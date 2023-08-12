@@ -1,0 +1,4 @@
+---
+alerts_camera:
+  name: "[Alerts] Camera"
+  icon: mdi:cctv

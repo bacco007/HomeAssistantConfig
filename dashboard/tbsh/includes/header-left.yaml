@@ -33,7 +33,7 @@ cards:
             display: block
             text-align: left
             float: left
-            width: 140px
+            width: 155px
             color: var(--secondary-text-color)
           button:
             pointer-events: none

@@ -139,9 +139,9 @@ binary_sensor:
     delay_on: 300
     state: >
       {{ is_state('binary_sensor.connected_eufy_security','off')
-          and is_state('input_boolean.alerts_ha','on') }}
+          and is_state('input_boolean.alerts_camera','on') }}
     attributes:
-      category: homeassistant
+      category: camera
 
   - name: "alerts_connect_hdhomerun"
     unique_id: alerts_connect_hdhomerun
@@ -230,3 +230,18 @@ binary_sensor:
           and is_state('input_boolean.ha_startup_pending','off') }}
     attributes:
       category: homeassistant
+
+  - name: "alerts_docker_containersoff"
+    unique_id: alerts_docker_containersoff
+    icon: mdi:docker
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ (is_state('binary_sensor.docker_tbsh1_containersoff','on')
+          or is_state('binary_sensor.docker_tbsh2_containersoff','on')
+          or is_state('binary_sensor.docker_tbsh3_containersoff','on')
+          or is_state('binary_sensor.docker_tbsh5_containersoff','on')
+          or is_state('binary_sensor.docker_pi4srv_containersoff','on'))
+          and is_state('input_boolean.alerts_docker_containers_off','on') }}
+    attributes:
+      category: docker

@@ -1,0 +1,4 @@
+---
+alerts_docker_containers_off:
+  name: "[Alerts] Docker Containers Off"
+  icon: mdi:docker

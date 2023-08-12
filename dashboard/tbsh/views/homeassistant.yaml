@@ -47,6 +47,7 @@ cards:
                     - !include ../homeassistant/watchman_services.yaml
                     - !include ../homeassistant/unavailable.yaml
                     - !include ../homeassistant/syslog_analysis.yaml
+                    - !include ../homeassistant/repairs.yaml
               - attributes:
                   label: Stats
                   isMinWidthIndicator: true
@@ -93,6 +94,7 @@ cards:
           - !include ../homeassistant/watchman_services.yaml
           - !include ../homeassistant/unavailable.yaml
           - !include ../homeassistant/syslog_analysis.yaml
+          - !include ../homeassistant/repairs.yaml
 
   # Column 2, Row 1
   - type: custom:state-switch

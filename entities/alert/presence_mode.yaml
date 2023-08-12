@@ -1,0 +1,24 @@
+---
+presence_mode:
+  name: "Presence Mode"
+  title: "Presence Mode"
+  message: Presence Mode doesn't match House Occupation
+  done_message: clear_notification
+  entity_id: binary_sensor.presence_presence_mode_alert
+  state: "on"
+  repeat: 1440
+  notifiers: alert
+  data:
+    tag: presence_mode
+    notification_id: presence_mode
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_presence_mode

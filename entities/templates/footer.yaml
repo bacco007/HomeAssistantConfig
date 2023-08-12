@@ -1,0 +1,16 @@
+---
+sensor:
+  - unique_id: footer
+    state: template
+    attributes:
+      time: >
+        {% set hours = now().strftime('%H') %}
+        {% set minutes = now().strftime('%M') %}
+        <div class="datetime">
+          <div class="time">
+            {{ hours }}<span class="time-colon">:</span>{{ minutes }}
+          </div>
+          <div class="date">
+            {{ now().strftime('%A, %B %d') }}
+          </div>
+        </div>

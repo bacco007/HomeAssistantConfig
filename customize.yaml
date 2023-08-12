@@ -44,7 +44,7 @@ alert.bureau_of_meteorology_connected:
   category: homeassistant
 alert.eufy_security_connected:
   icon: mdi:alert-decagram
-  category: homeassistant
+  category: camera
 alert.hdhomerun_connected:
   icon: mdi:alert-decagram
   category: homeassistant
@@ -69,6 +69,12 @@ alert.unifi_connected:
 alert.uptime_kuma_connected:
   icon: mdi:alert-decagram
   category: homeassistant
+alert.presence_mode:
+  icon: mdi:alert-decagram
+  category: presence
+alert.docker_containersoff_alert:
+  icon: mdi:alert-decagram
+  category: docker
 
 ## Sensor
 sensor.yahoofinance_amx_ax:

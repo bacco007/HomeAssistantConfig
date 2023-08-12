@@ -1,0 +1,19 @@
+---
+sensor:
+  - unique_id: binday_nextcollectionday
+    name: "[Bin Day] Next Collection Day"
+    icon: mdi:trash-can
+    state: >
+      {%- set days = state_attr('sensor.binday_waste', 'days') %}
+      {%- if days == 0 %}
+        Today
+      {%- elif days == 1 %}
+        Tomorrow
+      {%- elif days == 2 %}
+        After Tomorrow
+      {%- else %}
+        In {{ days }} days
+      {%- endif %}
+    attributes:
+      days: >-
+        {{ state_attr('sensor.binday_waste', 'days') }}

@@ -22,3 +22,16 @@ binary_sensor:
         {{ is_state('binary_sensor.presence_thomas_home','on')
             and now() - states.binary_sensor.presence_thomas_home.last_changed < timedelta(minutes=15) }}
       category: presence
+
+  - name: "[Presence] Presence Mode Alert"
+    unique_id: presence_presence_mode_alert
+    device_class: problem
+    delay_on: 900
+    state: >
+      {{ ((states('input_select.presence_mode') in ['Away','Vacation'] and is_state('binary_sensor.presence_people_home','on'))
+          or ((states('input_select.presence_mode') in ['Home','Guest','Night'] and is_state('binary_sensor.presence_people_home','off'))
+          or (is_state('input_select.presence_mode','Guest') and is_state('binary_sensor.presence_thomas_home','on'))))
+          and is_state('input_boolean.alerts_presence','on')
+      }}
+    attributes:
+      category: presence

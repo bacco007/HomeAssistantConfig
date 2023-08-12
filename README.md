@@ -46,22 +46,22 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, August 12th 2023_
+_Stats as at 05:00, Sunday, August 13th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.1 | 483     | 4479         | 3095 | 122 |
+| 2023.8.2 | 484     | 4498         | 3100 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 27
-Automation | 122
-Binary Sensor | 269
+Automation | 123
+Binary Sensor | 275
 Camera | 6
 Device Tracker | 141
 Group | 8
-Input Boolean | 8
+Input Boolean | 11
 Input Datetime | 0
 Input Text | 3
 Light | 14
@@ -69,7 +69,7 @@ Media Player | 25
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3095
+Sensor | 3100
 Sun | 1
 Switch | 210
 Weather | 13
@@ -206,6 +206,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [eufy_security](https://www.home-assistant.io/components/eufy_security) |
 | [event](https://www.home-assistant.io/components/event) |
 | [event.mqtt](https://www.home-assistant.io/components/event.mqtt) |
+| [event.spook](https://www.home-assistant.io/components/event.spook) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.dyson_local](https://www.home-assistant.io/components/fan.dyson_local) |
 | [fan.mqtt](https://www.home-assistant.io/components/fan.mqtt) |

@@ -1,0 +1,49 @@
+---
+persons:
+  styles:
+    grid:
+      - display: flex
+      - justify-content: center
+      - gap: 8px
+    card:
+      - background: "transparent"
+      - border-radius: 0
+      - box-shadow: none
+
+person:
+  show_name: false
+  show_state: false
+  template:
+    - base
+  triggers_update: sensor.time
+  styles:
+    custom_fields:
+      icon:
+        - clip-path: circle()
+        - pointer-events: none
+        - height: 100%
+        - aspect-ratio: 1
+        - width: 100%
+    grid:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+    card:
+      - max-width: 48px
+      - background: "transparent"
+      - box-shadow: "none"
+      - border-radius: 50%
+      - padding: 0px
+      - opacity: >
+          [[[
+            return variables.state === "home"
+              ? 1
+              : .5;
+          ]]]
+  custom_fields:
+    icon: >
+      [[[
+        return entity && variables.entity_picture
+          ? `<img src="${variables.entity_picture}" style="width:100%;height:100%" alt="${variables.state}" />`
+          : null;
+      ]]]

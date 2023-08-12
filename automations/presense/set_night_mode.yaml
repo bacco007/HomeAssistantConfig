@@ -1,0 +1,36 @@
+---
+alias: "[Presence] Set Night Mode"
+id: presence_night_mode
+mode: single
+trigger:
+  - platform: state
+    entity_id:
+      - sun.sun
+    to: below_horizon
+    id: sun_down
+  - platform: state
+    entity_id:
+      - sun.sun
+    to: above_horizon
+    id: sun_up
+condition: []
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - sun_up
+        sequence:
+          - service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.night_mode
+      - conditions:
+          - condition: trigger
+            id:
+              - sun_down
+        sequence:
+          - service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.night_mode

@@ -1,0 +1,16 @@
+---
+z_clock:
+  show_state: true
+  show_icon: false
+  show_name: false
+  tap_action:
+    action: none
+  styles:
+    card:
+      - background: "transparent"
+      - box-shadow: "none"
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Robot, sans-serif
+      - font-size: 64px
+      - font-weight: 500
+      - padding: 0
+      - line-height: 1

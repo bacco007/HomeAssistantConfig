@@ -1,0 +1,24 @@
+---
+top_nav:
+  show_icon: none
+  show_name: none
+  show_state: none
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-areas: |
+          "left right"
+      - grid-template-columns: 1fr 1fr
+      - align-items: center
+      - height: 50px
+    card:
+      - background: transparent
+      - border-radius: 0px
+      - box-shadow: none
+      - box-sizing: border-box
+      - padding: 0px
+  custom_fields:
+    left:
+      card: !include ../tbsh/includes/header-left.yaml
+    right:
+      card: !include ../tbsh/includes/header-right.yaml

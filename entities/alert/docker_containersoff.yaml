@@ -1,0 +1,36 @@
+---
+docker_containersoff_alert:
+  name: "Docker Containers Off Alert"
+  title: "Docker Containers Off Alert"
+  message: >
+    These Docker Containers are off:
+    {%- if states('binary_sensor.docker_tbsh1_containersoff') == 'on' %}
+    tbsh1: {{state_attr('binary_sensor.docker_tbsh1_containersoff', 'containers')}}
+    {%- elif states('binary_sensor.docker_tbsh2_containersoff') == 'on' %}
+    tbsh2: {{state_attr('binary_sensor.docker_tbsh2_containersoff', 'containers')}}
+    {%- elif states('binary_sensor.docker_tbsh3_containersoff') == 'on' %}
+    tbsh3: {{state_attr('binary_sensor.docker_tbsh3_containersoff', 'containers')}}
+    {%- elif states('binary_sensor.docker_tbsh5_containersoff') == 'on' %}
+    tbsh5: {{state_attr('binary_sensor.docker_tbsh5_containersoff', 'containers')}}
+    {%- elif states('binary_sensor.docker_pi4srv_containersoff') == 'on' %}
+    pi4srv: {{state_attr('binary_sensor.docker_pi4srv_containersoff', 'containers')}}
+    {% endif %}
+  done_message: clear_notification
+  entity_id: binary_sensor.alerts_docker_containersoff
+  state: "on"
+  repeat: 360
+  notifiers: alert
+  data:
+    tag: alerts_docker_containersoff
+    notification_id: alerts_docker_containersoff
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_alerts_docker_containersoff

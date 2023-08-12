@@ -19,7 +19,7 @@ cards:
           ha-card {
             border-style: none;
             background: none;
-            --mush-title-font-size: 20px;
+            --mush-title-font-size: 16px;
             --mush-title-padding: 0px 5px 0px;
           }
           h1.card-header{
