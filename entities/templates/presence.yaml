@@ -9,6 +9,21 @@ binary_sensor:
     attributes:
       category: presence
 
+  - name: "[Presence] Home Occupied"
+    unique_id: presence_home_occupied
+    state: >
+      {{ states('zone.home') | int > 0 }}
+    device_class: occupancy
+    attributes:
+      category: presence
+      is_home_full: |
+        {{ states('zone.home')|int == expand(states.person)|list|count }}
+      present_persons: |
+        {{ expand(states.person)
+          | selectattr('state', 'eq', 'home')
+          | map(attribute='attributes.friendly_name')
+          | list | sort }}
+
   - name: "[Presence] Thomas Home"
     unique_id: presence_thomas_home
     icon: "{{ iif(is_state('binary_sensor.presence_thomas_home','on'),'mdi:account-circle','mdi:account-circle-outline')}}"

@@ -1,105 +1,95 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:button-card
-    template: header_card
-    variables:
-      name: HDHomeRun
-      label: Manage
-      arrow: mdi:arrow-top-right
-      action: url
-      link: http://192.168.1.120
-    view_layout:
-      grid-column: 1/-1
-  - type: custom:mushroom-update-card
-    entity: update.1251b32b_update
-    name: HDHomeRun Firmware
-    icon: mdi:television-box
+  - type: custom:mushroom-template-card
+    primary: HDHomeRun
+    icon: mdi:television
+    icon_color: orange
     tap_action:
       action: none
-    hold_action:
-      action: none
-    double_tap_action:
-      action: none
-    fill_container: true
-  - square: false
-    type: grid
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_channel_count
-        name: Channels
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: button
+        icon: mdi:television-guide
+        name: Admin Panel
+        action_name: OPEN
         tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-        icon_color: pink
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_favourite_channels
-        name: Favourites
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-        icon_color: green
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_disabled_channels
-        name: Disabled
-        double_tap_action:
-          action: none
-        hold_action:
-          action: none
-        tap_action:
-          action: none
-        icon_color: deep-orange
-    columns: 3
-  - square: false
-    columns: 2
-    type: grid
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: button.1251b32b_channel_scan
+          action: navigate
+          navigation_path: http://192.168.1.120
+      - type: section
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Channels
+          icon: mdi:television-classic
+          state: ""
+        entities:
+          - entity: sensor.1251b32b_channel_count
+            name: Channel Count
+          - entity: binary_sensor.1251b32b_channel_scanning
+            name: Channel Scanning
+          - entity: sensor.1251b32b_disabled_channels
+            name: Disabled Channels
+          - entity: sensor.1251b32b_favourite_channels
+            name: Favourite Channels
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Tuners
+          icon: mdi:television
+          state: ""
+        entities:
+          - entity: sensor.1251b32b_tuner_count
+            name: Tuner Count
+          - entity: sensor.1251b32b_tuner0
+            name: Tuner 1
+          - entity: sensor.1251b32b_tuner1
+            name: Tuner 2
+          - entity: sensor.1251b32b_tuner2
+            name: Tuner 3
+          - entity: sensor.1251b32b_tuner3
+            name: Tuner 4
+      - type: section
+      - entity: button.1251b32b_channel_scan
         name: Channel Scan
-        icon_color: grey
-        fill_container: false
-        tap_action:
-          action: toggle
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-        secondary_info: none
-      - type: custom:mushroom-entity-card
-        entity: button.1251b32b_restart
+      - entity: button.1251b32b_restart
         name: Restart
-        double_tap_action:
-          action: none
-        hold_action:
-          action: none
-        tap_action:
-          action: toggle
-        icon_color: grey
-        secondary_info: none
-  - square: false
-    type: grid
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_tuner0
-        name: Tuner 1
-        fill_container: false
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_tuner1
-        name: Tuner 2
-        fill_container: false
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_tuner2
-        name: Tuner 3
-        fill_container: false
-      - type: custom:mushroom-entity-card
-        entity: sensor.1251b32b_tuner3
-        name: Tuner 4
-        fill_container: false
-    columns: 2
+      - entity: select.1251b32b_channel_sources
+        name: Channel Sources
+      - type: section
+      - entity: update.1251b32b_update
+        name: Firmware

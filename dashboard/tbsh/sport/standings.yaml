@@ -1,0 +1,34 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Sport Standings
+    icon: mdi:soccer
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - !include standings_afl.yaml
+      - !include standings_alm.yaml
+      - !include standings_alw.yaml
+      - !include standings_epl.yaml
+      - !include standings_mlb.yaml
+      - !include standings_nba.yaml
+      - !include standings_nfl.yaml
+      - !include standings_nhl.yaml
+      - !include standings_nrl.yaml
+      - !include standings_srp.yaml
