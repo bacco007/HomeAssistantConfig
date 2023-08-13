@@ -46,30 +46,30 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, August 13th 2023_
+_Stats as at 05:00, Monday, August 14th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.2 | 484     | 4498         | 3100 | 123 |
+| 2023.8.2 | 485     | 4544         | 3108 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
-Alert | 27
+Alert | 29
 Automation | 123
-Binary Sensor | 275
+Binary Sensor | 277
 Camera | 6
 Device Tracker | 141
-Group | 8
+Group | 24
 Input Boolean | 11
 Input Datetime | 0
 Input Text | 3
 Light | 14
 Media Player | 25
-Person | 1
+Person | 4
 Scene | 0
 Script | 7
-Sensor | 3100
+Sensor | 3108
 Sun | 1
 Switch | 210
 Weather | 13
@@ -551,6 +551,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [vacuum.mqtt](https://www.home-assistant.io/components/vacuum.mqtt) |
 | [version](https://www.home-assistant.io/components/version) |
+| [wake_on_lan](https://www.home-assistant.io/components/wake_on_lan) |
 | [watchman](https://www.home-assistant.io/components/watchman) |
 | [water_heater](https://www.home-assistant.io/components/water_heater) |
 | [water_heater.mqtt](https://www.home-assistant.io/components/water_heater.mqtt) |
