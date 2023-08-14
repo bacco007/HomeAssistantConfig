@@ -1,11 +1,94 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
+  - type: custom:mushroom-template-card
+    primary: Zigbee2MQTT
+    icon: mdi:zigbee
+    icon_color: orange
+    tap_action:
+      action: none
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
   - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
+      - type: button
+        icon: mdi:monitor-dashboard
+        name: Admin Panel
+        action_name: OPEN
+        tap_action:
+          action: navigate
+          navigation_path: /hassio/ingress/45df7312_zigbee2mqtt_edge
       - entity: binary_sensor.status_zigbee2mqtt
         secondary_info: last-updated
         name: Zigbee2MQTT Status
+      - type: section
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.zigbee2mqtt_*
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Zigbee2MQTT Automations
+            icon: mdi:sync-alert
+            state: ""
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: alert
+              entity_id: alert.zigbee*
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Zigbee2MQTT Alerts
+            icon: mdi:alert-circle
+            state: ""
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: binary_sensor
+              entity_id: binary_sensor.status_zigbee2mqtt
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Zigbee2MQTT Alert Sensors
+            icon: mdi:alert-circle
+            state: ""
+      - type: section
       - entity: sensor.zigbee2mqtt_coordinator_version
       - entity: sensor.zigbee2mqtt_version
       - entity: input_boolean.z2m_permit_join
@@ -14,10 +97,34 @@ cards:
       - entity: timer.z2m_permit_join
         name: Permit Join Time Remaining
         secondary_info: none
-    state_color: true
-    show_header_toggle: false
+      - type: section
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Firmware Updates
+            icon: mdi:update
+            state: ""
+        show_empty: true
+        sort:
+          method: friendly_name
+        filter:
+          include:
+            - group: group.updates_other
+              entity_id: update.z2m*
+              options:
+                type: custom:template-entity-row
+                name: >-
+                  {{ state_attr(config.entity, 'friendly_name').split(':',1)[0]
+                  }}
+                state: |-
+                  Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
   - square: false
     type: grid
+    columns: 2
     cards:
       - type: custom:mushroom-entity-card
         entity: automation.zigbee2mqtt_enable_z2m_join
@@ -29,7 +136,7 @@ cards:
           data:
             skip_condition: true
         fill_container: true
-        layout: vertical
+        layout: horizontal
         name: Enable Join
         secondary_info: none
         icon: mdi:zigbee
@@ -44,47 +151,21 @@ cards:
           data:
             skip_condition: true
         fill_container: true
-        layout: vertical
+        layout: horizontal
         name: Disable Join
         secondary_info: none
         icon: mdi:zigbee
         icon_color: red
-    columns: 2
-  - type: custom:zigbee2mqtt-networkmap
-    entity: sensor.zigbee2mqtt_networkmap
-    mqtt_base_topic: zigbee2mqtt
-    mqtt_topic: zigbee2mqtt/bridge/request/networkmap
-    mqtt_payload:
-      type: raw
-      routes: true
-    force: 4000
-    node_size: 10
-    font_size: 14
-    link_width: 2
-    height: 400
-    css: |
-      :host {
-        --zigbee2mqtt-networkmap-node-color: rgba(18, 120, 98, .7);
-        --zigbee2mqtt-networkmap-node-fill-color: #dcfaf3;
-        --zigbee2mqtt-networkmap-node-pinned-color: rgba(190, 56, 93, .6);
-        --zigbee2mqtt-networkmap-link-color: rgba(18, 120, 98, .5);
-        --zigbee2mqtt-networkmap-hover-color: #be385d;
-        --zigbee2mqtt-networkmap-link-selected-color: rgba(202, 164, 85, .6);
-        --zigbee2mqtt-networkmap-label-color: #fff;
-        --zigbee2mqtt-networkmap-arrow-color: rgba(18, 120, 98, 0.7);
-        --zigbee2mqtt-networkmap-node-coordinator-color: rgba(224, 78, 93, .7);
-        --zigbee2mqtt-networkmap-node-router-color: rgba(0, 165, 255, .7);
-      }
   - type: entities
     card_mod:
       style:
         fold-entity-row$: |
           ha-icon {
-            background: none !important;
-            margin-right: 24px !important;
-            --toggle-icon-width: 21px !important;
             color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
           }
+        hui-section-row $: |
+          .divider { display: none; }
         .: |
           .card-content {
             padding: 0;
@@ -93,50 +174,40 @@ cards:
       - type: custom:fold-entity-row
         head:
           type: custom:mushroom-template-card
-          icon: mdi:update
-          primary: Updates
-          secondary: >
-            Count: {{expand(integration_entities('mqtt')) | selectattr('domain', 'eq', 'update') | selectattr('entity_id', 'search', 'z2m') | selectattr('state', 'eq', 'on') | list | count }}
+          primary: Zigbee2MQTT Network Map
+          icon: mdi:zigbee
+          icon_color: yellow
           card_mod:
             style: |
               ha-card {
                 background: none;
-                --ha-card-box-shadow: 0px;
+                border: 0;
+                box-shadow: none;
               }
-          icon_color: orange
-          tap_action:
-            action: toggle
         padding: 0
         entities:
-          - type: custom:auto-entities
-            filter:
-              include:
-                - domain: update
-                  integration: mqtt
-                  entity_id: "*z2m*"
-                  options:
-                    type: custom:mushroom-update-card
-                    show_buttons_control: true
-                    layout: horizontal
-                    entities:
-                      - this.entity_id
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background: none;
-                          padding: 4px 16px !important;
-                          --ha-card-box-shadow: 0px;
-                        }
-            card:
-              type: custom:layout-card
-              cards: []
-              layout_type: masonry
-            sort:
-              method: friendly_name
-        card_mod:
-          style: |
-            :host {
-              --ha-card-border-width: 0;
-              --ha-card-background: none;
-              --ha-card-box-shadow: 0;
-            }
+          - type: custom:zigbee2mqtt-networkmap
+            entity: sensor.zigbee2mqtt_networkmap
+            mqtt_base_topic: zigbee2mqtt
+            mqtt_topic: zigbee2mqtt/bridge/request/networkmap
+            mqtt_payload:
+              type: raw
+              routes: true
+            force: 4000
+            node_size: 10
+            font_size: 14
+            link_width: 2
+            height: 400
+            css: |
+              :host {
+                --zigbee2mqtt-networkmap-node-color: rgba(18, 120, 98, .7);
+                --zigbee2mqtt-networkmap-node-fill-color: #dcfaf3;
+                --zigbee2mqtt-networkmap-node-pinned-color: rgba(190, 56, 93, .6);
+                --zigbee2mqtt-networkmap-link-color: rgba(18, 120, 98, .5);
+                --zigbee2mqtt-networkmap-hover-color: #be385d;
+                --zigbee2mqtt-networkmap-link-selected-color: rgba(202, 164, 85, .6);
+                --zigbee2mqtt-networkmap-label-color: #fff;
+                --zigbee2mqtt-networkmap-arrow-color: rgba(18, 120, 98, 0.7);
+                --zigbee2mqtt-networkmap-node-coordinator-color: rgba(224, 78, 93, .7);
+                --zigbee2mqtt-networkmap-node-router-color: rgba(0, 165, 255, .7);
+              }
