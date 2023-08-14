@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, August 14th 2023_
+_Stats as at 05:00, Tuesday, August 15th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.2 | 485     | 4544         | 3108 | 123 |
+| 2023.8.2 | 485     | 4548         | 3108 | 123 |
 
 Type | Qty
 -- | --
@@ -60,7 +60,7 @@ Automation | 123
 Binary Sensor | 277
 Camera | 6
 Device Tracker | 141
-Group | 24
+Group | 25
 Input Boolean | 11
 Input Datetime | 0
 Input Text | 3
@@ -745,7 +745,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.6)
-- Cloudflared (4.2.2)
+- Cloudflared (4.2.3)
 - ESPHome (2023.7.1)
 - eufy-security-ws (1.6.2)
 - Glances (0.19.2)

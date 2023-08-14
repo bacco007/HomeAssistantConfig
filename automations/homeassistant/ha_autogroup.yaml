@@ -23,6 +23,8 @@ action:
   - service: group.set
     data_template:
       object_id: battery_devices
+      name: "[Group] Battery Devices"
+      icon: mdi:battery
       entities: >-
         {%-
           for state in states.sensor
@@ -35,6 +37,8 @@ action:
   - service: group.set
     data_template:
       object_id: media_players
+      name: "[Group] Media Players"
+      icon: mdi:media-network
       entities: >-
         {%- for state in states.media_player %}
         {{ state.entity_id }}{%- if not loop.last -%}, {%- endif -%}
@@ -44,6 +48,7 @@ action:
     data:
       object_id: lights
       name: "[Group] Lights"
+      icon: mdi:lamps
       entities: >
         {{ states.light
             |map(attribute='entity_id')|list|sort }}
@@ -52,6 +57,7 @@ action:
     data:
       object_id: alert_controls
       name: "[Group] Alert Controls"
+      icon: mdi:alert-decagram
       entities: >
         {{ states
             |selectattr('entity_id','search','input_boolean.alerts_*')
@@ -61,6 +67,7 @@ action:
     data:
       object_id: connectivity_monitors
       name: "[Group] Connectivity Monitors"
+      icon: mdi:connection
       entities: >
         {{ states
             |selectattr('entity_id','search','binary_sensor.connected_*')
@@ -70,6 +77,7 @@ action:
     data:
       object_id: people
       name: "[Group] People"
+      icon: mdi:account-multiple
       entities: >
         {{ states.person|map(attribute='entity_id')|list|sort }}
 
@@ -77,16 +85,18 @@ action:
     data:
       object_id: waqi
       name: "[Group] WAQI"
+      icon: mdi:smog
       entities: >
         {{ states
           |selectattr('entity_id','search','waqi*')
           |rejectattr('entity_id','search','alert*')
+          |rejectattr('entity_id','search','group*')
           |map(attribute='entity_id')|list|sort }}
 
   - service: group.set
     data:
       object_id: docker_pi4srv_containers
-      name: "[Docker] Pi4Srv Containers"
+      name: "[Group] Docker Pi4Srv Containers"
       icon: mdi:docker
       entities: >
         {{states.sensor
@@ -102,7 +112,7 @@ action:
   - service: group.set
     data:
       object_id: docker_pi4srv_switches
-      name: "[Docker] Pi4Srv Switches"
+      name: "[Group] Docker Pi4Srv Switches"
       icon: mdi:docker
       entities: >
         {{states.switch
@@ -113,7 +123,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh1_containers
-      name: "[Docker] tbsh1 Containers"
+      name: "[Group] Docker tbsh1 Containers"
       icon: mdi:docker
       entities: >
         {{states.sensor
@@ -129,7 +139,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh1_switches
-      name: "[Docker] tbsh1 Switches"
+      name: "[Group] Docker tbsh1 Switches"
       icon: mdi:docker
       entities: >
         {{states.switch
@@ -140,7 +150,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh2_containers
-      name: "[Docker] tbsh2 Containers"
+      name: "[Group] Docker tbsh2 Containers"
       icon: mdi:docker
       entities: >
         {{states.sensor
@@ -156,7 +166,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh2_switches
-      name: "[Docker] tbsh2 Switches"
+      name: "[Group] Docker tbsh2 Switches"
       icon: mdi:docker
       entities: >
         {{states.switch
@@ -167,7 +177,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh3_containers
-      name: "[Docker] tbsh3 Containers"
+      name: "[Group] Docker tbsh3 Containers"
       icon: mdi:docker
       entities: >
         {{states.sensor
@@ -183,7 +193,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh3_switches
-      name: "[Docker] tbsh3 Switches"
+      name: "[Group] Docker tbsh3 Switches"
       icon: mdi:docker
       entities: >
         {{states.switch
@@ -194,7 +204,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh5_containers
-      name: "[Docker] tbsh5 Containers"
+      name: "[Group] Docker tbsh5 Containers"
       icon: mdi:docker
       entities: >
         {{states.sensor
@@ -210,7 +220,7 @@ action:
   - service: group.set
     data:
       object_id: docker_tbsh5_switches
-      name: "[Docker] tbsh5 Switches"
+      name: "[Group] Docker tbsh5 Switches"
       icon: mdi:docker
       entities: >
         {{states.switch
@@ -252,10 +262,20 @@ action:
     data:
       object_id: updates_unifi
       name: "[Updates] Unifi"
-      icon: si:unifi
+      icon: si:ubiquiti
       entities: >
         {{expand(integration_entities('unifi'))
           |selectattr('domain', 'eq', 'update')
+          |map(attribute='entity_id')
+          |list|sort }}
+  - service: group.set
+    data:
+      object_id: updates_zigbee2mqtt
+      name: "[Updates] Zigbee2MQTT"
+      icon: mdi:zigbee
+      entities: >
+        {{states.update
+          |selectattr('entity_id', 'search', 'z2m')
           |map(attribute='entity_id')
           |list|sort }}
   - service: group.set
@@ -266,6 +286,7 @@ action:
       entities: >
         {{states.update
           |rejectattr('entity_id', 'search', 'wud')
+          |rejectattr('entity_id', 'search', 'z2m')
           |rejectattr('entity_id', 'in', expand(integration_entities('hacs'))|map(attribute='entity_id')|list)
           |rejectattr('entity_id', 'in', expand(integration_entities('Supervisor'))|map(attribute='entity_id')|list)
           |rejectattr('entity_id', 'in', expand(integration_entities('unifi'))|map(attribute='entity_id')|list)
