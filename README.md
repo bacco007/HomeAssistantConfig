@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, August 15th 2023_
+_Stats as at 05:00, Wednesday, August 16th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.2 | 485     | 4548         | 3108 | 123 |
+| 2023.8.2 | 485     | 4539         | 3107 | 123 |
 
 Type | Qty
 -- | --
@@ -69,11 +69,11 @@ Media Player | 25
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3108
+Sensor | 3107
 Sun | 1
-Switch | 210
+Switch | 209
 Weather | 13
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -744,7 +744,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (15.0.6)
+- Advanced SSH & Web Terminal (15.0.7)
 - Cloudflared (4.2.3)
 - ESPHome (2023.7.1)
 - eufy-security-ws (1.6.2)
@@ -753,7 +753,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.4.4)
+- Node-RED (14.4.5)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - Zigbee2MQTT Edge (edge)
