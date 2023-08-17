@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, August 17th 2023_
+_Stats as at 05:00, Friday, August 18th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.2 | 485     | 4541         | 3107 | 123 |
+| 2023.8.2 | 486     | 4596         | 3107 | 123 |
 
 Type | Qty
 -- | --
@@ -71,9 +71,9 @@ Scene | 0
 Script | 7
 Sensor | 3107
 Sun | 1
-Switch | 209
+Switch | 208
 Weather | 13
-Zone | 4
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -363,6 +363,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [select.hdhomerun](https://www.home-assistant.io/components/select.hdhomerun) |
 | [select.mqtt](https://www.home-assistant.io/components/select.mqtt) |
 | [select.sensibo](https://www.home-assistant.io/components/select.sensibo) |
+| [select.smartthinq_sensors](https://www.home-assistant.io/components/select.smartthinq_sensors) |
 | [select.spook](https://www.home-assistant.io/components/select.spook) |
 | [sensibo](https://www.home-assistant.io/components/sensibo) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
@@ -597,7 +598,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Eufy Security](https://github.com/fuatakgun/eufy_security)
 - [Feedparser](https://github.com/custom-components/feedparser)
 - [Fontawesome](https://github.com/thomasloven/hass-fontawesome)
-- [Garbage Collection](https://github.com/bruxy70/Garbage-Collection)
 - [Generate Readme](https://github.com/custom-components/readme)
 - [Google Fit](https://github.com/YorkshireIoT/ha-google-fit)
 - [Gtfs Realtime](https://github.com/mark1foley/ha-gtfs-rt-v2)
@@ -607,7 +607,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -635,7 +635,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [Sensor.Unifigateway](https://github.com/custom-components/sensor.unifigateway)
-- [Sensor.Untappd](https://github.com/custom-components/sensor.untappd)
 - [Simpleicons](https://github.com/vigonotion/hass-simpleicons)
 - [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
 - [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar)
