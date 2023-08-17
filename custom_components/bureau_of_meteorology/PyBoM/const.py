@@ -43,4 +43,3 @@ URL_DAILY = "/forecasts/daily"
 URL_HOURLY = "/forecasts/hourly"
 URL_OBSERVATIONS = "/observations"
 URL_WARNINGS = "/warnings"
-
