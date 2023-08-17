@@ -17,7 +17,7 @@ from homeassistant.util import dt as dt_util
 
 
 from .const import (DOMAIN,
-                    SERVICE_CLEAR_DATA, SERVICE_UPDATE, SOLCAST_URL)
+                    SERVICE_CLEAR_DATA, SERVICE_UPDATE, SERVICE_GET_FORECASTS, SOLCAST_URL)
 from .coordinator import SolcastUpdateCoordinator
 from .solcastapi import ConnectionOptions, SolcastApi
 
@@ -40,6 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options)
         await solcast.sites_data()
+        await solcast.sites_usage()
         await solcast.load_saved_data()
         
         coordinator = SolcastUpdateCoordinator(hass, solcast) 
@@ -75,11 +76,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.info(f"SOLCAST - Service call: {SERVICE_UPDATE}")
             await coordinator.service_event_update()
 
-        # async def handle_service_update_forecast_actuals(call):
-        #     """Handle service call"""
-        #     _LOGGER.info(f"SOLCAST - Service call: {SERVICE_ACTUALS_UPDATE}")
-        #     await coordinator.service_event_update_actuals()
-
         async def handle_service_clear_solcast_data(call):
             """Handle service call"""
             _LOGGER.info(f"SOLCAST - Service call: {SERVICE_CLEAR_DATA}")
@@ -87,7 +83,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             
         async def handle_service_get_solcast_data(call) -> ServiceResponse:
             """Handle service call"""
-            _LOGGER.info(f"SOLCAST - Service call: get-forecasts")
+            _LOGGER.info(f"SOLCAST - Service call: {SERVICE_GET_FORECASTS}")
             d = await coordinator.service_get_forecasts()
             return {
                 "data": [
@@ -99,10 +95,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             DOMAIN, SERVICE_UPDATE, handle_service_update_forecast
         )
 
-        # hass.services.async_register(
-        #     DOMAIN, SERVICE_ACTUALS_UPDATE, handle_service_update_forecast_actuals
-        # )
-        
         hass.services.async_register(
             DOMAIN, SERVICE_CLEAR_DATA, handle_service_clear_solcast_data
         )
@@ -127,8 +119,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.data[DOMAIN].pop(entry.entry_id)
 
         hass.services.async_remove(DOMAIN, SERVICE_UPDATE)
-        # hass.services.async_remove(DOMAIN, SERVICE_ACTUALS_UPDATE)
         hass.services.async_remove(DOMAIN, SERVICE_CLEAR_DATA)
+        hass.services.async_remove(DOMAIN, SERVICE_GET_FORECASTS)
 
         return unload_ok
     except Exception as err:

@@ -15,3 +15,4 @@ ATTRIBUTION: Final = "Data retrieved from Solcast"
 
 SERVICE_UPDATE = "update_forecasts"
 SERVICE_CLEAR_DATA = "clear_all_solcast_data"
+SERVICE_GET_FORECASTS = "get_forecasts"

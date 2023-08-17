@@ -8,5 +8,5 @@ clear_all_solcast_data:
   description: Deletes the solcast.json file to remove all current solcast site data
 
 get_forecasts:
-  name: Get
+  name: Get forecast list
   description: Lists of events for forecasts

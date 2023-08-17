@@ -25,6 +25,6 @@ async def system_health_info(hass: HomeAssistant) -> dict[str, Any]:
 
     return {
         "can_reach_server": system_health.async_check_can_reach_url(hass, SOLCAST_URL),
-        "remaining_requests": used_requests,
+        "used_requests": used_requests,
         "rooftop_site_count": len(coordinator.solcast._sites)
     }

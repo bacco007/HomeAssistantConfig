@@ -94,6 +94,12 @@ SENSORS: dict[str, SensorEntityDescription] = {
         icon="mdi:web-check",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    "api_limit": SensorEntityDescription(
+        key="api_limit",
+        name="API Limit",
+        icon="mdi:web-check",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     "lastupdated": SensorEntityDescription(
         key="lastupdated",
         device_class=SensorDeviceClass.TIMESTAMP,

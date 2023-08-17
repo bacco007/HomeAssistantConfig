@@ -18,7 +18,8 @@ async def async_get_config_entry_diagnostics(
 
     return {
         "tz_conversion": coordinator.solcast._tz,
-        "remaining_requests": coordinator.solcast.get_api_used_count(),
+        "api_requests_made": coordinator.solcast.get_api_used_count(),
+        "api_requests_limit": coordinator.solcast.get_api_limit(),
         "rooftop_site_count": len(coordinator.solcast._sites),
         "solcast_data": coordinator.data,
         "converted_data": coordinator.solcast._tzdataconverted,
