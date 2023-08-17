@@ -1,8 +1,12 @@
 {
   "domain": "samsungtv_smart",
   "name": "SamsungTV Smart",
-  "integration_type": "device",
+  "codeowners": ["@jaruba", "@ollo69", "@screwdgeh"],
+  "config_flow": true,
+  "dependencies": [],
   "documentation": "https://github.com/ollo69/ha-samsungtv-smart",
+  "integration_type": "device",
+  "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/ollo69/ha-samsungtv-smart/issues",
   "requirements": [
     "websocket-client!=1.4.0,>=0.58.0",
@@ -10,9 +14,5 @@
     "aiofiles>=0.8.0",
     "casttube>=0.2.1"
   ],
-  "dependencies": [],
-  "codeowners": ["@jaruba", "@ollo69", "@screwdgeh"],
-  "config_flow": true,
-  "iot_class": "cloud_polling",
-  "version": "0.11.6"
+  "version": "0.12.0"
 }

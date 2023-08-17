@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 from datetime import datetime, timedelta
 from enum import Enum
 import logging
@@ -248,16 +249,20 @@ class ArtModeSupport(Enum):
 class SamsungTVDevice(MediaPlayerEntity):
     """Representation of a Samsung TV."""
 
+    _attr_device_class = MediaPlayerDeviceClass.TV
+    _attr_has_entity_name = True
+    _attr_name = None
+
     def __init__(
         self,
-        config,
-        unique_id,
-        entry_data,
+        config: dict[str, Any],
+        unique_id: str,
+        entry_data: dict[str, Any] | None,
         session: ClientSession,
-        update_token_func,
-        logo_file,
-        local_logo_path,
-    ):
+        update_token_func: Callable[[str], None],
+        logo_file: str,
+        local_logo_path: str | None,
+    ) -> None:
         """Initialize the Samsung device."""
 
         self._entry_data = entry_data
@@ -265,10 +270,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._mac = config.get(CONF_MAC)
 
         # Set entity attributes
-        self._attr_name = config.get(CONF_NAME, self._host)
         self._attr_unique_id = unique_id
-        self._attr_icon = "mdi:television"
-        self._attr_device_class = MediaPlayerDeviceClass.TV
         self._attr_media_title = None
         self._attr_media_image_url = None
         self._attr_media_image_remotely_accessible = False
@@ -277,9 +279,10 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._attr_is_volume_muted = False
         self._attr_volume_level = 0.0
 
+        dev_name = config.get(CONF_NAME, self._host)
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._attr_unique_id)},
-            name=self._attr_name,
+            name=dev_name,
             manufacturer="Samsung Electronics",
         )
         self._attr_device_info.update(
@@ -329,7 +332,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._show_channel_number: bool = False
 
         # ws initialization
-        ws_name = config.get(CONF_WS_NAME, self._attr_name)
+        ws_name = config.get(CONF_WS_NAME, dev_name)
         self._ws = SamsungTVWS(
             host=self._host,
             token=config.get(CONF_TOKEN),
@@ -670,7 +673,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         if self._dump_apps:
             _LOGGER.info(
                 "List of available apps for SamsungTV %s: %s",
-                self._attr_name,
+                self._host,
                 dump_app_list,
             )
             self._dump_apps = False

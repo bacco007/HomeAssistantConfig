@@ -3,26 +3,32 @@ from enum import Enum
 
 
 class AppLoadMethod(Enum):
+    """Valid application load methods."""
+
     All = 1
     Default = 2
     NotLoad = 3
 
 
 class AppLaunchMethod(Enum):
+    """Valid application launch methods."""
+
     Standard = 1
     Remote = 2
     Rest = 3
 
 
 class PowerOnMethod(Enum):
+    """Valid power on methods."""
+
     WOL = 1
     SmartThings = 2
 
 
 DOMAIN = "samsungtv_smart"
 
-MIN_HA_MAJ_VER = 2022
-MIN_HA_MIN_VER = 11
+MIN_HA_MAJ_VER = 2023
+MIN_HA_MIN_VER = 7
 __min_ha_version__ = f"{MIN_HA_MAJ_VER}.{MIN_HA_MIN_VER}.0"
 
 DATA_CFG_YAML = "cfg_yaml"
