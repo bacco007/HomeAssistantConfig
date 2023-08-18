@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, August 18th 2023_
+_Stats as at 05:00, Saturday, August 19th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.2 | 486     | 4596         | 3107 | 123 |
+| 2023.8.2 | 486     | 4538         | 3107 | 123 |
 
 Type | Qty
 -- | --
@@ -73,7 +73,7 @@ Sensor | 3107
 Sun | 1
 Switch | 208
 Weather | 13
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
