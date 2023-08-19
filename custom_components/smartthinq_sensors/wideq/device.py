@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import asyncio
 import base64
+from copy import deepcopy
 from datetime import datetime
 import json
 import logging
@@ -277,8 +278,7 @@ class Monitor:
             _LOGGER.debug(
                 "Device %s not reachable, state: %s", self._device_descr, state
             )
-            if self._work_id:
-                self._work_id = None
+            await self.stop()
             return None, False
 
         if not self._work_id:
@@ -303,14 +303,20 @@ class Monitor:
         """
         if self._platform_type != PlatformType.THINQ2:
             return None, False
+
+        snapshot = None
         if query_device:
             result = await self._client.session.get_device_v2_settings(self._device_id)
-            return result.get("snapshot"), False
+            if "snapshot" in result:
+                snapshot = deepcopy(result["snapshot"])
+            return snapshot, False
 
         await self._client.refresh_devices()
         if device_data := self._client.get_device(self._device_id):
-            return device_data.snapshot, False
-        return None, False
+            if dev_snapshot := device_data.snapshot:
+                snapshot = deepcopy(dev_snapshot)
+
+        return snapshot, False
 
     @staticmethod
     def decode_json(data: bytes) -> dict[str, Any]:
