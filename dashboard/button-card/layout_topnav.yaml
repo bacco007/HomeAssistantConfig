@@ -18,7 +18,7 @@ top_nav:
       - box-sizing: border-box
       - padding: 0px
   custom_fields:
-    left:
-      card: !include ../tbsh/includes/header-left.yaml
+    # left:
+    #   card: !include ../tbsh/includes/header-left.yaml
     right:
       card: !include ../tbsh/includes/header-right.yaml

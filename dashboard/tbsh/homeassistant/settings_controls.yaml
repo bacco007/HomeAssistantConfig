@@ -1,0 +1,240 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Home Assistant Settings and Controls
+    icon: mdi:home-assistant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: input_boolean.ha_startup_pending
+        name: HA in Startup Mode?
+        card_mod:
+          style: |
+            :host {
+              --state-active-color: rgba(255,173,51,1);
+              --switch-checked-button-color: rgba(255,102,0,1);
+              --switch-checked-track-color: rgba(179,0,0,1);
+            }
+      - entity: input_boolean.alerts_ha
+        name: Alert Notifications
+      - type: section
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.ha_*
+              options:
+                secondary_info: last-triggered
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Home Assistant Automations
+            icon: mdi:sync-alert
+            state: |
+              {{states.automation
+                |selectattr('entity_id','search', 'ha_*')
+                |list|count}}
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: alert
+              attributes:
+                category: homeassistant
+              options:
+                secondary_info: last-changed
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Home Assistant Alerts
+            icon: mdi:alert-circle
+            state: |
+              {{states.alert
+                |selectattr('attributes.category', 'defined')
+                |selectattr('attributes.category','search', 'homeassistant')
+                |list|count}}
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: binary_sensor.alerts_*
+              attributes:
+                category: homeassistant
+              options:
+                secondary_info: last-changed
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Home Assistant Alert Sensors
+            icon: mdi:alert-circle
+            state: |
+              {{states.binary_sensor
+                |selectattr('entity_id', 'search', 'alerts*')
+                |selectattr('attributes.category', 'defined')
+                |selectattr('attributes.category','search', 'homeassistant')
+                |list|count}}
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: binary_sensor.connected_*
+              attributes:
+                category: homeassistant
+              options:
+                secondary_info: last-changed
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Home Assistant Integrations Connected
+            icon: mdi:home-assistant
+            state: |
+              {{states.binary_sensor
+                |selectattr('entity_id', 'search', 'connected*')
+                |selectattr('attributes.category', 'defined')
+                |selectattr('attributes.category','search', 'homeassistant')
+                |list|count}}
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: group
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Home Assistant Groups
+            icon: mdi:group
+            state: |
+              {{states.group|list|count}}
+      - type: section
+      - entity: input_select.log_level
+        name: Set Logging Level
+        card_mod:
+          style: |
+            :host {
+              --paper-item-icon-color:
+                {% set level = states('input_select.log_level') %}
+                {% if level == 'fatal' %} rgba(179,0,0,1)
+                {% elif level == 'critical' %} rgba(255,102,0,1)
+                {% elif level == 'error' %} rgba(255,173,51,1)
+                {% elif level in ['warning','warn'] %} rgba(255,255,102,1)
+                {% else %} rgba(0,153,51,1)
+                {% endif %}
+              ;
+            }
+      - type: section
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: automation
+          exclude:
+            - state: "on"
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Disabled Automations
+            icon: mdi:robot-confused
+            state: >
+              {{states.automation |selectattr('state','!=', 'on')
+              |list|count}}
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: automation
+              attributes:
+                current: "> 0"
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Running Automations
+            icon: mdi:robot-excited
+            state: |
+              {{states.automation
+                |selectattr('attributes.current','defined')
+                |selectattr('attributes.current','gt', 0)
+                |list|count}}
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: script
+          exclude:
+            - state: "off"
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Running Scripts
+            icon: mdi:script-text-key
+            state: |
+              {{states.script
+                |selectattr('state','!=','off')
+                |list|count}}
+      - type: section
+      - type: custom:auto-entities
+        show_empty: true
+        unique: true
+        filter:
+          include:
+            - entity_id: sensor.*_browser_user
+              attributes:
+                type: browser_mod
+              options:
+                secondary_info: last-changed
+          exclude:
+            - state: unavailable
+        sort:
+          method: name
+        card:
+          type: custom:fold-entity-row
+          padding: 10
+          head:
+            entity: sensor.ha_connected_browsers

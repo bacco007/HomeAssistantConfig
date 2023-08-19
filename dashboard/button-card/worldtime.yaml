@@ -1,0 +1,112 @@
+---
+worldtime:
+  show_name: false
+  show_icon: false
+  show_state: false
+
+  styles:
+    grid:
+      - grid-template-areas: |
+          "left right"
+      - grid-template-columns: 1fr 1fr
+      - grid-gap: 1px
+    card:
+      - border-radius: 12px
+      - box-shadow: none
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - gap: 1px
+      - display: flex
+      - padding: 0
+      - overflow: hidden
+
+  custom_fields:
+    left:
+      card:
+        type: "custom:button-card"
+        show_icon: false
+        entity: sensor.time_london
+        name: United Kingdom
+        tap_action: none
+        template:
+          - wt
+    right:
+      card:
+        type: "custom:button-card"
+        show_icon: false
+        template:
+          - wt
+        entity: sensor.time_new_york
+        tap_action: none
+        name: USA, East Coast
+
+wt:
+  show_state: true
+  state_display: |
+    [[[
+      if (entity) {
+        var value = states[entity.entity_id];
+
+        return `${value.state}`;
+      }
+
+      return null;
+    ]]]
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-columns: auto
+      - grid-template-areas: |
+          "value"
+          "name"
+      - grid-template-rows: 13px 13px
+      - column-gap: 4px
+      - row-gap: 0px
+      - padding-right: 8px
+      - padding-left: 8px
+      - padding-top: 8px
+      - padding-bottom: 8px
+
+    img_cell:
+      - display: none
+      - box-sizing: border-box
+
+    custom_fields:
+      icon:
+        - box-sizing: border-box
+        - color: "var(--secondary-text-color)"
+        - height: 32px
+
+    state:
+      - box-sizing: border-box
+      - align-items: end;
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - color: "var(--text-color)"
+      - grid-area: value
+      - font-size: 14px
+      - line-height: 16px
+      - font-weight: 600
+      - text-align: center
+      - width: 100%
+      - align-self: end
+
+    name:
+      - box-sizing: border-box
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - grid-area: name
+      - color: "var(--secondary-text-color)"
+      - font-size: 10px
+      - font-weight: 700
+      - line-height: 13px
+      - text-align: center
+      - width: 100%
+      - align-self: start
+
+    card:
+      - background: "var(--card-background-color)"
+      - box-sizing: border-box
+      - display: flex
+      - border-radius: 0px
+      - box-shadow: none
+      - padding: 0 0 0 0
+      - align-items: center
+      - justify-content: center

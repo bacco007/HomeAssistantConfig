@@ -46,34 +46,34 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, August 19th 2023_
+_Stats as at 05:00, Sunday, August 20th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.2 | 486     | 4538         | 3107 | 123 |
+| 2023.8.3 | 486     | 4559         | 3117 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 29
 Automation | 123
-Binary Sensor | 277
+Binary Sensor | 282
 Camera | 6
 Device Tracker | 141
 Group | 25
 Input Boolean | 11
 Input Datetime | 0
 Input Text | 3
-Light | 14
-Media Player | 25
+Light | 15
+Media Player | 26
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3107
+Sensor | 3117
 Sun | 1
-Switch | 208
+Switch | 210
 Weather | 13
-Zone | 4
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -745,7 +745,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.7)
 - Cloudflared (4.2.3)
-- ESPHome (2023.7.1)
+- ESPHome (2023.8.1)
 - eufy-security-ws (1.6.2)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.111.1)

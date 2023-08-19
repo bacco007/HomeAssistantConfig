@@ -1,0 +1,372 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Home Assistant
+    icon: mdi:home-assistant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: sensor.integrations
+        name: HA Integrations in Use
+      - entity: sensor.custom_integrations
+        name: Custom Integrations in Use
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Integrations by Load Time
+          icon: mdi:timer
+          state: ''
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: markdown
+            content: >
+              |Rank|Integration|Time|
+
+              |:---:|:---:|:---:|
+
+              {%- set ns = namespace(count = 0) %}
+
+              {%- for attr in states.sensor.start_time.attributes %}
+
+              {%- if not attr=="friendly_name"
+                  and not attr=="unit_of_measurement"
+                  and not attr=="icon" -%}
+              {%- set ns.count = ns.count+1 %}
+
+              |{{ ns.count }}|{{attr}}|{{states.sensor.start_time.attributes
+              [attr] }}s|
+
+              {%- endif %}
+
+              {%- endfor %}
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                    overflow: auto;
+                    padding-bottom: 20px;
+                    font-size: 12px;
+                  }
+                ha-markdown: |
+                  ha-card.type-markdown { box-shadow: none; }
+                  .no-header {padding-top: 0px !important; }
+                ha-markdown$: >
+                  table { width: 100%; padding: 16px; border-collapse: collapse; padding:
+                  0px; }
+
+                  thead th { height: 1em; }
+
+                  tr td { padding-left: 0.5em; padding-right: 0.5em;  }
+
+                  th { padding-left: 0.5em; padding-right: 0.5em;  }
+
+                  tbody tr:nth-child(odd) { background-color:
+                  var(--table-row-background-color);  }
+
+                  tbody tr:nth-child(even) { background-color:
+                  var(--table-row-alternative-background-color);  }
+
+                  tbody tr td:nth-child(2) { width: 10%; }
+
+                  th ha-icon { height: 1em; vertical-align: top;  }
+
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Integrations and Domains Used
+          icon: mdi:home-assistant
+          state: ''
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.ha_overview
+            css:
+              table+: 'border-collapse: collapse;'
+            sort_by: subdomains
+            columns:
+              - name: Integration
+                data: subdomains
+                modify: x.subdomain
+              - name: Domains
+                data: subdomains
+                modify: x.uses
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Domains used by HA Integration
+          icon: mdi:home-assistant
+          state: ''
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.ha_overview
+            css:
+              table+: 'border-collapse: collapse;'
+            sort_by: components
+            columns:
+              - name: Domain
+                data: components
+                modify: x.domain
+              - name: Used by
+                data: components
+                modify: x.uses
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: section
+      - entity: sensor.entities
+        name: Entities in Use
+      - entity: sensor.sensors
+        name: Sensors in Use
+      - entity: sensor.devices
+        name: Devices
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Entity Counter
+          icon: mdi:home-assistant
+          state: ''
+        padding: 0
+        open: false
+        entities:
+          - type: custom:config-template-card
+            variables:
+              - states['sensor.entities'].state
+            entities:
+              - sensor.entities
+            card:
+              type: custom:auto-entities
+              card:
+                type: entities
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                    padding-left: 0px;
+                    padding-right: 0px;
+
+                  }
+              sort:
+                method: state
+                reverse: true
+                numeric: true
+              filter:
+                exclude:
+                  - entity_id: sensor.entities
+                  - entity_id: sensor.*issues*
+                include:
+                  - integration: spook
+                    domain: sensor
+                    options:
+                      type: custom:bar-card
+                      style: "ha-icon {\n  color: var(--accent-color) !important;\n}\nha-icon\t {\n  margin-top: -7px;\n  padding-right: 5px;\n}\nbar-card-indicator\t {\n  margin-top: -12px;\n  padding-right: 5px;\n}\nbar-card-name\t {\n  margin-top: -4.5px;\n  padding-left: 5px;\n}\nbar-card-backgroundbar\t {\n  margin-top: -3.5px;\n  # border-radius: 2.5px;\n}\nbar-card-currentbar\t {\n  margin-top: -3.5px;\n  # border-radius: 2.5px;\n}\nbar-card-targetbar\t {\n  margin-top: -3.5px;\n  # border-radius: 2.5px;\n}\nbar-card-targetmarker\t {\n  margin-top: -3.5px;\n  # border-radius: 2.5px;\n}\nbar-card-value\t {\n  margin-top: -4.5px;\n  padding-left: 5px;\n}\n"
+                      positions:
+                        title: inside
+                        value: inside
+                      entity_row: true
+                      min: 0
+                      max: ${vars[0]}
+                      color: rgb(26,204,147,0.33)
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.watchman_missing_entities
+          name: Watchman Missing Entities
+          icon: mdi:shield-half-full
+          state: >
+            {{state_attr('sensor.watchman_missing_entities', 'entities')|count}}
+            Issues
+        padding: 0
+        open: false
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.watchman_missing_entities
+            css:
+              table+: 'border-collapse: collapse; padding: 0px;'
+            columns:
+              - name: ' '
+                data: entities
+                modify: |-
+                  var ICON = 'mdi:cloud-question';
+                  if (x.state == "missing")
+                    ICON = 'mdi:cloud-alert';
+                  else if (x.state == "unavail")
+                    ICON = 'mdi:cloud-off-outline';
+                  '<ha-icon icon="' + ICON + '">'
+              - name: Entity
+                data: entities
+                modify: x.id
+              - name: Occurrences
+                data: entities
+                modify: x.occurrences
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.watchman_missing_services
+          name: Watchman Missing Services
+          icon: mdi:shield-half-full
+          state: >
+            {{state_attr('sensor.watchman_missing_services', 'entities')|count}}
+            Issues
+        padding: 0
+        open: false
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.watchman_missing_services
+            css:
+              table+: 'border-collapse: collapse; padding: 0px;'
+            columns:
+              - name: ' '
+                data: entities
+                modify: |-
+                  var ICON = 'mdi:cloud-question';
+                  if (x.state == "missing")
+                    ICON = 'mdi:cloud-alert';
+                  else if (x.state == "unavail")
+                    ICON = 'mdi:cloud-off-outline';
+                  '<ha-icon icon="' + ICON + '">'
+              - name: Entity
+                data: entities
+                modify: x.id
+              - name: Occurrences
+                data: entities
+                modify: x.occurrences
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: section
+      - type: custom:auto-entities
+        show_empty: true
+        unique: true
+        filter:
+          template: '{{ state_attr(''sensor.unavailable_entities'',''entity_id'') }}'
+        sort:
+          method: state
+        card:
+          type: custom:fold-entity-row
+          padding: 0
+          head:
+            entity: sensor.unavailable_entities
+            icon: mdi:trophy-broken
+      - type: custom:auto-entities
+        show_empty: true
+        unique: true
+        filter:
+          template: >
+            {{ state_attr('sensor.unknown_unavailable_none_entities', 'unknown')
+            }}
+        sort:
+          method: state
+        card:
+          type: custom:fold-entity-row
+          padding: 0
+          head:
+            type: custom:template-entity-row
+            entity: sensor.unknown_unavailable_none_entities
+            name: Unknown Entities
+            icon: mdi:trophy-broken
+            state: >
+              {{ state_attr('sensor.unknown_unavailable_none_entities',
+              'unknown_count')}} entities
+      - type: custom:auto-entities
+        show_empty: true
+        unique: true
+        filter:
+          template: >
+            {{ state_attr('sensor.unknown_unavailable_none_entities',
+            'unavailable') }}
+        sort:
+          method: state
+        card:
+          type: custom:fold-entity-row
+          padding: 0
+          head:
+            type: custom:template-entity-row
+            entity: sensor.unknown_unavailable_none_entities
+            name: Unavailable Entities
+            icon: mdi:trophy-broken
+            state: >
+              {{ state_attr('sensor.unknown_unavailable_none_entities',
+              'unavailable_count')}} entities
+      - type: custom:auto-entities
+        show_empty: true
+        unique: true
+        filter:
+          template: |
+            {{ state_attr('sensor.unknown_unavailable_none_entities', 'none') }}
+        sort:
+          method: state
+        card:
+          type: custom:fold-entity-row
+          padding: 0
+          head:
+            type: custom:template-entity-row
+            entity: sensor.unknown_unavailable_none_entities
+            name: None Entities
+            icon: mdi:trophy-broken
+            state: >
+              {{ state_attr('sensor.unknown_unavailable_none_entities',
+              'none_count')}} entities

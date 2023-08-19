@@ -3,8 +3,6 @@ type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
     primary: Solcast Solar Forecasting
-    secondary: |
-      Today: {{ states('sensor.brisbanestreet') }} kWh
     icon: mdi:solar-panel-large
     icon_color: orange
     tap_action:

@@ -1,0 +1,121 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Weather Settings and Controls
+    icon: mdi:weather-partly-rainy
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: input_boolean.alerts_weather
+        name: Alert Notifications
+      - type: section
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.weather_*
+            - entity_id: automation.openuv_*
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Weather Automations
+            icon: mdi:sync-alert
+            state: ""
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: alert
+              attributes:
+                category: weather
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Weather Alerts
+            icon: mdi:alert-circle
+            state: ""
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: binary_sensor
+              attributes:
+                category: weather_alert
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Weather Alert Sensors
+            icon: mdi:alert-circle
+            state: ""
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          type: custom:template-entity-row
+          name: Weather HA Integrations Connected
+          icon: mdi:weather-partly-snowy-rainy
+          state: ""
+        entities:
+          - entity: binary_sensor.connected_bureau_of_meteorology
+          - entity: binary_sensor.connected_docker_weatherflow2mqtt
+          - entity: binary_sensor.connected_pirateweather
+          - entity: binary_sensor.connected_openuv
+          - entity: binary_sensor.connected_waqi
+          - entity: binary_sensor.connected_weatherflow_cloud
+          - entity: binary_sensor.connected_weatherflow_local
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          type: custom:template-entity-row
+          name: Weather Alert Thresholds
+          icon: mdi:thermometer-lines
+          state: ""
+        padding: 5
+        entities:
+          - type: custom:numberbox-card
+            entity: input_number.low_temperature_threshold
+          - type: custom:numberbox-card
+            entity: input_number.high_temperature_threshold

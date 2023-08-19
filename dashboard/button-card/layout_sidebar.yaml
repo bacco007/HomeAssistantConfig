@@ -8,13 +8,15 @@ sidebar:
       - grid-template-areas: |
           "clock"
           "date"
+          "worldtime"
           "warnings"
           "menu"
           "."
           "people"
+          "chips"
           "utilities"
       - grid-template-columns: 1fr
-      - grid-template-rows: min-content min-content min-content auto min-content min-content min-content
+      - grid-template-rows: min-content min-content min-content min-content auto min-content min-content min-content min-content
       - gap: 8px
     card:
       - background: "var(--sidebar-background-color)"
@@ -45,6 +47,10 @@ sidebar:
           card:
             - box-sizing: border-box
             - border-radius: 0px
+    worldtime:
+      card:
+        type: "custom:button-card"
+        template: worldtime
     menu:
       card: !include ../tbsh/includes/menu2.yaml
     warnings:
@@ -69,18 +75,8 @@ sidebar:
               template:
                 - person
               entity: person.thomas_baxter
-          person2:
-            card:
-              type: "custom:button-card"
-              template:
-                - person
-              entity: person.thomas_baxter
-          person3:
-            card:
-              type: "custom:button-card"
-              template:
-                - person
-              entity: person.thomas_baxter
+    chips:
+      card: !include ../tbsh/includes/header-right.yaml
     utilities:
       card:
         type: "custom:button-card"

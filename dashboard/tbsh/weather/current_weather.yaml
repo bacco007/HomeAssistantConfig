@@ -1,195 +1,162 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: entities
+  - type: custom:mushroom-template-card
+    primary: Current Weather
+    icon: mdi:weather-partly-snowy-rainy
+    icon_color: blue
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
+      - entity: weather.tempest_hourly
+        name: Weatherflow (Hourly)
+        secondary_info: last-updated
+      - entity: weather.tempest_daily
+        name: Weatherflow (Daily)
+        secondary_info: last-updated
+      - entity: sensor.weather_current_condition
+        secondary_info: none
+        name: Current Condition
+      - entity: weather.east_tamworth
+        name: BoM Forecast
+        secondary_info: last-updated
       - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-template-card
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          primary: Current Weather
-          secondary: >
-            {{ states('sensor.weather_temperature') }}°C /
-            {{states('sensor.weather_humidity')}}% /
-            {{states('sensor.weather_precipitation_today')}}mm
-          icon: mdi:weather-partly-snowy-rainy
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 5
         card_mod:
           style: &style |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
             #measure > * {
               margin: 0 !important;
             }
+        padding: 5
+        head:
+          entity: sensor.weather_temperature
+          name: Current Temperature
         entities:
-          - entity: weather.tempest_hourly
-            name: Weatherflow (Hourly)
-            secondary_info: last-updated
-          - entity: weather.tempest_daily
-            name: Weatherflow (Daily)
-            secondary_info: last-updated
-          - entity: sensor.weather_current_condition
-            secondary_info: none
-            name: Current Condition
-          - entity: weather.east_tamworth
-            name: BoM Forecast
-            secondary_info: last-updated
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.weather_temperature
-              name: Current Temperature
-            entities:
-              - entity: sensor.weather_temperature_trend
-              - entity: sensor.tempest_st_00056115_temperature_level
-                name: Temperature Level
-              - entity: binary_sensor.weatherflow_is_freezing
-                name: Freezing
-              - entity: sensor.weather_apparent_temperature
-              - entity: sensor.weather_high_temperature
-              - entity: sensor.weather_low_temperature
-              - entity: sensor.weather_dew_point
-              - entity: sensor.tempest_st_00056115_dewpoint_comfort_level
-                name: Dewpoint Comfort
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.weather_humidity
-              name: Humidity
-            entities:
-              - entity: sensor.weather_humidity_today
-                name: Humidity Today
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head: sensor.weather_barometric_pressure
-            entities:
-              - entity: sensor.weatherflow_pressure_trend
-                name: Pressure Trend
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.weather_precipitation_probability
-              name: Precipitation Probability
-            entities:
-              - entity: sensor.weather_precipitation_probability_today
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.weather_precipitation_today
-              name: Precipitation Today
-            entities:
-              - entity: sensor.weather_precipitation_type
-              - entity: sensor.weather_precipitation_duration_today
-              - entity: sensor.weather_precipitation_yesterday
-              - entity: sensor.weather_precipitation_duration_yesterday
-              - entity: sensor.weather_precipitation_intensity
-              - entity: sensor.weather_precipitation_rate
-              - entity: sensor.weather_nearest_storm_distance
-              - entity: sensor.weather_nearest_storm_bearing
-              - entity: sensor.weather_storm_full_direction
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: binary_sensor.weatherflow_is_lightning
-              name: Lightning
-            entities:
-              - entity: sensor.weather_lightning_count
-              - entity: sensor.weatherflow_lightning_strike_count
-                name: Lightning Strike Count (WF)
-              - entity: sensor.weatherflow_lightning_strike_count_last_hour
-                name: Lightning Strikes Last Hour
-              - entity: sensor.weatherflow_lightning_strike_count_last_3_hours
-                name: Lightning Strikes Last 3 Hours
-              - entity: sensor.weatherflow_last_lightning_strike
-                name: Last Lightning Strike
-              - entity: sensor.weatherflow_last_lightning_strike_distance
-                name: Last Lightning Strike Distance
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.weather_wind_beaufort_display
-              name: Wind Conditions
-            entities:
-              - entity: sensor.weather_wind_speed
-              - entity: sensor.weather_wind_speed_today
-              - entity: sensor.weather_wind_gust
-              - entity: sensor.weather_wind_gust_today
-              - entity: sensor.weather_wind_lull
-              - entity: sensor.weather_wind_bearing
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.weather_cloud_cover
-              name: Cloud Cover
-            entities:
-              - entity: sensor.weather_cloud_cover_today
-          - entity: sensor.weather_visibility
-          - entity: sensor.uv_index
-          - type: custom:fold-entity-row
-            card_mod:
-              style: *style
-            padding: 5
-            head:
-              entity: sensor.air_quality_index
-              name: Air Quality
-            entities:
-              - entity: sensor.waqi_ozone
-              - entity: sensor.waqi_nitrogen_dioxide
-              - entity: sensor.waqi_particulate_matter_2_5
-              - entity: sensor.waqi_particulate_matter_10
-  - type: entities
-    card_mod:
-      style:
-        .: |
-          .card-content {
-            padding-top: 0;
-          }
-          #states {
-            padding-top: 0 !important;
-          }
-          #states > * {
-            margin: 0 !important;
-          }
-    entities:
+          - entity: sensor.weather_temperature_trend
+          - entity: sensor.tempest_st_00056115_temperature_level
+            name: Temperature Level
+          - entity: binary_sensor.weatherflow_is_freezing
+            name: Freezing
+          - entity: sensor.weather_apparent_temperature
+          - entity: sensor.weather_high_temperature
+          - entity: sensor.weather_low_temperature
+          - entity: sensor.weather_dew_point
+          - entity: sensor.tempest_st_00056115_dewpoint_comfort_level
+            name: Dewpoint Comfort
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: sensor.weather_humidity
+          name: Humidity
+        entities:
+          - entity: sensor.weather_humidity_today
+            name: Humidity Today
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head: sensor.weather_barometric_pressure
+        entities:
+          - entity: sensor.weatherflow_pressure_trend
+            name: Pressure Trend
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: sensor.weather_precipitation_probability
+          name: Precipitation Probability
+        entities:
+          - entity: sensor.weather_precipitation_probability_today
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: sensor.weather_precipitation_today
+          name: Precipitation Today
+        entities:
+          - entity: sensor.weather_precipitation_type
+          - entity: sensor.weather_precipitation_duration_today
+          - entity: sensor.weather_precipitation_yesterday
+          - entity: sensor.weather_precipitation_duration_yesterday
+          - entity: sensor.weather_precipitation_intensity
+          - entity: sensor.weather_precipitation_rate
+          - entity: sensor.weather_nearest_storm_distance
+          - entity: sensor.weather_nearest_storm_bearing
+          - entity: sensor.weather_storm_full_direction
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: binary_sensor.weatherflow_is_lightning
+          name: Lightning
+        entities:
+          - entity: sensor.weather_lightning_count
+          - entity: sensor.weatherflow_lightning_strike_count
+            name: Lightning Strike Count (WF)
+          - entity: sensor.weatherflow_lightning_strike_count_last_hour
+            name: Lightning Strikes Last Hour
+          - entity: sensor.weatherflow_lightning_strike_count_last_3_hours
+            name: Lightning Strikes Last 3 Hours
+          - entity: sensor.weatherflow_last_lightning_strike
+            name: Last Lightning Strike
+          - entity: sensor.weatherflow_last_lightning_strike_distance
+            name: Last Lightning Strike Distance
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: sensor.weather_wind_beaufort_display
+          name: Wind Conditions
+        entities:
+          - entity: sensor.weather_wind_speed
+          - entity: sensor.weather_wind_speed_today
+          - entity: sensor.weather_wind_gust
+          - entity: sensor.weather_wind_gust_today
+          - entity: sensor.weather_wind_lull
+          - entity: sensor.weather_wind_bearing
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: sensor.weather_cloud_cover
+          name: Cloud Cover
+        entities:
+          - entity: sensor.weather_cloud_cover_today
+      - entity: sensor.weather_visibility
+      - entity: sensor.uv_index
+      - type: custom:fold-entity-row
+        card_mod:
+          style: *style
+        padding: 5
+        head:
+          entity: sensor.air_quality_index
+          name: Air Quality
+        entities:
+          - entity: sensor.waqi_ozone
+          - entity: sensor.waqi_nitrogen_dioxide
+          - entity: sensor.waqi_particulate_matter_2_5
+          - entity: sensor.waqi_particulate_matter_10
+      - type: section
       - type: custom:template-entity-row
         name: Home High Temperature (24hr)
         icon: mdi:sun-thermometer

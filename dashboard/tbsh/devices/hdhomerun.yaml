@@ -4,7 +4,7 @@ cards:
   - type: custom:mushroom-template-card
     primary: HDHomeRun
     icon: mdi:television
-    icon_color: orange
+    icon_color: blue
     tap_action:
       action: none
   - type: entities
@@ -22,8 +22,8 @@ cards:
         name: Admin Panel
         action_name: OPEN
         tap_action:
-          action: navigate
-          navigation_path: http://192.168.1.120
+          action: url
+          url_path: http://192.168.1.120
       - type: section
       - type: custom:fold-entity-row
         card_mod:

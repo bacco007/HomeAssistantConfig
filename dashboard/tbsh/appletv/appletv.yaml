@@ -1,0 +1,33 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Apple TV (Bedroom)
+    icon: phu:apple-tv-box
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: custom:mini-media-player
+    entity: media_player.bedroom_apple_tv
+    name: Apple TV (Bedroom)
+    volume_stateless: false
+    group: false
+    artwork: cover
+    source: icon
+    info: scroll
+  - type: custom:tabbed-card
+    styles:
+      '--mdc-theme-primary': var(--accent-color)
+      '--mdc-tab-text-label-color-default': var(--rgb-state-default-color)
+      '--mdc-typography-button-font-size': 12px
+      '--mdc-tab-stacked-height': 30px
+    tabs:
+      - card: !include remote.yaml
+        attributes:
+          label: Remote
+      - card: !include appgrid.yaml
+        attributes:
+          label: Apps

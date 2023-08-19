@@ -1,0 +1,107 @@
+---
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Sonarr
+    icon: mdi:television
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: button
+        icon: mdi:monitor-dashboard
+        name: Sonarr
+        action_name: OPEN
+        tap_action:
+          action: url
+          url_path: "https://192.168.1.131:8989"
+      - type: custom:multiple-entity-row
+        entity: sensor.frontpage_sonarr_upcoming_count
+        name: Episodes
+        show_state: false
+        entities:
+          - entity: sensor.frontpage_sonarr_upcoming_count
+            unit: false
+            name: Upcoming
+          - entity: sensor.sonarr_queue
+            unit: false
+            name: Queued
+          - entity: sensor.sonarr_wanted
+            unit: false
+            name: Wanted
+      - type: section
+      - entity: sensor.sonarr_latest_update
+        type: custom:template-entity-row
+        name: Installed Version
+        state: "{{ states('sensor.sonarr_installed_version') }}"
+        secondary: "Latest: {{ states(config.entity) }}"
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Upcoming Shows
+          icon: mdi:television
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.sonarr_upcoming_media
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              tbody tr td:nth-child(1): "width: 20%;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: test
+                data: data
+                modify: x.title
+                hidden: true
+              - name: Date
+                data: data
+                modify: |-
+                  {
+                    var date = new Date(x.airdate);
+                    date.toString().split(' ')[0] + " " +
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0'))
+                  }
+              - name: Time
+                data: data
+                align: center
+                modify: |-
+                  {
+                    var date = new Date(x.airdate);
+                    String(date.getHours()).padStart(2,'0')+":"+
+                    String(date.getMinutes()).padStart(2,'0')
+                  }
+              - name: Detail
+                data: data
+                modify: '{ x.title + "<br/><span>" + x.number + ", " + x.episode + "</span>" }'

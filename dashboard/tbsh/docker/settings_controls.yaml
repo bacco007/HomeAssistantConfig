@@ -1,0 +1,424 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Docker Settings and Controls
+    icon: mdi:docker
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: input_boolean.alerts_docker_containers_off
+        name: Alert Notifications for Off Containers
+      - type: section
+      - entity: sensor.stats_docker
+        type: custom:multiple-entity-row
+        name: Container Stats
+        show_state: false
+        entities:
+          - attribute: containers_running
+            name: Running
+          - attribute: containers_stopped
+            name: Stopped
+          - attribute: containers_updatable
+            name: Updateable
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: group.docker*
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Home Assistant Groups
+            icon: mdi:group
+            state: >
+              {{states.group|selectattr('entity_id','search','group.docker')|list|count}}
+      - type: section
+        label: tbsh1
+      - entity: sensor.tbsh1_monitordocker_containers_total
+        type: custom:multiple-entity-row
+        name: Container Stats
+        show_state: false
+        entities:
+          - entity: sensor.tbsh1_monitordocker_containers_running
+            name: Running
+          - entity: sensor.tbsh1_monitordocker_containers_stopped
+            name: Stopped
+          - entity: sensor.tbsh1_monitordocker_containers_paused
+            name: Paused
+          - entity: sensor.tbsh1_monitordocker_containers_total
+            name: Total
+      - type: custom:auto-entities
+        filter:
+          include:
+            - group: group.docker_tbsh1_switches
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: tbsh1 - Container Switches
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh1_switches')|list|count}}
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: tbsh1 - Containers
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh1_containers')|list|count}}
+          padding: 0
+          open: false
+        unique: true
+        show_empty: true
+        filter:
+          template: >
+            {%- for s in expand('group.docker_tbsh1_containers')|list %} {%- set
+            SENSOR = s.entity_id %} {{
+              {
+                "type": "custom:fold-entity-row",
+                "head": {
+                  "type": "custom:template-entity-row",
+                  "name":  state_attr(SENSOR, 'friendly_name')|trim,
+                  "secondary": state_attr(SENSOR, 'status'),
+                  "icon": "mdi:docker",
+                  "state": ""
+                  },
+                "padding": "0",
+                "entities": [
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "image", "icon": "mdi:information-outline", "name": "Image"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "uptime", "icon": "mdi:clock", "name": "Container Start Time"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "health", "icon": "mdi:heart-pulse", "name": "Health" },
+                    { "type": "section" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "CPU (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "1cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "1CPU (Percent)" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "memory", "suffix": "Mb", "icon": "mdi:memory", "name": "Memory" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "memory_percentage", "suffix": "%", "icon": "mdi:memory", "name": "Memory (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_up", "suffix": "kB/s", "icon": "mdi:upload", "name": "Network Speed - Up" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_down", "suffix": "kB/s", "icon": "mdi:download", "name": "Network Speed - Down" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "network_total_up", "suffix": "MB", "icon": "mdi:upload", "name": "Network Total - Up"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_total_down", "suffix": "MB", "icon": "mdi:download", "name": "Network Total - Down"}
+                ]
+              }
+            }}, {% endfor %}
+      - type: section
+        label: tbsh2
+      - entity: sensor.tbsh2_monitordocker_containers_total
+        type: custom:multiple-entity-row
+        name: Container Stats
+        show_state: false
+        entities:
+          - entity: sensor.tbsh2_monitordocker_containers_running
+            name: Running
+          - entity: sensor.tbsh2_monitordocker_containers_stopped
+            name: Stopped
+          - entity: sensor.tbsh2_monitordocker_containers_paused
+            name: Paused
+          - entity: sensor.tbsh2_monitordocker_containers_total
+            name: Total
+      - type: custom:auto-entities
+        filter:
+          include:
+            - group: group.docker_tbsh2_switches
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: tbsh2 - Container Switches
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh2_switches')|list|count}}
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: tbsh2 - Containers
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh2_containers')|list|count}}
+          padding: 0
+          open: false
+        unique: true
+        show_empty: true
+        filter:
+          template: >
+            {%- for s in expand('group.docker_tbsh2_containers')|list %} {%- set
+            SENSOR = s.entity_id %} {{
+              {
+                "type": "custom:fold-entity-row",
+                "head": {
+                  "type": "custom:template-entity-row",
+                  "name":  state_attr(SENSOR, 'friendly_name')|trim,
+                  "secondary": state_attr(SENSOR, 'status'),
+                  "icon": "mdi:docker",
+                  "state": ""
+                  },
+                "padding": "0",
+                "entities": [
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "image", "icon": "mdi:information-outline", "name": "Image"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "uptime", "icon": "mdi:clock", "name": "Container Start Time"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "health", "icon": "mdi:heart-pulse", "name": "Health" },
+                    { "type": "section" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "CPU (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "1cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "1CPU (Percent)" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "memory", "suffix": "Mb", "icon": "mdi:memory", "name": "Memory" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "memory_percentage", "suffix": "%", "icon": "mdi:memory", "name": "Memory (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_up", "suffix": "kB/s", "icon": "mdi:upload", "name": "Network Speed - Up" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_down", "suffix": "kB/s", "icon": "mdi:download", "name": "Network Speed - Down" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "network_total_up", "suffix": "MB", "icon": "mdi:upload", "name": "Network Total - Up"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_total_down", "suffix": "MB", "icon": "mdi:download", "name": "Network Total - Down"}
+                ]
+              }
+            }}, {% endfor %}
+      - type: section
+        label: tbsh3
+      - entity: sensor.tbsh3_monitordocker_containers_total
+        type: custom:multiple-entity-row
+        name: Container Stats
+        show_state: false
+        entities:
+          - entity: sensor.tbsh3_monitordocker_containers_running
+            name: Running
+          - entity: sensor.tbsh3_monitordocker_containers_stopped
+            name: Stopped
+          - entity: sensor.tbsh3_monitordocker_containers_paused
+            name: Paused
+          - entity: sensor.tbsh3_monitordocker_containers_total
+            name: Total
+      - type: custom:auto-entities
+        filter:
+          include:
+            - group: group.docker_tbsh3_switches
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: tbsh3 - Container Switches
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh3_switches')|list|count}}
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: tbsh3 - Containers
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh3_containers')|list|count}}
+          padding: 0
+          open: false
+        unique: true
+        show_empty: true
+        filter:
+          template: >
+            {%- for s in expand('group.docker_tbsh3_containers')|list %} {%- set
+            SENSOR = s.entity_id %} {{
+              {
+                "type": "custom:fold-entity-row",
+                "head": {
+                  "type": "custom:template-entity-row",
+                  "name":  state_attr(SENSOR, 'friendly_name')|trim,
+                  "secondary": state_attr(SENSOR, 'status'),
+                  "icon": "mdi:docker",
+                  "state": ""
+                  },
+                "padding": "0",
+                "entities": [
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "image", "icon": "mdi:information-outline", "name": "Image"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "uptime", "icon": "mdi:clock", "name": "Container Start Time"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "health", "icon": "mdi:heart-pulse", "name": "Health" },
+                    { "type": "section" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "CPU (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "1cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "1CPU (Percent)" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "memory", "suffix": "Mb", "icon": "mdi:memory", "name": "Memory" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "memory_percentage", "suffix": "%", "icon": "mdi:memory", "name": "Memory (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_up", "suffix": "kB/s", "icon": "mdi:upload", "name": "Network Speed - Up" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_down", "suffix": "kB/s", "icon": "mdi:download", "name": "Network Speed - Down" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "network_total_up", "suffix": "MB", "icon": "mdi:upload", "name": "Network Total - Up"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_total_down", "suffix": "MB", "icon": "mdi:download", "name": "Network Total - Down"}
+                ]
+              }
+            }}, {% endfor %}
+      - type: section
+        label: tbsh5
+      - entity: sensor.tbsh5_monitordocker_containers_total
+        type: custom:multiple-entity-row
+        name: Container Stats
+        show_state: false
+        entities:
+          - entity: sensor.tbsh5_monitordocker_containers_running
+            name: Running
+          - entity: sensor.tbsh5_monitordocker_containers_stopped
+            name: Stopped
+          - entity: sensor.tbsh5_monitordocker_containers_paused
+            name: Paused
+          - entity: sensor.tbsh5_monitordocker_containers_total
+            name: Total
+      - type: custom:auto-entities
+        filter:
+          include:
+            - group: group.docker_tbsh5_switches
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: tbsh5 - Container Switches
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh5_switches')|list|count}}
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: tbsh5 - Containers
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_tbsh5_containers')|list|count}}
+          padding: 0
+          open: false
+        unique: true
+        show_empty: true
+        filter:
+          template: >
+            {%- for s in expand('group.docker_tbsh5_containers')|list %} {%- set
+            SENSOR = s.entity_id %} {{
+              {
+                "type": "custom:fold-entity-row",
+                "head": {
+                  "type": "custom:template-entity-row",
+                  "name":  state_attr(SENSOR, 'friendly_name')|trim,
+                  "secondary": state_attr(SENSOR, 'status'),
+                  "icon": "mdi:docker",
+                  "state": ""
+                  },
+                "padding": "0",
+                "entities": [
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "image", "icon": "mdi:information-outline", "name": "Image"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "uptime", "icon": "mdi:clock", "name": "Container Start Time"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "health", "icon": "mdi:heart-pulse", "name": "Health" },
+                    { "type": "section" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "CPU (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "1cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "1CPU (Percent)" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "memory", "suffix": "Mb", "icon": "mdi:memory", "name": "Memory" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "memory_percentage", "suffix": "%", "icon": "mdi:memory", "name": "Memory (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_up", "suffix": "kB/s", "icon": "mdi:upload", "name": "Network Speed - Up" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_down", "suffix": "kB/s", "icon": "mdi:download", "name": "Network Speed - Down" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "network_total_up", "suffix": "MB", "icon": "mdi:upload", "name": "Network Total - Up"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_total_down", "suffix": "MB", "icon": "mdi:download", "name": "Network Total - Down"}
+                ]
+              }
+            }}, {% endfor %}
+      - type: section
+        label: pi4srv
+      - entity: sensor.pi4srv_monitordocker_containers_total
+        type: custom:multiple-entity-row
+        name: Container Stats
+        show_state: false
+        entities:
+          - entity: sensor.pi4srv_monitordocker_containers_running
+            name: Running
+          - entity: sensor.pi4srv_monitordocker_containers_stopped
+            name: Stopped
+          - entity: sensor.pi4srv_monitordocker_containers_paused
+            name: Paused
+          - entity: sensor.pi4srv_monitordocker_containers_total
+            name: Total
+      - type: custom:auto-entities
+        filter:
+          include:
+            - group: group.docker_pi4srv_switches
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: pi4srv - Container Switches
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_pi4srv_switches')|list|count}}
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: pi4srv - Containers
+            icon: mdi:docker
+            state: |
+              {{expand('group.docker_pi4srv_containers')|list|count}}
+          padding: 0
+          open: false
+        unique: true
+        show_empty: true
+        filter:
+          template: >
+            {%- for s in expand('group.docker_pi4srv_containers')|list %} {%-
+            set SENSOR = s.entity_id %} {{
+              {
+                "type": "custom:fold-entity-row",
+                "head": {
+                  "type": "custom:template-entity-row",
+                  "name":  state_attr(SENSOR, 'friendly_name')|trim,
+                  "secondary": state_attr(SENSOR, 'status'),
+                  "icon": "mdi:docker",
+                  "state": ""
+                  },
+                "padding": "0",
+                "entities": [
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "image", "icon": "mdi:information-outline", "name": "Image"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "uptime", "icon": "mdi:clock", "name": "Container Start Time"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "health", "icon": "mdi:heart-pulse", "name": "Health" },
+                    { "type": "section" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "CPU (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "1cpu_percentage", "suffix": "%", "icon": "mdi:chip", "name": "1CPU (Percent)" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "memory", "suffix": "Mb", "icon": "mdi:memory", "name": "Memory" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "memory_percentage", "suffix": "%", "icon": "mdi:memory", "name": "Memory (Percent)" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_up", "suffix": "kB/s", "icon": "mdi:upload", "name": "Network Speed - Up" },
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_speed_down", "suffix": "kB/s", "icon": "mdi:download", "name": "Network Speed - Down" },
+                    { "type": "attribute",  "entity": s.entity_id, "attribute": "network_total_up", "suffix": "MB", "icon": "mdi:upload", "name": "Network Total - Up"},
+                    { "type": "attribute", "entity": s.entity_id, "attribute": "network_total_down", "suffix": "MB", "icon": "mdi:download", "name": "Network Total - Down"}
+                ]
+              }
+            }}, {% endfor %}

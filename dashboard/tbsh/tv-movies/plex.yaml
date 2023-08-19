@@ -1,0 +1,611 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Plex
+    icon: mdi:plex
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: button
+        icon: mdi:monitor-dashboard
+        name: Plex
+        action_name: OPEN
+        tap_action:
+          action: url
+          url_path: "http://192.168.1.100:32400"
+      - type: custom:multiple-entity-row
+        entity: sensor.plexstats_tvshowcount
+        name: TV Shows
+        show_state: false
+        entities:
+          - entity: sensor.plexstats_tvshowcount
+            unit: false
+            name: Shows
+          - entity: sensor.plexstats_tvseasoncount
+            unit: false
+            name: Shows
+          - entity: sensor.plexstats_tvepisodecount
+            unit: false
+            name: Shows
+      - type: custom:multiple-entity-row
+        entity: sensor.plexstats_moviecount
+        name: Movies
+        show_state: false
+        entities:
+          - entity: sensor.plexstats_moviecount
+            unit: false
+            name: Movies
+      - type: section
+      - entity: sensor.plex_latest_version
+        type: custom:template-entity-row
+        name: Installed Version
+        state: "{{ states('sensor.plex_installed_version') }}"
+        secondary: "Latest: {{ states(config.entity) }}"
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Top Users
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_tautulli_topusers',
+            'rows')[0].friendly_name }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_topusers
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: User
+                data: rows
+                modify: x.friendly_name
+              - name: Total Plays
+                data: rows
+                modify: x.total_plays
+                align: center
+              - name: Watch Length
+                data: rows
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_duration);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Last Play
+                data: rows
+                modify: |-
+                  {
+                    var date = new Date(x.last_play*1000);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                  }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Watch Summary
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_tautulli_history', 'data')[0].full_title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_history
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: "What?"
+                data: data
+                modify: x.full_title
+              - name: "Who?"
+                data: data
+                modify: x.user
+              - name: "When?"
+                data: data
+                modify: |-
+                  {
+                    var date = new Date(x.date*1000);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                  }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Watch Stats - TV
+          icon: mdi:plex
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_watch_stats_tv
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: "#"
+                data: data
+                modify: x.query_days + "D"
+                align: center
+              - name: Plays
+                data: data
+                modify: x.total_plays
+                align: center
+              - name: Duration
+                data: data
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_time);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Average
+                data: data
+                align: center
+                modify: |-
+                  {
+                    var time = Number(x.total_time);
+                    var playcnt = Number(x.total_plays);
+                    var uptime = time / playcnt;
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    if (playcnt == 0) {
+                      "00:00"
+                    } else {
+                      hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                    }
+                  }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Watch Stats - Movies
+          icon: mdi:plex
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_watch_stats_movies
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: "#"
+                data: data
+                modify: x.query_days + "D"
+                align: center
+              - name: Plays
+                data: data
+                modify: x.total_plays
+                align: center
+              - name: Duration
+                data: data
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_time);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Average
+                data: data
+                align: center
+                modify: |-
+                  {
+                    var time = Number(x.total_time);
+                    var playcnt = Number(x.total_plays);
+                    var uptime = time / playcnt;
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    if (playcnt == 0) {
+                      "00:00"
+                    } else {
+                      hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                    }
+                  }
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.plex_tautulli_history
+          name: Recently Added - TV
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_recently_added', 'data')[1].title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_recently_added
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              tbody tr td:nth-child(1): "width: 20%;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: test
+                data: data
+                modify: x.title
+                hidden: true
+              - name: Date
+                data: data
+                modify: |-
+                  {
+                    var date = new Date(x.airdate);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                  }
+              - name: Detail
+                data: data
+                modify: '{ x.title + "<br/><span>" + x.number + ", " + x.episode + "</span>" }'
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Recently Added - Movies
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[1].title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_recently_added_movies
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              tbody tr td:nth-child(1): "width: 25%;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: test
+                data: data
+                modify: x.title
+                hidden: true
+              - name: Date
+                data: data
+                modify: |-
+                  {
+                    var date = new Date(x.airdate);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                  }
+              - name: Detail
+                data: data
+                modify: x.title
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.plex_tautulli_history
+          name: Top TV (Last 30 Days)
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_tautulli_toptv_30days', 'rows')[0].title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_toptv_30days
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: Detail
+                data: rows
+                modify: x.title
+              - name: Plays
+                data: rows
+                align: center
+                modify: x.total_plays
+              - name: Length
+                data: rows
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_duration);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Date
+                data: rows
+                modify: |-
+                  {
+                    var date = new Date(x.last_play*1000);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                  }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Top TV (By Duration)
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_tautulli_toptv', 'rows')[0].title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_toptv
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: Detail
+                data: rows
+                modify: x.title
+              - name: Plays
+                data: rows
+                align: center
+                modify: x.total_plays
+              - name: Length
+                data: rows
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_duration);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Date
+                data: rows
+                modify: |-
+                  {
+                    var date = new Date(x.last_play*1000);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                  }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Top TV (By Eps Watched)
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_tautulli_toptv_plays', 'rows')[0].title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_toptv_plays
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: Detail
+                data: rows
+                modify: x.title
+              - name: Plays
+                data: rows
+                align: center
+                modify: x.total_plays
+              - name: Length
+                data: rows
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_duration);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Date
+                data: rows
+                modify: |-
+                  {
+                    var date = new Date(x.last_play*1000);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                  }
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Top Movies
+          icon: mdi:plex
+          state: >
+            {{state_attr('sensor.plex_tautulli_topmovies', 'rows')[0].title }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+            entities:
+              include: sensor.plex_tautulli_topmovies
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: Detail
+                data: rows
+                modify: x.title
+              - name: Plays
+                data: rows
+                align: center
+                modify: x.total_plays
+              - name: Length
+                data: rows
+                align: center
+                modify: |-
+                  {
+                    var uptime = Number(x.total_duration);
+                    var minutes = Math.floor((uptime % 3600) / 60);
+                    var hours = Math.floor(((uptime) / 3600));
+                    hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                  }
+              - name: Date
+                data: rows
+                modify: |-
+                  {
+                    var date = new Date(x.last_play*1000);
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                  }

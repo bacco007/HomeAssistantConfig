@@ -7,7 +7,7 @@ date:
     card:
       - background: "transparent"
       - box-shadow: "none"
-      - font-family: ui-rounded, system-ui, "SF Pro Text", Robot, sans-serif
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
       - font-size: 20px
       - font-weight: 500
       - padding: 0

@@ -1,0 +1,19 @@
+---
+type: "vertical-stack"
+cards:
+  - type: "custom:button-card"
+    name: "Media"
+    template:
+      - section_title
+  - square: false
+    type: grid
+    cards:
+      - type: custom:decluttering-card
+        template: frontpage_plex_unwatched_tv
+      - type: custom:decluttering-card
+        template: frontpage_sonarr
+      - type: custom:decluttering-card
+        template: frontpage_plex_unwatched_movies
+      - type: custom:decluttering-card
+        template: frontpage_radarr
+    columns: 2
