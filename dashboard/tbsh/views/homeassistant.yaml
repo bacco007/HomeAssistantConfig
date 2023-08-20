@@ -29,24 +29,18 @@ cards:
           width: 300
           max_width: 1000
     cards:
+      - !include ../homeassistant/homeassistant.yaml
+      - !include ../homeassistant/settings_controls.yaml
+      - !include ../homeassistant/updates.yaml
+      - !include ../homeassistant/addons.yaml
       - !include ../homeassistant/uptime.yaml
       - !include ../homeassistant/ha_versions.yaml
-      - !include ../homeassistant/integrationdomain.yaml
-      - !include ../homeassistant/domainsbyintegration.yaml
+      - !include ../homeassistant/nabucasa.yaml
       - !include ../homeassistant/automation_history.yaml
       - !include ../homeassistant/snapshots.yaml
-      - !include ../homeassistant/watchman_entities.yaml
-      - !include ../homeassistant/watchman_services.yaml
-      - !include ../homeassistant/unavailable.yaml
-      - !include ../homeassistant/syslog_analysis.yaml
-      - !include ../homeassistant/repairs.yaml
       - !include ../homeassistant/graph_dbsize.yaml
       - !include ../homeassistant/graph_countyamlfiles.yaml
       - !include ../homeassistant/graph_countyamllines.yaml
-      - !include ../homeassistant/integration_stats.yaml
-      - !include ../homeassistant/entity_count.yaml
-      - !include ../homeassistant/hacs_updates.yaml
-      - !include ../homeassistant/addons.yaml
 
   - !include ../includes/actions.yaml
 

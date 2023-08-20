@@ -22,6 +22,32 @@ cards:
           margin: 0 !important;
         }
     entities:
+      - type: custom:multiple-entity-row
+        entity: sensor.active_issues
+        name: Repairs
+        show_state: true
+        entities:
+          - entity: sensor.active_issues
+            unit: false
+            name: Active
+          - entity: sensor.ignored_issues
+            unit: false
+            name: Ignored
+      - type: custom:multiple-entity-row
+        entity: counter.logs_critical_counter
+        name: Syslog Analysis
+        show_state: false
+        entities:
+          - entity: counter.logs_critical_counter
+            unit: false
+            name: Critical
+          - entity: counter.logs_error_counter
+            unit: false
+            name: Error
+          - entity: counter.logs_warning_counter
+            unit: false
+            name: Warning
+      - type: section
       - entity: sensor.integrations
         name: HA Integrations in Use
       - entity: sensor.custom_integrations
@@ -31,7 +57,7 @@ cards:
           type: custom:template-entity-row
           name: Integrations by Load Time
           icon: mdi:timer
-          state: ''
+          state: ""
         padding: 0
         entities:
           - type: custom:hui-element
@@ -95,7 +121,7 @@ cards:
           type: custom:template-entity-row
           name: Integrations and Domains Used
           icon: mdi:home-assistant
-          state: ''
+          state: ""
         padding: 0
         entities:
           - type: custom:hui-element
@@ -103,7 +129,7 @@ cards:
             entities:
               include: sensor.ha_overview
             css:
-              table+: 'border-collapse: collapse;'
+              table+: "border-collapse: collapse;"
             sort_by: subdomains
             columns:
               - name: Integration
@@ -127,7 +153,7 @@ cards:
           type: custom:template-entity-row
           name: Domains used by HA Integration
           icon: mdi:home-assistant
-          state: ''
+          state: ""
         padding: 0
         entities:
           - type: custom:hui-element
@@ -135,7 +161,7 @@ cards:
             entities:
               include: sensor.ha_overview
             css:
-              table+: 'border-collapse: collapse;'
+              table+: "border-collapse: collapse;"
             sort_by: components
             columns:
               - name: Domain
@@ -166,7 +192,7 @@ cards:
           type: custom:template-entity-row
           name: Entity Counter
           icon: mdi:home-assistant
-          state: ''
+          state: ""
         padding: 0
         open: false
         entities:
@@ -226,9 +252,9 @@ cards:
             entities:
               include: sensor.watchman_missing_entities
             css:
-              table+: 'border-collapse: collapse; padding: 0px;'
+              table+: "border-collapse: collapse; padding: 0px;"
             columns:
-              - name: ' '
+              - name: " "
                 data: entities
                 modify: |-
                   var ICON = 'mdi:cloud-question';
@@ -270,9 +296,9 @@ cards:
             entities:
               include: sensor.watchman_missing_services
             css:
-              table+: 'border-collapse: collapse; padding: 0px;'
+              table+: "border-collapse: collapse; padding: 0px;"
             columns:
-              - name: ' '
+              - name: " "
                 data: entities
                 modify: |-
                   var ICON = 'mdi:cloud-question';
@@ -302,7 +328,7 @@ cards:
         show_empty: true
         unique: true
         filter:
-          template: '{{ state_attr(''sensor.unavailable_entities'',''entity_id'') }}'
+          template: "{{ state_attr('sensor.unavailable_entities','entity_id') }}"
         sort:
           method: state
         card:

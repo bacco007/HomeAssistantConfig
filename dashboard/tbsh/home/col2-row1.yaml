@@ -76,27 +76,6 @@ cards:
         variables:
           name: >
             <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
-            icon='mdi:airplane-alert'></ha-icon> FLIGHT TRACKER
-          label: More
-          link: /mobile-dashboard/flighttracker
-        view_layout:
-          grid-column: 1/-1
-        card_mod:
-          style: |
-            ha-card {
-              box-shadow: none;
-            }
-      - !include ../flighttracker/flightsoverhead.yaml
-      - !include ../flighttracker/closestplane.yaml
-      - !include ../flighttracker/planeofinterest.yaml
-
-  - type: vertical-stack
-    cards:
-      - type: custom:button-card
-        template: header_card
-        variables:
-          name: >
-            <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
             icon='mdi:football'></ha-icon> UPCOMING SPORT
           label: More
           link: /mobile-dashboard/docker

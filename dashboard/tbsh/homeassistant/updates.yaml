@@ -1,0 +1,154 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Updates
+    icon: mdi:update
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: custom:fold-entity-row
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Home Assistant
+          icon: mdi:home-assistant
+          state: |
+            {{expand('group.updates_homeassistant')
+              |selectattr('state', 'eq', 'on')
+              | list | count }} /
+            {{expand('group.updates_homeassistant')
+              |selectattr('state', 'eq', 'off')
+              | list | count }}
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_homeassistant')
+                    |selectattr('state', 'eq', 'on')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_homeassistant
+                  state: 'on'
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: 'New: {{ state_attr(config.entity, ''latest_version'') }}'
+                    secondary: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: No Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_homeassistant')
+                    |selectattr('state', 'eq', 'off')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_homeassistant
+                  state: 'off'
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
+      - type: custom:fold-entity-row
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Home Assistant Community Store
+          icon: hacs:hacs
+          state: |
+            {{expand('group.updates_hacs')
+              |selectattr('state', 'eq', 'on')
+              | list | count }} /
+            {{expand('group.updates_hacs')
+              |selectattr('state', 'eq', 'off')
+              | list | count }}
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_hacs')
+                    |selectattr('state', 'eq', 'on')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_hacs
+                  state: 'on'
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: 'New: {{ state_attr(config.entity, ''latest_version'') }}'
+                    secondary: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: No Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_hacs')
+                    |selectattr('state', 'eq', 'off')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_hacs
+                  state: 'off'
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}

@@ -1,32 +1,33 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:state-switch
-    entity: mediaquery
-    states:
-      "(min-width: 801px)":
-        type: "custom:button-card"
-        template: header_card_no_link
-        variables:
-          name: HA Addons
-        view_layout:
-          grid-column: 1/-1
+  - type: custom:mushroom-template-card
+    primary: Home Assistant Addons
+    icon: mdi:home-assistant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
   - type: custom:auto-entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     card:
       type: entities
       card_mod:
         style: |
-          ha-card {
-            border-style: none;
-            background: none;
-            --mush-title-font-size: 16px;
-            --mush-title-padding: 0px 5px 0px;
+          #states {
+            padding-top: 0 !important;
           }
-          h1.card-header{
-            padding: 6px 16px 0px;
-          }
-          div.card-content {
-            padding-top: 0px
+          #states > * {
+            margin: 0 !important;
           }
     filter:
       template: >
@@ -63,56 +64,42 @@ cards:
           {%- endfor %}
           {%- if dev.version > '' %}
             {{-
-              { 'type': 'section'
+              {
+                 "type": "custom:fold-entity-row",
+                 "card_mod": {
+                    "style": "#items {\n  padding-left: 12px !important;\n  padding-right: 12px !important;\n}\n#measure {\n  padding-top: 0 !important;\n}\n#measure > * {\n  margin: 0 !important;\n}\n"
+                 },
+                 "padding": 0,
+                 "head": {
+                    "type": "custom:template-entity-row",
+                    "name": dev.name,
+                    "icon": "mdi:home-assistant",
+                    "state": ""
+                 },
+                 "entities": [
+                    {
+                       "entity": dev.running,
+                       "name": "Status"
+                    },
+                    {
+                       "entity": dev.cpu_percent,
+                       "name": "CPU Percentage"
+
+                    },
+                    {
+                       "entity": dev.memory_percent,
+                       "name": "Memory Percentage"
+                    },
+                    {
+                       "type": "custom:template-entity-row",
+                       "entity": dev.update,
+                       "name": dev.name,
+                       "state": "New: {{ state_attr(config.entity, 'latest_version') }}",
+                       "secondary": "Current: {{ state_attr(config.entity, 'installed_version')}}"
+                    }
+                 ]
               }
             }},
-            {{-
-              { 'type': 'custom:mushroom-title-card',
-                'title': dev.name
-              }
-            }},
-            {{-
-              { 'type': 'custom:mushroom-chips-card',
-                'chips': [
-                  {
-                    'type': 'entity',
-                    'entity': dev.running,
-                    'icon_color': 'green'
-                  },
-                  {
-                    'type': 'entity',
-                    'entity': dev.version,
-                    'icon_color': 'green',
-                    'icon': 'mdi:package-variant-closed-check'
-                  },
-                  {
-                    'type': 'entity',
-                    'entity': dev.newest_version,
-                    'icon_color': 'purple',
-                    'icon': 'mdi:package-variant'
-                  },
-                  {
-                    'type': 'entity',
-                    'entity': dev.cpu_percent,
-                    'icon_color': 'blue'
-                  },
-                  {
-                    'type': 'entity',
-                    'entity': dev.memory_percent,
-                    'icon_color': 'orange'
-                  },
-                ]
-              }
-            }},
-            {{-
-              { 'type': 'custom:mushroom-update-card',
-                'entity': dev.update,
-                'name': dev.name,
-                'show_buttons_control': true,
-                'collapsible_controls': false,
-                'icon_type': 'entity-picture',
-                'layout': 'horizontal'
-              }
-            }},
+
           {%- endif %}
         {%- endfor %}

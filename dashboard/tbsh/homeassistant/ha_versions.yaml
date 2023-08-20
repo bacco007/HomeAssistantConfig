@@ -1,127 +1,85 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:state-switch
-    entity: mediaquery
-    states:
-      "(min-width: 801px)":
-        type: "custom:button-card"
-        template: header_card_no_link
-        variables:
-          name: Version Information
-        view_layout:
-          grid-column: 1/-1
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-update-card
+  - type: custom:mushroom-template-card
+    primary: Home Assistant Versions
+    icon: mdi:home-assistant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:template-entity-row
         entity: update.home_assistant_core_update
-        name: HA Core
-        show_buttons_control: true
-        icon_type: entity-picture
-      - type: custom:mushroom-template-card
-        primary: Version Information
-        secondary: >-
-          Installed v{{ state_attr('update.home_assistant_core_update', 'installed_version')}}
-
-          Latest v{{ state_attr('update.home_assistant_core_update', 'latest_version')}}
-        icon: mdi:package-variant-closed
-        multiline_secondary: true
-        fill_container: true
-        entity: update.home_assistant_core_update
-        tap_action:
-          action: more-info
-        icon_color: |-
-          {% if is_state('update.home_assistant_core_update', 'on') %}
-            orange
-          {% else %}
-            green
-          {% endif %}
-        badge_color: |-
-          {% if is_state('update.home_assistant_core_update', 'on') %}
-            red
-          {% else %}
-            blue
-          {% endif %}
-        badge_icon: |-
-          {% if is_state('update.home_assistant_core_update', 'on') %}
-            mdi:help
-          {% else %}
-            mdi:check-bold
-          {% endif %}
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-update-card
+        name: Home Assistant Core
+        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"
+      - type: custom:template-entity-row
         entity: update.home_assistant_operating_system_update
-        name: HA OS
-        show_buttons_control: true
-        icon_type: entity-picture
-      - type: custom:mushroom-template-card
-        primary: Version Information
-        secondary: >-
-          Installed v{{
-          states('sensor.home_assistant_operating_system_version')}}
-
-          Latest v{{
-          states('sensor.home_assistant_operating_system_newest_version')}}
-        icon: mdi:package-variant-closed
-        multiline_secondary: true
-        fill_container: true
-        entity: update.home_assistant_operating_system_update
-        tap_action:
-          action: more-info
-        icon_color: >-
-          {% if is_state('update.home_assistant_operating_system_update', 'on') %}
-            orange
-          {% else %}
-            green
-          {% endif %}
-        badge_color: >-
-          {% if is_state('update.home_assistant_operating_system_update', 'on') %}
-            red
-          {% else %}
-            blue
-          {% endif %}
-        badge_icon: >-
-          {% if is_state('update.home_assistant_operating_system_update', 'on') %}
-            mdi:help
-          {% else %}
-            mdi:check-bold
-          {% endif %}
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-update-card
+        name: Home Assistant OS
+        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"
+      - type: custom:template-entity-row
         entity: update.home_assistant_supervisor_update
-        name: HA Supervisor
-        show_buttons_control: true
-        icon_type: entity-picture
-      - type: custom:mushroom-template-card
-        primary: Version Information
-        secondary: >-
-          Installed v{{ state_attr('update.home_assistant_supervisor_update', 'installed_version')}}
-
-          Latest v{{ state_attr('update.home_assistant_supervisor_update', 'latest_version')}}
-        icon: mdi:package-variant-closed
-        multiline_secondary: true
-        fill_container: true
-        entity: update.home_assistant_core_update
-        tap_action:
-          action: more-info
-        icon_color: |-
-          {% if is_state('update.home_assistant_supervisor_update', 'on') %}
-            orange
-          {% else %}
-            green
-          {% endif %}
-        badge_color: |-
-          {% if is_state('update.home_assistant_supervisor_update', 'on') %}
-            red
-          {% else %}
-            blue
-          {% endif %}
-        badge_icon: |-
-          {% if is_state('update.home_assistant_supervisor_update', 'on') %}
-            mdi:help
-          {% else %}
-            mdi:check-bold
-          {% endif %}
-  - !include release_cal.yaml
+        name: Home Assistant Supervisor
+        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Home Assistant Release Calendar
+          icon: mdi:calendar-alert
+          state: ""
+          secondary: >
+            {% from 'easy_time.jinja' import custom_relative_time_attr %} {{
+            state_attr('calendar.home_assistant_devs', 'message') }} {{
+            custom_relative_time_attr('calendar.home_assistant_devs',
+            'start_time', values='day, hour') }}
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:atomic-calendar-revive
+            card_mod:
+              style: |
+                ha-card {
+                    background: none !important;
+                    border: 0;
+                    box-shadow: none !important;
+                    overflow: auto;
+                }
+            maxDaysToShow: 90
+            enableModeChange: true
+            showWeekDay: true
+            firstDayOfWeek: 1
+            refreshInterval: 600
+            showMonth: true
+            showCurrentEventLine: false
+            showDate: false
+            sortByStartTime: true
+            showDeclined: true
+            showRelativeTime: false
+            showMultiDay: false
+            showMultiDayEventParts: true
+            hideDuplicates: true
+            showLastCalendarWeek: false
+            calShowDescription: false
+            disableCalLink: false
+            disableCalLocationLink: false
+            disableCalEventLink: false
+            dimFinishedEvents: true
+            showProgressBar: false
+            showDescription: false
+            entities:
+              - entity: calendar.home_assistant_devs

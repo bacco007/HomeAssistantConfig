@@ -3,120 +3,100 @@ theme: noctis
 title: home
 path: home
 type: custom:grid-layout
-layout: !include ../includes/grid-layout.yaml
-badges: []
+layout: !include ../includes/layout-grid.yaml
 cards:
-  ### Sidebar - Menu
-  - !include ../includes/menu.yaml
+  - !include ../includes/sidebar.yaml
 
-  ### Header
   - type: "custom:layout-card"
-    layout_type: "custom:grid-layout"
+    layout_type: custom:masonry-layout
     layout:
-      grid-template-columns: 1fr 1fr
-      grid-template-rows: 1fr
-      grid-template-areas: |
-        "header-left header-right"
-      gap: 0px 0px
-      mediaquery:
-        "(max-width: 800px)":
-          grid-template-columns: 100%
-          grid-template-rows: auto
-          grid-template-areas: |
-            "header-left"
-            "header-right"
-
-    view_layout:
-      grid-area: header
-    cards:
-      - !include ../includes/header-left.yaml
-      - !include ../includes/header-right.yaml
-
-  # Mobile Only
-  - type: custom:state-switch
-    entity: mediaquery
-    view_layout:
-      grid-area: mobile
-    states:
-      "(max-width: 800px)":
-        type: vertical-stack
-        cards:
-          - !include ../weather/current_weather.yaml
-
-  ### Footer
-  - !include ../includes/footer.yaml
-
-  # Content
-  - type: "custom:layout-card"
-    layout_type: "custom:grid-layout"
-    layout:
-      grid-template-columns: 1fr 1fr 1fr
-      grid-template-rows: min-content min-content
-      grid-template-areas: |
-        "c1r1 c2r1 c3r1"
-        "c1r2 c2r2 c3r2"
-      gap: 0px 0px
-      height: 100%
-      mediaquery:
-        "(max-width: 1500px)":
-          grid-template-columns: 1fr 1fr
-          grid-template-rows: auto
-          grid-template-areas: |
-            "c1r1 c2r1"
-            "c3r1 c1r2"
-            "c2r2 c3r2"
-            "footer footer"
-        # "(min-width: 1501px)":
-        #   grid-template-columns: 1fr 1fr 1fr
-        #   grid-template-rows: min-content min-content
-        #   grid-template-areas: |
-        #     "c1r1 c2r1 c3r1"
-        #     "c1r2 c2r2 c3r2"
-
+      max_cols: 4
+      width: 300
+      max_width: 1000
     view_layout:
       grid-area: content
+    mediaquery:
+      "(max-width: 500px)":
+        layout:
+          max_cols: 1
+          width: 300
+          max_width: 1000
+      "(max-width: 1024px)":
+        layout:
+          max_cols: 2
+          width: 300
+          max_width: 1000
     cards:
-      # Column 1, Row 1
-      - type: custom:state-switch
-        entity: mediaquery
-        view_layout:
-          grid-area: c1r1
-        states:
-          "(min-width: 801px)": !include ../home/col1-row1.yaml
+      - !include ../home/col1-row1.yaml
+      - !include ../home/col2-row1.yaml
+      - type: "vertical-stack"
+        cards:
+          - type: "custom:button-card"
+            name: "Flight Tracker"
+            template:
+              - section_title
+          - !include ../flighttracker/flightsoverhead.yaml
+          - !include ../flighttracker/closestplane.yaml
+          - !include ../flighttracker/planeofinterest.yaml
 
-      # Column 2, Row 1
-      - type: custom:state-switch
-        entity: mediaquery
-        view_layout:
-          grid-area: c2r1
-        states:
-          "(min-width: 801px)": !include ../home/col2-row1.yaml
+      - type: "vertical-stack"
+        cards:
+          - type: "custom:button-card"
+            name: "Network"
+            template:
+              - section_title
+          - square: false
+            columns: 1
+            type: grid
+            cards:
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+                  - colour: "#8694E7"
+                  - title: Internet Uptime
+                  - icon: mdi:timelapse
+                  - line_width: 3
 
-      # Column 3, Row 1
-      - type: custom:state-switch
-        entity: mediaquery
-        view_layout:
-          grid-area: c3r1
-        states:
-          "(min-width: 801px)": !include ../home/col3-row1.yaml
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.unifi_networkstats_connected_devices
+                  - colour: "#8694E7"
+                  - title: Network Connected Devices
+                  - icon: mdi:download-network
+                  - line_width: 3
 
-      # Column 1, Row 2
-      - type: custom:gap-card
-        view_layout:
-          grid=area: c1r2
-          show:
-            mediaquery: "(min-width: 801px)"
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.speedtest_download
+                  - colour: "#8694E7"
+                  - title: Download
+                  - icon: mdi:download-network
+                  - line_width: 3
 
-      # Column 2, Row 2
-      - type: custom:gap-card
-        view_layout:
-          grid=area: c2r2
-          show:
-            mediaquery: "(min-width: 801px)"
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.speedtest_upload
+                  - colour: "#8694E7"
+                  - title: Upload
+                  - icon: mdi:upload-network
+                  - line_width: 3
 
-      # Column 3, Row 2
-      - type: custom:gap-card
-        view_layout:
-          grid=area: c3r2
-          show:
-            mediaquery: "(min-width: 801px)"
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.speedtest_ping
+                  - colour: "#8694E7"
+                  - title: Ping
+                  - icon: mdi:web
+                  - line_width: 3
+      - !include ../home/col3-row1.yaml
+      - !include ../sport/upcoming_sport.yaml
+      - !include ../tv-movies/upcoming_flipper.yaml
+
+  - !include ../includes/actions.yaml
+
+  - !include ../includes/mediaplayer.yaml
