@@ -1,0 +1,171 @@
+---
+type: "vertical-stack"
+cards:
+  - type: "custom:button-card"
+    name: "Media"
+    template:
+      - section_title
+  - square: false
+    type: grid
+    columns: 1
+    cards:
+      - type: custom:auto-entities
+        card_param: cards
+        filter:
+          template: >-
+            {% from 'easy_time.jinja' import custom_relative_time -%} {% for s in
+            state_attr('sensor.frontpage_plex_unwatched_tv','data') -%}
+              {{
+                {
+                "type": "custom:mushroom-template-card",
+                "entity": "sensor.frontpage_plex_unwatched_tv",
+                "primary": "Plex (New, Unwatched TV)",
+                "secondary": s.title + " - " + s.episode + " (" + s.number + ")\nAdded " + custom_relative_time(s.airdate, values='day'),
+                "multiline_secondary": true,
+                "badge_icon": "none",
+                "badge_color": "none",
+                "icon": "mdi:plex",
+                "tap_action": "none",
+                "hold_action": "none",
+                "fill_container": true,
+                "layout": "horizontal",
+                "card_mod": {
+                    "style": {
+                      ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                    }
+                }
+                }
+              }},
+            {%- endfor %}
+        show_empty: false
+        card:
+          type: custom:swipe-card
+          parameters:
+            direction: vertical
+            autoHeight: true
+            height: 80
+            effect: cube
+            autoplay:
+              delay: 2000
+            cubeEffect:
+              - slideShadows: false
+      - type: custom:auto-entities
+        card_param: cards
+        filter:
+          template: >-
+            {% from 'easy_time.jinja' import custom_relative_time -%} {% for s in
+            state_attr('sensor.frontpage_plex_unwatched_movies','data') -%}
+              {{
+                {
+                "type": "custom:mushroom-template-card",
+                "entity": "sensor.frontpage_plex_unwatched_movies",
+                "primary": "Plex (New, Unwatched Movies)",
+                "secondary": s.title + "\nAdded " + custom_relative_time(s.airdate, values='day'),
+                "multiline_secondary": true,
+                "badge_icon": "none",
+                "badge_color": "none",
+                "icon": "mdi:plex",
+                "tap_action": "none",
+                "hold_action": "none",
+                "fill_container": true,
+                "layout": "horizontal",
+                "card_mod": {
+                    "style": {
+                      ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                    }
+                }
+                }
+              }},
+            {%- endfor %}
+        show_empty: false
+        card:
+          type: custom:swipe-card
+          parameters:
+            direction: vertical
+            autoHeight: true
+            height: 80
+            effect: cube
+            autoplay:
+              delay: 2000
+            cubeEffect:
+              - slideShadows: false
+      - type: custom:auto-entities
+        card_param: cards
+        filter:
+          template: >-
+            {% from 'easy_time.jinja' import custom_relative_time -%} {% for s in
+            state_attr('sensor.frontpage_sonarr_upcoming','data') -%}
+              {{
+                {
+                "type": "custom:mushroom-template-card",
+                "entity": "sensor.frontpage_sonarr_upcoming",
+                "primary": "Sonarr (Upcoming TV)",
+                "secondary": s.title + " - " + s.episode + " (" + s.number + ")\nAiring " + custom_relative_time(s.airdate, values='day, hour'),
+                "multiline_secondary": true,
+                "badge_icon": "none",
+                "badge_color": "none",
+                "icon": "mdi:television",
+                "tap_action": "none",
+                "hold_action": "none",
+                "fill_container": true,
+                "layout": "horizontal",
+                "card_mod": {
+                    "style": {
+                      ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                    }
+                }
+                }
+              }},
+            {%- endfor %}
+        show_empty: false
+        card:
+          type: custom:swipe-card
+          parameters:
+            direction: vertical
+            autoHeight: true
+            height: 80
+            effect: cube
+            autoplay:
+              delay: 2000
+            cubeEffect:
+              - slideShadows: false
+      - type: custom:auto-entities
+        card_param: cards
+        filter:
+          template: >-
+            {% from 'easy_time.jinja' import custom_relative_time -%} {% for s in
+            state_attr('sensor.frontpage_radarr_upcoming','data') -%}
+              {{
+                {
+                "type": "custom:mushroom-template-card",
+                "entity": "sensor.frontpage_radarr_upcoming",
+                "primary": "Radarr (Upcoming Movies)",
+                "secondary": s.title + "\nReleased " + custom_relative_time(s.airdate, values='day'),
+                "multiline_secondary": true,
+                "badge_icon": "none",
+                "badge_color": "none",
+                "icon": "mdi:filmstrip",
+                "tap_action": "none",
+                "hold_action": "none",
+                "fill_container": true,
+                "layout": "horizontal",
+                "card_mod": {
+                    "style": {
+                      ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                    }
+                }
+                }
+              }},
+            {%- endfor %}
+        show_empty: false
+        card:
+          type: custom:swipe-card
+          parameters:
+            direction: vertical
+            autoHeight: true
+            height: 80
+            effect: cube
+            autoplay:
+              delay: 2000
+            cubeEffect:
+              - slideShadows: false

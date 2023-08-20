@@ -1,0 +1,38 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: NHL
+  icon: mdi:hockey-puck
+  state: ""
+padding: 0
+entities:
+  - type: custom:stack-in-card
+    cards:
+      - type: markdown
+        content: "### Eastern Conference, Atlantic Division"
+      - type: custom:decluttering-card
+        template: scoreboard_nhl
+        variables:
+          - entity: sensor.scoreboard_nhl_east_atlantic
+
+      - type: markdown
+        content: "### Eastern Conference, Metropolitan Division"
+      - type: custom:decluttering-card
+        template: scoreboard_nhl
+        variables:
+          - entity: sensor.scoreboard_nhl_east_metropolitan
+
+      - type: markdown
+        content: "### Western Conference, Central Division"
+      - type: custom:decluttering-card
+        template: scoreboard_nhl
+        variables:
+          - entity: sensor.scoreboard_nhl_west_central
+
+      - type: markdown
+        content: "### Western Conference, Pacific Division"
+      - type: custom:decluttering-card
+        template: scoreboard_nhl
+        variables:
+          - entity: sensor.scoreboard_nhl_west_pacific

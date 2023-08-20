@@ -75,6 +75,7 @@ sidebar:
               template:
                 - person
               entity: person.thomas_baxter
+              tap_action: ../tbsh/popup/thomas.yaml
     chips:
       card: !include ../tbsh/includes/header-right.yaml
     utilities:

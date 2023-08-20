@@ -6,95 +6,36 @@ subview: true
 path: cameras
 title: Cameras
 type: custom:grid-layout
-layout: !include ../includes/grid-3col.yaml
-badges: []
+layout: !include ../includes/layout-grid.yaml
 cards:
-  ### Sidebar - Menu
-  - !include ../includes/menu.yaml
+  - !include ../includes/sidebar.yaml
 
-  ### Header - Left
-  - !include ../includes/header-left.yaml
-
-  ### Header - Right
-  - !include ../includes/header-right.yaml
-
-  ### Footer
-  - !include ../includes/footer.yaml
-
-  # Mobile Only
-  - type: custom:state-switch
-    entity: mediaquery
+  - type: "custom:layout-card"
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 4
+      width: 300
+      max_width: 1000
     view_layout:
-      grid-area: mobile
-    states:
-      "(max-width: 800px)":
-        type: vertical-stack
+      grid-area: content
+    mediaquery:
+      "(max-width: 500px)":
+        layout:
+          max_cols: 1
+          width: 300
+          max_width: 1000
+      "(max-width: 1024px)":
+        layout:
+          max_cols: 2
+          width: 300
+          max_width: 1000
+    cards:
+      - !include ../cameras/front_house.yaml
+      - !include ../cameras/inside_garage.yaml
+      - !include ../cameras/front_gate.yaml
+      - !include ../cameras/front_door.yaml
+      - !include ../cameras/back_door.yaml
 
-        cards:
-          - !include ../cameras/front_house.yaml
-          - !include ../cameras/inside_garage.yaml
-          - !include ../cameras/front_gate.yaml
-          - !include ../cameras/front_door.yaml
-          - !include ../cameras/back_door.yaml
+  - !include ../includes/actions.yaml
 
-  # Column 1, Row 1
-  - type: custom:state-switch
-    entity: mediaquery
-    view_layout:
-      grid-area: c1r1
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
-        cards:
-          - !include ../cameras/front_house.yaml
-
-  # Column 2, Row 1
-  - type: custom:state-switch
-    entity: mediaquery
-    view_layout:
-      grid-area: c2r1
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
-        cards:
-          - !include ../cameras/inside_garage.yaml
-
-  # Column 3, Row 1
-  - type: custom:state-switch
-    entity: mediaquery
-    view_layout:
-      grid-area: c3r1
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
-        cards:
-          - !include ../cameras/front_gate.yaml
-
-  # Column 1, Row 2
-  - type: custom:state-switch
-    entity: mediaquery
-    view_layout:
-      grid-area: c1r2
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
-        cards:
-          - !include ../cameras/front_door.yaml
-
-  # Column 2, Row 2
-  - type: custom:state-switch
-    entity: mediaquery
-    view_layout:
-      grid-area: c2r2
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
-        cards:
-          - !include ../cameras/back_door.yaml
-
-  # Column 3, Row 2
-  - type: custom:gap-card
-    view_layout:
-      grid=area: c3r2
-      show:
-        mediaquery: "(min-width: 801px)"
+  - !include ../includes/mediaplayer.yaml

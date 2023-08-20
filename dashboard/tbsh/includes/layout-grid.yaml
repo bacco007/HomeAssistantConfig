@@ -1,0 +1,19 @@
+---
+margin: 0
+padding: 0
+grid-gap: 0px
+grid-template-columns: 1fr
+grid-template-rows: repeat(4, min-content)
+grid-template-areas: |
+  "content"
+  "sidebar"
+  "otherActions"
+  "mediaPlayer"
+mediaquery:
+  "(min-width: 880px)":
+    grid-template-columns: 285px auto
+    grid-template-rows: fit-content(100%) 70px 120px
+    grid-template-areas: |
+      "sidebar    content"
+      "sidebar    otherActions"
+      "sidebar    mediaPlayer"

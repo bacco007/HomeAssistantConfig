@@ -187,9 +187,9 @@ metadata_media_player:
       card:
         type: "custom:button-card"
         template: artwork_media_player
-        # variables:
-        #   entity_picture: >
-        #     [[[ return states[entity.entity_id].attributes.entity_picture ]]]
+        variables:
+          entity_picture: >
+            [[[ return states[entity.entity_id].attributes.entity_picture ]]]
     info:
       card:
         type: "custom:button-card"

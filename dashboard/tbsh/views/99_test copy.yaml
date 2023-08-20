@@ -4,42 +4,9 @@ title: Testing1
 path: testing1
 icon: mdi:ear-hearing
 type: custom:grid-layout
-layout:
-  margin: 0
-  padding: 0
-  grid-gap: 0px
-  grid-template-columns: 1fr
-  grid-template-rows: repeat(4, min-content)
-  grid-template-areas: |
-    "content"
-    "otherActions"
-    "mediaPlayer"
-    "sidebar"
-  mediaquery:
-    "(min-width: 880px)":
-      grid-template-columns: 285px auto
-      grid-template-rows: fit-content(100%) 70px 120px
-      grid-template-areas: |
-        "sidebar    content"
-        "sidebar    otherActions"
-        "sidebar    mediaPlayer"
+layout: !include ../includes/layout-grid.yaml
 cards:
-  # - type: "horizontal-stack"
-  #   view_layout:
-  #     grid-area: top_nav
-  #   cards:
-  #     - type: "custom:button-card"
-  #       template: top_nav
-
-  - type: "vertical-stack"
-    view_layout:
-      grid-area: sidebar
-    cards:
-      - type: "custom:button-card"
-        template: sidebar
-        card_mod:
-          style: |
-            ha-card { padding-top: 0 !important }
+  - !include ../includes/sidebar.yaml
 
   - type: "custom:layout-card"
     layout_type: custom:masonry-layout
@@ -50,6 +17,17 @@ cards:
 
     view_layout:
       grid-area: content
+    mediaquery:
+      "(max-width: 500px)":
+        layout:
+          max_cols: 1
+          width: 300
+          max_width: 1000
+      "(max-width: 1024px)":
+        layout:
+          max_cols: 2
+          width: 300
+          max_width: 1000
     cards:
       - !include ../tv-movies/plex.yaml
       - !include ../weather/bom.yaml
@@ -120,144 +98,9 @@ cards:
                   - line_width: 3
 
       - !include ../sport/upcoming_sport.yaml
-      - !include ../tv-movies/upcoming_media.yaml
+      - !include ../tv-movies/upcoming_flipper.yaml
 
-  - type: "custom:mod-card"
-    style: |
-      ha-card {
-        border-radius: 0px;
-        padding: 12px 8px;
-        margin: 0px;
-        height: auto;
-      }
-    view_layout:
-      grid-area: otherActions
-    card:
-      type: "horizontal-stack"
-      cards:
-        - type: "custom:button-card"
-          icon: mdi:home-assistant
-          name: "Home Assistant"
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          entity: sensor.stats_docker
-          icon: mdi:docker
-          name: Docker
-          variables:
-            notification: >
-              [[[
-                return parseInt(entity?.attributes.containers_stopped);
-              ]]]
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          entity: light.all_lights
-          icon: mdi:lightbulb
-          name: Lights
-          tap_action:
-            !include ../popup/lights.yaml
-          variables:
-            notification: >
-              [[[
-                return parseInt(entity?.attributes.containers_stopped);
-              ]]]
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          icon: mdi:tablet
-          name: "Home Hub"
-          variables:
-            notification: >
-              [[[
-                let id = states['binary_sensor.home_hub_plugged_in'];
-                if (id) return id.state === 'off';
-              ]]]
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          icon: mdi:history
-          name: "History"
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          icon: mdi:server
-          name: "Proxmox"
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          icon: mdi:update
-          name: "Updates"
-          entity: sensor.template_updates
-          variables:
-            notification: >
-              [[[
-                return parseInt(entity?.state);
-              ]]]
-          template:
-            - popup_button
-        - type: "custom:button-card"
-          icon: mdi:router-wireless-settings
-          name: "Router"
-          template:
-            - popup_button
+  - !include ../includes/actions.yaml
 
-  - type: "vertical-stack"
-    view_layout:
-      grid-area: mediaPlayer
-    cards:
-      - type: "custom:button-card"
-        entity: media_player.currently_playing
-        variables:
-          media_icon: sensor.active_media_players
-          media_source: sensor.active_media_players
-          entity_picture: sensor.active_media_players
-        template:
-          - conditional_media
-      # - type: conditional
-      #   conditions:
-      #     - entity: select.conditional_media
-      #       state: Living Room Apple TV
-      #   card:
-      #     type: "custom:button-card"
-      #     entity: media_player.living_room_apple_tv
-      #     variables:
-      #       media_icon: sensor.active_media_players
-      #       media_source: sensor.active_media_players
-      #       entity_picture: sensor.active_media_players
-      #     template:
-      #       - conditional_media
-      # - type: conditional
-      #   conditions:
-      #     - entity: select.conditional_media
-      #       state: Living Room HomePod mini
-      #   card:
-      #     type: "custom:button-card"
-      #     entity: media_player.living_room_homepod_mini
-      #     variables:
-      #       media_icon: sensor.active_media_players
-      #       media_source: sensor.active_media_players
-      #       entity_picture: sensor.active_media_players
-      #     template:
-      #       - conditional_media
-      # - type: conditional
-      #   conditions:
-      #     - entity: select.conditional_media
-      #       state: Kitchen HomePod mini
-      #   card:
-      #     type: "custom:button-card"
-      #     entity: media_player.kitchen_homepod_mini
-      #     variables:
-      #       media_icon: sensor.active_media_players
-      #       media_source: sensor.active_media_players
-      #       entity_picture: sensor.active_media_players
-      #     template:
-      #       - conditional_media
+  - !include ../includes/mediaplayer.yaml
 
-  # - type: "horizontal-stack"
-  #   view_layout:
-  #     grid-area: footer
-  #   cards:
-  #     - type: "custom:button-card"
-  #       entity: sensor.template_footer
-  #       template: footer

@@ -1,0 +1,66 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: ANFL
+  icon: mdi:football-helmet
+  state: ""
+padding: 0
+entities:
+  - type: custom:stack-in-card
+    cards:
+      - type: markdown
+        content: "### AFC East"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_afc_east
+
+      - type: markdown
+        content: "### AFC North"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_afc_north
+
+      - type: markdown
+        content: "### AFC South"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_afc_south
+
+      - type: markdown
+        content: "### AFC West"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_afc_west
+
+      - type: markdown
+        content: "### NFC East"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_nfc_east
+
+      - type: markdown
+        content: "### NFC North"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_nfc_north
+
+      - type: markdown
+        content: "### NFC South"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_nfc_south
+
+      - type: markdown
+        content: "### NFC West"
+      - type: custom:decluttering-card
+        template: scoreboard_nfl
+        variables:
+          - entity: sensor.scoreboard_nfl_nfc_west

@@ -1,0 +1,80 @@
+---
+type: "custom:mod-card"
+style: |
+  ha-card {
+    border-radius: 0px;
+    padding: 12px 8px;
+    margin: 0px;
+    height: auto;
+  }
+view_layout:
+  grid-area: otherActions
+card:
+  type: "horizontal-stack"
+  cards:
+    - type: "custom:button-card"
+      icon: mdi:home-assistant
+      name: "Home Assistant"
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      entity: sensor.stats_docker
+      icon: mdi:docker
+      name: Docker
+      variables:
+        notification: >
+          [[[
+            return parseInt(entity?.attributes.containers_stopped);
+          ]]]
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      entity: light.all_lights
+      icon: mdi:lightbulb
+      name: Lights
+      tap_action: !include ../popup/lights.yaml
+      variables:
+        notification: >
+          [[[
+            return parseInt(entity?.attributes.containers_stopped);
+          ]]]
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      icon: mdi:tablet
+      name: "Home Hub"
+      variables:
+        notification: >
+          [[[
+            let id = states['binary_sensor.home_hub_plugged_in'];
+            if (id) return id.state === 'off';
+          ]]]
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      icon: mdi:history
+      name: "History"
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      icon: mdi:server
+      name: "Proxmox"
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      icon: mdi:update
+      name: "Updates"
+      entity: sensor.template_updates
+      variables:
+        notification: >
+          [[[
+            return parseInt(entity?.state);
+          ]]]
+      template:
+        - popup_button
+    - type: "custom:button-card"
+      icon: si:sonos
+      name: "Sonos"
+      template:
+        - popup_button
+      tap_action: !include ../popup/sonos.yaml

@@ -1,0 +1,62 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: A-League Mens
+  icon: mdi:soccer
+  state: ""
+padding: 0
+entities:
+  - type: custom:hui-element
+    card_type: custom:flex-table-card
+    entities:
+      include: sensor.scoreboard_alm
+    css:
+      table+: "border-collapse: collapse; padding: 0px;"
+      tbody tr td:nth-child(1): "width: 10%;"
+    sort_by: entries-
+    columns:
+      - name: sort
+        hidden: true
+        data: entries
+        modify: x.stats.find(y=>y.name == 'points').displayValue
+      - name: Logo
+        data: entries
+        modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
+      - name: Team
+        data: entries
+        modify: x.team.displayName
+      - name: Pl
+        data: entries
+        modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
+      - name: W
+        data: entries
+        modify: x.stats.find(y=>y.name == 'wins').displayValue
+      - name: D
+        data: entries
+        modify: x.stats.find(y=>y.name == 'ties').displayValue
+      - name: L
+        data: entries
+        modify: x.stats.find(y=>y.name == 'losses').displayValue
+      - name: GD
+        data: entries
+        modify: |-
+          {
+            x.stats.find(y=>y.name == 'pointsFor').displayValue +
+            ":" +
+            x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+          }
+      - name: Pts
+        data: entries
+        modify: x.stats.find(y=>y.name == 'points').displayValue
+    card_mod:
+      style: |
+        ha-card {
+          overflow: auto;
+          padding-left: 20px;
+          padding-right: 20px;
+          padding-bottom: 20px
+        }
+        tbody tr:hover {
+          background-color: coral !important
+        }

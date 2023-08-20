@@ -1,0 +1,13 @@
+---
+type: "vertical-stack"
+view_layout:
+  grid-area: mediaPlayer
+cards:
+  - type: "custom:button-card"
+    entity: media_player.currently_playing
+    variables:
+      media_icon: sensor.active_media_players
+      media_source: sensor.active_media_players
+      entity_picture: sensor.active_media_players
+    template:
+      - conditional_media

@@ -2,7 +2,7 @@
 type: custom:mushroom-chips-card
 view_layout:
   grid-area: header-right
-alignment: end
+alignment: middle
 chips:
   - type: template
     icon: mdi:trash-can
@@ -85,7 +85,7 @@ chips:
     icon_color: lightblue
     tap_action:
       action: navigate
-      navigation_path: docker
+      navigation_path: server
     card_mod:
       style: |
         ha-card {
@@ -317,7 +317,4 @@ chips:
                   action: toggle
                 entity: button.homeassistant_restart
                 name: Restart HA
-  - type: entity
-    entity: person.thomas_baxter
-    content_info: none
-    use_entity_picture: true
+

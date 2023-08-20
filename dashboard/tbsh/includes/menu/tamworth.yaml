@@ -16,6 +16,16 @@ double_tap_action:
   action: none
 card_mod:
   style:
+    .: |
+      ha-card {
+        padding: 5px 10px !important;
+        text-align: left !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      :host {
+        --mush-icon-size: 35px;
+      }
     mushroom-state-info$: |
       .container {
         display: table !important;

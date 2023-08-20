@@ -21,14 +21,4 @@ cards:
         #states > * {
           margin: 0 !important;
         }
-    entities:
-      - !include standings_afl.yaml
-      - !include standings_alm.yaml
-      - !include standings_alw.yaml
-      - !include standings_epl.yaml
-      - !include standings_mlb.yaml
-      - !include standings_nba.yaml
-      - !include standings_nfl.yaml
-      - !include standings_nhl.yaml
-      - !include standings_nrl.yaml
-      - !include standings_srp.yaml
+    entities: !include_dir_list ../sport/standings/

@@ -1,569 +1,167 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: "custom:button-card"
-    template: header_card
-    variables:
-      name: Synology NAS (theCube2)
-      label: Manage
-      arrow: "mdi:arrow-top-right"
-      action: url
-      link: http://192.168.1.100:5000
-    view_layout:
-      grid-column: 1/-1
   - type: custom:mushroom-template-card
-    primary: DiskStation Manager
-    secondary: >-
-      {{states('sensor.synology_dsm_update')}} -
-      {{states('sensor.synology_dsm_version')}}
-    icon: phu:nas
-    icon_color: |-
-      {% if states('sensor.synology_dsm_update') == "Update is available" %}
-        red
-      {% else %}
-        green
-      {% endif %}
-    fill_container: true
-    multiline_secondary: false
+    primary: Synology NAS (theCube2)
+    icon: mdi:nas
+    icon_color: blue
     tap_action:
       action: none
-    hold_action:
-      action: none
-    double_tap_action:
-      action: none
-  - square: false
-    columns: 2
-    type: grid
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: binary_sensor.thecube2_security_status
-        name: Security Status
-        icon_color: grey
-        fill_container: false
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-      - type: custom:mushroom-entity-card
-        entity: sensor.thecube2_last_boot
-        name: Last Boot
-        double_tap_action:
-          action: none
-        hold_action:
-          action: none
-        tap_action:
-          action: none
-        icon_color: grey
-  - type: grid
-    square: false
-    columns: 3
-    cards:
-      - type: custom:stack-in-card
-        cards:
-          - type: custom:apexcharts-card
-            chart_type: radialBar
-            series:
-              - entity: sensor.thecube2_cpu_load_total
-                color: rgb(76, 175, 80)
-                max: 100
-                show:
-                  legend_value: false
-            apex_config:
-              plotOptions:
-                radialBar:
-                  offsetY: 0
-                  startAngle: -108
-                  endAngle: 108
-                  hollow:
-                    size: 65%
-                  dataLabels:
-                    name:
-                      show: false
-                    value:
-                      show: false
-                  track:
-                    strokeWidth: 80%
-                    margin: 0
-              legend:
-                show: false
-              chart:
-                height: 170px
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_cpu_load_total
-            primary_info: name
-            secondary_info: state
-            name: Core
-            icon_color: green
-            layout: vertical
-            card_mod:
-              style: |
-                ha-card {
-                  top: -63px;
-                }
-        card_mod:
-          style: |
-            ha-card {
-              height: 158px;
-            }
-      - type: custom:stack-in-card
-        cards:
-          - type: custom:apexcharts-card
-            chart_type: radialBar
-            series:
-              - entity: sensor.thecube2_memory_usage_real
-                color: rgb(33, 150, 243)
-                max: 100
-                show:
-                  legend_value: false
-            apex_config:
-              plotOptions:
-                radialBar:
-                  offsetY: 0
-                  startAngle: -108
-                  endAngle: 108
-                  hollow:
-                    size: 65%
-                  dataLabels:
-                    name:
-                      show: false
-                    value:
-                      show: false
-                  track:
-                    strokeWidth: 80%
-                    margin: 0
-              legend:
-                show: false
-              chart:
-                height: 170px
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_memory_usage_real
-            primary_info: name
-            secondary_info: state
-            name: Memory
-            icon_color: blue
-            layout: vertical
-            card_mod:
-              style: |
-                ha-card {
-                  top: -63px;
-                }
-        card_mod:
-          style: |
-            ha-card {
-              height: 158px;
-            }
-      - type: custom:stack-in-card
-        cards:
-          - type: custom:apexcharts-card
-            chart_type: radialBar
-            series:
-              - entity: sensor.thecube2_temperature
-                color: rgb(233, 30, 99)
-                max: 100
-                show:
-                  legend_value: false
-            apex_config:
-              plotOptions:
-                radialBar:
-                  offsetY: 0
-                  startAngle: -108
-                  endAngle: 108
-                  hollow:
-                    size: 65%
-                  dataLabels:
-                    name:
-                      show: false
-                    value:
-                      show: false
-                  track:
-                    strokeWidth: 80%
-                    margin: 0
-              legend:
-                show: false
-              chart:
-                height: 170px
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_temperature
-            primary_info: name
-            secondary_info: state
-            name: Temp
-            icon_color: pink
-            layout: vertical
-            card_mod:
-              style: |
-                ha-card {
-                  top: -63px;
-                }
-        card_mod:
-          style: |
-            ha-card {
-              height: 158px;
-            }
-  - type: custom:vertical-stack-in-card
-    cards:
-      - type: grid
-        square: false
-        columns: 2
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_network_down
-            primary_info: state
-            secondary_info: name
-            name: Download
-            icon_color: green
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_network_up
-            primary_info: state
-            secondary_info: name
-            name: Upload
-            icon_color: blue
-      - type: custom:mini-graph-card
-        entities:
-          - entity: sensor.thecube2_network_down
-            name: Download
-            color: var(--green-color)
-          - entity: sensor.thecube2_network_up
-            name: Upload
-            color: var(--blue-color)
-            y_axis: secondary
-        hours_to_show: 24
-        points_per_hour: 6
-        line_width: 3
-        font_size: 50
-        animate: true
-        show:
-          name: false
-          icon: false
-          state: false
-          legend: false
-          fill: fade
-  - type: custom:vertical-stack-in-card
-    cards:
-      - type: grid
-        square: false
-        columns: 2
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_drive_1_temperature
-            primary_info: state
-            secondary_info: name
-            name: Drive 1
-            icon_color: green
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_drive_2_temperature
-            primary_info: state
-            secondary_info: name
-            name: Drive 2
-            icon_color: blue
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_temperature_2
-            primary_info: state
-            secondary_info: name
-            name: Drive 3
-            icon_color: yellow
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_drive_4_temperature
-            primary_info: state
-            secondary_info: name
-            name: Drive 4
-            icon_color: red
-      - type: custom:plotly-graph
-        hours_to_show: 24
-        time_offset: |-
-          $fn () =>  {
-            now = new Date();
-            tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0,0,0,0);                                           // midnight
-            HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
-            return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
-          }
-        entities:
-          - entity: sensor.thecube2_drive_1_temperature
-            name: Drive 1
-            legendgroup: 1
-            texttemplate: <b>%{y:,.0f}</b>
-            line:
-              color: var(--green-color)
-          - entity: sensor.thecube2_drive_2_temperature
-            name: Drive 2
-            legendgroup: 2
-            texttemplate: <b>%{y:,.0f}</b>
-            line:
-              color: var(--blue-color)
-          - entity: sensor.thecube2_temperature_2
-            name: Drive 3
-            legendgroup: 3
-            texttemplate: <b>%{y:,.0f}</b>
-            line:
-              color: var(--yellow-color)
-          - entity: sensor.thecube2_drive_4_temperature
-            name: Drive 4
-            legendgroup: 4
-            texttemplate: <b>%{y:,.0f}</b>
-            line:
-              color: var(--red-color)
-        refresh_interval: auto
-        defaults:
-          entity:
-            connectgaps: true
-            show_value: true
-            filters:
-              - force_numeric
-              - resample: 30m
-              - sliding_window_moving_average:
-                  window_size: 10
-                  extended: true
-                  centered: true
-            line:
-              width: 3
-              color: rgba(255,155,255, 0.8)
-              shape: spline
-        layout:
-          showlegend: true
-          height: 250
-          margin:
-            autoexpand: true
-            l: 30
-            r: 20
-          xaxis:
-            showline: true
-            tickformat: "%H:%M"
-            showgrid: false
-            showticklabels: true
-            linecolor: rgb(204,204,204)
-            linewidth: 2
-            autotick: true
-            ticks: outside
-            tickwidth: 2
-            ticklen: 5
-            tickfont:
-              family: Roboto
-              size: 12
-              color: rgb(204,204,204)
-          yaxis:
-            title: ""
-            autorange: true
-            zeroline: true
-            fixedrange: true
-            linecolor: rgb(204,204,204)
-            linewidth: 2
-            tickfont:
-              family: Roboto
-              size: 12
-              color: rgb(204,204,204)
-          dragmode: false
-        config:
-          scrollZoom: false
-
-  - type: custom:expander-card
-    gap: 0.6em
-    padding: ""
-    clear: false
-    overlay-margin: 2em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:mushroom-template-card
-      primary: Volume 1
-      secondary: ""
-      icon: mdi:harddisk
-      fill_container: true
-      card_mod:
-        style: |
-          ha-card {
-            box-shadow: none !important;
-          }
-      double_tap_action:
-        action: none
-      hold_action:
-        action: none
-      tap_action:
-        action: none
-    title-card-padding: 0px
-    cards:
-      - square: false
-        columns: 2
-        type: grid
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_1_status
-            name: Status
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_1_volume_used
-            name: Volume %
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_1_total_size
-            name: Total Space
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_1_used_space
-            name: Used Space
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-    expanded: false
-
-  - type: custom:expander-card
-    gap: 0.6em
-    padding: ""
-    clear: false
-    overlay-margin: 2em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:mushroom-template-card
-      primary: Volume 2
-      secondary: ""
-      icon: mdi:harddisk
-      fill_container: true
-      card_mod:
-        style: |
-          ha-card {
-            box-shadow: none !important;
-          }
-      double_tap_action:
-        action: none
-      hold_action:
-        action: none
-      tap_action:
-        action: none
-    title-card-padding: 0px
-    cards:
-      - square: false
-        columns: 2
-        type: grid
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_2_status
-            name: Status
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_2_volume_used
-            name: Volume %
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_2_total_size
-            name: Total Space
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_2_used_space
-            name: Used Space
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-    expanded: false
-
-  - type: custom:expander-card
-    gap: 0.6em
-    padding: ""
-    clear: false
-    title: Expander
-    overlay-margin: 2em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:mushroom-template-card
-      primary: Volume 3
-      secondary: ""
-      icon: mdi:harddisk
-      fill_container: true
-      card_mod:
-        style: |
-          ha-card {
-            box-shadow: none !important;
-          }
-      double_tap_action:
-        action: none
-      hold_action:
-        action: none
-      tap_action:
-        action: none
-    title-card-padding: 0px
-    cards:
-      - square: false
-        columns: 2
-        type: grid
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_status_2
-            name: Status
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_volume_used
-            name: Volume %
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_total_size
-            name: Total Space
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: sensor.thecube2_used_space
-            name: Used Space
-            icon_color: grey
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none !important;
-                }
-    expanded: false
     card_mod:
       style: |
         ha-card {
           box-shadow: none !important;
         }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: button
+        icon: mdi:television-guide
+        name: Admin Panel
+        action_name: OPEN
+        tap_action:
+          action: url
+          url_path: http://192.168.1.100:5000
+      - type: section
+      - entity: binary_sensor.thecube2_security_status
+        name: Security Status
+      - entity: sensor.thecube2_last_boot
+        name: Last Boot
+      - type: section
+      - entity: sensor.thecube2_cpu_load_total
+        name: CPU Utilisation
+      - entity: sensor.thecube2_memory_usage_real
+        name: Memory Usage
+      - entity: sensor.thecube2_temperature
+        name: Temperature
+      - type: section
+      - entity: sensor.thecube2_network_down
+        name: Network Traffic - Down
+      - entity: sensor.thecube2_network_up
+        name: Network Traffic - Up
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Drive Temperatures
+          icon: mdi:thermometer
+          state: ""
+        entities:
+          - entity: sensor.thecube2_drive_1_temperature
+            name: Drive 1
+          - entity: sensor.thecube2_drive_2_temperature
+            name: Drive 2
+          - entity: sensor.thecube2_temperature_2
+            name: Drive 3
+          - entity: sensor.thecube2_drive_4_temperature
+            name: Drive 4
+      - type: section
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Volume 1
+          icon: mdi:harddisk
+          state: ""
+        entities:
+          - entity: sensor.thecube2_volume_1_status
+            name: Status
+          - entity: sensor.thecube2_volume_1_volume_used
+            name: Volume %
+          - entity: sensor.thecube2_volume_1_total_size
+            name: Total Space
+          - entity: sensor.thecube2_volume_1_used_space
+            name: Used Space
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Volume 2
+          icon: mdi:harddisk
+          state: ""
+        entities:
+          - entity: sensor.thecube2_volume_2_status
+            name: Status
+          - entity: sensor.thecube2_volume_2_volume_used
+            name: Volume %
+          - entity: sensor.thecube2_volume_2_total_size
+            name: Total Space
+          - entity: sensor.thecube2_volume_2_used_space
+            name: Used Space
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Volume 3
+          icon: mdi:harddisk
+          state: ""
+        entities:
+          - entity: sensor.thecube2_status_2
+            name: Status
+          - entity: sensor.thecube2_volume_used
+            name: Volume %
+          - entity: sensor.thecube2_total_size
+            name: Total Space
+          - entity: sensor.thecube2_used_space
+            name: Used Space
+      - type: section
+      - type: custom:template-entity-row
+        entity: update.thecube2_dsm_update
+        name: "{{ state_attr(config.entity, 'friendly_name').split(':',1)[0] }}"
+        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"
