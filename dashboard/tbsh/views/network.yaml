@@ -30,62 +30,12 @@ cards:
           width: 300
           max_width: 1000
     cards:
+      - !include ../network/settings_controls.yaml
       - type: vertical-stack
         cards:
-          - type: entities
-            state_color: true
-            card_mod:
-              class: content
-            entities:
-              - entity: binary_sensor.template_udm_internet
-                secondary_info: last-changed
-              - entity: sensor.template_udm_cpu_temp
-                name: CPU Temperature
-              - type: custom:bar-card
-                width: 55%
-                height: 2em
-                decimal: 0
-                unit_of_measurement: "%"
-                positions:
-                  icon: outside
-                  indicator: "off"
-                  name: outside
-                severity:
-                  - color: "#6d2525"
-                    from: 90
-                    to: 999
-                entity_row: true
-                entities:
-                  - entity: sensor.template_udm_cpu
-                  - entity: sensor.template_udm_mem
-                  - entity: sensor.template_udm_disk
-              - entity: sensor.template_udm_uptime
-          - type: custom:mod-card
-            card_mod:
-              style:
-                hui-horizontal-stack-card$: |
-                  #root {
-                    justify-content: space-evenly !important;
-                    padding: var(--tablet-popup-button-padding);
-                  }
-            card:
-              type: horizontal-stack
-              cards:
-                - type: custom:mushroom-template-card
-                  primary: Devices
-                  icon: mdi:devices
-                  tap_action:
-                    action: url
-                    url_path: https://192.168.1.1/network/default/clients
-                - type: custom:mushroom-template-card
-                  primary: System
-                  icon: mdi:cog
-                  tap_action:
-                    action: url
-                    url_path: https://192.168.1.1/settings/system
-                  template: icon_name
-          - !include ../network/unifi/netconn_wifi.yaml
-          - !include ../network/unifi/netconn_wired.yaml
+        - !include ../network/unifi.yaml
+        - !include ../network/unifi/netconn_wifi.yaml
+        - !include ../network/unifi/netconn_wired.yaml
 
       - type: vertical-stack
         cards:

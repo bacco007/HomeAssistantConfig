@@ -1,38 +1,85 @@
 ---
-type: horizontal-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:mushroom-entity-card
-    entity: switch.adguard_protection
-    icon_color: orange
-    layout: vertical
-    tap_action:
-      action: toggle
-    name: AdGuard
-    fill_container: true
+  - type: custom:mushroom-template-card
+    primary: AdGuard Home
+    icon: si:adguard
+    icon_color: blue
     card_mod:
       style: |
-        :host {
-          --mush-icon-border-radius: 12px;
-          --mush-card-primary-font-size: 12px;
-          --mush-card-secondary-font-size: 11px;
+        ha-card {
+          box-shadow: none !important;
         }
-  - type: vertical-stack
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: sensor.adguard_dns_queries
-        name: DNS Queries
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: binary_sensor.connected_adguard
+        name: AdGuard Home Connected
+        secondary_info: last-changed
+      - type: section
+      - type: button
+        name: Devices Dashboard
+        action_name: OPEN
+        icon: mdi:devices
+        tap_action:
+          action: url
+          url_path: http://192.168.1.10
+      - type: section
+      - entity: sensor.adguard_average_processing_speed
+        name: Average processing speed
+      - entity: sensor.adguard_dns_queries
+        name: DNS queries
+      - entity: sensor.adguard_dns_queries_blocked
+        name: DNS queries blocked
+      - entity: sensor.adguard_dns_queries_blocked_ratio
+        name: DNS queries blocked ratio
+      - entity: sensor.adguard_parental_control_blocked
+        name: Parental control blocked
+      - entity: sensor.adguard_rules_count
+        name: Rules count
+      - entity: sensor.adguard_safe_browsing_blocked
+        name: Safe browsing blocked
+      - entity: sensor.adguard_safe_searches_enforced
+        name: Safe searches enforced
+      - type: section
+      - type: custom:fold-entity-row
         card_mod:
           style: |
-            :host {
-              --mush-card-primary-font-size: 12px;
-              --mush-card-secondary-font-size: 11px;
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
             }
-      - type: custom:mushroom-entity-card
-        entity: sensor.adguard_dns_queries_blocked_ratio
-        name: Blocked Ratio
-        card_mod:
-          style: |
-            :host {
-              --mush-card-primary-font-size: 12px;
-              --mush-card-secondary-font-size: 11px;
+            #measure {
+              padding-top: 0 !important;
             }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Controls
+          icon: mdi:switch
+          state: ""
+        entities:
+          - entity: switch.adguard_filtering
+            name: Filtering
+          - entity: switch.adguard_parental_control
+            name: Parental control
+          - entity: switch.adguard_protection
+            name: Protection
+          - entity: switch.adguard_query_log
+            name: Query log
+          - entity: switch.adguard_safe_browsing
+            name: Safe browsing
+          - entity: switch.adguard_safe_search
+            name: Safe search

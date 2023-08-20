@@ -40,24 +40,10 @@ cards:
           - !include ../tamworth/livetraffic/majorevents.yaml
           - !include ../tamworth/livetraffic/roadwork.yaml
 
-      - type: vertical-stack
-        cards:
-          - !include ../tamworth/snippets/fuel_u95.yaml
-          - !include ../tamworth/snippets/fuel_u98.yaml
-          - !include ../tamworth/snippets/fuel_u91.yaml
-          - !include ../tamworth/snippets/fuel_e10.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include ../tamworth/snippets/hospital.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include ../tamworth/dams.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include ../tamworth/bushfire.yaml
+      - !include ../tamworth/snippets/fuel.yaml
+      - !include ../tamworth/snippets/hospital.yaml
+      - !include ../tamworth/dams.yaml
+      - !include ../tamworth/bushfire.yaml
 
   - !include ../includes/actions.yaml
 

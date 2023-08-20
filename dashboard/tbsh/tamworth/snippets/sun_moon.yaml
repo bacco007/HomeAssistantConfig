@@ -1,90 +1,143 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: entities
+  - type: custom:mushroom-template-card
+    primary: Sun and Moon
+    icon: mdi:sun-compass
+    icon_color: yellow
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-template-card
-          primary: Sun and Moon
-          secondary: |
-            {{states('sensor.sun_phase') }}
-          icon: mdi:sun-compass
-          icon_color: yellow
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-              }
-        padding: 0
+      - entity: sun.sun
+        name: Sun
+        type: custom:multiple-entity-row
+        show_state: false
         entities:
-          - type: custom:hui-element
-            card_type: entities
-            entities:
-              - entity: sun.sun
-                type: custom:multiple-entity-row
-                show_state: false
-                secondary_info:
-                  entity: sun.sun
-                entities:
-                  - attribute: next_rising
-                    format: relative
-                    name: SUNRISE
-                    styles:
-                      text-align: left
-                  - attribute: next_setting
-                    format: relative
-                    name: SUNSET
-                    styles:
-                      text-align: left
-              - type: custom:fold-entity-row
-                head: sensor.sun_state
-                entities:
-                  - sensor.sun_solarangle
-                  - sensor.sun_nextrising
-                  - sensor.sun_nextdawn
-                  - sensor.sun_nextnoon
-                  - sensor.sun_nextdusk
-                  - sensor.sun_nextsetting
-                  - sensor.sun_nextmidnight
-                  - type: section
-                  - sensor.solar_midnight
-                  - sensor.astronomical_dawn
-                  - sensor.nautical_dawn
-                  - sensor.dawn
-                  - sensor.sunrise
-                  - sensor.solar_noon
-                  - sensor.sunset
-                  - sensor.dusk
-                  - sensor.nautical_dusk
-                  - sensor.astronomical_dusk
-                  - type: section
-                  - sensor.daylight
-                  - sensor.civil_daylight
-                  - sensor.nautical_daylight
-                  - sensor.astronomical_daylight
-                  - sensor.night
-                  - sensor.civil_night
-                  - sensor.nautical_night
-                  - sensor.astronomical_night
-                  - type: section
-                  - sensor.elevation
-                  - sensor.max_elevation
-              - entity: sensor.moon
-          - type: custom:horizon-card
-
+          - entity: sensor.sun_next_dawn
+            name: Dawn
+            format: time
+          - entity: sensor.sun_next_rising
+            name: Sunrise
+            format: time
+          - entity: sensor.sun_next_noon
+            name: Noon
+            format: time
+          - entity: sensor.sun_next_setting
+            name: Sunset
+            format: time
+          - entity: sensor.sun_next_dusk
+            name: Dusk
+            format: time
+          - entity: sensor.sun_next_midnight
+            name: Night
+            format: time
+        card_mod:
+          style:
+            hui-generic-entity-row $: |
+              .info {
+                display: none;
+              }
+            .: |
+              .entities-row div.state.entity {
+                display: none;
+              }
+              .entities-row {
+                width: 100%;
+                justify-content: space-evenly !important;
+              }
+      - entity: sun.sun
+        name: Day
+        type: custom:multiple-entity-row
+        show_state: false
+        entities:
+          - entity: sensor.daylightyesterday
+            name: Yesterday
+          - entity: sensor.daylighttoday
+            name: Today
+          - entity: sensor.daylighttomorrow
+            name: Tomorrow
+        card_mod:
+          style:
+            .: |
+              .entities-row div.state.entity {
+                display: none;
+              }
+              .entities-row {
+                width: 100%;
+                justify-content: space-evenly !important;
+              }
+      - type: section
+      - entity: sensor.moon
+        name: Moon
+        type: custom:multiple-entity-row
+        show_state: false
+        entities:
+          - entity: sensor.moon_rise
+            name: Rise
+            format: time
+          - entity: sensor.moon_set
+            name: Set
+            format: time
+          - entity: sensor.moonphase
+        card_mod:
+          style:
+            hui-generic-entity-row $: |
+              .info {
+                display: none;
+              }
+            .: |
+              .entities-row div.state.entity {
+                display: none;
+              }
+              .entities-row {
+                width: 100%;
+                justify-content: space-evenly !important;
+              }
+      - entity: sensor.moon
+        name: Night
+        type: custom:multiple-entity-row
+        show_state: false
+        entities:
+          - entity: sensor.night
+            attribute: yesterday_hms
+            name: Yesterday
+            format: time
+          - entity: sensor.night
+            attribute: today_hms
+            name: Today
+          - entity: sensor.night
+            attribute: tomorrow_hms
+            name: Tomorrow
+  - type: custom:horizon-card
+    moon: true
+    refresh_period: 60
+    fields:
+      sunrise: true
+      sunset: true
+      dawn: true
+      noon: true
+      dusk: true
+      azimuth: true
+      sun_azimuth: true
+      moon_azimuth: true
+      elevation: true
+      sun_elevation: true
+      moon_elevation: true
+      moonrise: true
+      moonset: true
+      moon_phase: true
+    southern_flip: true

@@ -1,223 +1,193 @@
----
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: entities
+  - type: custom:mushroom-template-card
+    primary: UV Index
+    icon: mdi:sun-clock
+    icon_color: yellow
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-template-card
-          primary: UV Index
-          secondary: |
-            {{states('sensor.current_uv_level') }}
-          icon: mdi:sun-clock
-          icon_color: yellow
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-              }
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: entities
-            card_mod:
-              style: |
-                #states {
-                  padding-top: 0 !important;
-                }
-                #states > * {
-                  margin: 0 !important;
-                }
-            entities:
-              - entity: binary_sensor.protection_window
-                name: Protection Window
-              - entity: binary_sensor.uv_risk_alert
-                name: UV Risk Alert
-              - type: section
-              - entity: sensor.current_uv_level
-              - entity: sensor.current_uv_index
-                name: Current Index
-              - entity: sensor.uv_risk_today
-                name: Today Level
-              - entity: sensor.max_uv_index
-                name: Today Index
-              - entity: sensor.current_ozone_level
-                name: Current Ozone
-              - type: section
-              - entity: sensor.skin_type_1_safe_exposure_time
-                name: Skin Type 1
-              - entity: sensor.skin_type_2_safe_exposure_time
-                name: Skin Type 2
-              - entity: sensor.skin_type_3_safe_exposure_time
-                name: Skin Type 3
-              - entity: sensor.skin_type_4_safe_exposure_time
-                name: Skin Type 4
-              - entity: sensor.skin_type_5_safe_exposure_time
-                name: Skin Type 5
-              - entity: sensor.skin_type_6_safe_exposure_time
-                name: Skin Type 6
-          - type: custom:vertical-stack-in-card
-            cards:
-              - type: custom:mushroom-template-card
-                primary: UV Index (72 Hours)
-                fill_container: true
-                icon: mdi:chart-bubble
-                icon_color: red
-              - type: custom:plotly-graph
-                hours_to_show: 72
-                entities:
-                  - entity: sensor.current_uv_index
-                    name: UV Index
-                    legendgroup: 1
-                    yaxis: y
-                    connectgaps: true
-                    show_value: true
-                    filters:
-                      - force_numeric
-                      - resample: 30m
-                    texttemplate: <b>%{y:,01f}</b>
-                    x: $fn ({xs}) => xs
-                    "y": $fn ({ys}) => ys
-                    fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
-                    fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
-                    line:
-                      width: 3
-                      color: rgba(255,255,255, 0.8)
-                      shape: spline
-                  - entity: sensor.tempest_st_00056115_uv_index
-                    name: Home UV Index
-                    legendgroup: 2
-                    yaxis: y
-                    connectgaps: true
-                    show_value: true
-                    filters:
-                      - force_numeric
-                      - resample: 30m
-                    texttemplate: <b>%{y:,01f}</b>
-                    line:
-                      width: 3
-                      color: rgba(255,255,0, 0.8)
-                      shape: spline
-                refresh_interval: auto
-                layout:
-                  showlegend: true
-                  height: 300
-                  margin:
-                    autoexpand: true
-                    l: 40
-                    r: 20
+      - entity: binary_sensor.protection_window
+        name: Protection Window
+      - entity: binary_sensor.uv_risk_alert
+        name: UV Risk Alert
+      - type: section
+      - entity: sensor.current_uv_level
+      - entity: sensor.current_uv_index
+        name: Current Index
+      - entity: sensor.uv_risk_today
+        name: Today Level
+      - entity: sensor.max_uv_index
+        name: Today Index
+      - entity: sensor.current_ozone_level
+        name: Current Ozone
+      - type: section
+      - entity: sensor.skin_type_1_safe_exposure_time
+        name: Skin Type 1
+      - entity: sensor.skin_type_2_safe_exposure_time
+        name: Skin Type 2
+      - entity: sensor.skin_type_3_safe_exposure_time
+        name: Skin Type 3
+      - entity: sensor.skin_type_4_safe_exposure_time
+        name: Skin Type 4
+      - entity: sensor.skin_type_5_safe_exposure_time
+        name: Skin Type 5
+      - entity: sensor.skin_type_6_safe_exposure_time
+        name: Skin Type 6
+  - type: custom:plotly-graph
+    hours_to_show: 72
+    entities:
+      - entity: sensor.current_uv_index
+        name: UV Index
+        legendgroup: 1
+        yaxis: y
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,01f}</b>
+        x: $fn ({xs}) => xs
+        "y": $fn ({ys}) => ys
+        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+        line:
+          width: 3
+          color: rgba(255,255,255, 0.8)
+          shape: spline
+      - entity: sensor.tempest_st_00056115_uv_index
+        name: Home UV Index
+        legendgroup: 2
+        yaxis: y
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,01f}</b>
+        line:
+          width: 3
+          color: rgba(255,255,0, 0.8)
+          shape: spline
+    refresh_interval: auto
+    layout:
+      showlegend: true
+      height: 300
+      margin:
+        autoexpand: true
+        l: 40
+        r: 20
 
-                  xaxis:
-                    showline: true
-                    autorange: true
-                    fixedrange: true
-                    range:
-                      - $fn ({vars}) => vars.miny1 - 1
-                      - $fn ({vars}) => vars.maxy1 + 0.5
-                    tickformat: "%H:%M"
-                    showgrid: false
-                    showticklabels: true
-                    linecolor: rgb(204,204,204)
-                    linewidth: 2
-                    autotick: true
-                    ticks: outside
-                    tickwidth: 2
-                    ticklen: 5
-                    tickfont:
-                      family: Roboto
-                      size: 12
-                      color: rgb(204,204,204)
-                  yaxis:
-                    title: ""
-                    autorange: false
-                    fixedrange: true
-                    range:
-                      - 0
-                      - $fn ({vars}) => vars.maxy1 + 0.5
-                    zeroline: true
-                    linecolor: rgb(204,204,204)
-                    linewidth: 2
-                    tickfont:
-                      family: Roboto
-                      size: 12
-                      color: rgb(204,204,204)
-                  dragmode: false
-                  shapes:
-                    - type: rect
-                      xref: paper
-                      yref: y1
-                      x0: 0
-                      x1: 1
-                      y1: 2.5
-                      y0: 0
-                      fillcolor: "#558B2F"
-                      opacity: 0.2
-                      layer: below
-                      line:
-                        width: 0
-                    - type: rect
-                      xref: paper
-                      yref: y1
-                      x0: 0
-                      x1: 1
-                      y1: 5.5
-                      y0: 2.5
-                      fillcolor: "#F9A825"
-                      opacity: 0.2
-                      layer: below
-                      line:
-                        width: 0
-                    - type: rect
-                      xref: paper
-                      yref: y1
-                      x0: 0
-                      x1: 1
-                      y1: 7.5
-                      y0: 5.5
-                      fillcolor: "#EF6C00"
-                      opacity: 0.2
-                      layer: below
-                      line:
-                        width: 0
-                    - type: rect
-                      xref: paper
-                      yref: y1
-                      x0: 0
-                      x1: 1
-                      y1: 10.5
-                      y0: 7.5
-                      fillcolor: "#871C1C"
-                      opacity: 0.2
-                      layer: below
-                      line:
-                        width: 0
-                    - type: rect
-                      xref: paper
-                      yref: y1
-                      x0: 0
-                      x1: 1
-                      y1: 15
-                      y0: 10.5
-                      fillcolor: "#6A1B9A"
-                      opacity: 0.2
-                      layer: below
-                      line:
-                        width: 0
+      xaxis:
+        showline: true
+        autorange: true
+        fixedrange: true
+        range:
+          - $fn ({vars}) => vars.miny1 - 1
+          - $fn ({vars}) => vars.maxy1 + 0.5
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: false
+        fixedrange: true
+        range:
+          - 0
+          - $fn ({vars}) => vars.maxy1 + 0.5
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+      shapes:
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 2.5
+          y0: 0
+          fillcolor: "#558B2F"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 5.5
+          y0: 2.5
+          fillcolor: "#F9A825"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 7.5
+          y0: 5.5
+          fillcolor: "#EF6C00"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 10.5
+          y0: 7.5
+          fillcolor: "#871C1C"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 15
+          y0: 10.5
+          fillcolor: "#6A1B9A"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
 
-                config:
-                  scrollZoom: false
+    config:
+      scrollZoom: false

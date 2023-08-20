@@ -3,10 +3,10 @@ type: custom:vertical-stack-in-card
 cards:
   - type: custom:mushroom-entity-card
     entity: sensor.tamhospital_waitingtime
-    primary_info: state
-    secondary_info: name
+    primary_info: name
+    secondary_info: state
     fill_container: true
-    name: People Waiting
+    name: Tamworth Hospital - People Waiting
     icon: mdi:hospital
     icon_color: red
   - type: custom:plotly-graph

@@ -1,248 +1,216 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: entities
+  - type: custom:mushroom-template-card
+    primary: Air Quality - wAQI
+    icon: mdi:chart-bubble
+    icon_color: yellow
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
+      - entity: binary_sensor.waqi_air_quality_alert
+        name: Air Quality Alert
+      - entity: sensor.waqi_aqi_risk_level
+        card_mod:
+          style: |
+            :host {
+              --paper-item-icon-color:
+                {% set level = states('sensor.waqi_air_quality_index')|float(0) %}
+                {% if level < 50 %} var(--entity-ok-color)
+                {% elif level < 100 %} var(--entity-minor-color)
+                {% elif level < 150 %} var(--entity-warning-color)
+                {% elif level < 300 %} var(--entity-severe-color)
+                {% elif level >= 300 %} var(--entity-critical-color)
+                {% else %} var(--state-icon-color);
+                {% endif %}
+              ;
+            }
+      - entity: sensor.waqi_tamworth_north_west_slopes
+        name: Tamworth
+      - entity: sensor.waqi_tamworth_change_aqi
+        type: custom:multiple-entity-row
+        styles:
+          white-space: normal
+        style:
+          hui-generic-entity-row:
+            $: |
+              .info, .info > * {
+                white-space: normal !important;
+              }
+        name: Extremes (24hrs)
+        state_header: 24hr Chg
+        entities:
+          - entity: sensor.waqi_tamworth_min_aqi
+            name: Min
+          - entity: sensor.waqi_tamworth_max_aqi
+            name: Max
+      - type: section
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
-          primary: Air Quality - wAQI
-          secondary: |
-            {{states('sensor.waqi_tamworth_north_west_slopes') }}, {{states('sensor.waqi_aqi_risk_level') }}
-          icon: mdi:chart-bubble
-          icon_color: yellow
+          type: custom:template-entity-row
+          entity: sensor.waqi_tamworth_north_west_slopes
+          name: Individual Measures
+          state: ""
           card_mod:
             style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
+              #measures > * {
+                margin: 0 !important;
               }
         padding: 0
         entities:
-          - type: custom:hui-element
-            card_type: entities
-            card_mod:
-              style: |
-                #states {
-                  padding-top: 0 !important;
-                }
-                #states > * {
-                  margin: 0 !important;
-                }
-            entities:
-              - entity: binary_sensor.waqi_air_quality_alert
-                name: Air Quality Alert
-              - entity: sensor.waqi_aqi_risk_level
-                card_mod:
-                  style: |
-                    :host {
-                      --paper-item-icon-color:
-                        {% set level = states('sensor.waqi_air_quality_index')|float(0) %}
-                        {% if level < 50 %} var(--entity-ok-color)
-                        {% elif level < 100 %} var(--entity-minor-color)
-                        {% elif level < 150 %} var(--entity-warning-color)
-                        {% elif level < 300 %} var(--entity-severe-color)
-                        {% elif level >= 300 %} var(--entity-critical-color)
-                        {% else %} var(--state-icon-color);
-                        {% endif %}
-                      ;
-                    }
-              - entity: sensor.waqi_tamworth_north_west_slopes
-                name: Tamworth
-              - entity: sensor.waqi_tamworth_change_aqi
-                type: custom:multiple-entity-row
-                styles:
-                  white-space: normal
-                style:
-                  hui-generic-entity-row:
-                    $: |
-                      .info, .info > * {
-                        white-space: normal !important;
-                      }
-                name: Extremes (24hrs)
-                state_header: 24hr Chg
-                entities:
-                  - entity: sensor.waqi_tamworth_min_aqi
-                    name: Min
-                  - entity: sensor.waqi_tamworth_max_aqi
-                    name: Max
-              - type: section
-              - type: custom:fold-entity-row
-                head:
-                  type: custom:template-entity-row
-                  entity: sensor.waqi_tamworth_north_west_slopes
-                  name: Individual Measures
-                  state: ''
-                  card_mod:
-                    style: |
-                      #measures > * {
-                        margin: 0 !important;
-                      }
-                padding: 0
-                entities:
-                  - entity: sensor.waqi_nitrogen_dioxide
-                    name: Nitrogen Dioxide
-                  - entity: sensor.waqi_ozone
-                    name: Ozone
-                  - entity: sensor.waqi_particulate_matter_10
-                    name: PM10
-                  - entity: sensor.waqi_particulate_matter_2_5
-                    name: PM2.5
-
-          - type: custom:vertical-stack-in-card
-            cards:
-              - type: custom:vertical-stack-in-card
-                cards:
-                  - type: custom:mushroom-template-card
-                    primary: World AQI (72 Hours)
-                    fill_container: true
-                    icon: mdi:chart-bubble
-                    icon_color: red
-                  - type: custom:plotly-graph
-                    hours_to_show: 72
-                    entities:
-                      - entity: sensor.waqi_tamworth_north_west_slopes
-                        name: Max
-                        legendgroup: 1
-                        connectgaps: true
-                        show_value: true
-                        x: $fn ({xs}) => xs
-                        "y": $fn ({ys}) => ys
-                        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
-                        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
-                        filters:
-                          - force_numeric
-                          - resample: 30m
-                        texttemplate: <b>%{y:,01f}</b>
-                        line:
-                          width: 3
-                          color: rgba(255,255,255, 0.8)
-                          shape:
-                    refresh_interval: auto
-                    layout:
-                      showlegend: false
-                      height: 300
-                      margin:
-                        autoexpand: true
-                        l: 40
-                        r: 20
-                      xaxis:
-                        showline: true
-                        autorange: true
-                        tickformat: "%a %H"
-                        showgrid: false
-                        showticklabels: true
-                        linecolor: rgb(204,204,204)
-                        linewidth: 2
-                        autotick: true
-                        ticks: outside
-                        tickwidth: 2
-                        ticklen: 5
-                        tickfont:
-                          family: Roboto
-                          size: 12
-                          color: rgb(204,204,204)
-                      yaxis:
-                        title: ""
-                        autorange: false
-                        fixedrange: true
-                        range:
-                          - 0
-                          - $fn ({vars}) => vars.maxy1 + 0.5
-                        zeroline: true
-                        linecolor: rgb(204,204,204)
-                        linewidth: 2
-                        tickfont:
-                          family: Roboto
-                          size: 12
-                          color: rgb(204,204,204)
-                      dragmode: false
-                      shapes:
-                        - type: rect
-                          xref: paper
-                          yref: y1
-                          x0: 0
-                          x1: 1
-                          y1: 50
-                          y0: 0
-                          fillcolor: "#009966"
-                          opacity: 0.2
-                          layer: below
-                          line:
-                            width: 0
-                        - type: rect
-                          xref: paper
-                          yref: y1
-                          x0: 0
-                          x1: 1
-                          y1: 100
-                          y0: 50
-                          fillcolor: "#ffde33"
-                          opacity: 0.2
-                          layer: below
-                          line:
-                            width: 0
-                        - type: rect
-                          xref: paper
-                          yref: y1
-                          x0: 0
-                          x1: 1
-                          y1: 150
-                          y0: 100
-                          fillcolor: "#ff9933"
-                          opacity: 0.2
-                          layer: below
-                          line:
-                            width: 0
-                        - type: rect
-                          xref: paper
-                          yref: y1
-                          x0: 0
-                          x1: 1
-                          y1: 200
-                          y0: 150
-                          fillcolor: "#cc0033"
-                          opacity: 0.2
-                          layer: below
-                          line:
-                            width: 0
-                        - type: rect
-                          xref: paper
-                          yref: y1
-                          x0: 0
-                          x1: 1
-                          y1: 300
-                          y0: 200
-                          fillcolor: "#660099"
-                          opacity: 0.2
-                          layer: below
-                          line:
-                            width: 0
-                        - type: rect
-                          xref: paper
-                          yref: y1
-                          x0: 0
-                          x1: 1
-                          y1: 500
-                          y0: 300
-                          fillcolor: "#7e0023"
-                          opacity: 0.2
-                          layer: below
-                          line:
-                            width: 0
-                    config:
-                      scrollZoom: false
+          - entity: sensor.waqi_nitrogen_dioxide
+            name: Nitrogen Dioxide
+          - entity: sensor.waqi_ozone
+            name: Ozone
+          - entity: sensor.waqi_particulate_matter_10
+            name: PM10
+          - entity: sensor.waqi_particulate_matter_2_5
+            name: PM2.5
+  - type: custom:plotly-graph
+    hours_to_show: 72
+    entities:
+      - entity: sensor.waqi_tamworth_north_west_slopes
+        name: Max
+        legendgroup: 1
+        connectgaps: true
+        show_value: true
+        x: $fn ({xs}) => xs
+        "y": $fn ({ys}) => ys
+        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,01f}</b>
+        line:
+          width: 3
+          color: rgba(255,255,255, 0.8)
+          shape:
+    refresh_interval: auto
+    layout:
+      showlegend: false
+      height: 300
+      margin:
+        autoexpand: true
+        l: 40
+        r: 20
+      xaxis:
+        showline: true
+        autorange: true
+        tickformat: "%a %H"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: false
+        fixedrange: true
+        range:
+          - 0
+          - $fn ({vars}) => vars.maxy1 + 0.5
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+      shapes:
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 50
+          y0: 0
+          fillcolor: "#009966"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 100
+          y0: 50
+          fillcolor: "#ffde33"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 150
+          y0: 100
+          fillcolor: "#ff9933"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 200
+          y0: 150
+          fillcolor: "#cc0033"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 300
+          y0: 200
+          fillcolor: "#660099"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+        - type: rect
+          xref: paper
+          yref: y1
+          x0: 0
+          x1: 1
+          y1: 500
+          y0: 300
+          fillcolor: "#7e0023"
+          opacity: 0.2
+          layer: below
+          line:
+            width: 0
+    config:
+      scrollZoom: false

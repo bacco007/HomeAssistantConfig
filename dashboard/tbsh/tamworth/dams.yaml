@@ -1,71 +1,71 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: "custom:button-card"
-    template: header_card_no_link
-    variables:
-      name: WATERNSW DAMS
-    view_layout:
-      grid-column-start: 1
-      grid-column-end: -1
-  - type: vertical-stack
-    cards:
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:
-          - type: entities
-            style: |
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
+  - type: custom:mushroom-template-card
+    primary: Dam Levels
+    icon: mdi:water
+    icon_color: yellow
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        card_mod:
+        style: |
+          #measures > * {
+            margin: 0 !important;
+          }
+        head:
+          entity: sensor.waternsw_chaffey_dam_storage
+          name: Chaffey Dam
+        padding: 0
+        entities:
+          - entity: sensor.waternsw_chaffey_dam
+            name: Dam Stats
+            type: custom:multiple-entity-row
+            show_state: false
             entities:
-              - type: custom:fold-entity-row
-                head:
-                  entity: sensor.waternsw_chaffey_dam_storage
-                  name: Chaffey Dam
-                entities:
-                  - entity: sensor.waternsw_chaffey_dam
-                    name: Dam Stats
-                    type: custom:multiple-entity-row
-                    show_state: false
-                    entities:
-                      - attribute: spillway_level
-                        name: S/W Lev
-                        unit: " "
-                      - attribute: dead_water_level
-                        name: D/W Level
-                        unit: " "
-                      - attribute: capacity
-                        name: "Capacity (ML)"
-                        unit: " "
-                  - entity: sensor.waternsw_chaffey_dam_storage
-                    name: Current Storage %
-                  - entity: sensor.waternsw_chaffey_dam_volume
-                    name: Current Volume
-                  - entity: sensor.waternsw_chaffey_dam_water_level
-                    name: Current Water Level
-                  - entity: sensor.waternsw_chaffey_dam_rainfall
-                    name: Rainfall (24hrs)
-                  - entity: sensor.waternsw_chaffey_dam_net_inflow_24hrs
-                    name: Net Inflow (24hrs)
-                  - entity: sensor.waternsw_chaffey_dam_releases_24hrs
-                    name: Releases (24hrs)
-                  - entity: sensor.waternsw_chaffey_dam_evaporation_24hrs
-                    name: Evaporation (24hrs)
+              - attribute: spillway_level
+                name: S/W Lev
+                unit: " "
+              - attribute: dead_water_level
+                name: D/W Level
+                unit: " "
+              - attribute: capacity
+                name: "Capacity (ML)"
+                unit: " "
+          - entity: sensor.waternsw_chaffey_dam_storage
+            name: Current Storage %
+          - entity: sensor.waternsw_chaffey_dam_volume
+            name: Current Volume
+          - entity: sensor.waternsw_chaffey_dam_water_level
+            name: Current Water Level
+          - entity: sensor.waternsw_chaffey_dam_rainfall
+            name: Rainfall (24hrs)
+          - entity: sensor.waternsw_chaffey_dam_net_inflow_24hrs
+            name: Net Inflow (24hrs)
+          - entity: sensor.waternsw_chaffey_dam_releases_24hrs
+            name: Releases (24hrs)
+          - entity: sensor.waternsw_chaffey_dam_evaporation_24hrs
+            name: Evaporation (24hrs)
           - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
             entities:
               - entity: sensor.waternsw_chaffey_dam_storage
                 name: Chaffey Dam
@@ -129,62 +129,45 @@ cards:
             config:
               scrollZoom: false
 
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:
-          - type: entities
-            style: |
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
+      - type: custom:fold-entity-row
+        head:
+          entity: sensor.waternsw_split_rock_dam_storage
+          name: Split Rock Dam
+        padding: 0
+        entities:
+          - entity: sensor.waternsw_split_rock_dam
+            name: Dam Stats
+            type: custom:multiple-entity-row
+            show_state: false
             entities:
-              - type: custom:fold-entity-row
-                head:
-                  entity: sensor.waternsw_split_rock_dam_storage
-                  name: Split Rock Dam
-                entities:
-                  - entity: sensor.waternsw_split_rock_dam
-                    name: Dam Stats
-                    type: custom:multiple-entity-row
-                    show_state: false
-                    entities:
-                      - attribute: spillway_level
-                        name: S/W Lev
-                        unit: " "
-                      - attribute: dead_water_level
-                        name: D/W Level
-                        unit: " "
-                      - attribute: capacity
-                        name: "Capacity (ML)"
-                        unit: " "
-                  - entity: sensor.waternsw_split_rock_dam_storage
-                    name: Current Storage %
-                  - entity: sensor.waternsw_split_rock_dam_volume
-                    name: Current Volume
-                  - entity: sensor.waternsw_split_rock_dam_water_level
-                    name: Current Water Level
-                  - entity: sensor.waternsw_split_rock_dam_rainfall
-                    name: Rainfall (24hrs)
-                  - entity: sensor.waternsw_split_rock_dam_net_inflow_24hrs
-                    name: Net Inflow (24hrs)
-                  - entity: sensor.waternsw_split_rock_dam_releases_24hrs
-                    name: Releases (24hrs)
-                  - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
-                    name: Evaporation (24hrs)
+              - attribute: spillway_level
+                name: S/W Lev
+                unit: " "
+              - attribute: dead_water_level
+                name: D/W Level
+                unit: " "
+              - attribute: capacity
+                name: "Capacity (ML)"
+                unit: " "
+          - entity: sensor.waternsw_split_rock_dam_storage
+            name: Current Storage %
+          - entity: sensor.waternsw_split_rock_dam_volume
+            name: Current Volume
+          - entity: sensor.waternsw_split_rock_dam_water_level
+            name: Current Water Level
+          - entity: sensor.waternsw_split_rock_dam_rainfall
+            name: Rainfall (24hrs)
+          - entity: sensor.waternsw_split_rock_dam_net_inflow_24hrs
+            name: Net Inflow (24hrs)
+          - entity: sensor.waternsw_split_rock_dam_releases_24hrs
+            name: Releases (24hrs)
+          - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
+            name: Evaporation (24hrs)
           - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
             entities:
               - entity: sensor.waternsw_split_rock_dam_storage
                 name: Split Rock Dam
@@ -248,62 +231,44 @@ cards:
             config:
               scrollZoom: false
 
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:
-          - type: entities
-            style: |
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
+      - type: custom:fold-entity-row
+        head:
+          entity: sensor.waternsw_keepit_dam_storage
+          name: Keepit Dam
+        entities:
+          - entity: sensor.waternsw_keepit_dam
+            name: Dam Stats
+            type: custom:multiple-entity-row
+            show_state: false
             entities:
-              - type: custom:fold-entity-row
-                head:
-                  entity: sensor.waternsw_keepit_dam_storage
-                  name: Keepit Dam
-                entities:
-                  - entity: sensor.waternsw_keepit_dam
-                    name: Dam Stats
-                    type: custom:multiple-entity-row
-                    show_state: false
-                    entities:
-                      - attribute: spillway_level
-                        name: S/W Lev
-                        unit: " "
-                      - attribute: dead_water_level
-                        name: D/W Level
-                        unit: " "
-                      - attribute: capacity
-                        name: "Capacity (ML)"
-                        unit: " "
-                  - entity: sensor.waternsw_keepit_dam_storage
-                    name: Current Storage %
-                  - entity: sensor.waternsw_keepit_dam_volume
-                    name: Current Volume
-                  - entity: sensor.waternsw_keepit_dam_water_level
-                    name: Current Water Level
-                  - entity: sensor.waternsw_keepit_dam_rainfall
-                    name: Rainfall (24hrs)
-                  - entity: sensor.waternsw_keepit_dam_net_inflow_24hrs
-                    name: Net Inflow (24hrs)
-                  - entity: sensor.waternsw_keepit_dam_releases_24hrs
-                    name: Releases (24hrs)
-                  - entity: sensor.waternsw_keepit_dam_evaporation_24hrs
-                    name: Evaporation (24hrs)
+              - attribute: spillway_level
+                name: S/W Lev
+                unit: " "
+              - attribute: dead_water_level
+                name: D/W Level
+                unit: " "
+              - attribute: capacity
+                name: "Capacity (ML)"
+                unit: " "
+          - entity: sensor.waternsw_keepit_dam_storage
+            name: Current Storage %
+          - entity: sensor.waternsw_keepit_dam_volume
+            name: Current Volume
+          - entity: sensor.waternsw_keepit_dam_water_level
+            name: Current Water Level
+          - entity: sensor.waternsw_keepit_dam_rainfall
+            name: Rainfall (24hrs)
+          - entity: sensor.waternsw_keepit_dam_net_inflow_24hrs
+            name: Net Inflow (24hrs)
+          - entity: sensor.waternsw_keepit_dam_releases_24hrs
+            name: Releases (24hrs)
+          - entity: sensor.waternsw_keepit_dam_evaporation_24hrs
+            name: Evaporation (24hrs)
           - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
             entities:
               - entity: sensor.waternsw_keepit_dam_storage
                 name: Keepit Dam
@@ -367,145 +332,141 @@ cards:
             config:
               scrollZoom: false
 
-      - type: custom:vertical-stack-in-card
-        cards:
-          - type: custom:mushroom-template-card
-            primary: All Dams - Last 365 Days
-            name: Flights Tracked (This Year)
-            fill_container: true
-            icon: mdi:water
-            icon_color: blue
-          - type: custom:plotly-graph
-            entities:
-              - entity: sensor.archive_waternsw_chaffeydam_30day
-                name: Chaffey Dam
-                connectgaps: true
-                period: day
-                filters:
-                  - fn: |-
-                      ({xs, ys, hass}) => {
-                        let xx = [];
-                        let yy = [];
-                        for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_chaffeydam_30day"].attributes)) {
-                            let d = new Date(key).getTime();
-                            if (d > 0) {
-                                xx.push(d);
-                                yy.push(value);
-                            }
-                        }
-                        return {
-                          xs: xx,
-                          ys: yy
-                        };
-                      }
-                texttemplate: <b>%{y:,.0f}</b>
-                # fill: tozeroy
-                line:
-                  width: 2
-                  shape: spline
-              - entity: sensor.archive_waternsw_keepitdam_30day
-                name: Keepit Dam
-                connectgaps: true
-                period: day
-                filters:
-                  - fn: |-
-                      ({xs, ys, hass}) => {
-                        let xx = [];
-                        let yy = [];
-                        for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_keepitdam_30day"].attributes)) {
-                            let d = new Date(key).getTime();
-                            if (d > 0) {
-                                xx.push(d);
-                                yy.push(value);
-                            }
-                        }
-                        return {
-                          xs: xx,
-                          ys: yy
-                        };
-                      }
-                texttemplate: <b>%{y:,.0f}</b>
-                # fill: tozeroy
-                line:
-                  width: 2
-                  shape: spline
-              - entity: sensor.archive_waternsw_splitrockdam_30day
-                name: Split Rock Dam
-                connectgaps: true
-                period: day
-                filters:
-                  - fn: |-
-                      ({xs, ys, hass}) => {
-                        let xx = [];
-                        let yy = [];
-                        for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_splitrockdam_30day"].attributes)) {
-                            let d = new Date(key).getTime();
-                            if (d > 0) {
-                                xx.push(d);
-                                yy.push(value);
-                            }
-                        }
-                        return {
-                          xs: xx,
-                          ys: yy
-                        };
-                      }
-                texttemplate: <b>%{y:,.0f}</b>
-                # fill: tozeroy
-                line:
-                  width: 2
-                  shape: spline
-            hours_to_show: 1y
-            refresh_interval: auto
-            autorange_after_scroll: true
-            layout:
-              showlegend: true
-              height: 300
-              margin:
-                autoexpand: true
-                l: 40
-                r: 20
-                b: 10
-                t: 2
-              xaxis:
-                showline: true
-                tickformat: "%b %Y"
-                showgrid: false
-                showticklabels: true
-                linecolor: rgb(204,204,204)
-                linewidth: 2
-                autotick: true
-                ticks: outside
-                tickwidth: 2
-                ticklen: 5
-                tickfont:
-                  family: Roboto
-                  size: 12
-                  color: rgb(204,204,204)
-                rangeslider: true
-                rangeselector:
-                  x: 0
-                  "y": 1.2
-                  buttons:
-                    - count: 7
-                      step: day
-                    - count: 14
-                      step: day
-                    - count: 1
-                      step: month
-                    - count: 6
-                      step: month
-                    - count: 1
-                      step: year
-              yaxis:
-                title: ""
-                linecolor: rgb(204,204,204)
-                linewidth: 2
-                autotick: true
-                tickfont:
-                  family: Roboto
-                  size: 12
-                  color: rgb(204,204,204)
-              dragmode: true
-            config:
-              scrollZoom: true
+  - type: custom:plotly-graph
+    style: |
+      ha-card {
+        box-shadow: none !important;
+      }
+    entities:
+      - entity: sensor.archive_waternsw_chaffeydam_30day
+        name: Chaffey Dam
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_chaffeydam_30day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        # fill: tozeroy
+        line:
+          width: 2
+          shape: spline
+      - entity: sensor.archive_waternsw_keepitdam_30day
+        name: Keepit Dam
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_keepitdam_30day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        # fill: tozeroy
+        line:
+          width: 2
+          shape: spline
+      - entity: sensor.archive_waternsw_splitrockdam_30day
+        name: Split Rock Dam
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_splitrockdam_30day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        # fill: tozeroy
+        line:
+          width: 2
+          shape: spline
+    hours_to_show: 1y
+    refresh_interval: auto
+    autorange_after_scroll: true
+    layout:
+      showlegend: true
+      height: 300
+      margin:
+        autoexpand: true
+        l: 40
+        r: 20
+        b: 10
+        t: 2
+      xaxis:
+        showline: true
+        tickformat: "%b %Y"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        rangeslider: true
+        rangeselector:
+          x: 0
+          "y": 1.2
+          buttons:
+            - count: 7
+              step: day
+            - count: 14
+              step: day
+            - count: 1
+              step: month
+            - count: 6
+              step: month
+            - count: 1
+              step: year
+      yaxis:
+        title: ""
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: true
+    config:
+      scrollZoom: true

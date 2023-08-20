@@ -1,0 +1,425 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Petrol Prices
+    icon: mdi:gas-station
+    icon_color: yellow
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Unleaded 95
+          icon: mdi:gas-station
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: true
+        entities:
+          - entity: sensor.tamworth_fuel_average_ulp95
+            name: Unleaded 95 (Tamworth Average)
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: "*p95*"
+                  options:
+                    secondary_info: last-changed
+              exclude:
+                - entity_id: sensor.tamworth_fuel_average_ulp95
+            sort:
+              method: state
+            card:
+              type: custom:fold-entity-row
+              head:
+                name: Individual Service Stations
+                type: custom:template-entity-row
+                state: ""
+                icon: mdi:gas-station
+          - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
+            entities:
+              - entity: sensor.tamworth_fuel_average_ulp95
+                name: Average
+                legendgroup: 1
+              - entity: sensor.tamworth_fuel_average_ulp95
+                attribute: max
+                name: Max
+                legendgroup: 2
+              - entity: sensor.tamworth_fuel_average_ulp95
+                attribute: min
+                name: Min
+                legendgroup: 3
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 1h
+                texttemplate: <b>%{y:,.1f}</b>
+                show_value: true
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: true
+              height: 250
+              margin:
+                autoexpand: true
+                l: 30
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Unleaded 98
+          icon: mdi:gas-station
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        entities:
+          - entity: sensor.tamworth_fuel_average_ulp98
+            name: Unleaded 98 (Tamworth Average)
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: "*p98*"
+                  options:
+                    secondary_info: last-changed
+              exclude:
+                - entity_id: sensor.tamworth_fuel_average_ulp98
+            sort:
+              method: state
+            card:
+              type: custom:fold-entity-row
+              head:
+                name: Individual Service Stations
+                type: custom:template-entity-row
+                state: ""
+                icon: mdi:gas-station
+          - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
+            entities:
+              - entity: sensor.tamworth_fuel_average_ulp98
+                name: Average
+                legendgroup: 1
+              - entity: sensor.tamworth_fuel_average_ulp98
+                attribute: max
+                name: Max
+                legendgroup: 2
+              - entity: sensor.tamworth_fuel_average_ulp98
+                attribute: min
+                name: Min
+                legendgroup: 3
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 1h
+                texttemplate: <b>%{y:,.1f}</b>
+                show_value: true
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: true
+              height: 250
+              margin:
+                autoexpand: true
+                l: 30
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Unleaded 91
+          icon: mdi:gas-station
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        entities:
+          - entity: sensor.tamworth_fuel_average_ulp91
+            name: Unleaded 91 (Tamworth Average)
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: "*p91*"
+                  options:
+                    secondary_info: last-changed
+              exclude:
+                - entity_id: sensor.tamworth_fuel_average_ulp91
+            sort:
+              method: state
+            card:
+              type: custom:fold-entity-row
+              head:
+                name: Individual Service Stations
+                type: custom:template-entity-row
+                state: ""
+                icon: mdi:gas-station
+          - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
+            entities:
+              - entity: sensor.tamworth_fuel_average_ulp91
+                name: Average
+                legendgroup: 1
+              - entity: sensor.tamworth_fuel_average_ulp91
+                attribute: max
+                name: Max
+                legendgroup: 2
+              - entity: sensor.tamworth_fuel_average_ulp91
+                attribute: min
+                name: Min
+                legendgroup: 3
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 1h
+                texttemplate: <b>%{y:,.1f}</b>
+                show_value: true
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: true
+              height: 250
+              margin:
+                autoexpand: true
+                l: 30
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Unleaded E10
+          icon: mdi:gas-station
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        entities:
+          - entity: sensor.tamworth_fuel_average_e10
+            name: Unleaded E10 (Tamworth Average)
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: "*e10*"
+                  options:
+                    secondary_info: last-changed
+              exclude:
+                - entity_id: sensor.tamworth_fuel_average_e10
+            sort:
+              method: state
+            card:
+              type: custom:fold-entity-row
+              head:
+                name: Individual Service Stations
+                type: custom:template-entity-row
+                state: ""
+                icon: mdi:gas-station
+          - type: custom:plotly-graph
+            style: |
+              ha-card {
+                box-shadow: none !important;
+              }
+            entities:
+              - entity: sensor.tamworth_fuel_average_e10
+                name: Average
+                legendgroup: 1
+              - entity: sensor.tamworth_fuel_average_e10
+                attribute: max
+                name: Max
+                legendgroup: 2
+              - entity: sensor.tamworth_fuel_average_e10
+                attribute: min
+                name: Min
+                legendgroup: 3
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 1h
+                texttemplate: <b>%{y:,.1f}</b>
+                show_value: true
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: true
+              height: 250
+              margin:
+                autoexpand: true
+                l: 30
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false

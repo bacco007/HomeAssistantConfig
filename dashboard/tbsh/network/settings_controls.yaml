@@ -1,0 +1,103 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Network Settings and Controls
+    icon: mdi:lan-pending
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: input_boolean.alerts_network
+        name: Alert Notifications
+      - type: section
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.network_*
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Network Automations
+            icon: mdi:sync-alert
+            state: ""
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: alert
+              attributes:
+                category: network
+            - entity_id: alert.adguard_connected
+            - entity_id: alert.unifi_connected
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Network Alerts
+            icon: mdi:alert-circle
+            state: ""
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: binary_sensor
+              attributes:
+                category: network_alert
+            - entity_id: binary_sensor.alerts_connect_adguard
+            - entity_id: binary_sensor.alerts_connect_unifi
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Network Alert Sensors
+            icon: mdi:alert-circle
+            state: ""
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          type: custom:template-entity-row
+          name: Network HA Integrations Connected
+          icon: mdi:weather-partly-snowy-rainy
+          state: ""
+        entities:
+          - entity: binary_sensor.connected_adguard
+          - entity: binary_sensor.connected_uptime_kuma
+          - entity: binary_sensor.connected_unifi
