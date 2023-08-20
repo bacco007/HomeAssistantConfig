@@ -17,6 +17,9 @@ card:
       name: "Home Assistant"
       template:
         - popup_button
+      tap_action:
+        action: navigate
+        navigation_path: homeassistant
     - type: "custom:button-card"
       entity: sensor.stats_docker
       icon: mdi:docker

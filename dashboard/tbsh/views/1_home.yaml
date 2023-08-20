@@ -27,8 +27,15 @@ cards:
           width: 300
           max_width: 1000
     cards:
-      - !include ../home/col1-row1.yaml
-      - !include ../home/col2-row1.yaml
+      - !include ../snippets/weather_forecast.yaml
+      - type: custom:clock-weather-card
+        entity: weather.east_tamworth
+        hide_today_section: true
+        forecast_days: 7
+        weather_icon_type: line
+        animated_icon: false
+      - !include ../me/cakeday.yaml
+      - !include ../tamworth/nbn_fttnupgrade.yaml
       - type: "vertical-stack"
         cards:
           - type: "custom:button-card"

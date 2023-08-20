@@ -1,0 +1,84 @@
+---
+square: false
+columns: 2
+type: grid
+cards:
+  - type: custom:mushroom-template-card
+    icon: mdi:cake-variant
+    primary: |
+      {{ states("sensor.anniversary_datetracking_mybirthday") }} days
+    icon_color: grey
+    secondary: |
+      Cake Day, {{ states("sensor.anniversary_days_on_earth") }} Days
+    badge_icon: >-
+      {%- set event = int(states('sensor.anniversary_datetracking_mybirthday'))
+      %}
+
+      {% if (event) <= 10 %}
+
+      mdi:exclamation-thick
+
+      {% endif %}
+    badge_color: red
+    fill_container: true
+    multiline_secondary: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states('sensor.anniversary_datetracking_mybirthday')))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
+  - type: custom:mushroom-template-card
+    icon: mdi:cake-variant
+    primary: |
+      {{ states("sensor.anniversary_datetracking_myworkbirthday") }} days
+    icon_color: grey
+    secondary: |
+      Work Cake Day, {{ states("sensor.anniversary_days_at_work") }} Days
+    badge_icon: >-
+      {%- set event =
+      int(states('sensor.anniversary_datetracking_myworkbirthday')) %}
+
+      {% if (event) <= 10 %}
+
+      mdi:exclamation-thick
+
+      {% endif %}
+    badge_color: red
+    layout: horizontal
+    fill_container: true
+    multiline_secondary: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states('sensor.anniversary_datetracking_myworkbirthday')))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
