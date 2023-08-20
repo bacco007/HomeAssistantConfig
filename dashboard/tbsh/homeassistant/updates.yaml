@@ -46,13 +46,13 @@ cards:
             filter:
               include:
                 - group: group.updates_homeassistant
-                  state: 'on'
+                  state: "on"
                   options:
                     type: custom:template-entity-row
                     name: >-
                       {{ state_attr(config.entity,
                       'friendly_name').split(':',1)[0] }}
-                    state: 'New: {{ state_attr(config.entity, ''latest_version'') }}'
+                    state: "New: {{ state_attr(config.entity, 'latest_version') }}"
                     secondary: >-
                       Current: {{ state_attr(config.entity, 'installed_version')
                       }}
@@ -74,7 +74,7 @@ cards:
             filter:
               include:
                 - group: group.updates_homeassistant
-                  state: 'off'
+                  state: "off"
                   options:
                     type: custom:template-entity-row
                     name: >-
@@ -115,13 +115,13 @@ cards:
             filter:
               include:
                 - group: group.updates_hacs
-                  state: 'on'
+                  state: "on"
                   options:
                     type: custom:template-entity-row
                     name: >-
                       {{ state_attr(config.entity,
                       'friendly_name').split(':',1)[0] }}
-                    state: 'New: {{ state_attr(config.entity, ''latest_version'') }}'
+                    state: "New: {{ state_attr(config.entity, 'latest_version') }}"
                     secondary: >-
                       Current: {{ state_attr(config.entity, 'installed_version')
                       }}
@@ -143,7 +143,7 @@ cards:
             filter:
               include:
                 - group: group.updates_hacs
-                  state: 'off'
+                  state: "off"
                   options:
                     type: custom:template-entity-row
                     name: >-

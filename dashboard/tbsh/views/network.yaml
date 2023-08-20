@@ -33,9 +33,9 @@ cards:
       - !include ../network/settings_controls.yaml
       - type: vertical-stack
         cards:
-        - !include ../network/unifi.yaml
-        - !include ../network/unifi/netconn_wifi.yaml
-        - !include ../network/unifi/netconn_wired.yaml
+          - !include ../network/unifi.yaml
+          - !include ../network/unifi/netconn_wifi.yaml
+          - !include ../network/unifi/netconn_wired.yaml
 
       - type: vertical-stack
         cards:

@@ -5,57 +5,63 @@ cards:
     card_type: countdown
     date_locale: au
     f1_font: true
-  - type: custom:formulaone-card
-    card_type: next_race
-    date_locale: au
+    title: null
+    show_carnumber: false
+    show_raceinfo: true
+    location_clickable: true
     image_clickable: true
+    hide_tracklayout: false
+    hide_racedatetimes: false
+  - type: custom:formulaone-card
+    card_type: last_result
+    title: Last Race
+    ddate_locale: au
     f1_font: true
-  - type: custom:stack-in-card
-    cards:
-      - type: custom:formulaone-card
-        card_type: last_result
-        title: Last Race
-        ddate_locale: au
-        f1_font: true
-  - type: vertical-stack
-    cards:
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
-        tabs:
-          - card:
-              type: custom:formulaone-card
-              card_type: schedule
-              date_locale: au
-              previous_race: hide
-              location_clickable: true
-              f1_font: true
-            attributes:
-              label: Schedule
-          - card:
-              type: custom:formulaone-card
-              card_type: constructor_standings
-              standings:
-                show_teamlogo: true
-            attributes:
-              label: Cons Stds
-          - card:
-              type: custom:formulaone-card
-              card_type: driver_standings
-              f1_font: true
-              standings:
-                show_flag: true
-                show_team: true
-                show_teamlogo: true
-            attributes:
-              label: Drv Stds
-          - card:
-              type: custom:formulaone-card
-              card_type: results
-              date_locale: au
-              location_clickable: true
-              f1_font: true
-            attributes:
-              label: Results
+    show_raceinfo: true
+    hide_tracklayout: false
+    location_clickable: true
+    image_clickable: true
+    show_carnumber: true
+  - type: custom:tabbed-card
+    options: {}
+    styles:
+      --mdc-theme-primary: var(--label-badge-blue)
+      --mdc-tab-text-label-color-default: var(--label-badge-red)
+    tabs:
+      - card:
+          type: custom:formulaone-card
+          card_type: schedule
+          date_locale: au
+          previous_race: hide
+          location_clickable: true
+          f1_font: true
+          title: null
+          show_raceinfo: true
+        attributes:
+          label: Schedule
+      - card:
+          type: custom:formulaone-card
+          card_type: constructor_standings
+          standings:
+            show_teamlogo: true
+        attributes:
+          label: Cons Stds
+      - card:
+          type: custom:formulaone-card
+          card_type: driver_standings
+          f1_font: true
+          standings:
+            show_flag: true
+            show_team: true
+            show_teamlogo: true
+          show_carnumber: true
+        attributes:
+          label: Drv Stds
+      - card:
+          type: custom:formulaone-card
+          card_type: results
+          date_locale: au
+          location_clickable: true
+          f1_font: true
+        attributes:
+          label: Results
