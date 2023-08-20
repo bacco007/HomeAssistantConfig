@@ -29,10 +29,10 @@ cards:
           width: 300
           max_width: 1000
     cards:
-          - !include ../server/snippets/pve-ha.yaml
-          - !include ../server/snippets/pvenuc.yaml
-          - !include ../server/snippets/pvetbsh.yaml
-          - !include ../server/docker/settings_controls.yaml
+      - !include ../server/snippets/pve-ha.yaml
+      - !include ../server/snippets/pvenuc.yaml
+      - !include ../server/snippets/pvetbsh.yaml
+      - !include ../server/docker/settings_controls.yaml
 
   - !include ../includes/actions.yaml
 

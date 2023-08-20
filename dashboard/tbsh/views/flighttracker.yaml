@@ -29,17 +29,16 @@ cards:
           width: 300
           max_width: 1000
     cards:
-
-          - !include ../flighttracker/flightsoverhead.yaml
-          - !include ../flighttracker/closestplane.yaml
-          - !include ../flighttracker/planeofinterest.yaml
-          - !include ../flighttracker/flightaware.yaml
-          - !include ../flighttracker/flightradar24.yaml
-          - !include ../flighttracker/trackedaircraft.yaml
-          - !include ../flighttracker/flights_tracked.yaml
-          - !include ../flighttracker/distance.yaml
-          - !include ../flighttracker/flights_tracked_week.yaml
-          - !include ../flighttracker/flights_tracked_year.yaml
+      - !include ../flighttracker/flightsoverhead.yaml
+      - !include ../flighttracker/closestplane.yaml
+      - !include ../flighttracker/planeofinterest.yaml
+      - !include ../flighttracker/flightaware.yaml
+      - !include ../flighttracker/flightradar24.yaml
+      - !include ../flighttracker/trackedaircraft.yaml
+      - !include ../flighttracker/flights_tracked.yaml
+      - !include ../flighttracker/distance.yaml
+      - !include ../flighttracker/flights_tracked_week.yaml
+      - !include ../flighttracker/flights_tracked_year.yaml
 
   - !include ../includes/actions.yaml
 

@@ -17,7 +17,7 @@ browser_mod:
         grid-template-areas: |
           "col1 col2 col3"
         mediaquery:
-          #portrait
+          # portrait
           "(max-width: 1200px)":
             grid-template-columns: 1fr
             grid-template-rows: repeat(3, 1fr)

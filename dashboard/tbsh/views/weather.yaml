@@ -29,42 +29,42 @@ cards:
           width: 300
           max_width: 1000
     cards:
-          - !include ../weather/snippets/forecast_hour_day.yaml
-          - !include ../weather/current_weather.yaml
-          - !include ../weather/bom.yaml
-          - !include ../weather/pirate_weather.yaml
-          - !include ../devices/weatherflow.yaml
-          # - type: "custom:bom-radar-card"
-          #   frame_count: 25
-          #   center_latitude: "-31.09"
-          #   center_longitude: "150.93"
-          #   marker_latitude: "-31.09"
-          #   marker_longitude: "150.93"
-          #   show_marker: true
-          #   show_range: true
-          #   show_zoom: true
-          #   show_recenter: true
-          #   show_playback: true
-          #   extra_labels: true
-          #   show_radar_coverage: true
-          #   show_radar_location: true
-          #   zoom_level: "8"
+      - !include ../weather/snippets/forecast_hour_day.yaml
+      - !include ../weather/current_weather.yaml
+      - !include ../weather/bom.yaml
+      - !include ../weather/pirate_weather.yaml
+      - !include ../devices/weatherflow.yaml
+      # - type: "custom:bom-radar-card"
+      #   frame_count: 25
+      #   center_latitude: "-31.09"
+      #   center_longitude: "150.93"
+      #   marker_latitude: "-31.09"
+      #   marker_longitude: "150.93"
+      #   show_marker: true
+      #   show_range: true
+      #   show_zoom: true
+      #   show_recenter: true
+      #   show_playback: true
+      #   extra_labels: true
+      #   show_radar_coverage: true
+      #   show_radar_location: true
+      #   zoom_level: "8"
 
-          - type: vertical-stack
-            cards:
-              - !include ../weather/home_temp.yaml
-              - !include ../weather/home_rainfall.yaml
-              - !include ../weather/home_humidity.yaml
-              - !include ../weather/home_pressure.yaml
-              - !include ../weather/home_cloud.yaml
-              - !include ../weather/home_wind.yaml
-              - !include ../weather/home_lightning.yaml
-              - !include ../weather/home_uv.yaml
+      - type: vertical-stack
+        cards:
+          - !include ../weather/home_temp.yaml
+          - !include ../weather/home_rainfall.yaml
+          - !include ../weather/home_humidity.yaml
+          - !include ../weather/home_pressure.yaml
+          - !include ../weather/home_cloud.yaml
+          - !include ../weather/home_wind.yaml
+          - !include ../weather/home_lightning.yaml
+          - !include ../weather/home_uv.yaml
 
-          - !include ../tamworth/snippets/sun_moon.yaml
-          - !include ../tamworth/snippets/uv.yaml
-          - !include ../tamworth/snippets/aqi_nswdpe.yaml
-          - !include ../tamworth/snippets/aqi_waqi.yaml
+      - !include ../tamworth/snippets/sun_moon.yaml
+      - !include ../tamworth/snippets/uv.yaml
+      - !include ../tamworth/snippets/aqi_nswdpe.yaml
+      - !include ../tamworth/snippets/aqi_waqi.yaml
 
   - !include ../includes/actions.yaml
 
