@@ -1,0 +1,65 @@
+---
+sensor:
+  - name: "[Summary] Connectivity Monitor"
+    unique_id: summary_connectivity_monitor
+    icon: mdi:connection
+    state: |
+      {{ expand('group.connectivity_monitors') | selectattr('state', 'eq', 'off') | list | count | int(default=0) }}
+    attributes:
+      category: connectivity
+      count: |
+        {{ expand('group.connectivity_monitors') | list | count | int(default=0) }}
+      entities: |
+        {{ expand('group.connectivity_monitors') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort }}
+
+  - name: "[Summary] Updates"
+    unique_id: summary_updates
+    icon: mdi:arrow-up-bold-hexagon-outline
+    state: |
+      {{ expand(states.update) | selectattr('state', 'eq', 'on') | list | count | int(default=0) }}
+    attributes:
+      category: connectivity
+      count: |
+        {{ expand(states.update) | list | count }}
+      entities: |
+        {{ expand(states.update) | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name')  | list | sort }}
+
+  - name: "[Summary] Docker Containers"
+    unique_id: summary_docker_containers
+    icon: mdi:docker
+    state: |
+      {{ states('sensor.tbsh3_monitordocker_containers_total') | int(default=0)
+        + states('sensor.tbsh1_monitordocker_containers_total') | int(default=0)
+        + states('sensor.tbsh2_monitordocker_containers_total') | int(default=0)
+        + states('sensor.tbsh5_monitordocker_containers_total') | int(default=0)
+        + states('sensor.pi4srv_monitordocker_containers_total') | int(default=0)}}
+    attributes:
+      category: docker
+      containers_running: |
+        {{ states('sensor.tbsh3_monitordocker_containers_running') | int(default=0)
+          + states('sensor.tbsh1_monitordocker_containers_running') | int(default=0)
+          + states('sensor.tbsh2_monitordocker_containers_running') | int(default=0)
+          + states('sensor.tbsh5_monitordocker_containers_running') | int(default=0)
+          + states('sensor.pi4srv_monitordocker_containers_running') | int(default=0) }}
+      containers_stopped: |
+        {{ states('sensor.tbsh3_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.tbsh1_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.tbsh2_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.tbsh5_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.pi4srv_monitordocker_containers_stopped') | int(default=0) }}
+      containers_stopped_list: |
+        {{ expand('group.docker_pi4srv_switches') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort
+          + expand('group.docker_tbsh1_switches') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort
+          + expand('group.docker_tbsh2_switches') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort
+          + expand('group.docker_tbsh3_switches') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort
+          + expand('group.docker_tbsh5_switches') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort}}
+      containers_updatable: >
+        {{ expand('group.updates_docker') | selectattr('state', 'eq', 'on') | list | count | int(default=0) }}
+      containers_updatable_list: >
+        {{ expand('group.updates_docker') | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name') | list | sort }}
+      images: >
+        {{ states('sensor.tbsh3_monitordocker_images') | int(default=0)
+          + states('sensor.tbsh1_monitordocker_images') | int(default=0)
+          + states('sensor.tbsh2_monitordocker_images') | int(default=0)
+          + states('sensor.tbsh5_monitordocker_images') | int(default=0)
+          + states('sensor.pi4srv_monitordocker_images') | int(default=0) }}

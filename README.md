@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, August 21st 2023_
+_Stats as at 05:00, Tuesday, August 22nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.3 | 486     | 4570         | 3123 | 123 |
+| 2023.8.3 | 486     | 4574         | 3126 | 123 |
 
 Type | Qty
 -- | --
@@ -69,11 +69,11 @@ Media Player | 26
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3123
+Sensor | 3126
 Sun | 1
 Switch | 210
 Weather | 13
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -607,7 +607,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -745,8 +745,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.7)
 - Cloudflared (4.2.3)
-- ESPHome (2023.8.1)
-- eufy-security-ws (1.6.2)
+- ESPHome (2023.8.2)
+- eufy-security-ws (1.6.3)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.111.1)
 - JupyterLab (0.11.1)
