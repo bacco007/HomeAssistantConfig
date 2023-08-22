@@ -5,6 +5,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from .const import DOMAIN, ENTITY_DESCRIPTIONS
 from .coordinator import Coordinator
@@ -30,6 +31,8 @@ async def async_setup_entry(
 class GoogleFitBlueprintSensor(GoogleFitEntity, SensorEntity):
     """Google Fit Template Sensor class."""
 
+    entity_description: GoogleFitSensorDescription
+
     def __init__(
         self,
         coordinator: Coordinator,
@@ -39,10 +42,15 @@ class GoogleFitBlueprintSensor(GoogleFitEntity, SensorEntity):
         super().__init__(coordinator)
         self.entity_description = entity_description
         # Follow method in core Google Mail component and use oauth session to create unique ID
-        self._attr_unique_id = (
-            f"{coordinator.oauth_session.config_entry.entry_id}_"
-            + f"{entity_description.key}_{entity_description.data_key}"
-        )
+        if coordinator.oauth_session:
+            self._attr_unique_id = (
+                f"{coordinator.oauth_session.config_entry.entry_id}_"
+                + f"{entity_description.key}_{entity_description.data_key}"
+            )
+        else:
+            raise ConfigEntryAuthFailed(
+                "No valid OAuth Session associated for this Google Fit Sensor"
+            )
 
     @property
     def available(self) -> bool:

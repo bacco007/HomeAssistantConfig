@@ -21,6 +21,9 @@ from .api_types import (
     FitnessObject,
     FitnessDataPoint,
     FitnessSessionResponse,
+    SumPointsSensorDescription,
+    LastPointSensorDescription,
+    SumSessionSensorDescription,
 )
 from .const import (
     DOMAIN,
@@ -83,14 +86,14 @@ class Coordinator(DataUpdateCoordinator):
         """Return the config option on whether to use zero for when there is no sensor data."""
         return self._use_zero
 
-    def _get_interval(self, midnight_reset: bool = True) -> str:
+    def _get_interval(self, interval_period: int = 0) -> str:
         """Return the necessary interval for API queries, with start and end time in nanoseconds.
 
         If midnight_reset is true, start time is considered to be midnight of that day.
         If false, start time is considered to be exactly 24 hours ago.
         """
         start = 0
-        if midnight_reset:
+        if interval_period == 0:
             start = (
                 int(
                     datetime.combine(
@@ -99,9 +102,8 @@ class Coordinator(DataUpdateCoordinator):
                 )
                 * 1000000000
             )
-        # Make start time exactly 24 hours ago
         else:
-            start = (int(datetime.today().timestamp()) - 60 * 60 * 24) * 1000000000
+            start = (int(datetime.today().timestamp()) - interval_period) * 1000000000
         now = int(datetime.today().timestamp() * 1000000000)
         return f"{start}-{now}"
 
@@ -154,44 +156,35 @@ class Coordinator(DataUpdateCoordinator):
 
                 fetched_sleep = False
                 for entity in ENTITY_DESCRIPTIONS:
-                    if entity.data_key in [
-                        "activeMinutes",
-                        "calories",
-                        "distance",
-                        "heartMinutes",
-                        "steps",
-                        "hydration",
-                    ]:
-                        dataset = self._get_interval()
+                    if isinstance(entity, SumPointsSensorDescription):
+                        # Only need to call once to get all different sleep segments
+                        if entity.is_sleep and fetched_sleep:
+                            continue
+
+                        dataset = self._get_interval(entity.period_seconds)
                         response = await self.hass.async_add_executor_job(
                             _get_data, entity.source, dataset
                         )
-                        parser.parse(entity.data_key, fit_object=response)
-                    elif entity.data_key in [
-                        "awakeSeconds",
-                        "lightSleepSeconds",
-                        "deepSleepSeconds",
-                        "remSleepSeconds",
-                    ]:
-                        # Only need to call once to get all different sleep segments
-                        if fetched_sleep is False:
-                            dataset = self._get_interval(False)
-                            response = await self.hass.async_add_executor_job(
-                                _get_data, entity.source, dataset
-                            )
+
+                        if entity.is_sleep:
                             fetched_sleep = True
-                            parser.parse(entity.data_key, fit_object=response)
-                    elif entity.data_key == "sleepSeconds":
-                        response = await self.hass.async_add_executor_job(
-                            _get_session, 72
-                        )
-                        parser.parse(entity.data_key, fit_session=response)
-                    # Single data point fetches
-                    else:
+
+                        parser.parse(entity, fit_object=response)
+                    elif isinstance(entity, LastPointSensorDescription):
                         response = await self.hass.async_add_executor_job(
                             _get_data_changes, entity.source
                         )
-                        parser.parse(entity.data_key, fit_point=response)
+                        parser.parse(entity, fit_point=response)
+                    elif isinstance(entity, SumSessionSensorDescription):
+                        response = await self.hass.async_add_executor_job(
+                            _get_session, entity.activity_id
+                        )
+                        parser.parse(entity, fit_session=response)
+                    # Single data point fetches
+                    else:
+                        raise UpdateFailed(
+                            f"Unknown sensor type for {entity.data_key}. Got: {type(entity)}"
+                        )
 
                 self.fitness_data = parser.fit_data
 

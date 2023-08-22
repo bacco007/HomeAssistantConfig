@@ -1,5 +1,5 @@
 """TypeDefinition for Google Fit API."""
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import TypedDict, Any
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -155,3 +155,36 @@ class GoogleFitSensorDescription(SensorEntityDescription):
 
     data_key: str = "undefined"
     source: str = "undefined"
+    is_int: bool = False  # If true, data is an integer. Otherwise, data is a float
+
+
+@dataclass
+class SumPointsSensorDescription(GoogleFitSensorDescription):
+    """Represents a sensor where the values are summed over a set time period."""
+
+    # Sums points over this time period (in seconds). If period is 0, points will
+    # be summed for that day (i.e. since midnight)
+    period_seconds: int = 0
+
+    # Defines if this is a sleep type sensor. Must have sleep stage enum as part of data
+    is_sleep: bool = False
+
+
+@dataclass
+class LastPointSensorDescription(GoogleFitSensorDescription):
+    """Represents a sensor which just fetches the latest available data point."""
+
+    # The index at which to fetch the data point. Normally 0 but bloodPressureDiastolic
+    # has index 1 for example
+    index: int = 0
+
+
+@dataclass
+class SumSessionSensorDescription(GoogleFitSensorDescription):
+    """Represents a sensor which just fetches the latest available data point."""
+
+    # The Google Fit defined activity ID
+    activity_id: int = 0
+
+    # The period over which to sum
+    period: timedelta = timedelta(days=1)

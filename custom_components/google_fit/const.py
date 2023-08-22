@@ -16,7 +16,11 @@ from homeassistant.const import (
     PERCENTAGE,
 )
 
-from .api_types import GoogleFitSensorDescription
+from .api_types import (
+    SumPointsSensorDescription,
+    LastPointSensorDescription,
+    SumSessionSensorDescription,
+)
 
 LOGGER: Logger = getLogger(__package__)
 
@@ -60,7 +64,7 @@ SLEEP_STAGE: Final = {
 
 
 ENTITY_DESCRIPTIONS = (
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Active Minutes Daily",
         icon="mdi:timer",
@@ -69,8 +73,9 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DURATION,
         source="derived:com.google.active_minutes:com.google.android.gms:merge_active_minutes",
         data_key="activeMinutes",
+        is_int=True,
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Calories Burnt Daily",
         icon="mdi:fire",
@@ -80,7 +85,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.calories.expended:com.google.android.gms:merge_calories_expended",  # pylint: disable=line-too-long
         data_key="calories",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Basal Metabolic Rate",
         icon="mdi:target",
@@ -90,7 +95,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.calories.bmr:com.google.android.gms:merged",
         data_key="basalMetabolicRate",
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Distance Travelled Daily",
         icon="mdi:run",
@@ -100,7 +105,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.distance.delta:com.google.android.gms:merge_distance_delta",
         data_key="distance",
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Heart Points Daily",
         icon="mdi:heart",
@@ -110,7 +115,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.heart_minutes:com.google.android.gms:merge_heart_minutes",
         data_key="heartMinutes",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Height",
         icon="mdi:ruler",
@@ -120,7 +125,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.height:com.google.android.gms:merge_height",
         data_key="height",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Weight",
         icon="mdi:scale-bathroom",
@@ -130,7 +135,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.weight:com.google.android.gms:merge_weight",
         data_key="weight",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Body Fat",
         icon="mdi:scale-balance",
@@ -140,7 +145,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.body.fat.percentage:com.google.android.gms:merged",
         data_key="bodyFat",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Body Temperature",
         icon="mdi:thermometer",
@@ -150,7 +155,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.body.temperature:com.google.android.gms:merged",
         data_key="bodyTemperature",
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Steps Daily",
         icon="mdi:walk",
@@ -159,8 +164,9 @@ ENTITY_DESCRIPTIONS = (
         device_class=None,
         source="derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
         data_key="steps",
+        is_int=True,
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Awake Time",
         icon="mdi:sun-clock",
@@ -169,8 +175,11 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DURATION,
         source="derived:com.google.sleep.segment:com.google.android.gms:merged",
         data_key="awakeSeconds",
+        is_int=True,
+        is_sleep=True,
+        period_seconds=60 * 60 * 24,
     ),
-    GoogleFitSensorDescription(
+    SumSessionSensorDescription(
         key="google_fit",
         name="Sleep",
         icon="mdi:bed-clock",
@@ -179,8 +188,9 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DURATION,
         source="derived:com.google.sleep.segment:com.google.android.gms:merged",
         data_key="sleepSeconds",
+        activity_id=72,
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Light Sleep",
         icon="mdi:power-sleep",
@@ -189,8 +199,11 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DURATION,
         source="derived:com.google.sleep.segment:com.google.android.gms:merged",
         data_key="lightSleepSeconds",
+        is_int=True,
+        is_sleep=True,
+        period_seconds=60 * 60 * 24,
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Deep Sleep",
         icon="mdi:sleep",
@@ -199,8 +212,11 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DURATION,
         source="derived:com.google.sleep.segment:com.google.android.gms:merged",
         data_key="deepSleepSeconds",
+        is_int=True,
+        is_sleep=True,
+        period_seconds=60 * 60 * 24,
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="REM Sleep",
         icon="mdi:chat-sleep",
@@ -209,8 +225,11 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DURATION,
         source="derived:com.google.sleep.segment:com.google.android.gms:merged",
         data_key="remSleepSeconds",
+        is_int=True,
+        is_sleep=True,
+        period_seconds=60 * 60 * 24,
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Heart Rate",
         icon="mdi:heart-pulse",
@@ -219,7 +238,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm",
         data_key="heartRate",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Resting Heart Rate",
         icon="mdi:heart",
@@ -229,7 +248,7 @@ ENTITY_DESCRIPTIONS = (
         + "resting_heart_rate<-merge_heart_rate_bpm",
         data_key="heartRateResting",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Blood Pressure Systolic",
         icon="mdi:heart-box",
@@ -239,7 +258,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.blood_pressure:com.google.android.gms:merged",
         data_key="bloodPressureSystolic",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Blood Pressure Diastolic",
         icon="mdi:heart-box-outline",
@@ -248,8 +267,9 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.PRESSURE,
         source="derived:com.google.blood_pressure:com.google.android.gms:merged",
         data_key="bloodPressureDiastolic",
+        index=1,
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Blood Glucose",
         icon="mdi:water",
@@ -259,7 +279,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.blood_glucose:com.google.android.gms:merged",
         data_key="bloodGlucose",
     ),
-    GoogleFitSensorDescription(
+    SumPointsSensorDescription(
         key="google_fit",
         name="Hydration",
         icon="mdi:cup-water",
@@ -269,7 +289,7 @@ ENTITY_DESCRIPTIONS = (
         source="derived:com.google.hydration:com.google.android.gms:merged",
         data_key="hydration",
     ),
-    GoogleFitSensorDescription(
+    LastPointSensorDescription(
         key="google_fit",
         name="Oxygen Saturation",
         icon="mdi:water-percent",

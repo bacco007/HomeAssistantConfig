@@ -18,6 +18,10 @@ from .api_types import (
     FitnessObject,
     FitnessDataPoint,
     FitnessSessionResponse,
+    GoogleFitSensorDescription,
+    SumPointsSensorDescription,
+    LastPointSensorDescription,
+    SumSessionSensorDescription,
 )
 from .const import SLEEP_STAGE, LOGGER
 
@@ -145,7 +149,7 @@ class GoogleFitParse:
         LOGGER.debug("No float data points found for %s", response.get("dataSourceId"))
         return None
 
-    def _get_latest_data_point(
+    def _get_latest_data_float(
         self, response: FitnessDataPoint, index: int = 0
     ) -> float | None:
         value = None
@@ -161,7 +165,29 @@ class GoogleFitParse:
                         latest_time = int(point.get("endTimeNanos"))
                         value = round(data_point, 2)
         if value is None:
-            LOGGER.debug("No data points found for %s", response.get("dataSourceId"))
+            LOGGER.debug(
+                "No float data points found for %s", response.get("dataSourceId")
+            )
+        return value
+
+    def _get_latest_data_int(
+        self, response: FitnessDataPoint, index: int = 0
+    ) -> int | None:
+        value = None
+        data_points = response.get("insertedDataPoint")
+        latest_time = 0
+        for point in data_points:
+            if int(point.get("endTimeNanos")) > latest_time:
+                values = point.get("value")
+                if len(values) > 0:
+                    value = values[index].get("intVal")
+                    if value is not None:
+                        # Update the latest found time and update the value
+                        latest_time = int(point.get("endTimeNanos"))
+        if value is None:
+            LOGGER.debug(
+                "No int data points found for %s", response.get("dataSourceId")
+            )
         return value
 
     def _parse_sleep(self, response: FitnessObject) -> None:
@@ -213,100 +239,101 @@ class GoogleFitParse:
                 "No sleep type data points found. Values will be set to configured default."
             )
 
-    def _parse_object(self, request_id: str, response: FitnessObject) -> None:
+    def _parse_object(
+        self, entity: SumPointsSensorDescription, response: FitnessObject
+    ) -> None:
         """Parse the given fit object from the API according to the passed request_id."""
-        # Sensor types where data is returned as integer and needs summing
-        if request_id in ["activeMinutes", "steps"]:
-            self.data[request_id] = self._sum_points_int(response)
-        # Sensor types where data is returned as float and needs summing
-        elif request_id in ["calories", "distance", "heartMinutes", "hydration"]:
-            self.data[request_id] = self._sum_points_float(response)
-        # Sleep types need special handling to determine sleep segment type
-        elif request_id in [
-            "awakeSeconds",
-            "lightSleepSeconds",
-            "deepSleepSeconds",
-            "remSleepSeconds",
-        ]:
+        # Sleep data needs to be handled separately
+        if entity.is_sleep:
             self._parse_sleep(response)
         else:
-            raise UpdateFailed(
-                f"Unknown request ID specified for parsing: {request_id}"
-            )
-
-    def _parse_session(self, request_id: str, response: FitnessSessionResponse) -> None:
-        """Parse the given session data from the API according to the passed request_id."""
-        if request_id == "sleepSeconds":
-            # Sum all the session times (in milliseconds) from within the response
-            summed_millis: int | None = None
-            sessions = response.get("session")
-            if sessions is None:
-                raise UpdateFailed(
-                    "Google Fit returned invalid sleep session data. Session data is None."
-                )
-            for session in sessions:
-                # Initialise data is it is None
-                if summed_millis is None:
-                    summed_millis = 0
-
-                summed_millis += int(session.get("endTimeMillis")) - int(
-                    session.get("startTimeMillis")
-                )
-
-            if summed_millis is not None:
-                # Time is in milliseconds, need to convert to seconds
-                self.data["sleepSeconds"] = summed_millis / 1000
+            if entity.is_int:
+                self.data[entity.data_key] = self._sum_points_int(response)
             else:
-                LOGGER.debug(
-                    "No sleep sessions found for time period in Google Fit account."
-                )
-        else:
+                self.data[entity.data_key] = self._sum_points_float(response)
+
+    def _parse_session(
+        self, entity: SumSessionSensorDescription, response: FitnessSessionResponse
+    ) -> None:
+        """Parse the given session data from the API according to the passed request_id."""
+        # Sum all the session times (in milliseconds) from within the response
+        summed_millis: int | None = None
+        sessions = response.get("session")
+        if sessions is None:
             raise UpdateFailed(
-                f"Unknown request ID specified for parsing: {request_id}"
+                f"Google Fit returned invalid session data for source: {entity.source}.\r"
+                "Session data is None."
+            )
+        for session in sessions:
+            # Initialise data if it is None
+            if summed_millis is None:
+                summed_millis = 0
+
+            summed_millis += int(session.get("endTimeMillis")) - int(
+                session.get("startTimeMillis")
             )
 
-    def _parse_point(self, request_id: str, response: FitnessDataPoint) -> None:
-        """Parse the given single data point from the API according to the passed request_id."""
-        if request_id in [
-            "height",
-            "weight",
-            "basalMetabolicRate",
-            "bodyFat",
-            "bodyTemperature",
-            "heartRate",
-            "heartRateResting",
-            "bloodPressureSystolic",
-            "bloodGlucose",
-            "oxygenSaturation",
-        ]:
-            self.data[request_id] = self._get_latest_data_point(response)
-        elif request_id == "bloodPressureDiastolic":
-            self.data[request_id] = self._get_latest_data_point(response, 1)
+        if summed_millis is not None:
+            # Time is in milliseconds, need to convert to seconds
+            self.data[entity.data_key] = summed_millis / 1000
         else:
-            raise UpdateFailed(
-                f"Unknown request ID specified for parsing: {request_id}"
+            LOGGER.debug(
+                "No sessions from source %s found for time period in Google Fit account.",
+                entity.source,
+            )
+
+    def _parse_point(
+        self, entity: LastPointSensorDescription, response: FitnessDataPoint
+    ) -> None:
+        """Parse the given single data point from the API according to the passed request_id."""
+        if entity.is_int:
+            self.data[entity.data_key] = self._get_latest_data_int(
+                response, entity.index
+            )
+        else:
+            self.data[entity.data_key] = self._get_latest_data_float(
+                response, entity.index
             )
 
     def parse(
         self,
-        request_id: str,
+        entity: GoogleFitSensorDescription,
         fit_object: FitnessObject | None = None,
         fit_point: FitnessDataPoint | None = None,
         fit_session: FitnessSessionResponse | None = None,
     ) -> None:
-        """Parse the given fit object or point according to request_id.
+        """Parse the given fit object or point according to the entity type.
 
         Only one fit_ type object should be specified.
         """
-        if fit_object is not None:
-            self._parse_object(request_id, fit_object)
-        elif fit_point is not None:
-            self._parse_point(request_id, fit_point)
-        elif fit_session is not None:
-            self._parse_session(request_id, fit_session)
+        if isinstance(entity, SumPointsSensorDescription):
+            if fit_object is not None:
+                self._parse_object(entity, fit_object)
+            else:
+                raise UpdateFailed(
+                    "Bad Google Fit parse call. "
+                    + "FitnessObject must not be None for summed sensor type"
+                )
+        elif isinstance(entity, LastPointSensorDescription):
+            if fit_point is not None:
+                self._parse_point(entity, fit_point)
+            else:
+                raise UpdateFailed(
+                    "Bad Google Fit parse call. "
+                    + "FitnessDataPoint must not be None for last point sensor type"
+                )
+        elif isinstance(entity, SumSessionSensorDescription):
+            if fit_session is not None:
+                self._parse_session(entity, fit_session)
+            else:
+                raise UpdateFailed(
+                    "Bad Google Fit parse call. "
+                    + "FitnessSessionResponse must not be None for sum session sensor type"
+                )
         else:
             raise UpdateFailed(
-                "Invalid parse call." + "A fit type object must be passed to be parsed."
+                "Invalid parse call. "
+                + "A fit type object must be passed to be parsed."
             )
 
     @property
