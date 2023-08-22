@@ -200,6 +200,9 @@ class iCloud3:
         if Gb.restart_icloud3_request_flag:
             self.start_icloud3()
             Gb.restart_icloud3_request_flag = False
+        # elif Gb.restart_ha_flag:
+        #     log_info_msg(f"HA has started {Gb.restart_ha_flag=}")
+        #     start_ic3.ha_restart()
 
         # Exit 5-sec loop if no devices, updating a device now, or restarting iCloud3
         if (self.loop_ctrl_master_update_in_process_flag
@@ -378,6 +381,8 @@ class iCloud3:
         if Device.iosapp_data_updated_flag:
             Device.iosapp_data_invalid_error_cnt = 0
 
+            if instr(Device.iosapp_data_change_reason, ' ') is False:
+                Device.iosapp_data_change_reason = Device.iosapp_data_change_reason.title()
             event_msg = f"Trigger > {Device.iosapp_data_change_reason}"
             post_event(devicename, event_msg)
 
@@ -594,8 +599,8 @@ class iCloud3:
                     event_msg =(f"Nearby Devices > (<{NEAR_DEVICE_DISTANCE}m), "
                                 f"{Device.dist_apart_msg}, "
                                 f"Checked-{secs_to_time(Device.near_device_checked_secs)}")
-                    if event_msg != Device.last_nearby_devices_msg:
-                        Device.last_nearby_devices_msg = event_msg
+                    if event_msg != Device.last_near_devices_msg:
+                        Device.last_near_devices_msg = event_msg
                         post_event(devicename, event_msg)
 
         # Every 1/2-hour
@@ -812,7 +817,7 @@ class iCloud3:
 
             # Location is good or just setup the StatZone. Determine next update time and update interval,
             # next_update_time values and sensors with the good data
-            if (Device.update_sensors_flag):
+            if Device.update_sensors_flag:
                 self._update_all_tracking_sensors(Device, update_requested_by)
 
             else:
@@ -899,12 +904,11 @@ class iCloud3:
             if Device.is_dev_data_source_FAMSHR_FMF:
                 det_interval.determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT)
 
+        elif Device.is_monitored and Device.is_offline:
+            det_interval.determine_interval_monitored_device_offline(Device)
+
         else:
-            event_msg = EVLOG_UPDATE_START
-            # if Device.is_tracked:
-            #     event_msg+=(f"{update_requested_by} Update Started > "
-            #                 f"{update_reason.split(' (')[0]}")
-            post_event(devicename, event_msg)
+            post_event(devicename, EVLOG_UPDATE_START)
 
             self._post_before_update_monitor_msg(Device)
 
@@ -960,7 +964,7 @@ class iCloud3:
             # Update the devices that are near each other
             # See if a device updated updated earlier in this 5-sec loop was just updated and is
             # near the device being updated now
-            det_interval.update_nearby_device_info(Device)
+            det_interval.update_near_device_info(Device)
 
             # Cycle thru each Track From Zone get the interval and all other data
             devicename = Device.devicename
@@ -1430,6 +1434,8 @@ class iCloud3:
                     Device.old_loc_poor_gps_msg = f"Poor GPS > {cnt_msg}, Accuracy-±{Device.loc_data_gps_accuracy:.0f}m"
                 else:
                     Device.old_loc_poor_gps_msg = f"Locaton > Unknown {cnt_msg}, {secs_to_age_str(Device.loc_data_secs)}"
+                # if Device.old_loc_poor_gps_cnt > 2:
+                #    Device.old_loc_poor_gps_msg += f", Threshold-{secs_to_time_str(Device.old_loc_threshold_secs)}"
 
         except Exception as err:
             log_exception(err)

@@ -408,6 +408,8 @@ def _handle_global_action(global_action, action_option):
         return
 
     elif global_action == 'event_log_version':
+        # Gb.evlog_version = action_option
+        # Gb.EvLog.evlog_attrs["version_evlog"] = action_option
         Gb.conf_profile['event_log_version'] = action_option
         config_file.write_storage_icloud3_configuration_file()
 
@@ -474,8 +476,8 @@ def _handle_action_device_location_iosapp(Device):
         Device.iosapp_data_change_reason = f"Location Requested@{time_now()}"
         iosapp_interface.request_location(Device, force_request=True)
 
-    Device.resume_tracking()
-    Device.write_ha_sensor_state(NEXT_UPDATE, 'Locating')
+    # Device.resume_tracking()
+    # Device.write_ha_sensor_state(NEXT_UPDATE, 'Locating')
 
 #--------------------------------------------------------------------
 def _handle_action_device_locate(Device, action_option):

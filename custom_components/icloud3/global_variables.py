@@ -158,7 +158,8 @@ class GlobalVariables(object):
     # System Wide variables control iCloud3 start/restart procedures
     polling_5_sec_loop_running      = False     # Indicates the 5-sec polling loop is set up
     start_icloud3_inprocess_flag    = False
-    restart_icloud3_request_flag    = False     # iC3 needs to be restarted, set when a new_2fa code is needed in pyicloud_ic3_interface
+    restart_icloud3_request_flag    = False     # iC3 needs to be restarted
+    restart_ha_flag                 = False     # HA needs to be restarted
     any_device_was_updated_reason   = ''
     startup_alerts                  = []
 
@@ -230,7 +231,8 @@ class GlobalVariables(object):
     sensors_created_cnt         = 0               # Number of sensors that have been set up (incremented in sensor.py)
     device_trackers_cnt         = 0               # Number of device_trackers that will be creted (__init__.py)
     device_trackers_created_cnt = 0               # Number of device_trackers that have been set up (incremented in device_tracker.py)
-
+    area_id_personal_device     = None
+    
     # restore_state file
     restore_state_file_data = {}
     restore_state_profile   = {}
