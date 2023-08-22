@@ -4,53 +4,114 @@ binary_sensor:
     state: >
       {{ state_attr('sensor.udm_unifios', 'internet') | default }}
     attributes:
-      friendly_name: Internet
+      friendly_name: "[UDM] Internet Connectivity"
       icon: mdi:wan
       device_class: connectivity
+      category: udm
 
 sensor:
   - unique_id: udm_cpu
     state: >
       {{ state_attr('sensor.udm_unifios', 'cpu') | default }}
     attributes:
-      friendly_name: Processor
+      friendly_name: "[UDM] CPU Usage"
       icon: mdi:chip
       unit_of_measurement: "%"
+      category: udm
 
   - unique_id: udm_cpu_temp
     state: >
       {{ state_attr('sensor.udm_unifios', 'cpu_temp') | default }}
     attributes:
-      friendly_name: Processor Temperature
+      friendly_name: "[UDM] Processor Temperature"
       icon: mdi:thermometer
       unit_of_measurement: "°C"
+      category: udm
+
+  - unique_id: udm_system_temp
+    state: >
+      {{ state_attr('sensor.udm_unifios', 'system_temp') | default }}
+    attributes:
+      friendly_name: "[UDM] System Temperature"
+      icon: mdi:thermometer
+      unit_of_measurement: "°C"
+      category: udm
 
   - unique_id: udm_mem
     state: >
-      {{ state_attr('sensor.udm_unifios', 'mem') | default }}
+      {{ state_attr('sensor.udm_unifios', 'memory') | default }}
     attributes:
-      friendly_name: Memory
+      friendly_name: "[UDM] Memory Usage"
       icon: mdi:memory
       unit_of_measurement: "%"
+      category: udm
 
   - unique_id: udm_disk
     state: >
       {{ state_attr('sensor.udm_unifios', 'disk') | default }}
     attributes:
-      friendly_name: Hard Disk
+      friendly_name: "[UDM] Hard Disk Usage"
       icon: mdi:harddisk
       unit_of_measurement: "%"
+      category: udm
 
   - unique_id: udm_uptime
     state: >
       {{ state_attr('sensor.udm_unifios', 'uptime') | default }}
     attributes:
-      friendly_name: Uptime
+      friendly_name: "[UDM] Uptime"
       device_class: timestamp
+      icon: mdi:clock
+      category: udm
+
+  - unique_id: udm_avg_latency
+    state: >
+      {{ state_attr('sensor.udm_unifios', 'average_latency') | default }}
+    attributes:
+      friendly_name: "[UDM] Average Latency"
+      icon: mdi:clock-fast
+      category: udm
+      unit_of_measurement: 'ms'
+
+  - unique_id: udm_download_speed
+    state: >
+      {{ state_attr('sensor.udm_unifios', 'down') | default | round(2) }}
+    attributes:
+      friendly_name: "[UDM] Download Speed"
+      category: udm
+      icon: mdi:download
+      unit_of_measurement: 'MB'
+
+  - unique_id: udm_upload_speed
+    state: >
+      {{ state_attr('sensor.udm_unifios', 'up') | default | round(2) }}
+    attributes:
+      friendly_name: "[UDM] Upload Speed"
+      icon: mdi:upload
+      category: udm
+      unit_of_measurement: 'MB'
 
   - unique_id: udm_version
     state: >
       {{ state_attr('sensor.udm_unifios', 'version') | default }}
     attributes:
-      friendly_name: Version
+      friendly_name: "[UDM] Version"
       icon: mdi:router-wireless
+      category: udm
+
+  - unique_id: udm_availability
+    state: >
+      {{ state_attr('sensor.udm_unifios', 'availability') | default }}
+    attributes:
+      friendly_name: "[UDM] WAN Availability"
+      icon: mdi:connection
+      unit_of_measurement: "%"
+      category: udm
+
+  - unique_id: udm_lastwanip
+    state: >
+      {{ state_attr('sensor.udm_unifios', 'last_wan_ip') | default }}
+    attributes:
+      friendly_name: "[UDM] Last WAN IP Address"
+      icon: mdi:wan
+      category: udm

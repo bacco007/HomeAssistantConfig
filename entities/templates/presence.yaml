@@ -5,7 +5,7 @@ binary_sensor:
     icon: mdi:account-supervisor-circle
     device_class: presence
     state: >
-      {{ is_state('binary_sensor.presence_thomas_home', 'on') }}
+      {{ is_state('binary_sensor.presence_home_occupied', 'on') }}
     attributes:
       category: presence
 

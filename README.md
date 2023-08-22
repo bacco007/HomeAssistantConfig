@@ -46,21 +46,21 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, August 22nd 2023_
+_Stats as at 05:00, Wednesday, August 23rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.3 | 486     | 4574         | 3126 | 123 |
+| 2023.8.3 | 486     | 4566         | 3144 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 29
 Automation | 123
-Binary Sensor | 282
+Binary Sensor | 284
 Camera | 6
 Device Tracker | 141
-Group | 25
+Group | 27
 Input Boolean | 11
 Input Datetime | 0
 Input Text | 3
@@ -69,7 +69,7 @@ Media Player | 26
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3126
+Sensor | 3144
 Sun | 1
 Switch | 210
 Weather | 13
@@ -608,7 +608,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
 - [Icloud3](https://github.com/gcobb321/icloud3)
-- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
+- [Icloud3 V3, Developers Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
 - [Iphone Device Tracker](https://github.com/mudape/iphonedetect)

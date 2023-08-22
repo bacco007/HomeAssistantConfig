@@ -220,8 +220,8 @@ binary_sensor:
     attributes:
       category: homeassistant
 
-  - name: "alert_nabucasa_remoteui"
-    unique_id: alert_nabucasa_remoteui
+  - name: "alerts_nabucasa_remoteui"
+    unique_id: alerts_nabucasa_remoteui
     device_class: problem
     delay_on: 60
     state: >
@@ -245,3 +245,14 @@ binary_sensor:
           and is_state('input_boolean.alerts_docker_containers_off','on') }}
     attributes:
       category: docker
+
+  - name: "alerts_zigbee2mqtt_offline"
+    unique_id: alerts_zigbee2mqtt_offline
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{ is_state('binary_sensor.status_zigbee2mqtt','off')
+          and is_state('input_boolean.alerts_ha','on')
+          and is_state('input_boolean.ha_startup_pending','off') }}
+    attributes:
+      category: homeassistant

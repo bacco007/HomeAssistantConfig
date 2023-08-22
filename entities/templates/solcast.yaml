@@ -44,32 +44,5 @@ sensor:
         {%- endif %}
       {%- endfor %}
       {{ var.total }}
-    attributes:
-      expected_battery_charge_end_time: "14:00"
-      expected_battery_charge_end_energy: >-
-        {%- set forecast_today = state_attr('sensor.solcast_forecast_today', 'detailedForecast') %}
-        {%- set ts_expected_charge_end_time = today_at(this.attributes.expected_battery_charge_end_time).timestamp() %}
-
-        {%- set var = namespace(total = 0) %}
-        {%- set ts_now = ((as_timestamp(now())/1800)|round(0,'floor')|int * 1800) %}
-
-        {%- if now().minute < 30 %}
-          {%- set var.ts_actual_period = today_at(now().hour ~ ':00').timestamp() %}
-          {%- set var.remaining_minutes_actual_period = 30 - now().minute %}
-        {% else %}
-          {%- set var.ts_actual_period = today_at(now().hour ~ ':30').timestamp() %}
-          {%- set var.remaining_minutes_actual_period = 60 - now().minute %}
-        {%- endif %}
-
-        {%- for record in forecast_today %}
-          {%- set ts = as_timestamp(record.period_start) %}
-          {%- if ts == var.ts_actual_period and ts < ts_expected_charge_end_time %}
-            {%- set var.total = var.total + (record.pv_estimate / 30 * var.remaining_minutes_actual_period) %}
-          {%- endif %}
-          {%- if ts > ts_now and ts < ts_expected_charge_end_time %}
-            {%- set var.total = var.total + record.pv_estimate %}
-          {%- endif %}
-        {%- endfor %}
-        {{ var.total }}
     availability: >-
       {{ (states('sensor.solcast_forecast_today')|is_number) }}

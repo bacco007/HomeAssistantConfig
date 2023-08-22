@@ -4,7 +4,7 @@ zigbee_network:
   title: "Zigbee Network Offline"
   message: "The Zigbee network is offline - restart Zigbee2MQTT"
   done_message: clear_notification
-  entity_id: binary_sensor.status_zigbee2mqtt
+  entity_id: binary_sensor.alert_zigbee2mqtt_offline
   state: "on"
   repeat: 60
   skip_first: true

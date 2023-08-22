@@ -65,6 +65,25 @@ action:
 
   - service: group.set
     data:
+      object_id: alert_monitors
+      name: "[Group] Alert Monitors"
+      icon: mdi:alert-decagram
+      entities: >
+        {{ states
+            |selectattr('entity_id','search','binary_sensor.alerts_*')
+            |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: alerts
+      name: "[Group] Alerts"
+      icon: mdi:alert-decagram
+      entities: >
+        {{ states.alert
+            |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
       object_id: connectivity_monitors
       name: "[Group] Connectivity Monitors"
       icon: mdi:connection

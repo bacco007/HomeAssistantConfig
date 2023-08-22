@@ -63,3 +63,27 @@ sensor:
           + states('sensor.tbsh2_monitordocker_images') | int(default=0)
           + states('sensor.tbsh5_monitordocker_images') | int(default=0)
           + states('sensor.pi4srv_monitordocker_images') | int(default=0) }}
+
+  - name: "[Summary] Alerts"
+    unique_id: summary_alerts
+    icon: mdi:alert-decagram
+    state: |
+      {{ expand('group.alerts') | selectattr('state', 'eq', 'on') | list | count | int(default=0) }}
+    attributes:
+      category: connectivity
+      count: |
+        {{ expand('group.alerts') | list | count | int(default=0) }}
+      entities: |
+        {{ expand('group.alerts') | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name')  | list | sort }}
+
+  - name: "[Summary] Alert Monitors"
+    unique_id: summary_alert_monitors
+    icon: mdi:alert-decagram
+    state: |
+      {{ expand('group.alert_monitors') | selectattr('state', 'eq', 'on') | list | count | int(default=0) }}
+    attributes:
+      category: connectivity
+      count: |
+        {{ expand('group.alert_monitors') | list | count | int(default=0) }}
+      entities: |
+        {{ expand('group.alert_monitors') | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name')  | list | sort }}
