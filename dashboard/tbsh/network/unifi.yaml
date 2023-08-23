@@ -25,6 +25,7 @@ cards:
       - entity: binary_sensor.connected_wan
         name: Internet Status
         secondary_info: last-changed
+      - entity: binary_sensor.template_udm_internet
       - type: section
       - type: button
         name: Devices Dashboard
@@ -40,27 +41,42 @@ cards:
         tap_action:
           action: url
           url_path: https://192.168.1.1/settings/system
-      - entity: sensor.template_udm_cpu_temp
-        name: UDM Temperature
       - entity: sensor.template_udm_uptime
+      - entity: sensor.template_udm_cpu_temp
+      - entity: sensor.template_udm_system_temp
       - type: custom:bar-card
-        width: 55%
-        height: 2em
-        decimal: 1
+        entity_row: true
         unit_of_measurement: "%"
+        width: 50%
+        height: 2rem
         positions:
           icon: outside
           indicator: "off"
           name: outside
-        severity:
-          - color: "#6d2525"
-            from: 90
-            to: 999
-        entity_row: true
         entities:
-          - entity: sensor.template_udm_cpu
-          - entity: sensor.template_udm_mem
           - entity: sensor.template_udm_disk
+          - entity: sensor.template_udm_cpu
+            severity:
+              - color: var(--error-color)
+                from: 85
+                to: 100
+              - color: var(--warning-color)
+                from: 70
+                to: 84
+          - entity: sensor.template_udm_mem
+            severity:
+              - color: var(--error-color)
+                from: 85
+                to: 100
+              - color: var(--warning-color)
+                from: 70
+                to: 84
+      - type: section
+      - entity: sensor.template_udm_availability
+      - entity: sensor.template_udm_avg_latency
+      - entity: sensor.template_udm_download_speed
+      - entity: sensor.template_udm_upload_speed
+      - entity: sensor.template_udm_lastwanip
       - type: section
       - type: custom:fold-entity-row
         card_mod:

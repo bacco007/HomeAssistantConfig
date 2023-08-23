@@ -1,0 +1,10 @@
+---
+forecast_solar_connected:
+  name: "forecast Solar Connected"
+  entity_id: binary_sensor.connected_forecast_solar
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: forecast_solar_connected

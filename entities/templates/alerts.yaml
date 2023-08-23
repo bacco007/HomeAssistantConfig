@@ -176,6 +176,17 @@ binary_sensor:
     attributes:
       category: homeassistant
 
+  - name: "alerts_connect_forecast_solar"
+    unique_id: alerts_connect_forecast_solar
+    icon: mdi:solar-power-variant
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.connected_forecast_solar','off')
+          and is_state('input_boolean.alerts_ha','on') }}
+    attributes:
+      category: homeassistant
+
   - name: "alerts_connect_spotify"
     unique_id: alerts_connect_spotify
     icon: mdi:spotify

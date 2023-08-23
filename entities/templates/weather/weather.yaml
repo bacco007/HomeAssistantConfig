@@ -1,4 +1,47 @@
 ---
+binary_sensor:
+  - name: "[Weather] Is Raining"
+    unique_id: weather_is_raining
+    icon: mdi:weather-rainy
+    delay_on: 20
+    delay_off: "{{ iif(now() - states('sensor.uptime_sensor')|as_datetime < timedelta(minutes=5),0,14400) }}"
+    state: >
+      {%- if has_value('sensor.tempest_st_00056115_precipitation_type') %}
+        {{ iif(states('sensor.tempest_st_00056115_precipitation_type') == None, "True", "False")}}
+      {%- elif has_value('binary_sensor.weatherflow_is_raining') %}
+        {{ states('binary_sensor.weatherflow_is_raining') }}
+      {%- endif %}
+    availability: "{{ has_value('sensor.tempest_st_00056115_precipitation_type') }}"
+    attributes:
+      category: weather
+      provider: >
+        {%- if has_value('sensor.tempest_st_00056115_precipitation_type') %}
+          WeatherFlow Local
+        {%- elif has_value('binary_sensor.weatherflow_is_raining') %}
+          WeatherFlow Cloud
+        {%- endif %}
+      last_rain: >
+        {{ states('sensor.tempest_st_00056115_last_rain_start') }}
+
+  - name: "[Weather] Is Lightning"
+    unique_id: weather_is_lightning
+    icon: mdi:weather-lightning
+    delay_on: 20
+    delay_off: "{{ iif(now() - states('sensor.uptime_sensor')|as_datetime < timedelta(minutes=5),0,14400) }}"
+    state: >
+      {%- if has_value('binary_sensor.weatherflow_is_lightning') %}
+        {{ states('binary_sensor.weatherflow_is_lightning') }}
+      {%- endif %}
+    availability: "{{ has_value('binary_sensor.weatherflow_is_lightning') }}"
+    attributes:
+      category: weather
+      provider: >
+        {%- if has_value('binary_sensor.weatherflow_is_lightning') %}
+          WeatherFlow Cloud
+        {%- endif %}
+      last_lightning_strike: >
+        {{ states('sensor.weatherflow_last_lightning_strike') }}
+
 sensor:
   - name: "[Weather] Temperature Trend"
     unique_id: weather_temperature_trend

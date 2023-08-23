@@ -54,6 +54,9 @@ alert.lg_smartthinq_connected:
 alert.solcast_solar_connected:
   icon: mdi:alert-decagram
   category: homeassistant
+alert.forecast_solar_connected:
+  icon: mdi:alert-decagram
+  category: homeassistant
 alert.spotify_connected:
   icon: mdi:alert-decagram
   category: homeassistant

@@ -33,7 +33,8 @@ cards:
       - !include ../solar/production_heatmap.yaml
       - !include ../solar/graph_production.yaml
       - !include ../solar/graph_yield_year.yaml
-      - !include ../solar/snippets/solcast.yaml
+      - !include ../solar/solcast.yaml
+      - !include ../solar/forecastsolar.yaml
       - !include ../solar/graph_forecast.yaml
 
   - !include ../includes/actions.yaml

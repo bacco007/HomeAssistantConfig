@@ -107,6 +107,13 @@ binary_sensor:
     state: "{{ integration_entities('solcast_solar')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+  - name: "[Connected] Forecast Solar"
+    unique_id: connected_forecast_solar
+    icon: mdi:solar-power-variant
+    device_class: connectivity
+    state: "{{ integration_entities('forecast_solar')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
   - name: "[Connected] LG SmartThinq"
     unique_id: connected_lg_smartthinq
     icon: si:lg
