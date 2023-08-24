@@ -14,7 +14,7 @@ function A(A,t,e,i){var s,o=arguments.length,n=o<3?t:null===i?i=Object.getOwnPro
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-var v;g.finalized=!0,g.elementProperties=new Map,g.elementStyles=[],g.shadowRootOptions={mode:"open"},null==B||B({ReactiveElement:g}),(null!==(a=l.reactiveElementVersions)&&void 0!==a?a:l.reactiveElementVersions=[]).push("1.6.1");const u=window,p=u.trustedTypes,C=p?p.createPolicy("lit-html",{createHTML:A=>A}):void 0,m=`lit$${(Math.random()+"").slice(9)}$`,f="?"+m,y=`<${f}>`,I=document,b=(A="")=>I.createComment(A),w=A=>null===A||"object"!=typeof A&&"function"!=typeof A,L=Array.isArray,V=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,S=/-->/g,P=/>/g,H=RegExp(">|[ \t\n\f\r](?:([^\\s\"'>=/]+)([ \t\n\f\r]*=[ \t\n\f\r]*(?:[^ \t\n\f\r\"'`<>=]|(\"|')|))|$)","g"),O=/'/g,M=/"/g,z=/^(?:script|style|textarea|title)$/i,k=(A=>(t,...e)=>({_$litType$:A,strings:t,values:e}))(1),x=Symbol.for("lit-noChange"),N=Symbol.for("lit-nothing"),X=new WeakMap,j=I.createTreeWalker(I,129,null,!1),U=(A,t)=>{const e=A.length-1,i=[];let s,o=2===t?"<svg>":"",n=V;for(let t=0;t<e;t++){const e=A[t];let r,a,l=-1,c=0;for(;c<e.length&&(n.lastIndex=c,a=n.exec(e),null!==a);)c=n.lastIndex,n===V?"!--"===a[1]?n=S:void 0!==a[1]?n=P:void 0!==a[2]?(z.test(a[2])&&(s=RegExp("</"+a[2],"g")),n=H):void 0!==a[3]&&(n=H):n===H?">"===a[0]?(n=null!=s?s:V,l=-1):void 0===a[1]?l=-2:(l=n.lastIndex-a[2].length,r=a[1],n=void 0===a[3]?H:'"'===a[3]?M:O):n===M||n===O?n=H:n===S||n===P?n=V:(n=H,s=void 0);const d=n===H&&A[t+1].startsWith("/>")?" ":"";o+=n===V?e+y:l>=0?(i.push(r),e.slice(0,l)+"$lit$"+e.slice(l)+m+d):e+m+(-2===l?(i.push(void 0),t):d)}const r=o+(A[e]||"<?>")+(2===t?"</svg>":"");if(!Array.isArray(A)||!A.hasOwnProperty("raw"))throw Error("invalid template strings array");return[void 0!==C?C.createHTML(r):r,i]};class W{constructor({strings:A,_$litType$:t},e){let i;this.parts=[];let s=0,o=0;const n=A.length-1,r=this.parts,[a,l]=U(A,t);if(this.el=W.createElement(a,e),j.currentNode=this.el.content,2===t){const A=this.el.content,t=A.firstChild;t.remove(),A.append(...t.childNodes)}for(;null!==(i=j.nextNode())&&r.length<n;){if(1===i.nodeType){if(i.hasAttributes()){const A=[];for(const t of i.getAttributeNames())if(t.endsWith("$lit$")||t.startsWith(m)){const e=l[o++];if(A.push(t),void 0!==e){const A=i.getAttribute(e.toLowerCase()+"$lit$").split(m),t=/([.?@])?(.*)/.exec(e);r.push({type:1,index:s,name:t[2],strings:A,ctor:"."===t[1]?G:"?"===t[1]?Y:"@"===t[1]?J:Z})}else r.push({type:6,index:s})}for(const t of A)i.removeAttribute(t)}if(z.test(i.tagName)){const A=i.textContent.split(m),t=A.length-1;if(t>0){i.textContent=p?p.emptyScript:"";for(let e=0;e<t;e++)i.append(A[e],b()),j.nextNode(),r.push({type:2,index:++s});i.append(A[t],b())}}}else if(8===i.nodeType)if(i.data===f)r.push({type:2,index:s});else{let A=-1;for(;-1!==(A=i.data.indexOf(m,A+1));)r.push({type:7,index:s}),A+=m.length-1}s++}}static createElement(A,t){const e=I.createElement("template");return e.innerHTML=A,e}}function D(A,t,e=A,i){var s,o,n,r;if(t===x)return t;let a=void 0!==i?null===(s=e._$Co)||void 0===s?void 0:s[i]:e._$Cl;const l=w(t)?void 0:t._$litDirective$;return(null==a?void 0:a.constructor)!==l&&(null===(o=null==a?void 0:a._$AO)||void 0===o||o.call(a,!1),void 0===l?a=void 0:(a=new l(A),a._$AT(A,e,i)),void 0!==i?(null!==(n=(r=e)._$Co)&&void 0!==n?n:r._$Co=[])[i]=a:e._$Cl=a),void 0!==a&&(t=D(A,a._$AS(A,t.values),a,i)),t}class R{constructor(A,t){this.u=[],this._$AN=void 0,this._$AD=A,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}v(A){var t;const{el:{content:e},parts:i}=this._$AD,s=(null!==(t=null==A?void 0:A.creationScope)&&void 0!==t?t:I).importNode(e,!0);j.currentNode=s;let o=j.nextNode(),n=0,r=0,a=i[0];for(;void 0!==a;){if(n===a.index){let t;2===a.type?t=new T(o,o.nextSibling,this,A):1===a.type?t=new a.ctor(o,a.name,a.strings,this,A):6===a.type&&(t=new K(o,this,A)),this.u.push(t),a=i[++r]}n!==(null==a?void 0:a.index)&&(o=j.nextNode(),n++)}return s}p(A){let t=0;for(const e of this.u)void 0!==e&&(void 0!==e.strings?(e._$AI(A,e,t),t+=e.strings.length-2):e._$AI(A[t])),t++}}class T{constructor(A,t,e,i){var s;this.type=2,this._$AH=N,this._$AN=void 0,this._$AA=A,this._$AB=t,this._$AM=e,this.options=i,this._$Cm=null===(s=null==i?void 0:i.isConnected)||void 0===s||s}get _$AU(){var A,t;return null!==(t=null===(A=this._$AM)||void 0===A?void 0:A._$AU)&&void 0!==t?t:this._$Cm}get parentNode(){let A=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===A.nodeType&&(A=t.parentNode),A}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(A,t=this){A=D(this,A,t),w(A)?A===N||null==A||""===A?(this._$AH!==N&&this._$AR(),this._$AH=N):A!==this._$AH&&A!==x&&this.g(A):void 0!==A._$litType$?this.$(A):void 0!==A.nodeType?this.T(A):(A=>L(A)||"function"==typeof(null==A?void 0:A[Symbol.iterator]))(A)?this.k(A):this.g(A)}O(A,t=this._$AB){return this._$AA.parentNode.insertBefore(A,t)}T(A){this._$AH!==A&&(this._$AR(),this._$AH=this.O(A))}g(A){this._$AH!==N&&w(this._$AH)?this._$AA.nextSibling.data=A:this.T(I.createTextNode(A)),this._$AH=A}$(A){var t;const{values:e,_$litType$:i}=A,s="number"==typeof i?this._$AC(A):(void 0===i.el&&(i.el=W.createElement(i.h,this.options)),i);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===s)this._$AH.p(e);else{const A=new R(s,this),t=A.v(this.options);A.p(e),this.T(t),this._$AH=A}}_$AC(A){let t=X.get(A.strings);return void 0===t&&X.set(A.strings,t=new W(A)),t}k(A){L(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let e,i=0;for(const s of A)i===t.length?t.push(e=new T(this.O(b()),this.O(b()),this,this.options)):e=t[i],e._$AI(s),i++;i<t.length&&(this._$AR(e&&e._$AB.nextSibling,i),t.length=i)}_$AR(A=this._$AA.nextSibling,t){var e;for(null===(e=this._$AP)||void 0===e||e.call(this,!1,!0,t);A&&A!==this._$AB;){const t=A.nextSibling;A.remove(),A=t}}setConnected(A){var t;void 0===this._$AM&&(this._$Cm=A,null===(t=this._$AP)||void 0===t||t.call(this,A))}}class Z{constructor(A,t,e,i,s){this.type=1,this._$AH=N,this._$AN=void 0,this.element=A,this.name=t,this._$AM=i,this.options=s,e.length>2||""!==e[0]||""!==e[1]?(this._$AH=Array(e.length-1).fill(new String),this.strings=e):this._$AH=N}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(A,t=this,e,i){const s=this.strings;let o=!1;if(void 0===s)A=D(this,A,t,0),o=!w(A)||A!==this._$AH&&A!==x,o&&(this._$AH=A);else{const i=A;let n,r;for(A=s[0],n=0;n<s.length-1;n++)r=D(this,i[e+n],t,n),r===x&&(r=this._$AH[n]),o||(o=!w(r)||r!==this._$AH[n]),r===N?A=N:A!==N&&(A+=(null!=r?r:"")+s[n+1]),this._$AH[n]=r}o&&!i&&this.j(A)}j(A){A===N?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=A?A:"")}}class G extends Z{constructor(){super(...arguments),this.type=3}j(A){this.element[this.name]=A===N?void 0:A}}const q=p?p.emptyScript:"";class Y extends Z{constructor(){super(...arguments),this.type=4}j(A){A&&A!==N?this.element.setAttribute(this.name,q):this.element.removeAttribute(this.name)}}class J extends Z{constructor(A,t,e,i,s){super(A,t,e,i,s),this.type=5}_$AI(A,t=this){var e;if((A=null!==(e=D(this,A,t,0))&&void 0!==e?e:N)===x)return;const i=this._$AH,s=A===N&&i!==N||A.capture!==i.capture||A.once!==i.once||A.passive!==i.passive,o=A!==N&&(i===N||s);s&&this.element.removeEventListener(this.name,this,i),o&&this.element.addEventListener(this.name,this,A),this._$AH=A}handleEvent(A){var t,e;"function"==typeof this._$AH?this._$AH.call(null!==(e=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==e?e:this.element,A):this._$AH.handleEvent(A)}}class K{constructor(A,t,e){this.element=A,this.type=6,this._$AN=void 0,this._$AM=t,this.options=e}get _$AU(){return this._$AM._$AU}_$AI(A){D(this,A)}}const F=u.litHtmlPolyfillSupport;null==F||F(W,T),(null!==(v=u.litHtmlVersions)&&void 0!==v?v:u.litHtmlVersions=[]).push("2.6.1");
+var u;g.finalized=!0,g.elementProperties=new Map,g.elementStyles=[],g.shadowRootOptions={mode:"open"},null==B||B({ReactiveElement:g}),(null!==(a=l.reactiveElementVersions)&&void 0!==a?a:l.reactiveElementVersions=[]).push("1.6.1");const v=window,p=v.trustedTypes,m=p?p.createPolicy("lit-html",{createHTML:A=>A}):void 0,C=`lit$${(Math.random()+"").slice(9)}$`,f="?"+C,y=`<${f}>`,I=document,b=(A="")=>I.createComment(A),w=A=>null===A||"object"!=typeof A&&"function"!=typeof A,L=Array.isArray,V=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,P=/-->/g,S=/>/g,H=RegExp(">|[ \t\n\f\r](?:([^\\s\"'>=/]+)([ \t\n\f\r]*=[ \t\n\f\r]*(?:[^ \t\n\f\r\"'`<>=]|(\"|')|))|$)","g"),O=/'/g,M=/"/g,z=/^(?:script|style|textarea|title)$/i,k=(A=>(t,...e)=>({_$litType$:A,strings:t,values:e}))(1),x=Symbol.for("lit-noChange"),N=Symbol.for("lit-nothing"),X=new WeakMap,j=I.createTreeWalker(I,129,null,!1),U=(A,t)=>{const e=A.length-1,i=[];let s,o=2===t?"<svg>":"",n=V;for(let t=0;t<e;t++){const e=A[t];let r,a,l=-1,c=0;for(;c<e.length&&(n.lastIndex=c,a=n.exec(e),null!==a);)c=n.lastIndex,n===V?"!--"===a[1]?n=P:void 0!==a[1]?n=S:void 0!==a[2]?(z.test(a[2])&&(s=RegExp("</"+a[2],"g")),n=H):void 0!==a[3]&&(n=H):n===H?">"===a[0]?(n=null!=s?s:V,l=-1):void 0===a[1]?l=-2:(l=n.lastIndex-a[2].length,r=a[1],n=void 0===a[3]?H:'"'===a[3]?M:O):n===M||n===O?n=H:n===P||n===S?n=V:(n=H,s=void 0);const d=n===H&&A[t+1].startsWith("/>")?" ":"";o+=n===V?e+y:l>=0?(i.push(r),e.slice(0,l)+"$lit$"+e.slice(l)+C+d):e+C+(-2===l?(i.push(void 0),t):d)}const r=o+(A[e]||"<?>")+(2===t?"</svg>":"");if(!Array.isArray(A)||!A.hasOwnProperty("raw"))throw Error("invalid template strings array");return[void 0!==m?m.createHTML(r):r,i]};class W{constructor({strings:A,_$litType$:t},e){let i;this.parts=[];let s=0,o=0;const n=A.length-1,r=this.parts,[a,l]=U(A,t);if(this.el=W.createElement(a,e),j.currentNode=this.el.content,2===t){const A=this.el.content,t=A.firstChild;t.remove(),A.append(...t.childNodes)}for(;null!==(i=j.nextNode())&&r.length<n;){if(1===i.nodeType){if(i.hasAttributes()){const A=[];for(const t of i.getAttributeNames())if(t.endsWith("$lit$")||t.startsWith(C)){const e=l[o++];if(A.push(t),void 0!==e){const A=i.getAttribute(e.toLowerCase()+"$lit$").split(C),t=/([.?@])?(.*)/.exec(e);r.push({type:1,index:s,name:t[2],strings:A,ctor:"."===t[1]?G:"?"===t[1]?Y:"@"===t[1]?J:Z})}else r.push({type:6,index:s})}for(const t of A)i.removeAttribute(t)}if(z.test(i.tagName)){const A=i.textContent.split(C),t=A.length-1;if(t>0){i.textContent=p?p.emptyScript:"";for(let e=0;e<t;e++)i.append(A[e],b()),j.nextNode(),r.push({type:2,index:++s});i.append(A[t],b())}}}else if(8===i.nodeType)if(i.data===f)r.push({type:2,index:s});else{let A=-1;for(;-1!==(A=i.data.indexOf(C,A+1));)r.push({type:7,index:s}),A+=C.length-1}s++}}static createElement(A,t){const e=I.createElement("template");return e.innerHTML=A,e}}function D(A,t,e=A,i){var s,o,n,r;if(t===x)return t;let a=void 0!==i?null===(s=e._$Co)||void 0===s?void 0:s[i]:e._$Cl;const l=w(t)?void 0:t._$litDirective$;return(null==a?void 0:a.constructor)!==l&&(null===(o=null==a?void 0:a._$AO)||void 0===o||o.call(a,!1),void 0===l?a=void 0:(a=new l(A),a._$AT(A,e,i)),void 0!==i?(null!==(n=(r=e)._$Co)&&void 0!==n?n:r._$Co=[])[i]=a:e._$Cl=a),void 0!==a&&(t=D(A,a._$AS(A,t.values),a,i)),t}class R{constructor(A,t){this.u=[],this._$AN=void 0,this._$AD=A,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}v(A){var t;const{el:{content:e},parts:i}=this._$AD,s=(null!==(t=null==A?void 0:A.creationScope)&&void 0!==t?t:I).importNode(e,!0);j.currentNode=s;let o=j.nextNode(),n=0,r=0,a=i[0];for(;void 0!==a;){if(n===a.index){let t;2===a.type?t=new T(o,o.nextSibling,this,A):1===a.type?t=new a.ctor(o,a.name,a.strings,this,A):6===a.type&&(t=new K(o,this,A)),this.u.push(t),a=i[++r]}n!==(null==a?void 0:a.index)&&(o=j.nextNode(),n++)}return s}p(A){let t=0;for(const e of this.u)void 0!==e&&(void 0!==e.strings?(e._$AI(A,e,t),t+=e.strings.length-2):e._$AI(A[t])),t++}}class T{constructor(A,t,e,i){var s;this.type=2,this._$AH=N,this._$AN=void 0,this._$AA=A,this._$AB=t,this._$AM=e,this.options=i,this._$Cm=null===(s=null==i?void 0:i.isConnected)||void 0===s||s}get _$AU(){var A,t;return null!==(t=null===(A=this._$AM)||void 0===A?void 0:A._$AU)&&void 0!==t?t:this._$Cm}get parentNode(){let A=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===A.nodeType&&(A=t.parentNode),A}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(A,t=this){A=D(this,A,t),w(A)?A===N||null==A||""===A?(this._$AH!==N&&this._$AR(),this._$AH=N):A!==this._$AH&&A!==x&&this.g(A):void 0!==A._$litType$?this.$(A):void 0!==A.nodeType?this.T(A):(A=>L(A)||"function"==typeof(null==A?void 0:A[Symbol.iterator]))(A)?this.k(A):this.g(A)}O(A,t=this._$AB){return this._$AA.parentNode.insertBefore(A,t)}T(A){this._$AH!==A&&(this._$AR(),this._$AH=this.O(A))}g(A){this._$AH!==N&&w(this._$AH)?this._$AA.nextSibling.data=A:this.T(I.createTextNode(A)),this._$AH=A}$(A){var t;const{values:e,_$litType$:i}=A,s="number"==typeof i?this._$AC(A):(void 0===i.el&&(i.el=W.createElement(i.h,this.options)),i);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===s)this._$AH.p(e);else{const A=new R(s,this),t=A.v(this.options);A.p(e),this.T(t),this._$AH=A}}_$AC(A){let t=X.get(A.strings);return void 0===t&&X.set(A.strings,t=new W(A)),t}k(A){L(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let e,i=0;for(const s of A)i===t.length?t.push(e=new T(this.O(b()),this.O(b()),this,this.options)):e=t[i],e._$AI(s),i++;i<t.length&&(this._$AR(e&&e._$AB.nextSibling,i),t.length=i)}_$AR(A=this._$AA.nextSibling,t){var e;for(null===(e=this._$AP)||void 0===e||e.call(this,!1,!0,t);A&&A!==this._$AB;){const t=A.nextSibling;A.remove(),A=t}}setConnected(A){var t;void 0===this._$AM&&(this._$Cm=A,null===(t=this._$AP)||void 0===t||t.call(this,A))}}class Z{constructor(A,t,e,i,s){this.type=1,this._$AH=N,this._$AN=void 0,this.element=A,this.name=t,this._$AM=i,this.options=s,e.length>2||""!==e[0]||""!==e[1]?(this._$AH=Array(e.length-1).fill(new String),this.strings=e):this._$AH=N}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(A,t=this,e,i){const s=this.strings;let o=!1;if(void 0===s)A=D(this,A,t,0),o=!w(A)||A!==this._$AH&&A!==x,o&&(this._$AH=A);else{const i=A;let n,r;for(A=s[0],n=0;n<s.length-1;n++)r=D(this,i[e+n],t,n),r===x&&(r=this._$AH[n]),o||(o=!w(r)||r!==this._$AH[n]),r===N?A=N:A!==N&&(A+=(null!=r?r:"")+s[n+1]),this._$AH[n]=r}o&&!i&&this.j(A)}j(A){A===N?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=A?A:"")}}class G extends Z{constructor(){super(...arguments),this.type=3}j(A){this.element[this.name]=A===N?void 0:A}}const q=p?p.emptyScript:"";class Y extends Z{constructor(){super(...arguments),this.type=4}j(A){A&&A!==N?this.element.setAttribute(this.name,q):this.element.removeAttribute(this.name)}}class J extends Z{constructor(A,t,e,i,s){super(A,t,e,i,s),this.type=5}_$AI(A,t=this){var e;if((A=null!==(e=D(this,A,t,0))&&void 0!==e?e:N)===x)return;const i=this._$AH,s=A===N&&i!==N||A.capture!==i.capture||A.once!==i.once||A.passive!==i.passive,o=A!==N&&(i===N||s);s&&this.element.removeEventListener(this.name,this,i),o&&this.element.addEventListener(this.name,this,A),this._$AH=A}handleEvent(A){var t,e;"function"==typeof this._$AH?this._$AH.call(null!==(e=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==e?e:this.element,A):this._$AH.handleEvent(A)}}class K{constructor(A,t,e){this.element=A,this.type=6,this._$AN=void 0,this._$AM=t,this.options=e}get _$AU(){return this._$AM._$AU}_$AI(A){D(this,A)}}const F=v.litHtmlPolyfillSupport;null==F||F(W,T),(null!==(u=v.litHtmlVersions)&&void 0!==u?u:v.litHtmlVersions=[]).push("2.6.1");
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -36,35 +36,44 @@ const eA=(A,t)=>"method"===t.kind&&t.descriptor&&!("value"in t.descriptor)?{...t
  * @license
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */var oA;null===(oA=window.HTMLSlotElement)||void 0===oA||oA.prototype.assignedElements;const nA="sonos-card-dispatch-event-",rA=nA+"active-player",aA=nA+"request-player",lA=nA+"show-section",cA=nA+"call-media-started",dA=nA+"call-media-done",BA=nA+"play-dir",EA=nA+"browse-up",QA=nA+"browse-state",hA=n`
+ */var oA;null===(oA=window.HTMLSlotElement)||void 0===oA||oA.prototype.assignedElements;const nA="sonos-card-dispatch-event-",rA=nA+"active-player",aA=nA+"request-player",lA=nA+"show-section",cA=nA+"call-media-started",dA=nA+"call-media-done",BA=nA+"play-dir",EA=nA+"browse-up",QA=nA+"browse-state",hA=nA+"media-item-selected",gA=n`
   .list {
     --mdc-theme-primary: var(--accent-color);
     --mdc-list-vertical-padding: 0px;
     overflow: hidden;
   }
-`;function gA(A,t,e){const i=A.states[e].attributes.friendly_name||"";return t.entityNameRegexToReplace?i.replace(new RegExp(t.entityNameRegexToReplace,"g"),t.entityNameReplacement||""):i}function vA(A){return A.attributes.sonos_group||A.attributes.group_members}function uA(A){window.dispatchEvent(new CustomEvent(lA,{detail:A}))}function pA(A){return"playing"===A}function CA(A){const t=A.attributes;return`${t.media_artist||""} - ${t.media_title||""}`.replace(/^ - /g,"")}function mA(A,t){var e;const i=[A.entity,...Object.keys(A.members)].sort();if(null===(e=t.predefinedGroups)||void 0===e?void 0:e.length){const A=t.predefinedGroups.find((A=>A.entities.sort().toString()===i.toString()));if(A)return A.name}return[A.roomName,...Object.values(A.members)].join(" + ")}function fA(A){const t=new CustomEvent(rA,{bubbles:!0,composed:!0,detail:{entityId:A}});window.dispatchEvent(t)}var yA="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z",IA="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z",bA="M20.71,7.04C20.37,7.38 20.04,7.71 20.03,8.04C20,8.36 20.34,8.69 20.66,9C21.14,9.5 21.61,9.95 21.59,10.44C21.57,10.93 21.06,11.44 20.55,11.94L16.42,16.08L15,14.66L19.25,10.42L18.29,9.46L16.87,10.87L13.12,7.12L16.96,3.29C17.35,2.9 18,2.9 18.37,3.29L20.71,5.63C21.1,6 21.1,6.65 20.71,7.04M3,17.25L12.56,7.68L16.31,11.43L6.75,21H3V17.25Z",wA="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z",LA="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z",VA="M3,9H7L12,4V20L7,15H3V9M14,11H22V13H14V11Z",SA="M3,9H7L12,4V20L7,15H3V9M14,11H17V8H19V11H22V13H19V16H17V13H14V11Z";
+`,uA=n`
+  .title {
+    color: var(--secondary-text-color);
+    font-weight: bold;
+    padding: 0 0.5rem;
+    text-overflow-ellipsis: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+`;function vA(A,t,e){const i=A.states[e].attributes.friendly_name||"";return t.entityNameRegexToReplace?i.replace(new RegExp(t.entityNameRegexToReplace,"g"),t.entityNameReplacement||""):i}function pA(A){return A.attributes.sonos_group||A.attributes.group_members}function mA(A){window.dispatchEvent(new CustomEvent(lA,{detail:A}))}function CA(A){return"playing"===A}function fA(A){const t=A.attributes;return`${t.media_artist||""} - ${t.media_title||""}`.replace(/^ - /g,"")}function yA(A,t){var e;const i=[A.entity,...Object.keys(A.members)].sort();if(null===(e=t.predefinedGroups)||void 0===e?void 0:e.length){const A=t.predefinedGroups.find((A=>A.entities.sort().toString()===i.toString()));if(A)return A.name}return[A.roomName,...Object.values(A.members)].join(" + ")}function IA(A){const t=new CustomEvent(rA,{bubbles:!0,composed:!0,detail:{entityId:A}});window.dispatchEvent(t)}function bA(A){const t=new CustomEvent(hA,{bubbles:!0,composed:!0,detail:A});window.dispatchEvent(t)}const wA=40;function LA(A){return A?A/100*wA:wA}var VA="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z",PA="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z",SA="M20.71,7.04C20.37,7.38 20.04,7.71 20.03,8.04C20,8.36 20.34,8.69 20.66,9C21.14,9.5 21.61,9.95 21.59,10.44C21.57,10.93 21.06,11.44 20.55,11.94L16.42,16.08L15,14.66L19.25,10.42L18.29,9.46L16.87,10.87L13.12,7.12L16.96,3.29C17.35,2.9 18,2.9 18.37,3.29L20.71,5.63C21.1,6 21.1,6.65 20.71,7.04M3,17.25L12.56,7.68L16.31,11.43L6.75,21H3V17.25Z",HA="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z",OA="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z",MA="M3,9H7L12,4V20L7,15H3V9M14,11H22V13H14V11Z",zA="M3,9H7L12,4V20L7,15H3V9M14,11H17V8H19V11H22V13H19V16H17V13H14V11Z";
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructor(A){}get _$AU(){return this._$AM._$AU}_$AT(A,t,e){this._$Ct=A,this._$AM=t,this._$Ci=e}_$AS(A,t){return this.update(A,t)}update(A,t){return this.render(...t)}}
+const kA=1,xA=2,NA=A=>(...t)=>({_$litDirective$:A,values:t});class XA{constructor(A){}get _$AU(){return this._$AM._$AU}_$AT(A,t,e){this._$Ct=A,this._$AM=t,this._$Ci=e}_$AS(A,t){return this.update(A,t)}update(A,t){return this.render(...t)}}
 /**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const zA=OA(class extends MA{constructor(A){var t;if(super(A),A.type!==PA||"style"!==A.name||(null===(t=A.strings)||void 0===t?void 0:t.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(A){return Object.keys(A).reduce(((t,e)=>{const i=A[e];return null==i?t:t+`${e=e.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${i};`}),"")}update(A,[t]){const{style:e}=A.element;if(void 0===this.vt){this.vt=new Set;for(const A in t)this.vt.add(A);return this.render(t)}this.vt.forEach((A=>{null==t[A]&&(this.vt.delete(A),A.includes("-")?e.removeProperty(A):e[A]="")}));for(const A in t){const i=t[A];null!=i&&(this.vt.add(A),A.includes("-")?e.setProperty(A,i):e[A]=i)}return x}});function kA(A,t,e){return k`<ha-icon-button
+ */const jA=NA(class extends XA{constructor(A){var t;if(super(A),A.type!==kA||"style"!==A.name||(null===(t=A.strings)||void 0===t?void 0:t.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(A){return Object.keys(A).reduce(((t,e)=>{const i=A[e];return null==i?t:t+`${e=e.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${i};`}),"")}update(A,[t]){const{style:e}=A.element;if(void 0===this.vt){this.vt=new Set;for(const A in t)this.vt.add(A);return this.render(t)}this.vt.forEach((A=>{null==t[A]&&(this.vt.delete(A),A.includes("-")?e.removeProperty(A):e[A]="")}));for(const A in t){const i=t[A];null!=i&&(this.vt.add(A),A.includes("-")?e.setProperty(A,i):e[A]=i)}return x}});function UA(A,t,e){return k`<ha-icon-button
     @click="${t}"
     .path=${A}
-    style="${zA(Object.assign({"--mdc-icon-button-size":(null==e?void 0:e.big)?"6rem":"3rem","--mdc-icon-size":(null==e?void 0:e.big)?"6rem":"2rem"},null==e?void 0:e.additionalStyle))}"
-  ></ha-icon-button>`}class xA extends AA{constructor(){super(...arguments),this.prev=async()=>await this.mediaControlService.prev(this.entityId),this.play=async()=>await this.mediaControlService.play(this.entityId),this.pause=async()=>await this.mediaControlService.pause(this.entityId),this.next=async()=>await this.mediaControlService.next(this.entityId),this.shuffle=async()=>{var A;return await this.mediaControlService.shuffle(this.entityId,!(null===(A=this.entity)||void 0===A?void 0:A.attributes.shuffle))},this.repeat=async()=>{var A;return await this.mediaControlService.repeat(this.entityId,null===(A=this.entity)||void 0===A?void 0:A.attributes.repeat)},this.volDown=async()=>await this.mediaControlService.volumeDown(this.entityId,this.members),this.volUp=async()=>await this.mediaControlService.volumeUp(this.entityId,this.members)}render(){({config:this.config,hass:this.hass,entityId:this.entityId,entity:this.entity,hassService:this.hassService,mediaControlService:this.mediaControlService}=this.store),this.members=this.store.groups[this.entityId].members,this.isGroup=vA(this.entity).length>1;const A=pA(this.entity.state);return k`
+    style="${jA(Object.assign({"--mdc-icon-button-size":(null==e?void 0:e.big)?"6rem":"3rem","--mdc-icon-size":(null==e?void 0:e.big)?"6rem":"2rem"},null==e?void 0:e.additionalStyle))}"
+  ></ha-icon-button>`}class WA extends AA{constructor(){super(...arguments),this.prev=async()=>await this.mediaControlService.prev(this.entityId),this.play=async()=>await this.mediaControlService.play(this.entityId),this.pause=async()=>await this.mediaControlService.pause(this.entityId),this.next=async()=>await this.mediaControlService.next(this.entityId),this.shuffle=async()=>{var A;return await this.mediaControlService.shuffle(this.entityId,!(null===(A=this.entity)||void 0===A?void 0:A.attributes.shuffle))},this.repeat=async()=>{var A;return await this.mediaControlService.repeat(this.entityId,null===(A=this.entity)||void 0===A?void 0:A.attributes.repeat)},this.volDown=async()=>await this.mediaControlService.volumeDown(this.entityId,this.members),this.volUp=async()=>await this.mediaControlService.volumeUp(this.entityId,this.members)}render(){({config:this.config,hass:this.hass,entityId:this.entityId,entity:this.entity,hassService:this.hassService,mediaControlService:this.mediaControlService}=this.store),this.members=this.store.groups[this.entityId].members,this.isGroup=pA(this.entity).length>1;const A=CA(this.entity.state);return k`
       <div class="main" id="mediaControls">
         <div class="icons">
-          ${this.config.showVolumeUpAndDownButtons?kA(VA,this.volDown):""}
-          ${kA(this.shuffleIcon(),this.shuffle)} ${kA("M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z",this.prev)}
-          ${kA(A?"M15,16H13V8H15M11,16H9V8H11M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z":"M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z",A?this.pause:this.play,{big:!0})}
-          ${kA("M16,18H18V6H16M6,18L14.5,12L6,6V18Z",this.next)} ${kA(this.repeatIcon(),this.repeat)}
-          ${this.config.showVolumeUpAndDownButtons?kA(SA,this.volUp):""}
+          ${this.config.showVolumeUpAndDownButtons?UA(MA,this.volDown):""}
+          ${UA(this.shuffleIcon(),this.shuffle)} ${UA("M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z",this.prev)}
+          ${UA(A?"M15,16H13V8H15M11,16H9V8H11M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z":"M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z",A?this.pause:this.play,{big:!0})}
+          ${UA("M16,18H18V6H16M6,18L14.5,12L6,6V18Z",this.next)} ${UA(this.repeatIcon(),this.repeat)}
+          ${this.config.showVolumeUpAndDownButtons?UA(zA,this.volUp):""}
         </div>
         <sonos-volume .store=${this.store} .entityId=${this.entityId} .members=${this.members}></sonos-volume>
       </div>
@@ -79,7 +88,7 @@ const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructo
         display: flex;
         align-items: center;
       }
-    `}}A([iA()],xA.prototype,"store",void 0),A([iA()],xA.prototype,"entity",void 0),A([sA()],xA.prototype,"timerToggleShowAllVolumes",void 0),customElements.define("sonos-player-controls",xA);class NA extends AA{render(){({config:this.config,hass:this.hass,entity:this.entity}=this.store);const A=this.entity.attributes,t=mA(this.store.groups[this.entity.entity_id],this.config);let e=this.config.labelWhenNoMediaIsSelected?this.config.labelWhenNoMediaIsSelected:"No media selected";return A.media_title&&(e=CA(this.entity)),k` <div class="info">
+    `}}A([iA()],WA.prototype,"store",void 0),A([iA()],WA.prototype,"entity",void 0),A([sA()],WA.prototype,"timerToggleShowAllVolumes",void 0),customElements.define("sonos-player-controls",WA);class DA extends AA{render(){({config:this.config,hass:this.hass,entity:this.entity}=this.store);const A=this.entity.attributes,t=yA(this.store.groups[this.entity.entity_id],this.config);let e=this.config.labelWhenNoMediaIsSelected?this.config.labelWhenNoMediaIsSelected:"No media selected";return A.media_title&&(e=fA(this.entity)),k` <div class="info">
       <div class="entity">${t}</div>
       <div class="song">${e}</div>
       <div class="artist-album">${A.media_album_name}</div>
@@ -115,15 +124,15 @@ const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructo
         font-weight: 300;
         color: var(--secondary-text-color);
       }
-    `}}A([iA()],NA.prototype,"store",void 0),customElements.define("sonos-player-header",NA);class XA extends AA{disconnectedCallback(){this.tracker&&(clearInterval(this.tracker),this.tracker=void 0),super.disconnectedCallback()}render(){var A;({config:this.config,hass:this.hass,entity:this.entity,entityId:this.entityId}=this.store),this.entity=this.hass.states[this.entityId];const t=(null===(A=this.entity)||void 0===A?void 0:A.attributes.media_duration)||0;return t>0?(this.trackProgress(),k`
+    `}}A([iA()],DA.prototype,"store",void 0),customElements.define("sonos-player-header",DA);class RA extends AA{disconnectedCallback(){this.tracker&&(clearInterval(this.tracker),this.tracker=void 0),super.disconnectedCallback()}render(){var A;({config:this.config,hass:this.hass,entity:this.entity,entityId:this.entityId}=this.store),this.entity=this.hass.states[this.entityId];const t=(null===(A=this.entity)||void 0===A?void 0:A.attributes.media_duration)||0;return t>0?(this.trackProgress(),k`
         <div class="progress">
-          <span>${jA(this.playingProgress)}</span>
+          <span>${TA(this.playingProgress)}</span>
           <div class="bar">
             <paper-progress value="${this.playingProgress}" max="${t}"></paper-progress>
           </div>
-          <span> -${jA(t-this.playingProgress)}</span>
+          <span> -${TA(t-this.playingProgress)}</span>
         </div>
-      `):k``}trackProgress(){var A,t,e;const i=(null===(A=this.entity)||void 0===A?void 0:A.attributes.media_position)||0,s=pA(null===(t=this.entity)||void 0===t?void 0:t.state),o=(null===(e=this.entity)||void 0===e?void 0:e.attributes.media_position_updated_at)||0;this.playingProgress=s?i+(Date.now()-new Date(o).getTime())/1e3:i,this.tracker||(this.tracker=setInterval((()=>this.trackProgress()),1e3)),s||(clearInterval(this.tracker),this.tracker=void 0)}static get styles(){return n`
+      `):k``}trackProgress(){var A,t,e;const i=(null===(A=this.entity)||void 0===A?void 0:A.attributes.media_position)||0,s=CA(null===(t=this.entity)||void 0===t?void 0:t.state),o=(null===(e=this.entity)||void 0===e?void 0:e.attributes.media_position_updated_at)||0;this.playingProgress=s?i+(Date.now()-new Date(o).getTime())/1e3:i,this.tracker||(this.tracker=setInterval((()=>this.trackProgress()),1e3)),s||(clearInterval(this.tracker),this.tracker=void 0)}static get styles(){return n`
       .progress {
         width: 100%;
         font-size: x-small;
@@ -142,9 +151,9 @@ const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructo
         flex-grow: 1;
         --paper-progress-active-color: var(--accent-color);
       }
-    `}}A([iA()],XA.prototype,"store",void 0),A([sA()],XA.prototype,"playingProgress",void 0);const jA=A=>{const t=new Date(1e3*A).toISOString().substring(11,19);return t.startsWith("00:")?t.substring(3):t};customElements.define("sonos-progress",XA);class UA extends AA{render(){({config:this.config,hass:this.hass,mediaControlService:this.mediaControlService}=this.store);const A=100*this.hass.states[this.entityId].attributes.volume_level;let t=100;A<20&&this.config.dynamicVolumeSlider&&(t=30);const e=this.members&&Object.keys(this.members).length?!Object.keys(this.members).some((A=>!this.hass.states[A].attributes.is_volume_muted)):this.hass.states[this.entityId].attributes.is_volume_muted;return k`
+    `}}A([iA()],RA.prototype,"store",void 0),A([sA()],RA.prototype,"playingProgress",void 0);const TA=A=>{const t=new Date(1e3*A).toISOString().substring(11,19);return t.startsWith("00:")?t.substring(3):t};customElements.define("sonos-progress",RA);class ZA extends AA{render(){({config:this.config,hass:this.hass,mediaControlService:this.mediaControlService}=this.store);const A=100*this.hass.states[this.entityId].attributes.volume_level;let t=100;A<20&&this.config.dynamicVolumeSlider&&(t=30);const e=this.members&&Object.keys(this.members).length?!Object.keys(this.members).some((A=>!this.hass.states[A].attributes.is_volume_muted)):this.hass.states[this.entityId].attributes.is_volume_muted;return k`
       <div class="volume">
-        ${kA(e?"M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z":"M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z",(async()=>await this.mediaControlService.volumeMute(this.entityId,!e,this.members)))}
+        ${UA(e?"M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z":"M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z",(async()=>await this.mediaControlService.volumeMute(this.entityId,!e,this.members)))}
         <div class="volume-slider">
           <ha-control-slider .value="${A}" max=${t} @value-changed=${this.volumeChanged}> </ha-control-slider>
           <div class="volume-level">
@@ -178,8 +187,8 @@ const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructo
         font-weight: bold;
         font-size: 12px;
       }
-    `}}A([iA()],UA.prototype,"store",void 0),A([iA()],UA.prototype,"entityId",void 0),A([iA()],UA.prototype,"members",void 0),A([iA()],UA.prototype,"volumeClicked",void 0),customElements.define("sonos-volume",UA);class WA extends AA{render(){return({config:this.config,entity:this.entity,entityId:this.entityId}=this.store),k`
-      <div class="wrapper">
+    `}}A([iA()],ZA.prototype,"store",void 0),A([iA()],ZA.prototype,"entityId",void 0),A([iA()],ZA.prototype,"members",void 0),A([iA()],ZA.prototype,"volumeClicked",void 0),customElements.define("sonos-volume",ZA);class GA extends AA{render(){return({config:this.config,entity:this.entity,entityId:this.entityId}=this.store),k`
+      <div class="row">
         <sonos-player-header .store=${this.store}></sonos-player-header>
         <div class="artwork" style="background-image: ${this.getBackgroundImage()}"></div>
         <sonos-player-controls style="overflow-y:auto" .store=${this.store}></sonos-player-controls>
@@ -194,7 +203,7 @@ const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructo
         color: var(--primary-color);
       }
 
-      .wrapper {
+      .row {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -210,22 +219,22 @@ const PA=1,HA=2,OA=A=>(...t)=>({_$litDirective$:A,values:t});class MA{constructo
         background-repeat: no-repeat;
         background-size: contain;
       }
-    `}}A([iA()],WA.prototype,"store",void 0);
+    `}}A([iA()],GA.prototype,"store",void 0);
 /**
  * @license
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const DA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?void 0:e()};class RA{constructor(A,t){this.hass=A,this.sectionOnCreate=t}async callMediaService(A,t){window.dispatchEvent(new CustomEvent(cA,{bubbles:!0,composed:!0,detail:{section:this.sectionOnCreate}}));try{await this.hass.callService("media_player",A,t)}finally{window.dispatchEvent(new CustomEvent(dA,{bubbles:!0,composed:!0}))}}async browseMedia(A,t,e){return await this.hass.callWS({type:"media_player/browse_media",entity_id:A,media_content_id:e,media_content_type:t})}async getRelatedSwitchEntities(A){return new Promise((async(t,e)=>{const i={type:"render_template",template:"{{ device_entities(device_id('"+A+"')) }}"};try{const A=await this.hass.connection.subscribeMessage((e=>{A(),t(e.result.filter((A=>A.indexOf("switch")>-1)))}),i)}catch(A){e(A)}}))}async toggle(A){await this.hass.callService("homeassistant","toggle",{entity_id:A})}}function TA(A=[],t){return null==t?void 0:t.filter((t=>-1===["media-source://tts","media-source://camera"].indexOf(t.media_content_id||"")&&-1===A.indexOf(t.title)))}class ZA{constructor(A,t){this.hass=A,this.hassService=t}async getRoot(A,t){return TA(t,(await this.hassService.browseMedia(A)).children)||[]}async getDir(A,t,e){try{return TA(e,(await this.hassService.browseMedia(A,t.media_content_type,t.media_content_id)).children)||[]}catch(A){return console.error(A),[]}}async getAllFavorites(A,t){if(!A.length)return[];let e=(await Promise.all(A.map((A=>this.getFavoritesForPlayer(A,t))))).flatMap((A=>A));return e=this.removeDuplicates(e),e.length?e:this.getFavoritesFromStates(A)}removeDuplicates(A){return A.filter(((A,t,e)=>t===e.findIndex((t=>t.title===A.title))))}async getFavoritesForPlayer(A,t){var e;const i=null===(e=(await this.hassService.browseMedia(A,"favorites","")).children)||void 0===e?void 0:e.map((t=>this.hassService.browseMedia(A,t.media_content_type,t.media_content_id)));return(i?await Promise.all(i):[]).flatMap((A=>TA(t,A.children)||[]))}getFavoritesFromStates(A){console.log("Custom Sonos Card: found no favorites with thumbnails, trying with titles only");let t=A.map((A=>this.hass.states[A])).flatMap((A=>A.attributes.hasOwnProperty("source_list")?A.attributes.source_list:[]));return t=[...new Set(t)],t.length||console.log("Custom Sonos Card: No favorites found"),t.map((A=>({title:A})))}}class GA{constructor(A,t){this.hassService=t,this.hass=A}async join(A,t){await this.hassService.callMediaService("join",{entity_id:A,group_members:t})}async unjoin(A){await this.hassService.callMediaService("unjoin",{entity_id:A})}async createGroup(A,t){let e;A=this.ignoreUnavailableEntities(A);for(const i of Object.values(t))if(A.indexOf(i.entity)>-1){if(pA(i.state))return void await this.modifyExistingGroup(i,A);e=e||i}if(e)await this.modifyExistingGroup(e,A);else{const t=A[0];fA(t),await this.join(t,A)}}ignoreUnavailableEntities(A){return A.filter((A=>{var t;return"unavailable"!==(null===(t=this.hass.states[A])||void 0===t?void 0:t.state)}))}async modifyExistingGroup(A,t){const e=Object.keys(A.members).filter((A=>-1===t.indexOf(A)));(null==e?void 0:e.length)&&await this.unjoin(e),fA(A.entity),await this.join(A.entity,t)}async pause(A){await this.hassService.callMediaService("media_pause",{entity_id:A})}async prev(A){await this.hassService.callMediaService("media_previous_track",{entity_id:A})}async next(A){await this.hassService.callMediaService("media_next_track",{entity_id:A})}async play(A){await this.hassService.callMediaService("media_play",{entity_id:A})}async shuffle(A,t){await this.hassService.callMediaService("shuffle_set",{entity_id:A,shuffle:t})}async repeat(A,t){const e="all"===t?"one":"one"===t?"off":"all";await this.hassService.callMediaService("repeat_set",{entity_id:A,repeat:e})}async volumeDown(A,t={}){await this.hassService.callMediaService("volume_down",{entity_id:A});for(const A in t)await this.hassService.callMediaService("volume_down",{entity_id:A})}async volumeUp(A,t={}){await this.hassService.callMediaService("volume_up",{entity_id:A});for(const A in t)await this.hassService.callMediaService("volume_up",{entity_id:A})}async volumeSet(A,t,e){const i=t/100;await this.hassService.callMediaService("volume_set",{entity_id:A,volume_level:i});for(const A in e)await this.hassService.callMediaService("volume_set",{entity_id:A,volume_level:i})}async volumeMute(A,t,e){await this.hassService.callMediaService("volume_mute",{entity_id:A,is_volume_muted:t});for(const A in e)await this.hassService.callMediaService("volume_mute",{entity_id:A,is_volume_muted:t})}async setSource(A,t){await this.hassService.callMediaService("select_source",{source:t,entity_id:A})}async playMedia(A,t){await this.hassService.callMediaService("play_media",{entity_id:A,media_content_id:t.media_content_id,media_content_type:t.media_content_type})}}class qA{constructor(A,t,e){var i;this.hass=A,this.config=t,this.mediaPlayers=this.getMediaPlayers(),this.groups=this.createPlayerGroups(this.mediaPlayers),this.entityId=e||this.determineEntityId(this.groups),this.entity=this.hass.states[this.entityId];const s=null===(i=this.config.sections)||void 0===i?void 0:i[0];this.hassService=new RA(this.hass,s),this.mediaControlService=new GA(this.hass,this.hassService),this.mediaBrowseService=new ZA(this.hass,this.hassService)}getMediaPlayers(){return this.config.entities?[...new Set(this.config.entities)].filter((A=>this.hass.states[A])):Object.values(this.hass.states).filter(vA).map((A=>A.entity_id)).sort()}createPlayerGroups(A){const t=A.filter((t=>this.createGroupMasters(t,A))).map((t=>this.createGroupArray(t,A)));return Object.fromEntries(t.map((A=>[A.entity,A])))}createGroupMasters(A,t){const e=this.hass.states[A];try{const i=vA(e).filter((A=>t.indexOf(A)>-1)),s=(null==i?void 0:i.length)>1,o=s&&i&&i[0]===A;return!s||o}catch(A){return console.error("Failed to determine group master",JSON.stringify(e),A),!1}}createGroupArray(A,t){const e=this.hass.states[A];try{const i=vA(e).filter((e=>e!==A&&t.indexOf(e)>-1));return{entity:A,state:e.state,roomName:gA(this.hass,this.config,A),members:this.createGroupMembers(i)}}catch(A){return console.error("Failed to create group",JSON.stringify(e),A),{}}}createGroupMembers(A){return Object.fromEntries(A.map((A=>[A,gA(this.hass,this.config,A)])))}determineEntityId(A){const t=this.config.entityId||(window.location.href.indexOf("#")>0?window.location.href.replace(/.*#/g,""):"");let e;for(const i in A)if(i===t)e=i;else for(const s in A[i].members)s===t&&(e=i);if(!e)for(const t in A)pA(A[t].state)&&(e=t);return e||(e=Object.keys(A)[0]),e}}var YA;!function(A){A.MEDIA_BROWSER="media browser",A.GROUPS="groups",A.PLAYER="player",A.GROUPING="grouping",A.VOLUMES="volumes"}(YA||(YA={}));const{GROUPING:JA,GROUPS:KA,MEDIA_BROWSER:FA,PLAYER:$A,VOLUMES:_A}=YA;class At extends AA{render(){return k`
-      ${this.sectionButton("M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z",$A)}${this.sectionButton(LA,FA)}
-      ${this.sectionButton("M14,10A3,3 0 0,0 11,13A3,3 0 0,0 14,16A3,3 0 0,0 17,13A3,3 0 0,0 14,10M14,18A5,5 0 0,1 9,13A5,5 0 0,1 14,8A5,5 0 0,1 19,13A5,5 0 0,1 14,18M14,2A2,2 0 0,1 16,4A2,2 0 0,1 14,6A2,2 0 0,1 12,4A2,2 0 0,1 14,2M19,0H9A2,2 0 0,0 7,2V18A2,2 0 0,0 9,20H19A2,2 0 0,0 21,18V2A2,2 0 0,0 19,0M5,22H17V24H5A2,2 0 0,1 3,22V4H5",KA)} ${this.sectionButton("M6,22H18L12,16M21,3H3A2,2 0 0,0 1,5V17A2,2 0 0,0 3,19H7V17H3V5H21V17H17V19H21A2,2 0 0,0 23,17V5A2,2 0 0,0 21,3Z",JA)}
-      ${this.sectionButton("M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z",_A)}
-    `}sectionButton(A,t){var e;return!this.config.sections||(null===(e=this.config.sections)||void 0===e?void 0:e.indexOf(t))>-1?kA(A,(()=>uA(t)),{additionalStyle:Object.assign({padding:"1rem"},this.section===t&&{color:"var(--accent-color)"})}):k``}static get styles(){return n`
+const qA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?void 0:e()};class YA{constructor(A,t){this.hass=A,this.sectionOnCreate=t}async callMediaService(A,t){window.dispatchEvent(new CustomEvent(cA,{bubbles:!0,composed:!0,detail:{section:this.sectionOnCreate}}));try{await this.hass.callService("media_player",A,t)}finally{window.dispatchEvent(new CustomEvent(dA,{bubbles:!0,composed:!0}))}}async browseMedia(A,t,e){return await this.hass.callWS({type:"media_player/browse_media",entity_id:A,media_content_id:e,media_content_type:t})}async getRelatedSwitchEntities(A){return new Promise((async(t,e)=>{const i={type:"render_template",template:"{{ device_entities(device_id('"+A+"')) }}"};try{const A=await this.hass.connection.subscribeMessage((e=>{A(),t(e.result.filter((A=>A.indexOf("switch")>-1)))}),i)}catch(A){e(A)}}))}async toggle(A){await this.hass.callService("homeassistant","toggle",{entity_id:A})}}function JA(A=[],t){return null==t?void 0:t.filter((t=>-1===["media-source://tts","media-source://camera"].indexOf(t.media_content_id||"")&&-1===A.indexOf(t.title)))}class KA{constructor(A,t){this.hass=A,this.hassService=t}async getRoot(A,t){return JA(t,(await this.hassService.browseMedia(A)).children)||[]}async getDir(A,t,e){try{return JA(e,(await this.hassService.browseMedia(A,t.media_content_type,t.media_content_id)).children)||[]}catch(A){return console.error(A),[]}}async getAllFavorites(A,t){if(!A.length)return[];let e=(await Promise.all(A.map((A=>this.getFavoritesForPlayer(A,t))))).flatMap((A=>A));return e=this.removeDuplicates(e),e.length?e:this.getFavoritesFromStates(A)}removeDuplicates(A){return A.filter(((A,t,e)=>t===e.findIndex((t=>t.title===A.title))))}async getFavoritesForPlayer(A,t){var e;const i=null===(e=(await this.hassService.browseMedia(A,"favorites","")).children)||void 0===e?void 0:e.map((t=>this.hassService.browseMedia(A,t.media_content_type,t.media_content_id)));return(i?await Promise.all(i):[]).flatMap((A=>JA(t,A.children)||[]))}getFavoritesFromStates(A){console.log("Custom Sonos Card: found no favorites with thumbnails, trying with titles only");let t=A.map((A=>this.hass.states[A])).flatMap((A=>A.attributes.hasOwnProperty("source_list")?A.attributes.source_list:[]));return t=[...new Set(t)],t.length||console.log("Custom Sonos Card: No favorites found"),t.map((A=>({title:A})))}}class FA{constructor(A,t){this.hassService=t,this.hass=A}async join(A,t){await this.hassService.callMediaService("join",{entity_id:A,group_members:t})}async unjoin(A){await this.hassService.callMediaService("unjoin",{entity_id:A})}async createGroup(A,t){let e;A=this.ignoreUnavailableEntities(A);for(const i of Object.values(t))if(A.indexOf(i.entity)>-1){if(CA(i.state))return void await this.modifyExistingGroup(i,A);e=e||i}if(e)await this.modifyExistingGroup(e,A);else{const t=A[0];IA(t),await this.join(t,A)}}ignoreUnavailableEntities(A){return A.filter((A=>{var t;return"unavailable"!==(null===(t=this.hass.states[A])||void 0===t?void 0:t.state)}))}async modifyExistingGroup(A,t){const e=Object.keys(A.members).filter((A=>-1===t.indexOf(A)));(null==e?void 0:e.length)&&await this.unjoin(e),IA(A.entity),await this.join(A.entity,t)}async pause(A){await this.hassService.callMediaService("media_pause",{entity_id:A})}async prev(A){await this.hassService.callMediaService("media_previous_track",{entity_id:A})}async next(A){await this.hassService.callMediaService("media_next_track",{entity_id:A})}async play(A){await this.hassService.callMediaService("media_play",{entity_id:A})}async shuffle(A,t){await this.hassService.callMediaService("shuffle_set",{entity_id:A,shuffle:t})}async repeat(A,t){const e="all"===t?"one":"one"===t?"off":"all";await this.hassService.callMediaService("repeat_set",{entity_id:A,repeat:e})}async volumeDown(A,t={}){await this.hassService.callMediaService("volume_down",{entity_id:A});for(const A in t)await this.hassService.callMediaService("volume_down",{entity_id:A})}async volumeUp(A,t={}){await this.hassService.callMediaService("volume_up",{entity_id:A});for(const A in t)await this.hassService.callMediaService("volume_up",{entity_id:A})}async volumeSet(A,t,e){const i=t/100;await this.hassService.callMediaService("volume_set",{entity_id:A,volume_level:i});for(const A in e)await this.hassService.callMediaService("volume_set",{entity_id:A,volume_level:i})}async volumeMute(A,t,e){await this.hassService.callMediaService("volume_mute",{entity_id:A,is_volume_muted:t});for(const A in e)await this.hassService.callMediaService("volume_mute",{entity_id:A,is_volume_muted:t})}async setSource(A,t){await this.hassService.callMediaService("select_source",{source:t,entity_id:A})}async playMedia(A,t){await this.hassService.callMediaService("play_media",{entity_id:A,media_content_id:t.media_content_id,media_content_type:t.media_content_type})}}class $A{constructor(A,t,e){var i;this.hass=A,this.config=t,this.mediaPlayers=this.getMediaPlayers(),this.groups=this.createPlayerGroups(this.mediaPlayers),this.entityId=e||this.determineEntityId(this.groups),this.entity=this.hass.states[this.entityId];const s=null===(i=this.config.sections)||void 0===i?void 0:i[0];this.hassService=new YA(this.hass,s),this.mediaControlService=new FA(this.hass,this.hassService),this.mediaBrowseService=new KA(this.hass,this.hassService)}getMediaPlayers(){return this.config.entities?[...new Set(this.config.entities)].filter((A=>this.hass.states[A])):Object.values(this.hass.states).filter(pA).map((A=>A.entity_id)).sort()}createPlayerGroups(A){const t=A.filter((t=>this.createGroupMasters(t,A))).map((t=>this.createGroupArray(t,A)));return Object.fromEntries(t.map((A=>[A.entity,A])))}createGroupMasters(A,t){const e=this.hass.states[A];try{const i=pA(e).filter((A=>t.indexOf(A)>-1)),s=(null==i?void 0:i.length)>1,o=s&&i&&i[0]===A;return!s||o}catch(A){return console.error("Failed to determine group master",JSON.stringify(e),A),!1}}createGroupArray(A,t){const e=this.hass.states[A];try{const i=pA(e).filter((e=>e!==A&&t.indexOf(e)>-1));return{entity:A,state:e.state,roomName:vA(this.hass,this.config,A),members:this.createGroupMembers(i)}}catch(A){return console.error("Failed to create group",JSON.stringify(e),A),{}}}createGroupMembers(A){return Object.fromEntries(A.map((A=>[A,vA(this.hass,this.config,A)])))}determineEntityId(A){const t=this.config.entityId||(window.location.href.indexOf("#")>0?window.location.href.replace(/.*#/g,""):"");let e;for(const i in A)if(i===t)e=i;else for(const s in A[i].members)s===t&&(e=i);if(!e)for(const t in A)CA(A[t].state)&&(e=t);return e||(e=Object.keys(A)[0]),e}}var _A;!function(A){A.MEDIA_BROWSER="media browser",A.GROUPS="groups",A.PLAYER="player",A.GROUPING="grouping",A.VOLUMES="volumes"}(_A||(_A={}));const{GROUPING:At,GROUPS:tt,MEDIA_BROWSER:et,PLAYER:it,VOLUMES:st}=_A;class ot extends AA{render(){return k`
+      ${this.sectionButton("M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z",it)}${this.sectionButton(OA,et)}
+      ${this.sectionButton("M14,10A3,3 0 0,0 11,13A3,3 0 0,0 14,16A3,3 0 0,0 17,13A3,3 0 0,0 14,10M14,18A5,5 0 0,1 9,13A5,5 0 0,1 14,8A5,5 0 0,1 19,13A5,5 0 0,1 14,18M14,2A2,2 0 0,1 16,4A2,2 0 0,1 14,6A2,2 0 0,1 12,4A2,2 0 0,1 14,2M19,0H9A2,2 0 0,0 7,2V18A2,2 0 0,0 9,20H19A2,2 0 0,0 21,18V2A2,2 0 0,0 19,0M5,22H17V24H5A2,2 0 0,1 3,22V4H5",tt)} ${this.sectionButton("M6,22H18L12,16M21,3H3A2,2 0 0,0 1,5V17A2,2 0 0,0 3,19H7V17H3V5H21V17H17V19H21A2,2 0 0,0 23,17V5A2,2 0 0,0 21,3Z",At)}
+      ${this.sectionButton("M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z",st)}
+    `}sectionButton(A,t){var e;return!this.config.sections||(null===(e=this.config.sections)||void 0===e?void 0:e.indexOf(t))>-1?UA(A,(()=>mA(t)),{additionalStyle:Object.assign({padding:"1rem"},this.section===t&&{color:"var(--accent-color)"})}):k``}static get styles(){return n`
       :host {
         display: flex;
         justify-content: space-between;
       }
-    `}}var tt,et;A([iA()],At.prototype,"config",void 0),A([iA()],At.prototype,"section",void 0),customElements.define("sonos-footer",At),function(A){A.language="language",A.system="system",A.comma_decimal="comma_decimal",A.decimal_comma="decimal_comma",A.space_comma="space_comma",A.none="none"}(tt||(tt={})),function(A){A.language="language",A.system="system",A.am_pm="12",A.twenty_four="24"}(et||(et={}));var it;class st extends AA{setConfig(A){this.config=JSON.parse(JSON.stringify(A))}static get styles(){return n`
+    `}}var nt,rt;A([iA()],ot.prototype,"config",void 0),A([iA()],ot.prototype,"section",void 0),customElements.define("sonos-footer",ot),function(A){A.language="language",A.system="system",A.comma_decimal="comma_decimal",A.decimal_comma="decimal_comma",A.space_comma="space_comma",A.none="none"}(nt||(nt={})),function(A){A.language="language",A.system="system",A.am_pm="12",A.twenty_four="24"}(rt||(rt={}));var at;class lt extends AA{setConfig(A){this.config=JSON.parse(JSON.stringify(A))}static get styles(){return n`
       ha-svg-icon {
         margin: 5px;
       }
@@ -238,8 +247,8 @@ const DA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?
       div {
         margin-top: 20px;
       }
-    `}configChanged(){!function(A,t,e,i){i=i||{},e=null==e?{}:e;var s=new Event(t,{bubbles:void 0===i.bubbles||i.bubbles,cancelable:Boolean(i.cancelable),composed:void 0===i.composed||i.composed});s.detail=e,A.dispatchEvent(s)}(this,"config-changed",{config:this.config}),this.requestUpdate()}dispatchClose(){return this.dispatchEvent(new CustomEvent("closed"))}}A([iA()],st.prototype,"config",void 0),A([iA()],st.prototype,"hass",void 0),A([iA()],st.prototype,"store",void 0),function(A){A.GENERAL="General",A.ENTITIES="Entities",A.ADVANCED="Advanced",A.ARTWORK="Artwork"}(it||(it={}));const ot=[{name:"hideGroupCurrentTrack",selector:{boolean:{}}},{name:"dynamicVolumeSlider",selector:{boolean:{}}},{type:"string",name:"labelWhenNoMediaIsSelected"},{type:"string",name:"labelForTheAllVolumesSlider"},{type:"string",name:"artworkHostname"}];customElements.define("sonos-card-advanced-editor",class extends st{render(){return k`
-      <sonos-card-editor-form .schema=${ot} .store=${this.store}></sonos-card-editor-form>
+    `}configChanged(){!function(A,t,e,i){i=i||{},e=null==e?{}:e;var s=new Event(t,{bubbles:void 0===i.bubbles||i.bubbles,cancelable:Boolean(i.cancelable),composed:void 0===i.composed||i.composed});s.detail=e,A.dispatchEvent(s)}(this,"config-changed",{config:this.config}),this.requestUpdate()}dispatchClose(){return this.dispatchEvent(new CustomEvent("closed"))}}A([iA()],lt.prototype,"config",void 0),A([iA()],lt.prototype,"hass",void 0),A([iA()],lt.prototype,"store",void 0),function(A){A.GENERAL="General",A.ENTITIES="Entities",A.ADVANCED="Advanced",A.ARTWORK="Artwork"}(at||(at={}));const ct=[{name:"hideGroupCurrentTrack",selector:{boolean:{}}},{name:"dynamicVolumeSlider",selector:{boolean:{}}},{type:"string",name:"labelWhenNoMediaIsSelected"},{type:"string",name:"labelForTheAllVolumesSlider"},{type:"string",name:"artworkHostname"},{name:"mediaBrowserShowTitleForThumbnailIcons",selector:{boolean:{}}}];customElements.define("sonos-card-advanced-editor",class extends lt{render(){return k`
+      <sonos-card-editor-form .schema=${ct} .store=${this.store}></sonos-card-editor-form>
       <p>
         The following needs to be configured using code (YAML): 
         <ul>
@@ -248,31 +257,31 @@ const DA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?
           <li>mediaBrowserTitlesToIgnore</li>
         </ul>
       </p>
-    `}});class nt extends st{render(){return k``}}A([iA()],nt.prototype,"index",void 0),customElements.define("sonos-card-custom-source-editor",nt);const rt=[{type:"multi_select",options:{player:"Player","media browser":"Media Browser",groups:"Groups",grouping:"Grouping",volumes:"Volumes"},name:"sections"},{type:"string",name:"title"},{name:"showVolumeUpAndDownButtons",selector:{boolean:{}}},{type:"integer",name:"widthPercentage",default:100,required:!0},{type:"integer",name:"heightPercentage",default:100,required:!0}];customElements.define("sonos-card-general-editor",class extends st{render(){return k` <sonos-card-editor-form .schema=${rt} .store=${this.store}></sonos-card-editor-form> `}});const at=[{type:"string",name:"entityNameRegexToReplace"},{type:"string",name:"entityNameReplacement"}],lt=[{name:"entityId",help:"Not needed, but forces this player to be the selected one on loading the card (overrides url param etc)",selector:{entity:{multiple:!1,filter:{integration:"sonos",domain:"media_player"}}}},{name:"entities",help:"Not needed, unless you don't want to include all of them",selector:{entity:{multiple:!0,filter:{integration:"sonos",domain:"media_player"}}}}];class ct extends st{render(){({config:this.config,hass:this.hass}=this.store);const A=this.config.predefinedGroups;return this.editGroup>-1?k`<sonos-card-predefined-group-editor
+    `}});class dt extends lt{render(){return k``}}A([iA()],dt.prototype,"index",void 0),customElements.define("sonos-card-custom-source-editor",dt);const Bt=[{type:"multi_select",options:{player:"Player","media browser":"Media Browser",groups:"Groups",grouping:"Grouping",volumes:"Volumes"},name:"sections"},{type:"integer",name:"mediaBrowserItemsPerRow",default:1,required:!0,valueMin:1,valueMax:30},{type:"string",name:"title"},{name:"showVolumeUpAndDownButtons",selector:{boolean:{}}},{type:"integer",name:"widthPercentage",default:100,required:!0},{type:"integer",name:"heightPercentage",default:100,required:!0}];customElements.define("sonos-card-general-editor",class extends lt{render(){return k` <sonos-card-editor-form .schema=${Bt} .store=${this.store}></sonos-card-editor-form> `}});const Et=[{type:"string",name:"entityNameRegexToReplace"},{type:"string",name:"entityNameReplacement"}],Qt=[{name:"entityId",help:"Not needed, but forces this player to be the selected one on loading the card (overrides url param etc)",selector:{entity:{multiple:!1,filter:{integration:"sonos",domain:"media_player"}}}},{name:"entities",help:"Not needed, unless you don't want to include all of them",selector:{entity:{multiple:!0,filter:{integration:"sonos",domain:"media_player"}}}}];class ht extends lt{render(){({config:this.config,hass:this.hass}=this.store);const A=this.config.predefinedGroups;return this.editGroup>-1?k`<sonos-card-predefined-group-editor
           .index=${this.editGroup}
           .store=${this.store}
           @closed=${()=>this.editGroup=-1}
         ></sonos-card-predefined-group-editor>`:k`
-          <sonos-card-editor-form .schema=${lt} .store=${this.store}></sonos-card-editor-form>
+          <sonos-card-editor-form .schema=${Qt} .store=${this.store}></sonos-card-editor-form>
           <div>
             Predefined Groups
             <ha-control-button-group>
               ${null==A?void 0:A.map(((A,t)=>k`
                   <ha-control-button @click="${()=>this.editGroup=t}">
-                    ${A.name}<ha-svg-icon .path=${bA} label="Edit Group"></ha-svg-icon>
+                    ${A.name}<ha-svg-icon .path=${SA} label="Edit Group"></ha-svg-icon>
                   </ha-control-button>
                 `))}
               <ha-control-button @click="${()=>this.editGroup=A?A.length:0}">
-                Add group<ha-svg-icon .path=${wA} label="Add Group"></ha-svg-icon>
+                Add group<ha-svg-icon .path=${HA} label="Add Group"></ha-svg-icon>
               </ha-control-button>
             </ha-control-button-group>
           </div>
 
           <div>
             Entity Renaming
-            <sonos-card-editor-form .schema=${at} .store=${this.store}></sonos-card-editor-form>
+            <sonos-card-editor-form .schema=${Et} .store=${this.store}></sonos-card-editor-form>
           </div>
-        `}}A([sA()],ct.prototype,"editGroup",void 0),customElements.define("sonos-card-entities-editor",ct);class dt extends st{render(){var A;({config:this.config,hass:this.hass}=this.store);const t=(null===(A=this.config.predefinedGroups)||void 0===A?void 0:A[this.index||0])||{name:"",entities:[]};return k`
+        `}}A([sA()],ht.prototype,"editGroup",void 0),customElements.define("sonos-card-entities-editor",ht);class gt extends lt{render(){var A;({config:this.config,hass:this.hass}=this.store);const t=(null===(A=this.config.predefinedGroups)||void 0===A?void 0:A[this.index||0])||{name:"",entities:[]};return k`
       Add/Edit Predefined Group
       <sonos-card-editor-form
         .data=${t}
@@ -282,15 +291,15 @@ const DA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?
       ></sonos-card-editor-form>
       <ha-control-button-group>
         <ha-control-button @click="${this.dispatchClose}">
-          OK<ha-svg-icon .path=${yA} label="OK"></ha-svg-icon>
+          OK<ha-svg-icon .path=${VA} label="OK"></ha-svg-icon>
         </ha-control-button>
         ${t.name?k`<ha-control-button
               @click="${()=>{var A;this.config.predefinedGroups=null===(A=this.config.predefinedGroups)||void 0===A?void 0:A.filter(((A,t)=>t!==this.index)),this.index=-1,this.configChanged(),this.dispatchClose()}}"
             >
-              Delete<ha-svg-icon .path=${IA} label="Delete"></ha-svg-icon>
+              Delete<ha-svg-icon .path=${PA} label="Delete"></ha-svg-icon>
             </ha-control-button>`:""}
       </ha-control-button-group>
-    `}groupChanged(A,t){const e=A.detail.value;let i=this.config.predefinedGroups;Array.isArray(i)||(i=[]),i[t]?i[t]=e:i=[...i,e],this.config.predefinedGroups=i,this.configChanged()}}A([iA()],dt.prototype,"index",void 0),customElements.define("sonos-card-predefined-group-editor",dt);class Bt extends st{render(){({config:this.config,hass:this.hass}=this.store);const A=this.config.mediaArtworkOverrides;return this.editItem>-1?k`<sonos-card-artwork-override-editor
+    `}groupChanged(A,t){const e=A.detail.value;let i=this.config.predefinedGroups;Array.isArray(i)||(i=[]),i[t]?i[t]=e:i=[...i,e],this.config.predefinedGroups=i,this.configChanged()}}A([iA()],gt.prototype,"index",void 0),customElements.define("sonos-card-predefined-group-editor",gt);class ut extends lt{render(){({config:this.config,hass:this.hass}=this.store);const A=this.config.mediaArtworkOverrides;return this.editItem>-1?k`<sonos-card-artwork-override-editor
           .index=${this.editItem}
           .store=${this.store}
           @closed=${()=>this.editItem=-1}
@@ -300,43 +309,43 @@ const DA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?
             <ha-control-button-group>
               ${null==A?void 0:A.map(((A,t)=>{const e=A.mediaTitleEquals||A.mediaContentIdEquals||A.ifMissing&&"if missing"||t;return k`
                   <ha-control-button @click="${()=>this.editItem=t}">
-                    ${e}<ha-svg-icon .path=${bA} label="Edit"></ha-svg-icon>
+                    ${e}<ha-svg-icon .path=${SA} label="Edit"></ha-svg-icon>
                   </ha-control-button>
                 `}))}
               <ha-control-button @click="${()=>this.editItem=A?A.length:0}">
-                Add<ha-svg-icon .path=${wA} label="Add"></ha-svg-icon>
+                Add<ha-svg-icon .path=${HA} label="Add"></ha-svg-icon>
               </ha-control-button>
             </ha-control-button-group>
           </div>
-        `}}A([sA()],Bt.prototype,"editItem",void 0),customElements.define("sonos-card-artwork-overrides-editor",Bt);const Et={ifMissing:!1};class Qt extends st{render(){var A;({config:this.config,hass:this.hass}=this.store);const t=null===(A=this.config.mediaArtworkOverrides)||void 0===A?void 0:A[this.index||0];return k`
+        `}}A([sA()],ut.prototype,"editItem",void 0),customElements.define("sonos-card-artwork-overrides-editor",ut);const vt={ifMissing:!1};class pt extends lt{render(){var A;({config:this.config,hass:this.hass}=this.store);const t=null===(A=this.config.mediaArtworkOverrides)||void 0===A?void 0:A[this.index||0];return k`
       Add/Edit Artwork Override
       <sonos-card-editor-form
-        .data=${t||Et}
+        .data=${t||vt}
         .schema=${[{name:"ifMissing",selector:{boolean:{}}},{name:"mediaTitleEquals",type:"string"},{name:"mediaContentIdEquals",type:"string"},{name:"imageUrl",type:"string"}]}
         .store=${this.store}
         .changed=${A=>this.changed(A,this.index)}
       ></sonos-card-editor-form>
       <ha-control-button-group>
         <ha-control-button @click="${this.dispatchClose}">
-          OK<ha-svg-icon .path=${yA} label="OK"></ha-svg-icon>
+          OK<ha-svg-icon .path=${VA} label="OK"></ha-svg-icon>
         </ha-control-button>
         ${t?k`<ha-control-button
               @click="${()=>{var A;this.config.mediaArtworkOverrides=null===(A=this.config.mediaArtworkOverrides)||void 0===A?void 0:A.filter(((A,t)=>t!==this.index)),this.index=-1,this.configChanged(),this.dispatchClose()}}"
             >
-              Delete<ha-svg-icon .path=${IA} label="Delete"></ha-svg-icon>
+              Delete<ha-svg-icon .path=${PA} label="Delete"></ha-svg-icon>
             </ha-control-button>`:""}
       </ha-control-button-group>
-    `}changed(A,t){const e=A.detail.value;let i=this.config.mediaArtworkOverrides;Array.isArray(i)||(i=[]),i[t]?i[t]=e:i=[...i,e],this.config.mediaArtworkOverrides=i,this.configChanged()}}A([iA()],Qt.prototype,"index",void 0),customElements.define("sonos-card-artwork-override-editor",Qt);class ht extends st{render(){return({config:this.config,hass:this.hass}=this.store),k`
+    `}changed(A,t){const e=A.detail.value;let i=this.config.mediaArtworkOverrides;Array.isArray(i)||(i=[]),i[t]?i[t]=e:i=[...i,e],this.config.mediaArtworkOverrides=i,this.configChanged()}}A([iA()],pt.prototype,"index",void 0),customElements.define("sonos-card-artwork-override-editor",pt);class mt extends lt{render(){return({config:this.config,hass:this.hass}=this.store),k`
       <ha-form
         .data=${this.data||this.config}
         .schema=${this.schema}
-        .computeLabel=${gt}
+        .computeLabel=${Ct}
         .hass=${this.hass}
         @value-changed=${this.changed||this.valueChanged}
       ></ha-form>
-    `}valueChanged(A){const t=A.detail.value;this.config=Object.assign(Object.assign({},this.config),t),this.configChanged()}}function gt(A){let t=A.name.replace(/([A-Z])/g," $1");return t=t.charAt(0).toUpperCase()+t.slice(1),t+(A.help?` (${A.help})`:"")}A([iA()],ht.prototype,"schema",void 0),A([iA()],ht.prototype,"data",void 0),A([iA()],ht.prototype,"changed",void 0),customElements.define("sonos-card-editor-form",ht);const{GENERAL:vt,ENTITIES:ut,ADVANCED:pt,ARTWORK:Ct}=it;class mt extends st{constructor(){super(...arguments),this.configArea=vt}render(){return this.store=new qA(this.hass,this.config),this.config.sections&&0!==this.config.sections.length||(this.config.sections=[YA.PLAYER,YA.VOLUMES,YA.GROUPS,YA.GROUPING,YA.MEDIA_BROWSER]),k`
+    `}valueChanged(A){const t=A.detail.value;this.config=Object.assign(Object.assign({},this.config),t),this.configChanged()}}function Ct(A){let t=A.name.replace(/([A-Z])/g," $1");return t=t.charAt(0).toUpperCase()+t.slice(1),t+(A.help?` (${A.help})`:"")}A([iA()],mt.prototype,"schema",void 0),A([iA()],mt.prototype,"data",void 0),A([iA()],mt.prototype,"changed",void 0),customElements.define("sonos-card-editor-form",mt);const{GENERAL:ft,ENTITIES:yt,ADVANCED:It,ARTWORK:bt}=at;class wt extends lt{constructor(){super(...arguments),this.configArea=ft}render(){return this.store=new $A(this.hass,this.config),this.config.sections&&0!==this.config.sections.length||(this.config.sections=[_A.PLAYER,_A.VOLUMES,_A.GROUPS,_A.GROUPING,_A.MEDIA_BROWSER]),k`
       <ha-control-button-group>
-        ${[vt,ut,Ct,pt].map((A=>k`
+        ${[ft,yt,bt,It].map((A=>k`
             <ha-control-button
               style=${this.configAreaStyle(A)}
               @click="${()=>this.configArea=A}"
@@ -347,25 +356,25 @@ const DA=(A,t,e)=>{for(const e of t)if(e[0]===A)return(0,e[1])();return null==e?
       </ha-control-button-group>
 
       ${this.subEditor()}
-    `}subEditor(){return DA(this.configArea,[[vt,()=>k`<sonos-card-general-editor .store=${this.store}></sonos-card-general-editor>`],[ut,()=>k`<sonos-card-entities-editor .store=${this.store}></sonos-card-entities-editor>`],[pt,()=>k`<sonos-card-advanced-editor .store=${this.store}></sonos-card-advanced-editor>`],[Ct,()=>k`<sonos-card-artwork-overrides-editor .store=${this.store}></sonos-card-artwork-overrides-editor>`]])}configAreaStyle(A){return this.configArea===A?zA({"--control-button-background-color":"var(--primary-color)"}):""}}
+    `}subEditor(){return qA(this.configArea,[[ft,()=>k`<sonos-card-general-editor .store=${this.store}></sonos-card-general-editor>`],[yt,()=>k`<sonos-card-entities-editor .store=${this.store}></sonos-card-entities-editor>`],[It,()=>k`<sonos-card-advanced-editor .store=${this.store}></sonos-card-advanced-editor>`],[bt,()=>k`<sonos-card-artwork-overrides-editor .store=${this.store}></sonos-card-artwork-overrides-editor>`]])}configAreaStyle(A){return this.configArea===A?jA({"--control-button-background-color":"var(--primary-color)"}):""}}
 /**
  * @license
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"configArea",void 0),customElements.define("sonos-card-editor",mt);const{GROUPING:yt,GROUPS:It,MEDIA_BROWSER:bt,PLAYER:wt,VOLUMES:Lt}=YA,Vt=40;class St extends AA{constructor(){super(...arguments),this.showSectionListener=A=>{const t=A.detail;(!this.config.sections||this.config.sections.indexOf(t)>-1)&&(this.section=t)},this.callMediaStartedListener=A=>{this.showLoader||this.config.sections&&A.detail.section!==this.section||(this.cancelLoader=!1,setTimeout((()=>{this.cancelLoader||(this.showLoader=!0,this.loaderTimestamp=Date.now())}),300))},this.callMediaDoneListener=()=>{this.cancelLoader=!0;const A=Date.now()-this.loaderTimestamp;this.showLoader&&(A<1e3?setTimeout((()=>this.showLoader=!1),1e3-A):this.showLoader=!1)},this.entityIdListener=A=>{const t=A.detail.entityId;t!==this.entityId&&(this.entityId=t,this.requestUpdate())}}render(){this.createStore();let A=Pt(this.config.heightPercentage);const t=this.config.sections,e=!t||t.length>1,i=e?A-5:A,s=this.config.title;return A=s?A+2:A,k`
+function Lt(A,t,e){return A?t():null==e?void 0:e()}A([sA()],wt.prototype,"configArea",void 0),customElements.define("sonos-card-editor",wt);const{GROUPING:Vt,GROUPS:Pt,MEDIA_BROWSER:St,PLAYER:Ht,VOLUMES:Ot}=_A;class Mt extends AA{constructor(){super(...arguments),this.showSectionListener=A=>{const t=A.detail;(!this.config.sections||this.config.sections.indexOf(t)>-1)&&(this.section=t)},this.callMediaStartedListener=A=>{this.showLoader||this.config.sections&&A.detail.section!==this.section||(this.cancelLoader=!1,setTimeout((()=>{this.cancelLoader||(this.showLoader=!0,this.loaderTimestamp=Date.now())}),300))},this.callMediaDoneListener=()=>{this.cancelLoader=!0;const A=Date.now()-this.loaderTimestamp;this.showLoader&&(A<1e3?setTimeout((()=>this.showLoader=!1),1e3-A):this.showLoader=!1)},this.entityIdListener=A=>{const t=A.detail.entityId;t!==this.entityId&&(this.entityId=t,this.requestUpdate())}}render(){this.createStore();let A=LA(this.config.heightPercentage);const t=this.config.sections,e=!t||t.length>1,i=e?A-5:A,s=this.config.title;return A=s?A+2:A,k`
       <ha-card style="${this.haCardStyle(A)}">
         <div class="loader" ?hidden="${!this.showLoader}">
           <ha-circular-progress active="" progress="0"></ha-circular-progress>
         </div>
         ${s?k`<div class="title">${s}</div>`:k``}
         <div class="content" style="${this.contentStyle(i)}">
-          ${DA(this.section,[[wt,()=>k` <sonos-player .store=${this.store}></sonos-player>`],[It,()=>k` <sonos-groups .store=${this.store}></sonos-groups>`],[yt,()=>k`<sonos-grouping .store=${this.store}></sonos-grouping>`],[bt,()=>k` <sonos-media-browser .store=${this.store}></sonos-media-browser>`],[Lt,()=>k` <sonos-volumes .store=${this.store}></sonos-volumes>`]])}
+          ${qA(this.section,[[Ht,()=>k` <sonos-player .store=${this.store}></sonos-player>`],[Pt,()=>k` <sonos-groups .store=${this.store}></sonos-groups>`],[Vt,()=>k`<sonos-grouping .store=${this.store}></sonos-grouping>`],[St,()=>k` <sonos-media-browser .store=${this.store}></sonos-media-browser>`],[Ot,()=>k` <sonos-volumes .store=${this.store}></sonos-volumes>`]])}
         </div>
-        ${ft(e,(()=>k`<sonos-footer style=${this.footerStyle()} .config="${this.config}" .section="${this.section}">
+        ${Lt(e,(()=>k`<sonos-footer style=${this.footerStyle()} .config="${this.config}" .section="${this.section}">
             </sonos-footer>`))}
       </ha-card>
-    `}createStore(){this.entityId?this.store=new qA(this.hass,this.config,this.entityId):(this.store=new qA(this.hass,this.config),this.entityId=this.store.entityId)}getCardSize(){return 3}static getConfigElement(){return document.createElement("sonos-card-editor")}connectedCallback(){super.connectedCallback(),window.addEventListener(lA,this.showSectionListener),window.addEventListener(cA,this.callMediaStartedListener),window.addEventListener(dA,this.callMediaDoneListener),function(A){window.addEventListener(rA,A);const t=new CustomEvent(aA,{bubbles:!0,composed:!0});window.dispatchEvent(t)}(this.entityIdListener)}disconnectedCallback(){var A;window.removeEventListener(lA,this.showSectionListener),window.removeEventListener(cA,this.callMediaStartedListener),window.removeEventListener(dA,this.callMediaDoneListener),A=this.entityIdListener,window.removeEventListener(rA,A),super.disconnectedCallback()}haCardStyle(A){const t=Pt(this.config.widthPercentage);return zA({color:"var(--secondary-text-color)",height:`${A}rem`,minWidth:"20rem",maxWidth:`${t}rem`})}footerStyle(){return zA({height:"5rem",paddingBottom:"1rem"})}contentStyle(A){return zA({overflowY:"auto",height:`${A}rem`})}setConfig(A){const t=JSON.parse(JSON.stringify(A));for(const[A,e]of Object.entries(t))Array.isArray(e)&&0===e.length&&delete t[A];const e=t.sections;this.section=e?e.indexOf(wt)>-1?wt:e.indexOf(bt)>-1?bt:e.indexOf(It)>-1?It:e.indexOf(yt)>-1?yt:Lt:wt,this.config=t}static get styles(){return n`
+    `}createStore(){this.entityId?this.store=new $A(this.hass,this.config,this.entityId):(this.store=new $A(this.hass,this.config),this.entityId=this.store.entityId)}getCardSize(){return 3}static getConfigElement(){return document.createElement("sonos-card-editor")}connectedCallback(){super.connectedCallback(),window.addEventListener(lA,this.showSectionListener),window.addEventListener(cA,this.callMediaStartedListener),window.addEventListener(dA,this.callMediaDoneListener),function(A){window.addEventListener(rA,A);const t=new CustomEvent(aA,{bubbles:!0,composed:!0});window.dispatchEvent(t)}(this.entityIdListener)}disconnectedCallback(){var A;window.removeEventListener(lA,this.showSectionListener),window.removeEventListener(cA,this.callMediaStartedListener),window.removeEventListener(dA,this.callMediaDoneListener),A=this.entityIdListener,window.removeEventListener(rA,A),super.disconnectedCallback()}haCardStyle(A){const t=LA(this.config.widthPercentage);return jA({color:"var(--secondary-text-color)",height:`${A}rem`,minWidth:"20rem",maxWidth:`${t}rem`})}footerStyle(){return jA({height:"5rem",paddingBottom:"1rem"})}contentStyle(A){return jA({overflowY:"auto",height:`${A}rem`})}setConfig(A){const t=JSON.parse(JSON.stringify(A));for(const[A,e]of Object.entries(t))Array.isArray(e)&&0===e.length&&delete t[A];const e=t.sections;this.section=e?e.indexOf(Ht)>-1?Ht:e.indexOf(St)>-1?St:e.indexOf(Pt)>-1?Pt:e.indexOf(Vt)>-1?Vt:Ot:Ht,this.config=t}static get styles(){return n`
       .loader {
         position: absolute;
         z-index: 1000;
@@ -381,16 +390,16 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
         font-size: 1.2rem;
         color: var(--secondary-text-color);
       }
-    `}}function Pt(A){return A?A/100*Vt:Vt}function Ht(A,t,e){return k`
-    <ha-control-button @click="${A}" style=${zA({width:"fit-content","--control-button-background-color":"var(--accent-color)","--control-button-icon-color":"var(--secondary-text-color)"})}>
-      <ha-icon .icon=${t} style=${zA({padding:"1rem"})}></ha-icon>
-      ${e?k`<span style=${zA({paddingRight:"1rem",fontWeight:"bold"})}>${e}</span>`:""}
+    `}}function zt(A,t,e){return k`
+    <ha-control-button @click="${A}" style=${jA({width:"fit-content","--control-button-background-color":"var(--accent-color)","--control-button-icon-color":"var(--secondary-text-color)"})}>
+      <ha-icon .icon=${t} style=${jA({padding:"1rem"})}></ha-icon>
+      ${e?k`<span style=${jA({paddingRight:"1rem",fontWeight:"bold"})}>${e}</span>`:""}
     </ha-control-button>
-  `}A([iA({attribute:!1})],St.prototype,"hass",void 0),A([iA()],St.prototype,"config",void 0),A([sA()],St.prototype,"section",void 0),A([sA()],St.prototype,"store",void 0),A([sA()],St.prototype,"showLoader",void 0),A([sA()],St.prototype,"loaderTimestamp",void 0),A([sA()],St.prototype,"cancelLoader",void 0),A([sA()],St.prototype,"entityId",void 0);class Ot extends AA{render(){({config:this.config,hass:this.hass,groups:this.groups,entityId:this.entityId,mediaControlService:this.mediaControlService,mediaPlayers:this.mediaPlayers}=this.store);const A=this.mediaPlayers.filter((A=>A!==this.entityId&&this.groups[this.entityId].members[A])),t=this.mediaPlayers.filter((A=>A!==this.entityId&&!this.groups[this.entityId].members[A]));return k`
+  `}A([iA({attribute:!1})],Mt.prototype,"hass",void 0),A([iA()],Mt.prototype,"config",void 0),A([sA()],Mt.prototype,"section",void 0),A([sA()],Mt.prototype,"store",void 0),A([sA()],Mt.prototype,"showLoader",void 0),A([sA()],Mt.prototype,"loaderTimestamp",void 0),A([sA()],Mt.prototype,"cancelLoader",void 0),A([sA()],Mt.prototype,"entityId",void 0);class kt extends AA{render(){({config:this.config,hass:this.hass,groups:this.groups,entityId:this.entityId,mediaControlService:this.mediaControlService,mediaPlayers:this.mediaPlayers}=this.store);const A=this.mediaPlayers.filter((A=>A!==this.entityId&&this.groups[this.entityId].members[A])),t=this.mediaPlayers.filter((A=>A!==this.entityId&&!this.groups[this.entityId].members[A]));return k`
       <div class="buttons">
-        ${ft(t.length,(()=>Ht((async()=>await this.mediaControlService.join(this.entityId,t)),"mdi:checkbox-multiple-marked-outline","")))}
-        ${ft(A.length,(()=>Ht((async()=>await this.mediaControlService.unjoin(A)),"mdi:minus-box-multiple-outline","")))}
-        ${ft(this.config.predefinedGroups&&!0,(()=>this.renderPredefinedGroups()))}
+        ${Lt(t.length,(()=>zt((async()=>await this.mediaControlService.join(this.entityId,t)),"mdi:checkbox-multiple-marked-outline","")))}
+        ${Lt(A.length,(()=>zt((async()=>await this.mediaControlService.unjoin(A)),"mdi:minus-box-multiple-outline","")))}
+        ${Lt(this.config.predefinedGroups&&!0,(()=>this.renderPredefinedGroups()))}
       </div>
       <mwc-list multi class="list">
         ${this.mediaPlayers.map((A=>this.getGroupingItem(A))).map((A=>k`<mwc-list-item
@@ -404,7 +413,7 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
               <span class="item">${A.name}</span>
             </mwc-list-item>`))}
       </mwc-list>
-    `}getGroupingItem(A){const t=A===this.entityId,e=this.groups[this.entityId].members;return{isMain:t,isSelected:t||void 0!==e[A],isGrouped:Object.keys(e).length>0,name:gA(this.hass,this.config,A),entity:A}}async itemClickAction({isSelected:A,entity:t,isMain:e}){if(A){if(e){fA(Object.keys(this.groups[this.entityId].members)[0])}await this.mediaControlService.unjoin([t])}else await this.mediaControlService.join(this.entityId,[t])}renderPredefinedGroups(){var A;return null===(A=this.config.predefinedGroups)||void 0===A?void 0:A.filter((A=>A.entities.length>1)).map((A=>Ht((async()=>await this.mediaControlService.createGroup(A.entities,this.groups)),"mdi:speaker-multiple",A.name)))}static get styles(){return[n`
+    `}getGroupingItem(A){const t=A===this.entityId,e=this.groups[this.entityId].members;return{isMain:t,isSelected:t||void 0!==e[A],isGrouped:Object.keys(e).length>0,name:vA(this.hass,this.config,A),entity:A}}async itemClickAction({isSelected:A,entity:t,isMain:e}){if(A){if(e){IA(Object.keys(this.groups[this.entityId].members)[0])}await this.mediaControlService.unjoin([t])}else await this.mediaControlService.join(this.entityId,[t])}renderPredefinedGroups(){var A;return null===(A=this.config.predefinedGroups)||void 0===A?void 0:A.filter((A=>A.entities.length>1)).map((A=>zt((async()=>await this.mediaControlService.createGroup(A.entities,this.groups)),"mdi:speaker-multiple",A.name)))}static get styles(){return[n`
         .buttons {
           margin: 1rem;
           display: flex;
@@ -417,14 +426,14 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
           color: var(--secondary-text-color);
           font-weight: bold;
         }
-      `,hA]}}A([iA()],Ot.prototype,"store",void 0);class Mt extends AA{constructor(){super(...arguments),this.selected=!1,this.dispatchEntityIdEvent=()=>{if(this.selected){fA(this.group.entity)}}}connectedCallback(){var A;super.connectedCallback(),A=this.dispatchEntityIdEvent,window.addEventListener(aA,A)}disconnectedCallback(){var A;A=this.dispatchEntityIdEvent,window.removeEventListener(aA,A),super.disconnectedCallback()}render(){({config:this.config,hass:this.hass}=this.store);const A=this.config.hideGroupCurrentTrack?"":CA(this.hass.states[this.group.entity]),t=mA(this.group,this.config);this.dispatchEntityIdEvent();const e=this.hass.states[this.group.entity].attributes.icon;return k`
+      `,gA]}}A([iA()],kt.prototype,"store",void 0);class xt extends AA{constructor(){super(...arguments),this.selected=!1,this.dispatchEntityIdEvent=()=>{if(this.selected){IA(this.group.entity)}}}connectedCallback(){super.connectedCallback(),window.addEventListener(aA,this.dispatchEntityIdEvent)}disconnectedCallback(){window.removeEventListener(aA,this.dispatchEntityIdEvent),super.disconnectedCallback()}render(){({config:this.config,hass:this.hass}=this.store);const A=this.config.hideGroupCurrentTrack?"":fA(this.hass.states[this.group.entity]),t=yA(this.group,this.config);this.dispatchEntityIdEvent();const e=this.hass.states[this.group.entity].attributes.icon;return k`
       <mwc-list-item
         hasMeta
         ?selected="${this.selected}"
         ?activated="${this.selected}"
         @click="${()=>this.handleGroupClicked()}"
       >
-        <div class="wrapper">
+        <div class="row">
           <ha-icon .icon=${e} ?hidden=${!e}></ha-icon>
           <div class="text">
             <span class="speakers">${t}</span>
@@ -432,7 +441,7 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
           </div>
         </div>
 
-        ${ft(pA(this.group.state),(()=>k`
+        ${Lt(CA(this.group.state),(()=>k`
             <div class="bars" slot="meta">
               <div></div>
               <div></div>
@@ -440,7 +449,7 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
             </div>
           `))}
       </mwc-list-item>
-    `}handleGroupClicked(){if(!this.selected){this.selected=!0;const A=window.location.href.replace(/#.*/g,"");window.location.replace(`${A}#${this.group.entity}`),this.dispatchEntityIdEvent(),uA(YA.PLAYER)}}static get styles(){return n`
+    `}handleGroupClicked(){if(!this.selected){this.selected=!0;const A=window.location.href.replace(/#.*/g,"");window.location.replace(`${A}#${this.group.entity}`),this.dispatchEntityIdEvent(),mA(_A.PLAYER)}}static get styles(){return n`
       @keyframes sound {
         0% {
           opacity: 0.35;
@@ -451,40 +460,48 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
           height: 1rem;
         }
       }
+
       mwc-list-item {
         height: fit-content;
         margin: 1rem;
         border-radius: 1rem;
         background: var(--secondary-background-color);
       }
-      .wrapper {
+
+      .row {
         display: flex;
         margin: 1rem 0;
       }
+
       .text {
         display: flex;
         flex-direction: column;
         justify-content: center;
       }
+
       .speakers {
         white-space: initial;
         font-size: 1.1rem;
         font-weight: bold;
         color: var(--secondary-text-color);
       }
+
       .song-title {
         font-size: 0.9rem;
         font-weight: bold;
       }
+
       ha-icon {
         --mdc-icon-size: 3rem;
         margin-right: 1rem;
       }
+
       .bars {
         width: 0.55rem;
         position: relative;
         margin-left: 1rem;
       }
+
       .bars > div {
         background: var(--secondary-text-color);
         bottom: 0.05rem;
@@ -494,57 +511,149 @@ function ft(A,t,e){return A?t():null==e?void 0:e()}A([sA()],mt.prototype,"config
         animation: sound 0ms -800ms linear infinite alternate;
         display: block;
       }
+
       .bars > div:first-child {
         left: 0.05rem;
         animation-duration: 474ms;
       }
+
       .bars > div:nth-child(2) {
         left: 0.25rem;
         animation-duration: 433ms;
       }
+
       .bars > div:last-child {
         left: 0.45rem;
         animation-duration: 407ms;
       }
-    `}}A([iA()],Mt.prototype,"store",void 0),A([iA()],Mt.prototype,"selected",void 0),customElements.define("sonos-group",Mt);class zt extends AA{render(){return({config:this.config,hass:this.hass,groups:this.groups,entityId:this.entityId}=this.store),k`
+    `}}A([iA()],xt.prototype,"store",void 0),A([iA()],xt.prototype,"selected",void 0),customElements.define("sonos-group",xt);class Nt extends AA{render(){return({config:this.config,hass:this.hass,groups:this.groups,entityId:this.entityId}=this.store),k`
       <mwc-list activatable class="list">
         ${Object.values(this.groups).map((A=>{const t=this.entityId===A.entity;return k` <sonos-group .store=${this.store} .group=${A} .selected="${t}"></sonos-group> `}))}
       </mwc-list>
-    `}static get styles(){return hA}}A([iA()],zt.prototype,"store",void 0);
+    `}static get styles(){return gA}}A([iA()],Nt.prototype,"store",void 0);
 /**
  * @license
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const kt=(A,t)=>{var e,i;const s=A._$AN;if(void 0===s)return!1;for(const A of s)null===(i=(e=A)._$AO)||void 0===i||i.call(e,t,!1),kt(A,t);return!0},xt=A=>{let t,e;do{if(void 0===(t=A._$AM))break;e=t._$AN,e.delete(A),A=t}while(0===(null==e?void 0:e.size))},Nt=A=>{for(let t;t=A._$AM;A=t){let e=t._$AN;if(void 0===e)t._$AN=e=new Set;else if(e.has(A))break;e.add(A),Ut(t)}};
+const Xt=(A,t)=>{var e,i;const s=A._$AN;if(void 0===s)return!1;for(const A of s)null===(i=(e=A)._$AO)||void 0===i||i.call(e,t,!1),Xt(A,t);return!0},jt=A=>{let t,e;do{if(void 0===(t=A._$AM))break;e=t._$AN,e.delete(A),A=t}while(0===(null==e?void 0:e.size))},Ut=A=>{for(let t;t=A._$AM;A=t){let e=t._$AN;if(void 0===e)t._$AN=e=new Set;else if(e.has(A))break;e.add(A),Rt(t)}};
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function Xt(A){void 0!==this._$AN?(xt(this),this._$AM=A,Nt(this)):this._$AM=A}function jt(A,t=!1,e=0){const i=this._$AH,s=this._$AN;if(void 0!==s&&0!==s.size)if(t)if(Array.isArray(i))for(let A=e;A<i.length;A++)kt(i[A],!1),xt(i[A]);else null!=i&&(kt(i,!1),xt(i));else kt(this,A)}const Ut=A=>{var t,e,i,s;A.type==HA&&(null!==(t=(i=A)._$AP)&&void 0!==t||(i._$AP=jt),null!==(e=(s=A)._$AQ)&&void 0!==e||(s._$AQ=Xt))};class Wt extends MA{constructor(){super(...arguments),this._$AN=void 0}_$AT(A,t,e){super._$AT(A,t,e),Nt(this),this.isConnected=A._$AU}_$AO(A,t=!0){var e,i;A!==this.isConnected&&(this.isConnected=A,A?null===(e=this.reconnected)||void 0===e||e.call(this):null===(i=this.disconnected)||void 0===i||i.call(this)),t&&(kt(this,A),xt(this))}setValue(A){if((A=>void 0===A.strings)(this._$Ct))this._$Ct._$AI(A,this);else{const t=[...this._$Ct._$AH];t[this._$Ci]=A,this._$Ct._$AI(t,this,0)}}disconnected(){}reconnected(){}}
+ */function Wt(A){void 0!==this._$AN?(jt(this),this._$AM=A,Ut(this)):this._$AM=A}function Dt(A,t=!1,e=0){const i=this._$AH,s=this._$AN;if(void 0!==s&&0!==s.size)if(t)if(Array.isArray(i))for(let A=e;A<i.length;A++)Xt(i[A],!1),jt(i[A]);else null!=i&&(Xt(i,!1),jt(i));else Xt(this,A)}const Rt=A=>{var t,e,i,s;A.type==xA&&(null!==(t=(i=A)._$AP)&&void 0!==t||(i._$AP=Dt),null!==(e=(s=A)._$AQ)&&void 0!==e||(s._$AQ=Wt))};class Tt extends XA{constructor(){super(...arguments),this._$AN=void 0}_$AT(A,t,e){super._$AT(A,t,e),Ut(this),this.isConnected=A._$AU}_$AO(A,t=!0){var e,i;A!==this.isConnected&&(this.isConnected=A,A?null===(e=this.reconnected)||void 0===e||e.call(this):null===(i=this.disconnected)||void 0===i||i.call(this)),t&&(Xt(this,A),jt(this))}setValue(A){if((A=>void 0===A.strings)(this._$Ct))this._$Ct._$AI(A,this);else{const t=[...this._$Ct._$AH];t[this._$Ci]=A,this._$Ct._$AI(t,this,0)}}disconnected(){}reconnected(){}}
 /**
  * @license
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */class Dt{constructor(A){this.Y=A}disconnect(){this.Y=void 0}reconnect(A){this.Y=A}deref(){return this.Y}}class Rt{constructor(){this.Z=void 0,this.q=void 0}get(){return this.Z}pause(){var A;null!==(A=this.Z)&&void 0!==A||(this.Z=new Promise((A=>this.q=A)))}resume(){var A;null===(A=this.q)||void 0===A||A.call(this),this.Z=this.q=void 0}}
+ */class Zt{constructor(A){this.Y=A}disconnect(){this.Y=void 0}reconnect(A){this.Y=A}deref(){return this.Y}}class Gt{constructor(){this.Z=void 0,this.q=void 0}get(){return this.Z}pause(){var A;null!==(A=this.Z)&&void 0!==A||(this.Z=new Promise((A=>this.q=A)))}resume(){var A;null===(A=this.q)||void 0===A||A.call(this),this.Z=this.q=void 0}}
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const Tt=A=>!(A=>null===A||"object"!=typeof A&&"function"!=typeof A)(A)&&"function"==typeof A.then;const Zt=OA(class extends Wt{constructor(){super(...arguments),this._$Cwt=1073741823,this._$Cyt=[],this._$CK=new Dt(this),this._$CX=new Rt}render(...A){var t;return null!==(t=A.find((A=>!Tt(A))))&&void 0!==t?t:x}update(A,t){const e=this._$Cyt;let i=e.length;this._$Cyt=t;const s=this._$CK,o=this._$CX;this.isConnected||this.disconnected();for(let A=0;A<t.length&&!(A>this._$Cwt);A++){const n=t[A];if(!Tt(n))return this._$Cwt=A,n;A<i&&n===e[A]||(this._$Cwt=1073741823,i=0,Promise.resolve(n).then((async A=>{for(;o.get();)await o.get();const t=s.deref();if(void 0!==t){const e=t._$Cyt.indexOf(n);e>-1&&e<t._$Cwt&&(t._$Cwt=e,t.setValue(A))}})))}return x}disconnected(){this._$CK.disconnect(),this._$CX.pause()}reconnected(){this._$CK.reconnect(this),this._$CX.resume()}}),Gt="35px";class qt extends AA{constructor(){super(...arguments),this.iconStyle={position:"relative",flexShrink:"0",width:Gt,height:Gt}}getThumbnail(){var A,t;let e=this.mediaItem.thumbnail;return e?(null==e?void 0:e.match(/https:\/\/brands.home-assistant.io\/.+\/logo.png/))&&(e=null==e?void 0:e.replace("logo.png","icon.png")):(e=(null===(A=this.config.customThumbnailIfMissing)||void 0===A?void 0:A[this.mediaItem.title])||"",this.itemsWithImage&&!e&&(e=(null===(t=this.config.customThumbnailIfMissing)||void 0===t?void 0:t.default)||"data:image/png;base64,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")),e}render(){const A=this.getThumbnail();return k`
-      <div class="thumbnail" style="${this.thumbnailStyle(A)}"></div>
-      <ha-icon class="folder" style="${this.folderStyle(A)}" .icon=${"mdi:folder-music"}></ha-icon>
-      <div class="title" style="${this.titleStyle(A)}">${this.mediaItem.title}</div>
-    `}thumbnailStyle(A){return zA(Object.assign(Object.assign(Object.assign({},this.iconStyle),{backgroundSize:Gt,backgroundRepeat:"no-repeat",backgroundPosition:"left",backgroundImage:"url("+A+")"}),!A&&{display:"none"}))}folderStyle(A){return zA(Object.assign(Object.assign(Object.assign({},this.iconStyle),{"--mdc-icon-size":"90%"}),(!this.mediaItem.can_expand||A)&&{display:"none"}))}titleStyle(A){return zA(Object.assign({fontSize:"1.1rem",color:"var(--secondary-text-color)",fontWeight:"bold",padding:"0px 0.5rem",textOverflow:"ellipsis",overflow:"hidden",whiteSpace:"nowrap",alignSelf:"center",flex:"1"},(A||this.mediaItem.can_expand)&&{zIndex:"1"}))}static get styles(){return n`
-      :host {
-        display: flex;
+ */const qt=A=>!(A=>null===A||"object"!=typeof A&&"function"!=typeof A)(A)&&"function"==typeof A.then;const Yt=NA(class extends Tt{constructor(){super(...arguments),this._$Cwt=1073741823,this._$Cyt=[],this._$CK=new Zt(this),this._$CX=new Gt}render(...A){var t;return null!==(t=A.find((A=>!qt(A))))&&void 0!==t?t:x}update(A,t){const e=this._$Cyt;let i=e.length;this._$Cyt=t;const s=this._$CK,o=this._$CX;this.isConnected||this.disconnected();for(let A=0;A<t.length&&!(A>this._$Cwt);A++){const n=t[A];if(!qt(n))return this._$Cwt=A,n;A<i&&n===e[A]||(this._$Cwt=1073741823,i=0,Promise.resolve(n).then((async A=>{for(;o.get();)await o.get();const t=s.deref();if(void 0!==t){const e=t._$Cyt.indexOf(n);e>-1&&e<t._$Cwt&&(t._$Cwt=e,t.setValue(A))}})))}return x}disconnected(){this._$CK.disconnect(),this._$CX.pause()}reconnected(){this._$CK.reconnect(this),this._$CX.resume()}}),Jt="data:image/png;base64,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";function Kt(A,t){const e=A.some((A=>A.thumbnail));return A.map((A=>{const i=function(A,t,e){var i,s;let o=A.thumbnail;return o?(null==o?void 0:o.match(/https:\/\/brands\.home-assistant\.io\/.+\/logo.png/))&&(o=null==o?void 0:o.replace("logo.png","icon.png")):(o=null===(i=t.customThumbnailIfMissing)||void 0===i?void 0:i[A.title],e&&!o&&(o=(null===(s=t.customThumbnailIfMissing)||void 0===s?void 0:s.default)||Jt)),o||""}(A,t,e);return Object.assign(Object.assign({},A),{thumbnail:i,showFolderIcon:A.can_expand&&!i})}))}function Ft(A,t){return k`
+    <style>
+      .button:nth-of-type(${t+1}) .thumbnail {
+        background-image: url(${A});
       }
-    `}}A([iA()],qt.prototype,"mediaItem",void 0),A([iA()],qt.prototype,"config",void 0),A([iA()],qt.prototype,"itemsWithImage",void 0),customElements.define("sonos-media-list-item",qt);class Yt extends AA{constructor(){super(...arguments),this.browseMedia=!0}render(){const A=this.browseMedia?"M4,6H2V20A2,2 0 0,0 4,22H18V20H4V6M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M12,14.5V5.5L18,10L12,14.5Z":this.mediaBrowserDir?"M13.5 21C9.36 21 6 17.64 6 13.5V11H2L8 4L14 11H10V13.5C10 15.43 11.57 17 13.5 17H21V21H13.5Z":LA;return k`
+    </style>
+  `}function $t(A,t=!0){return k`
+    <div class="thumbnail" ?hidden="${!A.thumbnail}"></div>
+    <ha-icon class="folder" .icon=${"mdi:folder-music"} ?hidden="${!A.showFolderIcon}"></ha-icon>
+    <div class="title" ?hidden="${!t}">${A.title}</div>
+  `}class _t extends AA{render(){return({config:this.config}=this.store),k`
+      <mwc-list multi class="list">
+        ${Kt(this.items,this.config).map(((A,t)=>k`
+            ${Ft(A.thumbnail,t)}
+            <mwc-list-item class="button" @click="${()=>bA(A)}">
+              <div class="row">${$t(A)}</div>
+            </mwc-list-item>
+          `))}
+      </mwc-list>
+    `}static get styles(){return[n`
+        .button {
+          --icon-width: 35px;
+          height: 40px;
+        }
+
+        .row {
+          display: flex;
+        }
+
+        .thumbnail {
+          width: var(--icon-width);
+          height: var(--icon-width);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: left;
+        }
+
+        .folder {
+          width: var(--icon-width);
+          --mdc-icon-size: 100%;
+        }
+
+        .title {
+          font-size: 1.1rem;
+          align-self: center;
+          flex: 1;
+        }
+      `,uA,gA]}}A([iA()],_t.prototype,"store",void 0),A([iA()],_t.prototype,"items",void 0),customElements.define("sonos-media-browser-list",_t);class Ae extends AA{render(){return({config:this.config}=this.store),k`
+      <style>
+        :host {
+          --items-per-row: ${this.config.mediaBrowserItemsPerRow};
+        }
+      </style>
+      <div class="icons">
+        ${Kt(this.items,this.config).map(((A,t)=>k`
+              ${Ft(A.thumbnail,t)}
+              <ha-control-button class="button" @click="${()=>bA(A)}">
+                ${$t(A,!A.thumbnail||!!this.config.mediaBrowserShowTitleForThumbnailIcons)}
+              </ha-control-button>
+            `))}
+      </div>
+    `}static get styles(){return[n`
+        .icons {
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        .button {
+          --margin: 1%;
+          --width: calc(100% / var(--items-per-row) - var(--margin) * 2);
+          width: var(--width);
+          height: var(--width);
+          margin: var(--margin);
+        }
+
+        .thumbnail {
+          width: 100%;
+          padding-bottom: 100%;
+          margin: 0 6%;
+          background-size: 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+
+        .folder {
+          margin: 5% 15% 25% 15%;
+          --mdc-icon-size: 100%;
+        }
+
+        .title {
+          font-size: 0.8rem;
+          position: absolute;
+          width: 100%;
+          line-height: 160%;
+          bottom: 0;
+          background-color: #ffffffbb;
+        }
+      `,uA]}}A([iA()],Ae.prototype,"store",void 0),A([iA()],Ae.prototype,"items",void 0),customElements.define("sonos-media-browser-icons",Ae);class te extends AA{constructor(){super(...arguments),this.browseMedia=!0}render(){const A=this.browseMedia?"M4,6H2V20A2,2 0 0,0 4,22H18V20H4V6M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M12,14.5V5.5L18,10L12,14.5Z":this.mediaBrowserDir?"M13.5 21C9.36 21 6 17.64 6 13.5V11H2L8 4L14 11H10V13.5C10 15.43 11.57 17 13.5 17H21V21H13.5Z":OA;return k`
       <div class="play">
-        ${this.browseCanPlay?kA("M8,5.14V19.14L19,12.14L8,5.14Z",(()=>{window.dispatchEvent(new CustomEvent(BA))}),{additionalStyle:{padding:"0.5rem"}}):""}
+        ${this.browseCanPlay?UA("M8,5.14V19.14L19,12.14L8,5.14Z",(()=>window.dispatchEvent(new CustomEvent(BA))),{additionalStyle:{padding:"0.5rem"}}):""}
       </div>
       <div class="title">${this.title}</div>
-      ${kA(A,(()=>{window.dispatchEvent(new CustomEvent(EA))}),{additionalStyle:{padding:"0.5rem",flex:"1",textAlign:"right"}})}
+      ${UA(A,(()=>window.dispatchEvent(new CustomEvent(EA))),{additionalStyle:{padding:"0.5rem",flex:"1",textAlign:"right"}})}
     `}connectedCallback(){super.connectedCallback(),window.addEventListener(QA,(A=>{const t=A.detail;this.browseCanPlay=t.canPlay,this.browseMedia=!t.browse,this.mediaBrowserDir=t.currentDir,this.title=t.title}))}static get styles(){return n`
       :host {
         display: flex;
@@ -562,68 +671,58 @@ const kt=(A,t)=>{var e,i;const s=A._$AN;if(void 0===s)return!1;for(const A of s)
         align-items: center;
         justify-content: center;
       }
-    `}}A([iA()],Yt.prototype,"config",void 0),A([sA()],Yt.prototype,"browseCanPlay",void 0),A([sA()],Yt.prototype,"browseMedia",void 0),A([sA()],Yt.prototype,"mediaBrowserDir",void 0),A([sA()],Yt.prototype,"title",void 0),customElements.define("sonos-media-browser-header",Yt);const Jt="custom-sonos-card_currentDir";class Kt extends AA{constructor(){super(...arguments),this.parentDirs=[],this.playDirListener=async()=>{await this.playItem(this.currentDir)},this.browseClickedListener=async()=>{await this.browseClicked()}}connectedCallback(){super.connectedCallback(),window.addEventListener(BA,this.playDirListener),window.addEventListener(EA,this.browseClickedListener)}disconnectedCallback(){window.removeEventListener(BA,this.playDirListener),window.removeEventListener(EA,this.browseClickedListener),super.disconnectedCallback()}render(){({config:this.config,hass:this.hass,mediaPlayers:this.mediaPlayers,mediaControlService:this.mediaControlService,mediaBrowseService:this.mediaBrowseService,entityId:this.entityId}=this.store);const A=localStorage.getItem(Jt);if(A){const t=JSON.parse(A);t!==this.currentDir&&(this.currentDir=t,this.browse=!0,this.dispatchBrowseState())}return k`
+    `}}A([iA()],te.prototype,"config",void 0),A([sA()],te.prototype,"browseCanPlay",void 0),A([sA()],te.prototype,"browseMedia",void 0),A([sA()],te.prototype,"mediaBrowserDir",void 0),A([sA()],te.prototype,"title",void 0),customElements.define("sonos-media-browser-header",te);const ee="custom-sonos-card_currentDir";class ie extends AA{constructor(){super(...arguments),this.parentDirs=[],this.playDirListener=async()=>{await this.playItem(this.currentDir)},this.browseClickedListener=async()=>{this.browseClicked()},this.onMediaItemSelected=A=>{const t=A.detail;t.can_expand?(this.currentDir&&this.parentDirs.push(this.currentDir),this.setCurrentDir(t)):t.can_play&&(this.playItem(t),setTimeout((()=>mA(_A.PLAYER)),1e3))}}connectedCallback(){super.connectedCallback(),window.addEventListener(BA,this.playDirListener),window.addEventListener(EA,this.browseClickedListener),window.addEventListener(hA,this.onMediaItemSelected)}disconnectedCallback(){window.removeEventListener(BA,this.playDirListener),window.removeEventListener(EA,this.browseClickedListener),window.removeEventListener(hA,this.onMediaItemSelected),super.disconnectedCallback()}render(){({config:this.config,hass:this.hass,mediaPlayers:this.mediaPlayers,mediaControlService:this.mediaControlService,mediaBrowseService:this.mediaBrowseService,entityId:this.entityId}=this.store);const A=localStorage.getItem(ee);if(A){const t=JSON.parse(A);t!==this.currentDir&&(this.currentDir=t,this.browse=!0,this.dispatchBrowseState())}return k`
       <sonos-media-browser-header .config=${this.config}></sonos-media-browser-header>
-      ${""!==this.entityId&&Zt((this.browse?this.loadMediaDir(this.currentDir):this.getAllFavorites()).then((A=>{const t=Kt.itemsWithImage(A);return k` <mwc-list multi class="list">
-            ${A.map((A=>k`
-                <mwc-list-item @click="${async()=>await this.onMediaItemClick(A)}">
-                  <sonos-media-list-item
-                    .itemsWithImage="${t}"
-                    .mediaItem="${A}"
-                    .config="${this.config}"
-                  ></sonos-media-list-item>
-                </mwc-list-item>
-              `))}
-          </mwc-list>`})))}
-    `}firstUpdated(){this.dispatchBrowseState()}dispatchBrowseState(){var A;const t=this.browse?this.currentDir?this.currentDir.title:"Media Browser":"All Favorites";window.dispatchEvent(new CustomEvent(QA,{detail:{canPlay:null===(A=this.currentDir)||void 0===A?void 0:A.can_play,browse:this.browse,currentDir:this.currentDir,title:t}}))}browseClicked(){this.parentDirs.length?this.setCurrentDir(this.parentDirs.pop()):this.currentDir?this.setCurrentDir(void 0):(this.browse=!this.browse,this.dispatchBrowseState())}setCurrentDir(A){this.currentDir=A,A?localStorage.setItem(Jt,JSON.stringify(A)):localStorage.removeItem(Jt),this.dispatchBrowseState()}async onMediaItemClick(A){A.can_expand?(this.currentDir&&this.parentDirs.push(this.currentDir),this.setCurrentDir(A)):A.can_play&&(this.playItem(A),setTimeout((()=>uA(YA.PLAYER)),1e3))}async playItem(A){A.media_content_type||A.media_content_id?await this.mediaControlService.playMedia(this.entityId,A):await this.mediaControlService.setSource(this.entityId,A.title)}async getAllFavorites(){var A,t,e,i;let s=await this.mediaBrowseService.getAllFavorites(this.mediaPlayers,this.config.mediaBrowserTitlesToIgnore);return s=s.sort(((A,t)=>A.title.localeCompare(t.title,"en",{sensitivity:"base"}))),[...(null===(t=null===(A=this.config.customSources)||void 0===A?void 0:A[this.entityId])||void 0===t?void 0:t.map(Kt.createSource))||[],...(null===(i=null===(e=this.config.customSources)||void 0===e?void 0:e.all)||void 0===i?void 0:i.map(Kt.createSource))||[],...s]}static createSource(A){return Object.assign(Object.assign({},A),{can_play:!0})}static itemsWithImage(A){return A.some((A=>A.thumbnail))}async loadMediaDir(A){return await(A?this.mediaBrowseService.getDir(this.entityId,A,this.config.mediaBrowserTitlesToIgnore):this.mediaBrowseService.getRoot(this.entityId,this.config.mediaBrowserTitlesToIgnore))}static get styles(){return[hA,n`
-        mwc-list-item {
-          height: 40px;
-        }
-      `]}}A([iA()],Kt.prototype,"store",void 0),A([sA()],Kt.prototype,"browse",void 0),A([sA()],Kt.prototype,"currentDir",void 0);class Ft extends AA{constructor(){super(...arguments),this.showSwitches={}}render(){({config:this.config,hass:this.hass,mediaControlService:this.mediaControlService,entity:this.entity}=this.store);const A=vA(this.entity);return k`
-      ${ft(A.length>1,(()=>this.volumeWithName(this.entity.entity_id,this.config.labelForTheAllVolumesSlider?this.config.labelForTheAllVolumesSlider:"All",this.store.groups[this.entity.entity_id].members)))}
-      ${A.map((A=>this.volumeWithName(A,gA(this.hass,this.config,A))))}
-    `}volumeWithName(A,t,e){return k` <div class="wrapper">
+      ${""!==this.entityId&&Yt((this.browse?this.loadMediaDir(this.currentDir):this.getAllFavorites()).then((A=>this.config.mediaBrowserItemsPerRow>1?k`<sonos-media-browser-icons .items=${A} .store=${this.store}></sonos-media-browser-icons>`:k` <sonos-media-browser-list .items=${A} .store=${this.store}></sonos-media-browser-list>`)))}
+    `}firstUpdated(){this.dispatchBrowseState()}dispatchBrowseState(){var A;const t=this.browse?this.currentDir?this.currentDir.title:"Media Browser":"All Favorites";window.dispatchEvent(new CustomEvent(QA,{detail:{canPlay:null===(A=this.currentDir)||void 0===A?void 0:A.can_play,browse:this.browse,currentDir:this.currentDir,title:t}}))}browseClicked(){this.parentDirs.length?this.setCurrentDir(this.parentDirs.pop()):this.currentDir?this.setCurrentDir(void 0):(this.browse=!this.browse,this.dispatchBrowseState())}setCurrentDir(A){this.currentDir=A,A?localStorage.setItem(ee,JSON.stringify(A)):localStorage.removeItem(ee),this.dispatchBrowseState()}async playItem(A){A.media_content_type||A.media_content_id?await this.mediaControlService.playMedia(this.entityId,A):await this.mediaControlService.setSource(this.entityId,A.title)}async getAllFavorites(){var A,t,e,i;let s=await this.mediaBrowseService.getAllFavorites(this.mediaPlayers,this.config.mediaBrowserTitlesToIgnore);return s=s.sort(((A,t)=>A.title.localeCompare(t.title,"en",{sensitivity:"base"}))),[...(null===(t=null===(A=this.config.customSources)||void 0===A?void 0:A[this.entityId])||void 0===t?void 0:t.map(ie.createSource))||[],...(null===(i=null===(e=this.config.customSources)||void 0===e?void 0:e.all)||void 0===i?void 0:i.map(ie.createSource))||[],...s]}static createSource(A){return Object.assign(Object.assign({},A),{can_play:!0})}async loadMediaDir(A){return await(A?this.mediaBrowseService.getDir(this.entityId,A,this.config.mediaBrowserTitlesToIgnore):this.mediaBrowseService.getRoot(this.entityId,this.config.mediaBrowserTitlesToIgnore))}}A([iA()],ie.prototype,"store",void 0),A([sA()],ie.prototype,"browse",void 0),A([sA()],ie.prototype,"currentDir",void 0);class se extends AA{constructor(){super(...arguments),this.showSwitches={}}render(){({config:this.config,hass:this.hass,mediaControlService:this.mediaControlService,entity:this.entity}=this.store);const A=pA(this.entity);return k`
+      ${Lt(A.length>1,(()=>this.volumeWithName(this.entity.entity_id,this.config.labelForTheAllVolumesSlider?this.config.labelForTheAllVolumesSlider:"All",this.store.groups[this.entity.entity_id].members)))}
+      ${A.map((A=>this.volumeWithName(A,vA(this.hass,this.config,A))))}
+    `}volumeWithName(A,t,e){return k` <div class="row">
       <div class="volume-name">
         <div class="volume-name-text">${t}</div>
       </div>
       <div class="slider-row">
-        ${this.config.showVolumeUpAndDownButtons?kA(VA,(async()=>await this.mediaControlService.volumeDown(A))):""}
+        ${this.config.showVolumeUpAndDownButtons?UA(MA,(async()=>await this.mediaControlService.volumeDown(A))):""}
 
         <sonos-volume .store=${this.store} .entityId=${A} .members=${e}></sonos-volume>
-        ${this.config.showVolumeUpAndDownButtons?kA(SA,(async()=>await this.mediaControlService.volumeUp(A))):""}
-        ${ft(!e,(()=>kA(this.showSwitches[A]?"M22.12 21.46L2.4 1.73L1.12 3L4 5.87L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.34 4.5 11.67 4.5 12S4.53 12.65 4.57 12.97L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.38 18.72 15.83 18.45 16.26 18.14L20.85 22.73L22.12 21.46M12 15.5C10.07 15.5 8.5 13.93 8.5 12C8.5 11.5 8.62 11.08 8.79 10.67L13.33 15.21C12.92 15.39 12.5 15.5 12 15.5M11.74 8.53L8.56 5.35C8.75 5.25 8.93 5.15 9.13 5.07L9.5 2.42C9.54 2.18 9.75 2 10 2H14C14.25 2 14.46 2.18 14.5 2.42L14.87 5.07C15.5 5.32 16.04 5.66 16.56 6.05L19.05 5.05C19.27 4.96 19.54 5.05 19.66 5.27L21.66 8.73C21.78 8.95 21.73 9.22 21.54 9.37L19.43 11C19.47 11.34 19.5 11.67 19.5 12S19.47 12.65 19.43 12.97L21.54 14.63C21.73 14.78 21.78 15.05 21.66 15.27L20.5 17.29L15.47 12.26C15.5 12.18 15.5 12.09 15.5 12C15.5 10.07 13.93 8.5 12 8.5C11.91 8.5 11.83 8.5 11.74 8.53Z":"M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z",(()=>{this.showSwitches[A]=!this.showSwitches[A],this.requestUpdate()}))))}
+        ${this.config.showVolumeUpAndDownButtons?UA(zA,(async()=>await this.mediaControlService.volumeUp(A))):""}
+        ${Lt(!e,(()=>UA(this.showSwitches[A]?"M22.12 21.46L2.4 1.73L1.12 3L4 5.87L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.34 4.5 11.67 4.5 12S4.53 12.65 4.57 12.97L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.38 18.72 15.83 18.45 16.26 18.14L20.85 22.73L22.12 21.46M12 15.5C10.07 15.5 8.5 13.93 8.5 12C8.5 11.5 8.62 11.08 8.79 10.67L13.33 15.21C12.92 15.39 12.5 15.5 12 15.5M11.74 8.53L8.56 5.35C8.75 5.25 8.93 5.15 9.13 5.07L9.5 2.42C9.54 2.18 9.75 2 10 2H14C14.25 2 14.46 2.18 14.5 2.42L14.87 5.07C15.5 5.32 16.04 5.66 16.56 6.05L19.05 5.05C19.27 4.96 19.54 5.05 19.66 5.27L21.66 8.73C21.78 8.95 21.73 9.22 21.54 9.37L19.43 11C19.47 11.34 19.5 11.67 19.5 12S19.47 12.65 19.43 12.97L21.54 14.63C21.73 14.78 21.78 15.05 21.66 15.27L20.5 17.29L15.47 12.26C15.5 12.18 15.5 12.09 15.5 12C15.5 10.07 13.93 8.5 12 8.5C11.91 8.5 11.83 8.5 11.74 8.53Z":"M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z",(()=>{this.showSwitches[A]=!this.showSwitches[A],this.requestUpdate()}))))}
       </div>
       <div class="switches">
-        ${ft(!e&&this.showSwitches[A],(()=>Zt(this.getAdditionalSwitches(A))))}
+        ${Lt(!e&&this.showSwitches[A],(()=>Yt(this.getAdditionalSwitches(A))))}
       </div>
-    </div>`}getAdditionalSwitches(A){const t=this.store.hassService;return t.getRelatedSwitchEntities(A).then((A=>A.map((A=>{const e="on"===this.hass.states[A].state?zA({color:"var(--accent-color)"}):"";return k`
+    </div>`}getAdditionalSwitches(A){const t=this.store.hassService;return t.getRelatedSwitchEntities(A).then((A=>A.map((A=>{const e="on"===this.hass.states[A].state?jA({color:"var(--accent-color)"}):"";return k`
           <ha-icon
             @click="${()=>t.toggle(A)}"
             style="${e}"
             .icon=${this.hass.states[A].attributes.icon||""}
           ></ha-icon>
         `}))))}static get styles(){return n`
-      .wrapper {
+      .row {
         display: flex;
         flex-direction: column;
         padding-top: 1rem;
         padding-right: 1rem;
       }
-      .wrapper:not(:first-child) {
+
+      .row:not(:first-child) {
         border-top: solid var(--secondary-background-color);
       }
+
       .switches {
         display: flex;
         justify-content: center;
         gap: 1rem;
         margin-bottom: 1rem;
       }
+
       .volume-name {
         flex: 1;
         overflow: hidden;
         flex-direction: column;
         text-align: center;
       }
+
       .volume-name-text {
         flex: 1;
         overflow: hidden;
@@ -632,10 +731,12 @@ const kt=(A,t)=>{var e,i;const s=A._$AN;if(void 0===s)return!1;for(const A of s)
         font-size: 1.1rem;
         font-weight: bold;
       }
+
       .slider-row {
         display: flex;
       }
+
       sonos-volume {
         flex: 4;
       }
-    `}}A([iA()],Ft.prototype,"store",void 0),A([sA()],Ft.prototype,"showSwitches",void 0),customElements.define("sonos-volumes",Ft);const $t=A=>"Sonos"+(A?` (${A})`:""),_t=A=>"Media player for your Sonos speakers"+(A?` (${A})`:"");window.customCards.push({type:"sonos-card",name:$t(),description:_t(),preview:!0},{type:"sonos-grouping",name:$t("Grouping section"),description:_t("Grouping section"),preview:!0},{type:"sonos-groups",name:$t("Groups section"),description:_t("Groups section"),preview:!0},{type:"sonos-media-browser",name:$t("Media Browser section"),description:_t("Media Browser section"),preview:!0},{type:"sonos-player",name:$t("Player section"),description:"Media player for your Sonos speakers (Player section)",preview:!0}),customElements.define("sonos-card",St),customElements.define("sonos-grouping",Ot),customElements.define("sonos-groups",zt),customElements.define("sonos-media-browser",Kt),customElements.define("sonos-player",WA);
+    `}}A([iA()],se.prototype,"store",void 0),A([sA()],se.prototype,"showSwitches",void 0),customElements.define("sonos-volumes",se);const oe=A=>"Sonos"+(A?` (${A})`:""),ne=A=>"Media player for your Sonos speakers"+(A?` (${A})`:"");window.customCards.push({type:"sonos-card",name:oe(),description:ne(),preview:!0},{type:"sonos-grouping",name:oe("Grouping section"),description:ne("Grouping section"),preview:!0},{type:"sonos-groups",name:oe("Groups section"),description:ne("Groups section"),preview:!0},{type:"sonos-media-browser",name:oe("Media Browser section"),description:ne("Media Browser section"),preview:!0},{type:"sonos-player",name:oe("Player section"),description:"Media player for your Sonos speakers (Player section)",preview:!0}),customElements.define("sonos-card",Mt),customElements.define("sonos-grouping",kt),customElements.define("sonos-groups",Nt),customElements.define("sonos-media-browser",ie),customElements.define("sonos-player",GA);
