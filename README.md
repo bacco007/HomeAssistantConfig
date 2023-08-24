@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, August 24th 2023_
+_Stats as at 05:00, Friday, August 25th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.3 | 484     | 4487         | 3086 | 123 |
+| 2023.8.3 | 485     | 4501         | 3105 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 29
 Automation | 123
-Binary Sensor | 271
+Binary Sensor | 274
 Camera | 5
 Device Tracker | 137
 Group | 27
@@ -69,7 +69,7 @@ Media Player | 21
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3086
+Sensor | 3105
 Sun | 1
 Switch | 209
 Weather | 13
@@ -460,6 +460,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -605,7 +606,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Developers Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)

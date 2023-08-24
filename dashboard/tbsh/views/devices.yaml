@@ -34,6 +34,8 @@ cards:
       - !include ../devices/synology.yaml
       - !include ../devices/hdhomerun.yaml
       - !include ../devices/weatherflow.yaml
+      - !include ../devices/lg_washer.yaml
+      - !include ../devices/downloads.yaml
 
   - !include ../includes/actions.yaml
 

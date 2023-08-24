@@ -125,6 +125,7 @@ cards:
               - attribute: num_pending
                 name: Pending
                 unit: " "
+      - type: section
       - type: custom:fold-entity-row
         card_mod:
           style: |
@@ -189,6 +190,7 @@ cards:
               - entity: sensor.unifipoller_usw_1_rx
                 name: RX
                 unit: " "
+      - type: section
       - type: custom:fold-entity-row
         card_mod:
           style: |
@@ -243,6 +245,52 @@ cards:
               - entity: sensor.unifipoller_uap_rx
                 name: RX
                 unit: " "
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Baxter WiFi
+          state: ""
+          icon: mdi:wifi-alert
+        entities:
+          - entity: switch.baxter_wi_fi
+            name: WiFi Network On
+          - entity: sensor.baxter_wi_fi
+            name: Connected Clients
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: IoT
+          state: ""
+          icon: mdi:wifi-alert
+        entities:
+          - entity: image.baxter_wi_fi_qr_code
+            type: custom:template-entity-row
+            name: QR Code
+            state: ""
+          - entity: switch.iot
+            name: WiFi Network On
+          - entity: sensor.iot
+            name: Connected Clients
+          - entity: image.iot_qr_code
+            type: custom:template-entity-row
+            name: QR Code
+            state: ""
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Test
+          state: ""
+          icon: mdi:wifi-alert
+        entities:
+          - entity: switch.test
+            name: WiFi Network On
+          - entity: sensor.test
+            name: Connected Clients
+          - entity: image.test_qr_code
+            type: custom:template-entity-row
+            name: QR Code
+            state: ""
+      - type: section
       - type: custom:fold-entity-row
         card_mod:
           style: |
