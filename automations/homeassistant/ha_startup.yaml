@@ -17,34 +17,6 @@ action:
       message: "Waiting for startup to complete."
       notification_id: hass_restart
 
-  # Bounce Docker Containers
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id:
-        - switch.tbsh5_monitordocker_sungather
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id:
-        - switch.tbsh5_monitordocker_weatherflow2mqtt
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 30
-      milliseconds: 0
-
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id:
-        - switch.tbsh5_monitordocker_sungather
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id:
-        - switch.tbsh5_monitordocker_weatherflow2mqtt
-
   - service: input_boolean.turn_off
     entity_id: input_boolean.ha_startup_pending
 

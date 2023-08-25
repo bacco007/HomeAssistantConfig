@@ -46,32 +46,32 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, August 25th 2023_
+_Stats as at 05:00, Saturday, August 26th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.3 | 485     | 4501         | 3105 | 123 |
+| 2023.8.4 | 486     | 4539         | 3110 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
-Alert | 29
+Alert | 30
 Automation | 123
-Binary Sensor | 274
+Binary Sensor | 280
 Camera | 5
 Device Tracker | 137
 Group | 27
 Input Boolean | 11
 Input Datetime | 0
 Input Text | 3
-Light | 11
-Media Player | 21
+Light | 12
+Media Player | 22
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3105
+Sensor | 3110
 Sun | 1
-Switch | 209
+Switch | 207
 Weather | 13
 Zone | 3
 
@@ -444,6 +444,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
+| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -606,7 +607,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Developers Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -754,6 +755,8 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Node-RED (14.4.5)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
+- SunGather (0.1.3)
+- WeatherFlow to MQTT (3.1.6)
 - Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>

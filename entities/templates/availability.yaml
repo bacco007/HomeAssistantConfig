@@ -1,0 +1,12 @@
+---
+binary_sensor:
+  - name: "[Availability] Lights"
+    unique_id: availability_lights
+    icon: mdi:lightbulb
+    device_class: problem
+    state: >
+      {% set entities = state_attr(this.entity_id,'entity_id') %}
+      {{ false if entities == none else entities|count > 0 }}
+    attributes:
+      entity_id: "{{ expand('group.lights')|map(attribute='entity_id')|reject('has_value')|list|sort }}"
+      category: homeassistant

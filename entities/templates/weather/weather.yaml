@@ -704,3 +704,25 @@ sensor:
     attributes:
       provider: Pirate Weather
     availability: "{{ is_number(states('sensor.pirateweather_cloud_coverage_0d')) }}"
+
+  - name: "[Weather] Illuminance"
+    unique_id: weather_illuminance
+    icon: mdi:brightness-7
+    device_class: illuminance
+    state_class: measurement
+    unit_of_measurement: lx
+    state: >
+      {% if is_number(states('sensor.weatherflow_brightness')) %}
+        {{ states('sensor.weatherflow_brightness')|float }}
+      {% elif is_number(states('sensor.tempest_st_00056115_illuminance')) %}
+        {{ states('sensor.tempest_st_00056115_illuminance')|float }}
+      {% endif %}
+    attributes:
+      category: weather
+      provider: >
+        {% if is_number(states('sensor.weatherflow_visibility')) %} Weatherflow Cloud
+        {% elif is_number(states('sensor.tempest_st_00056115_illuminance')) %} Weatherflow
+        {% endif %}
+    availability: >
+      {{ is_number(states('sensor.weatherflow_brightness'))
+          or is_number(states('sensor.tempest_st_00056115_illuminance')) }}
