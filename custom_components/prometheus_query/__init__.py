@@ -1,0 +1,1 @@
+"""The prometheus query component."""

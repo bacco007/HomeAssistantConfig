@@ -1,0 +1,12 @@
+{
+  "domain": "prometheus_query",
+  "name": "Prometheus query sensor",
+  "version": "2021.06.1",
+  "documentation": "https://github.com/lfasci/homeassistant-prometheus-query",
+  "issue_tracker": "https://github.com/lfasci/homeassistant-prometheus-query",
+  "codeowners": [
+    "lfasci"
+  ],
+  "requirements": [],
+  "iot_class": "local_polling"
+}
