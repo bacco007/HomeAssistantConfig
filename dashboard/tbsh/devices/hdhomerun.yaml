@@ -92,4 +92,7 @@ cards:
         name: Channel Sources
       - type: section
       - entity: update.1251b32b_update
-        name: Firmware
+        type: custom:template-entity-row
+        name: "{{ state_attr(config.entity, 'friendly_name').split(':',1)[0] }}"
+        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"

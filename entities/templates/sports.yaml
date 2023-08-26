@@ -1540,6 +1540,83 @@ sensor:
           {%- endif %}
         {%- endif %}
 
+  # Manchester United (Women)
+  - name: sport_manchester_united_women
+    unique_id: sport_manchester_united_women
+    icon: "mdi:soccer"
+    picture: /local/sportlogos/manchester_united.png
+    state: >-
+      {%- if state_attr("sensor.ical_manchester_united_women_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_manchester_united_women_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Manchester United Women
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_manchester_united_women_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_manchester_united_women_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_manchester_united_women_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_manchester_united_women_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_manchester_united_women_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_manchester_united_women_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_manchester_united_women_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_manchester_united_women_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_manchester_united_women_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_manchester_united_women_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_manchester_united_women_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
   # MotoGP
   - name: sport_motogp
     unique_id: sport_motogp
@@ -3072,6 +3149,83 @@ sensor:
           0.0
         {%- else %}
           {%- set st = state_attr("sensor.ical_tcr_australia_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Toronto Maple Leafs
+  - name: sport_toronto_maple_leafs
+    unique_id: sport_toronto_maple_leafs
+    icon: mdi:hockey-puck
+    picture: /local/sportlogos/toronto_maple_leafs.png
+    state: >-
+      {%- if state_attr("sensor.ical_toronto_maple_leafs_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_toronto_maple_leafs_event_0", 'summary')[5:]|trim }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Toronto Maple Leafs
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_toronto_maple_leafs_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_toronto_maple_leafs_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_toronto_maple_leafs_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_toronto_maple_leafs_event_0", 'summary')[5:]|trim %}
+        {%- set st = state_attr("sensor.ical_toronto_maple_leafs_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_toronto_maple_leafs_event_0", 'location').split(', ')[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_toronto_maple_leafs_event_1", 'summary')[5:]|trim %}
+        {%- set st = state_attr("sensor.ical_toronto_maple_leafs_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_toronto_maple_leafs_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }}({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_toronto_maple_leafs_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_toronto_maple_leafs_event_0", 'start') %}
           {%- if st != None %}
             {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {{ diff }}.0

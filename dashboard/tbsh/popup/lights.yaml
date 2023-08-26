@@ -5,48 +5,43 @@ browser_mod:
   data:
     title: Lights
     content:
-      type: vertical-stack
-      cards:
-        - type: custom:mushroom-light-card
-          icon_color: amber
-          entity: light.all_lights
-          name: Control All Lights
-          fill_container: true
-          use_light_color: true
-          show_brightness_control: true
-          collapsible_controls: true
-          show_color_control: false
-        - type: custom:expander-card
-          gap: ""
-          padding: ""
-          clear: true
-          title: ""
-          overlay-margin: 2em
-          child-padding: ""
-          button-background: transparent
-          expanded: true
-          title-card:
-            type: custom:mushroom-title-card
-            title: ""
-            subtitle: Lights Turned On
-          cards:
-            - type: custom:auto-entities
-              filter:
-                include:
-                  - domain: light
-                    state: "on"
-                    group: light.all_lights
-                    options:
-                      type: custom:mushroom-light-card
-                      icon_color: amber
-                      use_light_color: true
-                      collapsible_controls: true
-                exclude: []
-              card:
-                square: false
-                columns: 2
-                type: grid
-              show_empty: true
-              card_param: cards
-              sort:
-                method: friendly_name
+      type: custom:auto-entities
+      filter:
+        include:
+          - entity_id: group.lights
+            state: "on"
+            options:
+              type: custom:mushroom-light-card
+              show_brightness_control: true
+              secondary_info: none
+              layout: horizontal
+              tap_action:
+                action: toggle
+              use_light_color: true
+
+          - group: group.lights
+            state: "on"
+            options:
+              type: custom:mushroom-light-card
+              layout: horizontal
+              secondary_info: last-changed
+              tap_action:
+                action: toggle
+          - group: group.lights
+            state: "off"
+            options:
+              type: custom:mushroom-light-card
+              layout: horizontal
+              secondary_info: last-changed
+              tap_action:
+                action: toggle
+        exclude: []
+      card:
+        type: custom:layout-card
+        cards: []
+        layout_type: custom:masonry-layout
+        layout:
+          width: 250
+          max_cols: 4
+      sort:
+        method: name

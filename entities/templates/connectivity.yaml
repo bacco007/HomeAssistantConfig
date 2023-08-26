@@ -58,18 +58,18 @@ binary_sensor:
     state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
-  - name: "[Connected] Docker Sungather"
-    unique_id: connected_docker_sungather
-    icon: mdi:docker
+  - name: "[Connected] Sungather"
+    unique_id: connected_sungather
+    icon: mdi:solar-power-variant-outline
     device_class: connectivity
-    state: "{{ 'True' if is_state('sensor.tbsh5_monitordocker_sungather', 'running') else 'False' }}"
+    state: "{{ 'True' if is_state('binary_sensor.sungather_running', 'on') else 'False' }}"
     attributes:
       category: homeassistant
-  - name: "[Connected] Docker Weatherflow2MQTT"
-    unique_id: connected_docker_weatherflow2mqtt
-    icon: mdi:docker
+  - name: "[Connected] Weatherflow2MQTT"
+    unique_id: connected_weatherflow2mqtt
+    icon: mdi:weather-cloudy-alert
     device_class: connectivity
-    state: "{{ 'True' if is_state('sensor.tbsh5_monitordocker_weatherflow2mqtt', 'running') else 'False' }}"
+    state: "{{ 'True' if is_state('binary_sensor.weatherflow_to_mqtt_running', 'on') else 'False' }}"
     attributes:
       category: homeassistant
   - name: "[Connected] PirateWeather"

@@ -12,13 +12,26 @@ sensor:
       entities: |
         {{ expand('group.connectivity_monitors') | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name')  | list | sort }}
 
+  - name: "[Summary] Lights"
+    unique_id: summary_lights
+    icon: mdi:lightbulb-on
+    state: |
+      {{ expand('group.lights') | selectattr('state', 'eq', 'on') | list | count | int(default=0) }}
+    attributes:
+      category: lights
+      count: |
+        {{ expand('group.lights') | list | count }}
+      entities: |
+        {{ expand('group.lights') | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name')  | list | sort }}
+
+
   - name: "[Summary] Updates"
     unique_id: summary_updates
     icon: mdi:arrow-up-bold-hexagon-outline
     state: |
       {{ expand(states.update) | selectattr('state', 'eq', 'on') | list | count | int(default=0) }}
     attributes:
-      category: connectivity
+      category: updates
       count: |
         {{ expand(states.update) | list | count }}
       entities: |

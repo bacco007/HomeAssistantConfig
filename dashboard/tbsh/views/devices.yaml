@@ -36,6 +36,7 @@ cards:
       - !include ../devices/weatherflow.yaml
       - !include ../devices/lg_washer.yaml
       - !include ../devices/downloads.yaml
+      - !include ../devices/einkdisplay.yaml
 
   - !include ../includes/actions.yaml
 

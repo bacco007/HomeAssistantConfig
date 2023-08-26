@@ -77,24 +77,24 @@ binary_sensor:
     attributes:
       category: homeassistant
 
-  - name: "alerts_docker_sungather"
-    unique_id: alerts_docker_sungather
-    icon: mdi:docker
+  - name: "alerts_sungather"
+    unique_id: alerts_sungather
+    icon: mdi:solar-power-variant-outline
     device_class: problem
     delay_on: 300
     state: >
-      {{ is_state('binary_sensor.connected_docker_sungather','off')
+      {{ is_state('binary_sensor.sungather_running','off')
           and is_state('input_boolean.alerts_ha','on') }}
     attributes:
       category: homeassistant
 
-  - name: "alerts_docker_weatherflow2mqtt"
-    unique_id: alerts_docker_weatherflow2mqtt
-    icon: mdi:docker
+  - name: "alerts_weatherflow2mqtt"
+    unique_id: alerts_weatherflow2mqtt
+    icon: mdi:weather-cloudy-alert
     device_class: problem
     delay_on: 300
     state: >
-      {{ is_state('binary_sensor.connected_docker_weatherflow2mqtt','off')
+      {{ is_state('binary_sensor.weatherflow_to_mqtt_running','off')
           and is_state('input_boolean.alerts_ha','on') }}
     attributes:
       category: homeassistant
@@ -267,3 +267,15 @@ binary_sensor:
           and is_state('input_boolean.ha_startup_pending','off') }}
     attributes:
       category: homeassistant
+
+  - name: "alerts_proxmox_nodesoff"
+    unique_id: alerts_proxmox_nodesoff
+    icon: si:proxmox
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ (is_state('binary_sensor.node_pvetbsh_status','on')
+          or is_state('binary_sensor.node_pvenuc_status','on')
+          or is_state('binary_sensor.node_pvenuc2_status','on')) }}
+    attributes:
+      category: proxmox

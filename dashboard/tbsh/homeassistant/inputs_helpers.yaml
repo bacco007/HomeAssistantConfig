@@ -1,0 +1,143 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Home Assistant User Inputs & Helpers
+    icon: mdi:home-assistant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: counter
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Counter
+            icon: mdi:text-box-check
+            state: |
+              {{states.counter
+                |list|count}}
+          padding: 0
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_boolean
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Input Boolean
+            icon: mdi:text-box-check
+            state: |
+              {{states.input_boolean
+                |list|count}}
+          padding: 0
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_datetime
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Input Datetime
+            icon: mdi:text-box-check
+            state: |
+              {{states.input_datetime
+                |list|count}}
+          padding: 0
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_number
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Input Number
+            icon: mdi:text-box-check
+            state: |
+              {{states.input_number
+                |list|count}}
+          padding: 0
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_select
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Input Select
+            icon: mdi:text-box-check
+            state: |
+              {{states.input_select
+                |list|count}}
+          padding: 0
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_text
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Input Text
+            icon: mdi:text-box-check
+            state: |
+              {{states.input_text
+                |list|count}}
+          padding: 0
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: timer
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Timer
+            icon: mdi:text-box-check
+            state: |
+              {{states.timer
+                |list|count}}
+          padding: 0

@@ -1,33 +1,26 @@
 ---
-type: entities
-card_mod:
-  style:
-    fold-entity-row$: |
-      ha-icon {
-        color: rgb(var(--rgb-disabled-color));
-        margin-right: 24px;
-      }
-    hui-section-row $: |
-      .divider { display: none; }
-    .: |
-      .card-content {
-        padding: 0;
-      }
-entities:
-  - type: custom:fold-entity-row
-    head:
-      type: custom:mushroom-template-card
-      primary: Automation Run History
-      secondary: >
-        {{ states('sensor.ha_automation_run_history') }}
-      icon: mdi:home-assistant
-      icon_color: blue
-      card_mod:
-        style: |
-          ha-card {
-            box-shadow: none !important;
-          }
-    padding: 0
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Automation Run History
+    icon: mdi:home-assistant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
       - type: custom:hui-element
         card_type: custom:flex-table-card
@@ -45,11 +38,10 @@ entities:
         card_mod:
           style: |
             ha-card {
+              background: none;
+              border: 0;
+              box-shadow: none;
               overflow: auto;
-              padding-left: 20px;
-              padding-right: 20px;
-              padding-bottom: 20px
-            }
-            tbody tr:hover {
-              background-color: coral !important
+              padding-top: 5px;
+              font-size: 12px;
             }

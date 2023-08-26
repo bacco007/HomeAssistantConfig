@@ -1,64 +1,129 @@
----
-type: custom:flex-table-card
-strict: true
-sort_by:
-  - aircraft-
-entities:
-  include: sensor.adsb_aircraft_tracked
-columns:
-  - name: HEX
-    data: aircraft
-    modify: |
-      if(x.flight != null )
-        {x.hex}
-        else {
-          '<div style="color:red;">' + x.hex + '</div>';
-      }
-  - name: FLIGHT
-    data: aircraft
-    modify: |
-      if(x.flight != null )
-        {x.flight}
-        else {
-          '<div style="color:red;">' + "-" + '</div>';
-      }
-  - name: REGO
-    data: aircraft
-    modify: |
-      if(x.r != null )
-        {x.r}
-        else {
-          '<div style="color:red;">' + "-" + '</div>';
-      }
-  - name: TYPE
-    data: aircraft
-    modify: |
-      if(x.t != null )
-        {x.t}
-        else {
-          '<div style="color:red;">' + "-" + '</div>';
-      }
-  - name: SPEED
-    data: aircraft
-    modify: |
-      if(x.gs != null )
-        {(x.gs*1.852).toFixed(0)}
-        else {
-          '<div style="color:red;">' + "-" + '</div>'
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Currently Tracked Planes
+    icon: mdi:airplane-cog
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
         }
-  - name: ALT
-    data: aircraft
-    modify: |
-      if(x.alt_baro != null )
-        {(x.alt_baro*0.3048).toFixed(0)}
-        else {
-          '<div style="color:red;">' + "-" + '</div>'
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
         }
-  - name: HEADING
-    data: aircraft
-    modify: |
-      if(x.track != null )
-        {x.track}
-        else {
-         '<div style="color:red;">' + "-" + '</div>'
+        #states > * {
+          margin: 0 !important;
         }
+    entities:
+      - entity: sensor.flighttracker_aircraft_total
+        name: Tracked Aircraft
+      - type: section
+        label: Nearest Plane
+      - type: custom:template-entity-row
+        name: >-
+          {{states(config.entity)}}, {{state_attr(config.entity,
+          'aircraft_rego')}} ({{state_attr('sensor.plane_overhead',
+          'distance')}} km away)
+
+          {{state_attr(config.entity, 'aircraft_owner')}} -
+          {{state_attr(config.entity, 'aircraft')}}
+        secondary: >-
+          {{state_attr(config.entity, 'origin_airport')}} >
+          {{state_attr(config.entity, 'destination_airport')}}
+        icon: mdi:airplane
+        entity: sensor.plane_overhead_detail
+        state: ""
+      - type: section
+        label: Latest Plane of Interest
+      - type: custom:template-entity-row
+        name: >-
+          {{state_attr(config.entity, 'name')}} ({{state_attr(config.entity, 'tail')}}, {{state_attr(config.entity, 'call')}})
+        secondary: >-
+          {% from 'easy_time.jinja' import custom_relative_time %}
+          {{state_attr(config.entity, 'equipment')}} ({{ custom_relative_time(state_attr(config.entity, 'date')|replace("/","-") + " " + state_attr(config.entity, 'time'), values='day, hour')}})
+        icon: mdi:airplane
+        entity: sensor.flighttracker_planefence_aircraft
+        state: ""
+  - type: custom:flex-table-card
+    strict: true
+    sort_by:
+      - aircraft-
+    entities:
+      include: sensor.adsb_aircraft_tracked_2
+    columns:
+      - name: HEX
+        data: aircraft
+        modify: |
+          if(x.flight != null )
+            {x.hex}
+            else {
+              '<div style="color:red;">' + x.hex + '</div>';
+          }
+      - name: FLIGHT
+        data: aircraft
+        modify: |
+          if(x.flight != null )
+            {x.flight}
+            else {
+              '<div style="color:red;">' + "-" + '</div>';
+          }
+      - name: REGO
+        data: aircraft
+        modify: |
+          if(x.r != null )
+            {x.r}
+            else {
+              '<div style="color:red;">' + "-" + '</div>';
+          }
+      - name: TYPE
+        data: aircraft
+        modify: |
+          if(x.t != null )
+            {x.t}
+            else {
+              '<div style="color:red;">' + "-" + '</div>';
+          }
+      - name: SPEED (kt)
+        data: aircraft
+        modify: |
+          if(x.gs != null )
+            {x.gs}
+            else {
+              '<div style="color:red;">' + "-" + '</div>'
+            }
+      - name: ALT (ft)
+        data: aircraft
+        modify: |
+          if(x.alt_baro != null )
+            {x.alt_baro}
+            else {
+              '<div style="color:red;">' + "-" + '</div>'
+            }
+      - name: HEAD (deg)
+        data: aircraft
+        modify: |
+          if(x.track != null )
+            {x.track}
+            else {
+             '<div style="color:red;">' + "-" + '</div>'
+            }
+      - name: LAT (deg)
+        data: aircraft
+        modify: |
+          if(x.lat != null )
+            {x.lat}
+            else {
+             '<div style="color:red;">' + "-" + '</div>'
+            }
+      - name: LON (deg)
+        data: aircraft
+        modify: |
+          if(x.lon != null )
+            {x.lon}
+            else {
+             '<div style="color:red;">' + "-" + '</div>'
+            }

@@ -46,22 +46,22 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, August 26th 2023_
+_Stats as at 05:00, Sunday, August 27th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.4 | 486     | 4539         | 3110 | 123 |
+| 2023.8.4 | 487     | 4611         | 3167 | 123 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 30
 Automation | 123
-Binary Sensor | 280
+Binary Sensor | 284
 Camera | 5
 Device Tracker | 137
 Group | 27
-Input Boolean | 11
+Input Boolean | 12
 Input Datetime | 0
 Input Text | 3
 Light | 12
@@ -69,11 +69,11 @@ Media Player | 22
 Person | 4
 Scene | 0
 Script | 7
-Sensor | 3110
+Sensor | 3167
 Sun | 1
-Switch | 207
+Switch | 206
 Weather | 13
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -427,6 +427,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
+| [sensor.prometheus_query](https://www.home-assistant.io/components/sensor.prometheus_query) |
 | [sensor.proxmoxve](https://www.home-assistant.io/components/sensor.proxmoxve) |
 | [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
@@ -744,7 +745,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.7)
-- Cloudflared (4.2.3)
+- Cloudflared (4.2.4)
+- EMQX (0.2.10)
 - ESPHome (2023.8.2)
 - eufy-security-ws (1.6.3)
 - Glances (0.19.2)

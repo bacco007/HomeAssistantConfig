@@ -36,11 +36,14 @@ cards:
       - !include ../homeassistant/uptime.yaml
       - !include ../homeassistant/ha_versions.yaml
       - !include ../homeassistant/nabucasa.yaml
+      - !include ../homeassistant/inputs_helpers.yaml
       - !include ../homeassistant/automation_history.yaml
       - !include ../homeassistant/snapshots.yaml
-      - !include ../homeassistant/graph_dbsize.yaml
-      - !include ../homeassistant/graph_countyamlfiles.yaml
-      - !include ../homeassistant/graph_countyamllines.yaml
+      - type: vertical-stack
+        cards:
+          - !include ../homeassistant/graph_dbsize.yaml
+          - !include ../homeassistant/graph_countyamlfiles.yaml
+          - !include ../homeassistant/graph_countyamllines.yaml
 
   - !include ../includes/actions.yaml
 

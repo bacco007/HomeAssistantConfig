@@ -1,0 +1,32 @@
+---
+proxmox_nodesoff_alert:
+  name: "Proxmox Nodes Off Alert"
+  title: "Proxmox Nodes Off Alert"
+  message: >
+    These Proxmox Nodes are off:
+    {%- if states('binary_sensor.node_pvetbsh_status') == 'off' %}
+    pvetbsh
+    {%- elif states('binary_sensor.node_pvenuc_status') == 'off' %}
+    pvenuc
+    {%- elif states('binary_sensor.node_pvenuc2_status') == 'off' %}
+    pvenuc2
+    {% endif %}
+  done_message: clear_notification
+  entity_id: binary_sensor.alerts_proxmox_nodesoff
+  state: "on"
+  repeat: 360
+  notifiers: alert
+  data:
+    tag: alerts_proxmox_nodesoff
+    notification_id: alerts_proxmox_nodesoff
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_alerts_proxmox_nodesoff

@@ -6,7 +6,7 @@ sensor:
   - name: e-ink Display Data
     unique_id: e_ink_display_data
     icon: ios:display-2
-    availability: true
+    availability: "true"
     state: "OK"
     attributes:
       greeting: >

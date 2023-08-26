@@ -1,0 +1,4 @@
+---
+alerts_proxmox_nodes_off:
+  name: "[Alerts] Proxmox Nodes Off"
+  icon: si:proxmox

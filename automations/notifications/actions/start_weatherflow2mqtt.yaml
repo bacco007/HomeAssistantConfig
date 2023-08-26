@@ -1,0 +1,13 @@
+---
+id: notify_action_start_weatherflow2mqtt
+alias: "[Notifications Action] Start Weatherflow2MQTT"
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: notify_action_start_weatherflow2mqtt
+action:
+  - service: hassio.addon_start
+    data:
+      addon: 67f4b1af_weatherflow2mqtt

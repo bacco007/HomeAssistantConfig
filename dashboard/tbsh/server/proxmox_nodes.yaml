@@ -1,0 +1,322 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Proxmox Node Settings and Controls
+    icon: si:proxmox
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: input_boolean.alerts_proxmox_nodes_off
+        name: Alert Notifications for off Nodes
+      - entity: binary_sensor.alerts_proxmox_nodesoff
+        name: Proxmox Nodes
+      - type: section
+        label: pveTBSH
+      - entity: binary_sensor.node_pvetbsh_status
+        name: Status
+      - entity: sensor.node_pvetbsh_uptime
+        name: Uptime
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: button.node_pvetbsh*
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #items {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+              }
+              #measure {
+                padding-top: 0 !important;
+              }
+              #measure > * {
+                margin: 0 !important;
+              }
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: pveTBSH - Controls
+            icon: mdi:button-pointer
+            state: ""
+      - entity: sensor.node_pvetbsh_cpu_used
+        name: CPU
+      - entity: sensor.node_pvetbsh_disk_used
+        type: custom:multiple-entity-row
+        name: Disk
+        show_state: false
+        entities:
+          - entity: sensor.node_pvetbsh_disk_free
+            name: Free (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_disk_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_disk_used
+            name: Used (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_disk_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - entity: sensor.node_pvetbsh_memory_free
+        type: custom:multiple-entity-row
+        name: Memory
+        show_state: false
+        entities:
+          - entity: sensor.node_pvetbsh_memory_free
+            name: Free (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_memory_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_memory_used
+            name: Used (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_memory_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - entity: sensor.node_pvetbsh_swap_free
+        type: custom:multiple-entity-row
+        name: Swap
+        show_state: false
+        entities:
+          - entity: sensor.node_pvetbsh_swap_free
+            name: Free (MB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_swap_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_swap_used
+            name: Used (MB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvetbsh_swap_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - type: section
+        label: pveNuc
+      - entity: binary_sensor.node_pvenuc_status
+        name: Status
+      - entity: sensor.node_pvenuc_uptime
+        name: Uptime
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: button.node_pvenuc*
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #items {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+              }
+              #measure {
+                padding-top: 0 !important;
+              }
+              #measure > * {
+                margin: 0 !important;
+              }
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: pveNuc - Controls
+            icon: mdi:button-pointer
+            state: ""
+      - entity: sensor.node_pvenuc_cpu_used
+        name: CPU
+      - entity: sensor.node_pvenuc_disk_used
+        type: custom:multiple-entity-row
+        name: Disk
+        show_state: false
+        entities:
+          - entity: sensor.node_pvenuc_disk_free
+            name: Free (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_disk_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_disk_used
+            name: Used (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_disk_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - entity: sensor.node_pvenuc_memory_free
+        type: custom:multiple-entity-row
+        name: Memory
+        show_state: false
+        entities:
+          - entity: sensor.node_pvenuc_memory_free
+            name: Free (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_memory_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_memory_used
+            name: Used (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_memory_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - entity: sensor.node_pvenuc_swap_free
+        type: custom:multiple-entity-row
+        name: Swap
+        show_state: false
+        entities:
+          - entity: sensor.node_pvenuc_swap_free
+            name: Free (MB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_swap_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_swap_used
+            name: Used (MB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc_swap_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - type: section
+        label: pvenuc2
+      - entity: binary_sensor.node_pvenuc2_status
+        name: Status
+      - entity: sensor.node_pvenuc2_uptime
+        name: Uptime
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: button.node_pvenuc2*
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          card_mod:
+            style: |
+              #items {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+              }
+              #measure {
+                padding-top: 0 !important;
+              }
+              #measure > * {
+                margin: 0 !important;
+              }
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: pvenuc2 - Controls
+            icon: mdi:button-pointer
+            state: ""
+      - entity: sensor.node_pvenuc2_cpu_used
+        name: CPU
+      - entity: sensor.node_pvenuc2_disk_used
+        type: custom:multiple-entity-row
+        name: Disk
+        show_state: false
+        entities:
+          - entity: sensor.node_pvenuc2_disk_free
+            name: Free (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_disk_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_disk_used
+            name: Used (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_disk_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - entity: sensor.node_pvenuc2_memory_free
+        type: custom:multiple-entity-row
+        name: Memory
+        show_state: false
+        entities:
+          - entity: sensor.node_pvenuc2_memory_free
+            name: Free (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_memory_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_memory_used
+            name: Used (GB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_memory_used_percentage
+            name: Used %
+            format: precision2
+            unit: false
+      - entity: sensor.node_pvenuc2_swap_free
+        type: custom:multiple-entity-row
+        name: Swap
+        show_state: false
+        entities:
+          - entity: sensor.node_pvenuc2_swap_free
+            name: Free (MB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_swap_free_percentage
+            name: Free %
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_swap_used
+            name: Used (MB)
+            format: precision2
+            unit: false
+          - entity: sensor.node_pvenuc2_swap_used_percentage
+            name: Used %
+            format: precision2
+            unit: false

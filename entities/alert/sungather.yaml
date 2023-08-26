@@ -1,0 +1,26 @@
+---
+sungather:
+  name: "Sungather"
+  title: "Sungather Not Running"
+  message: "Sungather is not running"
+  done_message: clear_notification
+  entity_id: binary_sensor.alerts_sungather
+  state: "on"
+  repeat: 1440
+  notifiers: alert
+  data:
+    tag: sungather
+    notification_id: sungather
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_sungather
+      - title: "Start Sungather"
+        action: notify_action_start_sungather

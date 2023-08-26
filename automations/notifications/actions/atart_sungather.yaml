@@ -1,0 +1,13 @@
+---
+id: notify_action_start_sungather
+alias: "[Notifications Action] Start Sungather"
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: notify_action_start_sungather
+action:
+  - service: hassio.addon_start
+    data:
+      addon: 7b536ee6_sungather

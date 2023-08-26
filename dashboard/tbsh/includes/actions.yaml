@@ -21,53 +21,27 @@ card:
         action: navigate
         navigation_path: homeassistant
     - type: "custom:button-card"
-      entity: sensor.stats_docker
-      icon: mdi:docker
-      name: Docker
-      variables:
-        notification: >
-          [[[
-            return parseInt(entity?.attributes.containers_stopped);
-          ]]]
+      icon: mdi:message-badge
+      name: "Notifications"
       template:
         - popup_button
+      tap_action: !include ../popup/notifications.yaml
+    # - type: "custom:button-card"
+    #   entity: sensor.stats_docker
+    #   icon: mdi:docker
+    #   name: Docker
+    #   variables:
+    #     notification: >
+    #       [[[
+    #         return parseInt(entity?.attributes.containers_stopped);
+    #       ]]]
+    #   template:
+    #     - popup_button
     - type: "custom:button-card"
-      entity: light.all_lights
+      entity: sensor.summary_lights
       icon: mdi:lightbulb
       name: Lights
       tap_action: !include ../popup/lights.yaml
-      variables:
-        notification: >
-          [[[
-            return parseInt(entity?.attributes.containers_stopped);
-          ]]]
-      template:
-        - popup_button
-    - type: "custom:button-card"
-      icon: mdi:tablet
-      name: "Home Hub"
-      variables:
-        notification: >
-          [[[
-            let id = states['binary_sensor.home_hub_plugged_in'];
-            if (id) return id.state === 'off';
-          ]]]
-      template:
-        - popup_button
-    - type: "custom:button-card"
-      icon: mdi:history
-      name: "History"
-      template:
-        - popup_button
-    - type: "custom:button-card"
-      icon: mdi:server
-      name: "Proxmox"
-      template:
-        - popup_button
-    - type: "custom:button-card"
-      icon: mdi:update
-      name: "Updates"
-      entity: sensor.template_updates
       variables:
         notification: >
           [[[
@@ -75,6 +49,50 @@ card:
           ]]]
       template:
         - popup_button
+    # - type: "custom:button-card"
+    #   icon: mdi:tablet
+    #   name: "Home Hub"
+    #   variables:
+    #     notification: >
+    #       [[[
+    #         let id = states['binary_sensor.home_hub_plugged_in'];
+    #         if (id) return id.state === 'off';
+    #       ]]]
+    #   template:
+    #     - popup_button
+    # - type: "custom:button-card"
+    #   icon: mdi:history
+    #   name: "History"
+    #   template:
+    #     - popup_button
+    # - type: "custom:button-card"
+    #   icon: mdi:server
+    #   name: "Proxmox"
+    #   template:
+    #     - popup_button
+    - type: "custom:button-card"
+      icon: mdi:update
+      name: "Updates"
+      entity: sensor.summary_updates
+      variables:
+        notification: >
+          [[[
+            return parseInt(entity?.state);
+          ]]]
+      template:
+        - popup_button
+      tap_action: !include ../popup/updates.yaml
+    - type: conditional
+      conditions:
+        - entity: media_player.currently_playing
+          state: playing
+      card:
+        type: "custom:button-card"
+        icon: mdi:play
+        name: "Currently Playing"
+        template:
+          - popup_button
+        tap_action: !include ../popup/currently_playing.yaml
     - type: "custom:button-card"
       icon: si:sonos
       name: "Sonos"

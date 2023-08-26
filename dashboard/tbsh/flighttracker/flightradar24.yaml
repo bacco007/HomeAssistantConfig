@@ -1,30 +1,24 @@
 ---
-type: entities
-card_mod:
-  style:
-    fold-entity-row$: |
-      ha-icon {
-        color: rgb(var(--rgb-disabled-color));
-        margin-right: 24px;
-      }
-    .: |
-      .card-content {
-        padding: 0;
-      }
-entities:
-  - type: custom:fold-entity-row
-    head:
-      type: custom:mushroom-template-card
-      entity: ""
-      icon: mdi:airplane
-      primary: FlightRadar24
-      card_mod:
-        style: |
-          ha-card {
-            border: 0;
-            box-shadow: none;
-          }
-    padding: 0
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: FlightRadr24
+    icon: mdi:airplane
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
       - entity: sensor.adsb_fr24_feeder_radar_code
         type: custom:multiple-entity-row
@@ -38,13 +32,3 @@ entities:
         type: custom:multiple-entity-row
       - entity: binary_sensor.adsb_fr24_mlat_connected
         type: custom:multiple-entity-row
-    card_mod:
-      class: content
-      style: |
-        ha-card {
-          border: 0;
-        }
-        #measure {
-          padding-left: 20px !important;
-          padding-right: 20px !important;
-          }

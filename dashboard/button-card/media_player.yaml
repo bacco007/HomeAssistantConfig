@@ -172,7 +172,7 @@ metadata_media_player:
   show_icon: false
   triggers_update: "all"
   tap_action:
-    action: none
+    action: !include ../tbsh/popup/currently_playing.yaml
   styles:
     grid:
       - display: flex

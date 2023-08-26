@@ -1,0 +1,9 @@
+---
+platform: prometheus_query
+name: adsb_aircraftcount_prom
+unique_id: adsb_aircraftcount_prom
+prometheus_url: !secret prom_url
+prometheus_query: readsb_aircraft_total
+unit_of_measurement: aircraft
+state_class: measurement
+scan_interval: 10

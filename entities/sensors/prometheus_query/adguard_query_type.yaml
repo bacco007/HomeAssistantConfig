@@ -1,0 +1,33 @@
+---
+platform: prometheus_query
+name: adguard_query_type
+unique_id: adguard_query_type
+prometheus_url: !secret prom_url
+prometheus_query: adguard_query_types
+unit_of_measurement: queries
+state_class: measurement
+scan_interval: 600
+unique_instance_key: type
+monitored_instances:
+  - instance_name: A
+    name: adguard_query_type_a
+  - instance_name: AAAA
+    name: adguard_query_type_aaaa
+  - instance_name: CNAME
+    name: adguard_query_type_cname
+  - instance_name: HTTPS
+    name: adguard_query_type_https
+  - instance_name: MX
+    name: adguard_query_type_mx
+  - instance_name: NS
+    name: adguard_query_type_NS
+  - instance_name: PTR
+    name: adguard_query_type_PTR
+  - instance_name: RRSIG
+    name: adguard_query_type_rrsig
+  - instance_name: SOA
+    name: adguard_query_type_SOA
+  - instance_name: SRV
+    name: adguard_query_type_srv
+  - instance_name: TXT
+    name: adguard_query_type_txt

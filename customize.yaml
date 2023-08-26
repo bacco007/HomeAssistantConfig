@@ -78,6 +78,9 @@ alert.presence_mode:
 alert.docker_containersoff_alert:
   icon: mdi:alert-decagram
   category: docker
+alert.proxmox_nodesoff_alert:
+  icon: si:proxmox
+  category: proxmox
 
 ## Sensor
 sensor.yahoofinance_amx_ax:
