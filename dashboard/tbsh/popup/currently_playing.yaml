@@ -116,7 +116,7 @@ browser_mod:
         - type: conditional
           conditions:
             - entity: media_player.currently_playing
-              state_not: 'off'
+              state_not: "off"
             - entity: media_player.currently_playing
               state_not: idle
           card:

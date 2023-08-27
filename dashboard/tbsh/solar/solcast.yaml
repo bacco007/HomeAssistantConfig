@@ -174,3 +174,66 @@ cards:
             name: Solcast Alerts
             icon: mdi:alert-plus
             state: ""
+  - type: custom:plotly-graph
+    entities:
+      - entity: sensor.solcast_forecast_today
+      - entity: sensor.solcast_forecast_tomorrow
+      - entity: sensor.solcast_forecast_d3
+      - entity: sensor.solcast_forecast_d4
+      - entity: sensor.solcast_forecast_d5
+      - entity: sensor.solcast_forecast_d6
+      - entity: sensor.solcast_forecast_d7
+    hours_to_show: 1w
+    refresh_interval: auto
+    defaults:
+      entity:
+        connectgaps: true
+        legendgroup: 1
+        filters:
+          - fn: |-
+              ({ meta }) => ({
+                xs: meta.detailedForecast.map(({ period_start }) => new Date(period_start)),
+                ys: meta.detailedForecast.map(({ pv_estimate }) => pv_estimate),
+              })
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 3
+          color: lightyellow
+          shape: spline
+    layout:
+      showlegend: false
+      height: 300
+      margin:
+        autoexpand: true
+        l: 30
+        r: 30
+      xaxis:
+        autorange: true
+        showline: true
+        showgrid: false
+        tickformat: "%a"
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

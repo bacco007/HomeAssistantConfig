@@ -35,7 +35,8 @@ cards:
       - !include ../solar/graph_yield_year.yaml
       - !include ../solar/solcast.yaml
       - !include ../solar/forecastsolar.yaml
-      - !include ../solar/graph_forecast.yaml
+      - !include ../solar/grid_costs.yaml
+      - !include ../opennem/opennem.yaml
 
   - !include ../includes/actions.yaml
 

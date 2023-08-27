@@ -1,13 +1,14 @@
 ---
-type: custom:vertical-stack-in-card
-cards:
-  - type: custom:mushroom-template-card
-    entity: sensor.opennem_nsw
-    primary: Generation (NSW)
-    fill_container: true
-    icon: mdi:transmission-tower-export
-    icon_color: red
-  - type: custom:plotly-graph
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: Generation (NSW)
+  icon: mdi:meter-electric-outline
+  state: ""
+padding: 0
+entities:
+  - type: custom:hui-element
+    card_type: custom:plotly-graph
     entities:
       - entity: sensor.opennem_nsw
         attribute: fossilfuel

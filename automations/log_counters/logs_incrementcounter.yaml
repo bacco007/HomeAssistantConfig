@@ -1,0 +1,46 @@
+---
+alias: "[Logs] Increment Counter"
+id: logs_increment_counter
+trigger:
+  - platform: event
+    event_type: system_log_event
+    event_data:
+      level: ERROR
+    id: error
+  - platform: event
+    event_type: system_log_event
+    event_data:
+      level: WARNING
+    id: warning
+  - platform: event
+    event_type: system_log_event
+    event_data:
+      level: CRITICAL
+    id: critical
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: warning
+        sequence:
+          - service: counter.increment
+            entity_id: counter.logs_warning_counter
+      - conditions:
+          - condition: trigger
+            id: error
+          - condition: and
+            conditions:
+              - condition: template
+                value_template: "{{ not 'logs_error_counter_increment' in (trigger.event.data.message|string) }}"
+        sequence:
+          - service: counter.increment
+            entity_id: counter.logs_error_counter
+      - conditions:
+          - condition: trigger
+            id: critical
+        sequence:
+          - service: counter.increment
+            entity_id: counter.logs_critical_counter
+mode: queued
+max: 20
+max_exceeded: silent

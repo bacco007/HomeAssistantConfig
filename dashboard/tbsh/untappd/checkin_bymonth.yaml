@@ -1,95 +1,72 @@
 ---
-type: entities
-card_mod:
-  style:
-    fold-entity-row$: |
-      ha-icon {
-        color: rgb(var(--rgb-disabled-color));
-        margin-right: 24px;
-      }
-    hui-section-row $: |
-      .divider { display: none; }
-    .: |
-      .card-content {
-        padding: 0;
-      }
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: Check-in Stats - By Month
+  icon: mdi:beer
+  state: >
+    {{state_attr('sensor.untappd_stats_by_checkinsbymonth', 'max_desc') }}, {{state_attr('sensor.untappd_stats_by_checkinsbymonth', 'max') }} Check-ins
+padding: 0
 entities:
-  - type: custom:fold-entity-row
-    head:
-      type: custom:mushroom-template-card
-      primary: Check-In Stats - By Month
-      secondary: |
-        {{state_attr('sensor.untappd_stats_by_checkinsbymonth', 'max_desc') }}, {{state_attr('sensor.untappd_stats_by_checkinsbymonth', 'max') }} Check-ins
-      icon: mdi:beer
-      icon_color: orange
-      card_mod:
-        style: |
-          ha-card {
-            background: none;
-            border: 0;
-            box-shadow: none;
-          }
-    padding: 0
+  - type: custom:plotly-graph
     entities:
-      - type: custom:plotly-graph
-        entities:
-          - entity: sensor.untappd_stats_by_checkinsbymonth
-            connectgaps: true
-            legendgroup: 1
-            filters:
-              - fn: |-
-                  ({ meta }) => ({
-                    xs: meta.data.map(({ item }) => item),
-                    ys: meta.data.map(({ count }) => count),
-                  })
-            x: $ex xs
-            y: $ex ys
-            texttemplate: <b>%{y:,.2f}</b>
-            line:
-              width: 3
-              color: lightyellow
-              shape: spline
-        refresh_interval: auto
-        raw_plotly_config: true
-        defaults:
-          entity:
+      - entity: sensor.untappd_stats_by_checkinsbymonth
+        connectgaps: true
+        legendgroup: 1
+        filters:
+          - fn: |-
+              ({ meta }) => ({
+                xs: meta.data.map(({ item }) => item),
+                ys: meta.data.map(({ count }) => count),
+              })
+        x: $ex xs
+        y: $ex ys
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 3
+          color: lightyellow
+          shape: spline
+    refresh_interval: auto
+    raw_plotly_config: true
+    defaults:
+      entity:
 
-        layout:
-          showlegend: false
-          height: 200
-          margin:
-            autoexpand: false
-            l: 30
-            r: 30
-            t: 20
-            b: 50
-          xaxis:
-            autorange: true
-            showline: true
-            showgrid: false
-            # tickformat: '%m'
-            showticklabels: true
-            linecolor: rgb(204,204,204)
-            linewidth: 2
-            autotick: false
-            ticks: outside
-            tickwidth: 2
-            ticklen: 5
-            tickfont:
-              family: Roboto
-              size: 12
-              color: rgb(204,204,204)
-          yaxis:
-            title: ''
-            autorange: true
-            zeroline: true
-            fixedrange: true
-            linecolor: rgb(204,204,204)
-            linewidth: 2
-            tickfont:
-              family: Roboto
-              size: 12
-              color: rgb(204,204,204)
-          dragmode: false
-        config:
-          scrollZoom: false
+    layout:
+      showlegend: false
+      height: 200
+      margin:
+        autoexpand: false
+        l: 30
+        r: 30
+        t: 20
+        b: 50
+      xaxis:
+        autorange: true
+        showline: true
+        showgrid: false
+        # tickformat: '%m'
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

@@ -510,7 +510,6 @@ cards:
                 }
               }},
             {%- endif %} {%- endfor %}
-
       - type: custom:auto-entities
         card_mod:
           style: |
@@ -580,3 +579,11 @@ cards:
                 }
               }},
             {%- endif %} {%- endfor %}
+      - type: section
+      - !include partial_curgen.yaml
+      - type: section
+      - !include graph_allregions_demand.yaml
+      - !include graph_allregions_generation.yaml
+      - !include graph_currentprice.yaml
+      - !include graph_gendemand.yaml
+      - !include graph_gentype.yaml

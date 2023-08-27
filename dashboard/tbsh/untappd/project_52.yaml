@@ -63,34 +63,34 @@ cards:
             'data')[0].beer_name }}
         padding: 0
         entities:
-        - type: custom:hui-element
-          card_type: custom:flex-table-card
-          entities:
-            include: sensor.untappd_project_52
-          css:
-            table+: "border-collapse: collapse; padding: 0px;"
-          columns:
-            - name: Check-In
-              data: data
-              modify: x.first_checkin
-            - name: Beer
-              data: data
-              modify: >-
-                { x.beer_name + "<br/><i>" + x.brewery + " (" + x.brewery_country
-                + ")</i>"}
-            - name: Style
-              data: data
-              modify: '{ x.beer_style + "<br/>" + x.beer_abv + "%" }'
-            - name: /5
-              data: data
-              modify: parseFloat(x.rating).toFixed(2)
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-                overflow: auto;
-                padding-top: 5px;
-                font-size: 12px;
-              }
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.untappd_project_52
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+            columns:
+              - name: Check-In
+                data: data
+                modify: x.first_checkin
+              - name: Beer
+                data: data
+                modify: >-
+                  { x.beer_name + "<br/><i>" + x.brewery + " (" + x.brewery_country
+                  + ")</i>"}
+              - name: Style
+                data: data
+                modify: '{ x.beer_style + "<br/>" + x.beer_abv + "%" }'
+              - name: /5
+                data: data
+                modify: parseFloat(x.rating).toFixed(2)
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }

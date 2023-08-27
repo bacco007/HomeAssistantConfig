@@ -1,12 +1,14 @@
 ---
-type: custom:vertical-stack-in-card
-cards:
-  - type: custom:mushroom-template-card
-    primary: Demand (All Regions)
-    fill_container: true
-    icon: mdi:meter-electric-outline
-    icon_color: yellow
-  - type: custom:plotly-graph
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: Demand (All Regions)
+  icon: mdi:meter-electric-outline
+  state: ""
+padding: 0
+entities:
+  - type: custom:hui-element
+    card_type: custom:plotly-graph
     hours_to_show: 7d
     entities:
       - entity: sensor.opennem_nsw

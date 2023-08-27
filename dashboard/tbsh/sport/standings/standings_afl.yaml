@@ -6,7 +6,7 @@ head:
   icon: mdi:football-australian
   state: ""
 padding: 0
-entities:
+entities: 
   - type: custom:hui-element
     card_type: custom:flex-table-card
     entities:

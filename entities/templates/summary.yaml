@@ -24,7 +24,6 @@ sensor:
       entities: |
         {{ expand('group.lights') | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name')  | list | sort }}
 
-
   - name: "[Summary] Updates"
     unique_id: summary_updates
     icon: mdi:arrow-up-bold-hexagon-outline

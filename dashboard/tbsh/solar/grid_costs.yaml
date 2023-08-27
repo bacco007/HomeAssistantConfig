@@ -1,0 +1,54 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Essential Energy Grid Costs
+    icon: mdi:transmission-tower-import
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: sensor.energy_timeofuse_tariff_type
+        name: Applicable Tariff
+        icon: mdi:transmission-tower-import
+      - entity: sensor.energy_timeofuse_tariff
+        name: Current Tariff
+      - entity: sensor.energy_solar_tariff
+        name: Solar Feed-In Tariff
+      - entity: sensor.energy_supply_charge
+        name: Daily Supply Charge
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: TOU Schedules
+          icon: mdi:transmission-tower-import
+          state: ""
+        entities:
+          - schedule.energy_timeofuse_tariff_offpeak
+          - schedule.energy_timeofuse_tariff_peak
+          - schedule.energy_timeofuse_tariff_shoulder
