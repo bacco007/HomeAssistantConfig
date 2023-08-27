@@ -1,0 +1,9 @@
+---
+alias: "[HA] Purge Database"
+description: Purge Database
+icon: mdi:delete-sweep
+sequence:
+  - service: recorder.purge
+    data:
+      keep_days: 0
+      repack: "true"

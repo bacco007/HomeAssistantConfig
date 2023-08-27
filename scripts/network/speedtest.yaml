@@ -1,0 +1,7 @@
+---
+alias: "[Network] Run Speedtest"
+max_exceeded: silent
+sequence:
+  - service: homeassistant.update_entity
+    target:
+      entity_id: sensor.speedtest_download

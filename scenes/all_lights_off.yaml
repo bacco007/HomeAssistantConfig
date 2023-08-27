@@ -1,0 +1,9 @@
+---
+id: alllightsoff
+name: All Lights Off
+icon: mdi:lightbulb-off
+entities:
+  light.office_lamp:
+    state: "off"
+  light.bedroom_lamp:
+    state: "off"

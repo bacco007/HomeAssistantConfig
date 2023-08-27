@@ -1,0 +1,9 @@
+---
+id: alllightson
+name: All Lights On
+icon: mdi:lightbulb-on
+entities:
+  light.office_lamp:
+    state: "on"
+  light.bedroom_lamp:
+    state: "on"

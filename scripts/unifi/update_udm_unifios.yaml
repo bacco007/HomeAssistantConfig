@@ -1,0 +1,7 @@
+---
+alias: "[UniFi] Update udm_unifios"
+max_exceeded: silent
+sequence:
+  - service: homeassistant.update_entity
+    target:
+      entity_id: sensor.udm_unifios

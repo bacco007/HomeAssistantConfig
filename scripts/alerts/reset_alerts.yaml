@@ -1,5 +1,5 @@
 ---
-alias: reset_alerts
+alias: "[Alerts] Reset Alerts"
 description: Turn on all disabled alerts
 icon: mdi:alert
 sequence:

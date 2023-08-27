@@ -163,3 +163,10 @@ binary_sensor:
     state: "{{ integration_entities('speedtestdotnet')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+  - name: "[Connected] iCal"
+    unique_id: connected_ical
+    icon: mdi:calendar
+    device_class: connectivity
+    state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant

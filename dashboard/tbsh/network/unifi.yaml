@@ -27,6 +27,10 @@ cards:
         secondary_info: last-changed
       - entity: binary_sensor.template_udm_internet
       - type: section
+      - entity: script.update_udm_unifios
+        name: Update UniFi Command Line Sensor
+        secondary_info: last-triggered
+      - type: section
       - type: button
         name: Devices Dashboard
         action_name: OPEN

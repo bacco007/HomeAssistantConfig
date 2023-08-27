@@ -279,3 +279,14 @@ binary_sensor:
           or is_state('binary_sensor.node_pvenuc2_status','on')) }}
     attributes:
       category: proxmox
+
+  - name: "alerts_ical"
+    unique_id: alerts_ical
+    icon: mdi:calendar
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.connected_ical','off')
+          and is_state('input_boolean.alerts_ha','on') }}
+    attributes:
+      category: homeassistant

@@ -1,5 +1,5 @@
 ---
-alias: disable_alerts
+alias: "[Alerts] Disable Alerts"
 description: Disable Alerts
 icon: mdi:alert
 sequence:
