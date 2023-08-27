@@ -10,7 +10,7 @@ grid-template-areas: |
   "otherActions"
   "mediaPlayer"
 mediaquery:
-  "(min-width: 880px)":
+  "(min-width: 1025px)":
     grid-template-columns: 285px auto
     grid-template-rows: fit-content(100%) 70px 120px
     grid-template-areas: |

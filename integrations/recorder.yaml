@@ -53,6 +53,8 @@ recorder:
       - sensor.z2m_office_airquality_formaldehyd
       - sensor.z2m_office_airquality_z2m_office_airquality_last_seen
       - sensor.z2m_office_airquality_linkquality
+      - sensor.weather_wind_bearing
+      - sensor.ha_automation_run_history
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -71,9 +73,13 @@ recorder:
       - sensor.tbsh03*
       - sensor.tbsh1*
       - sensor.tbsh2*
+      - sensor.tbsh3*
+      - sensor.tbsh4*
+      - sensor.tbsh5*
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
+      - sensor.pi4srv*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
@@ -122,10 +128,14 @@ recorder:
       - sensor.ble_*
       - sensor.yourspotify_*
       - sensor.192_168_1_131_*
+      - sensor.192.168.1.132_*
+      - sensor.192.168.1.133_*
       - sensor.tempest_st_00056115_wind*
       - sensor.qemu*
       - sensor.*icloud3*
       - sensor.current_weather*
+      - sensor.lxc*
+      - sensor.tempest_st_00056115*
     domains:
       - anniversaries
       - automation
@@ -148,6 +158,7 @@ recorder:
       - update
       - media_player
       - button
+      - event
     event_types:
       - service_removed
       - service_executed

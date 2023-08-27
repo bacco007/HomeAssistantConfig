@@ -1,0 +1,28 @@
+---
+energy_timeofuse_tariff_shoulder:
+  name: "[Energy] Time of Use Tariff - Shoulder"
+  monday:
+    - from: "07:00:00"
+      to: "17:00:00"
+    - from: "20:00:00"
+      to: "22:00:00"
+  tuesday:
+    - from: "07:00:00"
+      to: "17:00:00"
+    - from: "20:00:00"
+      to: "22:00:00"
+  wednesday:
+    - from: "07:00:00"
+      to: "17:00:00"
+    - from: "20:00:00"
+      to: "22:00:00"
+  thursday:
+    - from: "07:00:00"
+      to: "17:00:00"
+    - from: "20:00:00"
+      to: "22:00:00"
+  friday:
+    - from: "07:00:00"
+      to: "17:00:00"
+    - from: "20:00:00"
+      to: "22:00:00"

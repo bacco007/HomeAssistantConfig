@@ -31,6 +31,7 @@ influxdb:
       - climate
       - counter
       - device_tracker
+      - event
       - fan
       - group
       - geo_location
@@ -87,6 +88,8 @@ influxdb:
       - sensor.z2m_office_airquality_co2
       - sensor.z2m_office_airquality_voc
       - sensor.z2m_office_airquality_pm25
+      - sensor.weather_wind_bearing
+      - sensor.ha_automation_run_history
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
@@ -112,6 +115,9 @@ influxdb:
       - sensor.vmtbsh03*
       - sensor.tbsh1*
       - sensor.tbsh2*
+      - sensor.tbsh3*
+      - sensor.tbsh4*
+      - sensor.tbsh5*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
@@ -144,6 +150,7 @@ influxdb:
       - sensor.b7158737*
       - sensor.pve_ha_*
       - sensor.watchman_*
+      - sensor.pi4srv*
       - update.*
       - sensor.waveshare_75_ink*
       - sensor.washer*
@@ -166,9 +173,12 @@ influxdb:
       - sensor.helper*
       - sensor.*icloud3*
       - sensor.192_168_1_131*
+      - sensor.192.168.1.132_*
+      - sensor.192.168.1.133_*
       - sensor.daily_mix*
       - sensor.frontpage*
       - sensor.openweathermap*
       - sensor.yourspotify_*
       - sensor.qemu*
       - sensor.current_weather*
+      - sensor.lxc*

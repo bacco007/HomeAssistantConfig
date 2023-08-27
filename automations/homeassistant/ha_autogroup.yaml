@@ -40,9 +40,7 @@ action:
       name: "[Group] Media Players"
       icon: mdi:media-network
       entities: >-
-        {%- for state in states.media_player %}
-        {{ state.entity_id }}{%- if not loop.last -%}, {%- endif -%}
-        {%- endfor %}
+        {{ states.media_player|map(attribute='entity_id')|list|sort }}
 
   - service: group.set
     data:
@@ -52,6 +50,78 @@ action:
       entities: >
         {{ states.light
             |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: automations
+      name: "[Group] Automations"
+      icon: mdi:home-automation
+      entities: >-
+        {{ states.automation|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: remotes
+      name: "[Group] Remotes"
+      icon: mdi:remote
+      entities: >-
+        {{ states.remote|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: scripts
+      name: "[Group] Scripts"
+      icon: mdi:script
+      entities: >-
+        {{ states.script|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: switches
+      name: "[Group] Switches"
+      icon: mdi:script
+      entities: >-
+        {{ states.switch|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: calendars
+      name: "[Group] Calendars"
+      icon: mdi:calendar
+      entities: >-
+        {{ states.calendar|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: geo_location
+      name: "[Group] Geo Locations"
+      icon: mdi:map-marker-alert
+      entities: >-
+        {{ states.geo_location|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: weather
+      name: "[Group] Weather"
+      icon: mdi:weather-cloudy-clock
+      entities: >-
+        {{ states.weather|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: people
+      name: "[Group] People"
+      icon: mdi:account-group
+      entities: >-
+        {{ states.person|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
+      object_id: cameras
+      name: "[Group] Cameras"
+      icon: mdi:cctv
+      entities: >-
+        {{ states.camera|map(attribute='entity_id')|list|sort }}
 
   - service: group.set
     data:

@@ -1,6 +1,6 @@
 ---
 sensor:
-  - name: energy_timeofuse_tariff_type
+  - name: "[Energy] Time of Use Tariff Type"
     unique_id: energy_timeofuse_tariff_type
     state: >
       {#-
@@ -8,18 +8,18 @@ sensor:
       https://www.essentialenergy.com.au/-/media/Project/EssentialEnergy/Website/Files/Our-Network/TimeofUseBrochure.pdf
       Peak: 5pm to 8pm Weekdays
       Shoulder: 7am to 5pm + 8pm to 10pm Weekdays
-      Off-Peak: 10pm to 7am Weekdays, all weekend
+      Off-Peak: 10pm to 7am Weekdays, all weekend (19pm Fri to 7am Mon)
       #}
-      {%- set output = 'Shoulder'%}
-      {%- if (now().isoweekday()<6) and (17 <= now().hour <= 20) %}
-          {%-  set output = 'Peak' %}
-      {%- else %}
-        {%- if ((now().isoweekday()<6) and now().hour>= 22 or now().hour < 7) or (now().isoweekday()>=6) %}
-          {%- set output = 'Off-Peak' %}
-        {%- endif %}
+      {%- if is_state('schedule.energy_timeofuse_tariff_peak', 'on') %}
+        Peak
+      {%- elif is_state('schedule.energy_timeofuse_tariff_shoulder', 'on') %}
+        Shoulder
+      {%- elif is_state('schedule.energy_timeofuse_tariff_offpeak', 'on') %}
+        Off-Peak
       {%- endif %}
-      {{output}}
-  - name: energy_timeofuse_tariff
+    attributes:
+      category: energy
+  - name: "[Energy] Time of Use Tariff"
     unique_id: energy_timeofuse_tariff
     device_class: monetary
     state_class: measurement
@@ -33,7 +33,9 @@ sensor:
       {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Off-Peak") %}
         0.2920
       {%- endif %}
-  - name: energy_solar_tariff
+    attributes:
+      category: energy
+  - name: "[Energy] Solar Feed-In Tariff"
     unique_id: energy_solar_tariff
     device_class: monetary
     state_class: measurement
@@ -41,7 +43,9 @@ sensor:
     unit_of_measurement: $/kWh
     state: >
       0.05
-  - name: energy_supply_charge
+    attributes:
+      category: energy
+  - name: "[Energy] Supply Charge"
     unique_id: energy_supply_charge
     device_class: monetary
     state_class: measurement
@@ -49,3 +53,5 @@ sensor:
     unit_of_measurement: $/Day
     state: >
       1.6036
+    attributes:
+      category: energy

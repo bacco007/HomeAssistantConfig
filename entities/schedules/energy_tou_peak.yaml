@@ -1,0 +1,18 @@
+---
+energy_timeofuse_tariff_peak:
+  name: "[Energy] Time of Use Tariff - Peak"
+  monday:
+    - from: "17:00:00"
+      to: "20:00:00"
+  tuesday:
+    - from: "17:00:00"
+      to: "20:00:00"
+  wednesday:
+    - from: "17:00:00"
+      to: "20:00:00"
+  thursday:
+    - from: "17:00:00"
+      to: "20:00:00"
+  friday:
+    - from: "17:00:00"
+      to: "20:00:00"

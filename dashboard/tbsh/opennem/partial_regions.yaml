@@ -1,795 +1,582 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: entities
+  - type: custom:mushroom-template-card
+    entity: sensor.opennem_au
+    primary: OpenNEM
+    icon: mdi:transmission-tower
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_au
-          name: Australia
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_au' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+    icon_color: orange
   - type: entities
+    show_header_toggle: false
+    state_color: true
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+        #measure > * {
+          margin: 0 !important;
+        }
     entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_nem
-          name: National Energy Market
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_nem' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_nsw
-          name: New South Wales
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_nsw' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_qld
-          name: Queensland
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_qld' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_sa
-          name: South Australia
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_sa' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_tas
-          name: Tasmania
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_tas' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_vic
-          name: Victoria
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_vic' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-entity-card
-          entity: sensor.opennem_wa
-          name: Western Australia
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          icon: mdi:transmission-tower-off
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
-        entities:
-          - type: custom:auto-entities
-            card_param: cards
-            card:
-              type: grid
-              columns: 2
-              square: false
-              card_mod:
-                style: |
-                  ha-card {
-                    margin: -8px 0px 0px 0px;
-                    box-shadow: none;
-                  }
-            filter:
-              template: >-
-                {% set SENSOR = 'sensor.opennem_wa' -%}
-                {%- for attr in states[SENSOR].attributes | sort(reverse=false) -%}
-                {%- if attr not in ["attribution", "friendly_name", "device_class", "icon", "unit_of_measurement", "last_update", "region"] %}
-                {%- if attr == "fossilfuel" -%}
-                  {%- set attributename = "Fossil Fuels" -%}
-                {%- elif attr == "battery_charging" -%}
-                  {%- set attributename = "Battery (Charging)" -%}
-                {%- elif attr == "battery_discharging" -%}
-                  {%- set attributename = "Battery (Discharging)" -%}
-                {%- elif attr == "bioenergy_biomass" -%}
-                  {%- set attributename = "BioEnergy (Biomass)" -%}
-                {%- elif attr == "bioenergy_biogas" -%}
-                  {%- set attributename = "BioEnergy (Biogas)" -%}
-                {%- elif attr == "exports" -%}
-                  {%- set attributename = "Exported Electricity" -%}
-                {%- elif attr == "coal_black" -%}
-                  {%- set attributename = "Coal (Black)" -%}
-                {%- elif attr == "coal_brown" -%}
-                  {%- set attributename = "Coal (Brown)" -%}
-                {%- elif attr == "gas_ccgt" -%}
-                  {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
-                {%- elif attr == "gas_ocgt" -%}
-                  {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
-                {%- elif attr == "gas_recip" -%}
-                  {%- set attributename = "Gas (Reciprocating Engine)" -%}
-                {%- elif attr == "gas_steam" -%}
-                  {%- set attributename = "Gas (Steam)" -%}
-                {%- elif attr == "gas_wcmg" -%}
-                  {%- set attributename = "Gas (Waste Coal Mine)" -%}
-                {%- elif attr == "generation" -%}
-                  {%- set attributename = "Generation" -%}
-                {%- elif attr == "genvsdemand" -%}
-                  {%- set attributename = "Generation vs Demand" -%}
-                {%- elif attr == "solar_utility" -%}
-                  {%- set attributename = "Solar (Utility)" -%}
-                {%- elif attr == "solar_rooftop" -%}
-                  {%- set attributename = "Solar (Rooftop)" -%}
-                {%- else -%}
-                  {%- set attributename = attr.title()|replace("_"," ") -%}
-                {%- endif -%}
-                  {{
-                    {
-                      'type': 'custom:mushroom-template-card',
-                      'icon': 'mdi:transmission-tower',
-                      'fill_container': true,
-                      'multiline_secondary': true,
-                      'entity': SENSOR,
-                      'primary': '{{ state_attr(entity, "' + attr + '") }}',
-                      'secondary': attributename,
-                      "card_mod": {
-                        "style": ":host {\n  --mush-icon-size: 40px;\n  --mush-card-primary-font-size: 14px;\n  --mush-card-secondary-font-size: 12px;\n}\nha-card {\n  box-shadow: none;\n}\n"
-                       }
-                    }
-                  }},
-                {%- endif %}
-                {%- endfor %}
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_au
+            name: Australia
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_au' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_nem
+            name: National Energy Market
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_nem' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+      - type: section
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_nsw
+            name: New South Wales
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_nsw' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_qld
+            name: Queensland
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_qld' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_sa
+            name: South Australia
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_sa' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_tas
+            name: Tasmania
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_tas' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_vic
+            name: Victoria
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_vic' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}
+
+      - type: custom:auto-entities
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            entity: sensor.opennem_wa
+            name: Western Australia
+            icon: mdi:transmission-tower
+            state: |
+              {{ states(config.entity) }} MW
+        filter:
+          template: >-
+            {% set SENSOR = 'sensor.opennem_wa' -%} {%- for attr in
+            states[SENSOR].attributes | sort(reverse=false) -%} {%- if attr not
+            in ["attribution", "friendly_name", "device_class", "icon",
+            "unit_of_measurement", "last_update", "region"] %} {%- if attr ==
+            "fossilfuel" -%}
+              {%- set attributename = "Fossil Fuels" -%}
+            {%- elif attr == "battery_charging" -%}
+              {%- set attributename = "Battery (Charging)" -%}
+            {%- elif attr == "battery_discharging" -%}
+              {%- set attributename = "Battery (Discharging)" -%}
+            {%- elif attr == "bioenergy_biomass" -%}
+              {%- set attributename = "BioEnergy (Biomass)" -%}
+            {%- elif attr == "bioenergy_biogas" -%}
+              {%- set attributename = "BioEnergy (Biogas)" -%}
+            {%- elif attr == "exports" -%}
+              {%- set attributename = "Exported Electricity" -%}
+            {%- elif attr == "coal_black" -%}
+              {%- set attributename = "Coal (Black)" -%}
+            {%- elif attr == "coal_brown" -%}
+              {%- set attributename = "Coal (Brown)" -%}
+            {%- elif attr == "gas_ccgt" -%}
+              {%- set attributename = "Gas (Combined Cycle Power Plant)" -%}
+            {%- elif attr == "gas_ocgt" -%}
+              {%- set attributename = "Gas (Open Cycle Power Plant)" -%}
+            {%- elif attr == "gas_recip" -%}
+              {%- set attributename = "Gas (Reciprocating Engine)" -%}
+            {%- elif attr == "gas_steam" -%}
+              {%- set attributename = "Gas (Steam)" -%}
+            {%- elif attr == "gas_wcmg" -%}
+              {%- set attributename = "Gas (Waste Coal Mine)" -%}
+            {%- elif attr == "generation" -%}
+              {%- set attributename = "Generation" -%}
+            {%- elif attr == "genvsdemand" -%}
+              {%- set attributename = "Generation vs Demand" -%}
+            {%- elif attr == "solar_utility" -%}
+              {%- set attributename = "Solar (Utility)" -%}
+            {%- elif attr == "solar_rooftop" -%}
+              {%- set attributename = "Solar (Rooftop)" -%}
+            {%- else -%}
+              {%- set attributename = attr.title()|replace("_"," ") -%}
+            {%- endif -%}
+              {{
+                {
+                  'type': 'custom:template-entity-row',
+                  'icon': 'mdi:transmission-tower',
+                  'entity': SENSOR,
+                  'name': attributename,
+                  'state': '{{ state_attr("' + SENSOR + '", "' + attr + '")}} MW',
+                }
+              }},
+            {%- endif %} {%- endfor %}

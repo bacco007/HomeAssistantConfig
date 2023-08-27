@@ -1,85 +1,64 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:button-card
-    template: header_card_no_link
-    variables:
-      name: WeatherFlow Tempest Monitor
-    view_layout:
-      grid-column: 1/-1
-  - square: false
-    type: grid
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: binary_sensor.connected_weatherflow_cloud
-        layout: vertical
-        name: '[Connected] Cloud'
-      - type: custom:mushroom-entity-card
-        entity: binary_sensor.connected_weatherflow_local
-        layout: vertical
-        name: '[Connected] Local'
-    columns: 2
-  - type: custom:mushroom-entity-card
-    entity: sensor.weatherflow_station_information
-  - type: custom:mushroom-entity-card
-    entity: sensor.hub_hb_00045437_status
-    name: Tempest Hub Status
-  - type: custom:mushroom-entity-card
-    entity: sensor.tempest_st_00056115_status
-  - type: custom:decluttering-card
-    template: mushroom_entity_graph
-    variables:
-      - entity: sensor.tempest_st_00056115_battery
-      - colour: '#8694E7'
-      - title: Battery Level
-      - icon: mdi:battery-alert
-      - line_width: 3
-  - type: custom:decluttering-card
-    template: mushroom_entity_graph
-    variables:
-      - entity: sensor.tempest_st_00056115_voltage
-      - colour: '#8694E7'
-      - title: Voltage
-      - line_width: 3
-  - type: entities
+  - type: custom:mushroom-template-card
+    primary: Weatherflow Tempest Weather Station
+    icon: mdi:weather-cloudy-clock
+    icon_color: blue
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
+      - entity: binary_sensor.connected_weatherflow_cloud
+        name: Weatherflow Cloud Connected
+        secondary_info: last-changed
+      - entity: binary_sensor.connected_weatherflow_local
+        name: Weatherflow Local Connected
+        secondary_info: last-changed
+      - type: section
+      - entity: sensor.weatherflow_station_information
+        name: Station Information
+      - entity: sensor.hub_hb_00045437_status
+        name: Tempest Hub Status
+      - entity: sensor.tempest_st_00056115_status
+      - type: section
+      - entity: sensor.tempest_st_00056115_battery
+        name: Tempest Battery
+      - entity: sensor.tempest_st_00056115_voltage
+        name: Tempest Voltage
+      - type: section
       - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-template-card
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          primary: WeatherFlow (Cloud)
-          icon: mdi:solar-panel-large
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 0
         card_mod:
           style: &style |
-              #items {
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-              }
-              #measure {
-                padding-top: 0 !important;
-              }
-              #measure > * {
-                margin: 0 !important;
-              }
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Weatherflow (Cloud)
+          icon: mdi:weather-lightning-rainy
+          state: ""
         entities:
           - entity: weather.weatherflow_day_based_forecast
           - entity: weather.weatherflow_hourly_based_forecast
@@ -192,46 +171,15 @@ cards:
             entities:
               - entity: sensor.weatherflow_voltage_tempest
               - entity: sensor.weatherflow_station_information
-        show_header_toggle: false
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
       - type: custom:fold-entity-row
-        head:
-          type: custom:mushroom-template-card
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-              }
-          primary: WeatherFlow (Local)
-          icon: mdi:solar-panel-large
-          icon_color: orange
-          tap_action:
-            action: toggle
-        padding: 5
         card_mod:
-          style: &style |
-              #items {
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-              }
-              #measure {
-                padding-top: 0 !important;
-              }
-              #measure > * {
-                margin: 0 !important;
-              }
+          style: *style
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          name: Weatherflow (Local)
+          icon: mdi:weather-lightning-rainy
+          state: ""
         entities:
           - entity: weather.tempest_daily
           - entity: weather.tempest_hourly

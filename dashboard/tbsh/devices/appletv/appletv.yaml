@@ -25,9 +25,10 @@ cards:
       '--mdc-typography-button-font-size': 12px
       '--mdc-tab-stacked-height': 30px
     tabs:
-      - card: !include remote.yaml
-        attributes:
-          label: Remote
       - card: !include appgrid.yaml
         attributes:
           label: Apps
+      - card: !include remote.yaml
+        attributes:
+          label: Remote
+

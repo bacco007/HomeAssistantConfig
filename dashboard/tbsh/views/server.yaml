@@ -31,6 +31,7 @@ cards:
     cards:
       - !include ../server/proxmox_nodes.yaml
       - !include ../server/docker/settings_controls.yaml
+      - !include ../server/downloads.yaml
 
   - !include ../includes/actions.yaml
 

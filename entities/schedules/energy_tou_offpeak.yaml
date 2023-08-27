@@ -1,0 +1,34 @@
+---
+energy_timeofuse_tariff_offpeak:
+  name: "[Energy] Time of Use Tariff - Off-Peak"
+  sunday:
+    - from: "00:00:00"
+      to: "23:59:59"
+  monday:
+    - from: "00:00:00"
+      to: "07:00:00"
+    - from: "22:00:00"
+      to: "23:59:59"
+  tuesday:
+    - from: "00:00:00"
+      to: "07:00:00"
+    - from: "22:00:00"
+      to: "23:59:59"
+  wednesday:
+    - from: "00:00:00"
+      to: "07:00:00"
+    - from: "22:00:00"
+      to: "23:59:59"
+  thursday:
+    - from: "00:00:00"
+      to: "07:00:00"
+    - from: "22:00:00"
+      to: "23:59:59"
+  friday:
+    - from: "00:00:00"
+      to: "07:00:00"
+    - from: "22:00:00"
+      to: "23:59:59"
+  saturday:
+    - from: "00:00:00"
+      to: "23:59:59"
