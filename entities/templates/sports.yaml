@@ -2079,6 +2079,83 @@ sensor:
           {%- endif %}
         {%- endif %}
 
+  # Newcastle Knights (NRLW)
+  - name: sport_newcastle_knights_nrlw
+    unique_id: sport_newcastle_knights_nrlw
+    icon: "mdi:football"
+    picture: /local/sportlogos/newcastle_knights.svg
+    state: >-
+      {%- if state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Newcastle Knights (NRLW)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_newcastle_knights_nrlw_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_newcastle_knights_nrlw_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_newcastle_knights_nrlw_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_newcastle_knights_nrlw_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
   # NRL (All Teams)
   - name: sport_nrl_all_teams
     unique_id: sport_nrl_all_teams
@@ -2148,6 +2225,83 @@ sensor:
           0.0
         {%- else %}
           {%- set st = state_attr("sensor.ical_nrl_all_teams_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # NRLW (All Teams)
+  - name: sport_nrlw_all_teams
+    unique_id: sport_nrlw_all_teams
+    icon: "mdi:football"
+    picture: /local/sportlogos/nrlw_all_teams.svg
+    state: >-
+      {%- if state_attr("sensor.ical_nrlw_all_teams_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_nrlw_all_teams_event_0", 'summary').split(" - ",2)[0] }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: NRL (All Teams)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_nrlw_all_teams_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_nrlw_all_teams_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_nrlw_all_teams_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_nrlw_all_teams_event_0", 'summary').split(" - ",2)[0] %}
+        {%- set st = state_attr("sensor.ical_nrlw_all_teams_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_nrlw_all_teams_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_nrlw_all_teams_event_1", 'summary').split(" - ",2)[0] %}
+        {%- set st = state_attr("sensor.ical_nrlw_all_teams_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_nrlw_all_teams_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_nrlw_all_teams_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_nrlw_all_teams_event_0", 'start') %}
           {%- if st != None %}
             {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {{ diff }}.0
@@ -2422,7 +2576,7 @@ sensor:
           No Game Scheduled
         {%- endif %}
       nextevent: >-
-        {%- set op = state_attr("sensor.ical_swifts_event_0", 'summary').split(" - ",2)[0] %}
+        {%- set op = state_attr("sensor.ical_swifts_event_0", 'summary').split(" - ",2)[0] | default("No Game Scheduled") %}
         {%- set st = state_attr("sensor.ical_swifts_event_0", 'start') %}
         {%- if st != None %}
           {{ op }}

@@ -35,6 +35,7 @@ mushroom_entity_graph:
         line_width: "[[line_width]]"
         points_per_hour: "[[points_per_hour]]"
         animate: true
+        font_size: 50
         show:
           name: false
           icon: false
@@ -46,10 +47,8 @@ mushroom_entity_graph:
             ha-card {
               position: absolute !important;
               height: 100%;
-              width: 78%;
+              width: 100%;
               top: 0px;
-              left: auto;
-              right: 0px;
               --ha-card-border-width: 0;
             }
             ha-card:after {

@@ -16,7 +16,9 @@ card:
       }
 filter:
   template: >
-    {% for s in states|selectattr('entity_id','search','sensor.sport_') | rejectattr("attributes.nextevent", "search", "Scheduled") | sort(attribute="attributes.friendly_name")  -%}
+    {% for s in states|selectattr('entity_id','search','sensor.sport_') |
+      rejectattr("attributes.nextevent", "search", "(Scheduled|None)") |
+      sort(attribute="attributes.friendly_name")  -%}
       {{
         {
           "type": "custom:fold-entity-row",
