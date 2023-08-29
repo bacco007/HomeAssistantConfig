@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, August 29th 2023_
+_Stats as at 05:00, Wednesday, August 30th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.4 | 487     | 4652         | 3184 | 124 |
+| 2023.8.4 | 487     | 4655         | 3189 | 124 |
 
 Type | Qty
 -- | --
@@ -69,11 +69,11 @@ Media Player | 24
 Person | 4
 Scene | 2
 Script | 10
-Sensor | 3184
+Sensor | 3189
 Sun | 1
 Switch | 208
 Weather | 13
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -664,6 +664,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Bar Card](https://github.com/custom-cards/bar-card)
 - [Battery State Card / Entity Row](https://github.com/maxwroc/battery-state-card)
 - [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card)
+- [Bubble Card](https://github.com/Clooos/Bubble-Card)
 - [Button Card](https://github.com/custom-cards/button-card)
 - [Card Mod](https://github.com/thomasloven/lovelace-card-mod)
 - [Card Tools](https://github.com/thomasloven/lovelace-card-tools)
