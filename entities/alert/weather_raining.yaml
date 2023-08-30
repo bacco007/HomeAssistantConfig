@@ -1,0 +1,25 @@
+---
+weather_raining:
+  name: "It's raining!"
+  title: "It's raining!"
+  message: >
+    {{ states('sensor.weather_precipitation_type')|capitalize }} - {{ states('sensor.weather_precipitation_today') }}mm
+  done_message: clear_notification
+  entity_id: binary_sensor.weather_rain_alert
+  state: "on"
+  repeat: 1800
+  notifiers: alert
+  data:
+    tag: weather_raining
+    notification_id: weather_raining
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_weather_raining

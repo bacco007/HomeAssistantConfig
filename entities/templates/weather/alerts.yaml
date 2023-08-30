@@ -30,7 +30,7 @@ binary_sensor:
     delay_off: 30
     state: >
       {{is_state('binary_sensor.weatherflow_is_raining','on')
-        and states('sensor.weather_precipitation_today') > 0.02
+        and states('sensor.weather_precipitation_today') | float > 0.02
         and is_state('input_boolean.alerts_weather','on') }}
     availability: "{{ is_number(states('sensor.weather_precipitation_today')) }}"
     attributes:

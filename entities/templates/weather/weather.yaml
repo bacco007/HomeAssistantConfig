@@ -4,18 +4,18 @@ binary_sensor:
     unique_id: weather_is_raining
     icon: mdi:weather-rainy
     delay_on: 20
-    delay_off: "{{ iif(now() - states('sensor.uptime_sensor')|as_datetime < timedelta(minutes=5),0,14400) }}"
+    delay_off: 120
     state: >
-      {%- if has_value('sensor.tempest_st_00056115_precipitation_type') %}
-        {{ iif(states('sensor.tempest_st_00056115_precipitation_type') == None, "True", "False")}}
+      {%- if has_value('sensor.tempest_st_00056115_rain_rate') %}
+        {{ iif(states('sensor.tempest_st_00056115_rain_rate') | int > 0, "True", "False")}}
       {%- elif has_value('binary_sensor.weatherflow_is_raining') %}
         {{ states('binary_sensor.weatherflow_is_raining') }}
       {%- endif %}
-    availability: "{{ has_value('sensor.tempest_st_00056115_precipitation_type') }}"
+    availability: "{{ has_value('sensor.tempest_st_00056115_rain_rate') }}"
     attributes:
       category: weather
       provider: >
-        {%- if has_value('sensor.tempest_st_00056115_precipitation_type') %}
+        {%- if has_value('sensor.tempest_st_00056115_rain_rate') %}
           WeatherFlow Local
         {%- elif has_value('binary_sensor.weatherflow_is_raining') %}
           WeatherFlow Cloud

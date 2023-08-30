@@ -46,16 +46,16 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, August 30th 2023_
+_Stats as at 05:00, Thursday, August 31st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.4 | 487     | 4655         | 3189 | 124 |
+| 2023.8.4 | 487     | 4648         | 3181 | 124 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
-Alert | 31
+Alert | 32
 Automation | 124
 Binary Sensor | 289
 Camera | 5
@@ -69,11 +69,11 @@ Media Player | 24
 Person | 4
 Scene | 2
 Script | 10
-Sensor | 3189
+Sensor | 3181
 Sun | 1
 Switch | 208
 Weather | 13
-Zone | 4
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -608,7 +608,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -746,7 +746,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.7)
-- Cloudflared (4.2.4)
+- Cloudflared (4.2.5)
 - EMQX (0.2.10)
 - ESPHome (2023.8.2)
 - eufy-security-ws (1.6.3)
@@ -759,7 +759,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - SunGather (0.1.3)
-- WeatherFlow to MQTT (3.1.6)
+- WeatherFlow to MQTT (3.2.0)
 - Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>

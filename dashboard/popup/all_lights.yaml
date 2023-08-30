@@ -7,39 +7,53 @@ browser_mod:
     type: vertical-stack
     cards:
       - type: custom:mushroom-light-card
-        collapsible_controls: true
+        collapsible_controls: false
         entity: light.all_lights
         fill_container: true
         name: All Lights
-        position: top
         show_brightness_control: true
         show_color_control: true
         show_color_temp_control: true
         use_light_color: true
+        tap_action:
+          action: toggle
+        hold_action:
+          action: more-info
+        card_mod:
+          style: |
+            ha-card {
+              {% if states(config.entity) == "on" %}
+              box-shadow: 0px 0px 5px 5px rgba({{ state_attr(config.entity,'rgb_color') | join(', ')}}, {{ state_attr(config.entity,'brightness') / 255 }})
+              {% endif %}
+            }
       - type: custom:auto-entities
         filter:
           include:
             - domain: light
               options:
                 type: custom:mushroom-light-card
-                collapsible_controls: true
                 fill_container: true
-                position: top
+                use_light_color: true
                 show_brightness_control: true
                 show_color_control: true
                 show_color_temp_control: true
                 tap_action:
                   action: toggle
-                use_light_color: true
+                hold_action:
+                  action: more-info
                 card_mod:
                   style: |
                     ha-card {
                       padding: 4px 12px !important;
                       --ha-card-box-shadow: 0px;
+                      {% if states(config.entity) == "on" %}
+                      box-shadow: 0px 0px 5px 5px rgba({{ state_attr(config.entity,'rgb_color') | join(', ')}}, {{ state_attr(config.entity,'brightness') / 255 }})
+                      {% endif %}
                     }
           exclude:
             - entity_id: light.all_lights
             - entity_id: light.browser*
+            - state: unavailable
         card:
           type: custom:layout-card
           cards: []

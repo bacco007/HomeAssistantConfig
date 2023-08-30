@@ -22,6 +22,7 @@ cards:
           margin: 0 !important;
         }
     entities:
+      - entity: counter.automation_trigger_counter
       - type: custom:hui-element
         card_type: custom:flex-table-card
         entities:

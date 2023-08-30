@@ -67,6 +67,9 @@ cards:
                 transform: scale(1.2);
               }
             .: |
+              ha-card {
+                box-shadow: 0px 0px 10px 10px rgba({{ state_attr('light.office_lamp','rgb_color') | join(', ')}}, 1)
+              }
               mushroom-light-brightness-control {
                 position: absolute;
                 top: 0px;
@@ -99,6 +102,9 @@ cards:
                 transform: scale(1.2);
               }
             .: |
+              ha-card {
+                box-shadow: 0px 0px 10px 10px rgba({{ state_attr('light.bedroom_lamp','rgb_color') | join(', ')}}, 1)
+              }
               mushroom-light-brightness-control {
                 position: absolute;
                 top: 0px;
