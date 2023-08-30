@@ -191,11 +191,18 @@ class ICalEvents:
                     event["DTSTART"].dt, dt.DEFAULT_TIME_ZONE
                 )
 
-                # If we don't have a DTEND, just use DTSTART
                 if "DTEND" not in event:
-                    dtend = dtstart
+                    _LOGGER.debug("Event found without end datetime")
+                    if self.all_day:
+                        # if it's an all day event with no endtime listed, we'll assume it ends at 23:59:59
+                        _LOGGER.debug(f"Event {event['SUMMARY']} is flagged as all day, with a start time of {start}.")
+                        dtend = dtstart + timedelta(days=1, seconds=-1)
+                        _LOGGER.debug(f"Setting the end time to {dtend}")
+                    else:
+                        _LOGGER.debug(f"Event {event['SUMMARY']} doesn't have an end but isn't flagged as all day.")
+                        dtend = dtstart
                 else:
-                    _LOGGER.debug("DTEND in rrule: %s", str(event["DTEND"].dt))
+                    _LOGGER.debug("DTEND in event")
                     dtend = self._ical_date_fixer(
                         event["DTEND"].dt, dt.DEFAULT_TIME_ZONE
                     )
@@ -329,7 +336,15 @@ class ICalEvents:
                 start = dtstart
 
                 if "DTEND" not in event:
-                    dtend = dtstart
+                    _LOGGER.debug("Event found without end datetime")
+                    if self.all_day:
+                        # if it's an all day event with no endtime listed, we'll assume it ends at 23:59:59
+                        _LOGGER.debug(f"Event {event['SUMMARY']} is flagged as all day, with a start time of {start}.")
+                        dtend = dtstart + timedelta(days=1, seconds=-1)
+                        _LOGGER.debug(f"Setting the end time to {dtend}")
+                    else:
+                        _LOGGER.debug(f"Event {event['SUMMARY']} doesn't have an end but isn't flagged as all day.")
+                        dtend = dtstart
                 else:
                     _LOGGER.debug("DTEND in event")
                     dtend = self._ical_date_fixer(
