@@ -26,7 +26,8 @@
                 "data": {
                     "interval_observation": "Intervall in Minuten zwischen Sensor-Updates (Standard 2 min)",
                     "forecast_hours": "Anzahl der Stunden für die stundenbasierte Vorhersage (Standard 48 Stunden)",
-                    "interval_forecast": "Intervall in Minuten zwischen den Aktualisierungen der Vorhersage (Standard 30 min)"
+                    "interval_forecast": "Intervall in Minuten zwischen den Aktualisierungen der Vorhersage (Standard 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
                 }
             }
         }

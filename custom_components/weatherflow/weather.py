@@ -7,6 +7,7 @@ from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
     ATTR_FORECAST_NATIVE_PRECIPITATION,
     ATTR_FORECAST_PRECIPITATION_PROBABILITY,
+    ATTR_FORECAST_HUMIDITY,
     ATTR_FORECAST_NATIVE_TEMP,
     ATTR_FORECAST_NATIVE_TEMP_LOW,
     ATTR_FORECAST_TIME,
@@ -202,6 +203,7 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
                 {
                     ATTR_FORECAST_TIME: item.utc_time,
                     ATTR_FORECAST_NATIVE_TEMP: item.air_temperature,
+                    ATTR_FORECAST_HUMIDITY: item.relative_humidity,
                     ATTR_FORECAST_NATIVE_PRECIPITATION: item.precip,
                     ATTR_FORECAST_PRECIPITATION_PROBABILITY: item.precip_probability,
                     ATTR_FORECAST_CONDITION: format_condition(item.icon),

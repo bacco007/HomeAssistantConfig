@@ -26,7 +26,8 @@
                 "data": {
                     "interval_observation": "Interval i minutter mellem sensor opdateringer (Standard 2 min)",
                     "forecast_hours": "Antal timer for Time baseret vejrudsigt (Standard 48 timer)",
-                    "interval_forecast": "Interval i minutter mellem forecast opdateringer (Standard 30 min)"
+                    "interval_forecast": "Interval i minutter mellem forecast opdateringer (Standard 30 min)",
+                    "ignore_fetch_errors": "Hvis markeret, vil systemet ignorere fejl der måtte opstå hvis en enkelt værdi ikke kan hentes. Fjern markeringen for at se hvilken værdi der er problemer med."
                 }
             }
         }

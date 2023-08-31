@@ -26,7 +26,8 @@
                 "data": {
                     "interval_observation": "Intervall i minuter mellan sensoruppdateringar (Standard 2 min)",
                     "forecast_hours": "Antalet timmar för timbaserad väderprognos (Standard 48 h)",
-                    "interval_forecast": "Intervall i minuter mellan väderprognosuppdateringar (Standard 30 min)"
+                    "interval_forecast": "Intervall i minuter mellan väderprognosuppdateringar (Standard 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
                 }
             }
         }

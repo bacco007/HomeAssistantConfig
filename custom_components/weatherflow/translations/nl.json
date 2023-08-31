@@ -26,7 +26,8 @@
                 "data": {
                     "interval_observation": "Interval in minuten tussen sensor updates (Standaard 2 min)",
                     "forecast_hours": "Number of hours for the Hour based forecast (Default 48 hours)",
-                    "interval_forecast": "Interval in minuten tussen de weersvoorspelling updates (Standaard 30 min)"
+                    "interval_forecast": "Interval in minuten tussen de weersvoorspelling updates (Standaard 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
                 }
             }
         }

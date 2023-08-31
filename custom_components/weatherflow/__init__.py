@@ -33,6 +33,7 @@ from pyweatherflowrest.data import (
 
 from .const import (
     CONF_FORECAST_HOURS,
+    CONF_IGNORE_FETCH_ERRORS,
     CONF_INTERVAL_FORECAST,
     CONF_INTERVAL_OBSERVATION,
     CONF_STATION_ID,
@@ -42,6 +43,7 @@ from .const import (
     DEFAULT_BRAND,
     DEFAULT_FORECAST_HOURS,
     DEFAULT_FORECAST_INTERVAL,
+    DEFAULT_IGNORE_FETCH_ERRORS,
     DEFAULT_OBSERVATION_INTERVAL,
     DOMAIN,
     WEATHERFLOW_PLATFORMS,
@@ -84,6 +86,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         forecast_hours=entry.options.get(CONF_FORECAST_HOURS, DEFAULT_FORECAST_HOURS),
         homeassistant=True,
         session=session,
+        ignore_fetch_errors=entry.options.get(
+            CONF_IGNORE_FETCH_ERRORS, DEFAULT_IGNORE_FETCH_ERRORS
+        ),
     )
 
     try:

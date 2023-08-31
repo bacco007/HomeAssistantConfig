@@ -26,7 +26,8 @@
                 "data": {
                     "interval_observation": "Frequenza di aggiornamento per i dati dei sensori (default: 2 min)",
                     "forecast_hours": "Number of hours for the Hour based forecast (Default 48 hours)",
-                    "interval_forecast": "Frequenza di aggiornamento per le previsioni meteo (default: 30 min)"
+                    "interval_forecast": "Frequenza di aggiornamento per le previsioni meteo (default: 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
                 }
             }
         }
