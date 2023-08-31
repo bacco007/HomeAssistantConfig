@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, August 31st 2023_
+_Stats as at 05:00, Friday, September 1st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.4 | 487     | 4648         | 3181 | 124 |
+| 2023.9.0b0 | 490     | 4658         | 3187 | 124 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 24
 Person | 4
 Scene | 2
 Script | 10
-Sensor | 3181
+Sensor | 3187
 Sun | 1
-Switch | 208
+Switch | 215
 Weather | 13
 Zone | 3
 
@@ -157,6 +157,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [button.smartthinq_sensors](https://www.home-assistant.io/components/button.smartthinq_sensors) |
 | [button.spook](https://www.home-assistant.io/components/button.spook) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
+| [button.unifi](https://www.home-assistant.io/components/button.unifi) |
 | [calendar](https://www.home-assistant.io/components/calendar) |
 | [calendar.anniversaries](https://www.home-assistant.io/components/calendar.anniversaries) |
 | [calendar.garbage_collection](https://www.home-assistant.io/components/calendar.garbage_collection) |
@@ -264,6 +265,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
+| [lawn_mower](https://www.home-assistant.io/components/lawn_mower) |
+| [lawn_mower.mqtt](https://www.home-assistant.io/components/lawn_mower.mqtt) |
 | [light](https://www.home-assistant.io/components/light) |
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.group](https://www.home-assistant.io/components/light.group) |
@@ -462,7 +465,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
-| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -554,6 +556,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [vacuum.mqtt](https://www.home-assistant.io/components/vacuum.mqtt) |
 | [version](https://www.home-assistant.io/components/version) |
 | [wake_on_lan](https://www.home-assistant.io/components/wake_on_lan) |
+| [wake_word](https://www.home-assistant.io/components/wake_word) |
 | [watchman](https://www.home-assistant.io/components/watchman) |
 | [water_heater](https://www.home-assistant.io/components/water_heater) |
 | [water_heater.mqtt](https://www.home-assistant.io/components/water_heater.mqtt) |
@@ -608,7 +611,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
