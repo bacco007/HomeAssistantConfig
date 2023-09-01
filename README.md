@@ -46,32 +46,32 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, September 1st 2023_
+_Stats as at 05:00, Saturday, September 2nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.9.0b0 | 490     | 4658         | 3187 | 124 |
+| 2023.9.0b1 | 491     | 4678         | 3205 | 124 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 32
 Automation | 124
-Binary Sensor | 289
+Binary Sensor | 297
 Camera | 5
-Device Tracker | 137
+Device Tracker | 138
 Group | 35
 Input Boolean | 12
 Input Datetime | 0
 Input Text | 3
-Light | 13
-Media Player | 24
+Light | 14
+Media Player | 25
 Person | 4
 Scene | 2
 Script | 10
-Sensor | 3187
+Sensor | 3205
 Sun | 1
-Switch | 215
+Switch | 214
 Weather | 13
 Zone | 3
 
@@ -465,6 +465,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -752,7 +753,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Cloudflared (4.2.5)
 - EMQX (0.2.10)
 - ESPHome (2023.8.2)
-- eufy-security-ws (1.6.3)
+- eufy-security-ws (1.6.4)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.111.1)
 - JupyterLab (0.11.1)
@@ -762,7 +763,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - SunGather (0.1.3)
-- WeatherFlow to MQTT (3.2.0)
+- WeatherFlow to MQTT (3.2.1)
 - Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
