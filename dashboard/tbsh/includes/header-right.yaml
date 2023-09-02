@@ -53,60 +53,60 @@ chips:
   #       ha-card {
   #         --chip-background: rgba(var(--rgb-green), 0.2);
   #       }
-  - type: template
-    icon: mdi:home-assistant
-    icon_color: teal
-    tap_action:
-      action: navigate
-      navigation_path: homeassistant
-    card_mod:
-      style: |
-        ha-card {
-          --chip-background: rgba(var(--rgb-teal), 0.2);
-        }
-        ha-card:after {
-          content: "{{ states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int  }}";
-          position: absolute;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: rgb(var(--rgb-orange));
-          color: var(--card-background-color);
-          font-weight: bolder;
-          border-radius: 50%;
-          top: -5px;
-          right: -5px;
-          width: 16px;
-          height: 16px;
-          font-size: 11px;
-        }
-  - type: template
-    icon: mdi:docker
-    icon_color: lightblue
-    tap_action:
-      action: navigate
-      navigation_path: server
-    card_mod:
-      style: |
-        ha-card {
-          --chip-background: rgba(var(--rgb-teal), 0.2);
-        }
-        ha-card:after {
-          content: "{{ state_attr('sensor.stats_docker', 'containers_updatable') | int  }}";
-          position: absolute;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: rgb(var(--rgb-orange));
-          color: var(--card-background-color);
-          font-weight: bolder;
-          border-radius: 50%;
-          top: -5px;
-          right: -5px;
-          width: 16px;
-          height: 16px;
-          font-size: 11px;
-        }
+  # - type: template
+  #   icon: mdi:home-assistant
+  #   icon_color: teal
+  #   tap_action:
+  #     action: navigate
+  #     navigation_path: homeassistant
+  #   card_mod:
+  #     style: |
+  #       ha-card {
+  #         --chip-background: rgba(var(--rgb-teal), 0.2);
+  #       }
+  #       ha-card:after {
+  #         content: "{{ states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int  }}";
+  #         position: absolute;
+  #         display: flex;
+  #         justify-content: center;
+  #         align-items: center;
+  #         background: rgb(var(--rgb-orange));
+  #         color: var(--card-background-color);
+  #         font-weight: bolder;
+  #         border-radius: 50%;
+  #         top: -5px;
+  #         right: -5px;
+  #         width: 16px;
+  #         height: 16px;
+  #         font-size: 11px;
+  #       }
+  # - type: template
+  #   icon: mdi:docker
+  #   icon_color: lightblue
+  #   tap_action:
+  #     action: navigate
+  #     navigation_path: server
+  #   card_mod:
+  #     style: |
+  #       ha-card {
+  #         --chip-background: rgba(var(--rgb-teal), 0.2);
+  #       }
+  #       ha-card:after {
+  #         content: "{{ state_attr('sensor.stats_docker', 'containers_updatable') | int  }}";
+  #         position: absolute;
+  #         display: flex;
+  #         justify-content: center;
+  #         align-items: center;
+  #         background: rgb(var(--rgb-orange));
+  #         color: var(--card-background-color);
+  #         font-weight: bolder;
+  #         border-radius: 50%;
+  #         top: -5px;
+  #         right: -5px;
+  #         width: 16px;
+  #         height: 16px;
+  #         font-size: 11px;
+  #       }
   - type: template
     entity: group.media_players
     icon: >-

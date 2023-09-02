@@ -37,6 +37,7 @@ sensor:
     device_class: ozone
     state_class: measurement
     unit_of_measurement: AQI
+    icon: si:co2
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','ozone') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','ozone')) }}"
 
@@ -52,6 +53,7 @@ sensor:
     unique_id: waqi_nitrogen_dioxide
     device_class: nitrogen_dioxide
     state_class: measurement
+    icon: si:co2
     unit_of_measurement: AQI
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide')) }}"
@@ -69,6 +71,7 @@ sensor:
     device_class: pm25
     state_class: measurement
     unit_of_measurement: AQI
+    icon: si:pm2-5
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5')) }}"
 
@@ -77,5 +80,6 @@ sensor:
     device_class: pm25
     state_class: measurement
     unit_of_measurement: AQI
+    icon: si:pm2-5
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_10') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_10')) }}"

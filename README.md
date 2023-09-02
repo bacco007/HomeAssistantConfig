@@ -46,30 +46,30 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, September 2nd 2023_
+_Stats as at 05:00, Sunday, September 3rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.9.0b1 | 491     | 4678         | 3205 | 124 |
+| 2023.9.0b2 | 491     | 4688         | 3211 | 124 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 32
 Automation | 124
-Binary Sensor | 297
+Binary Sensor | 300
 Camera | 5
 Device Tracker | 138
 Group | 35
 Input Boolean | 12
 Input Datetime | 0
 Input Text | 3
-Light | 14
-Media Player | 25
+Light | 15
+Media Player | 26
 Person | 4
 Scene | 2
 Script | 10
-Sensor | 3205
+Sensor | 3211
 Sun | 1
 Switch | 214
 Weather | 13
@@ -758,7 +758,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Home Assistant Google Drive Backup (0.111.1)
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
-- Mosquitto broker (6.2.1)
+- Mosquitto broker (6.3.0)
 - Node-RED (14.4.5)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
