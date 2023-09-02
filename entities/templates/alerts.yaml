@@ -274,9 +274,9 @@ binary_sensor:
     device_class: problem
     delay_on: 300
     state: >
-      {{ (is_state('binary_sensor.node_pvetbsh_status','on')
-          or is_state('binary_sensor.node_pvenuc_status','on')
-          or is_state('binary_sensor.node_pvenuc2_status','on')) }}
+      {{ (is_state('binary_sensor.node_pvetbsh_status','off')
+          or is_state('binary_sensor.node_pvenuc_status','off')
+          or is_state('binary_sensor.node_pvenuc2_status','off')) }}
     attributes:
       category: proxmox
 
