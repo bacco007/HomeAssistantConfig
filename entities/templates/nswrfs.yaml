@@ -1,3 +1,4 @@
+---
 binary_sensor:
   - name: "[NSW RFS] Alert Active"
     unique_id: nsw_rfs_alert_active
