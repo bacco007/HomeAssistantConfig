@@ -12,7 +12,7 @@ cards:
   - type: "custom:layout-card"
     layout_type: custom:masonry-layout
     layout:
-      max_cols: 4
+      max_cols: 3
       width: 300
       max_width: 1000
     view_layout:
@@ -32,6 +32,7 @@ cards:
       - !include ../untappd/stats.yaml
       - !include ../untappd/project_52.yaml
       - !include ../untappd/beer_stats.yaml
+      - !include ../untappd/graph_progression.yaml
 
   - !include ../includes/actions.yaml
 

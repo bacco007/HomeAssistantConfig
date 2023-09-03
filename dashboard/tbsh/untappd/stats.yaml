@@ -1,62 +1,76 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Latest Check-In
-    secondary: >-
-      {{state_attr('sensor.untappd_last_check_in_bacco007', 'brewery')}} -
-      {{state_attr('sensor.untappd_last_check_in_bacco007', 'beer')}}
-      ({{state_attr('sensor.untappd_last_check_in_bacco007', 'abv')}})
-    icon: mdi:beer
-    entity: sensor.untappd_last_check_in_bacco007
-    icon_color: green
-    fill_container: true
-  - type: custom:mushroom-template-card
-    primary: Latest Badge
-    secondary: "{{states(entity)}}"
-    icon: si:untappd
-    icon_color: green
-    entity: sensor.untappd_badge
-    fill_container: true
-    badge_color: ""
-    picture: "{{state_attr(entity, 'entity_picture')}}"
-  - type: entities
+    primary: Untappd Stats
+    icon: mdi:beer-outline
+    icon_color: blue
     card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
+      - type: custom:template-entity-row
+        entity: sensor.untappd_last_check_in_bacco007
+        name: Beers Tried
+        icon: mdi:beer-outline
+        state: >
+          {{state_attr(config.entity, 'total_beers')}} Beers
+      - type: custom:template-entity-row
+        entity: sensor.untappd_last_check_in_bacco007
+        name: Latest Check-In
+        state: >
+          {{state_attr(config.entity, 'brewery')}} -
+          {{state_attr(config.entity, 'beer')}}
+          ({{state_attr(config.entity, 'abv')}})
+        secondary: >
+          {{states(config.entity)}}
+      - type: section
+      - type: custom:template-entity-row
+        entity: sensor.untappd_last_check_in_bacco007
+        name: Badges Awarded
+        icon: mdi:beer-outline
+        state: >
+          {{state_attr(config.entity, 'total_badges')}} Badges
+      - type: custom:template-entity-row
+        entity: sensor.untappd_last_badge_bacco007
+        name: Latest Badge
+        state: >
+          {{state_attr(config.entity, 'badge')}}
+        secondary: >
+          {{state_attr(config.entity, 'description')}}
+      - entity: sensor.untappd_checked
+        name: No. Check-Ins
+        icon: mdi:beer-outline
+      - entity: sensor.untappd_followings
+        name: Following
+        icon: mdi:beer-outline
+      - entity: sensor.untappd_friends
+        name: Friends
+        icon: mdi:beer-outline
+      - type: section
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
-          entity: ""
-          primary: Most Check-ins (by Beer)
+          type: custom:template-entity-row
+          name: Most Check-ins (by Year)
+          icon: mdi:beer-outline
           secondary: >
-            {{
-            state_attr('sensor.untappd_stats_by_beercheckincnt','data')[0]['item']
-            }}, {{
-            state_attr('sensor.untappd_stats_by_beercheckincnt','data')[0]['count']}}
+            {{ state_attr('sensor.untappd_stats_by_beercheckincnt','data')[0]['item'] }}
+          state: >
+            {{ state_attr('sensor.untappd_stats_by_beercheckincnt','data')[0]['count']}}
             Check-ins
-          icon: mdi:beer
-          icon_color: green
-          fill_container: true
-          multiline_secondary: false
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-              }
         padding: 0
         entities:
           - type: custom:hui-element
@@ -81,42 +95,15 @@ cards:
 
               {% endif -%}
               {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
-          entity: ""
-          primary: Most Check-ins (by Brewery)
+          type: custom:template-entity-row
+          name: Most Check-ins (by Brewery)
+          icon: mdi:beer-outline
           secondary: >
-            {{ state_attr('sensor.untappd_stats_by_brewery','data')[0]['item']
-            }}, {{
-            state_attr('sensor.untappd_stats_by_brewery','data')[0]['count']}}
-            Check-ins
-          icon: mdi:beer
-          icon_color: green
-          fill_container: true
-          multiline_secondary: false
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-              }
+            {{ state_attr('sensor.untappd_stats_by_brewery','data')[0]['item'] }}
+          state: >
+            {{ state_attr('sensor.untappd_stats_by_brewery','data')[0]['count']}} Check-ins
         padding: 0
         entities:
           - type: custom:hui-element
@@ -141,42 +128,15 @@ cards:
 
               {% endif -%}
               {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
-          entity: ""
-          primary: Most Check-ins (by Beer Style)
+          type: custom:template-entity-row
+          name: Most Check-ins (by Beer Style)
+          icon: mdi:beer-outline
           secondary: >
-            {{ state_attr('sensor.untappd_stats_by_beerstyle','data')[0]['item']
-            }}, {{
-            state_attr('sensor.untappd_stats_by_beerstyle','data')[0]['count']}}
-            Check-ins
-          icon: mdi:beer
-          icon_color: green
-          fill_container: true
-          multiline_secondary: false
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-              }
+            {{ state_attr('sensor.untappd_stats_by_beerstyle','data')[0]['item'] }}
+          state: >
+            {{ state_attr('sensor.untappd_stats_by_beerstyle','data')[0]['count'] }} Check-ins
         padding: 0
         entities:
           - type: custom:hui-element
@@ -201,43 +161,15 @@ cards:
 
               {% endif -%}
               {%- endfor %}
-  - type: entities
-    card_mod:
-      style:
-        fold-entity-row$: |
-          ha-icon {
-            color: rgb(var(--rgb-disabled-color));
-            margin-right: 24px;
-          }
-        hui-section-row $: |
-          .divider { display: none; }
-        .: |
-          .card-content {
-            padding: 0;
-          }
-    entities:
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
-          entity: ""
-          primary: Most Check-ins (by Nation)
+          type: custom:template-entity-row
+          name: Most Check-ins (by Nation)
+          icon: mdi:beer-outline
           secondary: >
-            {{
-            state_attr('sensor.untappd_stats_by_brewerycountry','data')[0]['item']
-            }}, {{
-            state_attr('sensor.untappd_stats_by_brewerycountry','data')[0]['count']}}
-            Check-ins
-          icon: mdi:beer
-          icon_color: green
-          fill_container: true
-          multiline_secondary: false
-          card_mod:
-            style: |
-              ha-card {
-                background: none;
-                border: 0;
-                box-shadow: none;
-              }
+            {{ state_attr('sensor.untappd_stats_by_brewerycountry','data')[0]['item'] }}
+          state: >
+            {{ state_attr('sensor.untappd_stats_by_brewerycountry','data')[0]['count'] }} Check-ins
         padding: 0
         entities:
           - type: custom:hui-element

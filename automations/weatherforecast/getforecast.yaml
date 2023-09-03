@@ -1,0 +1,21 @@
+---
+alias: "[Weather Forecast] Get Forecast"
+id: weatherforecast_getforecast
+mode: single
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    minutes: /30
+condition: []
+action:
+  # OpenWeatherMap - Hourly
+  - service: weather.get_forecast
+    data:
+      type: hourly
+    target:
+      entity_id: weather.openweathermap
+    response_variable: openweathermap_hourly
+  - event: update_weatherforecast_openweathermap_hourly
+    event_data:
+      forecast: "{{ openweathermap_hourly.forecast }}"

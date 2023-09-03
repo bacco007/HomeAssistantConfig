@@ -1,0 +1,12 @@
+---
+trigger:
+  - platform: event
+    event_type: update_weatherforecast_openweathermap_hourly
+sensor:
+  - name: "[Weather Forecast] OpenWeatherMap Hourly"
+    unique_id: weather_forecast_openweathermap_hourly
+    state: "{{ now().isoformat() }}"
+    attributes:
+      forecast: "{{ trigger.event.data.forecast }}"
+      category: weatherforecast
+      provider: OpenWeatherMap
