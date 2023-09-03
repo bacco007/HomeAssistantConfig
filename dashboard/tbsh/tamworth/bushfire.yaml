@@ -1,56 +1,99 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: "custom:button-card"
-    template: header_card_no_link
-    variables:
-      name: Bushfire Danger
-    view_layout:
-      grid-column: 1/-1
-  - type: grid
-    columns: 2
-    cards:
-      - type: vertical-stack
-        cards:
-          - type: custom:decluttering-card
-            template: bushfire_fireban
-            variables:
-              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_today
-              - name: Today
-          - type: custom:decluttering-card
-            template: bushfire_danger_level
-            variables:
-              - entity: sensor.fire_danger_northern_slopes_danger_level_today
-      - type: vertical-stack
-        cards:
-          - type: custom:decluttering-card
-            template: bushfire_fireban
-            variables:
-              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_tomorrow
-              - name: Tomorrow
-          - type: custom:decluttering-card
-            template: bushfire_danger_level
-            variables:
-              - entity: sensor.fire_danger_northern_slopes_danger_level_tomorrow
-      - type: vertical-stack
-        cards:
-          - type: custom:decluttering-card
-            template: bushfire_fireban
-            variables:
-              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_day_3
-              - name: Day 3
-          - type: custom:decluttering-card
-            template: bushfire_danger_level
-            variables:
-              - entity: sensor.fire_danger_northern_slopes_danger_level_day_3
-      - type: vertical-stack
-        cards:
-          - type: custom:decluttering-card
-            template: bushfire_fireban
-            variables:
-              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_day_4
-              - name: Day 4
-          - type: custom:decluttering-card
-            template: bushfire_danger_level
-            variables:
-              - entity: sensor.fire_danger_northern_slopes_danger_level_day_4
+  - type: custom:mushroom-template-card
+    primary: NSW RFS Alerts / Fire Warning Level
+    icon: mdi:fire-alert
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: sensor.nsw_rfs_alerts_near_me
+        name: Alerts Near Me
+      - entity: sensor.nsw_rfs_alerts_near_me
+        type: custom:multiple-entity-row
+        name: Incident Category
+        show_state: false
+        secondary_info: last-changed
+        entities:
+          - attribute: count_emergency_warning
+            name: Emergency
+            unit: ""
+          - attribute: count_watch_and_act
+            name: Watch & Act
+            unit: ""
+          - attribute: count_advice
+            name: Advice
+            unit: ""
+          - attribute: count_notapplicable
+            name: NA
+            unit: ""
+      - entity: sensor.nsw_rfs_alerts_near_me
+        type: custom:multiple-entity-row
+        name: Incident Status
+        show_state: false
+        secondary_info: last-changed
+        entities:
+          - attribute: count_outofcontrol
+            name: Out of Control
+            unit: ""
+          - attribute: count_beingcontrolled
+            name: Being Controlled
+            unit: ""
+          - attribute: count_undercontrol
+            name: Under Control
+            unit: ""
+      - type: section
+      - entity: binary_sensor.nsw_rfs_alert_active
+        type: custom:template-entity-row
+        name: >
+          {{state_attr(config.entity, 'last_alert_category')}}: {{state_attr(config.entity, 'last_alert')}}
+        secondary: >
+          {{state_attr(config.entity, 'last_alert_type')}}, {{state_attr(config.entity, 'last_alert_status')}}
+        state: >
+          {{state_attr(config.entity, 'last_alert_date')}}
+      - type: section
+      - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_today
+        type: custom:multiple-entity-row
+        name: Fire Danger Today
+        secondary_info: last-changed
+        entities:
+          - attribute: danger_level_today
+            name: Danger Level
+            unit: ""
+      - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_tomorrow
+        type: custom:multiple-entity-row
+        name: Fire Danger Tomorrow
+        secondary_info: last-changed
+        entities:
+          - attribute: danger_level_today
+            name: Danger Level
+            unit: ""
+      - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_day_3
+        type: custom:multiple-entity-row
+        name: Fire Danger Day 3
+        secondary_info: last-changed
+        entities:
+          - attribute: danger_level_today
+            name: Danger Level
+            unit: ""
+      - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_day_4
+        type: custom:multiple-entity-row
+        name: Fire Danger Day 4
+        secondary_info: last-changed
+        entities:
+          - attribute: danger_level_today
+            name: Danger Level
+            unit: ""

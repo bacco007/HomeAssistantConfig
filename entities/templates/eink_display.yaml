@@ -20,13 +20,13 @@ sensor:
           Good night
         {%- endif %}
       home_temperature: >
-        {{ states('sensor.tempest_st_00056115_temperature') }}
+        {{ states('sensor.weather_temperature') }}
       home_temperature_max: >
-        {{ state_attr('sensor.tempest_st_00056115_temperature', 'max_day') }}
+        {{ states('sensor.weather_temperature_maximum_day') }}
       home_temperature_min: >
-        {{ state_attr('sensor.tempest_st_00056115_temperature', 'min_day') }}
+        {{ states('sensor.weather_temperature_minimum_day') }}
       home_rainfall_today: >
-        {{ states('sensor.tempest_st_00056115_rain_today') }}
+        {{ states('sensor.weather_precipitation_today') }}
       home_rainfall_week: >
         {{ states('sensor.weatherstats_rain_home_week') }}
       home_rainfall_month: >
@@ -34,11 +34,11 @@ sensor:
       home_rainfall_year: >
         {{ states('sensor.weatherstats_rain_home') }}
       media_playing_status: >
-        {{ states('media_player.office_sonos') }}
+        {{ states('media_player.currently_playing') }}
       media_playing_title: >
-        {{ state_attr('media_player.office_sonos', 'media_title') | title }}
+        {{ state_attr('media_player.currently_playing', 'media_title') | title }}
       media_playing_artist: >
-        {{ state_attr('media_player.office_sonos', 'media_artist') | title }} (on {{ state_attr('media_player.office_sonos', 'media_channel') | title }})
+        {{ state_attr('media_player.currently_playing', 'media_artist') | title }} (on {{ state_attr('media_player.currently_playing', 'media_channel') | title }})
       current_weather_condition: >
         {%- set cond_now = states('weather.east_tamworth') %}
         {%- if states('sun.sun') == 'below_horizon' %}

@@ -37,6 +37,13 @@ binary_sensor:
     state: "{{ integration_entities('gdacs')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+  - name: "[Connected] NSW RFS"
+    unique_id: connected_nswrfs
+    icon: mdi:fire-alert
+    device_class: connectivity
+    state: "{{ integration_entities('nsw_rural_fire_service_feed')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
   - name: "[Connected] WAQI"
     unique_id: connected_waqi
     icon: mdi:smog
@@ -170,3 +177,16 @@ binary_sensor:
     state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+
+sensor:
+  - name: "[Connected] Offline Integrations"
+    unique_id: connected_offline_integrations
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:api','mdi:api-off') }}"
+    state: >
+      {% set entities = state_attr(this.entity_id,'entity_id') %}
+      {{ entities|count if entities != none else entities }}
+    attributes:
+      category: homeassistant
+      entity_id: >
+        {{ expand('group.connectivity_monitors')
+            |selectattr('state','eq','off')|map(attribute='entity_id')|list|sort }}

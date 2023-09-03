@@ -1,0 +1,90 @@
+binary_sensor:
+  - name: "[NSW RFS] Alert Active"
+    unique_id: nsw_rfs_alert_active
+    icon: mdi:fire-alert
+    state: "{{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 }}"
+    unit_of_measurement: "Incidents"
+    attributes:
+      category: nswrfs
+      last_alert: >
+        {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+              |sort(reverse=true,attribute='attributes.publication_date')
+              |map(attribute='attributes.friendly_name')|first }}
+        {%- endif %}
+      last_alert_desc: >
+        {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+              |sort(reverse=true,attribute='attributes.publication_date')
+              |map(attribute='attributes.location')|first }}
+        {%- endif %}
+      last_alert_date: >
+        {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
+          {%- set last_date = states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+              |sort(reverse=true,attribute='attributes.publication_date')
+              |map(attribute='attributes.publication_date')|first %}
+          {{ last_date }}
+        {%- endif %}
+      last_alert_category: >
+        {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+              |sort(reverse=true, attribute='attributes.publication_date')
+              |map(attribute='attributes.category')|first }}
+        {%- endif %}
+      last_alert_type: >
+        {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+              |sort(reverse=true, attribute='attributes.publication_date')
+              |map(attribute='attributes.type')|first }}
+        {%- endif %}
+      last_alert_status: >
+        {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+              |sort(reverse=true, attribute='attributes.publication_date')
+              |map(attribute='attributes.status')|first }}
+        {%- endif %}
+    availability: "{{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 }}"
+
+sensor:
+  - name: "[NSW RFS] Alerts Near Me"
+    unique_id: nsw_rfs_alerts_near_me
+    icon: mdi:fire-alert
+    state: "{{ integration_entities('nsw_rural_fire_service_feed')|select('has_value')|list|count}}"
+    unit_of_measurement: "Incidents"
+    attributes:
+      category: nswrfs
+      count_emergency_warning: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.category','eq','Emergency Warning')
+          |list|count}}
+      count_watch_and_act: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.category','eq','Watch and Act')
+          |list|count}}
+      count_advice: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.category','eq','Advice')
+          |list|count}}
+      count_notapplicable: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.category','eq','Not Applicable')
+          |list|count}}
+      count_outofcontrol: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.status','eq','Out of Control')
+          |list|count}}
+      count_beingcontrolled: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.status','eq','Being controlled')
+          |list|count}}
+      count_undercontrol: >
+        {{ states.geo_location
+          |selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
+          |selectattr('attributes.status','eq','Under control')
+          |list|count}}

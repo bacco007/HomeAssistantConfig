@@ -29,7 +29,7 @@ cards:
     cards:
       - !include ../snippets/weather_forecast.yaml
       - type: custom:clock-weather-card
-        entity: weather.east_tamworth
+        entity: weather.weather_home_daily
         hide_today_section: true
         forecast_days: 7
         weather_icon_type: line

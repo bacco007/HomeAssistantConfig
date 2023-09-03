@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "0.7.1";
+var VERSION = "0.7.3";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -73,7 +73,24 @@ class CellFormatters {
         const minr = Math.floor(minutes);
         return (!isNaN(hours) && !isNaN(minr)) ? hours + " hours " + minr + " minutes" : null;
     }
-    
+    duration(data) {
+        let h = (data > 3600) ? Math.floor(data / 3600).toString() + ':' : '';
+        let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
+        let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
+        if (m) s = s.padStart(2, 0);
+        return h + m + s;
+    }
+    duration_h(data) {
+        let d = (data > 86400) ? Math.floor(data / 86400).toString() + 'd ' : '';
+        let h = (data > 3600) ? Math.floor((data % 86400) / 3600) : ''
+        h = (d) ? h.toString().padStart(2,0) + ':' : ((h) ? h.toString() + ':' : '');
+
+        let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
+        let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
+        if (m) s = s.padStart(2, 0);
+        return d + h + m + s;
+    }
+
 
 }
 
@@ -251,6 +268,9 @@ class DataRow {
                     } else if (col_key === "_state" && "state" in this.entity.attributes) {
                         // '_state' denotes 'attributes.state'
                         raw_content.push(this.entity.attributes.state);
+                    } else if (col_key === "_name" && "name" in this.entity.attributes) {
+                        // '_name' denotes 'attributes.name'
+                        raw_content.push(this.entity.attributes.name);
                     } else if (col_key === "icon") {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
@@ -264,7 +284,28 @@ class DataRow {
                     } else {
                         // no matching data found, complain:
                         //raw_content.push("[[ no match ]]");
-                        raw_content.push(null);
+
+                        let pos = col_key.indexOf('.');
+                        if (pos < 0)
+                        {
+                            raw_content.push(null);
+                        }
+                        else
+                        {
+                            // if the col_key field contains a dotted object (eg: day.monday)
+                            //  then traverse each object to ensure that it exists
+                            //  until the final object value is found.
+                            // if at any point in the traversal, the object is not found
+                            //  then null will be used as the value.
+                            let objs = col_key.split('.');
+                            let value = this.entity.attributes;
+                            if (value) {
+                                for (let idx = 0; value && idx < objs.length; idx++) {
+                                    value = (objs[idx] in value) ? value[objs[idx]] : null;
+                                }
+                            }
+                            raw_content.push(value);
+                        }
                     }
 
                     // @todo: not really nice to clean `raw_content` up here, why
@@ -376,6 +417,9 @@ class FlexTableCard extends HTMLElement {
         this.card_height = 1;
         this.tbl = null;
     }
+
+    // Used to detect changes requiring a table refresh.
+    #old_last_updated = "";
 
     _getRegEx(pats, invert=false) {
         // compile and convert wildcardish-regex to real RegExp
@@ -496,15 +540,15 @@ class FlexTableCard extends HTMLElement {
 
     _updateContent(element, rows) {
         // callback for updating the cell-contents
-        element.innerHTML = rows.map((row) =>
-            `<tr id="entity_row_${row.entity.entity_id}">${row.data.map(
+        element.innerHTML = rows.map((row, index) =>
+            `<tr id="entity_row_${row.entity.entity_id}_${index}">${row.data.map(
                 (cell) => ((!cell.hide) ?
                     `<td class="${cell.css}">${cell.pre}${cell.content}${cell.suf}</td>` : "")
             ).join("")}</tr>`).join("");
 
         // if configured, set clickable row to show entity popup-dialog
-        rows.forEach(row => {
-            const elem = this.shadowRoot.getElementById(`entity_row_${row.entity.entity_id}`);
+        rows.forEach((row, index) => {
+            const elem = this.shadowRoot.getElementById(`entity_row_${row.entity.entity_id}_${index}`);
             // bind click()-handler to row (if configured)
             elem.onclick = (this.tbl.cfg.clickable) ? (function(clk_ev) {
                 // create and fire 'details-view' signal
@@ -523,6 +567,13 @@ class FlexTableCard extends HTMLElement {
 
         // get "data sources / origins" i.e, entities
         let entities = this._getEntities(hass, config.entities, config.entities.include, config.entities.exclude);
+
+        // Check for changes requiring a table refresh.
+        // Return if no changes detected.
+        let last_updated_arr = entities.map(a => a.last_updated);
+        let max = last_updated_arr.sort().slice(-1)[0];
+        if (max == this.#old_last_updated) return;
+        this.#old_last_updated = max;
 
         // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
         // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows

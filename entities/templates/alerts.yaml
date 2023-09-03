@@ -1,5 +1,21 @@
 ---
 binary_sensor:
+  - name: "[Alerts] Disabled"
+    unique_id: alerts_disabled
+    icon: mdi:alert-decagram-outline
+    device_class: problem
+    state: >
+      {{ states.alert
+        |selectattr('state','eq','off')
+        |list|count > 0 }}
+    attributes:
+      category: alerts
+      entity_id: >
+        {{ expand(states.alert)
+          |selectattr('state','eq','off')
+          |map(attribute='entity_id')
+          |list|sort}}
+
   - name: "alerts_wan_offline"
     unique_id: alert_wan_offline
     icon: mdi:wan

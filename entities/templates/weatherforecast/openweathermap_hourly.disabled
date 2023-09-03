@@ -1,0 +1,26 @@
+---
+trigger:
+  - platform: time_pattern
+    hours: /1
+  - event: start
+    platform: homeassistant
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: template
+      service: reload
+action:
+  - service: weather.get_forecast
+    data:
+      type: hourly
+    target:
+      entity_id: weather.openweathermap
+    response_variable: forecast
+sensor:
+  - name: "[Weather Forecast] OpenWeatherMap Hourly"
+    unique_id: weather_forecast_openweathermap_hourly
+    state: "{{ now().isoformat() }}"
+    attributes:
+      forecast: "{{ forecast.forecast }}"
+      category: weatherforecast
+      provider: OpenWeatherMap

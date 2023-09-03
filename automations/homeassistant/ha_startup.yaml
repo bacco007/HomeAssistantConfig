@@ -17,6 +17,9 @@ action:
       message: "Waiting for startup to complete."
       notification_id: hass_restart
 
+  - service: counter.reset
+    entity_id: counter.automation_trigger_counter
+
   - service: input_boolean.turn_off
     entity_id: input_boolean.ha_startup_pending
 

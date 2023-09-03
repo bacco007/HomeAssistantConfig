@@ -6,6 +6,10 @@ trigger:
     id: startup
     event: start
 
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
+
   - platform: event
     event_type: call_service
     event_data:
@@ -13,7 +17,7 @@ trigger:
       service: reload
 
   - platform: time_pattern
-    hours: "/2"
+    hours: "/1"
 
 action:
   - if: "{{ trigger.id == 'startup' }}"
@@ -392,3 +396,13 @@ action:
           |selectattr('entity_id','search','qbit_')
           |map(attribute='entity_id')
           |list|sort }}
+
+  - service: group.set
+    data:
+      object_id: addon_switch
+      name: "[Group] Add-on Switches"
+      icon: mdi:toggle-switch
+      entities: >
+        {{ states
+            |selectattr('entity_id','search','switch.addon__*')
+            |map(attribute='entity_id')|list|sort }}

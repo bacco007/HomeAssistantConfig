@@ -1,6 +1,6 @@
 ---
 type: custom:hourly-weather
-entity: weather.weatherflow_hourly_based_forecast
+entity: weather.weather_home_hourly
 icons: true
 show_precipitation_amounts: false
 show_precipitation_probability: false

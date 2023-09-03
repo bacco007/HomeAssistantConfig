@@ -1,0 +1,52 @@
+---
+trigger:
+  - platform: time
+    at: "00:00:00"
+  - platform: state
+    entity_id: sensor.weather_temperature
+sensor:
+  - name: "[Weather] Temperature Maximum Day"
+    unique_id: weather_temperature_maximum_day
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    icon: mdi:thermometer-chevron-up
+    state: >
+      {% set t_new = states('sensor.weather_temperature') | float(-99) %}
+      {{ [t_new, this.state | float(-99)] | max if trigger.platform != 'time' else t_new }}
+    attributes:
+      temperature_updated: "{{ now() | as_local }}"
+      category: weather
+    availability: >
+      {{ has_value('sensor.weather_temperature') }}
+
+  - name: "[Weather] Temperature Minimum Day"
+    unique_id: weather_temperature_minimum_day
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    icon: mdi:thermometer-chevron-down
+    state: >
+      {% set t_new = states('sensor.weather_temperature') | float(100) %}
+      {{ [t_new, this.state | float(100)] | min if trigger.platform != 'time' else t_new }}
+    attributes:
+      temperature_updated: "{{ now() | as_local }}"
+      category: weather
+    availability: >
+      {{ has_value('sensor.weather_temperature') }}
+
+  - name: "[Weather] Temperature Range_day"
+    unique_id: weather_temperature_range_day
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    icon: mdi:thermometer-lines
+    state: >
+      {%- set tmax = states('sensor.weather_temperature_maximum_day') | float(100) %}
+      {%- set tmin = states('sensor.weather_temperature_minimum_day') | float(100) %}
+      {{ (tmax - tmin) | round(2) }}
+    attributes:
+      temperature_updated: "{{ now() | as_local }}"
+      category: weather
+    availability: >
+      {{ has_value('sensor.weather_temperature') }}

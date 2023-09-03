@@ -1,6 +1,7 @@
 ---
 platform: universal
 name: Currently Playing
+unique_id: currently_playing
 children:
   - media_player.bedroom_apple_tv
   - media_player.bedroom_symfonisk
