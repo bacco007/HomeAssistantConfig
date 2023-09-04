@@ -12,12 +12,14 @@ binary_sensor:
           {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
               |sort(reverse=true,attribute='attributes.publication_date')
               |map(attribute='attributes.friendly_name')|first }}
+        {% else %} None Recorded
         {%- endif %}
       last_alert_desc: >
         {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
           {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
               |sort(reverse=true,attribute='attributes.publication_date')
               |map(attribute='attributes.location')|first }}
+        {% else %} None Recorded
         {%- endif %}
       last_alert_date: >
         {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
@@ -25,24 +27,28 @@ binary_sensor:
               |sort(reverse=true,attribute='attributes.publication_date')
               |map(attribute='attributes.publication_date')|first %}
           {{ last_date }}
+        {% else %} None Recorded
         {%- endif %}
       last_alert_category: >
         {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
           {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
               |sort(reverse=true, attribute='attributes.publication_date')
               |map(attribute='attributes.category')|first }}
+        {% else %} None Recorded
         {%- endif %}
       last_alert_type: >
         {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
           {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
               |sort(reverse=true, attribute='attributes.publication_date')
               |map(attribute='attributes.type')|first }}
+        {% else %} None Recorded
         {%- endif %}
       last_alert_status: >
         {%- if states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 %}
           {{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')
               |sort(reverse=true, attribute='attributes.publication_date')
               |map(attribute='attributes.status')|first }}
+        {% else %} None Recorded
         {%- endif %}
     availability: "{{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 }}"
 
