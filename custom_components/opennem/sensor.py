@@ -53,7 +53,7 @@ class OpenNEMSensor(CoordinatorEntity):
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.config.entry_id)},
-            default_name=f"{DEFAULT_NAME} {self._region.upper()}",
+            #default_name=f"{DEFAULT_NAME} {self._region.upper()}",
             #default_mode=f"{self._region.upper()}",
             name=self._name,
             entry_type=DeviceEntryType.SERVICE,
