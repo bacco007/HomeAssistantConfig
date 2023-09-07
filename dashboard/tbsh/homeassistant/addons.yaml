@@ -10,6 +10,34 @@ cards:
         ha-card {
           box-shadow: none !important;
         }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:auto-entities
+        show_empty: true
+        unique: true
+        filter:
+          include:
+            - group: group.addon_switch
+        sort:
+          method: state
+        card:
+          type: custom:fold-entity-row
+          padding: 0
+          head:
+            type: custom:template-entity-row
+            name: "Add-on Switches"
+            icon: mdi:toggle-switch
+            state: ""
   - type: custom:auto-entities
     card_mod:
       style: |

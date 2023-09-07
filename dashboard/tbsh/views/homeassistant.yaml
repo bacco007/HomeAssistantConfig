@@ -39,6 +39,7 @@ cards:
       - !include ../homeassistant/inputs_helpers.yaml
       - !include ../homeassistant/automation_history.yaml
       - !include ../homeassistant/snapshots.yaml
+      - !include ../homeassistant/graph_entitycount.yaml
       - type: vertical-stack
         cards:
           - !include ../homeassistant/graph_dbsize.yaml

@@ -2,8 +2,8 @@
 type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Home Assistant Addons
-    icon: mdi:home-assistant
+    primary: Updates
+    icon: mdi:update
     icon_color: blue
     card_mod:
       style: |
@@ -13,121 +13,142 @@ cards:
   - type: entities
     show_header_toggle: false
     state_color: true
-    card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
-        }
     entities:
-      - type: custom:auto-entities
-        show_empty: true
-        unique: true
-        filter:
-          include:
-            - group: group.addon_switch
-        sort:
-          method: state
-        card:
-          type: custom:fold-entity-row
-          padding: 0
-          head:
-            type: custom:template-entity-row
-            name: "Add-on Switches"
-            icon: mdi:toggle-switch
-            state: ""
-  - type: custom:auto-entities
-    card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
-        }
-    card:
-      type: entities
-      card_mod:
-        style: |
-          #states {
-            padding-top: 0 !important;
-          }
-          #states > * {
-            margin: 0 !important;
-          }
-    filter:
-      template: >
-        {%- set dev = namespace() %}
-        {%- set dev.name = '' %}
-        {%- set dev.running = '' %}
-        {%- set dev.newest_version = '' %}
-        {%- set dev.version = '' %}
-        {%- set dev.cpu_percent = '' %}
-        {%- set dev.memory_percent = '' %}
-        {%- set dev.update = '' %}
-
-        {%- for devid in (integration_entities('Supervisor') | map('device_id') | unique) | sort %}
-          {%- set dev.name = device_attr(devid, "name") %}
-          {%- for ent in device_entities(devid) %}
-            {%- if (ent.find("running") | int>=0) %}
-              {%- set dev.running = ent %}
-            {%- endif %}
-            {%- if (ent.find("newest_version") | int>=0) %}
-              {%- set dev.newest_version = ent %}
-            {%- endif %}
-            {%- if (ent.find("version") | int>=0) %}
-              {%- set dev.version = ent %}
-            {%- endif %}
-            {%- if (ent.find("cpu_percent") | int>=0) %}
-              {%- set dev.cpu_percent = ent %}
-            {%- endif %}
-            {%- if (ent.find("memory_percent") | int>=0) %}
-              {%- set dev.memory_percent = ent %}
-            {%- endif %}
-            {%- if (ent.find("update") | int>=0) %}
-              {%- set dev.update = ent %}
-            {%- endif %}
-          {%- endfor %}
-          {%- if dev.version > '' %}
-            {{-
-              {
-                 "type": "custom:fold-entity-row",
-                 "card_mod": {
-                    "style": "#items {\n  padding-left: 12px !important;\n  padding-right: 12px !important;\n}\n#measure {\n  padding-top: 0 !important;\n}\n#measure > * {\n  margin: 0 !important;\n}\n"
-                 },
-                 "padding": 0,
-                 "head": {
-                    "type": "custom:template-entity-row",
-                    "name": dev.name,
-                    "icon": "mdi:home-assistant",
-                    "state": ""
-                 },
-                 "entities": [
-                    {
-                       "entity": dev.running,
-                       "name": "Status"
-                    },
-                    {
-                       "entity": dev.cpu_percent,
-                       "name": "CPU Percentage"
-
-                    },
-                    {
-                       "entity": dev.memory_percent,
-                       "name": "Memory Percentage"
-                    },
-                    {
-                       "type": "custom:template-entity-row",
-                       "entity": dev.update,
-                       "name": dev.name,
-                       "state": "New: {{ state_attr(config.entity, 'latest_version') }}",
-                       "secondary": "Current: {{ state_attr(config.entity, 'installed_version')}}"
-                    }
-                 ]
-              }
-            }},
-
-          {%- endif %}
-        {%- endfor %}
+      - type: custom:fold-entity-row
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Home Assistant
+          icon: mdi:home-assistant
+          state: |
+            {{expand('group.updates_homeassistant')
+              |selectattr('state', 'eq', 'on')
+              | list | count }} /
+            {{expand('group.updates_homeassistant')
+              |selectattr('state', 'eq', 'off')
+              | list | count }}
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_homeassistant')
+                    |selectattr('state', 'eq', 'on')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_homeassistant
+                  state: "on"
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+                    secondary: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: No Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_homeassistant')
+                    |selectattr('state', 'eq', 'off')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_homeassistant
+                  state: "off"
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
+      - type: custom:fold-entity-row
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Home Assistant Community Store
+          icon: hacs:hacs
+          state: |
+            {{expand('group.updates_hacs')
+              |selectattr('state', 'eq', 'on')
+              | list | count }} /
+            {{expand('group.updates_hacs')
+              |selectattr('state', 'eq', 'off')
+              | list | count }}
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_hacs')
+                    |selectattr('state', 'eq', 'on')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_hacs
+                  state: "on"
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+                    secondary: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              head:
+                type: custom:template-entity-row
+                name: No Updates Available
+                icon: mdi:update
+                state: |
+                  {{expand('group.updates_hacs')
+                    |selectattr('state', 'eq', 'off')
+                    | list | count }}
+            show_empty: true
+            sort:
+              method: friendly_name
+            filter:
+              include:
+                - group: group.updates_hacs
+                  state: "off"
+                  options:
+                    type: custom:template-entity-row
+                    name: >-
+                      {{ state_attr(config.entity,
+                      'friendly_name').split(':',1)[0] }}
+                    state: >-
+                      Current: {{ state_attr(config.entity, 'installed_version')
+                      }}

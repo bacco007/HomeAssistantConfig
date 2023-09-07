@@ -1,0 +1,125 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:vertical-stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          margin: 10px 10px !important;
+        }
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.entities
+        primary_info: state
+        secondary_info: name
+        fill_container: true
+        name: Entities in Use
+        icon_color: yellow
+      - type: custom:plotly-graph
+        entities:
+          - entity: sensor.entities
+            connectgaps: true
+            show_value: true
+            filters:
+              - force_numeric
+              - resample: 6h
+            texttemplate: <b>%{y:,.0f}</b>
+            line:
+              width: 3
+              color: yellow
+        hours_to_show: 1w
+        refresh_interval: auto
+        layout:
+          showlegend: false
+          height: 200
+          margin:
+            autoexpand: false
+            l: 50
+            r: 50
+          xaxis:
+            showline: true
+            tickformat: "%a"
+            showgrid: false
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: false
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title: ""
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false
+  - type: custom:vertical-stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          margin: 10px 10px !important;
+        }
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.sensors
+        primary_info: state
+        secondary_info: name
+        fill_container: true
+        name: Sensors in Use
+        icon_color: yellow
+      - type: custom:plotly-graph
+        entities:
+          - entity: sensor.sensors
+            connectgaps: true
+            show_value: true
+            filters:
+              - force_numeric
+              - resample: 6h
+            texttemplate: <b>%{y:,.0f}</b>
+            line:
+              width: 3
+              color: yellow
+        hours_to_show: 1w
+        refresh_interval: auto
+        layout:
+          showlegend: false
+          height: 200
+          margin:
+            autoexpand: false
+            l: 50
+            r: 50
+          xaxis:
+            showline: true
+            tickformat: "%a"
+            showgrid: false
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: false
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title: ""
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false
