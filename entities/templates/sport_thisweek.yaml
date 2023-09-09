@@ -1,0 +1,570 @@
+---
+# trigger:
+#   {%- for s in states|selectattr('entity_id','search','calendar.ical_*')|list %}
+#   - platform: calendar
+#     event: end
+#     entity_id: {{ s.entity_id }}
+#   {%- endfor %}
+#   - platform: event
+#     event_type: event_template_reloaded
+# action:
+#   {%- for s in states|selectattr('entity_id','search','calendar.ical_*')|list %}
+#   - service: calendar.list_events
+#     data:
+#       duration:
+#         hours: 168
+#     target:
+#       entity_id: {{ s.entity_id }}
+#     response_variable: {{ s.entity_id | replace("calendar.","") }}
+# {%- endfor %}
+#   - variables:
+#       all_events: >
+#         {{ states.calendar
+#           |selectattr('entity_id','search','calendar.ical_*')
+#           |map(attribute='entity_id')
+#           |join('.events + ')
+#           |replace("calendar.","") }}.events
+#       events: >
+#         {{ all_events | selectattr('start', 'search', now().date() | string) | list }}
+# sensor:
+#   - name: "[Sport] Next 24 Hours"
+#     unique_id: sport_next_24_hours
+#     state: "{{ events | count }}"
+#     attributes:
+#       scheduled_events: "{{ events }}"
+
+trigger:
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_formula_1
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_extreme_e
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nascar_cup_series
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nascar_xfinity_series
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_anaheim_ducks
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_new_england_patriots
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_new_york_yankees
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_newcastle_knights
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nsw_waratahs
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_wrc
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_motogp
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_btcc
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_dtm
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_igtc
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_imsa
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_manchester_united
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_wec
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_misc_motorsport
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_f1
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_wallabies
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_socceroos
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_kings
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_sixers
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_sixers_women
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_australia_cricket_women
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_supercars
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_swans
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_australia_cricket
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_international_cricket_mens
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_swifts
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_afl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nrl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_international_rugby_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_indycar
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_formula_e
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_gt_world_challenge_asia
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_worldsbk
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_formula_2
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_formula_3
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_gt_world_challenge_australia
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_tcr_australia
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_swans_vfl
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_swans_aflw
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_toronto_maple_leafs
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_manchester_united_women
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_newcastle_knights_nrlw
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nrlw_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_fc_women
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_sydney_fc
+  - platform: event
+    event_type: event_template_reloaded
+action:
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_formula_1
+    response_variable: ical_formula_1
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_home_assistant
+    response_variable: ical_home_assistant
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_extreme_e
+    response_variable: ical_extreme_e
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_nascar_cup_series
+    response_variable: ical_nascar_cup_series
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_nascar_xfinity_series
+    response_variable: ical_nascar_xfinity_series
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_anaheim_ducks
+    response_variable: ical_anaheim_ducks
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_new_england_patriots
+    response_variable: ical_new_england_patriots
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_new_york_yankees
+    response_variable: ical_new_york_yankees
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_newcastle_knights
+    response_variable: ical_newcastle_knights
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_nsw_waratahs
+    response_variable: ical_nsw_waratahs
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_wrc
+    response_variable: ical_wrc
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_motogp
+    response_variable: ical_motogp
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_btcc
+    response_variable: ical_btcc
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_dtm
+    response_variable: ical_dtm
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_igtc
+    response_variable: ical_igtc
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_imsa
+    response_variable: ical_imsa
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_manchester_united
+    response_variable: ical_manchester_united
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_wec
+    response_variable: ical_wec
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_misc_motorsport
+    response_variable: ical_misc_motorsport
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_f1
+    response_variable: ical_f1
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_wallabies
+    response_variable: ical_wallabies
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_socceroos
+    response_variable: ical_socceroos
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_kings
+    response_variable: ical_sydney_kings
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_sixers
+    response_variable: ical_sydney_sixers
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_sixers_women
+    response_variable: ical_sydney_sixers_women
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_australia_cricket_women
+    response_variable: ical_australia_cricket_women
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_supercars
+    response_variable: ical_supercars
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_swans
+    response_variable: ical_sydney_swans
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_australia_cricket
+    response_variable: ical_australia_cricket
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_international_cricket_mens
+    response_variable: ical_international_cricket_mens
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_swifts
+    response_variable: ical_swifts
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_afl_all_teams
+    response_variable: ical_afl_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_nrl_all_teams
+    response_variable: ical_nrl_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_international_rugby_all_teams
+    response_variable: ical_international_rugby_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_indycar
+    response_variable: ical_indycar
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_formula_e
+    response_variable: ical_formula_e
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_gt_world_challenge_asia
+    response_variable: ical_gt_world_challenge_asia
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_worldsbk
+    response_variable: ical_worldsbk
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_formula_2
+    response_variable: ical_formula_2
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_formula_3
+    response_variable: ical_formula_3
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_gt_world_challenge_australia
+    response_variable: ical_gt_world_challenge_australia
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_tcr_australia
+    response_variable: ical_tcr_australia
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_swans_vfl
+    response_variable: ical_sydney_swans_vfl
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_swans_aflw
+    response_variable: ical_sydney_swans_aflw
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_toronto_maple_leafs
+    response_variable: ical_toronto_maple_leafs
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_manchester_united_women
+    response_variable: ical_manchester_united_women
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_newcastle_knights_nrlw
+    response_variable: ical_newcastle_knights_nrlw
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_nrlw_all_teams
+    response_variable: ical_nrlw_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_fc_women
+    response_variable: ical_sydney_fc_women
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 168
+    target:
+      entity_id: calendar.ical_sydney_fc
+    response_variable: ical_sydney_fc
+  - variables:
+      all_events: >
+        {{ ical_formula_1.events + ical_extreme_e.events + ical_nascar_cup_series.events
+        + ical_nascar_xfinity_series.events + ical_anaheim_ducks.events
+        + ical_new_england_patriots.events + ical_new_york_yankees.events
+        + ical_newcastle_knights.events + ical_nsw_waratahs.events + ical_wrc.events
+        + ical_motogp.events + ical_btcc.events + ical_dtm.events + ical_igtc.events
+        + ical_imsa.events + ical_manchester_united.events + ical_wec.events
+        + ical_misc_motorsport.events + ical_f1.events + ical_wallabies.events
+        + ical_socceroos.events + ical_sydney_kings.events + ical_sydney_sixers.events
+        + ical_sydney_sixers_women.events + ical_australia_cricket_women.events
+        + ical_supercars.events + ical_sydney_swans.events + ical_australia_cricket.events
+        + ical_international_cricket_mens.events + ical_swifts.events
+        + ical_afl_all_teams.events + ical_nrl_all_teams.events
+        + ical_international_rugby_all_teams.events + ical_indycar.events
+        + ical_formula_e.events + ical_gt_world_challenge_asia.events
+        + ical_worldsbk.events + ical_formula_2.events + ical_formula_3.events
+        + ical_gt_world_challenge_australia.events + ical_tcr_australia.events
+        + ical_sydney_swans_vfl.events + ical_sydney_swans_aflw.events
+        + ical_toronto_maple_leafs.events + ical_manchester_united_women.events
+        + ical_newcastle_knights_nrlw.events + ical_nrlw_all_teams.events
+        + ical_sydney_fc_women.events + ical_sydney_fc.events }}
+      events: >
+        {{ all_events | list }}
+sensor:
+  - name: "[Upcoming Sport] This Week"
+    unique_id: upcoming_sport_this_week
+    state: "{{ events | count }}"
+    state_class: measurement
+    unit_of_measurement: Events
+    icon: mdi:calendar
+    attributes:
+      category: sport
+      scheduled_events: "{{ events | sort(attribute='start')}}"

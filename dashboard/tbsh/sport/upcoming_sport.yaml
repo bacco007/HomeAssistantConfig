@@ -10,9 +10,9 @@ cards:
     type: grid
     cards:
       - type: custom:mushroom-entity-card
-        entity: sensor.stats_sport_upcoming_today
+        entity: sensor.upcoming_sport_next_24_hours
         tap_action:
-          action: none
+          action: !include ../popup/sport_24hrs.yaml
         hold_action:
           action: none
         double_tap_action:
@@ -22,7 +22,7 @@ cards:
         name: Today
         icon_color: green
       - type: custom:mushroom-entity-card
-        entity: sensor.stats_sport_upcoming_thisweek
+        entity: sensor.upcoming_sport_this_week
         name: This Week
         fill_container: false
         icon_color: yellow

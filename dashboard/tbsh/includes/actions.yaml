@@ -99,3 +99,15 @@ card:
       template:
         - popup_button
       tap_action: !include ../popup/sonos.yaml
+    - type: "custom:button-card"
+      icon: mdi:football-australian
+      name: Upcoming Sport
+      entity: sensor.upcoming_sport_next_24_hours
+      variables:
+        notification: >
+          [[[
+            return parseInt(entity?.state);
+          ]]]
+      template:
+        - popup_button
+      tap_action: !include ../popup/sport_24hrs.yaml
