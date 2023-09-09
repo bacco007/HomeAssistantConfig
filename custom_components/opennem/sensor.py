@@ -5,14 +5,21 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import OpenNEMDataUpdateCoordinator
-from .const import (ATTRIBUTION, DEFAULT_FORCE_UPDATE, DEFAULT_ICON,
-                    DEFAULT_NAME, DEVICE_CLASS, DOMAIN)
+
+from .const import (
+    ATTRIBUTION,
+    DEFAULT_NAME,
+    DEFAULT_FORCE_UPDATE,
+    DEFAULT_ICON,
+    DEVICE_CLASS,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
