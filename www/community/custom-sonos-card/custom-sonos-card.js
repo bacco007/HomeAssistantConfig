@@ -612,7 +612,7 @@ const Xt=(A,t)=>{var e,i;const s=A._$AN;if(void 0===s)return!1;for(const A of s)
               </ha-control-button>
             `))}
       </div>
-    `}static get styles(){return[n`
+    `}static get styles(){return[uA,n`
         .icons {
           display: flex;
           flex-wrap: wrap;
@@ -646,9 +646,10 @@ const Xt=(A,t)=>{var e,i;const s=A._$AN;if(void 0===s)return!1;for(const A of s)
           width: 100%;
           line-height: 160%;
           bottom: 0;
+          color: #7f7f7f;
           background-color: #ffffffbb;
         }
-      `,uA]}}A([iA()],Ae.prototype,"store",void 0),A([iA()],Ae.prototype,"items",void 0),customElements.define("sonos-media-browser-icons",Ae);class te extends AA{constructor(){super(...arguments),this.browseMedia=!0}render(){const A=this.browseMedia?"M4,6H2V20A2,2 0 0,0 4,22H18V20H4V6M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M12,14.5V5.5L18,10L12,14.5Z":this.mediaBrowserDir?"M13.5 21C9.36 21 6 17.64 6 13.5V11H2L8 4L14 11H10V13.5C10 15.43 11.57 17 13.5 17H21V21H13.5Z":OA;return k`
+      `]}}A([iA()],Ae.prototype,"store",void 0),A([iA()],Ae.prototype,"items",void 0),customElements.define("sonos-media-browser-icons",Ae);class te extends AA{constructor(){super(...arguments),this.browseMedia=!0}render(){const A=this.browseMedia?"M4,6H2V20A2,2 0 0,0 4,22H18V20H4V6M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M12,14.5V5.5L18,10L12,14.5Z":this.mediaBrowserDir?"M13.5 21C9.36 21 6 17.64 6 13.5V11H2L8 4L14 11H10V13.5C10 15.43 11.57 17 13.5 17H21V21H13.5Z":OA;return k`
       <div class="play">
         ${this.browseCanPlay?UA("M8,5.14V19.14L19,12.14L8,5.14Z",(()=>window.dispatchEvent(new CustomEvent(BA))),{additionalStyle:{padding:"0.5rem"}}):""}
       </div>
