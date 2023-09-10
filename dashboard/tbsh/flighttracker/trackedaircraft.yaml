@@ -54,18 +54,24 @@ cards:
     sort_by:
       - aircraft-
     entities:
-      include: sensor.adsb_aircraft_tracked_2
+      include: sensor.adsb_aircraft_tracked
+    card_mod:
+      style: |
+        ha-card {
+          background: none;
+          border: 0;
+          box-shadow: none;
+          overflow: auto;
+          padding-top: 5px;
+          font-size: 12px;
+        }
+        tbody tr:hover {
+          background-color: coral !important
+        }
     columns:
-      - name: HEX
-        data: aircraft
-        modify: |
-          if(x.flight != null )
-            {x.hex}
-            else {
-              '<div style="color:red;">' + x.hex + '</div>';
-          }
       - name: FLIGHT
         data: aircraft
+        align: center
         modify: |
           if(x.flight != null )
             {x.flight}
@@ -74,6 +80,7 @@ cards:
           }
       - name: REGO
         data: aircraft
+        align: center
         modify: |
           if(x.r != null )
             {x.r}
@@ -82,22 +89,25 @@ cards:
           }
       - name: TYPE
         data: aircraft
+        align: center
         modify: |
           if(x.t != null )
             {x.t}
             else {
               '<div style="color:red;">' + "-" + '</div>';
           }
-      - name: SPEED (kt)
+      - name: SPD (kt)
         data: aircraft
+        align: right
         modify: |
           if(x.gs != null )
-            {x.gs}
+            {x.gs.toFixed(0)}
             else {
               '<div style="color:red;">' + "-" + '</div>'
             }
       - name: ALT (ft)
         data: aircraft
+        align: right
         modify: |
           if(x.alt_baro != null )
             {x.alt_baro}
@@ -106,25 +116,28 @@ cards:
             }
       - name: HEAD (deg)
         data: aircraft
+        align: right
         modify: |
           if(x.track != null )
-            {x.track}
+            {x.track.toFixed(0)}
             else {
              '<div style="color:red;">' + "-" + '</div>'
             }
       - name: LAT (deg)
         data: aircraft
+        align: right
         modify: |
           if(x.lat != null )
-            {x.lat}
+            {x.lat.toFixed(3)}
             else {
              '<div style="color:red;">' + "-" + '</div>'
             }
       - name: LON (deg)
         data: aircraft
+        align: right
         modify: |
           if(x.lon != null )
-            {x.lon}
+            {x.lon.toFixed(3)}
             else {
              '<div style="color:red;">' + "-" + '</div>'
             }

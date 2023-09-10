@@ -1,0 +1,7 @@
+---
+platform: derivative
+source: sensor.weather_temperature_filtered
+name: "[Weather] Temperature Change"
+round: 1
+unit_time: h
+time_window: "00:10:00"

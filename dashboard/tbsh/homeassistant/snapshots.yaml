@@ -42,37 +42,50 @@ cards:
         hold_action:
           action: navigate
           navigation_path: /hassio/ingress/cebe7a76_hassio_google_drive_backup
-      - type: custom:hui-element
-        card_type: custom:flex-table-card
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Backup History
+          icon: mdi:home-assistant
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
         entities:
-          include: sensor.backup_state
-        css:
-          table+: "border-collapse: collapse;"
-        sort_by: backups
-        columns:
-          - name: Name
-            data: backups
-            modify: x.name
-          - name: Date
-            data: backups
-            modify: |
-              var date = new Date(x.date);
-              String(date.getDate()).padStart(2,'0')+"/"+
-              (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+
-              date.getFullYear()
-          - name: State
-            data: backups
-            modify: x.state
-          - name: Size
-            data: backups
-            modify: x.size
-        card_mod:
-          style: |
-            ha-card {
-              background: none;
-              border: 0;
-              box-shadow: none;
-              overflow: auto;
-              padding-top: 5px;
-              font-size: 12px;
-            }
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.backup_state
+            css:
+              table+: "border-collapse: collapse;"
+            sort_by: backups
+            columns:
+              - name: Name
+                data: backups
+                modify: x.name
+              - name: Date
+                data: backups
+                modify: |
+                  var date = new Date(x.date);
+                  String(date.getDate()).padStart(2,'0')+"/"+
+                  (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+
+                  date.getFullYear()
+              - name: State
+                data: backups
+                modify: x.state
+              - name: Size
+                data: backups
+                modify: x.size
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }

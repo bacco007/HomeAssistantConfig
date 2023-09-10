@@ -29,27 +29,12 @@ cards:
           width: 300
           max_width: 1000
     cards:
-      - type: vertical-stack
-        cards:
-          - !include ../lastfm/graph_today.yaml
-          - !include ../lastfm/graph_thisweek.yaml
-          - !include ../lastfm/graph_thisyear.yaml
-          - !include ../spotify/graph_playcount.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include ../lastfm/recent_played.yaml
-          - !include ../lastfm/topartists_alltime.yaml
-          - !include ../lastfm/topalbums_alltime.yaml
-          - !include ../lastfm/toptracks_weekly.yaml
-          - !include ../lastfm/toptracks_monthly.yaml
-          - !include ../lastfm/toptracks_alltime.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include ../spotify/topsongs.yaml
-          - !include ../spotify/topartists.yaml
-          - !include ../spotify/topalbums.yaml
+      - !include ../lastfm/graph_today.yaml
+      - !include ../lastfm/graph_thisweek.yaml
+      - !include ../lastfm/graph_thisyear.yaml
+      - !include ../spotify/graph_playcount.yaml
+      - !include ../lastfm/lastfm.yaml
+      - !include ../spotify/spotify.yaml
 
   - !include ../includes/actions.yaml
 

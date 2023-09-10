@@ -1,0 +1,8 @@
+---
+platform: filter
+name: "[Weather] Temperature (Filtered)"
+entity_id: sensor.weather_temperature
+filters:
+  - filter: lowpass
+    time_constant: 1
+    precision: 1

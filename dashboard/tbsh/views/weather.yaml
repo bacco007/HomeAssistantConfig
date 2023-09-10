@@ -31,8 +31,8 @@ cards:
     cards:
       - !include ../weather/snippets/forecast_hour_day.yaml
       - !include ../weather/current_weather.yaml
-      - !include ../weather/bom.yaml
-      - !include ../weather/pirate_weather.yaml
+      - !include ../weather/weather_other.yaml
+      - !include ../weather/settings_controls.yaml
       - !include ../devices/weatherflow.yaml
       # - type: "custom:bom-radar-card"
       #   frame_count: 25

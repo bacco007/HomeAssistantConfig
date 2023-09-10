@@ -1,0 +1,81 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: Pirate Weather
+  icon: mdi:weather-partly-snowy-rainy
+  state: ""
+padding: 0
+entities:
+  - entity: sensor.pirateweather_alerts
+    name: Alerts
+  - entity: sensor.pirateweather_minutely_summary
+    name: Summary - Minutely
+  - entity: sensor.pirateweather_hourly_summary
+  - entity: sensor.pirateweather_daily_summary
+  - entity: sensor.pirateweather_summary_0h
+  - entity: sensor.pirateweather_summary_0d
+  - entity: sensor.pirateweather_daytime_high_apparent_temperature_0d
+  - entity: sensor.pirateweather_overnight_low_apparent_temperature_0d
+  - type: custom:fold-entity-row
+    card_mod:
+      style: |
+        #items {
+          padding-left: 12px !important;
+          padding-right: 12px !important;
+        }
+        #measure {
+          padding-top: 0 !important;
+        }
+        #measure > * {
+          margin: 0 !important;
+        }
+    padding: 0
+    head:
+      entity: sensor.pirateweather_wind_gust
+      name: Wind Gust
+    entities:
+      - entity: sensor.pirateweather_wind_gust_0h
+      - entity: sensor.pirateweather_wind_gust_0d
+  - type: custom:fold-entity-row
+    card_mod:
+      style: |
+        #items {
+          padding-left: 12px !important;
+          padding-right: 12px !important;
+        }
+        #measure {
+          padding-top: 0 !important;
+        }
+        #measure > * {
+          margin: 0 !important;
+        }
+    padding: 0
+    head:
+      entity: sensor.pirateweather_humidity
+      name: Humidity
+    entities:
+      - entity: sensor.pirateweather_humidity_0h
+      - entity: sensor.pirateweather_humidity_0d
+  - type: custom:fold-entity-row
+    card_mod:
+      style: |
+        #items {
+          padding-left: 12px !important;
+          padding-right: 12px !important;
+        }
+        #measure {
+          padding-top: 0 !important;
+        }
+        #measure > * {
+          margin: 0 !important;
+        }
+    padding: 0
+    head:
+      entity: sensor.pirateweather_cloud_coverage
+      name: Cloud Coverage
+    entities:
+      - entity: sensor.pirateweather_cloud_coverage_0h
+      - entity: sensor.pirateweather_cloud_coverage_0d
+  - entity: sensor.pirateweather_nearest_storm_bearing
+  - entity: sensor.pirateweather_nearest_storm_distance

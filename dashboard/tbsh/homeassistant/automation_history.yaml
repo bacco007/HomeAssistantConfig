@@ -2,7 +2,7 @@
 type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Automation Run History
+    primary: Automations
     icon: mdi:home-assistant
     icon_color: blue
     card_mod:
@@ -23,26 +23,39 @@ cards:
         }
     entities:
       - entity: counter.automation_trigger_counter
-      - type: custom:hui-element
-        card_type: custom:flex-table-card
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Automation Run History
+          icon: mdi:home-assistant
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
         entities:
-          include: sensor.ha_automation_run_history
-        css:
-          table+: "border-collapse: collapse;"
-        columns:
-          - name: Time
-            data: history
-            modify: x.time
-          - name: Automation
-            data: history
-            modify: x.automation
-        card_mod:
-          style: |
-            ha-card {
-              background: none;
-              border: 0;
-              box-shadow: none;
-              overflow: auto;
-              padding-top: 5px;
-              font-size: 12px;
-            }
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.ha_automation_run_history
+            css:
+              table+: "border-collapse: collapse;"
+            columns:
+              - name: Time
+                data: history
+                modify: x.time
+              - name: Automation
+                data: history
+                modify: x.automation
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }

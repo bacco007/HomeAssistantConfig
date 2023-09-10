@@ -80,6 +80,74 @@ cards:
             name: PM10
           - entity: sensor.waqi_particulate_matter_2_5
             name: PM2.5
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Forecast
+          icon: mdi:cloud-alert
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.waqi_dailyforecast_*
+            clickable: true
+            columns:
+              - data: friendly_name
+                name: Measure
+                modify: x.replace("[WAQI] Daily Forecast - ","")
+              - data: 2d_ago
+                name: "-2d"
+                modify: if(x != null) { x } else { "-" }
+                align: center
+              - data: 1d_ago
+                name: "-1d"
+                modify: if(x != null) { x } else { "-" }
+                align: center
+              - data: 0d
+                name: Today
+                modify: if(x != null) { x } else { "-" }
+                align: center
+              - data: 1d
+                name: +1d
+                modify: if(x != null) { x } else { "-" }
+                align: center
+              - data: 2d
+                name: +2d
+                modify: if(x != null) { x } else { "-" }
+                align: center
+              - data: 3d
+                name: +3d
+                modify: if(x != null) { x } else { "-" }
+                align: center
+              - data: 4d
+                name: +4d
+                modify: if(x != null) { x } else { "-" }
+                align: center
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              tbody tr td:nth-child(4): "background-color: rgba(26,137,245,1); color: white;"
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }
+
   - type: custom:plotly-graph
     hours_to_show: 72
     entities:
