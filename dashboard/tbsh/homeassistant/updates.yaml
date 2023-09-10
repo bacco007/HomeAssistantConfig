@@ -13,6 +13,14 @@ cards:
   - type: entities
     show_header_toggle: false
     state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
     entities:
       - type: custom:fold-entity-row
         padding: 5
