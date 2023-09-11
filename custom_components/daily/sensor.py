@@ -2,6 +2,7 @@
 import asyncio
 import logging
 from statistics import median, stdev, variance, StatisticsError
+from datetime import datetime
 
 from homeassistant.core import callback, Event
 
@@ -24,6 +25,7 @@ from .const import (  # pylint: disable=unused-import
     CONF_INTERVAL,
     CONF_UNIT_OF_MEASUREMENT,
     CONF_AUTO_RESET,
+    ATTR_DATETIME_OF_OCCURRENCE,
 )
 from .entity import DailySensorEntity
 
@@ -45,6 +47,7 @@ class DailySensor(DailySensorEntity):
         super(DailySensor, self).__init__(coordinator, entity)
         self._state = None
         self._values = []
+        self._occurrence = None
 
     async def async_added_to_hass(self):
         """Complete the initialization."""
@@ -81,6 +84,7 @@ class DailySensor(DailySensorEntity):
         """Receive the reset event."""
         # reset the sensor
         self._state = None
+        self._occurrence = None
         self._values = []
         self.hass.add_job(self.async_write_ha_state)
 
@@ -89,6 +93,7 @@ class DailySensor(DailySensorEntity):
         """Receive the update event."""
         # update the sensor
         input_state = self.hass.states.get(self.coordinator.input_sensor)
+        state_minmax_changed = False
         try:
             if input_state is not None:
                 if input_state.state is None:
@@ -104,13 +109,17 @@ class DailySensor(DailySensorEntity):
                 elif self.coordinator.operation == CONF_MAX:
                     if self._state is None:
                         self._state = the_val
+                        state_minmax_changed = True
                     elif the_val > self._state:
                         self._state = the_val
+                        state_minmax_changed = True
                 elif self.coordinator.operation == CONF_MIN:
                     if self._state is None:
                         self._state = the_val
+                        state_minmax_changed = True
                     elif the_val < self._state:
                         self._state = the_val
+                        state_minmax_changed = True
                 elif self.coordinator.operation == CONF_MEAN:
                     self._values.append(the_val)
                     self._state = round(
@@ -128,6 +137,8 @@ class DailySensor(DailySensorEntity):
                         self._state = variance(self._values)
                     except StatisticsError:
                         pass
+                if state_minmax_changed:
+                    self._occurrence = datetime.now()
                 self.hass.add_job(self.async_write_ha_state)
         except ValueError:
             _LOGGER.error(
@@ -172,6 +183,7 @@ class DailySensor(DailySensorEntity):
             CONF_INTERVAL: self.coordinator.interval,
             CONF_UNIT_OF_MEASUREMENT: self.unit_of_measurement,
             CONF_AUTO_RESET: self.coordinator.auto_reset,
+            ATTR_DATETIME_OF_OCCURRENCE: self._occurrence,
         }
 
     @property

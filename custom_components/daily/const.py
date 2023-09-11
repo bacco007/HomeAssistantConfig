@@ -22,6 +22,9 @@ CONF_INTERVAL = "interval"
 CONF_UNIT_OF_MEASUREMENT = "unit_of_measurement"
 CONF_AUTO_RESET = "auto_reset"
 
+# Attributes
+ATTR_DATETIME_OF_OCCURRENCE = "datetime_of_occurrence"
+
 # Operations
 CONF_MAX = "max"
 CONF_MIN = "min"
