@@ -1,15 +1,10 @@
 """Energy platform."""
 from __future__ import annotations
 
-import logging
-from collections import OrderedDict
-
 from homeassistant.core import HomeAssistant
 
 from . import SolcastUpdateCoordinator
 from .const import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str):
@@ -20,17 +15,6 @@ async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str):
     if coordinator is None:
         return None
         
-    d = coordinator.get_energy_tab_data()
-    c ={}
+    return coordinator.get_energy_tab_data()
     
-    try:
-        c.update(coordinator._previousenergy)
-        c.update(d['wh_hours'])
-        c = OrderedDict(sorted(c.items()))
-        c = {"wh_hours": c}
-    except Exception as e:
-        _LOGGER.warning(f"SOLCAST - error is creating the energy graphing data in async_get_solar_forecast {e}")
-        k={}
-        c = {"wh_hours": k}
-        
-    return c 
+

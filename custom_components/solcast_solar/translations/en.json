@@ -4,8 +4,7 @@
         "step": {
             "user": {
                 "data": {
-                    "api_key": "Solcast API key",
-                    "name": "Name"
+                    "api_key": "Solcast API key"
                 },
                 "description": "Your Solcast API Account Key"
             }
@@ -15,8 +14,7 @@
         "step": {
             "init": {
                 "data": {
-                    "api_key": "Solcast API key",
-                    "name": "Name"
+                    "api_key": "Solcast API key"
                 },
                 "description": "Your Solcast API Account Key"
             }
@@ -25,9 +23,56 @@
     "system_health": {
         "info": {
             "can_reach_server": "Solcast server connection",
-            "remaining_requests": "API requests remaining",
+            "used_requests": "API requests remaining",
             "rooftop_site_count": "Rooftop site count"
+        }
+    },
+    "services": {
+        "update_forecasts": {
+            "name": "Update",
+            "description": "Fetches the latest forecasts data from Solcast."
+            },
+        "clear_all_solcast_data": {
+            "name": "Clear all saved Solcast data",
+            "description": "Deletes the solcast.json file to remove all current solcast site data."
+            },
+        "query_forecast_data": {
+            "name": "Query forecast data",
+            "description": "Return a data set or value for a given query.",
+            "fields": {
+                "start_date_time": {
+                    "name": "Start date time",
+                    "description": "Query forecast data events from date time."
+                },
+                "end_date_time": {
+                    "name": "End date time",
+                    "description": "Query forecast data events up to date time."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "power_now_30m": {"name": "Power Next 30 Mins"},
+            "power_now_1hr": {"name": "Power Next Hour"},
+            "total_kwh_forecast_today": {"name": "Forecast Today"},
+            "peak_w_today": {"name": "Peak Forecast Today"},
+            "peak_w_time_today": {"name": "Peak Time Today"},
+            "forecast_this_hour": {"name": "Forecast This Hour"},
+            "get_remaining_today": {"name": "Forecast Remaining Today"},
+            "forecast_next_hour": {"name": "Forecast Next Hour"},
+            "total_kwh_forecast_tomorrow": {"name": "Forecast Tomorrow"},
+            "peak_w_tomorrow": {"name": "Peak Forecast Tomorrow"},
+            "peak_w_time_tomorrow": {"name": "Peak Time Tomorrow"},
+            "api_counter": {"name": "API Used"},
+            "api_limit": {"name": "API Limit"},
+            "lastupdated": {"name": "API Last Polled"},
+            "total_kwh_forecast_d3": {"name": "Forecast Day 3"},
+            "total_kwh_forecast_d4": {"name": "Forecast Day 4"},
+            "total_kwh_forecast_d5": {"name": "Forecast Day 5"},
+            "total_kwh_forecast_d6": {"name": "Forecast Day 6"},
+            "total_kwh_forecast_d7": {"name": "Forecast Day 7"},
+            "power_now": {"name": "Power Now"}
         }
     }
 }
-

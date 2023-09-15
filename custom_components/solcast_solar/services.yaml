@@ -7,6 +7,16 @@ clear_all_solcast_data:
   name: Clear saved Solcast site data
   description: Deletes the solcast.json file to remove all current solcast site data
 
-get_forecasts:
-  name: Get forecast list
-  description: Lists of events for forecasts
+query_forecast_data:
+  name: Query forecasts
+  description: List of forecasts between start datetime and end datetime
+  fields:
+    start_date_time:
+      example: "2023-09-09T00:00:00"
+      selector:
+        datetime:
+    end_date_time:
+      example: "2023-09-10T10:00:00"
+      selector:
+        datetime:
+
