@@ -52,6 +52,7 @@ influxdb:
       - input_text
       - input_datetime
       - update
+      - remote
     entities:
       - sun.sun
       - sensor.ha_uptime_hours
@@ -182,3 +183,5 @@ influxdb:
       - sensor.qemu*
       - sensor.current_weather*
       - sensor.lxc*
+      - binary_sensor.wud*
+      - sensor.z2m_bedroom_vindstyrka*

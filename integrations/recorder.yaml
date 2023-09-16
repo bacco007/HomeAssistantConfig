@@ -136,6 +136,8 @@ recorder:
       - sensor.current_weather*
       - sensor.lxc*
       - sensor.tempest_st_00056115*
+      - binary_sensor.wud*
+      - sensor.z2m_bedroom_vindstyrka*
     domains:
       - anniversaries
       - automation
@@ -159,6 +161,7 @@ recorder:
       - media_player
       - button
       - event
+      - remote
     event_types:
       - service_removed
       - service_executed
