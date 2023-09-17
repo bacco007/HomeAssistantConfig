@@ -22,6 +22,9 @@ sensor:
             |rejectattr('entity_id','search','rssfeed_')
             |rejectattr('entity_id','search','button.')
             |rejectattr('entity_id','search','select.')
+            |rejectattr('entity_id','search','_color')
+            |rejectattr('entity_id','search','wunder')
+            |rejectattr('entity_id','search','gosungrow')
             |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('gdacs'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('github'))|map(attribute='entity_id')|list)
@@ -41,6 +44,8 @@ sensor:
             |rejectattr('entity_id','in',expand(integration_entities('ical'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('bureau_of_meteorology'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('weatherflow'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('eufy_security'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
             |rejectattr('last_changed','ge',ignore_ts)
             |map(attribute='entity_id')|list }}
         {%- endif %}

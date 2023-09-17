@@ -35,14 +35,14 @@ cards:
           type: custom:template-entity-row
           name: Today
           icon: mdi:solar-panel
-          state: "{{states('sensor.solcast_forecast_today') }} kWh"
+          state: "{{states('sensor.solcast_pv_forecast_forecast_today') }} kWh"
         entities:
-          - entity: sensor.solcast_forecast_today
-          - entity: sensor.solcast_peak_forecast_today
-          - entity: sensor.solcast_peak_time_today
-          - entity: sensor.solcast_forecast_this_hour
-          - entity: sensor.solcast_forecast_remaining_today
-          - entity: sensor.solcast_forecast_next_hour
+          - entity: sensor.solcast_pv_forecast_forecast_today
+          - entity: sensor.solcast_pv_forecast_peak_forecast_today
+          - entity: sensor.solcast_pv_forecast_peak_time_today
+          - entity: sensor.solcast_pv_forecast_forecast_this_hour
+          - entity: sensor.solcast_pv_forecast_forecast_remaining_today
+          - entity: sensor.solcast_pv_forecast_forecast_next_hour
       - type: custom:fold-entity-row
         card_mod:
           style: |
@@ -61,11 +61,11 @@ cards:
           type: custom:template-entity-row
           name: Tomorrow
           icon: mdi:solar-panel
-          state: "{{states('sensor.solcast_forecast_tomorrow') }} kWh"
+          state: "{{states('sensor.solcast_pv_forecast_forecast_tomorrow') }} kWh"
         entities:
-          - entity: sensor.solcast_forecast_tomorrow
-          - entity: sensor.solcast_peak_forecast_tomorrow
-          - entity: sensor.solcast_peak_time_tomorrow
+          - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+          - entity: sensor.solcast_pv_forecast_peak_forecast_tomorrow
+          - entity: sensor.solcast_pv_forecast_peak_time_tomorrow
       - type: custom:fold-entity-row
         card_mod:
           style: |
@@ -85,21 +85,21 @@ cards:
           name: This Week
           icon: mdi:solar-panel
           state: |
-            {{ ((states('sensor.solcast_forecast_today') | float
-               + states('sensor.solcast_forecast_tomorrow') | float
-               + states('sensor.solcast_forecast_d3') | float
-               + states('sensor.solcast_forecast_d4') | float
-               + states('sensor.solcast_forecast_d5') | float
-               + states('sensor.solcast_forecast_d6') | float
-               + states('sensor.solcast_forecast_d7') | float) / 7) | round(2) }} kWh (avg)
+            {{ ((states('sensor.solcast_pv_forecast_forecast_today') | float
+               + states('sensor.solcast_pv_forecast_forecast_tomorrow') | float
+               + states('sensor.solcast_pv_forecast_forecast_day_3') | float
+               + states('sensor.solcast_pv_forecast_forecast_day_4') | float
+               + states('sensor.solcast_pv_forecast_forecast_day_5') | float
+               + states('sensor.solcast_pv_forecast_forecast_day_6') | float
+               + states('sensor.solcast_pv_forecast_forecast_day_7') | float) / 7) | round(2) }} kWh (avg)
         entities:
-          - entity: sensor.solcast_forecast_today
-          - entity: sensor.solcast_forecast_tomorrow
-          - entity: sensor.solcast_forecast_d3
-          - entity: sensor.solcast_forecast_d4
-          - entity: sensor.solcast_forecast_d5
-          - entity: sensor.solcast_forecast_d6
-          - entity: sensor.solcast_forecast_d7
+          - entity: sensor.solcast_pv_forecast_forecast_today
+          - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+          - entity: sensor.solcast_pv_forecast_forecast_day_3
+          - entity: sensor.solcast_pv_forecast_forecast_day_4
+          - entity: sensor.solcast_pv_forecast_forecast_day_5
+          - entity: sensor.solcast_pv_forecast_forecast_day_6
+          - entity: sensor.solcast_pv_forecast_forecast_day_7
       - type: section
       - type: custom:fold-entity-row
         card_mod:
@@ -121,8 +121,9 @@ cards:
           icon: mdi:api
           state: ""
         entities:
-          - entity: sensor.solcast_api_used
-          - entity: sensor.solcast_api_last_polled
+          - entity: sensor.solcast_pv_forecast_api_used
+          - entity: sensor.solcast_pv_forecast_api_limit
+          - entity: sensor.solcast_pv_forecast_api_last_polled
       - type: custom:auto-entities
         filter:
           include:
@@ -176,13 +177,13 @@ cards:
             state: ""
   - type: custom:plotly-graph
     entities:
-      - entity: sensor.solcast_forecast_today
-      - entity: sensor.solcast_forecast_tomorrow
-      - entity: sensor.solcast_forecast_d3
-      - entity: sensor.solcast_forecast_d4
-      - entity: sensor.solcast_forecast_d5
-      - entity: sensor.solcast_forecast_d6
-      - entity: sensor.solcast_forecast_d7
+      - entity: sensor.solcast_pv_forecast_forecast_today
+      - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+      - entity: sensor.solcast_pv_forecast_forecast_day_3
+      - entity: sensor.solcast_pv_forecast_forecast_day_4
+      - entity: sensor.solcast_pv_forecast_forecast_day_5
+      - entity: sensor.solcast_pv_forecast_forecast_day_6
+      - entity: sensor.solcast_pv_forecast_forecast_day_7
     hours_to_show: 1w
     refresh_interval: auto
     defaults:

@@ -1,0 +1,10 @@
+---
+openuv_connected:
+  name: "OpenUV Connected"
+  entity_id: binary_sensor.connected_openuv
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: openuv_connected

@@ -1,0 +1,24 @@
+---
+uv_risk:
+  name: "UV Risk"
+  title: "UV Risk Alert"
+  message: "UV Risk: {{ states('sensor.uv_risk_today') }}"
+  done_message: clear_notification
+  entity_id: binary_sensor.uv_risk_alert
+  state: "on"
+  repeat: 86400
+  notifiers: alert
+  data:
+    tag: uv_alert
+    notification_id: uv_alert
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_uv_alert

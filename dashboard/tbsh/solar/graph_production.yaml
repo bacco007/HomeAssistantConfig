@@ -15,7 +15,7 @@ cards:
         return ms_to_show - now_utc % ms_to_show + 'ms'
       }
     entities:
-      - entity: sensor.solcast_forecast_today
+      - entity: sensor.solcast_pv_forecast_forecast_today
         name: Forecast
         legendgroup: 3
         connectgaps: true

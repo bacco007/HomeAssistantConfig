@@ -1,0 +1,32 @@
+---
+alias: N-Quantity Events from calendar
+fields:
+  quantity:
+    name: Event Quantity
+    example: 5
+    required: true
+    selector:
+      number:
+        min: 1
+        max: 25
+  calendar:
+    name: Calendar
+    example: calendar.example
+    required: true
+    selector:
+      entity:
+        domain: calendar
+sequence:
+  - service: calendar.list_events
+    data:
+      end_date_time: "{{now() + timedelta(days=365)}}"
+    target:
+      entity_id: "{{ calendar }}"
+    response_variable: agenda
+  - variables:
+      scheduled: "{{ {'events': agenda.events[:quantity]} }}"
+  - stop: Return the response variable back to the calling script or automation
+    response_variable: scheduled
+mode: single
+
+

@@ -1,0 +1,91 @@
+---
+trigger:
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_aflw_all_teams
+  - platform: event
+    event_type: event_template_reloaded
+action:
+  - service: calendar.list_events
+    data:
+      end_date_time: "{{now() + timedelta(days=365)}}"
+    target:
+      entity_id: calendar.ical_aflw_all_teams
+    response_variable: agenda
+  - variables:
+      all_events: "{{ agenda.events | list }}"
+      next_5_events: "{{ agenda.events[:5] | list }}"
+sensor:
+  - name: "[Upcoming Sport] AFLW (All Teams)"
+    unique_id: upcoming_sport_aflw_all_teams
+    icon: "mdi:football-australian"
+    picture: /local/sportlogos/aflw_all_teams.png
+    state: ""
+    attributes:
+      category: sport
+      remaining_events: "{{all_events | count}}"
+      next_5_events: "{{next_5_events}}"
+
+      # nexttime: >-
+      #   {%- set st = state_attr("sensor.ical_aflw_all_teams_event_0", 'eta') %}
+      #   {%- if st != None %}
+      #     {%- if state_attr("sensor.ical_aflw_all_teams_event_0", 'eta') <= 0 %}
+      #       On Now!
+      #     {%- else %}
+      #       {%- set st = state_attr("sensor.ical_aflw_all_teams_event_0", 'start') %}
+      #       {%- if st != None %}
+      #         {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+      #         {%- if diff > 6 %}
+      #           In {{ diff }} Days
+      #         {%- else %}
+      #           {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+      #         {%- endif %}
+      #       {%- else %}
+      #         No Time
+      #       {%- endif %}
+      #     {%- endif %}
+      #   {%- else %}
+      #     No Game Scheduled
+      #   {%- endif %}
+      # nextevent: >-
+      #   {%- set op = state_attr("sensor.ical_aflw_all_teams_event_0", 'summary').split(" - ")[0] %}
+      #   {%- set st = state_attr("sensor.ical_aflw_all_teams_event_0", 'start') %}
+      #   {%- if st != None %}
+      #     {{ op }}
+      #   {%- else %}
+      #     No Game Scheduled
+      #   {%- endif %}
+      # nextlocation: >-
+      #   {%- set op = state_attr("sensor.ical_aflw_all_teams_event_0", 'location') %}
+      #   {%- if op != None %}
+      #     {{ op }}
+      #   {%- else %}
+      #     No Location Noted
+      #   {%- endif %}
+      # nexteventafter: >-
+      #   {%- set op = state_attr("sensor.ical_aflw_all_teams_event_1", 'summary').split(" - ")[0] %}
+      #   {%- set st = state_attr("sensor.ical_aflw_all_teams_event_1", 'start') %}
+      #   {%- set et = state_attr("sensor.ical_aflw_all_teams_event_1", 'eta') %}
+      #   {%- if st != None %}
+      #       {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+      #       {%- if diff > 6 %}
+      #         {%- set nt = "In " + diff|string + " Days" %}
+      #       {%- else %}
+      #         {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+      #       {%- endif %}
+      #     {{ op }} ({{ nt }})
+      #   {%- else %}
+      #     No Game Scheduled
+      #   {%- endif %}
+      # sortorder: >-
+      #   {%- if is_state_attr("sensor.ical_aflw_all_teams_event_0", 'eta', '0') %}
+      #     0.0
+      #   {%- else %}
+      #     {%- set st = state_attr("sensor.ical_aflw_all_teams_event_0", 'start') %}
+      #     {%- if st != None %}
+      #       {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+      #         {{ diff }}.0
+      #     {%- else %}
+      #       999.0
+      #     {%- endif %}
+      #   {%- endif %}

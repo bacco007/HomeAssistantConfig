@@ -1,13 +1,13 @@
 ---
 type: custom:plotly-graph
 entities:
-  - entity: sensor.solcast_forecast_today
-  - entity: sensor.solcast_forecast_tomorrow
-  - entity: sensor.solcast_forecast_d3
-  - entity: sensor.solcast_forecast_d4
-  - entity: sensor.solcast_forecast_d5
-  - entity: sensor.solcast_forecast_d6
-  - entity: sensor.solcast_forecast_d7
+  - entity: sensor.solcast_pv_forecast_forecast_today
+  - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+  - entity: sensor.solcast_pv_forecast_forecast_day_3
+  - entity: sensor.solcast_pv_forecast_forecast_day_4
+  - entity: sensor.solcast_pv_forecast_forecast_day_5
+  - entity: sensor.solcast_pv_forecast_forecast_day_6
+  - entity: sensor.solcast_pv_forecast_forecast_day_7
 hours_to_show: 1w
 refresh_interval: auto
 defaults:

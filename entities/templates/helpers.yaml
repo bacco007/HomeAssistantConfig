@@ -77,3 +77,22 @@ sensor:
       {{ (this.date() - first.date()).days }}
     attributes:
       friendly_name: Days Passed in Year
+
+  - name: helper_timeofdayintro
+    unique_id: helper_timeofdayintro
+    icon: mdi:calendar
+    state: >-
+      {% set time = states('sensor.time') %}
+      {% if time >= '05:00' and time <= '12:00' -%}
+        Good morning
+      {% elif time >= '12:00' and time < '17:00' -%}
+        Good afternoon
+      {% elif time >= '19:00' and time < '23:00' -%}
+        Good evening
+      {% elif time >= '23:00' -%}
+        Good night
+      {% elif time < '04:00' -%}
+        Good night
+      {% else %}
+        Hi
+      {% endif %}

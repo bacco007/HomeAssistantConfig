@@ -33,6 +33,9 @@ alert.weatherflow_cloud:
 alert.weatherflow_local:
   icon: mdi:weather-partly-rainy
   category: weather
+alert.uv_risk:
+  icon: mdi:weather-sunny-alert
+  category: weather
 alert.adguard_connected:
   icon: mdi:alert-decagram
   category: homeassistant
