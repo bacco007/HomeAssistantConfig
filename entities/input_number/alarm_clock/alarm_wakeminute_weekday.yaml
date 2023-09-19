@@ -1,0 +1,7 @@
+---
+alarm_wakeminute_weekday:
+  name: Weekday - Minute
+  min: 00
+  max: 59
+  step: 1
+  icon: mdi:alarm

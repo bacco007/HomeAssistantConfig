@@ -1,0 +1,4 @@
+---
+alarm_length:
+  duration: "01:00:00"
+  name: alarm_length

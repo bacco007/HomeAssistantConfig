@@ -1,0 +1,17 @@
+---
+sensor:
+  - name: alarm_waketime_weekday
+    unique_id: alarm_waketime_weekday
+    icon: mdi:alarm
+    state: >
+      {{'{:02d}:{:02d}'.format(states('input_number.alarm_wakehour_weekday') | int, states('input_number.alarm_wakeminute_weekday') | int) }}
+    attributes:
+      category: alarm_clock
+
+  - name: alarm_waketime_weekend
+    unique_id: alarm_waketime_weekend
+    icon: mdi:alarm
+    state: >
+      {{'{:02d}:{:02d}'.format(states('input_number.alarm_wakehour_weekend') | int, states('input_number.alarm_wakeminute_weekend') | int) }}
+    attributes:
+      category: alarm_clock

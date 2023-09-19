@@ -1,0 +1,7 @@
+---
+alarm_wakehour_weekend:
+  name: Weekend - Hour
+  min: 00
+  max: 23
+  step: 1
+  icon: mdi:alarm

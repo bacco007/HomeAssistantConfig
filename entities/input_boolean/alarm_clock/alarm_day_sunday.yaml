@@ -1,0 +1,4 @@
+---
+alarm_day_sunday:
+  name: Sunday
+  icon: mdi:calendar

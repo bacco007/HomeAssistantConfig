@@ -1,0 +1,4 @@
+---
+alarm_wakestatus_weekend:
+  name: Weekend Alarm Mode
+  icon: mdi:alarm
