@@ -1,7 +1,9 @@
 """MastodonProfileStatsEntity class."""
 from __future__ import annotations
 
-from homeassistant.helpers.entity import DeviceInfo
+from dataclasses import dataclass
+
+from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import CONF_URL
 
@@ -10,10 +12,16 @@ from .coordinator import MastodonProfileStatsUpdateCoordinator
 from .profile import MastodonProfile
 
 
+@dataclass
+class MastodonProfileStatsEntityDescription(EntityDescription):
+    """Defines a base MastodonProfileStats entity description."""
+
+    entity_id: str | None = None
+
 class MastodonProfileStatsEntity(CoordinatorEntity):
     """MastodonProfileStatsEntity class."""
 
-    def __init__(self, coordinator: MastodonProfileStatsUpdateCoordinator) -> None:
+    def __init__(self, description: MastodonProfileStatsEntityDescription, coordinator: MastodonProfileStatsUpdateCoordinator) -> None:
         """Initialize."""
         super().__init__(coordinator)
 
@@ -30,3 +38,6 @@ class MastodonProfileStatsEntity(CoordinatorEntity):
             manufacturer=MANUFACTURER,
             configuration_url=coordinator.config_entry.data.get(CONF_URL),
         )
+        self.entity_description = description
+        if description.entity_id:
+            self.entity_id = description.entity_id

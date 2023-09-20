@@ -6,7 +6,7 @@ https://github.com/andrew-codechimp/ha-mastodon_profile_stats
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import Platform, CONF_URL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -23,12 +23,15 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
+
     hass.data[DOMAIN][
         entry.entry_id
     ] = coordinator = MastodonProfileStatsUpdateCoordinator(
         hass=hass,
+        config_entry=entry,
         client=MastodonProfileStatsApiClient(
-            session=async_get_clientsession(hass), entry=entry.data
+            session=async_get_clientsession(hass),
+            url=entry.data[CONF_URL]
         ),
     )
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities

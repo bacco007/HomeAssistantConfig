@@ -26,9 +26,11 @@ class MastodonProfileStatsUpdateCoordinator(DataUpdateCoordinator):
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: ConfigEntry,
         client: MastodonProfileStatsApiClient,
     ) -> None:
         """Initialize."""
+        self.config_entry = config_entry
         self.client = client
         super().__init__(
             hass=hass,

@@ -36,7 +36,7 @@ class MastodonProfileStatsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 await self._test_url(
-                    entry=user_input,
+                    url=user_input[CONF_URL],
                 )
             except MastodonProfileStatsApiClientCommunicationError as exception:
                 LOGGER.error(exception)
@@ -67,12 +67,12 @@ class MastodonProfileStatsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=_errors,
         )
 
-    async def _test_url(self, entry) -> None:
+    async def _test_url(self, url) -> None:
         """Validate url."""
 
         # _LOGGER.debug(f"Profile {entry}")
 
         client = MastodonProfileStatsApiClient(
-            session=async_create_clientsession(self.hass), entry=entry
+            session=async_create_clientsession(self.hass), url=url
         )
         await client.async_get_data()

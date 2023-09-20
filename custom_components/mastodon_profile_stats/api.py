@@ -7,8 +7,6 @@ import socket
 import aiohttp
 import async_timeout
 
-from homeassistant.const import CONF_URL
-
 from .profile import MastodonProfile
 
 
@@ -23,21 +21,19 @@ class MastodonProfileStatsApiClientCommunicationError(
 
 
 class MastodonProfileStatsApiClient:
-    """Sample API Client."""
+    """Mastodon API Client."""
 
     def __init__(
         self,
         session: aiohttp.ClientSession,
-        entry,
+        url,
     ) -> None:
-        """Sample API Client."""
+        """Mastodon API Client."""
         self._session = session
-        self.config_entry = entry
-        self._url = entry[CONF_URL]
+        self._url = url
 
     async def async_get_data(self) -> any:
         """Get data from the API."""
-
         # Construct the user profile to derive the api url
         user_profile = MastodonProfile(any_profile=self._url)
 

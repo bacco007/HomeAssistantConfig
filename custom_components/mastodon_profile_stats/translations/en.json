@@ -13,5 +13,18 @@
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred."
         }
+    },
+    "entity": {
+        "sensor": {
+            "followers": {
+                "name": "Followers"
+            },
+            "following": {
+                "name": "Following"
+            },
+            "statuses": {
+                "name": "Statuses"
+            }
+        }
     }
 }
