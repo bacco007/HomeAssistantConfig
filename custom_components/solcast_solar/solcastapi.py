@@ -237,6 +237,7 @@ class SolcastApi:
 
         except Exception:
             _LOGGER.error(f"SOLCAST - service event to get list of forecasts failed")
+            return None
 
     def get_api_used_count(self):
         """Return API polling count for this UTC 24hr period"""
@@ -257,7 +258,7 @@ class SolcastApi:
         """Return a rooftop sites total kw for today"""
         return self._data["siteinfo"][rooftopid]["tally"]
 
-    def get_rooftop_site_extra_data(self, rooftopid = "") -> float:
+    def get_rooftop_site_extra_data(self, rooftopid = ""):
         """Return a rooftop sites information"""
         g = tuple(d for d in self._sites if d["resource_id"] == rooftopid)
         if len(g) != 1:
@@ -290,11 +291,6 @@ class SolcastApi:
             for d in self._data_forecasts
             if d["period_start"].astimezone(tz).date() == da
         )
-        # if len(h) != 24 * 2:
-        #     _LOGGER.debug("DO NOT BOTHER REPORTING THIS AS AN ISSUE!!!!!")
-        #     _LOGGER.debug(f"get_forecast_day day {futureday+1} missing data from solcast. should be 48 records but the data only has {len(h)}. This can happen sometimes")
-        #     _LOGGER.debug("DO NOT BOTHER REPORTING THIS AS AN ISSUE!!!!!")
-            # raise ValueError(f"Incorrect number of forecasts returned. {len(h)}")
         
         tup = tuple(
                 {**d, "period_start": d["period_start"].astimezone(tz)} for d in h
@@ -319,103 +315,81 @@ class SolcastApi:
         # and returns 30min intervals that doesn't necessarily align with the
         # local time zone. This is a limitation of the Solcast API and not
         # this code, so we'll just have to live with it.
-        da = dt.now(timezone.utc).replace(
-            minute=0, second=0, microsecond=0
-        ) + timedelta(hours=hourincrement)
-        g = tuple(
-            d
-            for d in self._data_forecasts
-            if d["period_start"] >= da and d["period_start"] < da + timedelta(hours=1)
-        )
-        m = sum(z["pv_estimate"] for z in g) / len(g)
-        return int(m * 1000)
+        try:
+            da = dt.now(timezone.utc).replace(
+                minute=0, second=0, microsecond=0
+            ) + timedelta(hours=hourincrement)
+            g = tuple(
+                d
+                for d in self._data_forecasts
+                if d["period_start"] >= da and d["period_start"] < da + timedelta(hours=1)
+            )
+            m = sum(z["pv_estimate"] for z in g) / len(g)
+
+            return int(m * 1000)
+        except Exception as ex:
+            return 0
 
     def get_power_production_n_mins(self, minuteincrement) -> float:
         """Return Solcast Power Now data for N minutes ahead"""
-        da = dt.now(timezone.utc) + timedelta(minutes=minuteincrement)
-        m = min(
-            (z for z in self._data_forecasts), key=lambda x: abs(x["period_start"] - da)
-        )
-        # if abs(m["period_start"] - da) > timedelta(minutes=30):
-        #     _LOGGER.debug("DO NOT BOTHER REPORTING THIS AS AN ISSUE!!!!!")
-        #     _LOGGER.debug(f"get_power_production_n_mins {minuteincrement} is missing data from solcast. Any data found was used to show something at least")
-        #     _LOGGER.debug("DO NOT BOTHER REPORTING THIS AS AN ISSUE!!!!!")
-        #     # raise ValueError(
-        #     #     f"Solcast data didn't return anything within 30 minutes of {da}"
-        #     # )
-        return int(m["pv_estimate"] * 1000)
+        try:
+            da = dt.now(timezone.utc) + timedelta(minutes=minuteincrement)
+            m = min(
+                (z for z in self._data_forecasts), key=lambda x: abs(x["period_start"] - da)
+            )
+            return int(m["pv_estimate"] * 1000)
+        except Exception as ex:
+            return 0.0
 
     def get_peak_w_day(self, dayincrement) -> int:
         """Return hour of max kw for rooftop site N days ahead"""
-        tz = self._tz
-        da = dt.now(tz).date() + timedelta(days=dayincrement)
-        g = tuple(
-            d
-            for d in self._data_forecasts
-            if d["period_start"].astimezone(tz).date() == da
-        )
-        m = max(z["pv_estimate"] for z in g)
-        return int(m * 1000)
+        try:
+            tz = self._tz
+            da = dt.now(tz).date() + timedelta(days=dayincrement)
+            g = tuple(
+                d
+                for d in self._data_forecasts
+                if d["period_start"].astimezone(tz).date() == da
+            )
+            m = max(z["pv_estimate"] for z in g)
+            return int(m * 1000)
+        except Exception as ex:
+            return 0
 
     def get_peak_w_time_day(self, dayincrement) -> dt:
         """Return hour of max kw for rooftop site N days ahead"""
-        tz = self._tz
-        da = dt.now(tz).date() + timedelta(days=dayincrement)
-        g = tuple(
-            d
-            for d in self._data_forecasts
-            if d["period_start"].astimezone(tz).date() == da
-        )
-        return max((z for z in g), key=lambda x: x["pv_estimate"])["period_start"]
+        try:
+            tz = self._tz
+            da = dt.now(tz).date() + timedelta(days=dayincrement)
+            g = tuple(
+                d
+                for d in self._data_forecasts
+                if d["period_start"].astimezone(tz).date() == da
+            )
+            return max((z for z in g), key=lambda x: x["pv_estimate"])["period_start"]
+        except Exception as ex:
+            return None
 
-    def get_remaining_today(self):
+    def get_remaining_today(self) -> float:
         """Return Remaining Forecasts data for today"""
-        tz = self._tz
-        d = dt.now(tz)
-        #needed_delta = d.replace(hour=23, minute=59, second=59, microsecond=0) - d
-        #permitted_error = timedelta(hours=1)
+        try:
+            tz = self._tz
+            da = dt.now(tz).replace(second=0, microsecond=0) 
 
-        da = dt.now(tz).replace(second=0, microsecond=0) 
-        if da.minute < 30:
-            da.replace(minute=0)
-        else:
-            da.replace(minute=30)
-        
-        g = tuple(
-            d
-            for d in self._data_forecasts
-            if d["period_start"].astimezone(tz).date() == da.date() and d["period_start"].astimezone(tz) >= da
-        )
-        m = sum(z["pv_estimate"] for z in g) / 2
-        return m
-    
-        # ret = 0.0
-        # for idx in range(1, len(self._data_forecasts)):
-        #     prev = self._data_forecasts[idx - 1]
-        #     curr = self._data_forecasts[idx]
-
-        #     prev_date = prev["period_start"].astimezone(tz).date()
-        #     cur_date = curr["period_start"].astimezone(tz).date()
-        #     if prev_date != cur_date or cur_date != d.date():
-        #         continue
-
-        #     if not (curr["period_start"] > d and prev["period_start"] > d):
-        #         continue
-
-        #     delta: timedelta = curr["period_start"] - prev["period_start"]
-        #     diff_hours = delta.total_seconds() / 3600
-        #     ret += (prev["pv_estimate"] + curr["pv_estimate"]) / 2 * diff_hours
-        #     needed_delta -= delta
-
-        # if needed_delta > permitted_error:
-        #     _LOGGER.debug("DO NOT BOTHER REPORTING THIS AS AN ISSUE!!!!!")
-        #     _LOGGER.debug(f"get_remaining_today is missing data from solcast. Any data found was used to show something at least")
+            if da.minute < 30:
+                da = da.replace(minute=0)
+            else:
+                da = da.replace(minute=30)
             
-        #     # raise ValueError(
-        #     #     f"Solcast data didn't return anything within {permitted_error} (needed_delta={needed_delta})"
-        #     # )
+            g = tuple(
+                d
+                for d in self._data_forecasts
+                if d["period_start"].astimezone(tz).date() == da.date() and d["period_start"].astimezone(tz) >= da
+            )
 
-        # return ret
+            return sum(z["pv_estimate"] for z in g) / 2
+        except Exception as ex:
+            return 0.0
 
     def get_total_kwh_forecast_day(self, dayincrement) -> float:
         """Return total kwh total for rooftop site N days ahead"""
@@ -423,8 +397,7 @@ class SolcastApi:
         d = dt.now(tz) + timedelta(days=dayincrement)
         d = d.replace(hour=0, minute=0, second=0, microsecond=0)
         needed_delta = d.replace(hour=23, minute=59, second=59, microsecond=0) - d
-        permitted_error = timedelta(hours=1)
-
+        
         ret = 0.0
         for idx in range(1, len(self._data_forecasts)):
             prev = self._data_forecasts[idx - 1]
@@ -439,14 +412,6 @@ class SolcastApi:
             diff_hours = delta.total_seconds() / 3600
             ret += (prev["pv_estimate"] + curr["pv_estimate"]) / 2 * diff_hours
             needed_delta -= delta
-
-        # if needed_delta > permitted_error:
-        #     _LOGGER.debug("DO NOT BOTHER REPORTING THIS AS AN ISSUE!!!!!")
-        #     _LOGGER.debug(f"forecast day {dayincrement+1} is missing data from solcast. Any data found was used to show something at least")
-            
-        #     # raise ValueError(
-        #     #     f"Solcast data didn't return anything within {permitted_error} (needed_delta={needed_delta})"
-            # )
 
         return ret
     
@@ -477,6 +442,7 @@ class SolcastApi:
                 ae = None
                 resp_dict = await self.fetch_data("estimated_actuals", 168, site=site['resource_id'], apikey=site['apikey'], cachedname="actuals")
                 if not isinstance(resp_dict, dict):
+                    _LOGGER.warning("SOLCAST - No data was returned so this WILL cause errors.. either your limit is up, internet down.. what ever the case is it is NOT a problem with the integration, and all other problems of sensor values being wrong will be a seen")
                     raise TypeError(f"resp_dict must be a dict, not {type(resp_dict)}")
                 
                 ae = resp_dict.get("estimated_actuals", None)
@@ -590,7 +556,7 @@ class SolcastApi:
                         status = 200
                         _LOGGER.debug(f"SOLCAST - Got cached file data for site {site}")
                 else:
-                    _LOGGER.debug(f"SOLCAST - OK REAL API CALL HAPPENING RIGHT NOW")
+                    #_LOGGER.debug(f"SOLCAST - OK REAL API CALL HAPPENING RIGHT NOW")
                     resp: ClientResponse = await self.aiohttp_session.get(
                         url=url, params=params, ssl=False
                     )
@@ -598,6 +564,9 @@ class SolcastApi:
 
                     if status == 200:
                         _LOGGER.debug(f"SOLCAST - API returned data. API Counter incremented from {self._api_used} to {self._api_used + 1}")
+                    else:
+                        _LOGGER.warning(f"SOLCAST - API returned status {status}. API data  {self._api_used} to {self._api_used + 1}")
+                        _LOGGER.warning("This is an error with the data returned from Solcast, not the integration!")
     
                     resp_json = await resp.json(content_type=None)
 
@@ -634,7 +603,6 @@ class SolcastApi:
 
         return None
     
-
     def makeenergydict(self) -> dict:
         wh_hours = {}
     

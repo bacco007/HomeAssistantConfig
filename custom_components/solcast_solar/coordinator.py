@@ -49,7 +49,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         try:
             self.async_update_listeners()
         except Exception:
-            _LOGGER.error("SOLCAST - update_integration_listeners: %s", traceback.format_exc())
+            #_LOGGER.error("SOLCAST - update_integration_listeners: %s", traceback.format_exc())
+            pass
 
     async def service_event_update(self, *args):
         await self.solcast.http_data(dopast=False)
