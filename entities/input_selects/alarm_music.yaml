@@ -1,0 +1,6 @@
+---
+alarm_music:
+  name: "[Alarm Clock] Wakeup Music Selection"
+  icon: mdi:music-circle
+  options:
+    - Select Sonos Favourite

@@ -60,3 +60,30 @@
     target:
       entity_id: light.bedroom_lamp
   mode: single
+- id: '1695195690273'
+  alias: '[Alarm Clock] Set Wakeup Music Select'
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id:
+    - sensor.sonos_favorites
+    to:
+  condition: []
+  action:
+  - variables:
+      sonos_favourites: '{{ state_attr(''sensor.sonos_favorites'', ''items'').values()
+        | list }}'
+      current_favourite: '{{states(''input_select.alarm_music'')}}'
+  - service: input_select.set_options
+    data:
+      options: '{{sonos_favourites}}'
+    target:
+      entity_id: input_select.alarm_music
+  - service: input_select.select_option
+    data:
+      option: '{{current_favourite}}'
+    target:
+      entity_id: input_select.alarm_music
+  mode: single
