@@ -1,4 +1,51 @@
 ---
+binary_sensor:
+  - name: alarm_today
+    unique_id: alarm_today
+    icon: mdi:bed-clock
+    state: >
+      {%- set alarmdays =  states.input_boolean
+        | selectattr('entity_id', 'match', '.*alarm_day*')
+        | selectattr('state', 'eq', 'on')
+        | map(attribute='entity_id')
+        | list | replace("input_boolean.alarm_day_","")
+      %}
+      {%- set todayday = now().strftime("%A") | lower %}
+      {%- if todayday in alarmdays %}
+      True
+      {%- else %}
+      False
+      {%- endif %}
+    # availability: >
+    attributes:
+      day_type: >
+        {%- set todayday = now().strftime("%A") | lower %}
+        {{ iif(todayday in "[saturday, sunday]", "Weekend", "Weekday", "None") }}
+      category: alarm_clock
+
+  - name: alarm_tomorrow
+    unique_id: alarm_tomorrow
+    icon: mdi:bed-clock
+    state: >
+      {%- set alarmdays =  states.input_boolean
+        | selectattr('entity_id', 'match', '.*alarm_day*')
+        | selectattr('state', 'eq', 'on')
+        | map(attribute='entity_id')
+        | list | replace("input_boolean.alarm_day_","")
+      %}
+      {%- set tomorrowday = (now().date() + timedelta(days=1)).strftime("%A") | lower %}
+      {%- if tomorrowday in alarmdays %}
+      True
+      {%- else %}
+      False
+      {%- endif %}
+    # availability: >
+    attributes:
+      day_type: >
+        {%- set tomorrowday = (now().date() + timedelta(days=1)).strftime("%A") | lower %}
+        {{ iif(tomorrowday in "[saturday, sunday]", "Weekend", "Weekday", "None") }}
+      category: alarm_clock
+
 sensor:
   - name: alarm_waketime_weekday
     unique_id: alarm_waketime_weekday

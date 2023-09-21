@@ -1,13 +1,3 @@
-- id: '1664679805983'
-  alias: Hook - Media Player
-  description: ''
-  use_blueprint:
-    path: EPMatt/media_player.yaml
-    input:
-      controller_device: 60c680d2da19565a2feafe27325f13ed
-      controller_entity: media_
-      controller_model: IKEA E1744 SYMFONISK Rotary Remote
-      media_player: media_player.office_sonos
 - id: '1670914225475'
   alias: PiLocator Alerts
   description: ''
@@ -19,33 +9,24 @@
       cm4_mmc: MMC
       cm4_wifi: With Wifi
 - id: '1695121244822'
-  alias: Alarm test
+  alias: '[Alarm Clock] Testing'
   description: ''
   trigger: []
   condition: []
   action:
-  - service: media_player.play_media
-    target:
-      entity_id: media_player.bedroom_symfonisk
+  - variables:
+      sonos_device: media_player.bedroom_symfonisk
+      light_switchedon: light.bedroom_lamp
+      music_selected: '{{states(''input_select.alarm_music'')}}'
+  - service: media_player.select_source
     data:
-      media_content_id: FV:2/17
-      media_content_type: favorite_item_id
-    metadata:
-      title: Double J (Sydney, NSW)
-      thumbnail: http://d1flk301fokgs0.cloudfront.net/cachedImages/F899781C488DFE0B7671CAE0B7A3C203_180.jpg
-      media_class: genre
-      children_media_class:
-      navigateIds:
-      - {}
-      - media_content_type: favorites
-        media_content_id: ''
-      - media_content_type: favorites_folder
-        media_content_id: object.item.audioItem.audioBroadcast
+      entity_id: '{{sonos_device}}'
+      source: '{{music_selected}}'
   - service: media_player.volume_set
     data:
       volume_level: 0.15
     target:
-      entity_id: media_player.bedroom_symfonisk
+      entity_id: '{{sonos_device}}'
   - delay:
       hours: 0
       minutes: 2
@@ -54,11 +35,11 @@
   - service: media_player.media_stop
     data: {}
     target:
-      entity_id: media_player.bedroom_symfonisk
+      entity_id: '{{sonos_device}}'
   - service: light.toggle
     data: {}
     target:
-      entity_id: light.bedroom_lamp
+      entity_id: '{{light_switchedon}}'
   mode: single
 - id: '1695195690273'
   alias: '[Alarm Clock] Set Wakeup Music Select'
