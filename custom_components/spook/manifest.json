@@ -15,6 +15,7 @@
     "input_select",
     "lovelace",
     "number",
+    "person",
     "recorder",
     "repairs",
     "select",
@@ -26,5 +27,5 @@
   "issue_tracker": "https://github.com/frenck/spook/issues",
   "quality_scale": "platinum",
   "requirements": [],
-  "version": "1.1.1"
+  "version": "1.2.0"
 }
