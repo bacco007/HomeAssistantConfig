@@ -1,5 +1,5 @@
 ---
-theme: noctis
+# theme: noctis
 icon: mdi:weather-cloudy-alert
 subview: true
 path: weather

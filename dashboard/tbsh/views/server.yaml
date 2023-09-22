@@ -1,5 +1,5 @@
 ---
-theme: noctis
+# theme: noctis
 icon: mdi:server
 subview: true
 path: server

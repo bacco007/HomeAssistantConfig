@@ -10,3 +10,9 @@ http:
     - 172.30.33.0/24
   server_port: !secret httpserver_port
   ip_ban_enabled: true
+  cors_allowed_origins:
+    - https://unpkg.com
+    - https://unpkg.com/lit-html@1/directives/style-map.js?module
+    - https://unpkg.com/lit-html@1/directives/if-defined?module
+    - https://unpkg.com/lit-html@%5E1.0.0?module
+    - https://unpkg.com/lit-html@1/directives/style-map.js?module

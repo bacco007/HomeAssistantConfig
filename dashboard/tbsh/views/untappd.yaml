@@ -1,5 +1,5 @@
 ---
-theme: noctis
+# theme: noctis
 icon: mdi:beer
 subview: true
 path: untappd
@@ -30,6 +30,7 @@ cards:
           max_width: 1000
     cards:
       - !include ../untappd/stats.yaml
+      - !include ../untappd/settings.yaml
       - !include ../untappd/project_52.yaml
       - !include ../untappd/beer_stats.yaml
       - !include ../untappd/graph_progression.yaml

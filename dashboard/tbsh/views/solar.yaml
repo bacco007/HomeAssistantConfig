@@ -1,5 +1,5 @@
 ---
-theme: noctis
+# theme: noctis
 icon: mdi:solar-power-variant
 subview: true
 path: solar

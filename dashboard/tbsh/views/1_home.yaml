@@ -1,5 +1,5 @@
 ---
-theme: noctis
+# theme: noctis
 title: home
 path: home
 type: custom:grid-layout
@@ -36,70 +36,195 @@ cards:
         animated_icon: false
       - !include ../me/cakeday.yaml
       - !include ../tamworth/nbn_fttnupgrade.yaml
-      - type: "vertical-stack"
+      - !include ../home/binday.yaml
+      # - type: "vertical-stack"
+      #   cards:
+      #     - type: "custom:button-card"
+      #       name: "Flight Tracker"
+      #       template:
+      #         - section_title
+      #     - !include ../flighttracker/flightsoverhead.yaml
+      #     - !include ../flighttracker/closestplane.yaml
+      #     - !include ../flighttracker/planeofinterest.yaml
+      - type: custom:stack-in-card
         cards:
-          - type: "custom:button-card"
-            name: "Flight Tracker"
-            template:
-              - section_title
-          - !include ../flighttracker/flightsoverhead.yaml
-          - !include ../flighttracker/closestplane.yaml
-          - !include ../flighttracker/planeofinterest.yaml
+          - type: entities
+            entities:
+              - type: custom:paper-buttons-row
+                buttons:
+                  - icon: mdi:airplane-alert
+                    layout: icon|name
+                    name: Flight Tracker
+                    style:
+                      name:
+                        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                        margin-left: 18px
+                        font-size: 15px
+                        font-weight: 600
+                        color: var(--title)
+                      icon:
+                        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                        "--mdc-icon-size": 20px
+                        color: var(--title)
+                style: |
+                  div.flex-box {
+                    margin-top: -6px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  }
+              - type: custom:hui-element
+                card_type: grid
+                columns: 1
+                square: false
+                style: |
+                  ha-card {
+                    background-color: var(--card-background-color);
+                    padding: 2px;
+                    box-shadow: none;
+                  }
+                cards:
+                  - type: custom:decluttering-card
+                    template: mushroom_entity_graph
+                    variables:
+                      - entity: sensor.flighttracker_aircraft_total
+                      - colour: green
+                      - title: Bird Watch - Flights Overhead
+                      - line_width: 2.5
+                      - icon: mdi:airplane-alert
+                  - type: custom:mushroom-template-card
+                    style: |
+                      ha-card {
+                        background-color: var(--background-color);
+                    primary: Bird Watch - Closest Plane
+                    secondary: |-
+                      {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}} ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
+                      {{state_attr(entity, 'aircraft_owner')}} - {{state_attr(entity, 'aircraft')}}
+                      {{state_attr(entity, 'origin_airport')}} > {{state_attr(entity, 'destination_airport')}}
+                    icon: mdi:airplane
+                    entity: sensor.plane_overhead_detail
+                    icon_color: green
+                    fill_container: true
+                    multiline_secondary: true
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
 
-      - type: "vertical-stack"
+                  - type: custom:mushroom-template-card
+                    style: |
+                      ha-card {
+                        background-color: var(--background-color);
+                    primary: Bird Watch - Latest Aircraft of Interest
+                    secondary: >-
+                      {% from 'easy_time.jinja' import custom_relative_time%}
+                      {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}},
+                      {{state_attr(entity, 'call')}})
+
+                      {{state_attr(entity, 'equipment')}} ({{
+                      custom_relative_time(state_attr(entity, 'date')|replace("/","-") +
+                      " " + state_attr(entity, 'time'), values='day, hour')}})
+                    icon: mdi:airplane-alert
+                    entity: sensor.flighttracker_planefence_aircraft
+                    icon_color: green
+                    fill_container: true
+                    multiline_secondary: true
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+
+      - type: custom:stack-in-card
         cards:
-          - type: "custom:button-card"
-            name: "Network"
-            template:
-              - section_title
-          - square: false
-            columns: 1
-            type: grid
-            cards:
-              - type: custom:decluttering-card
-                template: mushroom_entity_graph
-                variables:
-                  - entity: sensor.unifi_gateway_wan_uptimeavail_stats
-                  - colour: "#8694E7"
-                  - title: Internet Uptime
-                  - icon: mdi:timelapse
-                  - line_width: 3
+          - type: entities
+            entities:
+              - type: custom:paper-buttons-row
+                buttons:
+                  - icon: mdi:network
+                    layout: icon|name
+                    name: Network
+                    style:
+                      name:
+                        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                        margin-left: 18px
+                        font-size: 15px
+                        font-weight: 600
+                        color: var(--title)
+                      icon:
+                        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                        "--mdc-icon-size": 20px
+                        color: var(--title)
+                # - icon: mdi:close
+                #   layout: icon
+                #   tap_action:
+                #     action: navigate
+                #     navigation_path: /
+                #   style:
+                #     icon:
+                #       '--mdc-icon-size': 15px
+                style: |
+                  div.flex-box {
+                    margin-top: -6px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  }
+              - type: custom:hui-element
+                card_type: grid
+                columns: 1
+                square: false
+                style: |
+                  ha-card {
+                    background-color: var(--card-background-color);
+                    padding: 2px;
+                    box-shadow: none;
+                  }
+                cards:
+                  - type: custom:decluttering-card
+                    template: mushroom_entity_graph
+                    variables:
+                      - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+                      - colour: "#8694E7"
+                      - title: Internet Uptime
+                      - icon: mdi:timelapse
+                      - line_width: 2.5
+                  - type: custom:decluttering-card
+                    template: mushroom_entity_graph
+                    variables:
+                      - entity: sensor.unifi_networkstats_connected_devices
+                      - colour: "#8694E7"
+                      - title: Network Connected Devices
+                      - icon: mdi:download-network
+                      - line_width: 2.5
+                  - type: custom:decluttering-card
+                    template: mushroom_entity_graph
+                    variables:
+                      - entity: sensor.speedtest_download
+                      - colour: "#8694E7"
+                      - title: Download
+                      - icon: mdi:download-network
+                      - line_width: 2.5
+                  - type: custom:decluttering-card
+                    template: mushroom_entity_graph
+                    variables:
+                      - entity: sensor.speedtest_upload
+                      - colour: "#8694E7"
+                      - title: Upload
+                      - icon: mdi:upload-network
+                      - line_width: 2.5
+                  - type: custom:decluttering-card
+                    template: mushroom_entity_graph
+                    variables:
+                      - entity: sensor.speedtest_ping
+                      - colour: "#8694E7"
+                      - title: Ping
+                      - icon: mdi:web
+                      - line_width: 2.5
 
-              - type: custom:decluttering-card
-                template: mushroom_entity_graph
-                variables:
-                  - entity: sensor.unifi_networkstats_connected_devices
-                  - colour: "#8694E7"
-                  - title: Network Connected Devices
-                  - icon: mdi:download-network
-                  - line_width: 3
-
-              - type: custom:decluttering-card
-                template: mushroom_entity_graph
-                variables:
-                  - entity: sensor.speedtest_download
-                  - colour: "#8694E7"
-                  - title: Download
-                  - icon: mdi:download-network
-                  - line_width: 3
-
-              - type: custom:decluttering-card
-                template: mushroom_entity_graph
-                variables:
-                  - entity: sensor.speedtest_upload
-                  - colour: "#8694E7"
-                  - title: Upload
-                  - icon: mdi:upload-network
-                  - line_width: 3
-
-              - type: custom:decluttering-card
-                template: mushroom_entity_graph
-                variables:
-                  - entity: sensor.speedtest_ping
-                  - colour: "#8694E7"
-                  - title: Ping
-                  - icon: mdi:web
-                  - line_width: 3
       - !include ../home/col3-row1.yaml
       - !include ../sport/upcoming_sport.yaml
       - !include ../tv-movies/upcoming_flipper.yaml

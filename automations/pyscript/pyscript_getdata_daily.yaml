@@ -1,7 +1,7 @@
 ---
-id: "pyscript_getdata_daily"
-alias: "PyScript, GetData: Daily"
-description: "PyScript, GetData: Daily"
+id: "pyscript_getdata_untappd"
+alias: "[PyScript] GetData: Untappd"
+description: "[PyScript] GetData: Untappd"
 trigger:
   - platform: homeassistant
     event: start
@@ -9,18 +9,5 @@ trigger:
     hours: "/3"
 condition: []
 action:
-  # - service: pyscript.getdata_afldraw
-  #   data:
-  #     icon: "mdi:football-australian"
-  # - service: pyscript.getdata_aflladder
-  #   data:
-  #     icon: "mdi:football-australian"
-  # - service: pyscript.getdata_nrldraw
-  #   data:
-  #     icon: "mdi:football"
-  # - service: pyscript.getdata_nrlladder
-  #   data:
-  #     icon: "mdi:football"
   - service: pyscript.getdata_untappd_project52
-
 mode: single

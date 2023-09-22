@@ -1,5 +1,5 @@
 ---
-theme: noctis
+# theme: noctis
 icon: mdi:news
 subview: true
 path: news

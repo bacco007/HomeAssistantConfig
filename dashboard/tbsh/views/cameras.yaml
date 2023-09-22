@@ -1,6 +1,6 @@
 ---
 # lovelace_gen
-theme: noctis
+# theme: noctis
 icon: mdi:cctv
 subview: true
 path: cameras

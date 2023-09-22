@@ -1,6 +1,6 @@
 ---
 # lovelace_gen
-theme: noctis
+# theme: noctis
 icon: mdi:timelapse
 subview: true
 path: uptime

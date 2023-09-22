@@ -1,0 +1,49 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Untappd Settings and Controls
+    icon: mdi:beer-outline
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.*untappd*
+              options:
+                secondary_info: last-triggered
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          card_mod:
+            style: |
+              #measure {
+                padding-top: 0 !important;
+              }
+              #measure > * {
+                margin: 0 !important;
+              }
+          head:
+            type: custom:template-entity-row
+            name: Untappd Automations
+            icon: mdi:sync-alert
+            state: ""

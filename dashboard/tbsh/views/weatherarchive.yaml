@@ -1,5 +1,5 @@
 ---
-theme: Backend-selected
+# theme: Backend-selected
 title: Weather Archive
 path: weatherarchive
 icon: mdi:sun-wireless-outline
