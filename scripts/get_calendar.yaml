@@ -28,5 +28,3 @@ sequence:
   - stop: Return the response variable back to the calling script or automation
     response_variable: scheduled
 mode: single
-
-

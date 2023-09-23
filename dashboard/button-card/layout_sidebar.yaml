@@ -9,7 +9,7 @@ sidebar:
           "clock"
           "date"
           "worldtime"
-          "warnings"
+          "."
           "menu"
           "."
           "people"
@@ -53,17 +53,17 @@ sidebar:
         template: worldtime
     menu:
       card: !include ../tbsh/includes/menu2.yaml
-    warnings:
-      card:
-        type: "conditional"
-        conditions:
-          - entity: binary_sensor.meteoalarm
-            state: "on"
-        card:
-          type: "custom:button-card"
-          entity: binary_sensor.meteoalarm
-          template:
-            - meteocard
+    # warnings:
+    #   card:
+    #     type: "conditional"
+    #     conditions:
+    #       - entity: binary_sensor.meteoalarm
+    #         state: "on"
+    #     card:
+    #       type: "custom:button-card"
+    #       entity: binary_sensor.meteoalarm
+    #       template:
+    #         - meteocard
     people:
       card:
         type: "custom:button-card"

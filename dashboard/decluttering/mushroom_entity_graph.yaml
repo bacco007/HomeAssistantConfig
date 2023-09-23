@@ -31,12 +31,12 @@ mushroom_entity_graph:
           - entity: "[[entity]]"
             name: "[[title]]"
             color: "[[colour]]"
-        height: 50
+        height: 65
         hours_to_show: "[[hours_to_show]]"
         line_width: "[[line_width]]"
         points_per_hour: "[[points_per_hour]]"
         animate: true
-        font_size: 50
+        font_size: 65
         show:
           name: false
           icon: false

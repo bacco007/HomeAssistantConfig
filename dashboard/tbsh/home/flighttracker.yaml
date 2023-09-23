@@ -1,0 +1,102 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - icon: mdi:airplane-alert
+            layout: icon|name
+            name: Flight Tracker
+            style:
+              name:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                margin-left: 18px
+                font-size: 15px
+                font-weight: 600
+                color: var(--title)
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+          - icon: mdi:arrow-top-right
+            layout: icon
+            tap_action:
+              action: navigate
+              navigation_path: flighttracker
+            style:
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                '--mdc-icon-size': 20px
+                color: var(--title)
+        style: |
+          div.flex-box {
+            margin-top: -6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+      - type: custom:hui-element
+        card_type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            padding: 2px;
+            box-shadow: none;
+          }
+        cards:
+          - type: custom:decluttering-card
+            template: mushroom_entity_graph
+            variables:
+              - entity: sensor.flighttracker_aircraft_total
+              - colour: green
+              - title: Bird Watch - Flights Overhead
+              - line_width: 2.5
+              - icon: mdi:airplane-alert
+          - type: custom:mushroom-template-card
+            style: |
+              ha-card {
+                background-color: var(--background-color);
+            primary: Bird Watch - Closest Plane
+            secondary: |-
+              {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}} ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
+              {{state_attr(entity, 'aircraft_owner')}} - {{state_attr(entity, 'aircraft')}}
+              {{state_attr(entity, 'origin_airport')}} > {{state_attr(entity, 'destination_airport')}}
+            icon: mdi:airplane
+            entity: sensor.plane_overhead_detail
+            icon_color: green
+            fill_container: true
+            multiline_secondary: true
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+          - type: custom:mushroom-template-card
+            style: |
+              ha-card {
+                background-color: var(--background-color);
+            primary: Bird Watch - Latest Aircraft of Interest
+            secondary: >-
+              {% from 'easy_time.jinja' import custom_relative_time%}
+              {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}},
+              {{state_attr(entity, 'call')}})
+
+              {{state_attr(entity, 'equipment')}} ({{
+              custom_relative_time(state_attr(entity, 'date')|replace("/","-") +
+              " " + state_attr(entity, 'time'), values='day, hour')}})
+            icon: mdi:airplane-alert
+            entity: sensor.flighttracker_planefence_aircraft
+            icon_color: green
+            fill_container: true
+            multiline_secondary: true
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none

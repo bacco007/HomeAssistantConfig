@@ -13,6 +13,18 @@ card:
   type: "horizontal-stack"
   cards:
     - type: "custom:button-card"
+      icon: mdi:bed-clock
+      name: Alarm Clock
+      template:
+        - popup_button
+      tap_action: !include ../popup/alarm_clock.yaml
+      variables:
+        notifications: >
+          [[[
+            if (states['binary_sensor.alarm_today'].state == 'on')
+              return parseInt(1);
+          ]]]
+    - type: "custom:button-card"
       icon: mdi:home-assistant
       name: "Home Assistant"
       template:

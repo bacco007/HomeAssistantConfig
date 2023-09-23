@@ -1,0 +1,73 @@
+---
+alias: "[Alarm Clock] Alarm Clock"
+description: ""
+trigger:
+  - platform: template
+    value_template: >-
+      {{ is_state('binary_sensor.alarm_today', 'on') and
+          states('sensor.time') == state_attr('binary_sensor.alarm_today', 'alarm_time') }}
+    id: alarm_triggered
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.alarm_length
+    id: alarm_timer_finished
+condition: []
+action:
+  - variables:
+      sonos_device: "{{state_attr('sensor.alarm_defaults', 'default_sonos')}}"
+      light_switchedon: "{{state_attr('sensor.alarm_defaults', 'default_light')}}"
+      music_selected: "{{state_attr('sensor.alarm_defaults', 'default_music')}}"
+  - choose:
+      - conditions:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.alarm_debug_testing
+                state: "on"
+              - condition: trigger
+                id:
+                  - alarm_triggered
+        sequence:
+          - if:
+              - condition: state
+                entity_id: input_boolean.alarm_debug_testing
+                state: "on"
+            then:
+              - service: input_boolean.turn_off
+                data: {}
+                target:
+                  entity_id: input_boolean.alarm_debug_testing
+          - service: light.turn_on
+            data:
+              transition: 30
+            target:
+              entity_id: "{{light_switchedon}}"
+          - service: media_player.select_source
+            data:
+              entity_id: "{{sonos_device}}"
+              source: "{{music_selected}}"
+          - service: media_player.volume_set
+            data:
+              volume_level: 0.15
+            target:
+              entity_id: "{{sonos_device}}"
+          - service: timer.start
+            data:
+              duration: "01:00:00"
+            target:
+              entity_id: timer.alarm_length
+      - conditions:
+          - condition: trigger
+            id: alarm_timer_finished
+        sequence:
+          - service: media_player.media_stop
+            data: {}
+            target:
+              entity_id: "{{sonos_device}}"
+          - service: light.turn_off
+            data:
+              transition: 30
+            target:
+              entity_id: "{{light_switchedon}}"
+mode: single

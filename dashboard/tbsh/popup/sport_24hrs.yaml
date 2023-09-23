@@ -19,7 +19,7 @@ browser_mod:
       cards:
         - type: custom:hui-element
           view_layout:
-            grid-area: col2
+            grid-area: col1
           card_type: custom:flex-table-card
           entities:
             include: sensor.upcoming_sport_this_week

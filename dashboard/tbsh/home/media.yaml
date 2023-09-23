@@ -19,6 +19,16 @@ cards:
                 filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
                 "--mdc-icon-size": 20px
                 color: var(--title)
+          - icon: mdi:arrow-top-right
+            layout: icon
+            tap_action:
+              action: navigate
+              navigation_path: tv-movies
+            style:
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                '--mdc-icon-size': 20px
+                color: var(--title)
         style: |
           div.flex-box {
             margin-top: -6px;

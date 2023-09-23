@@ -24,7 +24,7 @@ cards:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1025px)":
+      "(max-width: 1368px)":
         layout:
           max_cols: 2
           width: 300

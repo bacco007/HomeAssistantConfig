@@ -1,0 +1,151 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - icon: mdi:weather-cloudy-arrow-right
+            layout: icon|name
+            name: Weather
+            style:
+              name:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                margin-left: 18px
+                font-size: 15px
+                font-weight: 600
+                color: var(--title)
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+          - icon: mdi:arrow-top-right
+            layout: icon
+            tap_action:
+              action: navigate
+              navigation_path: weather
+            style:
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+        style: |
+          div.flex-box {
+            margin-top: -6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+      - type: custom:hui-element
+        card_type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            padding: 2px;
+            box-shadow: none;
+          }
+        cards:
+          - type: custom:hourly-weather
+            entity: weather.weather_home_hourly
+            icons: true
+            show_precipitation_amounts: false
+            show_precipitation_probability: false
+            show_wind: false
+            label_spacing: 2
+            offset: 0
+            num_segments: 24
+            name: " "
+            card_mod:
+              style:
+                weather-bar$: |
+                  .main {
+                    --mush-rgb-red: 244, 67, 54;
+                    --mush-rgb-pink: 233, 30, 99;
+                    --mush-rgb-purple: 156, 39, 176;
+                    --mush-rgb-deep-purple: 103, 58, 183;
+                    --mush-rgb-indigo: 63, 81, 181;
+                    --mush-rgb-blue: 33, 150, 243;
+                    --mush-rgb-light-blue: 3, 169, 244;
+                    --mush-rgb-cyan: 0, 188, 212;
+                    --mush-rgb-teal: 0, 150, 136;
+                    --mush-rgb-green: 76, 175, 80;
+                    --mush-rgb-light-green: 139, 195, 74;
+                    --mush-rgb-lime: 205, 220, 57;
+                    --mush-rgb-yellow: 255, 235, 59;
+                    --mush-rgb-amber: 255, 193, 7;
+                    --mush-rgb-orange: 255, 152, 0;
+                    --mush-rgb-deep-orange: 255, 87, 34;
+                    --mush-rgb-brown: 121, 85, 72;
+                    --mush-rgb-grey: 158, 158, 158;
+                    --mush-rgb-blue-grey: 96, 125, 139;
+                    --mush-rgb-black: 0, 0, 0;
+                    --mush-rgb-white: 255, 255, 255;
+
+                    --color-clear-night: rgba(var(--mush-rgb-black), 0.2) !important;
+                    --color-cloudy: rgba(var(--mush-rgb-grey), 0.2) !important;
+                    --color-fog: var(--color-cloudy);
+                    --color-hail: rgba(var(--mush-rgb-indigo), 0.2) !important;
+                    --color-lightning: var(--color-rainy);
+                    --color-lightning-rainy: var(--color-rainy);
+                    --color-partlycloudy: rgba(var(--mush-rgb-blue), 0.2) !important;
+                    --color-pouring: var(--color-rainy);
+                    --color-rainy: rgba(var(--mush-rgb-indigo), 0.2) !important;
+                    --color-snowy: rgba(var(--mush-rgb-white), 0.2) !important;
+                    --color-snowy-rainy: var(--color-partlycloudy);
+                    --color-sunny: rgba(var(--mush-rgb-yellow), 0.2) !important;
+                    --color-windy: var(--color-sunny);
+                    --color-windy-variant: var(--color-sunny);
+                    --color-exceptional: rgba(var(--mush-rgb-amber), 0.2) !important;
+                  }
+                  .bar > div {
+                    height: 42px !important;
+                  }
+                  .bar > div:first-child {
+                    border-top-left-radius: 12px !important;
+                    border-bottom-left-radius: 12px !important;
+                  }
+                  .bar > div:last-child {
+                    border-top-right-radius: 12px !important;
+                    border-bottom-right-radius: 12px !important;
+                  }
+                  .bar > div > span {
+                    text-shadow: none !important;
+                    color: rgb(var(--primary-text-color));
+                    font-size: 14px;
+                    font-weight: bold;
+                  }
+                  .axes > div > .bar-block-bottom > .hour {
+                    font-size: 12px;
+                    font-weight: bolder;
+                  }
+                  .axes > div > .bar-block-bottom > .temperature {
+                    font-size: 12px;
+                    font-weight: bolder;
+                  }
+                  .axes {
+                    margin-top: 10px !important;
+                  }
+                .: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    --ha-card-box-shadow: 0px;
+                    margin: -8px -4px -4px -8px;
+                  }
+          - type: custom:clock-weather-card
+            entity: weather.weather_home_daily
+            hide_today_section: true
+            forecast_days: 7
+            weather_icon_type: line
+            animated_icon: false
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    --ha-card-box-shadow: 0px;
+                    margin: -8px -4px -4px -8px;
+                  }

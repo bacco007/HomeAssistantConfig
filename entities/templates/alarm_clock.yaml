@@ -21,6 +21,10 @@ binary_sensor:
       day_type: >
         {%- set todayday = now().strftime("%A") | lower %}
         {{ iif(todayday in "[saturday, sunday]", "Weekend", "Weekday", "None") }}
+      alarm_time: >
+        {%- set todayday = now().strftime("%A") | lower %}
+        {%- set daytype = iif(todayday in "[saturday, sunday]", "weekend", "weekday", "none") %}
+        {{ states('sensor.alarm_waketime_' + daytype) }}
       category: alarm_clock
 
   - name: alarm_tomorrow
@@ -47,6 +51,16 @@ binary_sensor:
       category: alarm_clock
 
 sensor:
+  - name: alarm_defaults
+    unique_id: alarm_defaults
+    icon: mdi:bed-clock
+    state: ""
+    attributes:
+      category: alarm_clock
+      default_music: "Double J (Sydney, NSW)"
+      default_sonos: "media_player.bedroom_symfonisk"
+      default_light: "light.bedroom_lamp"
+
   - name: alarm_waketime_weekday
     unique_id: alarm_waketime_weekday
     icon: mdi:alarm
