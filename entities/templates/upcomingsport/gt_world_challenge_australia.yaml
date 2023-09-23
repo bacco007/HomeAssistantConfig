@@ -2,7 +2,7 @@
 trigger:
   - platform: calendar
     event: end
-    entity_id: calendar.ical_aflw_all_teams
+    entity_id: calendar.ical_gt_world_challenge_australia
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -10,7 +10,7 @@ action:
     data:
       end_date_time: "{{now() + timedelta(days=365)}}"
     target:
-      entity_id: calendar.ical_aflw_all_teams
+      entity_id: calendar.ical_gt_world_challenge_australia
     response_variable: agenda
   - variables:
       all_events: "{{ agenda.events | list }}"
@@ -18,17 +18,17 @@ action:
       dump: "{{agenda}}"
       countnumb: "{{agenda.events | count}}"
 sensor:
-  - name: "[Upcoming Sport] AFLW (All Teams)"
-    unique_id: upcoming_sport_aflw_all_teams
-    icon: "mdi:football-australian"
-    picture: /local/sportlogos/aflw_all_teams.png
+  - name: "[Upcoming Sport] GT World Challenge Australia"
+    unique_id: upcoming_sport_gt_world_challenge_australia
+    icon: "mdi:flag-checkered"
+    picture: /local/sportlogos/gt_world_challenge_australia.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled
       {%- else %}
         {%- from 'easy_time.jinja' import easy_relative_time %}
         {% set tmpdate = as_timestamp(next_5_events[0]['start']) %}
-        {{next_5_events[0]['summary'].split(' - ')[0]}} @ {{next_5_events[0]['location']}} - {{ easy_relative_time(tmpdate, 'day, hour, minute') }} ({{ iif(((tmpdate)-as_timestamp(now())| int /60/1440) | round (0) < 6, tmpdate|timestamp_custom ('%a %H:%M',0), tmpdate|timestamp_custom ('%d/%m %H:%M',0), "None Recorded")}})
+        {{next_5_events[0]['summary']}} @ {{next_5_events[0]['location'].split(',')[0]}} - {{ easy_relative_time(tmpdate, 'day, hour, minute') }} ({{ iif(((tmpdate)-as_timestamp(now())| int /60/1440) | round (0) < 6, tmpdate|timestamp_custom ('%a %H:%M',0), tmpdate|timestamp_custom ('%d/%m %H:%M',0), "None Recorded")}})
       {%- endif %}
     attributes:
       category: sport
@@ -65,26 +65,26 @@ sensor:
           {{ easy_relative_time(next_5_events[0]['start'], 'day, hour, minute') }} ({{ as_timestamp(next_5_events[0]['start'])|timestamp_custom ('%a %H:%M',0) }})
         {%- endif %}
       afterevent_desc: >
-        {%- if countnumb == 0 %}
+        {%- if countnumb == 0 or countnumb == 1 %}
           No Event Scheduled
         {%- else %}
           {{next_5_events[1]['summary'].split(' - ')[0]}}
         {%- endif %}
       afterevent_locn: >
-        {%- if countnumb == 0 %}
+        {%- if countnumb == 0 or countnumb == 1 %}
           No Event Scheduled
         {%- else %}
           {{next_5_events[1]['location']}}
         {%- endif %}
       afterevent_time: >
-        {%- if countnumb == 0 %}
+        {%- if countnumb == 0 or countnumb == 1 %}
           No Event Scheduled
         {%- else %}
           {%- from 'easy_time.jinja' import easy_relative_time %}
           {{ easy_relative_time(next_5_events[1]['start'], 'day, hour, minute') }} ({{ as_timestamp(next_5_events[1]['start'])|timestamp_custom ('%a %H:%M',0) }})
         {%- endif %}
       afterevent_timeto: >
-        {%- if countnumb == 0 %}
+        {%- if countnumb == 0 or countnumb == 1 %}
           -999
         {%- else %}
           {{ ((as_timestamp(next_5_events[1]['start'])-as_timestamp(now())) | int/60/1440) | round (0) }}
