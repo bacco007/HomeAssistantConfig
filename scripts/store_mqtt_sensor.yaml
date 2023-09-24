@@ -1,0 +1,44 @@
+---
+alias: "Store MQTT Sensor"
+description: "Stores data in a MQTT message."
+icon: mdi:message-bookmark
+mode: parallel
+
+fields:
+  name:
+    name: "MQTT Name"
+    example: "last_message"
+    required: true
+    selector:
+      text:
+  state:
+    name: "State"
+    example: "some state"
+    required: true
+    selector:
+      text:
+  attributes:
+    name: "Attributes"
+    example: "attributes"
+    selector:
+      text:
+        multiline: true
+
+sequence:
+  - parallel:
+      - service: mqtt.publish
+        data:
+          topic: "custom/sensor/{{ name }}/state"
+          payload: "{{ state | striptags | truncate(250) }}"
+          retain: true
+
+      # Only add attributes if they are present.
+      - if:
+          - condition: template
+            value_template: '{{ attributes != "" }}'
+        then:
+          - service: mqtt.publish
+            data:
+              topic: "custom/sensor/{{ name }}/attributes"
+              payload: '{{ attributes | default("none") }}'
+              retain: true

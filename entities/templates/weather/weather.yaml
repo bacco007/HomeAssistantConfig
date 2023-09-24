@@ -768,3 +768,105 @@ sensor:
     availability: >
       {{ is_number(states('sensor.weatherflow_brightness'))
           or is_number(states('sensor.tempest_st_00056115_illuminance')) }}
+
+  - name: "[Weather] Future Temperature - Above 25"
+    unique_id: weather_future_temperature_above_25
+    icon: mdi:weather-rainy
+    state: >
+      {%- set ns = namespace(high_temp = 25, cnt = 0) %}
+      {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
+      {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+          {%- if forecast.temperature > ns.high_temp %}
+            {%- set ns.cnt = ns.cnt + 1 %}
+          {%- endif %}
+      {%- endfor %}
+      {{ ns.cnt }}
+    unit_of_measurement: Intervals
+    attributes:
+      category: weather
+      availability: >
+        {{ state_attr('weather.weather_home_hourly','forecast')[0] is defined }}
+      provider: >
+        {{ state_attr('weather.weather_home_hourly', 'attribution') }}
+      intervals: >
+        {%- set ns = namespace(high_temp = 25, list = []) %}
+        {%- set current = [] %}
+        {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
+        {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+        {%- if forecast.temperature > ns.high_temp %}
+          {%- set new = [{
+          "date": as_timestamp(forecast.datetime) | timestamp_custom('%A %b %-d'),
+          "time": as_timestamp(forecast.datetime) | timestamp_custom('%H:00'),
+          "temperature": forecast.temperature|round(0)}] %}
+        {%- set ns.list = ns.list + new %}
+        {%- endif %}
+        {%- endfor %}
+        {{ ns.list }}
+
+  - name: "[Weather] Future Temperature - Above 30"
+    unique_id: weather_future_temperature_above_30
+    icon: mdi:weather-rainy
+    state: >
+      {%- set ns = namespace(high_temp = 30, cnt = 0) %}
+      {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
+      {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+          {%- if forecast.temperature > ns.high_temp %}
+            {%- set ns.cnt = ns.cnt + 1 %}
+          {%- endif %}
+      {%- endfor %}
+      {{ ns.cnt }}
+    unit_of_measurement: Intervals
+    attributes:
+      category: weather
+      availability: >
+        {{ state_attr('weather.weather_home_hourly','forecast')[0] is defined }}
+      provider: >
+        {{ state_attr('weather.weather_home_hourly', 'attribution') }}
+      intervals: >
+        {%- set ns = namespace(high_temp = 30, list = []) %}
+        {%- set current = [] %}
+        {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
+        {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+        {%- if forecast.temperature > ns.high_temp %}
+          {%- set new = [{
+          "date": as_timestamp(forecast.datetime) | timestamp_custom('%A %b %-d'),
+          "time": as_timestamp(forecast.datetime) | timestamp_custom('%H:00'),
+          "temperature": forecast.temperature|round(0)}] %}
+        {%- set ns.list = ns.list + new %}
+        {%- endif %}
+        {%- endfor %}
+        {{ ns.list }}
+
+  - name: "[Weather] Future Temperature - Below 10"
+    unique_id: weather_future_temperature_below_10
+    icon: mdi:weather-rainy
+    state: >
+      {%- set ns = namespace(high_temp = 10, cnt = 0) %}
+      {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
+      {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+          {%- if forecast.temperature < ns.high_temp %}
+            {%- set ns.cnt = ns.cnt + 1 %}
+          {%- endif %}
+      {%- endfor %}
+      {{ ns.cnt }}
+    unit_of_measurement: Intervals
+    attributes:
+      category: weather
+      availability: >
+        {{ state_attr('weather.weather_home_hourly','forecast')[0] is defined }}
+      provider: >
+        {{ state_attr('weather.weather_home_hourly', 'attribution') }}
+      intervals: >
+        {%- set ns = namespace(high_temp = 10, list = []) %}
+        {%- set current = [] %}
+        {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
+        {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+        {%- if forecast.temperature < ns.high_temp %}
+          {%- set new = [{
+          "date": as_timestamp(forecast.datetime) | timestamp_custom('%A %b %-d'),
+          "time": as_timestamp(forecast.datetime) | timestamp_custom('%H:00'),
+          "temperature": forecast.temperature|round(0)}] %}
+        {%- set ns.list = ns.list + new %}
+        {%- endif %}
+        {%- endfor %}
+        {{ ns.list }}
