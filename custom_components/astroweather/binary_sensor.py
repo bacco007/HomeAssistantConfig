@@ -24,9 +24,7 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
 
     """Set up the AstroWeather binary sensor platform."""
     _LOGGER.info("Set up AstroWeather binary sensor platform")
@@ -45,9 +43,7 @@ async def async_setup_entry(
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(
-            AstroWeatherBinarySensor(coordinator, entry.data, sensor, fcst_coordinator)
-        )
+        sensors.append(AstroWeatherBinarySensor(coordinator, entry.data, sensor, fcst_coordinator))
 
     async_add_entities(sensors, True)
     return True

@@ -58,9 +58,7 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         #     for _ in range(12)
         # )
 
-        unique_id = (
-            f"{str(user_input[CONF_LATITUDE])}_{str(user_input[CONF_LONGITUDE])}"
-        )
+        unique_id = f"{str(user_input[CONF_LATITUDE])}_{str(user_input[CONF_LONGITUDE])}"
         await self.async_set_unique_id(unique_id)
 
         _LOGGER.debug("Unique id: %s", str(unique_id))
@@ -74,15 +72,9 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_TIMEZONE_INFO: user_input[CONF_TIMEZONE_INFO],
                 # CONF_FORECAST_TYPE: user_input[CONF_FORECAST_TYPE],
                 CONF_FORECAST_INTERVAL: user_input.get(CONF_FORECAST_INTERVAL),
-                CONF_CONDITION_CLOUDCOVER_WEIGHT: user_input.get(
-                    CONF_CONDITION_CLOUDCOVER_WEIGHT
-                ),
-                CONF_CONDITION_SEEING_WEIGHT: user_input.get(
-                    CONF_CONDITION_SEEING_WEIGHT
-                ),
-                CONF_CONDITION_TRANSPARENCY_WEIGHT: user_input.get(
-                    CONF_CONDITION_TRANSPARENCY_WEIGHT
-                ),
+                CONF_CONDITION_CLOUDCOVER_WEIGHT: user_input.get(CONF_CONDITION_CLOUDCOVER_WEIGHT),
+                CONF_CONDITION_SEEING_WEIGHT: user_input.get(CONF_CONDITION_SEEING_WEIGHT),
+                CONF_CONDITION_TRANSPARENCY_WEIGHT: user_input.get(CONF_CONDITION_TRANSPARENCY_WEIGHT),
                 CONF_METNO_ENABLED: user_input.get(CONF_METNO_ENABLED),
             },
         )
@@ -94,24 +86,22 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required(
-                        CONF_LATITUDE, default=self.hass.config.latitude
-                    ): vol.All(vol.Coerce(float), vol.Range(min=-89, max=89)),
-                    vol.Required(
-                        CONF_LONGITUDE, default=self.hass.config.longitude
-                    ): vol.All(vol.Coerce(float), vol.Range(min=-180, max=180)),
+                    vol.Required(CONF_LATITUDE, default=self.hass.config.latitude): vol.All(
+                        vol.Coerce(float), vol.Range(min=-89, max=89)
+                    ),
+                    vol.Required(CONF_LONGITUDE, default=self.hass.config.longitude): vol.All(
+                        vol.Coerce(float), vol.Range(min=-180, max=180)
+                    ),
                     vol.Required(CONF_ELEVATION, default=DEFAULT_ELEVATION): vol.All(
                         vol.Coerce(int), vol.Range(min=0, max=4000)
                     ),
-                    vol.Required(
-                        CONF_TIMEZONE_INFO, default=self.hass.config.time_zone
-                    ): vol.All(vol.Coerce(str), vol.In(pytz.all_timezones)),
+                    vol.Required(CONF_TIMEZONE_INFO, default=self.hass.config.time_zone): vol.All(
+                        vol.Coerce(str), vol.In(pytz.all_timezones)
+                    ),
                     # vol.Optional(
                     #     CONF_FORECAST_TYPE, default=FORECAST_TYPE_DAILY
                     # ): vol.In(FORECAST_TYPES),
-                    vol.Optional(
-                        CONF_FORECAST_INTERVAL, default=DEFAULT_FORECAST_INTERVAL
-                    ): vol.All(
+                    vol.Optional(CONF_FORECAST_INTERVAL, default=DEFAULT_FORECAST_INTERVAL): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=FORECAST_INTERVAL_MIN, max=FORECAST_INTERVAL_MAX),
                     ),
@@ -122,10 +112,7 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
                     ),
-                    vol.Optional(
-                        CONF_CONDITION_SEEING_WEIGHT,
-                        default=DEFAULT_CONDITION_SEEING_WEIGHT,
-                    ): vol.All(
+                    vol.Optional(CONF_CONDITION_SEEING_WEIGHT, default=DEFAULT_CONDITION_SEEING_WEIGHT,): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
                     ),
@@ -136,10 +123,7 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
                     ),
-                    vol.Optional(
-                        CONF_METNO_ENABLED,
-                        default=DEFAULT_METNO_ENABLED,
-                    ): vol.All(
+                    vol.Optional(CONF_METNO_ENABLED, default=DEFAULT_METNO_ENABLED,): vol.All(
                         vol.Coerce(bool),
                         # vol.Range(min=0, max=5),
                     ),
@@ -168,27 +152,19 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 {
                     vol.Required(
                         CONF_LATITUDE,
-                        default=self.config_entry.options.get(
-                            CONF_LATITUDE, self.hass.config.latitude
-                        ),
+                        default=self.config_entry.options.get(CONF_LATITUDE, self.hass.config.latitude),
                     ): vol.All(vol.Coerce(float), vol.Range(min=-89, max=89)),
                     vol.Required(
                         CONF_LONGITUDE,
-                        default=self.config_entry.options.get(
-                            CONF_LONGITUDE, self.hass.config.longitude
-                        ),
+                        default=self.config_entry.options.get(CONF_LONGITUDE, self.hass.config.longitude),
                     ): vol.All(vol.Coerce(float), vol.Range(min=-180, max=180)),
                     vol.Required(
                         CONF_ELEVATION,
-                        default=self.config_entry.options.get(
-                            CONF_ELEVATION, DEFAULT_ELEVATION
-                        ),
+                        default=self.config_entry.options.get(CONF_ELEVATION, DEFAULT_ELEVATION),
                     ): vol.All(vol.Coerce(int), vol.Range(min=0, max=4000)),
                     vol.Required(
                         CONF_TIMEZONE_INFO,
-                        default=self.config_entry.options.get(
-                            CONF_TIMEZONE_INFO, self.hass.config.time_zone
-                        ),
+                        default=self.config_entry.options.get(CONF_TIMEZONE_INFO, self.hass.config.time_zone),
                     ): vol.All(vol.Coerce(str), vol.In(pytz.all_timezones)),
                     # vol.Optional(
                     #     CONF_FORECAST_TYPE,
@@ -198,9 +174,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     # ): vol.In(FORECAST_TYPES),
                     vol.Required(
                         CONF_FORECAST_INTERVAL,
-                        default=self.config_entry.options.get(
-                            CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL
-                        ),
+                        default=self.config_entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL),
                     ): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=FORECAST_INTERVAL_MIN, max=FORECAST_INTERVAL_MAX),

@@ -57,10 +57,6 @@ class AstroWeatherEntity(Entity):
 
     async def async_added_to_hass(self):
         """When entity is added to hass."""
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
-        self.async_on_remove(
-            self.fcst_coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        self.async_on_remove(self.fcst_coordinator.async_add_listener(self.async_write_ha_state))

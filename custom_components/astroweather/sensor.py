@@ -184,7 +184,7 @@ SENSOR_TYPES = {
         "10m Wind Speed",
         SPEED_METERS_PER_SECOND,
         "mdi:windsock",
-        None,
+        SensorDeviceClass.WIND_SPEED,
         STATE_CLASS_MEASUREMENT,
     ],
     "wind10m_speed_plain": [
@@ -358,9 +358,7 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
     """Set up the AstroWeather sensor platform."""
     _LOGGER.info("Set up AstroWeather sensor platform")
 
@@ -378,9 +376,7 @@ async def async_setup_entry(
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(
-            AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator)
-        )
+        sensors.append(AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator))
 
     async_add_entities(sensors, True)
     return True
@@ -404,23 +400,15 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        if (
-            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
-            == SensorDeviceClass.TIMESTAMP
-        ):
-            return dt_util.parse_datetime(
-                str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None))
-            )
+        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
+            return dt_util.parse_datetime(str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)))
         else:
             return getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        if (
-            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
-            == SensorDeviceClass.TIMESTAMP
-        ):
+        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
             return None
         else:
             return SENSOR_TYPES[self._sensor][SENSOR_UNIT]

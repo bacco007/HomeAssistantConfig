@@ -13,7 +13,9 @@ from homeassistant.components.weather import (
     ATTR_WEATHER_HUMIDITY,
     ATTR_WEATHER_WIND_BEARING,
     ATTR_WEATHER_WIND_SPEED,
+    Forecast,
     WeatherEntity,
+    WeatherEntityFeature,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.util.unit_system import METRIC_SYSTEM
@@ -69,9 +71,7 @@ from .entity import AstroWeatherEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
     """Set up the AstroWeather weather platform."""
     _LOGGER.info("Set up AstroWeather weather platform")
 
@@ -105,6 +105,8 @@ async def async_setup_entry(
 class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
     """Representation of a weather entity."""
 
+    _attr_supported_features = WeatherEntityFeature.FORECAST_HOURLY
+
     def __init__(
         self,
         coordinator,
@@ -119,6 +121,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         self._name = f"{DOMAIN.capitalize()} {entries[CONF_ID]}"
         self._unit_system = unit_system
         self._forecast_type = fcst_type
+        self.weather = None
 
     @property
     def name(self) -> str:
@@ -384,36 +387,24 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_MOON_PHASE: self.moon_phase,
         }
 
-    @property
-    def forecast(self) -> List:
-        """Return the forecast."""
+    def get_forecast(self, index, param):
+        """Retrieve forecast parameter."""
+        try:
+            forecast = self.weather["forecasts"][index]
+            return forecast[param]
+        except (IndexError, KeyError) as err:
+            raise ValueError from err
+
+    def _forecast(self) -> list[Forecast] | None:
+        """Return the forecast array."""
 
         if self.fcst_coordinator.data is None or len(self.fcst_coordinator.data) < 2:
             return None
 
-        data = []
+        forecasts: list[Forecast] = []
 
         for forecast in self.fcst_coordinator.data:
-            # if self._forecast_type == FORECAST_TYPE_DAILY:
-            #     data.append(
-            #         {
-            #             ATTR_FORECAST_TIME: (forecast.timestamp).isoformat(),
-            #             ATTR_FORECAST_PRECIPITATION: None,
-            #             ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
-            #             ATTR_FORECAST_CLOUDCOVER: forecast.cloudcover,
-            #             ATTR_FORECAST_SEEING: forecast.seeing,
-            #             ATTR_FORECAST_TRANSPARENCY: forecast.transparency,
-            #             ATTR_FORECAST_LIFTED_INDEX: forecast.lifted_index,
-            #             ATTR_FORECAST_CONDITION: forecast.condition,
-            #             ATTR_WEATHER_HUMIDITY: forecast.rh2m,
-            #             ATTR_FORECAST_WIND_SPEED: forecast.wind10m_speed,
-            #             ATTR_FORECAST_WIND_BEARING: forecast.wind10m_direction,
-            #             ATTR_FORECAST_TEMP: forecast.temp2m,
-            #             ATTR_FORECAST_PREC_TYPE: forecast.prec_type,
-            #         }
-            #     )
-            # else:
-            data.append(
+            forecasts.append(
                 {
                     ATTR_FORECAST_TIME: forecast.timestamp,
                     ATTR_FORECAST_PRECIPITATION: None,
@@ -431,4 +422,23 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
                     ATTR_FORECAST_PREC_TYPE: forecast.prec_type,
                 }
             )
-        return data
+
+        if forecasts:
+            return forecasts
+        return None
+
+    @property
+    def forecast(self) -> list[Forecast] | None:
+        """Return the forecast array."""
+        return self._forecast()
+
+    async def async_forecast_hourly(self) -> list[Forecast] | None:
+        """Return the hourly forecast in native units."""
+        return self._forecast()
+
+    async def async_update(self) -> None:
+        """Get the latest weather data."""
+        # await self.fcst_coordinator.update()
+        # thermostat = self.data.ecobee.get_thermostat(self._index)
+        self.weather = self.fcst_coordinator.data
+        await self.async_update_listeners(("hourly",))

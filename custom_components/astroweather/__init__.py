@@ -70,18 +70,12 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         hass.config_entries.async_update_entry(
             entry,
             options={
-                CONF_FORECAST_INTERVAL: entry.data.get(
-                    CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL
-                ),
-                CONF_FORECAST_TYPE: entry.data.get(
-                    CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY
-                ),
+                CONF_FORECAST_INTERVAL: entry.data.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL),
+                CONF_FORECAST_TYPE: entry.data.get(CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY),
                 CONF_LATITUDE: entry.data[CONF_LATITUDE],
                 CONF_LONGITUDE: entry.data[CONF_LONGITUDE],
                 CONF_ELEVATION: entry.data.get(CONF_ELEVATION, DEFAULT_ELEVATION),
-                CONF_TIMEZONE_INFO: entry.data.get(
-                    CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO
-                ),
+                CONF_TIMEZONE_INFO: entry.data.get(CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO),
                 CONF_CONDITION_CLOUDCOVER_WEIGHT: entry.data.get(
                     CONF_CONDITION_CLOUDCOVER_WEIGHT,
                     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
@@ -107,18 +101,12 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         hass.config_entries.async_update_entry(
             entry,
             options={
-                CONF_FORECAST_INTERVAL: entry.data.get(
-                    CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL
-                ),
-                CONF_FORECAST_TYPE: entry.data.get(
-                    CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY
-                ),
+                CONF_FORECAST_INTERVAL: entry.data.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL),
+                CONF_FORECAST_TYPE: entry.data.get(CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY),
                 CONF_LATITUDE: entry.data[CONF_LATITUDE],
                 CONF_LONGITUDE: 0.000001,
                 CONF_ELEVATION: entry.data.get(CONF_ELEVATION, DEFAULT_ELEVATION),
-                CONF_TIMEZONE_INFO: entry.data.get(
-                    CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO
-                ),
+                CONF_TIMEZONE_INFO: entry.data.get(CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO),
                 CONF_CONDITION_CLOUDCOVER_WEIGHT: entry.data.get(
                     CONF_CONDITION_CLOUDCOVER_WEIGHT,
                     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
@@ -142,22 +130,16 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         entry.options.get(CONF_FORECAST_INTERVAL) > FORECAST_INTERVAL_MAX
         or entry.options.get(CONF_FORECAST_INTERVAL) < FORECAST_INTERVAL_MIN
     ):
-        _LOGGER.debug(
-            "Overwriting update interval to %s minutes", str(DEFAULT_FORECAST_INTERVAL)
-        )
+        _LOGGER.debug("Overwriting update interval to %s minutes", str(DEFAULT_FORECAST_INTERVAL))
         hass.config_entries.async_update_entry(
             entry,
             options={
                 CONF_FORECAST_INTERVAL: DEFAULT_FORECAST_INTERVAL,
-                CONF_FORECAST_TYPE: entry.data.get(
-                    CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY
-                ),
+                CONF_FORECAST_TYPE: entry.data.get(CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY),
                 CONF_LATITUDE: entry.data[CONF_LATITUDE],
                 CONF_LONGITUDE: entry.data[CONF_LONGITUDE],
                 CONF_ELEVATION: entry.data.get(CONF_ELEVATION, DEFAULT_ELEVATION),
-                CONF_TIMEZONE_INFO: entry.data.get(
-                    CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO
-                ),
+                CONF_TIMEZONE_INFO: entry.data.get(CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO),
                 CONF_CONDITION_CLOUDCOVER_WEIGHT: entry.data.get(
                     CONF_CONDITION_CLOUDCOVER_WEIGHT,
                     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
@@ -185,9 +167,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         "Options cloudcover_weight %s",
         str(entry.options.get(CONF_CONDITION_CLOUDCOVER_WEIGHT)),
     )
-    _LOGGER.debug(
-        "Options seeing_weight %s", str(entry.options.get(CONF_CONDITION_SEEING_WEIGHT))
-    )
+    _LOGGER.debug("Options seeing_weight %s", str(entry.options.get(CONF_CONDITION_SEEING_WEIGHT)))
     _LOGGER.debug(
         "Options transparency_weight %s",
         str(entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT)),
@@ -214,9 +194,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         _LOGGER,
         name=DOMAIN,
         update_method=astroweather.get_location_data,
-        update_interval=timedelta(
-            minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)
-        ),
+        update_interval=timedelta(minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)),
     )
     await coordinator.async_config_entry_first_refresh()
     if not coordinator.last_update_success:
@@ -246,9 +224,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         _LOGGER,
         name=DOMAIN,
         update_method=astroweather.get_hourly_forecast,
-        update_interval=timedelta(
-            minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)
-        ),
+        update_interval=timedelta(minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)),
     )
     await fcst_coordinator.async_config_entry_first_refresh()
     if not fcst_coordinator.last_update_success:
@@ -268,9 +244,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
     _LOGGER.debug("Forecast updated")
 
     for platform in ASTROWEATHER_PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
+        hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, platform))
 
     if not entry.update_listeners:
         entry.add_update_listener(async_update_options)
@@ -289,10 +263,7 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry) -> boo
 
     unload_ok = all(
         await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in ASTROWEATHER_PLATFORMS
-            ]
+            *[hass.config_entries.async_forward_entry_unload(entry, component) for component in ASTROWEATHER_PLATFORMS]
         )
     )
 
