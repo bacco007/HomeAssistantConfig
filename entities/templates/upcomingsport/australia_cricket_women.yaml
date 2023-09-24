@@ -2,7 +2,7 @@
 trigger:
   - platform: calendar
     event: end
-    entity_id: calendar.ical_indycar
+    entity_id: calendar.ical_australia_cricket_women
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -10,7 +10,7 @@ action:
     data:
       end_date_time: "{{now() + timedelta(days=365)}}"
     target:
-      entity_id: calendar.ical_indycar
+      entity_id: calendar.ical_australia_cricket_women
     response_variable: agenda
   - variables:
       all_events: "{{ agenda.events | list }}"
@@ -18,10 +18,10 @@ action:
       dump: "{{agenda}}"
       countnumb: "{{agenda.events | count}}"
 sensor:
-  - name: "[Upcoming Sport] IndyCar"
-    unique_id: upcoming_sport_indycar
-    icon: "mdi:flag-checkered"
-    picture: /local/sportlogos/indycar.png
+  - name: "[Upcoming Sport] Australia Cricket Women"
+    unique_id: upcoming_sport_australia_cricket_women
+    icon: "mdi:cricket"
+    picture: /local/sportlogos/australia_cricket_women.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

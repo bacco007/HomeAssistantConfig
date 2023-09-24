@@ -16,29 +16,25 @@ card:
       }
 filter:
   template: >
-    {% for s in states|selectattr('entity_id','search','sensor.sport_') |
-    selectattr("attributes.nextevent", "search", "(Scheduled|None)") |
-    sort(attribute="attributes.friendly_name")  -%}
+    {% for s in expand(states.group.upcomingsport_withoutevents)|map(attribute='entity_id')|list|sort -%}
       {{
         {
           "type": "custom:fold-entity-row",
           "head": {
             "type": "custom:mushroom-template-card",
-            "primary": "{{ state_attr(entity, \"friendly_name\") }}",
+            "primary": "{{ state_attr(entity, 'friendly_name') | replace('[Upcoming Sport] ', '') }}",
             "multiline_secondary": true,
-            "secondary": "{% if states(entity) == \"Nothing Scheduled\" %} {{ state_attr(entity, \"nextevent\") }} {% else %} {{ state_attr(entity, \"nextevent\") }} ({{ state_attr(entity, \"nexttime\") }})\n{{ state_attr(entity, \"nexteventafter\") }} {% endif %}",
-            "entity": s.entity_id,
-            "badge_icon": "{%- if is_state_attr(entity, 'nexttime', 'On Now!') %} mdi:clock {%- endif %}",
-            "icon": "{{ state_attr(entity, \"icon\") }}",
-            "icon_color": "{%- if is_state_attr(entity, 'nexttime', 'On Now!') %} green {% elif states(entity) == \"Nothing Scheduled\" %} grey {% else %} orange {%- endif %}",
+            "secondary": "{{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No Event Scheduled', state_attr(entity, 'nextevent_desc') + ' ' + state_attr(entity, 'nextevent_time')) }}\n{{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' + state_attr(entity, 'afterevent_time')) }}",
+            "entity": s,
+            "badge_icon": "{%- if is_state_attr(entity, 'nextevent_timeto', 0) %} mdi:clock {%- endif %}",
+            "icon": "{{ state_attr(entity, 'icon') }}",
             "badge_color": "green",
             "tap_action": "none",
             "card_mod": {
               "style": {
-                "mushroom-state-info$": ".primary {\n  font-size: 14px !important;\n  white-space: normal !important;\n}\n.secondary {\n  font-size: 13px !important;\n}\n",
-                ".": "ha-card:before {\n  content: \"\";\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, \"entity_picture\") }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background: none;\n  box-shadow: none;\n}\n"
+                ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background-color: var(--background-color);\n}\n"
               }
-            }
+          }
           },
           "padding": 0,
           "entities": [
@@ -68,11 +64,11 @@ filter:
               "showDescription": false,
               "entities": [
                 {
-                  "entity": "calendar.ical_" + s.entity_id | replace("sensor.sport_","")
+                  "entity": "calendar.ical_" + s | replace("sensor.upcoming_sport_","")
                 }
               ],
               "card_mod": {
-                "style": "ha-card {\n  background: none;\n  box-shadow: none;\n}\n"
+                "style": "ha-card {\n  background: none;\n  box-shadow: none;\n  font-size: 12px;}\n"
               }
             }
           ]
