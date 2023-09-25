@@ -1,0 +1,286 @@
+type: custom:stack-in-card
+cards:
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-bottom: 0 !important;
+        }
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - icon: mdi:weather-cloudy-arrow-right
+            layout: icon|name
+            name: Weather Lookahead (Pirate Weather)
+            style:
+              name:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                margin-left: 18px
+                font-size: 15px
+                font-weight: 600
+                color: var(--title)
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+          - icon: mdi:arrow-top-right
+            layout: icon
+            tap_action:
+              action: navigate
+              navigation_path: weather
+            style:
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+        style: |
+          div.flex-box {
+            margin-top: -6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Today (Remainder)
+          icon: mdi:weather-cloudy-alert
+          state: ""
+        entities:
+          - type: custom:hourly-weather
+            entity: weather.pirateweather
+            forecast_type: hourly
+            icons: true
+            show_precipitation_amounts: false
+            show_precipitation_probability: false
+            show_wind: false
+            offset: 0
+            num_segments: |
+              {{ 24 - now().hour }}
+            label_spacing: |
+              {% set segments = 24 - now().hour %}
+              {{ 4 if segments > 12 else 2 }}
+            name: " "
+            colors: &colors
+              clear-night: rgba(0, 0, 0, 0.2)
+              cloudy: rgba(158, 158, 158, 0.2)
+              fog: rgba(158, 158, 158, 0.2)
+              hail: rgba(63, 81, 181), 0.2)
+              lightning: rgba(63, 81, 181), 0.2)
+              lightning-rainy: rgba(63, 81, 181), 0.2)
+              partlycloudy: rgba(33, 150, 243, 0.2)
+              pouring: rgba(63, 81, 181), 0.2)
+              rainy: rgba(63, 81, 181), 0.2)
+              snowy: rgba(255, 255, 255, 0.2)
+              snowy-rainy: rgba(33, 150, 243, 0.2)
+              sunny: rgba(255, 235, 59, 0.2)
+              windy: rgba(255, 235, 59, 0.2)
+              windy-variant: rgba(255, 235, 59, 0.2)
+              exceptional: rgba(255, 193, 7, 0.2)
+            card_mod: &style
+              style:
+                weather-bar$: |
+                  .bar > div {
+                    height: 42px
+                  }
+                  .bar > div:first-child {
+                    border-top-left-radius: 12px
+                    border-bottom-left-radius: 12px
+                  }
+                  .bar > div:last-child {
+                    border-top-right-radius: 12px
+                    border-bottom-right-radius: 12px
+                  }
+                  .bar > div > span {
+                    text-shadow: none
+                    color: rgb(var(--primary-text-color));
+                    font-size: 14px;
+                    font-weight: bold;
+                  }
+                  .axes > div > .bar-block-bottom > .hour {
+                    font-size: 12px;
+                    font-weight: bolder;
+                  }
+                  .axes > div > .bar-block-bottom > .temperature {
+                    font-size: 12px;
+                    font-weight: bolder;
+                  }
+                  .axes {
+                    margin-top: 10px
+                  }
+                .: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    --ha-card-box-shadow: 0px;
+                    margin: -8px -4px -4px -8px;
+                  }
+      - type: custom:card-templater
+        entities:
+          - sensor.time
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name_template: Tomorrow ({{ (now()+timedelta(days=1)).strftime('%A') }})
+            icon: mdi:weather-cloudy-alert
+            state: ""
+          entities:
+            - type: custom:hourly-weather
+              entity: weather.pirateweather
+              forecast_type: hourly
+              icons: true
+              show_precipitation_amounts: false
+              show_precipitation_probability: false
+              show_wind: false
+              num_segments: 24
+              offset: |
+                {{ 24 - now().hour }}
+              label_spacing: 3
+              name: " "
+              colors: *colors
+              card_mod: *style
+      - type: custom:card-templater
+        entities:
+          - sensor.time
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name_template: Day 3 ({{ (now()+timedelta(days=2)).strftime('%A') }})
+            icon: mdi:weather-cloudy-alert
+            state: ""
+          entities:
+            - type: custom:hourly-weather
+              entity: weather.pirateweather
+              forecast_type: hourly
+              icons: true
+              show_precipitation_amounts: false
+              show_precipitation_probability: false
+              show_wind: false
+              num_segments: 24
+              offset: |
+                {{ 48 - now().hour }}
+              label_spacing: 3
+              name: " "
+              colors: *colors
+              card_mod: *style
+      - type: custom:card-templater
+        entities:
+          - sensor.time
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name_template: Day 4 ({{ (now()+timedelta(days=3)).strftime('%A') }})
+            icon: mdi:weather-cloudy-alert
+            state: ""
+          entities:
+            - type: custom:hourly-weather
+              entity: weather.pirateweather
+              forecast_type: hourly
+              icons: true
+              show_precipitation_amounts: false
+              show_precipitation_probability: false
+              show_wind: false
+              num_segments: 24
+              offset: |
+                {{ 72 - now().hour }}
+              label_spacing: 3
+              name: " "
+              colors: *colors
+              card_mod: *style
+      - type: custom:card-templater
+        entities:
+          - sensor.time
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name_template: Day 5 ({{ (now()+timedelta(days=4)).strftime('%A') }})
+            icon: mdi:weather-cloudy-alert
+            state: ""
+          entities:
+            - type: custom:hourly-weather
+              entity: weather.pirateweather
+              forecast_type: hourly
+              icons: true
+              show_precipitation_amounts: false
+              show_precipitation_probability: false
+              show_wind: false
+              num_segments: 24
+              offset: |
+                {{ 96 - now().hour }}
+              label_spacing: 3
+              name: " "
+              colors: *colors
+              card_mod: *style
+      - type: custom:card-templater
+        entities:
+          - weather.pirateweather
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name_template: Day 6 ({{ (now()+timedelta(days=5)).strftime('%A') }})
+            icon: mdi:weather-cloudy-alert
+            state: ""
+          entities:
+            - type: custom:hourly-weather
+              entity: weather.pirateweather
+              forecast_type: hourly
+              icons: true
+              show_precipitation_amounts: false
+              show_precipitation_probability: false
+              show_wind: false
+              num_segments: 24
+              offset: |
+                {{ 120 - now().hour }}
+              label_spacing: 3
+              name: " "
+              colors: *colors
+              card_mod: *style
+      - type: custom:card-templater
+        entities:
+          - sensor.time
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name_template: Day 7 ({{ (now()+timedelta(days=6)).strftime('%A') }})
+            icon: mdi:weather-cloudy-alert
+            state: ""
+          entities:
+            - type: custom:hourly-weather
+              entity: weather.pirateweather
+              forecast_type: hourly
+              icons: true
+              show_precipitation_amounts: false
+              show_precipitation_probability: false
+              show_wind: false
+              num_segments: 24
+              offset: |
+                {{ 148 - now().hour }}
+              label_spacing: 3
+              name: " "
+              colors: *colors
+              card_mod: *style

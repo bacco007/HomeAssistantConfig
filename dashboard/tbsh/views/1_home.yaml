@@ -11,7 +11,7 @@ cards:
     layout_type: custom:masonry-layout
     layout:
       max_cols: 4
-      width: 750
+      width: 300
       max_width: 1000
     view_layout:
       grid-area: content
@@ -21,7 +21,7 @@ cards:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1400px)":
+      "(max-width: 1368px)":
         layout:
           max_cols: 2
           width: 300
