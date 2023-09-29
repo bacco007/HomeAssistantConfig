@@ -1,0 +1,104 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "Denna WeatherFlow Station är redan konfigurerad."
+        },
+        "error": {
+            "wrong_station_id": "Angivet Stations-ID är inte korrekt.",
+            "invalid_data": "Data som returneras från WeatherFlow är ogiltig.",
+            "wrong_token": "Angiven API-token är inte korrekt.",
+            "bad_request": "Ett okänt fel uppstod under inhämtning av data."
+        },
+        "step": {
+            "user": {
+                "description": "Konfigurera en WeatherFlow Station",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station-Id",
+                    "api_token": "Personlig API-Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Intervall i minuter mellan sensoruppdateringar (Standard 2 min)",
+                    "forecast_hours": "Antalet timmar för timbaserad väderprognos (Standard 48 h)",
+                    "interval_forecast": "Intervall i minuter mellan väderprognosuppdateringar (Standard 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "trend": {
+                "state": {
+                    "falling": "Fallande",
+                    "rising": "Stigande",
+                    "steady": "Stabil"
+                }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Lugnt",
+                    "light_air": "Svag vind",
+                    "light_breeze": "Svag vind",
+                    "gentle_breeze": "Måttlig vind",
+                    "moderate_breeze": "Måttlig vind",
+                    "fresh_breeze": "Frisk vind",
+                    "strong_breeze": "Frisk vind",
+                    "moderate_gale": "Hård vind",
+                    "fresh_gale": "Hård vind",
+                    "strong_gale": "Hård vind",
+                    "storm": "Storm",
+                    "violent_storm": "Storm",
+                    "hurricane": "Orkan"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNO",
+                    "ne": "NO",
+                    "ene": "ONO",
+                    "e": "Ö",
+                    "ese": "OSO",
+                    "se": "SO",
+                    "sse": "SSO",
+                    "s": "S",
+                    "ssw": "SSV",
+                    "sw": "SV",
+                    "wsw": "VSV",
+                    "w": "V",
+                    "wnw": "VNV",
+                    "nw": "NV",
+                    "nnw": "NNV"
+                }
+            },
+            "precip_intensity": {
+                "state": {
+                    "none": "Uppehåll",
+                    "very_light": "Stänk",
+                    "light": "Lätt",
+                    "moderate": "Måttligt",
+                    "heavy": "Kraftigt",
+                    "very_heavy": "Rikligt",
+                    "extreme": "Extremt"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Extrem",
+                    "very-high": "Mycket hög",
+                    "high": "Hög",
+                    "moderate": "Måttlig",
+                    "low": "Låg",
+                    "none": "Ingen"
+                }
+            }
+        }
+    }
+}

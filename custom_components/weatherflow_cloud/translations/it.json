@@ -1,0 +1,104 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "La stazione WeatherFlow è già stata configurata."
+        },
+        "error": {
+            "wrong_station_id": "L'ID della stazione non è corretto.",
+            "invalid_data": "I dati ricevuti da WeatherFlow non sono corretti.",
+            "wrong_token": "Il Token API inserito non è corretto.",
+            "bad_request": "Errore sconosciuto in fase di accesso ai dati."
+        },
+        "step": {
+            "user": {
+                "description": "Configurazione della stazione WeatherFlow",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "ID stazione",
+                    "api_token": "Token API personale"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Frequenza di aggiornamento per i dati dei sensori (default: 2 min)",
+                    "forecast_hours": "Number of hours for the Hour based forecast (Default 48 hours)",
+                    "interval_forecast": "Frequenza di aggiornamento per le previsioni meteo (default: 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "trend": {
+                "state": {
+                    "falling": "Discendente",
+                    "rising": "Ascendente",
+                    "steady": "Stabile"
+                }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Calma",
+                    "light_air": "Bava di vento",
+                    "light_breeze": "Brezza leggera",
+                    "gentle_breeze": "Brezza leggera",
+                    "moderate_breeze": "Brezza moderata",
+                    "fresh_breeze": "Brezza moderata",
+                    "strong_breeze": "Brezza forte",
+                    "moderate_gale": "Burrasca moderata",
+                    "fresh_gale": "Burrasca moderata",
+                    "strong_gale": "Burrasca intensa",
+                    "storm": "Bufera",
+                    "violent_storm": "Bufera violenta",
+                    "hurricane": "Uragano"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNE",
+                    "ne": "NE",
+                    "ene": "ENE",
+                    "e": "E",
+                    "ese": "ESE",
+                    "se": "SE",
+                    "sse": "SSE",
+                    "s": "S",
+                    "ssw": "SSO",
+                    "sw": "SO",
+                    "wsw": "OSO",
+                    "w": "O",
+                    "wnw": "ONO",
+                    "nw": "NO",
+                    "nnw": "NNO"
+                }
+            },
+            "precip_intensity": {
+                "state": {
+                    "none": "Nessuna",
+                    "very_light": "Molto leggera",
+                    "light": "Leggera",
+                    "moderate": "Moderata",
+                    "heavy": "Intensa",
+                    "very_heavy": "Molto intensa",
+                    "extreme": "Estrema"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Estremo",
+                    "very-high": "Molto Elevato",
+                    "high": "Elevato",
+                    "moderate": "Moderato",
+                    "low": "Basso",
+                    "none": "Nessuno"
+                }
+            }
+        }
+    }
+}

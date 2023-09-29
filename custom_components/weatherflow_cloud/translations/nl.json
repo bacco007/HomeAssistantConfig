@@ -1,0 +1,104 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "WeatherFlow station is reeds geconfigured."
+        },
+        "error": {
+            "wrong_station_id": "De Station Id is niet juist.",
+            "invalid_data": "De gegevens afkomstig van WeatherFlow zijn ongeldig.",
+            "wrong_token": "Het Api Token is niet juist.",
+            "bad_request": "Een onbekende fout in opgetreden tijdens het ophalen van de gegevens."
+        },
+        "step": {
+            "user": {
+                "description": "Configuratie van een WeatherFlow station",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Personal Api Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Interval in minuten tussen sensor updates (Standaard 2 min)",
+                    "forecast_hours": "Number of hours for the Hour based forecast (Default 48 hours)",
+                    "interval_forecast": "Interval in minuten tussen de weersvoorspelling updates (Standaard 30 min)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "trend": {
+                "state": {
+                    "falling": "Dalend",
+                    "rising": "Stijgend",
+                    "steady": "Constant"
+                }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Windstil",
+                    "light_air": "Zwakke wind",
+                    "light_breeze": "Zwakke wind",
+                    "gentle_breeze": "Matige wind",
+                    "moderate_breeze": "Matige wind",
+                    "fresh_breeze": "Vrij krachtige wind",
+                    "strong_breeze": "Krachtige wind",
+                    "moderate_gale": "Harde wind",
+                    "fresh_gale": "Stormachtige wind",
+                    "strong_gale": "Storm",
+                    "storm": "Zware storm",
+                    "violent_storm": "Zeer ware storm",
+                    "hurricane": "Orkaan"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNO",
+                    "ne": "NO",
+                    "ene": "ONO",
+                    "e": "O",
+                    "ese": "OZO",
+                    "se": "ZO",
+                    "sse": "ZZO",
+                    "s": "Z",
+                    "ssw": "ZZW",
+                    "sw": "ZW",
+                    "wsw": "WZW",
+                    "w": "W",
+                    "wnw": "WNW",
+                    "nw": "NW",
+                    "nnw": "NNW"
+                }
+            },
+            "precip_intensity": {
+                "state": {
+                    "none": "Geen",
+                    "very_light": "Zeer licht",
+                    "light": "Licht",
+                    "moderate": "Matig",
+                    "heavy": "Zwaar",
+                    "very_heavy": "Zeer zwaar",
+                    "extreme": "Extreem"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Extreem",
+                    "very-high": "Zeer sterk",
+                    "high": "Sterk",
+                    "moderate": "Matig",
+                    "low": "Zwak",
+                    "none": "Geen"
+                }
+            }
+        }
+    }
+}

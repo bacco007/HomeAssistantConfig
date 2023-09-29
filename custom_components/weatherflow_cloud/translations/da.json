@@ -1,0 +1,104 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "Denne WeatherFlow Station er allerede konfigureret."
+        },
+        "error": {
+            "wrong_station_id": "Det indtastede Station Id er ikke korrekt.",
+            "invalid_data": "Data returneret fra WeatherFlow er ikke gyldige.",
+            "wrong_token": "Den indtastede API Token er ikke gyldig.",
+            "bad_request": "Der opstod en ukendt fejl under hentning af data."
+        },
+        "step": {
+            "user": {
+                "description": "Konfigurer en WeatherFlow Station",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Personlig Api Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Interval i minutter mellem sensor opdateringer (Standard 2 min)",
+                    "forecast_hours": "Antal timer for Time baseret vejrudsigt (Standard 48 timer)",
+                    "interval_forecast": "Interval i minutter mellem forecast opdateringer (Standard 30 min)",
+                    "ignore_fetch_errors": "Hvis markeret, vil systemet ignorere fejl der måtte opstå hvis en enkelt værdi ikke kan hentes. Fjern markeringen for at se hvilken værdi der er problemer med."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "trend": {
+                "state": {
+                    "falling": "Falder",
+                    "rising": "Stiger",
+                    "steady": "Stabil"
+                }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Stille",
+                    "light_air": "Næsten stille",
+                    "light_breeze": "Svag vind",
+                    "gentle_breeze": "Let vind",
+                    "moderate_breeze": "Jævn vind",
+                    "fresh_breeze": "Frisk vind",
+                    "strong_breeze": "Hård vind",
+                    "moderate_gale": "Stiv kuling",
+                    "fresh_gale": "Hård kuling",
+                    "strong_gale": "Stormende kuling",
+                    "storm": "Storm",
+                    "violent_storm": "Stærk storm",
+                    "hurricane": "Orkan"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNØ",
+                    "ne": "NØ",
+                    "ene": "ØNØ",
+                    "e": "Ø",
+                    "ese": "ØSØ",
+                    "se": "SØ",
+                    "sse": "SSØ",
+                    "s": "S",
+                    "ssw": "SSV",
+                    "sw": "SV",
+                    "wsw": "VSV",
+                    "w": "V",
+                    "wnw": "VNV",
+                    "nw": "NV",
+                    "nnw": "NNV"
+                }
+            },
+            "precip_intensity": {
+                "state": {
+                    "none": "Ingen",
+                    "very_light": "Meget Let",
+                    "light": "Let",
+                    "moderate": "Moderat",
+                    "heavy": "Kraftig",
+                    "very_heavy": "Meget Kraftig",
+                    "extreme": "Ekstrem"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Ekstrem høj",
+                    "very-high": "Meget høj",
+                    "high": "Høj",
+                    "moderate": "Moderat",
+                    "low": "Lav",
+                    "none": "Ingen data"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,104 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "Stanice WeatherFlow už je nakonfigurovaná."
+        },
+        "error": {
+            "wrong_station_id": "Zadané Station Id je chybné.",
+            "invalid_data": "Chybná data z WeatherFlow.",
+            "wrong_token": "Zadaný Api Token je chybný.",
+            "bad_request": "Nastala neznámá chyba při přenosu dat."
+        },
+        "step": {
+            "user": {
+                "description": "Nastavit Stanici WeatherFlow",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Osobní Api Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Interval aktualizace senzoru v minutách (Výchozí: 2 minuty)",
+                    "forecast_hours": "Počet zobrazených hodin v hodinové předpovědi (Výchozí: 48 hodin)",
+                    "interval_forecast": "Interval aktualizace předpovšdi v minutách (Výchozí: 30 minut)",
+                    "ignore_fetch_errors": "If set, the system will ignore errors if a specific value cannot be retrieved. Unset to figure out what item is causing the problems."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "trend": {
+                "state": {
+                    "falling": "Klesající",
+                    "rising": "Rostoucí",
+                    "steady": "Stabilní"
+                }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Bezvětří",
+                    "light_air": "Klidný vánek",
+                    "light_breeze": "Lehký vánek",
+                    "gentle_breeze": "Mírný vánek",
+                    "moderate_breeze": "Střední vítr",
+                    "fresh_breeze": "Střední vítr",
+                    "strong_breeze": "Silný vítr",
+                    "moderate_gale": "Mírnější vichr",
+                    "fresh_gale": "Střední vichr",
+                    "strong_gale": "Silný vichr",
+                    "storm": "Bouřka",
+                    "violent_storm": "Silná bouřka",
+                    "hurricane": "Vichřice"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "S",
+                    "nne": "SSV",
+                    "ne": "SV",
+                    "ene": "VSV",
+                    "e": "V",
+                    "ese": "VJV",
+                    "se": "JV",
+                    "sse": "JJV",
+                    "s": "J",
+                    "ssw": "JJZ",
+                    "sw": "JZ",
+                    "wsw": "ZJZ",
+                    "w": "Z",
+                    "wnw": "ZSZ",
+                    "nw": "SZ",
+                    "nnw": "SSZ"
+                }
+            },
+            "precip_intensity": {
+                "state": {
+                    "none": "Žádné",
+                    "very_light": "Velmi lehké",
+                    "light": "Lehké",
+                    "moderate": "Střední",
+                    "heavy": "Silné",
+                    "very_heavy": "Velmi silné",
+                    "extreme": "Extrémní"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Extrémní",
+                    "very-high": "Velmi vysoké",
+                    "high": "Vysoké",
+                    "moderate": "Střední",
+                    "low": "Nízké",
+                    "none": "Žádné"
+                }
+            }
+        }
+    }
+}
