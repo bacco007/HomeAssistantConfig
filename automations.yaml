@@ -5,6 +5,6 @@
     path: giqcass/rpilocator-notification-blueprint.yaml
     input:
       zero_2_w: --NO--
-      notify_device: 9e09ff6838383746ba31fe9914a10e47
+      notify_device: e93f101330f503133307ec86a813b514
       cm4_mmc: MMC
       cm4_wifi: With Wifi

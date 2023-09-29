@@ -16,10 +16,10 @@ homeassistant:
       unit_of_measurement: "AQI"
 
 sensor:
-  - platform: waqi
-    token: !secret waqi_apikey
-    locations:
-      - tamworth
+  # - platform: waqi
+  #   token: !secret waqi_apikey
+  #   locations:
+  #     - tamworth
 
   - platform: statistics
     name: waqi_tamworth_min_aqi
