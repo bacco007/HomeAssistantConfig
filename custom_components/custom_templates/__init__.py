@@ -1,6 +1,7 @@
 import asyncio
 from collections import ChainMap
 import logging
+from typing import Callable
 
 from homeassistant.exceptions import TemplateError
 from homeassistant.const import EVENT_COMPONENT_LOADED, STATE_UNKNOWN
@@ -227,7 +228,8 @@ def get_cached_translations(
         }
 
     cache = hass.data.setdefault(TRANSLATION_FLATTEN_CACHE, _TranslationCache(hass))
-    cached = cache.get_cached(language, category, components)
+    # noinspection PyUnresolvedReferences
+    cached = cache.ct_patched_get_cached(language, category, components)
 
     return dict(ChainMap(*cached))
 
@@ -246,11 +248,18 @@ def setup(hass, config):
 
         hass.bus.async_listen(EVENT_COMPONENT_LOADED, load_translations)
 
-    _TranslationCache.get_cached = get_cached
+    state_translated_template = StateTranslated(hass, languages)
+    state_attr_translated_template = StateAttrTranslated(hass, languages)
+    translated_template = Translated(hass, languages)
+    all_translations_template = AllTranslations(hass, languages)
+    eval_template = EvalTemplate(hass)
 
-    def is_safe_callable(self, obj):
+    _TranslationCache.ct_patched_get_cached = get_cached
+
+    def is_safe_callable(self: TemplateEnvironment, obj):
+        # noinspection PyUnresolvedReferences
         return (isinstance(obj, (StateTranslated, StateAttrTranslated, EvalTemplate, Translated, AllTranslations))
-                or self.is_safe_callable_old(obj))
+                or self.ct_original_is_safe_callable_old(obj))
 
     def patch_environment(env: TemplateEnvironment):
         env.globals[CONST_STATE_TRANSLATED_FUNCTION_NAME] = state_translated_template
@@ -263,14 +272,22 @@ def setup(hass, config):
         env.filters[CONST_TRANSLATED_FUNCTION_NAME] = translated_template
         env.filters[CONST_EVAL_FUNCTION_NAME] = eval_template
 
-    TemplateEnvironment.is_safe_callable_old = TemplateEnvironment.is_safe_callable
+    def patched_init(
+        self: TemplateEnvironment,
+        hass: HomeAssistant | None,
+        limited: bool | None = False,
+        strict: bool | None = False,
+        log_fn: Callable[[int, str], None] | None = None,
+    ):
+        # noinspection PyUnresolvedReferences
+        self.ct_original__init__(hass, limited, strict, log_fn)
+        patch_environment(self)
+
+    TemplateEnvironment.ct_original__init__ = TemplateEnvironment.__init__
+    TemplateEnvironment.__init__ = patched_init
+    TemplateEnvironment.ct_original_is_safe_callable_old = TemplateEnvironment.is_safe_callable
     TemplateEnvironment.is_safe_callable = is_safe_callable
 
-    state_translated_template = StateTranslated(hass, languages)
-    state_attr_translated_template = StateAttrTranslated(hass, languages)
-    translated_template = Translated(hass, languages)
-    all_translations_template = AllTranslations(hass, languages)
-    eval_template = EvalTemplate(hass)
     tpl = Template("", hass)
     tpl._strict = False
     tpl._limited = False
