@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "This Location has already been configured."
+        },
+        "error": {
+            "unauthorized": "The API key is incorrect or your account status is inactive or disabled",
+            "bad_request": "Requests is invalid in some way (invalid dates, bad location parameter etc)",
+            "server_error": "Visual Crossing servers encounter an unexpected error",
+            "too_many": "Too many daily request for the current plan"
+        },
+        "step": {
+            "user": {
+                "description": "Set up Visual Crossing Weather",
+                "title": "Visual Crossing",
+                "data": {
+                    "name": "Location Name",
+                    "api_key": "Visual Crossing API Key",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "name": "Location Name",
+                    "language": "Language for Long Weather Description",
+                    "days": "Number of forecast days. (Default: 7, min: 1, max: 14)"
+                }
+            }
+        }
+    }
+}
