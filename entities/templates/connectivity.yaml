@@ -62,7 +62,7 @@ binary_sensor:
     unique_id: weatherflow_cloud_connected
     icon: mdi:weather-lightning-rainy
     device_class: connectivity
-    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('weatherflow_cloud')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
   - name: "[Connected] Sungather"
@@ -175,6 +175,25 @@ binary_sensor:
     icon: mdi:calendar
     device_class: connectivity
     state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] iCloud 3"
+    unique_id: connected_icloud3
+    icon: mdi:apple-icloud
+    device_class: connectivity
+    state: "{{ integration_entities('icloud3')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Bluetooth"
+    unique_id: connected_bluetooth
+    icon: mdi:bluetooth
+    device_class: connectivity
+    state: >
+      {{ (expand(state_attr('sensor.devices_bluetooth', 'entity_id'))
+            | selectattr('state', 'eq', 'home') | list | count > 0
+          or expand(state_attr('sensor.devices_bluetooth_le', 'entity_id'))
+            | selectattr('state', 'eq', 'home') | list | count > 0)
+          and is_state('input_boolean.alerts_bluetooth','on') }}
     attributes:
       category: homeassistant
 

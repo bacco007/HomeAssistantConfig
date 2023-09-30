@@ -306,3 +306,14 @@ binary_sensor:
           and is_state('input_boolean.alerts_ha','on') }}
     attributes:
       category: homeassistant
+
+  - name: "alerts_bluetooth"
+    unique_id: alerts_bluetooth
+    icon: mdi:bluetooth
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{ is_state('binary_sensor.connected_bluetooth','off')
+          and is_state('input_boolean.alerts_bluetooth','on') }}
+    attributes:
+      category: homeassistant

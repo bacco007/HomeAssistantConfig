@@ -3,23 +3,19 @@
 type: custom:mushroom-template-card
 primary: Sport
 secondary: >
-  {{
-  states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder",
-  "<=", 7)|list|count }} This Week
+  {{ states('sensor.upcoming_sport_this_week') }} This Week
 multiline_secondary: true
 icon: mdi:football-australian
 icon_color: >-
-  {% if
-  states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder",
-  "<=", 0)|list|count > 0 %}
+  {%- if states('sensor.upcoming_sport_this_week') | int > 0 %}
     green
-  {% else %}
+  {%- else %}
     grey
-  {% endif %}
+  {%- endif %}
 badge_icon: >
-  {% if (states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 0)|list|count) > 0 %}
+  {%- if states('sensor.upcoming_sport_this_week') | int  > 0 %}
     mdi:clock
-  {% endif %}
+  {%- endif %}
 badge_color: red
 layout: horizontal
 tap_action:

@@ -1,0 +1,25 @@
+---
+sensor:
+  - name: "[Devices] Bluetooth"
+    unique_id: devices_bluetooth
+    icon: mdi:bluetooth-settings
+    unit_of_measurement: devices
+    state: >
+      {% set c = state_attr(this.entity_id, 'entity_id') %}
+      {{ c | count if c != none else none }}
+    attributes:
+      entity_id: >
+        {{ states.device_tracker | selectattr('attributes.source_type', 'eq', 'bluetooth')
+            | map(attribute='entity_id') | list }}
+
+  - name: "[Devices] Bluetooth LE"
+    unique_id: devices_bluetooth_le
+    icon: mdi:bluetooth-settings
+    unit_of_measurement: devices
+    state: >
+      {% set c = state_attr(this.entity_id, 'entity_id') %}
+      {{ c | count if c != none else none }}
+    attributes:
+      entity_id: >
+        {{ states.device_tracker | selectattr('attributes.source_type', 'eq', 'bluetooth_le')
+            | map(attribute='entity_id') | list }}

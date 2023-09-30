@@ -34,6 +34,10 @@
 #       scheduled_events: "{{ events }}"
 
 trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/6"
   - platform: calendar
     event: end
     entity_id: calendar.ical_formula_1

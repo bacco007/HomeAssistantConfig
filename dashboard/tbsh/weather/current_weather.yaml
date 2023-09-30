@@ -48,7 +48,7 @@ cards:
           - entity: sensor.weather_temperature_trend
           - entity: sensor.tempest_st_00056115_temperature_level
             name: Temperature Level
-          - entity: binary_sensor.weatherflow_is_freezing
+          - entity: binary_sensor.weatherflow_cloud_is_freezing
             name: Freezing
           - entity: sensor.weather_apparent_temperature
           - entity: sensor.weather_high_temperature
@@ -105,19 +105,19 @@ cards:
           style: *style
         padding: 5
         head:
-          entity: binary_sensor.weatherflow_is_lightning
+          entity: binary_sensor.weatherflow_cloud_is_lightning
           name: Lightning
         entities:
           - entity: sensor.weather_lightning_count
-          - entity: sensor.weatherflow_lightning_strike_count
+          - entity: sensor.weatherflow_cloud_lightning_strike_count
             name: Lightning Strike Count (WF)
-          - entity: sensor.weatherflow_lightning_strike_count_last_hour
+          - entity: sensor.weatherflow_cloud_lightning_strike_count_last_hour
             name: Lightning Strikes Last Hour
-          - entity: sensor.weatherflow_lightning_strike_count_last_3_hours
+          - entity: sensor.weatherflow_cloud_lightning_strike_count_last_3_hours
             name: Lightning Strikes Last 3 Hours
-          - entity: sensor.weatherflow_last_lightning_strike
+          - entity: sensor.weatherflow_cloud_last_lightning_strike
             name: Last Lightning Strike
-          - entity: sensor.weatherflow_last_lightning_strike_distance
+          - entity: sensor.weatherflow_cloud_last_lightning_strike_distance
             name: Last Lightning Strike Distance
       - type: custom:fold-entity-row
         card_mod:

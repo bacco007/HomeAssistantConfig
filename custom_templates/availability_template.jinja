@@ -1,0 +1,25 @@
+{% macro avail(entity_list) %}
+  {# This expects a list of entities.
+      The number of entities are counted.
+      The number of entities that are NOT unknown, unavailable, empty,
+      or none are counted.
+      If the 2 counts are the same, true is returned, else false, defaults to false.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be
+      certain of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'availability_template.jinja' import avail %}
+      {{- avail(['entity_1','entity_2']) | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') | reject('in', ['unknown','unavailable','','none'])
+    | list | count == entity_list | count -}}
+  {%- else -%}
+    false 
+  {%- endif -%}
+{% endmacro %}

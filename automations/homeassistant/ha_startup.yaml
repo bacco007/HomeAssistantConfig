@@ -49,7 +49,7 @@ action:
                   type: mrkdwn
                   text: *start_message
 
-      - service: notify.mobile_app_tbiphone13pro
+      - service: notify.mobile_app_tbiphone15promax
         data:
           message: *start_message
           title: *start_title

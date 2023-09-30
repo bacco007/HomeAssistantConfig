@@ -1,0 +1,4 @@
+---
+alerts_bluetooth:
+  name: "[Alerts] Bluetooth"
+  icon: mdi:bluetooth

@@ -1,0 +1,187 @@
+{% macro true_any(entity_list) %}
+  {# This expects a list of entities. This means [] brackets
+      OR if your entities are pulled from a BluePrint entity selector,
+      that is already a list and you do not need the brackets.
+      The number of entities that evaluate as True using
+      `bool(value, default) function` is counted. (truthy values)
+      https://www.home-assistant.io/docs/configuration/templating/#numeric-functions-and-filters
+      Items that do not evaluate as bool will be defaulted to null/undefined.
+      If there are one or more that match, 
+      True is returned, else False, defaults to False.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be certain
+      of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'logic_chekr.jinja' import true_any %}
+      {{- true_any(['entity_1','entity_2']) | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') 
+    | map('bool', null) | select('eq', True)
+    | list | count > 0 -}}
+  {%- else -%}
+    False 
+  {%- endif -%}
+{% endmacro %}
+
+{% macro false_any(entity_list) %}
+  {# This expects a list of entities. This means [] brackets
+      OR if your entities are pulled from a BluePrint entity selector,
+      that is already a list and you do not need the brackets.
+      The number of entities that evaluate as False using
+      `bool(value, default) function` is counted. (falsy values)
+      https://www.home-assistant.io/docs/configuration/templating/#numeric-functions-and-filters
+      Items that do not evaluate as bool will be defaulted to null/undefined.
+      If there are one or more that match, 
+      True is returned, else False, defaults to False.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be certain
+      of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'logic_chekr.jinja' import false_any %}
+      {{- false_any(['entity_1','entity_2']) | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') 
+    | map('bool', null) | select('eq', False)
+    | list | count > 0 -}}
+  {%- else -%}
+    False 
+  {%- endif -%}
+{% endmacro %}
+
+{% macro true_one(entity_list) %}
+  {# This expects a list of entities. This means [] brackets
+      OR if your entities are pulled from a BluePrint entity selector,
+      that is already a list and you do not need the brackets.
+      The number of entities that evaluate as True using
+      `bool(value, default) function` is counted. (truthy values)
+      https://www.home-assistant.io/docs/configuration/templating/#numeric-functions-and-filters
+      Items that do not evaluate as bool will be defaulted to null/undefined.
+      If there is only one that matches, 
+      True is returned, else False, defaults to False.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be certain
+      of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'logic_chekr.jinja' import true_one %}
+      {{- true_one(['entity_1','entity_2]') | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') 
+    | map('bool', null) | select('eq', True)
+    | list | count == 1 -}}
+  {%- else -%}
+    False 
+  {%- endif -%}
+{% endmacro %}
+
+{% macro true_all(entity_list) %}
+  {# This expects a list of entities. This means [] brackets
+      OR if your entities are pulled from a BluePrint entity selector,
+      that is already a list and you do not need the brackets.
+      The number of entities that evaluate as True using
+      `bool(value, default) function` is counted. (truthy values)
+      https://www.home-assistant.io/docs/configuration/templating/#numeric-functions-and-filters
+      Items that do not evaluate as bool will be defaulted to True.
+      The number of entities are counted.
+      If the 2 counts are the same, True is returned, else False,
+      defaults to False.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be certain
+      of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'logic_chekr.jinja' import true_all %}
+      {{- true_all(['entity_1','entity_2']) | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') 
+    | map('bool', True) | select('eq', True)
+    | list | count == entity_list | count -}}
+  {%- else -%}
+    False 
+  {%- endif -%}
+{% endmacro %}
+
+{% macro false_one(entity_list) %}
+  {# This expects a list of entities. This means [] brackets
+      OR if your entities are pulled from a BluePrint entity selector,
+      that is already a list and you do not need the brackets.
+      The number of entities that evaluate as False using
+      `bool(value, default) function` is counted. (falsy values)
+      https://www.home-assistant.io/docs/configuration/templating/#numeric-functions-and-filters
+      Items that do not evaluate as bool will be defaulted to null/undefined.
+      If there is only one that matches, True is returned,
+      else False, defaults to False.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be certain
+      of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'logic_chekr.jinja' import false_one %}
+      {{- false_one(['entity_1','entity_2']) | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') 
+    | map('bool', null) | select('eq', False)
+    | list | count == 1 -}}
+  {%- else -%}
+    False 
+  {%- endif -%}
+{% endmacro %}
+
+{% macro false_all(entity_list) %}
+  {# This expects a list of entities. This means [] brackets
+      OR if your entities are pulled from a BluePrint entity selector,
+      that is already a list and you do not need the brackets.
+      The number of entities that evaluate as False using
+      `bool(value, default) function` is counted. (falsy values)
+      https://www.home-assistant.io/docs/configuration/templating/#numeric-functions-and-filters
+      Items that do not evaluate as bool will be defaulted to False.
+      The number of entities are counted.
+      If the 2 counts are the same, True is returned, else False,
+      defaults to False.
+    REMEMBER!!
+      This always returns text, so cast to bool on the other end to be certain
+      of the result.
+      Use of the - character in the return template ensures no unwanted spacing
+      is pulled back with your answer.
+    SAMPLE USAGE:
+      {% from 'logic_chekr.jinja' import false_all %}
+      {{- false_all(['entity_1','entity_2']) | bool -}}
+  #}
+  {# First tests to make sure this is a list #}
+  {%- if entity_list is iterable and
+    (entity_list is not string and entity_list is not mapping)
+  -%}
+    {{- entity_list | map('states') 
+    | map('bool', False) | select('eq', False)
+    | list | count == entity_list | count -}}
+  {%- else -%}
+    False 
+  {%- endif -%}
+{% endmacro %}
