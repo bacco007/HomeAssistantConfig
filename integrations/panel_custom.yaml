@@ -19,3 +19,13 @@ panel_custom:
     require_admin: true
     config:
       ingress: core_configurator
+
+  - name: ha_supervisor
+    sidebar_title: Supervisor
+    sidebar_icon: mdi:home-assistant
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: 'hassio/dashboard'
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: Supervisor
