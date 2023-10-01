@@ -77,11 +77,18 @@ card:
     #   name: "History"
     #   template:
     #     - popup_button
-    # - type: "custom:button-card"
-    #   icon: mdi:server
-    #   name: "Proxmox"
-    #   template:
-    #     - popup_button
+    - type: "custom:button-card"
+      entity: sensor.summary_media_players
+      icon: mdi:play-network
+      name: "Media Players"
+      template:
+        - popup_button
+      tap_action: !include ../popup/media_players.yaml
+      variables:
+        notification: >
+          [[[
+            return parseInt(entity?.state);
+          ]]]
     - type: "custom:button-card"
       icon: mdi:update
       name: "Updates"

@@ -24,6 +24,23 @@ sensor:
       entities: |
         {{ expand('group.lights') | selectattr('state', 'eq', 'on') | map(attribute='attributes.friendly_name')  | list | sort }}
 
+  - name: "[Summary] Media Players"
+    unique_id: summary_media_players
+    icon: mdi:play-network
+    state: >
+      {{ expand('group.media_players')
+        | selectattr('state', 'eq', 'playing')
+        | list | count | int(default=0) }}
+    attributes:
+      category: media_player
+      count: >
+        {{ expand('group.media_players') | list | count }}
+      entities: >
+        {{ expand('group.media_players')
+          | rejectattr('state', 'eq', 'unavailable')
+          | map(attribute='attributes.friendly_name')
+          | list | sort }}
+
   - name: "[Summary] Updates"
     unique_id: summary_updates
     icon: mdi:arrow-up-bold-hexagon-outline
