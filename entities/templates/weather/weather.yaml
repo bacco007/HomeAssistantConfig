@@ -870,3 +870,16 @@ sensor:
         {%- endif %}
         {%- endfor %}
         {{ ns.list }}
+
+  - name: "[Weather] Fog Probability Today"
+    unique_id: weather_fog_probability_today
+    icon: mdi:weather-fog
+    state_class: measurement
+    unit_of_measurement: "%"
+    state: >
+      {{ states('sensor.tempest_st_00056115_fog_probability') }}
+    attributes:
+      category: weather
+      provider: Weatherflow Local
+    availability: >
+      {{ is_number(states('sensor.tempest_st_00056115_fog_probability')) }}

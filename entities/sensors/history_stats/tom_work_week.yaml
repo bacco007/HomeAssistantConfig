@@ -1,0 +1,9 @@
+---
+platform: history_stats
+name: historystats_tom_work_week
+entity_id: person.thomas_baxter
+state: "TRC"
+type: time
+end: "{{ now() }}"
+duration:
+  days: 7

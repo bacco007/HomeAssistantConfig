@@ -1,0 +1,9 @@
+---
+platform: history_stats
+name: historystats_tom_away_week
+entity_id: person.thomas_baxter
+state: "not_home"
+type: time
+end: "{{ now().replace(hour=0, minute=0, second=0) }}"
+duration:
+  days: 7

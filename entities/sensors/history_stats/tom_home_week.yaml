@@ -1,0 +1,9 @@
+---
+platform: history_stats
+name: historystats_tom_home_week
+entity_id: person.thomas_baxter
+state: "home"
+type: time
+end: "{{ now() }}"
+duration:
+  days: 7

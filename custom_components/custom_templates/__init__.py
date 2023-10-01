@@ -1,7 +1,7 @@
 import asyncio
 from collections import ChainMap
 import logging
-from typing import Callable
+from typing import Any, Callable
 
 from homeassistant.exceptions import TemplateError
 from homeassistant.const import EVENT_COMPONENT_LOADED, STATE_UNKNOWN
@@ -18,6 +18,7 @@ from .const import (DOMAIN, CUSTOM_TEMPLATES_SCHEMA, CONF_PRELOAD_TRANSLATIONS, 
 _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = CUSTOM_TEMPLATES_SCHEMA
+ConfigType = dict[str, Any]
 
 
 class TranslatableTemplate:
@@ -235,7 +236,7 @@ def get_cached_translations(
 
 
 # noinspection PyProtectedMember
-def setup(hass, config):
+def setup(hass: HomeAssistant, config: ConfigType):
     if DOMAIN not in config:
         return True
     languages = []
@@ -259,7 +260,7 @@ def setup(hass, config):
     def is_safe_callable(self: TemplateEnvironment, obj):
         # noinspection PyUnresolvedReferences
         return (isinstance(obj, (StateTranslated, StateAttrTranslated, EvalTemplate, Translated, AllTranslations))
-                or self.ct_original_is_safe_callable_old(obj))
+                or self.ct_original_is_safe_callable(obj))
 
     def patch_environment(env: TemplateEnvironment):
         env.globals[CONST_STATE_TRANSLATED_FUNCTION_NAME] = state_translated_template
@@ -274,19 +275,22 @@ def setup(hass, config):
 
     def patched_init(
         self: TemplateEnvironment,
-        hass: HomeAssistant | None,
+        hass_param: HomeAssistant | None,
         limited: bool | None = False,
         strict: bool | None = False,
         log_fn: Callable[[int, str], None] | None = None,
     ):
         # noinspection PyUnresolvedReferences
-        self.ct_original__init__(hass, limited, strict, log_fn)
+        self.ct_original__init__(hass_param, limited, strict, log_fn)
         patch_environment(self)
 
-    TemplateEnvironment.ct_original__init__ = TemplateEnvironment.__init__
-    TemplateEnvironment.__init__ = patched_init
-    TemplateEnvironment.ct_original_is_safe_callable_old = TemplateEnvironment.is_safe_callable
-    TemplateEnvironment.is_safe_callable = is_safe_callable
+    if not hasattr(TemplateEnvironment, 'ct_original__init__'):
+        TemplateEnvironment.ct_original__init__ = TemplateEnvironment.__init__
+        TemplateEnvironment.__init__ = patched_init
+
+    if not hasattr(TemplateEnvironment, 'ct_original_is_safe_callable'):
+        TemplateEnvironment.ct_original_is_safe_callable = TemplateEnvironment.is_safe_callable
+        TemplateEnvironment.is_safe_callable = is_safe_callable
 
     tpl = Template("", hass)
     tpl._strict = False
