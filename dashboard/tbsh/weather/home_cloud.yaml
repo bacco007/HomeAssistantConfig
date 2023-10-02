@@ -50,7 +50,7 @@ cards:
       colorize_states: true
       title: History (24 Hrs)
     series:
-      - entity: sensor.weatherflow_cloud_base
+      - entity: sensor.weatherflow_cloud_cloud_base
         name: Cloud Base
         type: line
         color: "#3D82FF"
@@ -71,7 +71,7 @@ cards:
           duration: 15m
           func: avg
         yaxis_id: third
-      - entity: sensor.weatherflow_visibility
+      - entity: sensor.weatherflow_cloud_visibility
         name: Visibility
         color: "#8F3BB8"
         group_by:
@@ -126,12 +126,12 @@ title-card:
     - type: custom:config-template-card
       entities:
         - sensor.openweathermap_cloud_coverage
-        - sensor.weatherflow_cloud_base
-        - sensor.weatherflow_visibility
+        - sensor.weatherflow_cloud_cloud_base
+        - sensor.weatherflow_cloud_visibility
       variables:
         cloud_coverage: states['sensor.openweathermap_cloud_coverage'].state
-        cloud_base: states['sensor.weatherflow_cloud_base'].state
-        visibility: states['sensor.weatherflow_visibility'].state
+        cloud_base: states['sensor.weatherflow_cloud_cloud_base'].state
+        visibility: states['sensor.weatherflow_cloud_visibility'].state
       card:
         type: custom:paper-buttons-row
         styles:
@@ -153,19 +153,19 @@ title-card:
               button:
                 justify-content: flex-start
                 width: 100%
-          - entity: sensor.weatherflow_cloud_base
+          - entity: sensor.weatherflow_cloud_cloud_base
             name: Cloud Base
             layout: name_state
             fill_raw: last
             state: >-
-              {{ "{0:,.0f}".format(states.sensor.weatherflow_cloud_base.state |
+              {{ "{0:,.0f}".format(states.sensor.weatherflow_cloud_cloud_base.state |
               float ) }} m
             styles:
               name:
                 white-space: nowrap
               state:
                 color: "#DDDDDD"
-          - entity: sensor.weatherflow_visibility
+          - entity: sensor.weatherflow_cloud_visibility
             name: Visibility
             layout: name_state
             fill_raw: last

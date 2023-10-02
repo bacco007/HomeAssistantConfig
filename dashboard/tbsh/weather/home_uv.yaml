@@ -47,7 +47,7 @@ cards:
         max: 15
         min: 0
     series:
-      - entity: sensor.weatherflow_uv_index
+      - entity: sensor.weatherflow_cloud_uv_index
         name: UV Index
         type: line
         color: black
@@ -107,7 +107,7 @@ cards:
             return [new Date(entry.datetime).getTime(), entry.uv];
           });
         stroke_width: 2
-      - entity: weather.weatherflow_hourly_based_forecast
+      - entity: weather.weatherflow_cloud_hourly_based_forecast
         name: Weatherflow
         type: line
         show:
@@ -167,15 +167,15 @@ title-card:
       entities:
         - type: custom:config-template-card
           variables:
-            uv_description: states['sensor.weatherflow_uv_description'].state
+            uv_description: states['sensor.weatherflow_cloud_uv_description'].state
           entities:
-            - sensor.weatherflow_uv_description
+            - sensor.weatherflow_cloud_uv_description
           card:
             type: custom:paper-buttons-row
             styles:
               justify-content: flex-start
             buttons:
-              - entity: sensor.weatherflow_last_lightning_strike
+              - entity: sensor.weatherflow_cloud_last_lightning_strike
                 name: Lightning
                 icon: mdi:weather-sunny
                 layout: icon|state
@@ -190,7 +190,7 @@ title-card:
                   button:
                     justify-content: flex-start
                     width: 100%
-              - entity: sensor.weatherflow_uv_index
+              - entity: sensor.weatherflow_cloud_uv_index
                 name: UV Index
                 layout: name_state
                 styles:
@@ -205,23 +205,23 @@ title-card:
       entities:
         - type: custom:paper-buttons-row
           buttons:
-            - entity: sensor.weatherflow_brightness
+            - entity: sensor.weatherflow_cloud_brightness
               name: "Brightness: "
               layout: name|state
               state: >-
-                {{ "{0:,.0f}".format(states.sensor.weatherflow_brightness.state
+                {{ "{0:,.0f}".format(states.sensor.weatherflow_cloud_brightness.state
                 | float ) }} lux
               styles:
                 state:
                   color: "#DDDDDD"
                 button:
                   justify-content: flex-end
-            - entity: sensor.weatherflow_solar_radiation
+            - entity: sensor.weatherflow_cloud_solar_radiation
               name: "Solar Radiation: "
               layout: name|state
               state: >-
                 {{
-                "{0:,.0f}".format(states.sensor.weatherflow_solar_radiation.state
+                "{0:,.0f}".format(states.sensor.weatherflow_cloud_solar_radiation.state
                 | float ) }} W/m2
               styles:
                 state:

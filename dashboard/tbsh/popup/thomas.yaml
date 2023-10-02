@@ -44,15 +44,15 @@ browser_mod:
             - entity: sensor.historystats_tom_work
               name: Work
         - type: section
-        - entity: sensor.tbiphone13pro_battery_level
+        - entity: sensor.tbiphone15promax_battery_level
           type: custom:multiple-entity-row
           name: Mobile Phone
           state_header: Battery
           entities:
-            - entity: sensor.tbiphone13pro_activity
+            - entity: sensor.tbiphone15promax_activity
               name: Activity
         - type: section
-        - entity: sensor.tbiphone13pro_geocoded_location
+        - entity: sensor.tbiphone15promax_geocoded_location
           type: custom:multiple-entity-row
           name: Location
           styles:

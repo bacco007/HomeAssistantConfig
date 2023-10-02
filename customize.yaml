@@ -6,10 +6,10 @@ alert.air_quality:
 alert.backup_alert:
   icon: mdi:backup-restore
   category: homeassistant
-alert.docker_sungather:
+alert.sungather:
   icon: mdi:docker
   category: homeassistant
-alert.docker_weatherflow2mqtt:
+alert.weatherflow2mqtt:
   icon: mdi:docker
   category: homeassistant
 alert.gdacs_connected:

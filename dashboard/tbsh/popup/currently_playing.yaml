@@ -89,13 +89,6 @@ browser_mod:
                 {% if not is_state('media_player.currently_playing', 'idle') and not is_state('media_player.currently_playing', 'off') %}
                 {% set source = state_attr('media_player.currently_playing', 'source') %}
                 {% set appname = state_attr('media_player.currently_playing', 'app_id') %}
-                  {% if source == 'YouTube' %}
-                    background: url( '{{ states.sensor.shieldtv_youtube_watching.attributes.entity_picture }}' ) center no-repeat;
-                    {% elif appname == 'com.google.ios.youtube' %}
-                    background: url( '{{ states.sensor.youtube_watching.attributes.entity_picture }}' ) center no-repeat;
-                    {% else %}
-                    background: url( '{{ state_attr('media_player.currently_playing', "entity_picture") }}' ) center no-repeat;
-                  {% endif %}
                 {% endif %}
                 background-size: contain;
                 margin: 4px 4px 16px;
@@ -105,10 +98,6 @@ browser_mod:
                 {% set active_child = state_attr(config.entity, 'active_child') %}
                 {% if active_child == 'media_player.spotify' %}
                   aspect-ratio: 1 / 1;
-                {% elif active_child == 'media_player.living_room_tv' %}
-                  aspect-ratio: 16 / 9;
-                {% elif active_child == 'media_player.bedroom_tv' %}
-                  aspect-ratio: 2 / 3;
                 {% else %}
                   aspect-ratio: 1 / 1;
                 {% endif %}
@@ -166,13 +155,6 @@ browser_mod:
             {% if not is_state('media_player.currently_playing', 'idle') and not is_state('media_player.currently_playing', 'off') %}
             {% set source = state_attr('media_player.currently_playing', 'source') %}
             {% set appname = state_attr('media_player.currently_playing', 'app_id') %}
-              {% if source == 'YouTube' %}
-                background: url( '{{ states.sensor.shieldtv_youtube_watching.attributes.entity_picture }}' ) center no-repeat;
-                {% elif appname == 'com.google.ios.youtube' %}
-                background: url( '{{ states.sensor.youtube_watching.attributes.entity_picture }}' ) center no-repeat;
-                {% else %}
-                background: url( '{{ state_attr('media_player.currently_playing', "entity_picture") }}' ) center no-repeat;
-              {% endif %}
             {% endif %}
             filter: blur(150px) saturate(200%);
             background-size: 100% 100%;

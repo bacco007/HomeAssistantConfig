@@ -10,7 +10,7 @@ filter:
     - sensor.z2m_bedroom_climate_temperature
     - sensor.z2m_office_airquality_temperature
     - sensor.z2m_lounge_climate_temperature
-    - sensor.weatherflow_air_temperature
+    - sensor.weather_temperature
     - media_player.currently_playing
 entity_config:
   light.bedroom_lamp:

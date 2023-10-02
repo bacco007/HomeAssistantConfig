@@ -25,7 +25,7 @@ cards:
       show_states: false
       title: History (24 Hrs)
     series:
-      - entity: sensor.weatherflow_barometric_pressure
+      - entity: sensor.weatherflow_cloud_barometric_pressure
         name: Barometric Pressure
         type: area
         color: "#3D82FF"
@@ -96,15 +96,15 @@ title-card:
                   return 'midi:thermometer-lines';
                 }
               }
-            pressure_trend: states['sensor.weatherflow_pressure_trend'].state
+            pressure_trend: states['sensor.weatherflow_cloud_pressure_trend'].state
           entities:
-            - sensor.weatherflow_barometric_pressure
+            - sensor.weatherflow_cloud_barometric_pressure
           card:
             type: custom:paper-buttons-row
             styles:
               justify-content: flex-start
             buttons:
-              - entity: sensor.weatherflow_barometric_pressure
+              - entity: sensor.weatherflow_cloud_barometric_pressure
                 name: Feels Like
                 icon: ${ setPressureTrendIcon(pressure_trend) }
                 layout: icon|state
@@ -120,7 +120,7 @@ title-card:
                   button:
                     width: 100%
                     justify-content: flex-start
-              - entity: sensor.weatherflow_pressure_trend
+              - entity: sensor.weatherflow_cloud_pressure_trend
                 name: Trend
                 layout: name_state
                 styles:

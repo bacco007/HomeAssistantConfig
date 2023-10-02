@@ -17,7 +17,7 @@ cards:
       show: true
       title: History (24 Hrs)
     series:
-      - entity: sensor.weatherflow_last_lightning_strike_distance
+      - entity: sensor.weatherflow_cloud_last_lightning_strike_distance
         name: Last Strike Distance
         color: "#DBAF07"
     apex_config:
@@ -69,15 +69,15 @@ title-card:
                 return Math.floor(seconds) + " sec";
                 return seconds;
               }
-            lightning_date: states['sensor.weatherflow_last_lightning_strike'].state
+            lightning_date: states['sensor.weatherflow_cloud_last_lightning_strike'].state
           entities:
-            - sensor.weatherflow_last_lightning_strike
+            - sensor.weatherflow_cloud_last_lightning_strike
           card:
             type: custom:paper-buttons-row
             styles:
               justify-content: flex-start
             buttons:
-              - entity: sensor.weatherflow_last_lightning_strike
+              - entity: sensor.weatherflow_cloud_last_lightning_strike
                 name: Lightning
                 icon: mdi:lightning-bolt
                 layout: icon|state
@@ -92,7 +92,7 @@ title-card:
                   button:
                     justify-content: flex-start
                     width: 100%
-              - entity: sensor.weatherflow_last_lightning_strike_distance
+              - entity: sensor.weatherflow_cloud_last_lightning_strike_distance
                 name: Distance
                 layout: name_state
                 state:
@@ -107,7 +107,7 @@ title-card:
       entities:
         - type: custom:paper-buttons-row
           buttons:
-            - entity: sensor.weatherflow_lightning_strike_count
+            - entity: sensor.weatherflow_cloud_lightning_strike_count
               name: "Last Minute: "
               layout: name|state
               styles:
@@ -115,13 +115,13 @@ title-card:
                   color: "#DDDDDD"
                 button:
                   justify-content: flex-end
-            - entity: sensor.weatherflow_lightning_strike_count_last_hour
+            - entity: sensor.weatherflow_cloud_lightning_strike_count_last_hour
               name: "Last Hour: "
               layout: name|state
               styles:
                 state:
                   color: "#DDDDDD"
-            - entity: sensor.weatherflow_lightning_strike_count_last_3_hours
+            - entity: sensor.weatherflow_cloud_lightning_strike_count_last_3_hours
               name: "Last 3 Hours: "
               layout: name|state
               styles:

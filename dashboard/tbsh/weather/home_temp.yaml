@@ -40,7 +40,7 @@ cards:
       colorize_states: true
       title: History (24 Hrs)
     series:
-      - entity: sensor.weatherflow_air_temperature
+      - entity: sensor.weatherflow_cloud_air_temperature
         name: Air
         type: area
         color: '#3D82FF'
@@ -50,7 +50,7 @@ cards:
         stroke_width: 2
         opacity: 0.2
         yaxis_id: first
-      - entity: sensor.weatherflow_wet_bulb_temperature
+      - entity: sensor.weatherflow_cloud_wet_bulb_temperature
         name: Wet Bulb
         color: '#8F3BB8'
         group_by:
@@ -58,7 +58,7 @@ cards:
           func: avg
         stroke_width: 2
         yaxis_id: first
-      - entity: sensor.weatherflow_dewpoint
+      - entity: sensor.weatherflow_cloud_dewpoint
         name: Dew Point
         color: '#cc32ff'
         group_by:
@@ -66,7 +66,7 @@ cards:
           func: avg
         stroke_width: 2
         yaxis_id: first
-      - entity: sensor.weatherflow_relative_humidity
+      - entity: sensor.weatherflow_cloud_relative_humidity
         name: Humidity
         color: '#B6B8BA'
         stroke_width: 2
@@ -94,7 +94,7 @@ cards:
       show: true
       title: Forecast (24 Hrs)
     series:
-      - entity: weather.weatherflow_hourly_based_forecast
+      - entity: weather.weatherflow_cloud_hourly_based_forecast
         name: Temperature
         type: area
         show:
@@ -111,7 +111,7 @@ cards:
     card_mod:
       style: |
         ha-card { box-shadow: none; border: 0; }
-    entity: sensor.weatherflow_air_temperature
+    entity: sensor.weatherflow_cloud_air_temperature
     data:
       max: auto
     title: ''
@@ -165,7 +165,7 @@ title-card:
   entities:
     - type: custom:paper-buttons-row
       buttons:
-        - entity: sensor.weatherflow_air_temperature
+        - entity: sensor.weatherflow_cloud_air_temperature
           name: Feels Like
           layout: icon|state
           state:
@@ -180,7 +180,7 @@ title-card:
             button:
               width: 100%
               justify-content: flex-start
-        - entity: sensor.weatherflow_dewpoint
+        - entity: sensor.weatherflow_cloud_dewpoint
           name: Dew Point
           layout: name_state
           state:
@@ -190,7 +190,7 @@ title-card:
               white-space: nowrap
             state:
               color: '#DDDDDD'
-        - entity: sensor.weatherflow_feels_like_temperature
+        - entity: sensor.weatherflow_cloud_feels_like_temperature
           name: Apparent
           layout: name_state
           state:

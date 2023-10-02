@@ -173,9 +173,7 @@ influxdb:
       - sensor.fire_danger*
       - sensor.helper*
       - sensor.*icloud3*
-      - sensor.192_168_1_131*
-      - sensor.192.168.1.132_*
-      - sensor.192.168.1.133_*
+      - sensor.192*
       - sensor.daily_mix*
       - sensor.frontpage*
       - sensor.openweathermap*

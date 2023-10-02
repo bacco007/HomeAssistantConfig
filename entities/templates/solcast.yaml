@@ -1,7 +1,7 @@
 ---
 trigger:
   - platform: state
-    entity_id: sensor.solcast_forecast_today
+    entity_id: sensor.solcast_pv_forecast_forecast_today
     not_from:
       - "unknown"
       - "unavailable"
@@ -21,7 +21,7 @@ sensor:
     unit_of_measurement: "kWh"
     icon: mdi:solar-power
     state: >-
-      {%- set forecast_today = state_attr('sensor.solcast_forecast_today', 'detailedForecast') %}
+      {%- set forecast_today = state_attr('sensor.solcast_pv_forecast_forecast_today', 'detailedForecast') %}
 
       {%- set var = namespace(total = 0) %}
       {%- set ts_now = ((as_timestamp(now())/1800)|round(0,'floor')|int * 1800) %}
@@ -45,4 +45,4 @@ sensor:
       {%- endfor %}
       {{ var.total }}
     availability: >-
-      {{ (states('sensor.solcast_forecast_today')|is_number) }}
+      {{ (states('sensor.solcast_pv_forecast_forecast_today')|is_number) }}

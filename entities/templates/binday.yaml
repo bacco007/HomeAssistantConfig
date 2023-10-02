@@ -2,18 +2,38 @@
 sensor:
   - unique_id: binday_nextcollectionday
     name: "[Bin Day] Next Collection Day"
-    icon: mdi:trash-can
-    state: >
-      {%- set days = state_attr('sensor.binday_waste', 'days') %}
-      {%- if days == 0 %}
-        Today
-      {%- elif days == 1 %}
-        Tomorrow
-      {%- elif days == 2 %}
-        After Tomorrow
-      {%- else %}
-        In {{ days }} days
+    device_class: timestamp
+    icon: >
+      {%- if (as_timestamp(state_attr('sensor.binday_recycling', 'next_date')) - as_timestamp(now()))  / 86400 < 7 %}
+        {{ states.sensor.binday_recycling.attributes.icon }}
+      {%- elif (as_timestamp(state_attr('sensor.binday_greenwaste', 'next_date')) - as_timestamp(now()))  / 86400 < 7 %}
+        {{ states.sensor.binday_greenwaste.attributes.icon }}
+      {%- else %} mdi:trash-can
       {%- endif %}
+    state: >
+      {%- set recycle = state_attr('sensor.binday_recycling', 'next_date') | as_local
+          if has_value('sensor.binday_recycling') else none %}
+      {%- set greenwaste = state_attr('sensor.binday_greenwaste', 'next_date') | as_local
+          if has_value('sensor.binday_greenwaste') else none %}
+      {%- set types = [recycle, greenwaste] %}
+      {%- set active = namespace(types=[]) %}
+      {%- for item in types if item != none %}
+        {%- set active.types = active.types + [item] %}
+      {%- endfor %}
+      {{ none if active.types == [] else active.types | min }}
     attributes:
-      days: >-
+      category: binday
+      days: >
         {{ state_attr('sensor.binday_waste', 'days') }}
+      display: >
+        {% set next = state_attr('sensor.binday_waste', 'next_date') %}
+        {%- if next.day == now().day %} Today
+        {%- elif next - now() <= timedelta(hours=24) %} Tomorrow
+        {%- elif next - now() <= timedelta(hours=24*7) %}In {{((as_timestamp(state_attr('sensor.binday_recycling', 'next_date')) - as_timestamp(now()))  / 86400) | round(0) }} Days
+        {%- elif next-now() > timedelta(days=365) %} None
+        {%- else %} {{ next.strftime('%a, %b %d') }}
+        {%- endif %}
+      waste_type: >
+        {% if (as_timestamp(state_attr('sensor.binday_recycling', 'next_date')) - as_timestamp(now()))  / 86400 < 7 %} recycle
+        {%- elif (as_timestamp(state_attr('sensor.binday_greenwaste', 'next_date')) - as_timestamp(now()))  / 86400 < 7 %} greenwaste
+        {%- endif %}

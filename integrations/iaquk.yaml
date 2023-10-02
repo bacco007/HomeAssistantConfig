@@ -2,8 +2,8 @@
 iaquk:
   lounge:
     sources:
-      temperature: sensor.zha_lounge_weather_temperature
-      humidity: sensor.zha_lounge_weather_humidity
+      temperature: sensor.z2m_lounge_climate_temperature
+      humidity: sensor.z2m_lounge_climate_humidity
       # tvoc:
     sensors:
       - iaq_level

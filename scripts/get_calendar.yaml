@@ -11,7 +11,7 @@ fields:
         max: 25
   calendar:
     name: Calendar
-    example: calendar.example
+    example: calendar.australia_holidays
     required: true
     selector:
       entity:

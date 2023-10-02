@@ -4,7 +4,7 @@ nabucasa_remoteui:
   title: "Nabu Casa Remote UI Offline"
   message: "Nabu Casa Remote UI access is offline"
   done_message: clear_notification
-  entity_id: binary_sensor.alert_nabucasa_remoteui
+  entity_id: binary_sensor.alerts_nabucasa_remoteui
   state: "on"
   repeat: 1440
   notifiers: alert

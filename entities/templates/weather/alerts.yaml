@@ -29,7 +29,7 @@ binary_sensor:
     delay_on: 30
     delay_off: 30
     state: >
-      {{is_state('binary_sensor.weatherflow_is_raining','on')
+      {{is_state('binary_sensor.weatherflow_cloud_is_raining','on')
         and states('sensor.weather_precipitation_today') | float > 0.02
         and is_state('input_boolean.alerts_weather','on') }}
     availability: "{{ is_number(states('sensor.weather_precipitation_today')) }}"
@@ -39,25 +39,25 @@ binary_sensor:
   - name: "[Weather] Temperature Alert"
     unique_id: temperature_alert
     icon: >
-      {% if is_state('binary_sensor.weather_high_temperature_alert','on') %} mdi:thermometer-alert
-      {% elif is_state('binary_sensor.weather_low_temperature_alert','on') %} mdi:thermometer-alert
-      {% else %} mdi:thermometer
-      {% endif %}
+      {%- if is_state('binary_sensor.weather_high_temperature_alert','on') %} mdi:thermometer-alert
+      {%- elif is_state('binary_sensor.weather_low_temperature_alert','on') %} mdi:thermometer-alert
+      {%- else %} mdi:thermometer
+      {%- endif %}
     state: >
       {{ is_state('binary_sensor.weather_high_temperature_alert','on')
           or is_state('binary_sensor.weather_low_temperature_alert','on') }}
     attributes:
       category: weather_alert
       type: >
-        {% if is_state('binary_sensor.weather_high_temperature_alert','on') %} Heat
-        {% elif is_state('binary_sensor.weather_low_temperature_alert','on') %} Cold
-        {% else %} Off
-        {% endif %}
+        {%- if is_state('binary_sensor.weather_high_temperature_alert','on') %} Heat
+        {%- elif is_state('binary_sensor.weather_low_temperature_alert','on') %} Cold
+        {%- else %} Off
+        {%- endif %}
 
   - name: "[Weather] Storm Approaching Alert"
     unique_id: weather_storm_approaching_alert
     icon: mdi:weather-lightning-rainy
-    delay_off: "{{ iif(now() - states('sensor.ha_uptime_hours')|as_datetime < timedelta(minutes=5),0,14400) }}"
+    delay_off: "{{ iif(now() - states('sensor.ha_uptime_hours')|as_datetime < timedelta(minutes=5),0,30) }}"
     state: >
       {{ states('sensor.weather_precipitation_probability')|int >= 30
           and states('sensor.weather_nearest_storm_distance')|int < 5
@@ -72,7 +72,7 @@ binary_sensor:
     delay_off: 30
     state: >
       {{states('sensor.weather_lightning_count') | int > 0
-        and states('sensor.weatherflow_last_lightning_strike_distance') | int < 10
+        and states('sensor.weatherflow_cloud_last_lightning_strike_distance') | int < 10
         and is_state('input_boolean.alerts_weather','on') }}
     availability: "{{ is_number(states('sensor.weather_lightning_count')) }}"
     attributes:
@@ -82,16 +82,16 @@ binary_sensor:
     unique_id: weather_rain_soon
     icon: mdi:weather-pouring
     state: >
-      {% set found = namespace(value=0) %}
-      {% if is_state('sensor.weather_precipitation_type','rain') %}
-        {% set threshold = 25 %}
-        {% set forecast = state_attr('weather.tempest_hourly','forecast') %}
-        {% for item in forecast %}
-          {% if loop.index0 < 12 and item.precipitation_probability|int(-1) >= threshold %}
-            {% set found.value = 1 %}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+      {%- set found = namespace(value=0) %}
+      {%- if is_state('sensor.weather_precipitation_type','rain') %}
+        {%- set threshold = 25 %}
+        {%- set forecast = state_attr('weather.tempest_hourly','forecast') %}
+        {%- for item in forecast %}
+          {%- if loop.index0 < 12 and item.precipitation_probability|int(-1) >= threshold %}
+            {%- set found.value = 1 %}
+          {%- endif %}
+        {%- endfor %}
+      {%- endif %}
       {{ found.value == 1 }}
     availability: >
       {{ state_attr('weather.tempest_hourly','forecast') != none

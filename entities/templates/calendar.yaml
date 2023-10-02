@@ -1,0 +1,14 @@
+---
+binary_sensor:
+  - name: "[Calendar] Empty Alert"
+    unique_id: calendar_empty_alert
+    state: >
+      {% set entities = state_attr(this.entity_id, 'entity_id') %}
+      {{ false if entities == none else entities | count > 0 }}
+    attributes:
+      category: calendar
+      entity_id: >
+        {{ states.calendar
+            | selectattr('attributes.start_time', 'eq', null)
+            | map(attribute='name') | list | sort }}
+    availability: "{{ is_state('binary_sensor.connected_ical', 'on') }}"

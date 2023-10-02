@@ -23,6 +23,9 @@ forecast_template: >
   {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
       and state_attr('weather.weatherflow_hourly_based_forecast','forecast') != none %}
     {{ state_attr('weather.weatherflow_hourly_based_forecast','forecast') }}
+  {% elif is_state('binary_sensor.connected_weatherflow_local','on')
+      and state_attr('sensor.hub_hb_00045437_weather', 'hourly_forecast') != none %}
+    {{ state_attr('sensor.hub_hb_00045437_weather', 'hourly_forecast') }}
   {% elif is_state('binary_sensor.connected_bureau_of_meteorology','on')
       and state_attr('weather.east_tamworth','forecast') != none %}
     {{ state_attr('weather.east_tamworth_hourly','forecast') }}
@@ -31,6 +34,9 @@ attribution_template: >
   {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
       and state_attr('weather.weatherflow_hourly_based_forecast','forecast') != none %}
     WeatherFlow Cloud
+  {% elif is_state('binary_sensor.connected_weatherflow_local','on')
+      and state_attr('sensor.hub_hb_00045437_weather', 'hourly_forecast') != none %}
+    WeatherFlow Local
   {% elif is_state('binary_sensor.connected_bureau_of_meteorology','on')
       and state_attr('weather.east_tamworth','forecast') != none %}
     Bureau of Meteorology

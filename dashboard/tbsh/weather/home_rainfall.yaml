@@ -30,7 +30,7 @@ cards:
                 return (Math.round(value * 10) / 10).toFixed(1) + "mm";
               }
     series:
-      - entity: sensor.weatherflow_precipitation_intensity
+      - entity: sensor.weatherflow_cloud_precipitation_intensity
         name: Intensity
         transform: |
           if (x === 'none')
@@ -61,7 +61,7 @@ cards:
         show:
           in_header: false
           legend_value: false
-      - entity: sensor.weatherflow_precipitation_today
+      - entity: sensor.weatherflow_cloud_precipitation_today
         name: Today
         color: "#3D82FF"
         yaxis_id: second
@@ -101,7 +101,7 @@ cards:
                 return (Math.round(value * 1000) / 1000).toFixed(1) + "mm";
               }
     series:
-      - entity: weather.weatherflow_hourly_based_forecast
+      - entity: weather.weatherflow_cloud_hourly_based_forecast
         name: Precipitation Probability
         type: area
         stroke_width: 2
@@ -114,7 +114,7 @@ cards:
             return [new Date(entry.datetime).getTime(), entry.precipitation_probability];
           });
         yaxis_id: first
-      - entity: weather.weatherflow_hourly_based_forecast
+      - entity: weather.weatherflow_cloud_hourly_based_forecast
         name: Precipitation
         type: line
         stroke_width: 2
@@ -171,7 +171,7 @@ title-card:
       entities:
         - type: custom:config-template-card
           variables:
-            precipitation_intensity: states['sensor.weatherflow_precipitation_intensity'].state
+            precipitation_intensity: states['sensor.weatherflow_cloud_precipitation_intensity'].state
             setIcon: |
               precipitation_intensity => {
                 if (precipitation_intensity == 'none') {
@@ -200,13 +200,13 @@ title-card:
                 }
               }
           entities:
-            - sensor.weatherflow_precipitation_intensity
+            - sensor.weatherflow_cloud_precipitation_intensity
           card:
             type: custom:paper-buttons-row
             styles:
               justify-content: flex-start
             buttons:
-              - entity: sensor.weatherflow_precipitation_intensity
+              - entity: sensor.weatherflow_cloud_precipitation_intensity
                 name: Lightning
                 icon: ${ setIcon(precipitation_intensity) }
                 layout: icon|state
@@ -221,7 +221,7 @@ title-card:
                   button:
                     justify-content: flex-start
                     width: 100%
-              - entity: sensor.weatherflow_precipitation_today
+              - entity: sensor.weatherflow_cloud_precipitation_today
                 name: Today
                 layout: name_state
                 state:
@@ -231,7 +231,7 @@ title-card:
                     white-space: nowrap
                   state:
                     color: "#DDDDDD"
-              - entity: sensor.weatherflow_precipitation_yesterday
+              - entity: sensor.weatherflow_cloud_precipitation_yesterday
                 name: Yesterday
                 layout: name_state
                 state:
@@ -248,7 +248,7 @@ title-card:
       entities:
         - type: custom:paper-buttons-row
           buttons:
-            - entity: sensor.weatherflow_precipitation_rate
+            - entity: sensor.weatherflow_cloud_precipitation_rate
               name: "Rate: "
               layout: name|state
               state:
@@ -258,7 +258,7 @@ title-card:
                   color: "#DDDDDD"
                 button:
                   justify-content: flex-end
-            - entity: sensor.weatherflow_precipitation_duration_today
+            - entity: sensor.weatherflow_cloud_precipitation_duration_today
               name: "Today: "
               layout: name|state
               state:
@@ -266,7 +266,7 @@ title-card:
               styles:
                 state:
                   color: "#DDDDDD"
-            - entity: sensor.weatherflow_precipitation_duration_yesterday
+            - entity: sensor.weatherflow_cloud_precipitation_duration_yesterday
               name: "Yesterday: "
               layout: name|state
               state:
