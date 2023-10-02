@@ -72,9 +72,9 @@ class IaqukSensor(SensorEntity):
 
         self._attr_unique_id = f"{controller.unique_id}_{sensor_type}"
         self._attr_name = f"{controller.name} {SENSORS[sensor_type]}"
-        if sensor_type == SENSOR_INDEX:
-            self._attr_state_class = STATE_CLASS_MEASUREMENT
-
+        self._attr_state_class = (
+            STATE_CLASS_MEASUREMENT if sensor_type == SENSOR_INDEX else None
+        )
         self._attr_device_class = (
             f"{DOMAIN}__level" if sensor_type == SENSOR_LEVEL else None
         )

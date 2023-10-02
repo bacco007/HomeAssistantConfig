@@ -6,7 +6,7 @@ from homeassistant.components.sensor import DOMAIN as SENSOR
 # Base component constants
 NAME: Final = "Indoor Air Quality UK Index"
 DOMAIN: Final = "iaquk"
-VERSION: Final = "1.6.3"
+VERSION: Final = "1.6.4"
 ISSUE_URL: Final = "https://github.com/Limych/ha-iaquk/issues"
 
 STARTUP_MESSAGE: Final = f"""
