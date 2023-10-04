@@ -48,14 +48,18 @@ cards:
           }
         cards:
           - type: custom:hourly-weather
-            entity: weather.weather_home_hourly
+            entity: weather.weatherflow_forecast_brisbane_st
+            forecast_type: hourly
             icons: true
             show_precipitation_amounts: false
             show_precipitation_probability: false
             show_wind: false
-            label_spacing: 2
             offset: 0
-            num_segments: 24
+            num_segments: |
+              {{ 24 - now().hour }}
+            label_spacing: |
+              {% set segments = 24 - now().hour %}
+              {{ 4 if segments > 12 else 2 }}
             name: " "
             card_mod:
               style:
@@ -135,11 +139,19 @@ cards:
                     margin: -8px -4px -4px -8px;
                   }
           - type: custom:clock-weather-card
-            entity: weather.weather_home_daily
-            hide_today_section: true
-            forecast_days: 7
+            entity: weather.weatherflow_forecast_brisbane_st
             weather_icon_type: line
-            animated_icon: false
+            animated_icon: true
+            forecast_days: 10
+            locale: en-GB
+            time_format: 24
+            date_pattern: P
+            hide_today_section: true
+            hide_forecast_section: false
+            hide_clock: true
+            hide_date: true
+            hourly_forecast: false
+            use_browser_time: true
             card_mod:
               style:
                 .: |
