@@ -12,7 +12,7 @@ cards:
         buttons:
           - icon: mdi:weather-cloudy-arrow-right
             layout: icon|name
-            name: Weather Lookahead (Pirate Weather)
+            name: Weather Lookahead (Weatherflow)
             style:
               name:
                 filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
@@ -62,7 +62,7 @@ cards:
           state: ""
         entities:
           - type: custom:hourly-weather
-            entity: weather.pirateweather
+            entity: weather.weatherflow_forecast_brisbane_st
             forecast_type: hourly
             icons: true
             show_precipitation_amounts: false
@@ -142,7 +142,7 @@ cards:
             state: ""
           entities:
             - type: custom:hourly-weather
-              entity: weather.pirateweather
+              entity: weather.weatherflow_forecast_brisbane_st
               forecast_type: hourly
               icons: true
               show_precipitation_amounts: false
@@ -168,7 +168,7 @@ cards:
             state: ""
           entities:
             - type: custom:hourly-weather
-              entity: weather.pirateweather
+              entity: weather.weatherflow_forecast_brisbane_st
               forecast_type: hourly
               icons: true
               show_precipitation_amounts: false
@@ -194,7 +194,7 @@ cards:
             state: ""
           entities:
             - type: custom:hourly-weather
-              entity: weather.pirateweather
+              entity: weather.weatherflow_forecast_brisbane_st
               forecast_type: hourly
               icons: true
               show_precipitation_amounts: false
@@ -220,7 +220,7 @@ cards:
             state: ""
           entities:
             - type: custom:hourly-weather
-              entity: weather.pirateweather
+              entity: weather.weatherflow_forecast_brisbane_st
               forecast_type: hourly
               icons: true
               show_precipitation_amounts: false
@@ -235,7 +235,7 @@ cards:
               card_mod: *style
       - type: custom:card-templater
         entities:
-          - weather.pirateweather
+          - weather.weatherflow_forecast_brisbane_st
         card:
           type: custom:fold-entity-row
           padding: 5
@@ -246,7 +246,7 @@ cards:
             state: ""
           entities:
             - type: custom:hourly-weather
-              entity: weather.pirateweather
+              entity: weather.weatherflow_forecast_brisbane_st
               forecast_type: hourly
               icons: true
               show_precipitation_amounts: false
@@ -272,7 +272,7 @@ cards:
             state: ""
           entities:
             - type: custom:hourly-weather
-              entity: weather.pirateweather
+              entity: weather.weatherflow_forecast_brisbane_st
               forecast_type: hourly
               icons: true
               show_precipitation_amounts: false

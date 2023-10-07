@@ -49,7 +49,7 @@ cards:
       #   show_radar_coverage: true
       #   show_radar_location: true
       #   zoom_level: "8"
-
+      # - !include ../weather/lookahead.yaml
       - type: vertical-stack
         cards:
           - !include ../weather/home_temp.yaml

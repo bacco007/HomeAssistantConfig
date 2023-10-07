@@ -6,7 +6,7 @@ cards:
   - type: custom:mushroom-template-card
     icon: mdi:cake-variant
     primary: |
-      {{ states("sensor.anniversary_datetracking_mybirthday") }} days
+      In {{ states("sensor.anniversary_datetracking_mybirthday") }} days
     icon_color: grey
     secondary: |
       Cake Day, {{ states("sensor.anniversary_days_on_earth") }} Days
@@ -45,7 +45,7 @@ cards:
   - type: custom:mushroom-template-card
     icon: mdi:cake-variant
     primary: |
-      {{ states("sensor.anniversary_datetracking_myworkbirthday") }} days
+      In {{ states("sensor.anniversary_datetracking_myworkbirthday") }} days
     icon_color: grey
     secondary: |
       Work Cake Day, {{ states("sensor.anniversary_days_at_work") }} Days

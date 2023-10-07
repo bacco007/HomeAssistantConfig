@@ -9,7 +9,6 @@ sidebar:
           "clock"
           "date"
           "worldtime"
-          "."
           "menu"
           "."
           "people"
@@ -34,6 +33,9 @@ sidebar:
         type: "custom:button-card"
         template: z_clock
         entity: sensor.time
+        tap_action:
+          action: navigate
+          navigation_path: home
         styles:
           card:
             - box-sizing: border-box
@@ -43,6 +45,9 @@ sidebar:
         type: "custom:button-card"
         template: date
         entity: sensor.date
+        tap_action:
+          action: navigate
+          navigation_path: home
         styles:
           card:
             - box-sizing: border-box

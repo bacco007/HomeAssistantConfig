@@ -314,28 +314,6 @@ sensor:
       {{ state_attr('weather.tempest_daily','forecast')[0] is defined
           and is_number(state_attr('weather.tempest_daily','forecast')[0].precipitation_probability) }}
 
-  - name: "[Weather] Precipitation Intensity"
-    unique_id: weather_precipitation_intensity
-    icon: mdi:weather-pouring
-    state: >
-      {% if states('sensor.tempest_st_00056115_rain_intensity')|lower != 'none' %}
-        {{ states('sensor.tempest_st_00056115_rain_intensity') }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and states('sensor.weatherflow_cloud_precipitation_intensity')|lower != 'none' %}
-        {{ states('sensor.weatherflow_cloud_precipitation_intensity') }}
-      {% else %} 0
-      {% endif %}
-    attributes:
-      provider: >
-        {% if states('sensor.tempest_st_00056115_rain_intensity') != 'None' %} WeatherFlow Local
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and states('sensor.weatherflow_cloud_precipitation_intensity') != 'none' %} WeatherFlow Cloud
-        {% else %} WeatherFlow Local
-        {% endif %}
-    availability: >
-      {{ has_value('sensor.tempest_st_00056115_rain_intensity')
-          or has_value('sensor.weatherflow_cloud_precipitation_intensity') }}
-
   - name: "[Weather] Precipitation Rate"
     unique_id: weather_precipitation_rate
     icon: mdi:weather-pouring
@@ -343,22 +321,54 @@ sensor:
     state_class: measurement
     unit_of_measurement: mm/h
     state: >
-      {% if has_value('sensor.tempest_st_00056115_rain_rate') %}
-        {{ states('sensor.tempest_st_00056115_rain_rate')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('sensor.weatherflow_cloud_precipitation_rate') %}
-        {{ states('sensor.weatherflow_cloud_precipitation_rate')|float }}
-      {% else %} none
+      {% if is_state('binary_sensor.connected_weatherflow_local', 'on')
+            and is_number(states('sensor.tempest_st_00056115_rain_rate')) %}
+          {{ states('sensor.tempest_st_00056115_rain_rate') | float }}
+      {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+            and is_number(states('sensor.weatherflow_cloud_precipitation_rate')) %}
+          {{ states('sensor.weatherflow_cloud_precipitation_rate') | float }}
+      {% elif is_state('binary_sensor.connected_pirateweather', 'on')
+            and is_number(states('sensor.pirateweather_precip_intensity')) %}
+          {{ states('sensor.pirateweather_precip_intensity') | float }}
       {% endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_rain_rate')) %} WeatherFlow Local
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_rate')) %} WeatherFlow Cloud
+        {% if is_state('binary_sensor.connected_weatherflow_local', 'on')
+            and is_number(states('sensor.tempest_st_00056115_rain_rate')) %}
+          WeatherFlow Local
+        {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+            and is_number(states('sensor.weatherflow_cloud_precipitation_rate')) %}
+          WeatherFlow Cloud
+        {% elif is_state('binary_sensor.connected_pirateweather', 'on')
+            and is_number(states('sensor.pirateweather_precip_intensity')) %}
+          Pirate Weather
         {% endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_rain_rate'))
-          or is_number(states('sensor.weatherflow_cloud_precipitation_rate')) }}
+      {{ (is_state('binary_sensor.connected_weatherflow_local', 'on')
+            and is_number(states('sensor.tempest_st_00056115_rain_rate')))
+          or (is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+            and is_number(states('sensor.weatherflow_cloud_precipitation_rate')))
+          or is_state('binary_sensor.connected_pirateweather', 'on')
+            and is_number(states('sensor.pirateweather_precip_intensity')) }}
+
+  - name: "[Weather] Precipitation Intensity"
+    unique_id: weather_precipitation_intensity
+    icon: mdi:weather-pouring
+    state: >
+      {% set rate = states('sensor.weather_precipitation_rate')|int %}
+      {% if rate == 0 %} none
+      {% elif rate <= 1.0 %} very light
+      {% elif rate <= 4 %} light
+      {% elif rate <= 15 %} moderate
+      {% elif rate <= 30 %} very heavy
+      {% elif rate <= 50 %} heavy
+      {% else %} violent
+      {% endif %}
+    attributes:
+      category: weather
+      provider: "{{ state_attr('sensor.weather_precipitation_rate', 'provider') }}"
+    availability: "{{ is_number(states('sensor.weather_precipitation_rate')) }}"
 
   - name: "[Weather] Precipitation Duration Today"
     unique_id: weather_precipitation_duration_today

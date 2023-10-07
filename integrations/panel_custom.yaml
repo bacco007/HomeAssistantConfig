@@ -1,31 +1,67 @@
 ---
 panel_custom:
-  - name: Integrations
-    sidebar_title: Integrations
+  #   PANEL_ADDONS
+  - name: panel_addons
+    sidebar_title: Add-ons
+    sidebar_icon: mdi:toy-brick-outline
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: "hassio/dashboard"
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator
+
+  #   PANEL_AUTOMATIONS
+  - name: panel_automations
+    sidebar_title: Automations
+    sidebar_icon: mdi:robot
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: "config/automation"
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator
+
+  #   PANEL_ENTITIES
+  - name: panel_entities
+    sidebar_title: Entities
     sidebar_icon: mdi:devices
     js_url: /api/hassio/app/entrypoint.js
-    url_path: config/integrations/dashboard
+    url_path: "config/entities"
     embed_iframe: true
     require_admin: true
     config:
       ingress: core_configurator
 
-  - name: Automations
-    sidebar_title: Automations
-    sidebar_icon: mdi:cog-transfer
+  #   PANEL_HELPERS
+  - name: panel_helpers
+    sidebar_title: Helpers
+    sidebar_icon: mdi:toggle-switch-outline
     js_url: /api/hassio/app/entrypoint.js
-    url_path: config/automation/dashboard
+    url_path: "config/helpers"
     embed_iframe: true
     require_admin: true
     config:
       ingress: core_configurator
 
-  - name: ha_supervisor
-    sidebar_title: Supervisor
-    sidebar_icon: mdi:home-assistant
+  #   PANEL_INTEGRATIONS
+  - name: panel_integrations
+    sidebar_title: Integrations
+    sidebar_icon: mdi:chip
     js_url: /api/hassio/app/entrypoint.js
-    url_path: 'hassio/dashboard'
+    url_path: "config/integrations"
     embed_iframe: true
     require_admin: true
     config:
-      ingress: Supervisor
+      ingress: core_configurator
+
+  #   PANEL_STATES
+  - name: panel_states
+    sidebar_title: States
+    sidebar_icon: mdi:details
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: "developer-tools/state"
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator

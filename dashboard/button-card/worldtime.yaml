@@ -26,7 +26,7 @@ worldtime:
         show_icon: false
         entity: sensor.time_london
         name: United Kingdom
-        tap_action: none
+        tap_action: !include ../tbsh/popup/time_dst.yaml
         template:
           - wt
     right:
@@ -36,7 +36,7 @@ worldtime:
         template:
           - wt
         entity: sensor.time_new_york
-        tap_action: none
+        tap_action: !include ../tbsh/popup/time_dst.yaml
         name: USA, East Coast
 
 wt:
