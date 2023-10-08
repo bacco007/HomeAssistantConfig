@@ -1,0 +1,153 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Weather Today vs History
+    icon: mdi:weather-partly-snowy-rainy
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          entity: sensor.weather_high_temperature_differential
+          icon: mdi:thermometer-chevron-up
+          name: High Temperature Differential
+        entities:
+          - type: attribute
+            entity: sensor.weather_high_temperature_differential
+            icon: mdi:thermometer-chevron-up
+            attribute: today_temp
+            name: Today
+            suffix: °C
+          - type: attribute
+            entity: sensor.weather_high_temperature_differential
+            icon: mdi:thermometer-chevron-up
+            attribute: temp_average
+            name: Historical Average for Today
+            suffix: °C
+          - type: attribute
+            entity: sensor.weather_high_temperature_differential
+            icon: mdi:thermometer-chevron-up
+            attribute: temp_hottest
+            name: Historical High for Today
+            suffix: °C
+          - type: attribute
+            entity: sensor.weather_high_temperature_differential
+            icon: mdi:thermometer-chevron-up
+            attribute: temp_coldest
+            name: Historical Low for Today
+            suffix: °C
+          - type: custom:hui-element
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+            card_type: statistics-graph
+            chart_type: line
+            period: day
+            entities:
+              - sensor.weather_high_temperature_differential
+            days_to_show: 365
+            stat_types:
+              - mean
+              - max
+              - min
+            hide_legend: true
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          entity: sensor.weather_low_temperature_differential
+          icon: mdi:thermometer-chevron-down
+          name: Low Temperature Differential
+        entities:
+          - type: attribute
+            entity: sensor.weather_low_temperature_differential
+            icon: mdi:thermometer-chevron-down
+            attribute: today_temp
+            name: Today
+            suffix: °C
+          - type: attribute
+            entity: sensor.weather_low_temperature_differential
+            icon: mdi:thermometer-chevron-down
+            attribute: temp_average
+            name: Historical Average for Today
+            suffix: °C
+          - type: attribute
+            entity: sensor.weather_low_temperature_differential
+            icon: mdi:thermometer-chevron-down
+            attribute: temp_hottest
+            name: Historical Low for Today
+            suffix: °C
+          - type: attribute
+            entity: sensor.weather_low_temperature_differential
+            icon: mdi:thermometer-chevron-down
+            attribute: temp_coldest
+            name: Historical Low for Today
+            suffix: °C
+          - type: custom:hui-element
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+            card_type: statistics-graph
+            chart_type: line
+            period: day
+            entities:
+              - sensor.weather_low_temperature_differential
+            days_to_show: 365
+            stat_types:
+              - mean
+              - max
+              - min
+            hide_legend: true
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          entity: sensor.weather_precipitation_today
+          name: Rainfall
+        entities:
+          - type: attribute
+            entity: sensor.bom_average
+            icon: mdi:weather-pouring
+            attribute: rainfall_highest
+            name: Highest Recorded for Today
+            suffix: mm
+          - type: attribute
+            entity: sensor.bom_average
+            icon: mdi:weather-pouring
+            attribute: rainfall_average
+            name: Average for Today
+            suffix: mm

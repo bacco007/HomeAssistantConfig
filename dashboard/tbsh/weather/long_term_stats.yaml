@@ -1,0 +1,262 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Weather Long Term Stats
+    icon: mdi:weather-partly-snowy-rainy
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          entity: sensor.weather_temperature
+          name: Temperature
+          state: ""
+        entities:
+          - type: custom:hui-element
+            card_type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_temperature
+                name: Min Day
+                stat_type: min
+                period:
+                  calendar:
+                    period: day
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_temperature
+                name: Min Month
+                stat_type: min
+                period:
+                  calendar:
+                    period: month
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_temperature
+                name: Min Year
+                stat_type: min
+                period:
+                  calendar:
+                    period: year
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_temperature
+                name: Max Day
+                stat_type: max
+                period:
+                  calendar:
+                    period: day
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_temperature
+                name: Max Month
+                stat_type: max
+                period:
+                  calendar:
+                    period: month
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_temperature
+                name: Max Year
+                stat_type: max
+                period:
+                  calendar:
+                    period: year
+          - type: custom:hui-element
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+            card_type: statistics-graph
+            chart_type: line
+            period: day
+            entities:
+              - sensor.weather_temperature
+            days_to_show: 365
+            stat_types:
+              - mean
+              - max
+              - min
+            hide_legend: true
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          entity: sensor.weather_precipitation_today
+          name: Rainfall
+          state: ""
+        entities:
+          - type: custom:hui-element
+            card_type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_precipitation_today
+                name: Max Day
+                stat_type: max
+                period:
+                  calendar:
+                    period: day
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_precipitation_today
+                name: Max Month
+                stat_type: max
+                period:
+                  calendar:
+                    period: month
+              - type: statistic
+                style: |
+                  ha-card {
+                    background-color: none;
+                    box-shadow: none;
+                  }
+                entity: sensor.weather_precipitation_today
+                name: Max Year
+                stat_type: max
+                period:
+                  calendar:
+                    period: year
+          - type: custom:hui-element
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+            card_type: statistics-graph
+            chart_type: line
+            period: day
+            entities:
+              - sensor.weather_precipitation_today
+            days_to_show: 365
+            stat_types:
+              - mean
+              - max
+              - min
+            hide_legend: true
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          entity: sensor.weather_humidity
+          name: Humidity
+          state: ""
+        entities:
+          - type: custom:hui-element
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+            card_type: statistics-graph
+            chart_type: line
+            period: day
+            entities:
+              - sensor.weather_humidity
+            days_to_show: 365
+            stat_types:
+              - mean
+              - max
+              - min
+            hide_legend: true
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          entity: sensor.weather_barometric_pressure
+          name: Pressure
+          state: ""
+        entities:
+          - type: custom:hui-element
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+            card_type: statistics-graph
+            chart_type: line
+            period: day
+            entities:
+              - sensor.weather_barometric_pressure
+            days_to_show: 365
+            stat_types:
+              - mean
+              - max
+              - min
+            hide_legend: true

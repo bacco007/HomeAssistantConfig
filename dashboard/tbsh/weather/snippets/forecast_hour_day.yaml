@@ -1,36 +1,65 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:stack-in-card
-    view_layout:
-      grid-column: span 2
-    card_mod:
-      style: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-        }
-    cards:
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          grid-template-columns: 66px auto
-          margin: "-4px -4px -12px -4px;"
+  - type: entities
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - icon: mdi:weather-cloudy-arrow-right
+            layout: icon|name
+            name: Weather
+            style:
+              name:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                margin-left: 18px
+                font-size: 15px
+                font-weight: 600
+                color: var(--title)
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+          - icon: mdi:arrow-top-right
+            layout: icon
+            tap_action:
+              action: navigate
+              navigation_path: weather
+            style:
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+        style: |
+          div.flex-box {
+            margin-top: -6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+      - type: custom:hui-element
+        card_type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            padding: 2px;
+            box-shadow: none;
+          }
         cards:
-          - type: custom:mushroom-entity-card
-            entity: weather.east_tamworth_hourly
-            icon_color: blue
-            card_mod:
-              style: |
-                ha-card {
-                  background: none;
-                  --ha-card-box-shadow: 0px;
-                }
           - type: custom:hourly-weather
-            entity: weather.east_tamworth_hourly
-            icons: false
-            label_spacing: "2"
-            num_segments: "12"
+            entity: weather.weatherflow_forecast_brisbane_st
+            forecast_type: hourly
+            icons: true
+            show_precipitation_amounts: false
+            show_precipitation_probability: false
+            show_wind: false
+            offset: 0
+            num_segments: |
+              {{ 24 - now().hour }}
+            label_spacing: |
+              {% set segments = 24 - now().hour %}
+              {{ 4 if segments > 12 else 2 }}
             name: " "
             card_mod:
               style:
@@ -61,12 +90,12 @@ cards:
                     --color-clear-night: rgba(var(--mush-rgb-black), 0.2) !important;
                     --color-cloudy: rgba(var(--mush-rgb-grey), 0.2) !important;
                     --color-fog: var(--color-cloudy);
-                    --color-hail: rgba(var(--mush-rgb-blue), 0.2) !important;
+                    --color-hail: rgba(var(--mush-rgb-indigo), 0.2) !important;
                     --color-lightning: var(--color-rainy);
                     --color-lightning-rainy: var(--color-rainy);
-                    --color-partlycloudy: rgba(var(--mush-rgb-light-blue), 0.2) !important;
+                    --color-partlycloudy: rgba(var(--mush-rgb-blue), 0.2) !important;
                     --color-pouring: var(--color-rainy);
-                    --color-rainy: rgba(var(--mush-rgb-blue), 0.2) !important;
+                    --color-rainy: rgba(var(--mush-rgb-indigo), 0.2) !important;
                     --color-snowy: rgba(var(--mush-rgb-white), 0.2) !important;
                     --color-snowy-rainy: var(--color-partlycloudy);
                     --color-sunny: rgba(var(--mush-rgb-yellow), 0.2) !important;
@@ -99,21 +128,36 @@ cards:
                     font-size: 12px;
                     font-weight: bolder;
                   }
+                  .axes {
+                    margin-top: 10px !important;
+                  }
                 .: |
                   ha-card {
                     background: none;
+                    border: 0;
                     --ha-card-box-shadow: 0px;
-                    margin: -8px -4px -4px -16px;
+                    margin: -8px -4px -4px -8px;
                   }
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-        }
-    cards:
-      - type: custom:clock-weather-card
-        entity: weather.east_tamworth
-        hide_today_section: true
-        forecast_days: 7
+          - type: custom:clock-weather-card
+            entity: weather.weatherflow_forecast_brisbane_st
+            weather_icon_type: line
+            animated_icon: true
+            forecast_days: 10
+            locale: en-GB
+            time_format: 24
+            date_pattern: P
+            hide_today_section: true
+            hide_forecast_section: false
+            hide_clock: true
+            hide_date: true
+            hourly_forecast: false
+            use_browser_time: true
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    --ha-card-box-shadow: 0px;
+                    margin: -8px -4px -4px -8px;
+                  }

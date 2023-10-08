@@ -26,6 +26,8 @@ cards:
           - !include ../weather/current_weather.yaml
           - !include ../weather/weather_other.yaml
           - !include ../weather/settings_controls.yaml
+          - !include ../weather/today_vs_history.yaml
+          - !include ../weather/long_term_stats.yaml
           - !include ../devices/weatherflow.yaml
           # - type: "custom:bom-radar-card"
           #   frame_count: 25
@@ -43,16 +45,16 @@ cards:
           #   show_radar_location: true
           #   zoom_level: "8"
           # - !include ../weather/lookahead.yaml
-          - type: vertical-stack
-            cards:
-              - !include ../weather/home_temp.yaml
-              - !include ../weather/home_rainfall.yaml
-              - !include ../weather/home_humidity.yaml
-              - !include ../weather/home_pressure.yaml
-              - !include ../weather/home_cloud.yaml
-              - !include ../weather/home_wind.yaml
-              - !include ../weather/home_lightning.yaml
-              - !include ../weather/home_uv.yaml
+          # - type: vertical-stack
+          #   cards:
+          #     - !include ../weather/home_temp.yaml
+          #     - !include ../weather/home_rainfall.yaml
+          #     - !include ../weather/home_humidity.yaml
+          #     - !include ../weather/home_pressure.yaml
+          #     - !include ../weather/home_cloud.yaml
+          #     - !include ../weather/home_wind.yaml
+          #     - !include ../weather/home_lightning.yaml
+          #     - !include ../weather/home_uv.yaml
           - type: custom:swipe-card
             start_card: 1
             reset_after: 300

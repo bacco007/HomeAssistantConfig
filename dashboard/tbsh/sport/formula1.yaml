@@ -1,67 +1,142 @@
 ---
-type: vertical-stack
+type: custom:stack-in-card
 cards:
-  - type: custom:formulaone-card
-    card_type: countdown
-    date_locale: au
-    f1_font: true
-    title: null
-    show_carnumber: false
-    show_raceinfo: true
-    location_clickable: true
-    image_clickable: true
-    hide_tracklayout: false
-    hide_racedatetimes: false
-  - type: custom:formulaone-card
-    card_type: last_result
-    title: Last Race
-    ddate_locale: au
-    f1_font: true
-    show_raceinfo: true
-    hide_tracklayout: false
-    location_clickable: true
-    image_clickable: true
-    show_carnumber: true
-  - type: custom:tabbed-card
-    options: {}
-    styles:
-      --mdc-theme-primary: var(--label-badge-blue)
-      --mdc-tab-text-label-color-default: var(--label-badge-red)
-    tabs:
-      - card:
-          type: custom:formulaone-card
-          card_type: schedule
-          date_locale: au
-          previous_race: hide
-          location_clickable: true
-          f1_font: true
-          title: null
-          show_raceinfo: true
-        attributes:
-          label: Schedule
-      - card:
-          type: custom:formulaone-card
-          card_type: constructor_standings
-          standings:
-            show_teamlogo: true
-        attributes:
-          label: Cons Stds
-      - card:
-          type: custom:formulaone-card
-          card_type: driver_standings
-          f1_font: true
-          standings:
-            show_flag: true
-            show_team: true
-            show_teamlogo: true
-          show_carnumber: true
-        attributes:
-          label: Drv Stds
-      - card:
-          type: custom:formulaone-card
-          card_type: results
-          date_locale: au
-          location_clickable: true
-          f1_font: true
-        attributes:
-          label: Results
+  - type: custom:mushroom-template-card
+    primary: Formula One
+    icon: si:f1
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Next Race
+          icon: si:f1
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:formulaone-card
+            card_type: countdown
+            date_locale: au
+            f1_font: true
+            title: null
+            show_carnumber: false
+            show_raceinfo: true
+            location_clickable: true
+            image_clickable: true
+            hide_tracklayout: false
+            hide_racedatetimes: false
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Last Race
+          icon: si:f1
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:formulaone-card
+            card_type: last_result
+            ddate_locale: au
+            f1_font: true
+            show_raceinfo: true
+            hide_tracklayout: false
+            location_clickable: true
+            image_clickable: true
+            show_carnumber: true
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Remaining Schedule
+          icon: si:f1
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:formulaone-card
+            card_type: schedule
+            date_locale: au
+            previous_race: hide
+            location_clickable: true
+            f1_font: true
+            title: null
+            show_raceinfo: true
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Constructors Standings
+          icon: si:f1
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:formulaone-card
+            card_type: constructor_standings
+            standings:
+              show_teamlogo: true
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Driver Standings
+          icon: si:f1
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:formulaone-card
+            card_type: driver_standings
+            f1_font: true
+            standings:
+              show_flag: true
+              show_team: true
+              show_teamlogo: true
+            show_carnumber: true
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Results
+          icon: si:f1
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:formulaone-card
+            card_type: results
+            date_locale: au
+            location_clickable: true
+            f1_font: true
+            style: |
+              ha-card {
+                background-color: none;
+                box-shadow: none;
+              }
