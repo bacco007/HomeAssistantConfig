@@ -893,3 +893,32 @@ sensor:
       provider: Weatherflow Local
     availability: >
       {{ is_number(states('sensor.tempest_st_00056115_fog_probability')) }}
+
+  - name: "[Weather] UV Index"
+    unique_id: weather_uv_index
+    icon: mdi:weather-sunny-alert
+    #device_class: wind_speed
+    state_class: measurement
+    unit_of_measurement: UV index
+    state: >
+      {% if is_number(states('sensor.tempest_st_00056115_uv_index')) %}
+        {{ states('sensor.tempest_st_00056115_uv_index')|float }}
+      {% elif is_number(states('sensor.weatherflow_cloud_uv_index')) %}
+        {{ states('sensor.weatherflow_cloud_uv_index')|float }}
+      {% elif is_number(states('sensor.current_uv_index')) %}
+        {{ states('sensor.current_uv_index')|float }}
+      {% elif is_number(states('sensor.pirateweather_uv_index')) %}
+        {{ states('sensor.pirateweather_uv_index')|float }}
+      {% endif %}
+    attributes:
+      provider: >
+        {% if is_number(states('sensor.tempest_st_00056115_uv_index')) %} WeatherFlow Local
+        {% elif is_number(states('sensor.weatherflow_cloud_uv_inde')) %} WeatherFlow Cloud
+        {% elif is_number(states('sensor.current_uv_index')) %} OpenUV
+        {% elif is_number(states('sensor.pirateweather_uv_index')) %} Pirate Weather
+        {% endif %}
+    availability: >
+      {{ is_number(states('sensor.tempest_st_00056115_uv_index'))
+          or is_number(states('sensor.weatherflow_cloud_uv_index'))
+          or is_number(states('sensor.pirateweather_uv_index'))
+          or is_number(states('sensor.current_uv_index')) }}

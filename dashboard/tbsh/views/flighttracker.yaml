@@ -9,33 +9,42 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: "custom:layout-card"
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 300
-      max_width: 1000
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    mediaquery:
+    states:
       "(max-width: 500px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1368px)":
+        cards: &cards
+          - !include ../flighttracker/flightaware.yaml
+          - !include ../flighttracker/flightradar24.yaml
+          - !include ../flighttracker/trackedaircraft.yaml
+          - !include ../flighttracker/flights_tracked.yaml
+          - !include ../flighttracker/distance.yaml
+          - !include ../flighttracker/flights_tracked_week.yaml
+          - !include ../flighttracker/flights_tracked_year.yaml
+      "(max-width: 1370px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 2
           width: 300
           max_width: 1000
-    cards:
-      - !include ../flighttracker/flightaware.yaml
-      - !include ../flighttracker/flightradar24.yaml
-      - !include ../flighttracker/trackedaircraft.yaml
-      - !include ../flighttracker/flights_tracked.yaml
-      - !include ../flighttracker/distance.yaml
-      - !include ../flighttracker/flights_tracked_week.yaml
-      - !include ../flighttracker/flights_tracked_year.yaml
+        cards: *cards
+      "all":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 300
+          max_width: 1000
+        cards: *cards
 
   - !include ../includes/actions.yaml
 

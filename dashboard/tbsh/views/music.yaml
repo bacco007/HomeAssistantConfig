@@ -9,32 +9,41 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: "custom:layout-card"
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 300
-      max_width: 1000
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    mediaquery:
+    states:
       "(max-width: 500px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1368px)":
+        cards: &cards
+          - !include ../lastfm/graph_today.yaml
+          - !include ../lastfm/graph_thisweek.yaml
+          - !include ../lastfm/graph_thisyear.yaml
+          - !include ../spotify/graph_playcount.yaml
+          - !include ../lastfm/lastfm.yaml
+          - !include ../spotify/spotify.yaml
+      "(max-width: 1370px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 2
           width: 300
           max_width: 1000
-    cards:
-      - !include ../lastfm/graph_today.yaml
-      - !include ../lastfm/graph_thisweek.yaml
-      - !include ../lastfm/graph_thisyear.yaml
-      - !include ../spotify/graph_playcount.yaml
-      - !include ../lastfm/lastfm.yaml
-      - !include ../spotify/spotify.yaml
+        cards: *cards
+      "all":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 300
+          max_width: 1000
+        cards: *cards
 
   - !include ../includes/actions.yaml
 

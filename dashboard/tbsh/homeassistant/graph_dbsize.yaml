@@ -1,5 +1,8 @@
 ---
-type: vertical-stack
+type: custom:swipe-card
+start_card: 1
+reset_after: 300
+parameters: !include ../../card-config/swipe-card.yaml
 cards:
   - type: custom:vertical-stack-in-card
     card_mod:

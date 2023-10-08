@@ -9,43 +9,52 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: "custom:layout-card"
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 300
-      max_width: 1000
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    mediaquery:
+    states:
       "(max-width: 500px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1368px)":
+        cards: &cards
+          - type: custom:tabbed-card
+            options: {}
+            styles:
+              "--mdc-theme-primary": var(--accent-color)
+              "--mdc-tab-text-label-color-default": var(--rgb-state-default-color)
+              "--mdc-typography-button-font-size": 12px
+              "--mdc-tab-stacked-height": 30px
+            tabs:
+              - card: !include ../sport/calendar.yaml
+                attributes:
+                  label: With Events
+              - card: !include ../sport/calendar_none.yaml
+                attributes:
+                  label: Without Events
+          - !include ../sport/teamtracker.yaml
+          - !include ../sport/standings.yaml
+          - !include ../sport/formula1.yaml
+      "(max-width: 1370px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 2
           width: 300
           max_width: 1000
-    cards:
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          '--mdc-theme-primary': var(--accent-color)
-          '--mdc-tab-text-label-color-default': var(--rgb-state-default-color)
-          '--mdc-typography-button-font-size': 12px
-          '--mdc-tab-stacked-height': 30px
-        tabs:
-          - card: !include ../sport/calendar.yaml
-            attributes:
-              label: With Events
-          - card: !include ../sport/calendar_none.yaml
-            attributes:
-              label: Without Events
-      - !include ../sport/teamtracker.yaml
-      - !include ../sport/standings.yaml
-      - !include ../sport/formula1.yaml
+        cards: *cards
+      "all":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 300
+          max_width: 1000
+        cards: *cards
 
   - !include ../includes/actions.yaml
 

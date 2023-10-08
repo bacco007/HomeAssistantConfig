@@ -1,0 +1,18 @@
+---
+autoHeight: true
+centeredSlides: true
+effect: coverflow
+coverflowEffect:
+  depth: 100
+  modifier: 1
+  rotate: 50
+  scale: 1
+  slideShadows: true
+  stretch: 1
+pagination:
+  type: bullets
+spaceBetween: 20
+speed: 500
+autoplay:
+  delay: 30000
+  speed: 1500

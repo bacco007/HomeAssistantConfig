@@ -9,41 +9,49 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: "custom:layout-card"
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 300
-      max_width: 1000
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    mediaquery:
+    states:
       "(max-width: 500px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1368px)":
+        cards: &cards
+          - type: vertical-stack
+            cards:
+              - !include ../tamworth/snippets/livetraffic.yaml
+              - !include ../tamworth/livetraffic/alpine.yaml
+              - !include ../tamworth/livetraffic/fire.yaml
+              - !include ../tamworth/livetraffic/flood.yaml
+              - !include ../tamworth/livetraffic/incidents.yaml
+              - !include ../tamworth/livetraffic/incidentslga.yaml
+              - !include ../tamworth/livetraffic/majorevents.yaml
+              - !include ../tamworth/livetraffic/roadwork.yaml
+          - !include ../tamworth/snippets/fuel.yaml
+          - !include ../tamworth/snippets/hospital.yaml
+          - !include ../tamworth/dams.yaml
+          - !include ../tamworth/bushfire.yaml
+      "(max-width: 1370px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 2
           width: 300
           max_width: 1000
-    cards:
-      - type: vertical-stack
-        cards:
-          - !include ../tamworth/snippets/livetraffic.yaml
-          - !include ../tamworth/livetraffic/alpine.yaml
-          - !include ../tamworth/livetraffic/fire.yaml
-          - !include ../tamworth/livetraffic/flood.yaml
-          - !include ../tamworth/livetraffic/incidents.yaml
-          - !include ../tamworth/livetraffic/incidentslga.yaml
-          - !include ../tamworth/livetraffic/majorevents.yaml
-          - !include ../tamworth/livetraffic/roadwork.yaml
-
-      - !include ../tamworth/snippets/fuel.yaml
-      - !include ../tamworth/snippets/hospital.yaml
-      - !include ../tamworth/dams.yaml
-      - !include ../tamworth/bushfire.yaml
+        cards: *cards
+      "all":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 300
+          max_width: 1000
+        cards: *cards
 
   - !include ../includes/actions.yaml
 

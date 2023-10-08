@@ -1,0 +1,20 @@
+---
+type: custom:auto-entities
+filter:
+  include:
+    - integration: accuweather
+sort:
+  method: name
+  ignore_case: true
+card:
+  type: custom:fold-entity-row
+  card_mod:
+    style: |
+      #measure > * {
+        margin: 0 !important;
+      }
+  head:
+    type: custom:template-entity-row
+    name: Accuweather
+    icon: mdi:weather-partly-lightning
+    state: ""

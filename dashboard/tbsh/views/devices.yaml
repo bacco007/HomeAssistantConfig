@@ -9,34 +9,43 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: "custom:layout-card"
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 300
-      max_width: 1000
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    mediaquery:
+    states:
       "(max-width: 500px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1368px)":
+        cards: &cards
+          - !include ../devices/appletv/appletv.yaml
+          - !include ../devices/zigbee2mqtt.yaml
+          - !include ../devices/synology.yaml
+          - !include ../devices/hdhomerun.yaml
+          - !include ../devices/weatherflow.yaml
+          - !include ../devices/lg_washer.yaml
+          - !include ../devices/dyson_fan.yaml
+          - !include ../devices/einkdisplay.yaml
+      "(max-width: 1370px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 2
           width: 300
           max_width: 1000
-    cards:
-      - !include ../devices/appletv/appletv.yaml
-      - !include ../devices/zigbee2mqtt.yaml
-      - !include ../devices/synology.yaml
-      - !include ../devices/hdhomerun.yaml
-      - !include ../devices/weatherflow.yaml
-      - !include ../devices/lg_washer.yaml
-      - !include ../devices/dyson_fan.yaml
-      - !include ../devices/einkdisplay.yaml
+        cards: *cards
+      "all":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 300
+          max_width: 1000
+        cards: *cards
 
   - !include ../includes/actions.yaml
 

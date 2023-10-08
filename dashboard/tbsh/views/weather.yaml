@@ -9,62 +9,80 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: "custom:layout-card"
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 300
-      max_width: 1000
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    mediaquery:
+    states:
       "(max-width: 500px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 1
           width: 300
           max_width: 1000
-      "(max-width: 1368px)":
+        cards: &cards
+          - !include ../weather/snippets/forecast_hour_day.yaml
+          - !include ../weather/current_weather.yaml
+          - !include ../weather/weather_other.yaml
+          - !include ../weather/settings_controls.yaml
+          - !include ../devices/weatherflow.yaml
+          # - type: "custom:bom-radar-card"
+          #   frame_count: 25
+          #   center_latitude: "-31.09"
+          #   center_longitude: "150.93"
+          #   marker_latitude: "-31.09"
+          #   marker_longitude: "150.93"
+          #   show_marker: true
+          #   show_range: true
+          #   show_zoom: true
+          #   show_recenter: true
+          #   show_playback: true
+          #   extra_labels: true
+          #   show_radar_coverage: true
+          #   show_radar_location: true
+          #   zoom_level: "8"
+          # - !include ../weather/lookahead.yaml
+          - type: vertical-stack
+            cards:
+              - !include ../weather/home_temp.yaml
+              - !include ../weather/home_rainfall.yaml
+              - !include ../weather/home_humidity.yaml
+              - !include ../weather/home_pressure.yaml
+              - !include ../weather/home_cloud.yaml
+              - !include ../weather/home_wind.yaml
+              - !include ../weather/home_lightning.yaml
+              - !include ../weather/home_uv.yaml
+          - type: custom:swipe-card
+            start_card: 1
+            reset_after: 300
+            parameters: !include ../../card-config/swipe-card.yaml
+            cards:
+              - !include ../tamworth/snippets/sun_moon.yaml
+              - !include ../tamworth/snippets/uv.yaml
+          - type: custom:swipe-card
+            start_card: 1
+            reset_after: 300
+            parameters: !include ../../card-config/swipe-card.yaml
+            cards:
+              - !include ../tamworth/snippets/aqi_waqi.yaml
+              - !include ../tamworth/snippets/aqi_nswdpe.yaml
+      "(max-width: 1370px)":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
         layout:
           max_cols: 2
           width: 300
           max_width: 1000
-    cards:
-      - !include ../weather/snippets/forecast_hour_day.yaml
-      - !include ../weather/current_weather.yaml
-      - !include ../weather/weather_other.yaml
-      - !include ../weather/settings_controls.yaml
-      - !include ../devices/weatherflow.yaml
-      # - type: "custom:bom-radar-card"
-      #   frame_count: 25
-      #   center_latitude: "-31.09"
-      #   center_longitude: "150.93"
-      #   marker_latitude: "-31.09"
-      #   marker_longitude: "150.93"
-      #   show_marker: true
-      #   show_range: true
-      #   show_zoom: true
-      #   show_recenter: true
-      #   show_playback: true
-      #   extra_labels: true
-      #   show_radar_coverage: true
-      #   show_radar_location: true
-      #   zoom_level: "8"
-      # - !include ../weather/lookahead.yaml
-      - type: vertical-stack
-        cards:
-          - !include ../weather/home_temp.yaml
-          - !include ../weather/home_rainfall.yaml
-          - !include ../weather/home_humidity.yaml
-          - !include ../weather/home_pressure.yaml
-          - !include ../weather/home_cloud.yaml
-          - !include ../weather/home_wind.yaml
-          - !include ../weather/home_lightning.yaml
-          - !include ../weather/home_uv.yaml
-
-      - !include ../tamworth/snippets/sun_moon.yaml
-      - !include ../tamworth/snippets/uv.yaml
-      - !include ../tamworth/snippets/aqi_nswdpe.yaml
-      - !include ../tamworth/snippets/aqi_waqi.yaml
+        cards: *cards
+      "all":
+        type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 300
+          max_width: 1000
+        cards: *cards
 
   - !include ../includes/actions.yaml
 

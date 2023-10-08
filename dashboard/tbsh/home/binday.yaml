@@ -14,7 +14,7 @@ cards:
         primary: Next Bin Day
         secondary: >
           {% from 'relative_time_plus.jinja' import relative_time_plus %}
-          {{ relative_time_plus(states('sensor.binday_nextcollectionday'), parts=1, week=false, time=true, language='en') }}  
+          {{ relative_time_plus(states('sensor.binday_nextcollectionday'), parts=1, week=false, time=true, language='en') }}
         tap_action:
           action: none
         hold_action:
