@@ -1,6 +1,8 @@
 """Support for WeatherFlow Forecast weather service."""
 from __future__ import annotations
 
+import logging
+
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Any
 
@@ -26,9 +28,16 @@ from homeassistant.util.unit_system import METRIC_SYSTEM
 from homeassistant.util.dt import utc_from_timestamp
 
 from . import WeatherFlowForecastDataUpdateCoordinator
-from .const import DOMAIN, CONF_STATION_ID
+from .const import (
+    ATTR_ATTRIBUTION,
+    CONF_STATION_ID,
+    DEFAULT_NAME,
+    DOMAIN,
+    MANUFACTURER,
+    MODEL
+)
 
-DEFAULT_NAME = "WeatherFlow Forecast"
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
         hass: HomeAssistant,
@@ -73,7 +82,7 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
     """Implementation of a WeatherFlow weather condition."""
 
     _attr_attribution = (
-        "Weather Forecast from Better Forecast delivered by WeatherFlow"
+        ATTR_ATTRIBUTION
     )
     _attr_has_entity_name = True
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
@@ -94,7 +103,10 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
     ) -> None:
         """Initialise the platform with a data instance and station."""
         super().__init__(coordinator)
+
         self._attr_unique_id = _calculate_unique_id(config, hourly)
+        self._attr_name = name
+
         self._config = config
         self._is_metric = is_metric
         self._hourly = hourly
@@ -103,11 +115,10 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
             name="Forecast",
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN,)},  # type: ignore[arg-type]
-            manufacturer="WeatherFlow",
-            model="Forecast",
-            configuration_url="https://weatherflow.github.io/Tempest/api/",
+            manufacturer=MANUFACTURER,
+            model=MODEL,
+            configuration_url=f"https://tempestwx.com/station/{self._config[CONF_STATION_ID]}/grid",
         )
-        self._attr_name = name
 
     @property
     def condition(self) -> str | None:
@@ -120,36 +131,50 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
     @property
     def native_temperature(self) -> float | None:
         """Return the temperature."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.air_temperature
         return self.coordinator.data.current_weather_data.temperature
 
     @property
     def native_pressure(self) -> float | None:
         """Return the pressure."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.sea_level_pressure
         return self.coordinator.data.current_weather_data.pressure
 
     @property
     def humidity(self) -> float | None:
         """Return the humidity."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.relative_humidity
         return self.coordinator.data.current_weather_data.humidity
 
     @property
     def native_wind_speed(self) -> float | None:
         """Return the wind speed."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.wind_avg
         return self.coordinator.data.current_weather_data.wind_speed
 
     @property
     def wind_bearing(self) -> float | str | None:
         """Return the wind direction."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.wind_direction
         return self.coordinator.data.current_weather_data.wind_bearing
 
     @property
     def native_wind_gust_speed(self) -> float | None:
         """Return the wind gust speed in native units."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.wind_gust
         return self.coordinator.data.current_weather_data.wind_gust_speed
 
     @property
     def native_dew_point(self) -> float | None:
         """Return the dew point."""
+        if self.coordinator.add_sensors:
+            return self.coordinator.data.sensor_data.dew_point
         return self.coordinator.data.current_weather_data.dew_point
 
     def _forecast(self, hourly: bool) -> list[Forecast] | None:

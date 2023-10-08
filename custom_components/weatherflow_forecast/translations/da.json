@@ -15,7 +15,8 @@
                 "title": "WeatherFlow Forecast",
                 "data": {
                     "station_id": "Station Id",
-                    "api_token": "Personlig Api Token"
+                    "api_token": "Personlig Api Token",
+                    "add_sensors": "Tilføj sensorer fra vejrstationen"
                 }
             }
         }
@@ -24,7 +25,39 @@
         "step": {
             "init": {
                 "data": {
-                    "api_token": "Personlig Api Token"
+                    "api_token": "Personlig Api Token",
+                    "add_sensors": "Tilføj sensorer fra vejrstationen"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNØ",
+                    "ne": "NØ",
+                    "ene": "ØNØ",
+                    "e": "Ø",
+                    "ese": "ØSØ",
+                    "se": "SØ",
+                    "sse": "SSØ",
+                    "s": "S",
+                    "ssw": "SSV",
+                    "sw": "SV",
+                    "wsw": "VSV",
+                    "w": "V",
+                    "wnw": "VNV",
+                    "nw": "NV",
+                    "nnw": "NNV"
+                }
+            },
+            "pressure_trend": {
+                "state": {
+                    "falling": "Falder",
+                    "rising": "Stiger",
+                    "steady": "Stabil"
                 }
             }
         }
