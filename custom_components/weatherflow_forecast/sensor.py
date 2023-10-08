@@ -96,6 +96,14 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     WeatherFlowSensorEntityDescription(
+        key="cloud_base",
+        name="Cloud Base",
+        native_unit_of_measurement=UnitOfLength.METERS,
+        device_class=SensorDeviceClass.DISTANCE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0
+    ),
+    WeatherFlowSensorEntityDescription(
         key="delta_t",
         name="Delta T",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -156,10 +164,18 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
     ),
     WeatherFlowSensorEntityDescription(
         key="precip",
+        name="Precipitation",
+        native_unit_of_measurement=UnitOfPrecipitationDepth.MILLIMETERS,
+        device_class=SensorDeviceClass.PRECIPITATION,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WeatherFlowSensorEntityDescription(
+        key="precip_rate",
         name="Precipitation Rate",
         native_unit_of_measurement=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
         device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WeatherFlowSensorEntityDescription(
         key="precip_accum_last_1hr",
@@ -261,6 +277,13 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         suggested_display_precision=1,
     ),
     WeatherFlowSensorEntityDescription(
+        key="timestamp",
+        name="Data Updated",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+    WeatherFlowSensorEntityDescription(
         key="uv",
         name="UV Index",
         native_unit_of_measurement=UV_INDEX,
@@ -269,11 +292,12 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         suggested_display_precision=1,
     ),
     WeatherFlowSensorEntityDescription(
-        key="timestamp",
-        name="Data Updated",
-        device_class=SensorDeviceClass.TIMESTAMP,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
+        key="visibility",
+        name="Visibility",
+        native_unit_of_measurement=UnitOfLength.KILOMETERS,
+        device_class=SensorDeviceClass.DISTANCE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0
     ),
     WeatherFlowSensorEntityDescription(
         key="wet_bulb_globe_temperature",

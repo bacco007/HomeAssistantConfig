@@ -124,8 +124,9 @@ class WeatherFlowForecastWeatherData:
 
     def initialize_data(self) -> bool:
         """Establish connection to API."""
+
         self._weather_data = WeatherFlow(
-            self._config[CONF_STATION_ID], self._config[CONF_API_TOKEN], session=async_get_clientsession(self.hass))
+            self._config[CONF_STATION_ID], self._config[CONF_API_TOKEN], elevation=self.hass.config.elevation, session=async_get_clientsession(self.hass))
 
         return True
 
