@@ -11,9 +11,7 @@
                     "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
                     "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
                     "seeing_weight": "Widząc wagę do obliczenia stanu",
-                    "transparency_weight": "Waga przezroczystości do obliczania stanu",
-                    "metno_enabled": "Skorzystaj z danych prognozy Norweskiego Instytutu Meteorologicznego"
-                }
+                    "transparency_weight": "Waga przezroczystości do obliczania stanu"                }
             }
         }
     },
@@ -28,9 +26,7 @@
                     "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
                     "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
                     "seeing_weight": "Widząc wagę do obliczenia stanu",
-                    "transparency_weight": "Waga przezroczystości do obliczania stanu",
-                    "metno_enabled": "Skorzystaj z danych prognozy Norweskiego Instytutu Meteorologicznego"
-                }
+                    "transparency_weight": "Waga przezroczystości do obliczania stanu"                }
             }
         }
     }

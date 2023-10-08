@@ -18,6 +18,7 @@ from homeassistant.util import dt as dt_util
 from homeassistant.const import (
     DEGREE,
     LENGTH_METERS,
+    LENGTH_MILLIMETERS,
     PERCENTAGE,
     SPEED_METERS_PER_SECOND,
     TEMP_CELSIUS,
@@ -124,6 +125,13 @@ SENSOR_TYPES = {
         None,
         STATE_CLASS_MEASUREMENT,
     ],
+    "fog_area_fraction_percentage": [
+        "Fog Area",
+        PERCENTAGE,
+        "mdi:weather-fog",
+        None,
+        STATE_CLASS_MEASUREMENT,
+    ],
     "seeing_percentage": [
         "Seeing",
         PERCENTAGE,
@@ -187,13 +195,6 @@ SENSOR_TYPES = {
         SensorDeviceClass.WIND_SPEED,
         STATE_CLASS_MEASUREMENT,
     ],
-    "wind10m_speed_plain": [
-        "10m Wind Speed Plain",
-        None,
-        "mdi:windsock",
-        None,
-        None,
-    ],
     "temp2m": [
         "2m Temperature",
         TEMP_CELSIUS,
@@ -208,12 +209,12 @@ SENSOR_TYPES = {
         SensorDeviceClass.TEMPERATURE,
         STATE_CLASS_MEASUREMENT,
     ],
-    "prec_type": [
-        "Precipitation Type",
-        None,
+    "precipitation_amount": [
+        "Precipitation Amount",
+        LENGTH_MILLIMETERS,
         "mdi:weather-snowy-rainy",
-        None,
-        None,
+        SensorDeviceClass.PRECIPITATION,
+        STATE_CLASS_MEASUREMENT,
     ],
     "condition_percentage": [
         "Condition",
@@ -299,6 +300,13 @@ SENSOR_TYPES = {
         None,
         None,
     ],
+    "moon_next_new_moon": [
+        "Moon Next New Moon",
+        None,
+        "mdi:moon-new",
+        SensorDeviceClass.TIMESTAMP,
+        None,
+    ],
     "moon_altitude": [
         "Moon Altitude",
         DEGREE,
@@ -358,7 +366,9 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
+async def async_setup_entry(
+    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
+) -> None:
     """Set up the AstroWeather sensor platform."""
     _LOGGER.info("Set up AstroWeather sensor platform")
 
@@ -376,7 +386,9 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_a
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator))
+        sensors.append(
+            AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator)
+        )
 
     async_add_entities(sensors, True)
     return True
@@ -400,15 +412,23 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
-            return dt_util.parse_datetime(str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)))
+        if (
+            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+            == SensorDeviceClass.TIMESTAMP
+        ):
+            return dt_util.parse_datetime(
+                str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None))
+            )
         else:
             return getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
+        if (
+            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+            == SensorDeviceClass.TIMESTAMP
+        ):
             return None
         else:
             return SENSOR_TYPES[self._sensor][SENSOR_UNIT]

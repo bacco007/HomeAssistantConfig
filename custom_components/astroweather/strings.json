@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "description": "Configuration of the geographic location, forecast update interval and condition calculation.",
+                "description": "Configuration of the geographic location, forecast update interval, and condition calculation.",
                 "data": {
                     "latitude": "Latitude (-89° to 89°)",
                     "longitude": "Longitude (-180° to 180°)",

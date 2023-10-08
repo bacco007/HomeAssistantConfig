@@ -33,11 +33,16 @@ from .const import (
     DOMAIN,
     ATTR_FORECAST_CLOUDCOVER,
     ATTR_FORECAST_CLOUDLESS,
+    ATTR_FORECAST_CLOUD_AREA_FRACTION,
+    ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH,
+    ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM,
+    ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW,
+    ATTR_FORECAST_FOG_AREA_FRACTION,
     ATTR_FORECAST_SEEING,
     ATTR_FORECAST_TRANSPARENCY,
     ATTR_FORECAST_LIFTED_INDEX,
     ATTR_FORECAST_HUMIDITY,
-    ATTR_FORECAST_PREC_TYPE,
+    ATTR_FORECAST_PRECIPITATION_AMOUNT,
     ATTR_WEATHER_CLOUDCOVER,
     ATTR_WEATHER_CLOUDLESS,
     ATTR_WEATHER_SEEING,
@@ -45,8 +50,7 @@ from .const import (
     ATTR_WEATHER_LIFTED_INDEX,
     ATTR_WEATHER_CONDITION,
     ATTR_WEATHER_CONDITION_PLAIN,
-    ATTR_WEATHER_PREC_TYPE,
-    ATTR_WEATHER_WIND_SPEED_PLAIN,
+    ATTR_WEATHER_PRECIPITATION_AMOUNT,
     ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME,
     ATTR_WEATHER_DEEPSKY_TODAY_PLAIN,
     ATTR_WEATHER_DEEPSKY_TODAY_DESC,
@@ -62,6 +66,7 @@ from .const import (
     ATTR_WEATHER_MOON_NEXT_RISING,
     ATTR_WEATHER_MOON_NEXT_SETTING,
     ATTR_WEATHER_MOON_PHASE,
+    ATTR_WEATHER_MOON_NEXT_NEW_MOON,
     CONDITION_CLASSES,
     DEFAULT_ATTRIBUTION,
     DEVICE_TYPE_WEATHER,
@@ -71,7 +76,9 @@ from .entity import AstroWeatherEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+) -> None:
     """Set up the AstroWeather weather platform."""
     _LOGGER.info("Set up AstroWeather weather platform")
 
@@ -150,6 +157,41 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def cloud_area_fraction(self) -> int:
+        """Return current cloud area fraction. Met.no only"""
+        if self._current is not None:
+            return self._current.cloud_area_fraction_percentage
+        return None
+
+    @property
+    def cloud_area_fraction_high(self) -> int:
+        """Return current cloud area fraction high. Met.no only"""
+        if self._current is not None:
+            return self._current.cloud_area_fraction_high_percentage
+        return None
+
+    @property
+    def cloud_area_fraction_medium(self) -> int:
+        """Return current cloud area fraction medium. Met.no only"""
+        if self._current is not None:
+            return self._current.cloud_area_fraction_medium_percentage
+        return None
+
+    @property
+    def cloud_area_fraction_low(self) -> int:
+        """Return current cloud area fraction low. Met.no only"""
+        if self._current is not None:
+            return self._current.cloud_area_fraction_low_percentage
+        return None
+
+    @property
+    def fog_area_fraction(self) -> int:
+        """Return current fog area fraction. Met.no only"""
+        if self._current is not None:
+            return self._current.fog_area_fraction_percentage
+        return None
+
+    @property
     def seeing_percentage(self) -> int:
         """Return current seeing."""
         if self._current is not None:
@@ -204,10 +246,10 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
-    def prec_type(self) -> str:
+    def precipitation_amount(self) -> float:
         """Return precipitation type."""
         if self._current is not None:
-            return self._current.prec_type.capitalize()
+            return self._current.precipitation_amount
         return None
 
     @property
@@ -269,13 +311,6 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         """Return the wind speed."""
         if self._current is not None:
             return self._current.wind10m_speed
-        return None
-
-    @property
-    def wind_speed_plain(self) -> str:
-        """Return the wind speed plain."""
-        if self._current is not None:
-            return self._current.wind10m_speed_plain
         return None
 
     @property
@@ -349,6 +384,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def moon_next_new_moon(self) -> datetime:
+        """Return moon next new moon."""
+        if self._current is not None:
+            return self._current.moon_next_new_moon
+        return None
+
+    @property
     def attribution(self) -> str:
         """Return the attribution."""
         return DEFAULT_ATTRIBUTION
@@ -361,14 +403,18 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             "timestamp": self.timestamp,
             ATTR_WEATHER_CLOUDCOVER: self.cloudcover_percentage,
             ATTR_WEATHER_CLOUDLESS: self.cloudless_percentage,
+            ATTR_FORECAST_CLOUD_AREA_FRACTION: self.cloud_area_fraction,
+            ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH: self.cloud_area_fraction_high,
+            ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM: self.cloud_area_fraction_medium,
+            ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW: self.cloud_area_fraction_low,
+            ATTR_FORECAST_FOG_AREA_FRACTION: self.fog_area_fraction,
             ATTR_WEATHER_SEEING: self.seeing_percentage,
             ATTR_WEATHER_TRANSPARENCY: self.transparency_percentage,
             ATTR_WEATHER_LIFTED_INDEX: self.lifted_index,
             ATTR_WEATHER_CONDITION: self.condition_percentage,
             ATTR_WEATHER_CONDITION_PLAIN: self.condition_plain,
-            ATTR_WEATHER_PREC_TYPE: self.prec_type,
+            ATTR_WEATHER_PRECIPITATION_AMOUNT: self.precipitation_amount,
             ATTR_WEATHER_WIND_SPEED: self.native_wind_speed,
-            ATTR_WEATHER_WIND_SPEED_PLAIN: self.wind_speed_plain,
             ATTR_WEATHER_WIND_BEARING: self.wind_bearing,
             ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME: self.deepsky_forecast_today_dayname,
             ATTR_WEATHER_DEEPSKY_TODAY_PLAIN: self.deepsky_forecast_today_plain,
@@ -385,6 +431,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_MOON_NEXT_RISING: self.moon_next_rising,
             ATTR_WEATHER_MOON_NEXT_SETTING: self.moon_next_setting,
             ATTR_WEATHER_MOON_PHASE: self.moon_phase,
+            ATTR_WEATHER_MOON_NEXT_NEW_MOON: self.moon_next_new_moon,
         }
 
     def get_forecast(self, index, param):
@@ -411,15 +458,20 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
                     ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
                     ATTR_FORECAST_CLOUDCOVER: forecast.cloudcover_percentage,
                     ATTR_FORECAST_CLOUDLESS: forecast.cloudless_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION: forecast.cloud_area_fraction_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH: forecast.cloud_area_fraction_high_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM: forecast.cloud_area_fraction_medium_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW: forecast.cloud_area_fraction_low_percentage,
+                    ATTR_FORECAST_FOG_AREA_FRACTION: forecast.fog_area_fraction_percentage,
                     ATTR_FORECAST_SEEING: forecast.seeing_percentage,
                     ATTR_FORECAST_TRANSPARENCY: forecast.transparency_percentage,
                     ATTR_FORECAST_LIFTED_INDEX: forecast.lifted_index,
                     ATTR_FORECAST_CONDITION: forecast.condition_percentage,
                     ATTR_FORECAST_HUMIDITY: forecast.rh2m,
+                    ATTR_FORECAST_PRECIPITATION_AMOUNT: forecast.precipitation_amount,
                     ATTR_FORECAST_WIND_SPEED: forecast.wind10m_speed,
                     ATTR_FORECAST_WIND_BEARING: forecast.wind10m_direction,
                     ATTR_FORECAST_TEMP: forecast.temp2m,
-                    ATTR_FORECAST_PREC_TYPE: forecast.prec_type,
                 }
             )
 
@@ -438,7 +490,5 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
 
     async def async_update(self) -> None:
         """Get the latest weather data."""
-        # await self.fcst_coordinator.update()
-        # thermostat = self.data.ecobee.get_thermostat(self._index)
         self.weather = self.fcst_coordinator.data
         await self.async_update_listeners(("hourly",))

@@ -21,12 +21,10 @@ from .const import (
     CONF_CONDITION_CLOUDCOVER_WEIGHT,
     CONF_CONDITION_SEEING_WEIGHT,
     CONF_CONDITION_TRANSPARENCY_WEIGHT,
-    CONF_METNO_ENABLED,
     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
     DEFAULT_CONDITION_SEEING_WEIGHT,
     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
     DEFAULT_FORECAST_INTERVAL,
-    DEFAULT_METNO_ENABLED,
     FORECAST_INTERVAL_MIN,
     FORECAST_INTERVAL_MAX,
     DEFAULT_ELEVATION,
@@ -70,12 +68,10 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_LONGITUDE: user_input[CONF_LONGITUDE],
                 CONF_ELEVATION: user_input[CONF_ELEVATION],
                 CONF_TIMEZONE_INFO: user_input[CONF_TIMEZONE_INFO],
-                # CONF_FORECAST_TYPE: user_input[CONF_FORECAST_TYPE],
                 CONF_FORECAST_INTERVAL: user_input.get(CONF_FORECAST_INTERVAL),
                 CONF_CONDITION_CLOUDCOVER_WEIGHT: user_input.get(CONF_CONDITION_CLOUDCOVER_WEIGHT),
                 CONF_CONDITION_SEEING_WEIGHT: user_input.get(CONF_CONDITION_SEEING_WEIGHT),
                 CONF_CONDITION_TRANSPARENCY_WEIGHT: user_input.get(CONF_CONDITION_TRANSPARENCY_WEIGHT),
-                CONF_METNO_ENABLED: user_input.get(CONF_METNO_ENABLED),
             },
         )
 
@@ -98,9 +94,6 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_TIMEZONE_INFO, default=self.hass.config.time_zone): vol.All(
                         vol.Coerce(str), vol.In(pytz.all_timezones)
                     ),
-                    # vol.Optional(
-                    #     CONF_FORECAST_TYPE, default=FORECAST_TYPE_DAILY
-                    # ): vol.In(FORECAST_TYPES),
                     vol.Optional(CONF_FORECAST_INTERVAL, default=DEFAULT_FORECAST_INTERVAL): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=FORECAST_INTERVAL_MIN, max=FORECAST_INTERVAL_MAX),
@@ -122,10 +115,6 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
-                    ),
-                    vol.Optional(CONF_METNO_ENABLED, default=DEFAULT_METNO_ENABLED,): vol.All(
-                        vol.Coerce(bool),
-                        # vol.Range(min=0, max=5),
                     ),
                 }
             ),
@@ -166,12 +155,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         CONF_TIMEZONE_INFO,
                         default=self.config_entry.options.get(CONF_TIMEZONE_INFO, self.hass.config.time_zone),
                     ): vol.All(vol.Coerce(str), vol.In(pytz.all_timezones)),
-                    # vol.Optional(
-                    #     CONF_FORECAST_TYPE,
-                    #     default=self.config_entry.options.get(
-                    #         CONF_FORECAST_TYPE, FORECAST_TYPE_DAILY
-                    #     ),
-                    # ): vol.In(FORECAST_TYPES),
                     vol.Required(
                         CONF_FORECAST_INTERVAL,
                         default=self.config_entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL),
@@ -208,16 +191,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     ): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
-                    ),
-                    vol.Required(
-                        CONF_METNO_ENABLED,
-                        default=self.config_entry.options.get(
-                            CONF_METNO_ENABLED,
-                            DEFAULT_METNO_ENABLED,
-                        ),
-                    ): vol.All(
-                        vol.Coerce(bool),
-                        # vol.Range(min=0, max=5),
                     ),
                 }
             ),

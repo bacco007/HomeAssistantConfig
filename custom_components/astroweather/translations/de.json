@@ -11,9 +11,7 @@
                     "forecast_interval": "Aktualisierungsintervall (Min)",
                     "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
                     "seeing_weight": "Gewichtung des Seeings",
-                    "transparency_weight": "Gewichtung der Transparenz",
-                    "metno_enabled": "Norwegian Meteorological Institute Vorhersage verwenden"
-                }
+                    "transparency_weight": "Gewichtung der Transparenz"                }
             }
         }
     },
@@ -28,9 +26,7 @@
                     "forecast_interval": "Aktualisierungsintervall (Min)",
                     "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
                     "seeing_weight": "Gewichtung des Seeings",
-                    "transparency_weight": "Gewichtung der Transparenz",
-                    "metno_enabled": "Norwegian Meteorological Institute Vorhersage verwenden"
-                }
+                    "transparency_weight": "Gewichtung der Transparenz"                }
             }
         }
     }
