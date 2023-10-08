@@ -31,7 +31,7 @@ cards:
         columns: 1
         square: false
         style: |
-          ha-card { 
+          ha-card {
             background-color: var(--card-background-color);
             padding: 2px;
             box-shadow: none;

@@ -1,0 +1,34 @@
+---
+- name: bom_average
+  resource_template: "http://www.bom.gov.au/jsp/ncc/cdio/calendar/climate-calendar?stn_num=055325&month={{now().strftime('%m')|string}}&day={{now().strftime('%d')|string}}"
+  scan_interval: 3600
+  sensor:
+    - unique_id: bom_average
+      name: BOM Average
+      select: "#content > div.date-modified"
+      value_template: "{{value | replace('Page created: ', '')}}"
+      attributes:
+        - name: maxtemp_average
+          select: "#temperature1 > tbody > tr:nth-child(3) > td:nth-child(2)"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: maxtemp_hottest
+          select: "#temperature1 > tbody > tr:nth-child(2) > td.col2"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: maxtemp_coldest
+          select: "#temperature1 > tbody > tr:nth-child(4) > td.col2"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: mintemp_average
+          select: "#temperature2 > tbody > tr:nth-child(3) > td:nth-child(2)"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: mintemp_hottest
+          select: "#temperature2 > tbody > tr:nth-child(2) > td.col2"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: mintemp_coldest
+          select: "#temperature2 > tbody > tr:nth-child(4) > td.col2"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: rainfall_highest
+          select: "#rainfall1 > tbody > tr:nth-child(2) > td.no-qc"
+          value_template: "{{value | replace(' mm', '')}}"
+        - name: rainfall_average
+          select: "#typical1 > tbody > tr:nth-child(4) > td:nth-child(2)"
+          value_template: "{{value | replace(' mm', '')}}"

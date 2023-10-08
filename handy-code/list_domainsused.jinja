@@ -1,0 +1,3 @@
+{%- for d in states | groupby('domain') %}
+  {{ d[0] }}
+{%- endfor %}

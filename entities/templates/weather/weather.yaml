@@ -2,7 +2,7 @@
 binary_sensor:
   - name: "[Weather] Is Raining"
     unique_id: weather_is_raining
-    icon: mdi:weather-rainy
+    icon: mdi:weather-pouring
     delay_on: 20
     delay_off: 120
     state: >
@@ -67,8 +67,8 @@ sensor:
     unique_id: weather_current_condition
     icon: mdi:weather-partly-snowy-rainy
     state: >
-      {% if has_value('weather.tempest_daily') %}
-        {% set condition = states('weather.tempest_daily') %}
+      {% if has_value('weather.tempest_hourly') %}
+        {% set condition = states('weather.tempest_hourly') %}
       {% elif has_value('weather.tempest_daily') %}
         {% set condition = states('weather.tempest_daily') %}
       {% elif has_value('weather.east_tamworth') %}
@@ -93,13 +93,13 @@ sensor:
       {% endif %}
     attributes:
       provider: >
-        {% if has_value('weather.tempest_daily') %} WeatherFlow Local
+        {% if has_value('weather.tempest_hourly') %} WeatherFlow Local
         {% elif has_value('weather.tempest_daily') %} WeatherFlow Cloud
         {% elif has_value('weather.east_tamworth') %} Bureau of Meteorology
         {% elif has_value('weather.pirateweather') %} Pirate Weather
         {% endif %}
     availability: >
-      {{ has_value('weather.tempest_daily')
+      {{ has_value('weather.tempest_hourly')
           or has_value('weather.tempest_daily')
           or has_value('weather.east_tamworth')
           or has_value('weather.pirateweather') }}
@@ -206,6 +206,57 @@ sensor:
       {{ (state_attr('sensor.tempest_st_00056115_temperature','min_day') is defined
             and is_number(state_attr('sensor.tempest_st_00056115_temperature','min_day')))
           or is_number(states('sensor.tamworth_airport_min_temp')) }}
+
+  - name: "[Weather] High Temperature Differential"
+    unique_id: weather_high_temperature_differential
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    state: >
+      {{ (states('sensor.weather_high_temperature') | float
+          - state_attr('sensor.bom_average', 'maxtemp_average') | float) | round(2) }}
+    attributes:
+      category: weather
+      today_temp: "{{states('sensor.weather_high_temperature') | float }}"
+      temp_average: "{{state_attr('sensor.bom_average', 'maxtemp_average') | float }}"
+      temp_hottest: "{{state_attr('sensor.bom_average', 'maxtemp_hottest') | float }}"
+      temp_coldest: "{{state_attr('sensor.bom_average', 'maxtemp_coldest') | float }}"
+    availability: >
+      {{ is_number(states('sensor.weather_high_temperature'))
+          and is_number(state_attr('sensor.bom_average', 'maxtemp_average')) }}
+
+  - name: "[Weather] Low Temperature Differential"
+    unique_id: weather_low_temperature_differential
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    state: >
+      {{ (states('sensor.weather_low_temperature') | float
+          - state_attr('sensor.bom_average', 'mintemp_average') | float) | round(2) }}
+    attributes:
+      category: weather
+      today_temp: "{{states('sensor.weather_low_temperature') | float }}"
+      temp_average: "{{state_attr('sensor.bom_average', 'mintemp_average') | float }}"
+      temp_hottest: "{{state_attr('sensor.bom_average', 'mintemp_hottest') | float }}"
+      temp_coldest: "{{state_attr('sensor.bom_average', 'mintemp_coldest') | float }}"
+    availability: >
+      {{ is_number(states('sensor.weather_low_temperature'))
+          and is_number(state_attr('sensor.bom_average', 'mintemp_average')) }}
+
+  - name: "[Weather] Temperature Trend"
+    unique_id: weather_temperature_trend
+    icon: >
+      {% if is_state(this.entity_id, 'rising') %} mdi:thermometer-chevron-up
+      {% elif is_state(this.entity_id, 'falling') %} mdi:thermometer-chevron-down
+      {% else %} mdi:thermometer
+      {% endif %}
+    state: >
+      {% set change = states('sensor.weather_temperature_change') | float %}
+      {% if change >= 0.25 %} rising
+      {% elif change < -0.25 %} falling
+      {% else %} steady
+      {% endif %}
+    availability: "{{ is_number(states('sensor.weather_temperature_change')) }}"
 
   - name: "[Weather] Dew Point"
     unique_id: weather_dew_point
@@ -897,7 +948,7 @@ sensor:
   - name: "[Weather] UV Index"
     unique_id: weather_uv_index
     icon: mdi:weather-sunny-alert
-    #device_class: wind_speed
+    # device_class: wind_speed
     state_class: measurement
     unit_of_measurement: UV index
     state: >

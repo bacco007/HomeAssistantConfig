@@ -100,19 +100,11 @@ browser_mod:
                   primary: Home
                   secondary: >-
                     {% if states(entity) == 'False' %}
-
-                    DST Starts 
-
-                    {{ as_timestamp(state_attr(entity, 'dstStart')) |
-                    timestamp_custom('%d/%m/%Y, %H:%M') }}
-
+                      DST Starts
+                      {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
                     {% else %}
-
-                    DST Ends 
-
-                    {{ as_timestamp(state_attr(entity, 'dstEnd')) |
-                    timestamp_custom('%d/%m/%Y, %H:%M') }}
-
+                      DST Ends
+                      {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
                     {% endif %}
                   icon: mdi:clock
                   fill_container: true
@@ -134,19 +126,11 @@ browser_mod:
                   primary: United Kingdom
                   secondary: >-
                     {% if states(entity) == 'False' %}
-
-                    DST Starts
-
-                    {{ as_timestamp(state_attr(entity, 'dstStart')) |
-                    timestamp_custom('%d/%m/%Y, %H:%M') }}
-
+                      DST Starts
+                      {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
                     {% else %}
-
-                    DST Ends
-
-                    {{ as_timestamp(state_attr(entity, 'dstEnd')) |
-                    timestamp_custom('%d/%m/%Y, %H:%M') }}
-
+                      DST Ends
+                      {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
                     {% endif %}
                   icon: mdi:clock
                   fill_container: true
@@ -168,19 +152,11 @@ browser_mod:
                   primary: USA, East Coast
                   secondary: >-
                     {% if states(entity) == 'False' %}
-
-                    DST Starts
-
-                    {{ as_timestamp(state_attr(entity, 'dstStart')) |
-                    timestamp_custom('%d/%m/%Y, %H:%M') }}
-
+                      DST Starts
+                      {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
                     {% else %}
-
-                    DST Ends
-
-                    {{ as_timestamp(state_attr(entity, 'dstEnd')) |
-                    timestamp_custom('%d/%m/%Y, %H:%M') }}
-
+                      DST Ends
+                      {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
                     {% endif %}
                   icon: mdi:clock
                   fill_container: true
