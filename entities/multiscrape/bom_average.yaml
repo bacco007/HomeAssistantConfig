@@ -12,23 +12,32 @@
           select: "#temperature1 > tbody > tr:nth-child(3) > td:nth-child(2)"
           value_template: "{{value | replace(' °C', '')}}"
         - name: maxtemp_hottest
-          select: "#temperature1 > tbody > tr:nth-child(2) > td.col2"
+          select: "#temperature1 > tbody > tr:nth-child(2) > td:nth-child(2)"
           value_template: "{{value | replace(' °C', '')}}"
         - name: maxtemp_coldest
-          select: "#temperature1 > tbody > tr:nth-child(4) > td.col2"
+          select: "#temperature1 > tbody > tr:nth-child(4) > td:nth-child(2)"
           value_template: "{{value | replace(' °C', '')}}"
         - name: mintemp_average
           select: "#temperature2 > tbody > tr:nth-child(3) > td:nth-child(2)"
           value_template: "{{value | replace(' °C', '')}}"
         - name: mintemp_hottest
-          select: "#temperature2 > tbody > tr:nth-child(2) > td.col2"
+          select: "#temperature2 > tbody > tr:nth-child(2) > td:nth-child(2)"
           value_template: "{{value | replace(' °C', '')}}"
         - name: mintemp_coldest
-          select: "#temperature2 > tbody > tr:nth-child(4) > td.col2"
+          select: "#temperature2 > tbody > tr:nth-child(4) > td:nth-child(2)"
           value_template: "{{value | replace(' °C', '')}}"
         - name: rainfall_highest
-          select: "#rainfall1 > tbody > tr:nth-child(2) > td.no-qc"
+          select: "#rainfall1 > tbody > tr:nth-child(2) > td:nth-child(2)"
           value_template: "{{value | replace(' mm', '')}}"
         - name: rainfall_average
           select: "#typical1 > tbody > tr:nth-child(4) > td:nth-child(2)"
           value_template: "{{value | replace(' mm', '')}}"
+        - name: rainfall_highest
+          select: "#rainfall1 > tbody > tr:nth-child(2) > td:nth-child(2)"
+          value_template: "{{value | replace(' mm', '')}}"
+        - name: typicalarounddate_maxtemp
+          select: "#typical1 > tbody > tr:nth-child(2) > td:nth-child(2)"
+          value_template: "{{value | replace(' °C', '')}}"
+        - name: typicalarounddate_mintemp
+          select: "#typical1 > tbody > tr:nth-child(3) > td:nth-child(2)"
+          value_template: "{{value | replace(' °C', '')}}"
