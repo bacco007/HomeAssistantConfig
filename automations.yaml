@@ -8,3 +8,20 @@
       notify_device: e93f101330f503133307ec86a813b514
       cm4_mmc: MMC
       cm4_wifi: With Wifi
+- id: '1696920090820'
+  alias: Update BOM Average when Unavailable
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.bom_average
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - service: multiscrape.trigger_bom_average
+    data: {}
+  mode: single

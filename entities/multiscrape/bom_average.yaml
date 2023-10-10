@@ -2,6 +2,8 @@
 - name: bom_average
   resource_template: "http://www.bom.gov.au/jsp/ncc/cdio/calendar/climate-calendar?stn_num=055325&month={{now().strftime('%m')|string}}&day={{now().strftime('%d')|string}}"
   scan_interval: 21600
+  log_response: true
+  timeout: 60
   sensor:
     - unique_id: bom_average
       name: BOM Average
