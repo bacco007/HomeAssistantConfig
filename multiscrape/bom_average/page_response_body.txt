@@ -1,0 +1,702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-AU" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<meta name="language" content="english" />
+		<title>Climate calendar</title>
+		<link rel="Schema.AGLS" href="http://www.naa.gov.au/recordkeeping/gov_online/agls/1.2" />
+		<meta name="DC.Publisher" content="corporateName=Bureau of Meteorology" />
+		<meta name="DC.Format" content="text/html" />
+		<meta name="DC.Coverage.jurisdiction" content="Commonwealth of Australia" />
+		<meta name="DC.Rights" scheme="URI" content="http://www.bom.gov.au/other/copyright.shtml" />
+		<meta name="DC.Language" scheme="RFC1766" content="en" />
+		<meta name="AGLS.Audience" scheme="BoM_audience list" content="All" />
+		<meta  name="keywords" content="climate calendar, on this day, climate, average, normal, alamanac, weather planner, event forecast, wedding forecast, travel weather, outdoor event, typical weather, weather forecast" />
+		<meta name="description" content="The Australian Climate calendar shows typical and historical weather for any day of the year." />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="/css/core.css" />
+		<link rel="stylesheet" type="text/css" href="/standard/common.css" />
+		<link rel="stylesheet" type="text/css" href="/climate/cdo/styles/cdo.css" />
+		<link rel="stylesheet" type="text/css" href="/climate/cdo/styles/climate-calendar.css" />
+		<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/css/core-ie.css" /><![endif]-->
+		<script src="/scripts/utilities.js" type="text/javascript" ></script>
+		<script src="/climate/cdo/scripts/sidemenu.js" type="text/javascript" ></script>
+		<script src="/climate/cdo/scripts/climate-calendar.js" type="text/javascript" ></script>
+	
+                              <script>!function(a){var e="https://s.go-mpulse.net/boomerang/",t="addEventListener";if("False"=="True")a.BOOMR_config=a.BOOMR_config||{},a.BOOMR_config.PageParams=a.BOOMR_config.PageParams||{},a.BOOMR_config.PageParams.pci=!0,e="https://s2.go-mpulse.net/boomerang/";if(window.BOOMR_API_key="6WJWU-82JGA-WH5QR-FV53R-5JQ89",function(){function n(e){a.BOOMR_onload=e&&e.timeStamp||(new Date).getTime()}if(!a.BOOMR||!a.BOOMR.version&&!a.BOOMR.snippetExecuted){a.BOOMR=a.BOOMR||{},a.BOOMR.snippetExecuted=!0;var i,_,o,r=document.createElement("iframe");if(a[t])a[t]("load",n,!1);else if(a.attachEvent)a.attachEvent("onload",n);r.src="javascript:void(0)",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="width:0;height:0;border:0;display:none;",o=document.getElementsByTagName("script")[0],o.parentNode.insertBefore(r,o);try{_=r.contentWindow.document}catch(O){i=document.domain,r.src="javascript:var d=document.open();d.domain='"+i+"';void(0);",_=r.contentWindow.document}_.open()._l=function(){var a=this.createElement("script");if(i)this.domain=i;a.id="boomr-if-as",a.src=e+"6WJWU-82JGA-WH5QR-FV53R-5JQ89",BOOMR_lstart=(new Date).getTime(),this.body.appendChild(a)},_.write("<bo"+'dy onload="document._l();">'),_.close()}}(),"".length>0)if(a&&"performance"in a&&a.performance&&"function"==typeof a.performance.setResourceTimingBufferSize)a.performance.setResourceTimingBufferSize();!function(){if(BOOMR=a.BOOMR||{},BOOMR.plugins=BOOMR.plugins||{},!BOOMR.plugins.AK){var e=""=="true"?1:0,t="",n="n2h4lpqx3m6rszjgv2dq-f-698e2631e-clientnsv4-s.akamaihd.net",i="false"=="true"?2:1,_={"ak.v":"36","ak.cp":"491154","ak.ai":parseInt("320835",10),"ak.ol":"0","ak.cr":20,"ak.ipv":4,"ak.proto":"http/1.1","ak.rid":"30f414c6","ak.r":46126,"ak.a2":e,"ak.m":"a","ak.n":"essl","ak.bpcip":"110.143.197.0","ak.cport":52856,"ak.gh":"23.219.64.55","ak.quicv":"","ak.tlsv":"UNKNOWN","ak.0rtt":"","ak.csrc":"-","ak.acc":"reno","ak.t":"1697033863","ak.ak":"hOBiQwZUYzCg5VSAfCLimQ==EfmFC3BJG8uAqlSv6rYSi+1Hmu9+0eCl+OXNo4w3uaLRNRxxSzDW+fv4r8Fo+S7EXl4912rDh7l6sIkdz838zvX69cDQIGL9OwEJZPMiYibpeeg8IzviSYW63QOQ7g1L5gA/7C0yRNRT3Ulpdcu2po5gNKWc3C9AG/0RhnhHVT3cwemLTNRwai3VaLYbfbE3bWZgo0kKXGUEiKQuHmeXbAjCzhq/keAP3AW2HIHCcTcnnzHAs55AnH/V6Yy/T3NiJvzppdl2UKYmbCEGoAI5T1LgPBJT3S+6WRkHNAUTB4xFnOAVIDmRiVGlX1tSZvRgQGGCB+rxu5ZXSFL7gPdd7aZBOOUQSIug3reTlNbplnNIZ8XPrmlYiiCxpXAJvQFZ6aAiAGyrEae1r460Ne9kGsk9pYazNM6Bwz8V1ffRKJo=","ak.pv":"43","ak.dpoabenc":"","ak.tf":i};if(""!==t)_["ak.ruds"]=t;var o={i:!1,av:function(e){var t="http.initiator";if(e&&(!e[t]||"spa_hard"===e[t]))_["ak.feo"]=void 0!==a.aFeoApplied?1:0,BOOMR.addVar(_)},rv:function(){var a=["ak.bpcip","ak.cport","ak.cr","ak.csrc","ak.gh","ak.ipv","ak.m","ak.n","ak.ol","ak.proto","ak.quicv","ak.tlsv","ak.0rtt","ak.r","ak.acc","ak.t","ak.tf"];BOOMR.removeVar(a)}};BOOMR.plugins.AK={akVars:_,akDNSPreFetchDomain:n,init:function(){if(!o.i){var a=BOOMR.subscribe;a("before_beacon",o.av,null,null),a("onbeacon",o.rv,null,null),o.i=!0}return this},is_complete:function(){return!0}}}}()}(window);</script><script >bazadebezolkohpepadr="1815030940"</script><script type="text/javascript" src="http://www.bom.gov.au/akam/13/6c2f2db6"  defer></script></head>
+	<body>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5VPX722');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5VPX722"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+	<ul id="jumplinks">
+		<li><a href="#content">Skip to main content</a></li>
+	</ul>
+
+    <!-- Start: PageHeight -->
+    <div id="pageheight">
+	  <div id="pagewrap">
+      <!-- Start: Header -->
+      <div id="header">
+		<div class="l_content">
+			<div id="header-logo">
+				<img class="bannerprint" width="1" height="1" alt="Print Background" src="/images/ui/bannerprint.gif" />
+				<a id="logo" href="/?ref=logo"><img src="/images/ui/bom_logo_clr.gif" title="Australian Government - Bureau of Meteorology" alt="Australian Government - Bureau of Meteorology" /></a>
+			</div>
+			<div id="header-main">
+				<div class="l_top">
+					<div id="header-search">
+						<form action="//search.bom.gov.au/s/search.html" method="get" class="searchform" enctype="application/x-www-form-urlencoded">
+							<label for="query">Search</label><input type="text" id="query" name="query" size="30" placeholder="Enter search terms" value="" />
+							<input type="hidden" name="collection" value="bom" />
+							<input type="submit" value="Search" name="Submit" title="Search" class="search" />
+						</form>
+					</div>
+					<ul>
+						<li><a href="/?ref=hdr">Home</a></li>
+						<li><a href="/inside/index.shtml?ref=hdr">About</a></li>
+                                                <li><a href="//media.bom.gov.au/">Media</a></li>
+						<li class="last"><a href="/inside/contacts.shtml?ref=hdr">Contacts</a></li>
+					</ul>
+				</div>
+				<div class="l_bottom">
+					<ul class="sf-menu">
+						<li id="sf-menu-nsw">
+							<abbr title="New South Wales"><a href="/nsw/?ref=hdr" title="New South Wales">NSW</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/nsw-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/nsw/index.shtml?ref=hdr" title="New South Wales Weather and Warnings">NSW Weather &amp; Warnings</a></li>
+								<li><a href="/nsw/warnings/index.shtml?ref=hdr" title="New South Wales Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/nsw/forecasts/index.shtml?ref=hdr" title="New South Wales Forecasts">Forecasts</a></li>
+								<li><a href="/nsw/forecasts/sydney.shtml?ref=hdr" title="Sydney Forecast">Sydney Forecast</a></li>
+								<li><a href="/nsw/forecasts/map.shtml?ref=hdr" title="New South Wales Forecast Area Map">NSW Forecast Area Map</a></li>
+								<li><a href="/nsw/observations/index.shtml?ref=hdr" title="New South Wales Weather Observations">Observations</a></li>
+								<li><a href="/nsw/observations/sydney.shtml?ref=hdr" title="Latest Weather Observations for the Sydney Area">Sydney Observations</a></li>
+								<li><a href="/nsw/observations/nswall.shtml?ref=hdr" title="Latest Weather Observations for New South Wales">All NSW Observations</a></li>
+								<li class="last"><a href="/nsw/flood/index.shtml?ref=hdr" title="New South Wales Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-vic">
+							<abbr title="Victoria"><a href="/vic/?ref=hdr" title="Victoria">VIC</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/vic-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/vic/index.shtml?ref=hdr" title="Victorian Weather and Warnings">VIC Weather &amp; Warnings</a></li>
+								<li><a href="/vic/warnings/index.shtml?ref=hdr" title="Victorian Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/vic/forecasts/index.shtml?ref=hdr" title="Victorian Forecasts">Forecasts</a></li>
+								<li><a href="/vic/forecasts/melbourne.shtml?ref=hdr" title="Melbourne Forecast">Melbourne Forecast</a></li>
+								<li><a href="/vic/forecasts/map.shtml?ref=hdr" title="Victorian Forecast Areas Map">Vic. Forecast Areas Map</a></li>
+								<li><a href="/vic/observations/index.shtml?ref=hdr" title="Victorian Observations">Observations</a></li>
+								<li><a href="/vic/observations/melbourne.shtml?ref=hdr" title="Latest Weather Observations for the Melbourne Area">Melbourne Observations</a></li>
+								<li><a href="/vic/observations/vicall.shtml?ref=hdr" title="Latest Weather Observations for Victoria">All Victorian Observations</a></li>
+								<li class="last"><a href="/vic/flood/index.shtml?ref=hdr" title="Victoria Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-qld">
+							<abbr title="Queensland"><a href="/qld/?ref=hdr" title="Queensland">QLD</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/qld-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/qld/index.shtml?ref=hdr" title="Queensland Weather and Warnings">QLD Weather &amp; Warnings</a></li>
+								<li><a href="/qld/warnings/index.shtml?ref=hdr" title="Queensland Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/qld/forecasts/index.shtml?ref=hdr" title="Queensland Forecasts">Forecasts</a></li>
+								<li><a href="/qld/forecasts/brisbane.shtml?ref=hdr" title="Brisbane Forecast">Brisbane Forecast</a></li>
+								<li><a href="/qld/forecasts/map.shtml?ref=hdr" title="Queensland Forecast Areas Map">Qld. Forecast Areas Map</a></li>
+								<li><a href="/qld/observations/index.shtml?ref=hdr" title="Queensland Observations">Observations</a></li>
+								<li><a href="/qld/observations/brisbane.shtml?ref=hdr" title="Latest Weather Observations for the Brisbane Area">Brisbane Observations</a></li>
+								<li><a href="/qld/observations/qldall.shtml?ref=hdr" title="Latest Weather Observations for Queensland">All Queensland Observations</a></li>
+								<li class="last"><a href="/qld/flood/index.shtml?ref=hdr" title="Queensland Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-wa">
+							<abbr title="Western Australia"><a href="/wa/?ref=hdr" title="Western Australia">WA</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/wa-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/wa/index.shtml?ref=hdr" title="Western Australia Weather and Warnings">WA Weather &amp; Warnings</a></li>
+								<li><a href="/wa/warnings/index.shtml?ref=hdr" title="Western Australia Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/wa/forecasts/index.shtml?ref=hdr" title="Western Australia Forecasts">Forecasts</a></li>
+								<li><a href="/wa/forecasts/perth.shtml?ref=hdr" title="Perth Forecast">Perth Forecast</a></li>
+								<li><a href="/wa/forecasts/map.shtml?ref=hdr" title="Western Australian Forecast Areas Map">WA Forecast Areas Map</a></li>
+								<li><a href="/wa/observations/index.shtml?ref=hdr" title="Western Australia Observations">Observations</a></li>
+								<li><a href="/wa/observations/perth.shtml?ref=hdr" title="Latest Weather Observations for the Perth Area">Perth Observations</a></li>
+								<li><a href="/wa/observations/waall.shtml?ref=hdr" title="Latest Weather Observations for Western Australia">All WA Observations</a></li>
+								<li class="last"><a href="/wa/flood/index.shtml?ref=hdr" title="Western Australia Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-sa">
+							<abbr title="South Australia"><a href="/sa/?ref=hdr" title="South Australia">SA</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/sa-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/sa/index.shtml?ref=hdr" title="South Australian Weather and Warnings">SA Weather &amp; Warnings</a></li>
+								<li><a href="/sa/warnings/index.shtml?ref=hdr" title="Warnings for South Australia">Warnings Summary</a></li>
+								<li><a href="/sa/forecasts/index.shtml?ref=hdr" title="South Australian Forecasts">Forecasts</a></li>
+								<li><a href="/sa/forecasts/adelaide.shtml?ref=hdr" title="Adelaide Forecast">Adelaide Forecast</a></li>
+								<li><a href="/sa/forecasts/map.shtml?ref=hdr" title="South Australia Forecast Area Map">SA Forecast Area Map</a></li>
+								<li><a href="/sa/observations/index.shtml?ref=hdr" title="South Australian Observations">Observations</a></li>
+								<li><a href="/sa/observations/adelaide.shtml?ref=hdr" title="Latest Weather Observations for the Adelaide Area">Adelaide Observations</a></li>
+								<li><a href="/sa/observations/saall.shtml?ref=hdr" title="Latest Weather Observations for South Australia">All SA Observations</a></li>
+								<li class="last"><a href="/sa/flood/index.shtml?ref=hdr" title="South Australia Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-tas">
+							<abbr title="Tasmania"><a href="/tas/?ref=hdr" title="Tasmania">TAS</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/tas-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/tas/index.shtml?ref=hdr" title="Tasmanian Weather and Warnings">TAS Weather &amp; Warnings</a></li>
+								<li><a href="/tas/warnings/index.shtml?ref=hdr" title="Tasmanian Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/tas/forecasts/index.shtml?ref=hdr" title="Tasmanian Forecasts">Forecasts</a></li>
+								<li><a href="/tas/forecasts/hobart.shtml?ref=hdr" title="Hobart Forecast">Hobart Forecast</a></li>
+								<li><a href="/tas/forecasts/map.shtml?ref=hdr" title="Tasmanian Forecast Areas Map">Tas. Forecast Areas Map</a></li>
+								<li><a href="/tas/observations/index.shtml?ref=hdr" title="Tasmanian Observations">Observations</a></li>
+								<li><a href="/tas/observations/hobart.shtml?ref=hdr" title="Latest Weather Observations for the Hobart Area">Hobart Observations</a></li>
+								<li><a href="/tas/observations/tasall.shtml?ref=hdr" title="Latest Weather Observations for Tasmania">All Tasmanian Observations</a></li>
+								<li class="last"><a href="/tas/flood/index.shtml?ref=hdr" title="Tasmania Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-act">
+							<abbr title="Australian Capital Territory"><a href="/act/?ref=hdr" title="Australian Capital Territory">ACT</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/act-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/act/index.shtml?ref=hdr" title="Australian Capital Territory Weather and Warnings">ACT Weather &amp; Warnings</a></li>
+								<li><a href="/act/warnings/index.shtml?ref=hdr" title="Australian Capital Territory Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/act/forecasts/index.shtml?ref=hdr" title="Australian Capital Territory Forecasts">Forecasts</a></li>
+								<li><a href="/act/forecasts/canberra.shtml?ref=hdr" title="Canberra Forecast">Canberra Forecast</a></li>
+								<li><a href="/act/forecasts/act.shtml?ref=hdr" title="Australian Capital Territory Forecast">ACT Forecast</a></li>
+								<li><a href="/act/observations/index.shtml?ref=hdr" title="Australian Capital Territory Observations">Observations</a></li>
+								<li class="last"><a href="/act/observations/canberra.shtml?ref=hdr" title="Latest Weather Observations for the Canberra Area">Canberra Observations</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-nt">
+							<abbr title="Northern Territory"><a href="/nt/?ref=hdr" title="Northern Territory">NT</a></abbr>
+							<ul>
+								<li class="decoration"><img src="/images/weather/nt-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/nt/index.shtml?ref=hdr" title="Northern Territory Weather and Warnings">NT Weather &amp; Warnings</a></li>
+								<li><a href="/nt/warnings/index.shtml?ref=hdr" title="Northern Territory Warnings Summary">Warning Summary</a></li>
+								<li><a href="/nt/forecasts/index.shtml?ref=hdr" title="Northern Territory Forecasts">Forecasts</a></li>
+								<li><a href="/nt/forecasts/darwin.shtml?ref=hdr" title="Darwin Forecast">Darwin Forecast</a></li>
+								<li><a href="/nt/forecasts/map.shtml?ref=hdr" title="Northern Territory Forecast Area Map">NT Forecast Areas Map</a></li>
+								<li><a href="/nt/observations/index.shtml?ref=hdr" title="Northern Territory Weather Observations">Observations</a></li>
+								<li><a href="/nt/observations/darwin.shtml?ref=hdr" title="Latest Weather Observations for Darwin Area">Darwin Observations</a></li>
+								<li><a href="/nt/observations/ntall.shtml?ref=hdr" title="All NT Weather Observations">All NT Observations</a></li>
+								<li class="last"><a href="/nt/flood/index.shtml?ref=hdr" title="Northern Territory Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<li id="sf-menu-aus" class="separator">
+							<a href="/australia/?ref=hdr" title="National Weather and Warnings">Australia</a>
+							<ul>
+								<li class="decoration"><img src="/images/weather/aus-thumb.png" alt="" /></li>
+								<li class="heading"><a href="/australia/index.shtml?ref=hdr" title="National Weather and Warnings">National Weather &amp; Warnings</a></li>
+								<li><a href="/australia/warnings/index.shtml?ref=hdr" title="National Warnings Summary">Warnings Summary</a></li>
+								<li><a href="/australia/majorcities.shtml?ref=hdr" title="Major Cities Forecast plus Outlook">Major Cities</a></li>
+								<li><a href="/australia/radar/index.shtml?ref=hdr" title="Radar Images">Radar Images</a></li>
+								<li><a href="/australia/charts/index.shtml?ref=hdr" title="Weather Maps">Weather Maps</a></li>
+								<li><a href="/australia/satellite/index.shtml?ref=hdr" title="Recent Satellite Images">Satellite Images</a></li>
+								<li class="last"><a href="/australia/flood/index.shtml?ref=hdr" title="Australia Rainfall and River Conditions">Rainfall &amp; River Conditions</a></li>
+							</ul>
+							<div class="sf-menu-pointer"></div>
+						</li>
+						<!-- <li class="no-menu"><a href="/global/?ref=hdr" title="Global Weather and Warnings">Global</a></li> -->
+						<li class="last no-menu"><a href="/ant/?ref=hdr" title="Antarctic and Southern Ocean Weather">Antarctica</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="l_shadow"></div>
+      </div>
+      <!-- End: Header -->
+
+      <!--#include virtual="site_announcement.html" -->
+
+      <!-- Start: Columns -->
+      <div id="columns">
+		<!-- Start: Container -->
+		<div id="container">
+  			<!-- Begin: breadcrumbs -->
+  			<p id="breadcrumb"><a href="/index.shtml">Bureau Home</a> &gt; <a href="/climate/data/index.shtml">Climate Data Online</a> &gt; <strong>Climate calendar</strong></p>
+			<!-- End: Breadcrumb -->
+			<h1>Climate calendar<br />
+    			<strong>Tamworth Airport Aws</strong>
+			</h1>
+			<!-- Start: Content -->
+			<div id="content">
+			 <!-- about info -->
+			 	<div id="page-info"><a href="/climate/cdo/about/about-climate-calendar.shtml" title="Background information about this page">About the climate calendar</a></div>
+			 	<div class="note">
+              		<p>The calendar is based on weather history and is not a forecast. Typical weather shows 7 day averages around this day of the year, while historical weather 
+                shows the conditions recorded for this day of the year.</p>
+              </div>
+     <p id="cdo"><a href="http://www.bom.gov.au/climate/data/">Climate Data Online</a></p>
+     <div class="metadata">
+         <div id="map-link"><a href="http://www.bom.gov.au/jsp/ncc/cdio/cvg/av?p_stn_num=055325&amp;p_prim_element_index=0&amp;p_comp_element_index=0&amp;period_of_avg=&amp;normals_years=&amp;redraw=null&amp;p_display_type=enlarged_map" title="Link to high resolution topographic map">
+         MAP</a></div>
+     <div id="site"><strong>Station: </strong><span id="station">Tamworth Airport Aws</span>
+     </div>
+     <div class="line">
+           <div id="id"><strong>Number: </strong>055325</div>
+           <div id="startdate"><strong>Opened: </strong>1992</div>
+           <div id="status"><strong>Now: </strong>
+            Open</div>       </div>        <div class="line">              <div id="latitude"><strong>Lat: </strong>31.07&deg;S</div>              <div id="longitude"><strong>Lon: </strong>150.84&deg;E</div>              <div id="elevation"><strong>Elevation: </strong>395 m</div>        </div> </div><form action="climate-calendar?" method="get" onsubmit="return loadDays()" id="thisday" class="no-print">
+       <fieldset>
+       <input type="hidden" id="stn_num" name="stn_num" value="055325" size="20" maxlength="10">
+       </input>
+       <label for="month">Choose a month</label>
+ <span id="daySelect">
+            <select name="month" id ="month" size="1" onchange="loadDays()">
+<option value="01">January</option>
+<option value="02">February</option>
+<option value="03">March</option>
+<option value="04">April</option>
+<option value="05">May</option>
+<option value="06">June</option>
+<option value="07">July</option>
+<option value="08">August</option>
+<option value="09">September</option>
+<option selected="selected" value="10">October</option>
+<option value="11">November</option>
+<option value="12">December</option>
+            </select>
+            <label for="day">Choose a day</label>
+            <select name="day" id= "day" size="1">
+<option value="01">01</option>
+<option value="02">02</option>
+<option value="03">03</option>
+<option value="04">04</option>
+<option value="05">05</option>
+<option value="06">06</option>
+<option value="07">07</option>
+<option value="08">08</option>
+<option value="09">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option selected="selected" value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+<option value="31">31</option>
+            </select>
+ </span>
+              <input type="submit" value="Get day" id="submitday">
+            </input>
+<div id="statslink"><a href="/climate/averages/tables/cw_055325.shtml" class="link">Monthly conditions</a></div>
+            </fieldset>
+</form>
+ <h2 class="almanac">Typical weather around 12 October</h2>
+ <table class="table-basic" id="typical1" summary="">
+     <tbody>
+         <tr>
+             <th colspan="2" title="Historical average over 7 days">Averages</th>
+         </tr>
+         <tr>
+             <td title="Average maximum temperature" class="col1">Maximum
+                 temperature</td>
+             <td>24.8<span> &deg;C</span></td>
+         </tr>
+         <tr>
+             <td title="Average minimum temperature" class="col1">Minimum
+                 temperature</td>
+             <td>9.1<span> &deg;C</span></td>
+         </tr>
+         <tr>
+             <td title="Average rainfall" class="col1">Rainfall</td>
+             <td>
+2.2<span> mm</span>             </td>
+         </tr>
+     </tbody>
+ </table>
+ <table class="table-basic columns" id="typical2" summary="">
+     <tbody>
+         <tr>
+             <th colspan="5" title="Chance of rainfall" class="chance-rain">
+                 Days with rain</th>
+         </tr>
+         <tr class="chance">
+             <td><span>Dry</span><br />0 <span>mm</span></td>
+             <td><span>At least</span><br />2 <span>mm</span></td>
+             <td><span>At least</span><br />5 <span>mm</span></td>
+             <td><span>At least</span><br />10 <span>mm</span></td>
+             <td><span>At least</span><br />25 <span>mm</span></td>
+         </tr>
+         <tr class="chance">
+             <td title="Chance of 0 mm of rain" class="narrow">
+73<span> %</span></td>             <td title="Chance of at least 2mm of rain">
+15<span> %</span></td>             <td title="Chance of at least 5mm of rain">
+9<span> %</span></td>               <td title="Chance of at least 10mm of rain">8<span> %</span></td>               <td title="Chance of at least 25mm of rain">3<span> %</span></td>         </tr>     </tbody> </table><hr class="clearfix" /><h2 class="almanac">Historical weather on 12 October</h2><table class="table-basic" id="temperature1" summary="">    <tbody>        <tr>            <th colspan="3" class="max-temp">Maximum Temperature</th>        </tr>        <tr>             <td class="col1" title="Highest maximum temperature on record">Hottest                 day</td>          <td class="col2">
+32.7<span > &deg;C</span></td>          <td class="col3">
+2013</td>      </tr>
+      <tr>
+          <td title="Mean maximum temperature" class="col1">Average</td>
+          <td>
+25.1<span> &deg;C</span>           </td>
+          <td>
+31<span> y</span>           </td>
+      </tr>
+      <tr>
+          <td title="Lowest maximum temperature on record" class="col1">Coldest
+                day</td>
+          <td class="col2">
+14.8<span > &deg;C</span></td>          <td class="col3">
+2012</td>      </tr>
+    </tbody>
+</table>
+<table class="table-basic" id="temperature2" summary="">
+    <tbody>
+      <tr>
+          <th colspan="3" class="min-temp">Minimum Temperature</th>
+      </tr>
+      <tr>
+          <td title="Highest minimum temperature on record" class="col1">Warmest
+          night</td>
+          <td class="col2">
+17.6<span > &deg;C</span></td>          <td class="col3">
+2017</td>      </tr>
+      <tr>
+           <td title="Mean minimum temperature" class="col1">Average</td>
+           <td>
+9.0<span> &deg;C</span>           </td>
+           <td>
+27<span> y</span>           </td>
+      </tr>
+      <tr>
+           <td title="Lowest minimum temperature on record" class="col1">Coldest
+                 night</td>
+          <td class="no-qc">
+1.2<span > &deg;C</span></td>          <td class="col3">
+2016</td>      </tr>
+    </tbody>
+</table>
+<table class="table-basic" id="rainfall1" summary="">
+    <tbody>
+      <tr>
+            <th colspan="3" class="high-rain">Rainfall</th>
+      </tr>
+      <tr>
+           <td title="Total highest rainfall 24 hours to 9am" class="col1">Highest
+                rainfall</td>
+          <td class="no-qc">
+39.2<span > mm</span></td>          <td class="col3">
+2017</td>      </tr>
+    </tbody></table>
+<table class="table-basic" id="rainfall2" summary=""><tbody><tr><td><div>
+<strong>On this day: </strong>
+<div id="eventdetails">
+<p>In 2006 severe fires burnt on the eastern shore of Hobart. </p>
+</div>
+</div></td></tr></tbody></table>
+    <p class="annotation">
+        <span class="no-qc">Red text</span> = data which are 
+        not quality controlled and confirmed. '--' = insufficient data.
+    <br />
+    These data  may differ from the official <a href="/climate/extreme/records.shtml">quality
+    checked records</a>.
+    This information is not a forecast.
+    </p>
+<p id="prodCodeDisplay"><b>Product Code: </b>IDCJCC0012  reference: 99963532</p>
+<div  class="do-print"><h4>COPYRIGHT</h4>
+<p>The copyright for any data is held in the Commonwealth of Australia and the purchaser shall give acknowledgement of the source in reference to the data. Apart from dealings under the copyright Act, 1968, the purchaser shall not reproduce, modify or supply (by sale or otherwise) these data without written permission.  If you need more information, you can contact us via the Climate Data &amp; Information links at: http://www.bom.gov.au/inside/contacts.shtml</p>
+<h4>LIABILITY</h4>
+<p>While every effort is made to supply the best data available this may not be possible in all cases. We do not give any warranty, nor accept any liability in relation to the information given, except that liability (if any), that is required by law.</p></div>
+<div class="date-modified">Page created: Thu 12 Oct 2023 01:17:43 AM AEDT</div>
+    <p class="source">&copy; Australian Bureau of Meteorology</p>
+</div>
+<!-- End: Content -->
+<!-- Begin: Right Column -->
+<div id="right-column">
+<!-- right-block -->
+<!-- climate-calendar.shtml -->
+<div id="right-block">
+<h2>Related data &amp; information</h2>
+<ul>
+    <li><a href="/climate/data-services/">Getting other data</a></li>
+    <li><a href="/climate/surveys/customer_feedback.shtml" title="Feedback survey">Please send feedback</a></li>
+</ul>
+<h3>Weather &amp; climate history</h3>
+<ul>
+    <li><a href="/climate/extreme/records.shtml">Climate extremes</a></li>
+    <li><a href="/announcements/sevwx/">Severe weather events</a></li>
+    <li><a href="/climate/mwr/">Monthly weather review</a></li>
+    <li><a href="/announcements/">Media releases</a></li>
+    <li><a href="/cyclone/history/index.shtml">Tropical cyclones history</a></li>
+    </ul>
+</div>
+<!-- end right block -->
+</div>
+<!-- End: Right Column -->
+</div>
+<!-- End: Container -->
+<!-- Begin: Left Column -->
+<div id="left-column">
+<!-- start left hand nav block -->
+<div id="left-block">
+    <div id="section-nav"><img src="/climate/images/climate.jpg" alt="" />
+    <p class="section-heading"><a href="/climate/">Climate</a></p>
+    <ul id="topmenu">
+	
+    <li><a href="/climate/ahead/">Outlooks &amp; drivers</a>
+		<ul>
+			<li><a href="/climate/outlooks/#/overview/summary/">Rainfall &amp; temperature outlooks</a> </li>
+			<li><a href="/climate/outlooks/#/overview/video/">Outlook video</a> </li>
+			<li><a href="/climate/enso/">Climate driver update</a></li>
+			<li><a href="/water/ssf/">Streamflow outlooks</a></li>
+			<li><a href="/climate/mjo/">Tropical monitoring</a></li>
+			<li><a href="/climate/rainfall-onset/">Northern rainfall onset</a></li>
+			<li><a href="/climate/cyclones/australia/">Tropical cyclone outlook</a></li>
+			<li><a href="/climate/model-summary/">Climate model summary</a></li>
+		</ul>
+    </li>
+        
+	<li><a  href="/climate/current/">News &amp; reports</a>
+		<ul>
+		<li><a href="/climate/drought/">Drought</a></li>
+			<li><a href="/climate/rainfall/">Rainfall update</a></li>	
+			<li><a href="/climate/current/statement_archives.shtml">Monthly, seasonal, annual summaries</a></li>
+			<li><a href="/climate/mwr/">Monthly weather review</a></li>
+			<li><a href="/climate/current/statements/">Signficant weather</a></li>
+			<li><a href="/climate/updates/">Climate updates</a></li>
+		</ul>
+    </li>
+    <li><a href="/climate/data/">Weather station data</a>
+            <ul>
+                <li><a href="/climate/data/index.shtml?bookmark=136">Daily rainfall</a></li>
+				<li><a href="/climate/data/index.shtml?bookmark=201">Recent observations</a></li>
+				<li><a href="/climate/data/index.shtml?bookmark=200">Monthly statistics</a></li>
+				<li><a href="/climate/australia/cities/">Major cities</a></li>
+				<li><a href="/climate/change/acorn-sat/">Long-term temperature data</a></li>
+            </ul>
+        </li>
+        <li><a href="/climate/data-services/">Data services</a>
+            <ul>
+                <li><a href="/climate/data/stations/">Weather Station Directory</a></li>
+            </ul>
+        </li>
+        <li><a href="/climate/maps/" title="Maps of recent and previous conditions">Maps
+            &ndash; history to now</a>
+            <ul>
+                <!--li><a href="/jsp/awap/rain/index.jsp">Rainfall</a></li-->
+                <li><a href="/climate/maps/rainfall/">Rainfall</a></li>
+				<li><a href="/jsp/awap/temp/index.jsp">Temperature</a></li>
+				<li><a href="/jsp/awap/vprp/index.jsp">Vapour pressure</a></li>
+				<li><a href="/jsp/awap/solar/index.jsp">Solar exposure</a></li>
+				<!--li><a href="/jsp/awap/ndvi/index.jsp" title="Normalised Difference Vegetation Index">Vegetation
+						index (NDVI)</a></li-->	
+				<li><a href="/climate/history/rainfall/">Rainfall history poster</a></li>
+				<li><a href="/climate/history/temperature/">Temperature history poster</a></li>
+				<li><a href="/jsp/awap/cmb/archive.jsp">Atmospheric circulation</a></li>
+            </ul>
+        </li>
+        <li><a href="/climate/averages/maps.shtml">Maps &ndash; averages</a>
+            <ul>
+                <li><a href="javascript:donothing();" class="menu-subheading">Rainfall</a>
+                    <ul>
+                        <li><a href="/jsp/ncc/climate_averages/rainfall/index.jsp">Mean
+                            rainfall </a></li>
+                        <li><a href="/jsp/ncc/climate_averages/decadal-rainfall/index.jsp">Decadal &amp; multi-decadal
+                            rainfall</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/rainfall-percentiles/index.jsp">Rainfall
+                            percentiles</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/rainfall-percentages/index.jsp">Rainfall
+                            percentages</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/rainfall-variability/index.jsp">Rainfall
+                            variability </a></li>
+                        <li><a href="/jsp/ncc/climate_averages/raindays/index.jsp">Days
+                            of rain </a></li>
+                    </ul>
+                </li>
+                <li><a href="javascript:donothing();" class="menu-subheading">Temperature</a>
+                    <ul>
+                        <li><a href="/jsp/ncc/climate_averages/temperature/index.jsp">Max,
+                            min &amp; mean temperature </a></li>
+                        <li><a href="/jsp/ncc/climate_averages/decadal-temperature/index.jsp">Decadal &amp; multi-decadal
+                            temperature</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/app-temperature/index.jsp">Apparent
+                            indoor temperature</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/temperature-percentiles/index.jsp">Temperature
+                            percentiles</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/frost/index.jsp">Potential
+                            frost days</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/degree-days/index.jsp">Degree
+                            days </a></li>
+                    </ul>
+                </li>
+                <li><a href="/jsp/ncc/climate_averages/relative-humidity/index.jsp">Humidity</a></li>
+                
+				<li><a href="javascript:donothing();" class="menu-subheading">Evaporation</a>
+                    <ul>
+                        <li><a href="/jsp/ncc/climate_averages/evaporation/index.jsp">Evaporation</a></li>
+                        <li><a href="/jsp/ncc/climate_averages/evapotranspiration/index.jsp">Evapotranspiration</a></li>
+                    </ul>
+                </li>
+				
+				<li><a href="javascript:donothing();" class="menu-subheading">Wind</a>
+					<ul>
+						<li><a href="/climate/averages/wind/IDCJCM0021_wind_roses.shtml">Wind</a></li>
+						<li><a href="/jsp/ncc/climate_averages/wind-velocity/index.jsp">Wind velocity</a></li>
+					</ul>
+				</li>
+				
+				<li><a href="javascript:donothing();" class="menu-subheading">Sunshine, radiation, cloud</a>
+					<ul>
+						<li><a href="/jsp/ncc/climate_averages/sunshine-hours/index.jsp">Sunshine
+							duration</a></li>
+						<li><a href="/jsp/ncc/climate_averages/solar-exposure/index.jsp">Solar
+							exposure</a></li>
+						<li><a href="/jsp/ncc/climate_averages/uv-index/index.jsp">Solar
+							ultraviolet (UV) Index</a></li>
+						<li><a href="/jsp/ncc/climate_averages/cloud/index.jsp">Cloud</a></li>
+					</ul>
+				</li>
+		
+				<li><a href="javascript:donothing();" class="menu-subheading">Cyclones, storms, fire</a>
+					<ul>
+						<li><a href="/climate/maps/averages/tropical-cyclones/">Tropical
+						cyclones </a></li>
+						<li><a href="/jsp/ncc/climate_averages/thunder-lightning/index.jsp">Thunder &amp; lightning </a></li>
+						<li><a href="/jsp/ncc/climate_averages/ffdi/index.jsp">Forest Fire Danger Index</a></li>
+					</ul>
+				</li>
+
+                <li><a href="javascript:donothing();" class="menu-subheading">Climate
+                    descriptions </a>
+                    <ul>
+                        <li><a href="/jsp/ncc/climate_averages/climate-classifications/index.jsp">Climate
+                            classifications </a></li>
+                    </ul>
+                </li>
+                <li><a href="/climate/averages/climatology/gridded-data-info/gridded-climate-data.shtml">Gridded
+                    climate data sets</a></li>
+            </ul>
+        </li>
+        <li><a href="/climate/change/">Climate change</a>
+            <ul>
+                <li><a href="/climate/change/index.shtml#tabs=Tracker&amp;tracker=trend-maps">Trend
+                    maps</a></li>
+                <li><a href="/climate/change/index.shtml#tabs=Tracker&amp;tracker=timeseries">Timeseries</a></li>
+                
+                <li><a href="/climate/change/index.shtml#tabs=Tracker&amp;tracker=site-networks">Site networks</a></li>
+                <li><a href="/climate/change/index.shtml#tabs=Tracker&amp;tracker=global-trend-maps">Global trend
+                    maps</a></li>
+                <li><a href="/climate/change/index.shtml#tabs=Tracker&amp;tracker=global-timeseries">Global timeseries</a></li>
+            <li><a href="/climate/data/acorn-sat/">ACORN-SAT data &amp; details</a></li>
+            </ul>
+        </li>
+        <li><a href="/climate/extremes/">Extremes of climate</a>
+            <ul>
+                <li><a href="/cgi-bin/climate/extremes/daily_extremes.cgi">Daily extremes tables</a></li>
+                <li><a href="/cgi-bin/climate/extremes/extreme_maps.cgi">Climate extremes maps</a></li>
+                <li><a href="/cgi-bin/climate/extremes/ari_maps.cgi">Average recurrence interval</a></li>
+                <li><a href="/cgi-bin/climate/extremes/extreme_graphs.cgi">Extremes graphs &ndash; monthly</a></li>
+                <li><a href="/cgi-bin/climate/extremes/extreme_graphs_annual.cgi">Extremes graphs &ndash; annual</a></li>
+                <li><a href="/climate/extreme/records.shtml">Climate records</a></li>
+            </ul>
+        </li>
+        
+       <li><a href="/climate/about/">About Australian climate</a></li>
+
+    </ul>
+</div>
+</div>
+<!-- end of left hand nav block -->
+</div>
+<!-- End: Left Column -->
+
+<div class="clr"><!-- clear columns --></div>
+</div>
+<!-- End: Columns -->
+</div>
+<!-- End: pagewrap -->
+<!-- Start: Footer -->
+<div id="footer">
+    <div id="footer-columns">
+        <ul id="fc-one">
+            <li class="icon-link border-bottom uppercase"><a href="/australia/warnings/?ref=ftr" id="icon-link-warnings"><span>Warnings</span></a></li>
+            <li class="row-link-first uppercase"><a href="/water/?ref=ftr">Water</a></li>
+            <li class="row-link uppercase"><a href="/climate/?ref=ftr">Climate</a></li>
+            <li class="row-link uppercase"><a href="/environment/?ref=ftr">Environment</a></li>
+            <li class="border-top"><a href="/cyclone/?ref=ftr">Tropical Cyclones</a></li>
+            <li><a href="/tsunami/?ref=ftr">Tsunami Warning Centre</a></li>
+            <li><a href="/watl/?ref=ftr">Agriculture - Water and the Land</a></li>
+            <li><a href="/marine/?ref=ftr">Marine &amp; Ocean</a></li>
+            <li><a href="/uv/?ref=ftr">UV &amp; Sun Protection</a></li>
+            <li><a href="/australia/flood/?ref=ftr">Rainfall &amp; River Conditions</a></li>
+        </ul>
+        <ul id="fc-two">
+            <li class="imagebox-links">
+                <h3 class="hidden">Graphical Views</h3>
+                <ul>
+                    <li class="first"><a href="/australia/radar/?ref=ftr" id="imagebox-link-radar">Radar</a></li>
+                    <li><a href="/australia/satellite/?ref=ftr" id="imagebox-link-sat">Sat</a></li>
+                    <li><a href="/australia/charts/?ref=ftr" id="imagebox-link-maps">Maps</a></li>
+                </ul>
+            </li>
+            <li><a href="/jsp/watl/rainfall/pme.jsp?ref=ftr">Rainfall Forecasts</a></li>
+            <li><a href="/climate/ahead/?ref=ftr">Seasonal Outlooks</a></li>
+            <li><a href="/climate/change/?ref=ftr">Climate Variability &amp; Change</a></li>
+            <li><a href="/climate/data/?ref=ftr">Climate Data Online</a></li>
+            <li><a href="/water/ssf/?ref=ftr">Seasonal Streamflow Forecasts</a></li>
+            <li><a href="/water/dashboards/#/water-storages/summary/state">Water Storage</a></li>
+        </ul>
+        <ul id="fc-three">
+            <li class="icon-link border-bottom"><a href="/australia/meteye?ref=ftr" id="icon-link-fe"><span>MetEye&trade;</span></a></li>
+            <li><a href="/weather-services/?ref=ftr">National Weather Services</a></li>
+            <li><a href="/aviation/?ref=ftr">Aviation Weather Services</a></li>
+            <li><a href="/defence/?ref=ftr">Defence Services</a></li>
+            <li><a href="http://www.sws.bom.gov.au/?ref=ftr">Space Weather Services</a></li>
+            <li><a href="/reguser/?ref=ftr">Registered User Services</a></li>
+            <li><a href="/business-solutions/industry-solutions.shtml?ref=ftr">Industry Solutions</a></li>
+            <li><a href="/sep/?ref=ftr">Supplier Entry Point</a></li>
+        </ul>
+        <ul id="fc-four">
+            <li style="line-height: 15px;" class="icon-link row-link-1st row-double"><a href="http://www.facebook.com/bureauofmeteorology" id="icon-link-fb"><span>Facebook</span></a></li>
+            <li style="line-height: 15px;" class="icon-link row-link-2nd"><a id="icon-link-tw" href="http://media.bom.gov.au/social-media/"><span>Twitter</span></a></li>
+            <li style="line-height: 15px;" class="icon-link row-link-1st"><a href="http://www.youtube.com/user/BureauOfMeteorology" id="icon-link-yt"><span>Youtube</span></a></li>
+            <li style="line-height: 15px;" class="icon-link row-link-2nd"><a href="http://media.bom.gov.au/social?ref=ftr" id="icon-link-bl"><span>Blog</span></a></li>
+            <li style="line-height: 15px; margin-bottom: 9px; padding-bottom: 12px;" class="icon-link row-link-1st border-bottom"><a style="background-image: url('/images/ui/in-icon-sprite.gif');" href="https://www.instagram.com/bureauofmeteorology/" id="icon-link-in"><span>Instagram</span></a></li>
+            <li style="line-height: 15px; margin-bottom: 9px; padding-bottom: 12px;" class="icon-link row-link-2nd border-bottom"><a href="http://www.bom.gov.au/rss/?ref=ftr" id="icon-link-rss"><span>RSS</span></a></li>
+            <li style="line-height: 15px;" class="row-link-first"><a href="/careers/?ref=ftr">Careers</a></li>
+            <li style="line-height: 15px;" class="row-link"><a href="/site-map/?ref=ftr">Sitemap</a></li>
+            <li style="line-height: 15px;" class="row-link"><a href="/other/feedback/?ref=ftr">Feedback</a></li>
+            <li style="line-height: 15px;" class="border-top"><a href="/foi/?ref=ftr">Freedom of Information</a></li>
+            <li style="line-height: 15px;"><a href="/iwk/?ref=ftr">Indigenous Weather Knowledge</a></li>
+            <li style="line-height: 15px;"><a href="/lam/glossary/?ref=ftr">Glossary</a></li>
+            <li style="line-height: 15px;"><a href="/climate/data-services/education.shtml ">Students and Teachers</a></li>
+        </ul>
+        <p id="timestamp">This page was created at <strong><!--#config timefmt="%H:%M" --><!--#echo var="DATE_LOCAL" --> on <!--#config timefmt="%A %e %B %Y (%Z)" --><!--#echo var="DATE_LOCAL" --></strong></p>
+        <p id="copyright">&#169; <a href="/other/copyright.shtml?ref=ftr">Copyright</a> Commonwealth of Australia <!--#config timefmt="%Y" --><!--#echo var="DATE_LOCAL" -->, Bureau of Meteorology (ABN 92 637 533 532) | CRICOS Provider 02015K | <a href="/other/disclaimer.shtml?ref=ftr">Disclaimer</a> | <a href="/other/privacy.shtml?ref=ftr">Privacy</a> | <a href="/other/accessibility.shtml?ref=ftr">Accessibility</a></p>
+    </div>
+</div>
+<!-- End: Footer -->
+</div>
+<!-- End: PageHeight -->
+
+<script src="/includes/analytics.js" type="text/javascript"></script>
+<noscript><img src="http://www.bom.gov.au/akam/13/pixel_6c2f2db6?a=dD02ZWRhMDg1NWQ2ZWUwMWZjZmU2ZGE1ZGY5NzFlOTlkMDQzMzVkOTQwJmpzPW9mZg==" style="visibility: hidden; position: absolute; left: -999px; top: -999px;" /></noscript></body>
+</html>
