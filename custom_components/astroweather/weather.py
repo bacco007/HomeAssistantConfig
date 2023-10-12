@@ -67,6 +67,7 @@ from .const import (
     ATTR_WEATHER_MOON_NEXT_SETTING,
     ATTR_WEATHER_MOON_PHASE,
     ATTR_WEATHER_MOON_NEXT_NEW_MOON,
+    ATTR_WEATHER_DEEP_SKY_DARKNESS,
     CONDITION_CLASSES,
     DEFAULT_ATTRIBUTION,
     DEVICE_TYPE_WEATHER,
@@ -76,9 +77,7 @@ from .entity import AstroWeatherEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
     """Set up the AstroWeather weather platform."""
     _LOGGER.info("Set up AstroWeather weather platform")
 
@@ -391,6 +390,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def deep_sky_darkness(self) -> float:
+        """Return length of deep sky darkness."""
+        if self._current is not None:
+            return self._current.deep_sky_darkness
+        return None
+
+    @property
     def attribution(self) -> str:
         """Return the attribution."""
         return DEFAULT_ATTRIBUTION
@@ -432,6 +438,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_MOON_NEXT_SETTING: self.moon_next_setting,
             ATTR_WEATHER_MOON_PHASE: self.moon_phase,
             ATTR_WEATHER_MOON_NEXT_NEW_MOON: self.moon_next_new_moon,
+            ATTR_WEATHER_DEEP_SKY_DARKNESS: self.deep_sky_darkness,
         }
 
     def get_forecast(self, index, param):

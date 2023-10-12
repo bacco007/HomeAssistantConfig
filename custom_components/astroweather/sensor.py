@@ -17,12 +17,11 @@ from homeassistant.util import dt as dt_util
 
 from homeassistant.const import (
     DEGREE,
-    LENGTH_METERS,
-    LENGTH_MILLIMETERS,
     PERCENTAGE,
-    SPEED_METERS_PER_SECOND,
-    TEMP_CELSIUS,
-    TIME_HOURS,
+    UnitOfLength,
+    UnitOfSpeed,
+    UnitOfTime,
+    UnitOfTemperature,
 )
 from .const import (
     DOMAIN,
@@ -43,7 +42,7 @@ _LOGGER = logging.getLogger(__name__)
 SENSOR_TYPES = {
     "forecast_length": [
         "Forecast Length",
-        TIME_HOURS,
+        UnitOfTime.HOURS,
         "mdi:map-marker-distance",
         None,
         None,
@@ -64,7 +63,7 @@ SENSOR_TYPES = {
     ],
     "elevation": [
         "Elevation",
-        LENGTH_METERS,
+        UnitOfLength.METERS,
         "mdi:image-filter-hdr",
         None,
         None,
@@ -162,7 +161,7 @@ SENSOR_TYPES = {
     ],
     "lifted_index": [
         "Lifted Index",
-        TEMP_CELSIUS,
+        UnitOfTemperature.CELSIUS,
         "mdi:arrow-expand-up",
         SensorDeviceClass.TEMPERATURE,
         STATE_CLASS_MEASUREMENT,
@@ -190,28 +189,28 @@ SENSOR_TYPES = {
     ],
     "wind10m_speed": [
         "10m Wind Speed",
-        SPEED_METERS_PER_SECOND,
+        UnitOfSpeed.METERS_PER_SECOND,
         "mdi:windsock",
         SensorDeviceClass.WIND_SPEED,
         STATE_CLASS_MEASUREMENT,
     ],
     "temp2m": [
         "2m Temperature",
-        TEMP_CELSIUS,
+        UnitOfTemperature.CELSIUS,
         "mdi:thermometer",
         SensorDeviceClass.TEMPERATURE,
         STATE_CLASS_MEASUREMENT,
     ],
     "dewpoint2m": [
         "2m Dewpoint",
-        TEMP_CELSIUS,
+        UnitOfTemperature.CELSIUS,
         "mdi:thermometer",
         SensorDeviceClass.TEMPERATURE,
         STATE_CLASS_MEASUREMENT,
     ],
     "precipitation_amount": [
         "Precipitation Amount",
-        LENGTH_MILLIMETERS,
+        UnitOfLength.MILLIMETERS,
         "mdi:weather-snowy-rainy",
         SensorDeviceClass.PRECIPITATION,
         STATE_CLASS_MEASUREMENT,
@@ -321,6 +320,20 @@ SENSOR_TYPES = {
         None,
         None,
     ],
+    "night_duration_astronomical": [
+        "Astronomical Night Duration",
+        UnitOfTime.SECONDS,
+        "mdi:timer-play-outline",
+        SensorDeviceClass.DURATION,
+        None,
+    ],
+    "deep_sky_darkness": [
+        "Deep Sky Darkness",
+        UnitOfTime.SECONDS,
+        "mdi:timer-play",
+        SensorDeviceClass.DURATION,
+        None,
+    ],
     "deepsky_forecast_today": [
         "Deepsky Forecast Today",
         PERCENTAGE,
@@ -366,9 +379,7 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
     """Set up the AstroWeather sensor platform."""
     _LOGGER.info("Set up AstroWeather sensor platform")
 
@@ -386,9 +397,7 @@ async def async_setup_entry(
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(
-            AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator)
-        )
+        sensors.append(AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator))
 
     async_add_entities(sensors, True)
     return True
@@ -412,23 +421,15 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        if (
-            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
-            == SensorDeviceClass.TIMESTAMP
-        ):
-            return dt_util.parse_datetime(
-                str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None))
-            )
+        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
+            return dt_util.parse_datetime(str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)))
         else:
             return getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        if (
-            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
-            == SensorDeviceClass.TIMESTAMP
-        ):
+        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
             return None
         else:
             return SENSOR_TYPES[self._sensor][SENSOR_UNIT]

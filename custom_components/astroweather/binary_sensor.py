@@ -16,16 +16,38 @@ from .const import (
 )
 from .entity import AstroWeatherEntity
 
+SENSOR_NAME = 0
+SENSOR_UNIT = 1
+SENSOR_ICON = 2
+SENSOR_DEVICE_CLASS = 3
+
 _LOGGER = logging.getLogger(__name__)
 
 # Sensor types are defined like: Name, Unit Type, icon, device class
 SENSOR_TYPES = {
-    "deep_sky_view": ["Deep Sky View", None, "mdi:weather-night", "mdi:weather-fog"],
+    "deep_sky_view": ["Deep Sky View", None, "mdi:weather-night", None],
+    "deep_sky_darkness_moon_rises": [
+        "Moon rises during darkness",
+        None,
+        "mdi:arrow-up-circle-outline",
+        None,
+    ],
+    "deep_sky_darkness_moon_sets": [
+        "Moon sets during darkness",
+        None,
+        "mdi:arrow-down-circle-outline",
+        None,
+    ],
+    "deep_sky_darkness_moon_always_up": [
+        "Moon always up during darkness",
+        None,
+        "mdi:arrow-up-bold-circle-outline",
+        None,
+    ],
 }
 
 
 async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
-
     """Set up the AstroWeather binary sensor platform."""
     _LOGGER.info("Set up AstroWeather binary sensor platform")
 
@@ -52,12 +74,12 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_a
 class AstroWeatherBinarySensor(AstroWeatherEntity, BinarySensorEntity):
     """Implementation of a AstroWeather Weatherflow Binary Sensor."""
 
-    def __init__(self, coordinator, entries, sensor, fcst_coordinator):
+    def __init__(self, coordinator, entries, sensor, fcst_coordinator) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator, entries, sensor, fcst_coordinator)
         self._sensor = sensor
-        self._device_class = SENSOR_TYPES[self._sensor][1]
-        self._name = f"{DOMAIN.capitalize()} {SENSOR_TYPES[self._sensor][0]}"
+        self._device_class = SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+        self._name = f"{DOMAIN.capitalize()} {SENSOR_TYPES[self._sensor][SENSOR_NAME]}"
 
     @property
     def name(self):
@@ -72,4 +94,4 @@ class AstroWeatherBinarySensor(AstroWeatherEntity, BinarySensorEntity):
     @property
     def icon(self):
         """Icon to use in the frontend."""
-        return SENSOR_TYPES[self._sensor][1]
+        return SENSOR_TYPES[self._sensor][SENSOR_ICON]
