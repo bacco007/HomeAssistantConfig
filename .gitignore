@@ -17,6 +17,7 @@ neighbours
 .ssh
 zigbee2mqtt
 image
+multiscrape
 
 # Ignore File Extensions
 *.conf

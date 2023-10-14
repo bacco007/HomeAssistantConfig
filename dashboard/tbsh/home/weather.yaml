@@ -142,7 +142,7 @@ cards:
             entity: weather.weatherflow_forecast_brisbane_st
             weather_icon_type: line
             animated_icon: true
-            forecast_days: 10
+            forecast_rows: 10
             locale: en-GB
             time_format: 24
             date_pattern: P

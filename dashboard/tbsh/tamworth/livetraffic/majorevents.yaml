@@ -37,27 +37,66 @@ entities:
     padding: 0
     entities:
       - type: custom:hui-element
-        card_type: markdown
+        card_type: custom:flex-table-card
+        entities:
+          include: sensor.getdata_livetrafficnsw_majorevents
+        clickable: true
+        sort_by: data+
+        columns:
+          - hidden: true
+            name: sort
+            data: data
+            modify: x.dist_km
+          - data: data
+            name: " "
+            modify: x.incidenttype + " " + x.displayname
+          - data: data
+            name: Location
+            modify: >-
+              if(x != null) { x.suburb + " - " + x.road + " (" + x.dist_km + "km away)"
+              } else { "-" }
+            align: center
+          - data: data
+            name: Detail
+            modify: x.additionalinfo + "<br/>" + x.advice + "<br/> " + x.periods
+          - data: data
+            name: Dates
+            modify: >
+              if (x.length == 0) {
+                "-"
+              } else {
+                var date = new Date(x.starttime * 1000);
+                if (x.starttime != 0) {
+                  var startstring = "Start: " + String(date.getDate()).padStart(2, '0') + "/" + (String(date.getMonth() + 1).padStart(2, '0')) + "/" + date.getFullYear()
+                } else {
+                  var startstring = "No Start Date"
+                }
+                var date2 = new Date(x.endtime * 1000);
+                if (x.endtime != 0) {
+                  var endstring = "<br/>End: " + String(date2.getDate()).padStart(2, '0') + "/" + (String(date2.getMonth() + 1).padStart(2, '0')) + "/" + date2.getFullYear()
+                } else {
+                  var endstring = "<br/>No End Date"
+                }
+                var date3 = new Date(x.lastupdatetime * 1000);
+                if (x.lastupdatetime != 0) {
+                  var updatestring = "<br/>Last Update: " + String(date3.getDate()).padStart(2, '0') + "/" + (String(date3.getMonth() + 1).padStart(2, '0')) + "/" + date3.getFullYear()
+                } else {
+                  var updatestring = "<br/>No Update Date"
+                }
+                startstring + endstring + updatestring
+              }
+        css:
+          table+: "border-collapse: collapse; padding: 0px;"
         card_mod:
           style: |
-            ha-card.type-markdown {
+            ha-card {
+              background: none;
+              border: 0;
               box-shadow: none;
-              border-top: 1px groove var(--divider-color);
-              overflow-y: scroll;
-              height: 300px;
+              overflow: auto;
+              padding-top: 5px;
+              font-size: 12px;
             }
-            ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
-        content: >
-          {% if states('sensor.getdata_livetrafficnsw_majorevents') == "0" %}
-          No majorevents Recorded
-          {%- else %}
-          {%- for item in state_attr('sensor.getdata_livetrafficnsw_majorevents', 'data')|sort(attribute='starttime') %}
-
-          **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-          {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-          Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-          Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-
-          {% endfor %}
-
-          {%- endif %}
+            tbody tr:hover {
+              background-color: coral !important
+            }

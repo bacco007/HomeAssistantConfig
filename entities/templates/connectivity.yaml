@@ -12,6 +12,7 @@ binary_sensor:
   - name: "[Connected] MQTT"
     unique_id: connected_mqtt
     icon: mdi:sort-clock-descending
+    picture: https://brands.home-assistant.io/mqtt/icon.png
     device_class: connectivity
     state: "{{ integration_entities('mqtt')|select('has_value')|list|count > 0 }}"
     attributes:
@@ -19,6 +20,7 @@ binary_sensor:
   - name: "[Connected] Uptime Kuma"
     unique_id: connected_uptime_kuma
     icon: mdi:sort-clock-descending
+    picture: https://brands.home-assistant.io/uptime_kuma/icon.png
     device_class: connectivity
     state: "{{ integration_entities('uptime_kuma')|select('has_value')|list|count > 0 }}"
     attributes:
@@ -26,6 +28,7 @@ binary_sensor:
   - name: "[Connected] OpenUV"
     unique_id: connected_openuv
     icon: mdi:weather-sunny-alert
+    picture: https://brands.home-assistant.io/openuv/icon.png
     device_class: connectivity
     state: "{{ integration_entities('openuv')|select('has_value')|list|count > 0 }}"
     attributes:
@@ -33,6 +36,7 @@ binary_sensor:
   - name: "[Connected] GDACS"
     unique_id: connected_gdacs
     icon: mdi:home-flood
+    picture: https://brands.home-assistant.io/gdacs/icon.png
     device_class: connectivity
     state: "{{ integration_entities('gdacs')|select('has_value')|list|count > 0 }}"
     attributes:
@@ -40,6 +44,7 @@ binary_sensor:
   - name: "[Connected] NSW RFS"
     unique_id: connected_nswrfs
     icon: mdi:fire-alert
+    picture: https://brands.home-assistant.io/nsw_rural_fire_service_fire_danger/icon.png
     device_class: connectivity
     state: "{{ integration_entities('nsw_rural_fire_service_feed')|select('has_value')|list|count > 0 }}"
     attributes:
@@ -47,6 +52,7 @@ binary_sensor:
   - name: "[Connected] WAQI"
     unique_id: connected_waqi
     icon: mdi:smog
+    picture: https://brands.home-assistant.io/waqi/icon.png
     device_class: connectivity
     state: "{{ integration_entities('waqi')|select('has_value')|list|count > 0 }}"
     attributes:
@@ -54,6 +60,7 @@ binary_sensor:
   - name: "[Connected] Weatherflow Local"
     unique_id: weatherflow_local_connected
     icon: mdi:weather-lightning-rainy
+    picture: https://brands.home-assistant.io/weatherflow/icon.png
     device_class: connectivity
     state: "{{ has_value('sensor.tempest_st_00056115_status') }}"
     attributes:
@@ -61,8 +68,9 @@ binary_sensor:
   - name: "[Connected] Weatherflow Cloud"
     unique_id: weatherflow_cloud_connected
     icon: mdi:weather-lightning-rainy
+    picture: https://brands.home-assistant.io/weatherflow/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('weatherflow_cloud')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('weatherflow_forecast')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
   - name: "[Connected] Sungather"
@@ -72,16 +80,10 @@ binary_sensor:
     state: "{{ 'True' if is_state('binary_sensor.sungather_running', 'on') else 'False' }}"
     attributes:
       category: homeassistant
-  - name: "[Connected] Weatherflow2MQTT"
-    unique_id: connected_weatherflow2mqtt
-    icon: mdi:weather-cloudy-alert
-    device_class: connectivity
-    state: "{{ 'True' if is_state('binary_sensor.weatherflow_to_mqtt_running', 'on') else 'False' }}"
-    attributes:
-      category: homeassistant
   - name: "[Connected] PirateWeather"
     unique_id: connected_pirateweather
     icon: mdi:weather-sunny-alert
+    picture: https://brands.home-assistant.io/pirateweather/icon.png
     device_class: connectivity
     state: "{{ integration_entities('pirateweather')|select('has_value')|list|count > 0 }}"
     attributes:

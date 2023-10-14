@@ -9,6 +9,9 @@
       name: BOM Average
       select: "#content > div.date-modified"
       value_template: "{{value | replace('Page created: ', '')}}"
+      on_error:
+        log: warning
+        value: last
       attributes:
         - name: maxtemp_average
           select: "#temperature1 > tbody > tr:nth-child(3) > td:nth-child(2)"

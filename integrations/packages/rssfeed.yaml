@@ -13,6 +13,8 @@ homeassistant:
       icon: mdi:newspaper
     sensor.rssfeed_fox_sports:
       icon: si:foxtel
+    sensor.rssfeed_newsnation:
+      icon: mdi:newspaper
     sensor.rssfeed_northern_daily_leader:
       icon: mdi:newspaper
     sensor.rssfeed_the_guardian_au:
@@ -28,7 +30,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.espn.com.au/espn/rss/news
     show_topn: 10
     inclusions:
@@ -41,7 +43,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: http://feeds.bbci.co.uk/news/rss.xml
     show_topn: 10
     inclusions:
@@ -54,8 +56,8 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
-    feed_url: http://rss.cnn.com/rss/edition.rss
+      minutes: 15
+    feed_url: http://rss.cnn.com/rss/cnn_latest.rss
     show_topn: 10
     inclusions:
       - title
@@ -67,7 +69,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: http://www.news.com.au/feed
     show_topn: 10
     inclusions:
@@ -80,7 +82,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: http://feeds.skynews.com/feeds/rss/home.xml
     show_topn: 10
     inclusions:
@@ -93,7 +95,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.smh.com.au/rss/feed.xml
     show_topn: 10
     inclusions:
@@ -106,7 +108,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.foxsports.com.au/content-feeds/breaking-news/
     show_topn: 10
     inclusions:
@@ -119,7 +121,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.northerndailyleader.com.au/rss.xml
     show_topn: 10
     inclusions:
@@ -132,7 +134,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.theguardian.com/au/rss
     show_topn: 10
     inclusions:
@@ -145,7 +147,7 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.theguardian.com/uk/rss
     show_topn: 10
     inclusions:
@@ -158,8 +160,21 @@ sensor:
     entity_namespace: rssfeed
     date_format: "%a, %d %b %Y %H:%M:%S %Z"
     scan_interval:
-      hours: 1
+      minutes: 15
     feed_url: https://www.skysports.com/rss/12040
+    show_topn: 10
+    inclusions:
+      - title
+      - image
+      - published
+      - link
+  - platform: feedparser
+    name: NewsNation
+    entity_namespace: rssfeed
+    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    scan_interval:
+      minutes: 15
+    feed_url: https://www.newsnationnow.com/feed/
     show_topn: 10
     inclusions:
       - title

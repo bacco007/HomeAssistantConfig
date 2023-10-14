@@ -399,6 +399,17 @@ action:
 
   - service: group.set
     data:
+      object_id: rssfeeds
+      name: "[Group] RSS Feeds"
+      icon: mdi:rss-box
+      entities: >
+        {{ states
+          |selectattr('entity_id','search','rssfeed_')
+          |map(attribute='entity_id')
+          |list|sort }}
+
+  - service: group.set
+    data:
       object_id: addon_switch
       name: "[Group] Add-on Switches"
       icon: mdi:toggle-switch
