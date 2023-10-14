@@ -1,0 +1,141 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "menu_options": {
+          "add_sensor": "Create a Sensor Variable",
+          "add_binary_sensor": "Create a Binary Sensor Variable",
+          "add_device_tracker": "Create a Device Tracker (GPS) Variable"
+        }
+      },
+      "add_sensor": {
+        "title": "Variables+History - Sensor",
+        "data": {
+          "name": "[%key:common::config_flow::data::name%]",
+          "variable_id": "Variable ID",
+          "icon": "Icon",
+          "device_class": "Device Class",
+          "restore": "Restore on Restart",
+          "force_update": "Force Update",
+          "exclude_from_recorder": "Exclude from Recorder"
+        },
+        "description": "Create a new Sensor Variable"
+      },
+      "sensor_page_2": {
+        "title": "Variables+History - Sensor Page 2",
+        "data": {
+          "value": "Initial Value",
+          "attributes": "Initial Attributes",
+          "state_class": "State Class",
+          "unit_of_measurement": "Unit of Measurement"
+        },
+        "description": "Create a new Sensor Variable Page 2"
+      },
+      "add_binary_sensor": {
+        "title": "Variables+History - Binary Sensor",
+        "data": {
+          "name": "[%key:common::config_flow::data::name%]",
+          "variable_id": "Variable ID",
+          "icon": "Icon",
+          "value": "Initial Value",
+          "attributes": "Initial Attributes",
+          "device_class": "Device Class",
+          "restore": "Restore on Restart",
+          "force_update": "Force Update",
+          "exclude_from_recorder": "Exclude from Recorder"
+        },
+        "description": "Create a new Binary Sensor Variable"
+      },
+      "add_device_tracker": {
+        "title": "Variables+History - Device Tracker (GPS)",
+        "data": {
+          "name": "[%key:common::config_flow::data::name%]",
+          "variable_id": "Variable ID",
+          "icon": "Icon",
+          "latitude": "Initial Latitude",
+          "longitude": "Initial Longitude",
+          "location_name": "Initial Location Name",
+          "gps_accuracy": "Initial GPS Accuracy",
+          "battery_level": "Initial Battery Level",
+          "attributes": "Initial Attributes",
+          "restore": "Restore on Restart",
+          "force_update": "Force Update",
+          "exclude_from_recorder": "Exclude from Recorder"
+        },
+        "description": "Create a new Device Tracker (GPS) Variable"
+      }
+    },
+    "error": {
+      "invalid_value_type": "The value entered is not compatible with the selected device_class",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {},
+      "sensor_options": {
+        "title": "Variables+History - Sensor",
+        "data": {
+          "device_class": "Device Class",
+          "restore": "Restore on Restart",
+          "force_update": "Force Update",
+          "exclude_from_recorder": "Exclude from Recorder"
+        },
+        "description": "Update existing Sensor Variable"
+      },
+      "sensor_options_page_2": {
+        "title": "Variables+History - Sensor Page 2",
+        "data": {
+          "value": "Value (typically only useful if Restore on Restart is False)",
+          "attributes": "Attributes (typically only useful if Restore on Restart is False)",
+          "state_class": "State Class",
+          "unit_of_measurement": "Unit of Measurement"
+        },
+        "description": "Update existing Sensor Variable"
+      },
+      "binary_sensor_options": {
+        "title": "Variables+History - Binary Sensor",
+        "data": {
+          "value": "Value (typically only useful if Restore on Restart is False)",
+          "attributes": "Attributes (typically only useful if Restore on Restart is False)",
+          "device_class": "Device Class",
+          "restore": "Restore on Restart",
+          "force_update": "Force Update",
+          "exclude_from_recorder": "Exclude from Recorder"
+        },
+        "description": "Update existing Binary Sensor Variable"
+      },
+      "device_tracker_options": {
+        "title": "Variables+History - Device Tracker (GPS)",
+        "data": {
+          "latitude": "Latitude (typically only useful if Restore on Restart is False)",
+          "longitude": "Longitude (typically only useful if Restore on Restart is False)",
+          "location_name": "Location Name (typically only useful if Restore on Restart is False)",
+          "gps_accuracy": "GPS Accuracy (typically only useful if Restore on Restart is False)",
+          "battery_level": "Battery Level (typically only useful if Restore on Restart is False)",
+          "attributes": "Attributes (typically only useful if Restore on Restart is False)",
+          "restore": "Restore on Restart",
+          "force_update": "Force Update",
+          "exclude_from_recorder": "Exclude from Recorder"
+        },
+        "description": "Update existing Device Tracker (GPS) Variable"
+      }
+    },
+    "abort": {
+      "yaml_variable": "Cannot change options here for Variables created by YAML.\n\nTo use the User Interface to manage this Variable, you will need to:\n1. Remove it from YAML\n2. Restart Home Assistant\n3. Manually recreate it in Home Assistant, Integrations, +Add Integration.",
+      "yaml_update_error": "Unable to update YAML Sensor Variable"
+    },
+    "error": {
+      "invalid_value_type": "The value entered is not compatible with the selected device_class",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    }
+  },
+  "selector": {
+    "boolean_options": {
+      "options": {
+        "true": "true",
+        "false": "false"
+      }
+    }
+  }
+}

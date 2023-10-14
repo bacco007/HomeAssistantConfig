@@ -1,0 +1,17 @@
+{
+    "domain": "variable",
+    "name": "Variables+History",
+    "after_dependencies": ["recorder"],
+    "codeowners": [
+        "@rogro82",
+        "@wibias",
+        "@Snuffy2"
+    ],
+    "config_flow": true,
+    "dependencies": [],
+    "documentation": "https://github.com/Wibias/hass-variables",
+    "iot_class": "local_push",
+    "issue_tracker": "https://github.com/Wibias/hass-variables/issues",
+    "requirements": ["iso4217==1.11.20220401"],
+    "version": "3.3.4"
+}
