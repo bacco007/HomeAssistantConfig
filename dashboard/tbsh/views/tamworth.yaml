@@ -32,6 +32,12 @@ cards:
               - !include ../tamworth/livetraffic/incidentslga.yaml
               - !include ../tamworth/livetraffic/majorevents.yaml
               - !include ../tamworth/livetraffic/roadwork.yaml
+          - type: vertical-stack
+            cards:
+              - !include ../tamworth/snippets/essential_energy.yaml
+              - !include ../tamworth/essential_energy/current.yaml
+              - !include ../tamworth/essential_energy/future.yaml
+              - !include ../tamworth/essential_energy/cancelled.yaml
           - !include ../tamworth/snippets/fuel.yaml
           - !include ../tamworth/snippets/hospital.yaml
           - !include ../tamworth/dams.yaml

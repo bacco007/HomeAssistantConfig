@@ -133,6 +133,7 @@ def getdata_livetrafficnsw(
     attributes["friendly_name"] = friendly_name
     attributes["icon"] = icon
     attributes["data"] = OUTPUT_DATA
+    attributes["category"] = "livetrafficnsw"
     attributes["lastcheck"] = datetime.datetime.now()
     state.set(entity_id, value=countval, new_attributes=attributes)
 
