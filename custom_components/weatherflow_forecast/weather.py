@@ -30,6 +30,7 @@ from homeassistant.util.dt import utc_from_timestamp
 from . import WeatherFlowForecastDataUpdateCoordinator
 from .const import (
     ATTR_ATTRIBUTION,
+    CONF_FIRMWARE_REVISION,
     CONF_STATION_ID,
     DEFAULT_NAME,
     DOMAIN,
@@ -118,6 +119,7 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
             manufacturer=MANUFACTURER,
             model=MODEL,
             configuration_url=f"https://tempestwx.com/station/{self._config[CONF_STATION_ID]}/grid",
+            hw_version=f"FW V{self._config.get(CONF_FIRMWARE_REVISION, ' - Not Available')}",
         )
 
     @property

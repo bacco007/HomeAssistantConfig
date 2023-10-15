@@ -5,6 +5,9 @@ ATTR_ATTRIBUTION = "Weather data delivered by WeatherFlow"
 CONCENTRATION_GRAMS_PER_CUBIC_METER = "g/m³"
 CONF_ADD_SENSORS = "add_sensors"
 CONF_API_TOKEN = "api_token"
+CONF_DEVICE_ID = "device_id"
+CONF_FIRMWARE_REVISION = "firmware_revision"
+CONF_SERIAL_NUMBER = "serial_number"
 CONF_STATION_ID = "station_id"
 
 DEFAULT_ADD_SENSOR = False

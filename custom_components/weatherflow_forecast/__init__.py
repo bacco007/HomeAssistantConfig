@@ -156,7 +156,7 @@ class WeatherFlowForecastWeatherData:
 
         if self._add_sensors:
             try:
-                resp: WeatherFlowForecastData = await self._weather_data.async_get_sensors()
+                resp: WeatherFlowForecastData = await self._weather_data.async_fetch_sensor_data()
             except WeatherFlowForecastWongStationId as unauthorized:
                 _LOGGER.debug(unauthorized)
                 raise Unauthorized from unauthorized
