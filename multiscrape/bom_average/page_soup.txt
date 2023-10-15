@@ -22,7 +22,7 @@
 <script src="/scripts/utilities.js" type="text/javascript"></script>
 <script src="/climate/cdo/scripts/sidemenu.js" type="text/javascript"></script>
 <script src="/climate/cdo/scripts/climate-calendar.js" type="text/javascript"></script>
-<script>!function(a){var e="https://s.go-mpulse.net/boomerang/",t="addEventListener";if("False"=="True")a.BOOMR_config=a.BOOMR_config||{},a.BOOMR_config.PageParams=a.BOOMR_config.PageParams||{},a.BOOMR_config.PageParams.pci=!0,e="https://s2.go-mpulse.net/boomerang/";if(window.BOOMR_API_key="6WJWU-82JGA-WH5QR-FV53R-5JQ89",function(){function n(e){a.BOOMR_onload=e&&e.timeStamp||(new Date).getTime()}if(!a.BOOMR||!a.BOOMR.version&&!a.BOOMR.snippetExecuted){a.BOOMR=a.BOOMR||{},a.BOOMR.snippetExecuted=!0;var i,_,o,r=document.createElement("iframe");if(a[t])a[t]("load",n,!1);else if(a.attachEvent)a.attachEvent("onload",n);r.src="javascript:void(0)",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="width:0;height:0;border:0;display:none;",o=document.getElementsByTagName("script")[0],o.parentNode.insertBefore(r,o);try{_=r.contentWindow.document}catch(O){i=document.domain,r.src="javascript:var d=document.open();d.domain='"+i+"';void(0);",_=r.contentWindow.document}_.open()._l=function(){var a=this.createElement("script");if(i)this.domain=i;a.id="boomr-if-as",a.src=e+"6WJWU-82JGA-WH5QR-FV53R-5JQ89",BOOMR_lstart=(new Date).getTime(),this.body.appendChild(a)},_.write("<bo"+'dy onload="document._l();">'),_.close()}}(),"".length>0)if(a&&"performance"in a&&a.performance&&"function"==typeof a.performance.setResourceTimingBufferSize)a.performance.setResourceTimingBufferSize();!function(){if(BOOMR=a.BOOMR||{},BOOMR.plugins=BOOMR.plugins||{},!BOOMR.plugins.AK){var e=""=="true"?1:0,t="",n="n2h4lpqx3m6rszjlhdxa-f-894f2e2f8-clientnsv4-s.akamaihd.net",i="false"=="true"?2:1,_={"ak.v":"36","ak.cp":"491154","ak.ai":parseInt("320835",10),"ak.ol":"0","ak.cr":940,"ak.ipv":4,"ak.proto":"http/1.1","ak.rid":"17f85075","ak.r":46126,"ak.a2":e,"ak.m":"a","ak.n":"essl","ak.bpcip":"110.143.197.0","ak.cport":42434,"ak.gh":"23.219.64.54","ak.quicv":"","ak.tlsv":"UNKNOWN","ak.0rtt":"","ak.csrc":"-","ak.acc":"reno","ak.t":"1697331438","ak.ak":"hOBiQwZUYzCg5VSAfCLimQ==RwuARnFYQmaAHIqF/UdgvhdVubx3F52Fb3Nu3BP1ZvugDxSfFPHyPfzmTKvS16l994dL0X8wSF1hsNdMOPw2VNk7FXpAR+KI9jmo1ln3d/gXzCf0uVqkefTeU/3J7MWbqdCbTsgvGAHKFcZEhZNZixke6sRCjCWh8fdj2Yk/MP1DUSZEutBOzqT6ng38u96sOsHdsoHKIgg7ChGsJisPcrU6ppUQyCvWSW9VPbTHNDMVYFEBGwz8tnYKRIBzl5M6zWdWhPDKeO9j4HEPsnGHEO5zkUvjvVtHTS/OPf+IvHg3nJolTzvs8plnGXweK0yhxz14183M4alpgBk+HlIDc1P9sXIcKNSnRke4IumU029/vUEp6qDouC3nQGoNaLLhKiT1M1koitVbVx+36a8X/prZaikPUW/WWTSzCsWaFrg=","ak.pv":"43","ak.dpoabenc":"","ak.tf":i};if(""!==t)_["ak.ruds"]=t;var o={i:!1,av:function(e){var t="http.initiator";if(e&&(!e[t]||"spa_hard"===e[t]))_["ak.feo"]=void 0!==a.aFeoApplied?1:0,BOOMR.addVar(_)},rv:function(){var a=["ak.bpcip","ak.cport","ak.cr","ak.csrc","ak.gh","ak.ipv","ak.m","ak.n","ak.ol","ak.proto","ak.quicv","ak.tlsv","ak.0rtt","ak.r","ak.acc","ak.t","ak.tf"];BOOMR.removeVar(a)}};BOOMR.plugins.AK={akVars:_,akDNSPreFetchDomain:n,init:function(){if(!o.i){var a=BOOMR.subscribe;a("before_beacon",o.av,null,null),a("onbeacon",o.rv,null,null),o.i=!0}return this},is_complete:function(){return!0}}}}()}(window);</script><script>bazadebezolkohpepadr="1815030940"</script><script defer="" src="http://www.bom.gov.au/akam/13/6c2f2f89" type="text/javascript"></script></head>
+<script>!function(a){var e="https://s.go-mpulse.net/boomerang/",t="addEventListener";if("False"=="True")a.BOOMR_config=a.BOOMR_config||{},a.BOOMR_config.PageParams=a.BOOMR_config.PageParams||{},a.BOOMR_config.PageParams.pci=!0,e="https://s2.go-mpulse.net/boomerang/";if(window.BOOMR_API_key="6WJWU-82JGA-WH5QR-FV53R-5JQ89",function(){function n(e){a.BOOMR_onload=e&&e.timeStamp||(new Date).getTime()}if(!a.BOOMR||!a.BOOMR.version&&!a.BOOMR.snippetExecuted){a.BOOMR=a.BOOMR||{},a.BOOMR.snippetExecuted=!0;var i,_,o,r=document.createElement("iframe");if(a[t])a[t]("load",n,!1);else if(a.attachEvent)a.attachEvent("onload",n);r.src="javascript:void(0)",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="width:0;height:0;border:0;display:none;",o=document.getElementsByTagName("script")[0],o.parentNode.insertBefore(r,o);try{_=r.contentWindow.document}catch(O){i=document.domain,r.src="javascript:var d=document.open();d.domain='"+i+"';void(0);",_=r.contentWindow.document}_.open()._l=function(){var a=this.createElement("script");if(i)this.domain=i;a.id="boomr-if-as",a.src=e+"6WJWU-82JGA-WH5QR-FV53R-5JQ89",BOOMR_lstart=(new Date).getTime(),this.body.appendChild(a)},_.write("<bo"+'dy onload="document._l();">'),_.close()}}(),"".length>0)if(a&&"performance"in a&&a.performance&&"function"==typeof a.performance.setResourceTimingBufferSize)a.performance.setResourceTimingBufferSize();!function(){if(BOOMR=a.BOOMR||{},BOOMR.plugins=BOOMR.plugins||{},!BOOMR.plugins.AK){var e=""=="true"?1:0,t="",n="n2h4lpqxfbergzjmgyqa-f-1bae9e5d2-clientnsv4-s.akamaihd.net",i="false"=="true"?2:1,_={"ak.v":"36","ak.cp":"491154","ak.ai":parseInt("320835",10),"ak.ol":"0","ak.cr":592,"ak.ipv":4,"ak.proto":"http/1.1","ak.rid":"a942663","ak.r":30133,"ak.a2":e,"ak.m":"a","ak.n":"essl","ak.bpcip":"110.143.197.0","ak.cport":54226,"ak.gh":"23.32.5.82","ak.quicv":"","ak.tlsv":"UNKNOWN","ak.0rtt":"","ak.csrc":"-","ak.acc":"reno","ak.t":"1697396256","ak.ak":"hOBiQwZUYzCg5VSAfCLimQ==HJVXzQSBKVFWKW1EnTg6AhahGuLjaiImQx1beBiB2Evky7YAMZlFyOUxPrU7iJPyKo1MFNtOOAckbcpi1VywCVeQHJMIp5CmxaZNYBiumc97VPYkMqs2FrC4Dx+CIJJsDkS2MCeJKOvC4cBV2Z2FLLLDMvwImKqvVdex829kzMgizaBZaQQsWEypEnc+A82eGmwIDVdcQSKXNXAHA0jxKdj3SzGEsQ4yB6H4fFb3wuAWIKOJZUxxJYAdFkjunyN2HyIGCDk7PhnkNZF0W0qVxKNab1Sk/mPQ4D2/0uooFR2kW/2oEXZw+PKTwkdxBC0fKmf4pWUXrjZ0QpaOLLWXKjj4/Hhg92vUPMHLMVZ8/juSruTkjq7gU2JAIKQLC8wi9efGNKcKoej39NGwQwlHmPzd5gz8j+3BlM9gSgVyNmI=","ak.pv":"43","ak.dpoabenc":"","ak.tf":i};if(""!==t)_["ak.ruds"]=t;var o={i:!1,av:function(e){var t="http.initiator";if(e&&(!e[t]||"spa_hard"===e[t]))_["ak.feo"]=void 0!==a.aFeoApplied?1:0,BOOMR.addVar(_)},rv:function(){var a=["ak.bpcip","ak.cport","ak.cr","ak.csrc","ak.gh","ak.ipv","ak.m","ak.n","ak.ol","ak.proto","ak.quicv","ak.tlsv","ak.0rtt","ak.r","ak.acc","ak.t","ak.tf"];BOOMR.removeVar(a)}};BOOMR.plugins.AK={akVars:_,akDNSPreFetchDomain:n,init:function(){if(!o.i){var a=BOOMR.subscribe;a("before_beacon",o.av,null,null),a("onbeacon",o.rv,null,null),o.i=!0}return this},is_complete:function(){return!0}}}}()}(window);</script><script>bazadebezolkohpepadr="1815030940"</script><script defer="" src="http://www.bom.gov.au/akam/13/6c2f2fbe" type="text/javascript"></script></head>
 <body>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -278,8 +278,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <option value="12">12</option>
 <option value="13">13</option>
 <option value="14">14</option>
-<option selected="selected" value="15">15</option>
-<option value="16">16</option>
+<option value="15">15</option>
+<option selected="selected" value="16">16</option>
 <option value="17">17</option>
 <option value="18">18</option>
 <option value="19">19</option>
@@ -301,7 +301,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div id="statslink"><a class="link" href="/climate/averages/tables/cw_055325.shtml">Monthly conditions</a></div>
 </fieldset>
 </form>
-<h2 class="almanac">Typical weather around 15 October</h2>
+<h2 class="almanac">Typical weather around 16 October</h2>
 <table class="table-basic" id="typical1" summary="">
 <tbody>
 <tr>
@@ -310,17 +310,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <tr>
 <td class="col1" title="Average maximum temperature">Maximum
                  temperature</td>
-<td>25.3<span> °C</span></td>
+<td>25.5<span> °C</span></td>
 </tr>
 <tr>
 <td class="col1" title="Average minimum temperature">Minimum
                  temperature</td>
-<td>9.4<span> °C</span></td>
+<td>9.6<span> °C</span></td>
 </tr>
 <tr>
 <td class="col1" title="Average rainfall">Rainfall</td>
 <td>
-2.1<span> mm</span> </td>
+1.9<span> mm</span> </td>
 </tr>
 </tbody>
 </table>
@@ -339,15 +339,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </tr>
 <tr class="chance">
 <td class="narrow" title="Chance of 0 mm of rain">
-72<span> %</span></td> <td title="Chance of at least 2mm of rain">
+73<span> %</span></td> <td title="Chance of at least 2mm of rain">
 15<span> %</span></td> <td title="Chance of at least 5mm of rain">
-9<span> %</span></td> <td title="Chance of at least 10mm of rain">9<span> %</span></td> <td title="Chance of at least 25mm of rain">1<span> %</span></td> </tr> </tbody> </table><hr class="clearfix"/><h2 class="almanac">Historical weather on 15 October</h2><table class="table-basic" id="temperature1" summary=""> <tbody> <tr> <th class="max-temp" colspan="3">Maximum Temperature</th> </tr> <tr> <td class="col1" title="Highest maximum temperature on record">Hottest                 day</td> <td class="col2">
-34.5<span> °C</span></td> <td class="col3">
-2006</td> </tr>
+10<span> %</span></td> <td title="Chance of at least 10mm of rain">8<span> %</span></td> <td title="Chance of at least 25mm of rain">1<span> %</span></td> </tr> </tbody> </table><hr class="clearfix"/><h2 class="almanac">Historical weather on 16 October</h2><table class="table-basic" id="temperature1" summary=""> <tbody> <tr> <th class="max-temp" colspan="3">Maximum Temperature</th> </tr> <tr> <td class="col1" title="Highest maximum temperature on record">Hottest                 day</td> <td class="no-qc">
+35.2<span> °C</span></td> <td class="col3">
+2019</td> </tr>
 <tr>
 <td class="col1" title="Mean maximum temperature">Average</td>
 <td>
-25.1<span> °C</span> </td>
+25.5<span> °C</span> </td>
 <td>
 31<span> y</span> </td>
 </tr>
@@ -355,8 +355,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <td class="col1" title="Lowest maximum temperature on record">Coldest
                 day</td>
 <td class="col2">
-17.3<span> °C</span></td> <td class="col3">
-1993</td> </tr>
+14.1<span> °C</span></td> <td class="col3">
+2010</td> </tr>
 </tbody>
 </table>
 <table class="table-basic" id="temperature2" summary="">
@@ -368,21 +368,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <td class="col1" title="Highest minimum temperature on record">Warmest
           night</td>
 <td class="col2">
-16.0<span> °C</span></td> <td class="col3">
-2004</td> </tr>
+17.1<span> °C</span></td> <td class="col3">
+2006</td> </tr>
 <tr>
 <td class="col1" title="Mean minimum temperature">Average</td>
 <td>
 8.4<span> °C</span> </td>
 <td>
-30<span> y</span> </td>
+31<span> y</span> </td>
 </tr>
 <tr>
 <td class="col1" title="Lowest minimum temperature on record">Coldest
                  night</td>
 <td class="col2">
-2.9<span> °C</span></td> <td class="col3">
-2013</td> </tr>
+2.6<span> °C</span></td> <td class="col3">
+2014</td> </tr>
 </tbody>
 </table>
 <table class="table-basic" id="rainfall1" summary="">
@@ -394,13 +394,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <td class="col1" title="Total highest rainfall 24 hours to 9am">Highest
                 rainfall</td>
 <td class="no-qc">
-40.6<span> mm</span></td> <td class="col3">
-2008</td> </tr>
+20.6<span> mm</span></td> <td class="col3">
+2010</td> </tr>
 </tbody></table>
 <table class="table-basic" id="rainfall2" summary=""><tbody><tr><td><div>
 <strong>On this day: </strong>
 <div id="eventdetails">
-<p>In 2005, 10 cm hail at Uluru/Ayres Rock, NT, caused minor injuries to tourists on a viewing platform.</p>
+<p>In 2006 a severe frost affected Tasmania, causing significant damage to Tasmania's stone fruit crop.</p>
+<p>In 1944, widespread dust-storms affected NSW and required afternoon lighting in Sydney.</p>
 </div>
 </div></td></tr></tbody></table>
 <center>Application has experienced display problems at this time.

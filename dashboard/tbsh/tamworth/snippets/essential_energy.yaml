@@ -9,15 +9,15 @@ cards:
   - type: custom:plotly-graph
     entities:
       - entity: sensor.essential_energy_outages_near_me
-        attribute: current
+        attribute: count_current
         name: Current
         legendgroup: 1
       - entity: sensor.essential_energy_outages_near_me
-        attribute: future
+        attribute: count_future
         name: Future
         legendgroup: 2
       - entity: sensor.essential_energy_outages_near_me
-        attribute: cancelled
+        attribute: count_cancelled
         name: Cancelled
         legendgroup: 3
     hours_to_show: 1w
