@@ -1,0 +1,65 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "La stazione WeatherFlow è già stata configurata."
+        },
+        "error": {
+            "wrong_station_id": "L'ID della stazione non è corretto.",
+            "server_error": "WeatherFlow servers encountered an unexpected error",
+            "wrong_token": "Il Token API inserito non è corretto.",
+            "bad_request": "Errore sconosciuto in fase di accesso ai dati."
+        },
+        "step": {
+            "user": {
+                "description": "Configurazione della stazione WeatherFlow Forecast",
+                "title": "WeatherFlow Forecast",
+                "data": {
+                    "station_id": "ID stazione",
+                    "api_token": "Token API personale",
+                    "add_sensors": "Add sensors from the Weather Station"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "api_token": "Token API personale",
+                    "add_sensors": "Add sensors from the Weather Station"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "pressure_trend": {
+                "state": {
+                    "falling": "Discendente",
+                    "rising": "Ascendente",
+                    "steady": "Stabile"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNE",
+                    "ne": "NE",
+                    "ene": "ENE",
+                    "e": "E",
+                    "ese": "ESE",
+                    "se": "SE",
+                    "sse": "SSE",
+                    "s": "S",
+                    "ssw": "SSO",
+                    "sw": "SO",
+                    "wsw": "OSO",
+                    "w": "O",
+                    "wnw": "ONO",
+                    "nw": "NO",
+                    "nnw": "NNO"
+                }
+            }
+        }
+    }
+}

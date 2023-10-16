@@ -1,0 +1,65 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "WeatherFlow station is reeds geconfigured."
+        },
+        "error": {
+            "wrong_station_id": "De Station Id is niet juist.",
+            "server_error": "WeatherFlow servers encountered an unexpected error",
+            "wrong_token": "Het Api Token is niet juist.",
+            "bad_request": "Een onbekende fout in opgetreden tijdens het ophalen van de gegevens."
+        },
+        "step": {
+            "user": {
+                "description": "Configuratie van een WeatherFlow Forecast station",
+                "title": "WeatherFlow Forecast",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Personal Api Token",
+                    "add_sensors": "Add sensors from the Weather Station"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "api_token": "Personal Api Token",
+                    "add_sensors": "Add sensors from the Weather Station"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "pressure_trend": {
+                "state": {
+                    "falling": "Dalend",
+                    "rising": "Stijgend",
+                    "steady": "Constant"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNO",
+                    "ne": "NO",
+                    "ene": "ONO",
+                    "e": "O",
+                    "ese": "OZO",
+                    "se": "ZO",
+                    "sse": "ZZO",
+                    "s": "Z",
+                    "ssw": "ZZW",
+                    "sw": "ZW",
+                    "wsw": "WZW",
+                    "w": "W",
+                    "wnw": "WNW",
+                    "nw": "NW",
+                    "nnw": "NNW"
+                }
+            }
+        }
+    }
+}

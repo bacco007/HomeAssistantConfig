@@ -1,0 +1,65 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "WeatherFlow-Station wurde bereits konfiguriert."
+        },
+        "error": {
+            "wrong_station_id": "Die Station-Id ist falsch.",
+            "server_error": "WeatherFlow servers encountered an unexpected error",
+            "wrong_token": "Der eingegebene Api-Token ist nicht korrekt.",
+            "bad_request": "Ein unbekannter Fehler ist beim Empfang von Daten aufgetreten."
+        },
+        "step": {
+            "user": {
+                "description": "Einrichten einer WeatherFlow Forecast-Station",
+                "title": "WeatherFlow Forecast",
+                "data": {
+                    "station_id": "Station-Id",
+                    "api_token": "Persönlicher Api-Token",
+                    "add_sensors": "Add sensors from the Weather Station"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "api_token": "Persönlicher Api-Token",
+                    "add_sensors": "Add sensors from the Weather Station"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "pressure_trend": {
+                "state": {
+                    "falling": "fallend",
+                    "rising": "steigend",
+                    "steady": "stetig"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNO",
+                    "ne": "NO",
+                    "ene": "ONO",
+                    "e": "O",
+                    "ese": "OSO",
+                    "se": "SO",
+                    "sse": "SSO",
+                    "s": "S",
+                    "ssw": "SSW",
+                    "sw": "SW",
+                    "wsw": "WSW",
+                    "w": "W",
+                    "wnw": "WNW",
+                    "nw": "NW",
+                    "nnw": "NNW"
+                }
+            }
+        }
+    }
+}
