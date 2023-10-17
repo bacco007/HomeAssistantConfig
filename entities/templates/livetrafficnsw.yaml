@@ -1,4 +1,26 @@
 ---
+binary_sensor:
+  - name: "[Live Traffic NSW] Nearby Active Incident"
+    unique_id: livetrafficnsw_nearby_active_incident
+    icon: mdi:alert-decagram
+    state: >
+      {%- set ns = namespace(items=0) %}
+      {%- for s in states|selectattr('entity_id','search','sensor.getdata_livetrafficnsw_') %}
+        {%- set test = ['Dist 0-1', 'Dist 1-2', 'Dist 2-5'] %}
+        {%- for l in test %}
+          {%- set val = (state_attr(s.entity_id, 'distances')[0][l] | int(0)) %}
+          {%- if val >= 1 %}
+            {%- set ns.items = (ns.items + val) %}
+          {%- endif %}
+        {%- endfor %}
+      {%- endfor %}
+      {{ ns.items > 0 }}
+    unit_of_measurement: "Incidents"
+    attributes:
+      category: livetrafficnsw
+    availability: >
+      {{ states|selectattr('entity_id','search','sensor.getdata_livetrafficnsw_')|map(attribute='entity_id')|list|count > 0 }}
+
 sensor:
   - name: stats_livetraffic
     unique_id: stats_livetraffic
@@ -14,6 +36,7 @@ sensor:
     state_class: measurement
     unit_of_measurement: Incidents
     attributes:
+      category: "livetrafficnsw"
       alpine: >
         {{ states('sensor.getdata_livetrafficnsw_alpine') | int }}
       fire: >

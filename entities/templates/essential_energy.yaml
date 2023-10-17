@@ -3,9 +3,9 @@ binary_sensor:
   - name: "[Essential Energy] Nearby Active Outage"
     unique_id: essential_energy_nearby_active_outage
     icon: mdi:alert-decagram
-    state:
-      "{{ (state_attr('sensor.essential_energy_outages_current', 'distances')[0]['Dist 0-1']
-      + state_attr('sensor.essential_energy_outages_current', 'distances')[0]['Dist 1-2'])|int(0) > 0 }}"
+    state: >
+      {{ (state_attr('sensor.essential_energy_outages_current', 'distances')[0]['Dist 0-1']
+        + state_attr('sensor.essential_energy_outages_current', 'distances')[0]['Dist 1-2'])|int(0) > 0 }}
     unit_of_measurement: "Outages"
     attributes:
       category: essential_energy
@@ -18,17 +18,19 @@ binary_sensor:
       count_cancelled: >
         {{ (state_attr('sensor.essential_energy_outages_cancelled', 'distances')[0]['Dist 0-1']
             + state_attr('sensor.essential_energy_outages_cancelled', 'distances')[0]['Dist 1-2'])|int(0)}}
-    availability:
-      "{{ (state_attr('sensor.essential_energy_outages_current', 'distances')[0]['Dist 0-1']
-      + state_attr('sensor.essential_energy_outages_current', 'distances')[0]['Dist 1-2'])|int(0) > 0 }}"
+    availability: >
+      {{ has_value('sensor.essential_energy_outages_current')
+          or has_value('sensor.essential_energy_outages_future')
+          or has_value('sensor.essential_energy_outages_cancelled') }}
 
 sensor:
   - name: "[Essential Energy] Outages Near Me"
     unique_id: essential_energy_outages_near_me
     icon: mdi:fire-alert
-    state: "{{ states('sensor.essential_energy_outages_current')|int(0)
-              + states('sensor.essential_energy_outages_future')|int(0)
-              + states('sensor.essential_energy_outages_cancelled')|int(0)}}"
+    state: >
+      {{ states('sensor.essential_energy_outages_current')|int(0)
+        + states('sensor.essential_energy_outages_future')|int(0)
+        + states('sensor.essential_energy_outages_cancelled')|int(0)}}
     unit_of_measurement: "Outages"
     attributes:
       category: essential_energy

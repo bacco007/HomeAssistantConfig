@@ -17,12 +17,12 @@ trigger:
       service: reload
 
   - platform: time_pattern
-    hours: "/1"
+    minutes: "/15"
 
 action:
   - if: "{{ trigger.id == 'startup' }}"
     then:
-      - delay: 60
+      - delay: 240
 
   - service: group.set
     data_template:
@@ -452,4 +452,13 @@ action:
                 |rejectattr('entity_id','search','this_week')
                 |rejectattr('entity_id','search','next_24_hours')
                 |selectattr('attributes.nextevent_timeto','<=',7)
+                |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: livetrafficnsw
+      name: "[Group] Live Traffic NSW"
+      icon: mdi:dump-truck
+      entities: >
+        {{ states|selectattr('entity_id','search','sensor.getdata_livetrafficnsw_')
                 |map(attribute='entity_id')|list|sort }}

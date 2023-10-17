@@ -54,6 +54,13 @@ def getdata_livetrafficnsw(
         log.error("getdata_livetrafficnsw: Other Error Occured: {err}")
 
     OUTPUT_DATA = []
+    dist_0_1 = 0
+    dist_1_2 = 0
+    dist_2_5 = 0
+    dist_5_10 = 0
+    dist_10_20 = 0
+    dist_20_50 = 0
+    dist_50_100 = 0
     basedata = r.json()
     data = basedata['features']
     for rec in data:
@@ -107,6 +114,20 @@ def getdata_livetrafficnsw(
             if rec["properties"]["ended"] == True:
                 pass
             else:
+                if (distance_to_locn <= 1):
+                    dist_0_1 += 1
+                elif (distance_to_locn > 1 and distance_to_locn <= 2):
+                    dist_1_2 += 1
+                elif (distance_to_locn > 2 and distance_to_locn <= 5):
+                    dist_2_5 += 1
+                elif (distance_to_locn > 5 and distance_to_locn <= 10):
+                    dist_5_10 += 1  
+                elif (distance_to_locn > 10 and distance_to_locn <= 20):
+                    dist_10_20 += 1   
+                elif (distance_to_locn > 20 and distance_to_locn <= 50):
+                    dist_20_50 += 1   
+                elif (distance_to_locn > 50 and distance_to_locn <= 100):
+                    dist_50_100 += 1                   
                 OUTPUT_DATA.append(
                     {
                         "id": rec["id"],
@@ -127,12 +148,22 @@ def getdata_livetrafficnsw(
                     }
                 )
     countval = len(OUTPUT_DATA)
+    dist_detail = [{
+        "Dist 0-1": dist_0_1,
+        "Dist 1-2": dist_1_2,
+        "Dist 2-5": dist_2_5,
+        "Dist 5-10": dist_5_10,
+        "Dist 10-20": dist_10_20,
+        "Dist 20-50": dist_20_50,
+        "Dist 50-100": dist_50_100
+        }]
 
     attributes = {}
     attributes["unit_of_measurement"] = "Incidents"
     attributes["friendly_name"] = friendly_name
     attributes["icon"] = icon
     attributes["data"] = OUTPUT_DATA
+    attributes["distances"] = dist_detail
     attributes["category"] = "livetrafficnsw"
     attributes["lastcheck"] = datetime.datetime.now()
     state.set(entity_id, value=countval, new_attributes=attributes)
