@@ -6,56 +6,36 @@ import requests
 from bs4 import BeautifulSoup
 from waste_collection_schedule import Collection  # type: ignore[attr-defined]
 
-TITLE = "Maroondah City Council"
-DESCRIPTION = "Source for Maroondah City Council. Finds both green waste and general recycling dates."
-URL = "https://www.maroondah.vic.gov.au"
+TITLE = "Mansfield Shire Council"
+DESCRIPTION = "Source for Mansfield Shire Council rubbish collection."
+URL = "https://www.mansfield.vic.gov.au"
 TEST_CASES = {
-    "Monday - Area A": {"address": "1 Abbey Court, RINGWOOD 3134"},  # Monday - Area A
-    "Monday - Area B": {
-        "address": "1 Angelica Crescent, CROYDON HILLS 3136"
-    },  # Monday - Area B
-    "Tuesday - Area B": {"address": "6 Como Close, CROYDON 3136"},  # Tuesday - Area B
-    "Wednesday - Area A": {
-        "address": "113 Dublin Road, RINGWOOD EAST 3135"
-    },  # Wednesday - Area A
-    "Wednesday - Area B": {
-        "address": "282 Maroondah Highway, RINGWOOD 3134"
-    },  # Wednesday - Area B
-    "Thursday - Area A": {
-        "address": "4 Albury Court, CROYDON NORTH 3136"
-    },  # Thursday - Area A
-    "Thursday - Area B": {
-        "address": "54 Lincoln Road, CROYDON 3136"
-    },  # Thursday - Area B
-    "Friday - Area A": {
-        "address": "6 Lionel Crescent, CROYDON 3136"
-    },  # Friday - Area A
-    "Friday - Area B": {"address": "61 Timms Avenue, KILSYTH 3137"},  # Friday - Area B
+    "Delatite Hotel": {"street_address": "95 High Street, Mansfield"},
+    "Mansfield Zoo": {"street_address": "1064 Mansfield-Woods Point Road, Mansfield"},
 }
 
 _LOGGER = logging.getLogger(__name__)
 
 ICON_MAP = {
-    "Food and Garden organics": "mdi:leaf",
-    "Hard Waste": "mdi:sofa",
+    "General Waste": "mdi:trash-can",
     "Recycling": "mdi:recycle",
 }
 
 
 class Source:
-    def __init__(self, address):
-        self._street_address = address
+    def __init__(self, street_address):
+        self._street_address = street_address
 
     def fetch(self):
         session = requests.Session()
 
         response = session.get(
-            "https://www.maroondah.vic.gov.au/Residents-property/Waste-rubbish/Waste-collection-schedule"
+            "https://www.mansfield.vic.gov.au/Community/Residents/Waste-Recycling/Check-My-Bin-Day"
         )
         response.raise_for_status()
 
         response = session.get(
-            "https://www.maroondah.vic.gov.au/api/v1/myarea/search",
+            "https://www.mansfield.vic.gov.au/api/v1/myarea/search",
             params={"keywords": self._street_address},
         )
         response.raise_for_status()
@@ -65,7 +45,7 @@ class Source:
             or len(addressSearchApiResults["Items"]) < 1
         ):
             raise Exception(
-                f"Address search for '{self._street_address}' returned no results. Check your address on https://www.maroondah.vic.gov.au/Residents-property/Waste-rubbish/Waste-collection-schedule"
+                f"Address search for '{self._street_address}' returned no results. Check your address on https://www.mansfield.vic.gov.au/Community/Residents/Waste-Recycling/Check-My-Bin-Day"
             )
 
         addressSearchTopHit = addressSearchApiResults["Items"][0]
@@ -75,7 +55,7 @@ class Source:
         _LOGGER.debug("Geolocationid: %s", geolocationid)
 
         response = session.get(
-            "https://www.maroondah.vic.gov.au/ocapi/Public/myarea/wasteservices?ocsvclang=en-AU",
+            "https://www.mansfield.vic.gov.au/ocapi/Public/myarea/wasteservices?ocsvclang=en-AU",
             params={"geolocationid": geolocationid},
         )
         response.raise_for_status()
