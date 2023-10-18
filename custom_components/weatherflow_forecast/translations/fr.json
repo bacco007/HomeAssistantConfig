@@ -1,0 +1,65 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "La localisation du WeatherFlow est deja paramétrisée."
+        },
+        "error": {
+            "wrong_station_id": "La Station ID est incorrecte.",
+            "server_error": "Une erreur inattendue a été détectée avec le service infonuagique de WeatherFlow",
+            "wrong_token": "Le Jeton-API est incorrect ou ne correspond pas à la Weather Station.",
+            "bad_request": "Une erreur inconnue s'est produite lors de la récupération des données."
+        },
+        "step": {
+            "user": {
+                "description": "Configurer une Station WeatherFlow Forecast",
+                "title": "WeatherFlow Forecast",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Jeton-API personnel",
+                    "add_sensors": "Ajouter les senseurs de la Weather Station"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "api_token": "Jeton-API personnel",
+                    "add_sensors": "Ajouter les senseurs de la Weather Station"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNE",
+                    "ne": "NE",
+                    "ene": "ENE",
+                    "e": "E",
+                    "ese": "ESE",
+                    "se": "SE",
+                    "sse": "SSE",
+                    "s": "S",
+                    "ssw": "SSO",
+                    "sw": "SO",
+                    "wsw": "OSO",
+                    "w": "O",
+                    "wnw": "ONO",
+                    "nw": "NO",
+                    "nnw": "NNO"
+                }
+            },
+            "pressure_trend": {
+                "state": {
+                    "falling": "À la baisse",
+                    "rising": "À la hausse",
+                    "steady": "Constante"
+                }
+            }
+        }
+    }
+}
