@@ -9,7 +9,7 @@
   sensor:
     - unique_id: bom_average
       name: BOM Average
-      #select: "#content > div.date-modified"
+      # select: "#content > div.date-modified"
       value_template: "{{now()}}"
       on_error:
         log: warning
