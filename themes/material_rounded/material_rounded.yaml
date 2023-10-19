@@ -6,10 +6,8 @@ Material Rounded:
     modes:
         dark:
             # Token colors
-            token-rgb-primary: rgb(0, 74, 118)
-            token-rgb-secondary: rgb(194, 231, 254)
-            token-color-primary: var(--token-rgb-primary)
-            token-color-accent: var(--token-rgb-secondary)
+            token-color-primary: rgb(0, 74, 118)
+            token-color-accent: rgb(194, 231, 254)
             token-color-feedback-info: rgb(138, 208, 248)
             token-color-feedback-warning: rgb(244,180,0)
             token-color-feedback-error: rgb(229, 97, 128)
@@ -52,6 +50,7 @@ Material Rounded:
             # Inconsistent tile card CSS
             state-alarm_control_panel-disarmed-color: rgb(72, 74, 78)
             state-fan-off-color: rgb(40, 42, 46)
+            state-climate-off-color: rgb(72, 74, 78)
 
             # Chip
             ha-chip-text-color: rgb(255 255 255)
@@ -74,10 +73,8 @@ Material Rounded:
 
         light:
             # Token colors
-            token-rgb-primary: rgb(194, 231, 254)
-            token-rgb-secondary: rgb(0, 29, 53)
-            token-color-primary: var(--token-rgb-primary)
-            token-color-accent: var(--token-rgb-secondary)
+            token-color-primary: rgb(194, 231, 254)
+            token-color-accent: rgb(0, 29, 53)
             token-color-feedback-info: rgb(138, 208, 248)
             token-color-feedback-warning: rgb(244,180,0)
             token-color-feedback-error: rgb(229, 97, 128)
@@ -120,6 +117,7 @@ Material Rounded:
             # Inconsistent tile card CSS
             state-alarm_control_panel-disarmed-color: rgb(158, 158, 158)
             state-fan-off-color: rgb(158, 158, 158)
+            state-climate-off-color: rgb(158, 158, 158)
 
             # Chip
             ha-chip-text-color: rgb(255 255 255)
@@ -153,7 +151,7 @@ Material Rounded:
     token-size-radius-card: var(--token-size-radius-large)
     token-size-width-border-card: 0
     token-size-height-slider: 4px
-    token-size-height-navbar: 48px
+    # token-size-height-navbar: 80px
     token-size-font-title: 28px
 
     # Weight token
@@ -169,7 +167,7 @@ Material Rounded:
     mdc-shape-large: var(--token-size-radius-large)
 
     # Sizes
-    header-height: var(--token-size-height-navbar)
+    # header-height: var(--token-size-height-navbar)
     paper-slider-height: var(--token-size-height-slider)
 
     # Typography
@@ -298,8 +296,6 @@ Material Rounded:
     codemirror-atom: var(--codemirror-property)
 
     # RGB colors
-    rgb-primary-color: var(--token-rgb-primary)
-    rgb-accent-color: var(--token-rgb-secondary)
     rgb-white-color: 240, 243, 255
     rgb-purple-color: 189, 157, 255
     rgb-pink-color: 255, 98, 192
@@ -355,10 +351,14 @@ Material Rounded:
           }
           paper-tab > ha-icon {
             width: 100%;
-            height: 65%;
+            max-width: 72px;
+            height: 36px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
+            align-self: start;
+            position: relative;
+            top: 4px;
           }
           paper-tab.iron-selected > ha-icon {
             color: var(--accent-color);
@@ -392,6 +392,20 @@ Material Rounded:
             bottom: 0 !important;
           }
 
+          ha-menu-button {
+            top: -10px;
+          }
+
+          .action-items {
+            top: -10px;
+            position: relative;
+          }
+
+          #add-view {
+            position: relative !important;
+            vertical-align: top;
+          }
+
         ha-tabs:
           $: |
             #tabsContent.scrollable {
@@ -404,20 +418,29 @@ Material Rounded:
               display: none !important;
             }
 
+        paper-tabs:
+          $: |
+            #tabsContent.scrollable {
+              width: 100% !important;
+              display: flex !important;
+              justify-content: space-between !important;
+              flex-shrink: 0;
+            }
+
         hui-masonry-view:
           $: |
             ha-fab {
-              bottom: 8em !important;
+              bottom: calc(2*var(--header-height)) !important;
             }
 
         hui-sidebar-view:
           $: |
             ha-fab {
-              bottom: 8em !important;
+              bottom: calc(2*var(--header-height)) !important;
             }
 
         hui-panel-view:
           $: |
             ha-fab {
-              bottom: 8em !important;
+              bottom: calc(2*var(--header-height)) !important;
             }
