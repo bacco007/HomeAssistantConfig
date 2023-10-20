@@ -1,0 +1,22 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "data": {
+            "email": "Email Address",
+            "api_key": "API Key",
+            "account_id": "Account ID"
+          }
+        }
+      },
+      "error": {
+        "cannot_connect": "Cannot connect to the service, please check your API key and internet connection.",
+        "invalid_auth": "Invalid authentication, please check your credentials.",
+        "unknown": "Unknown error, please check the logs."
+      },
+      "abort": {
+        "single_instance_allowed": "Only a single configuration of this integration is allowed."
+      }
+    }
+}
+  
