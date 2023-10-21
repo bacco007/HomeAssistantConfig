@@ -162,6 +162,7 @@ binary_sensor:
     unique_id: connected_unifi
     icon: mdi:wifi
     device_class: connectivity
+    picture: https://brands.home-assistant.io/unifi/icon.png
     state: "{{ integration_entities('unifi')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -169,6 +170,7 @@ binary_sensor:
     unique_id: connected_speedtest
     icon: mdi:speedtest
     device_class: connectivity
+    picture: https://brands.home-assistant.io/speedtestdotnet/icon.png
     state: "{{ integration_entities('speedtestdotnet')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -176,6 +178,7 @@ binary_sensor:
     unique_id: connected_ical
     icon: mdi:calendar
     device_class: connectivity
+    picture: https://brands.home-assistant.io/ical/icon.png
     state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -183,9 +186,19 @@ binary_sensor:
     unique_id: connected_icloud3
     icon: mdi:apple-icloud
     device_class: connectivity
+    picture: https://brands.home-assistant.io/icloud3/icon.png
     state: "{{ integration_entities('icloud3')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+  - name: "[Connected] Cloudflare Tunnel Monitor"
+    unique_id: connected_cloudflare_tunnel_monitor
+    icon: si:cloudflare
+    device_class: connectivity
+    picture: https://brands.home-assistant.io/cloudflare_tunnel_monitor/icon.png
+    state: "{{ integration_entities('cloudflare_tunnel_monitor')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+
   - name: "[Connected] Bluetooth"
     unique_id: connected_bluetooth
     icon: mdi:bluetooth

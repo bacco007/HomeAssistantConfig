@@ -1,0 +1,26 @@
+---
+docker_cloudflaretunnel_alert:
+  name: "Cloudflare Tunnel(s) Offline Alert"
+  title: "Cloudflare Tunnel(s) Offline Alert"
+  message: >
+    These Cloudflare Tunnels are offline:
+    {{ state_attr('binary_sensor.cloudflare_tunnel_status', 'unhealthy_tunnels') }}
+  done_message: clear_notification
+  entity_id: binary_sensor.alerts_cloudflare_tunnel
+  state: "on"
+  repeat: 360
+  notifiers: alert
+  data:
+    tag: alerts_cloudflare_tunnel
+    notification_id: alerts_cloudflare_tunnel
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_alerts_cloudflare_tunnel

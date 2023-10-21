@@ -1,0 +1,49 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Cloudflare Tunnels
+    icon: si:cloudflare
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: binary_sensor.cloudflare_tunnel_status
+        name: Status
+        type: custom:multiple-entity-row
+        secondary_info: last-changed
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:check-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if is_state(config.entity, 'on') %} #db4437 {% else %} var(--secondary-text-color) {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if is_state(config.entity, 'off') %} #43a047 {% else %} var(--secondary-text-color) {% endif %}
+              }
+      - entity: sensor.cloudflare_tunnel_home_assistant_status
+        name: "[Tunnel] Home Assistant"
+        icon: si:cloudflare
+      - entity: sensor.cloudflare_tunnel_homelab_status
+        name: "[Tunnel] Homelab"
+        icon: si:cloudflare
+      - entity: sensor.cloudflare_tunnel_uptime_kuma_status
+        name: "[Tunnel] Uptime Kuma (Oracle Cloud)"
+        icon: si:cloudflare

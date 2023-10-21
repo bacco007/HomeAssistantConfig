@@ -24,6 +24,7 @@ cards:
           max_width: 1000
         cards: &cards
           - !include ../network/settings_controls.yaml
+          - !include ../network/cloudflare_tunnels.yaml
           - type: vertical-stack
             cards:
               - !include ../network/unifi.yaml

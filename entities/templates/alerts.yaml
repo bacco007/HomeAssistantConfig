@@ -317,3 +317,13 @@ binary_sensor:
           and is_state('input_boolean.alerts_bluetooth','on') }}
     attributes:
       category: homeassistant
+
+  - name: "alerts_cloudflare_tunnel"
+    unique_id: alerts_cloudflare_tunnel
+    icon: si:cloudflare
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{ is_state('binary_sensor.cloudflare_tunnel_status','on') }}
+    attributes:
+      category: homeassistant

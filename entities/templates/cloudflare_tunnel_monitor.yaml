@@ -1,0 +1,16 @@
+---
+binary_sensor:
+  - name: "[Cloudflare Tunnel] Status"
+    unique_id: cloudflare_tunnel_status
+    icon: si:cloudflare
+    state: >
+      {{ expand(integration_entities('cloudflare_tunnel_monitor'))
+        | rejectattr('state','eq','healthy')|map(attribute='entity_id')|list|count > 0 }}
+    attributes:
+      category: cloudflare_tunnel
+      healthy_tunnels: >
+        {{ expand(integration_entities('cloudflare_tunnel_monitor'))
+          | selectattr('state','eq','healthy')|map(attribute='entity_id')|list }}
+      unhealthy_tunnels: >
+        {{ expand(integration_entities('cloudflare_tunnel_monitor'))
+          | rejectattr('state','eq','healthy')|map(attribute='entity_id')|list }}
