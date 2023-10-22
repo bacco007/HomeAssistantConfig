@@ -111,3 +111,59 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
+  - type: entities
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Average People Waiting (Last Week)
+          icon: mdi:hospital
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 1w
+            refresh_interval: 120
+            entities:
+              - entity: sensor.tamhospital_waitingtime
+                statistic: mean
+                period: hour
+                connectgaps: true
+                show_value: true
+                texttemplate: <b>%{y:,.0f}</b>
+                line:
+                  width: 3
+                  color: yellow
+                  shape: step
+            layout:
+              showlegend: false
+              height: 200
+              margin:
+                autoexpand: false
+                l: 50
+                r: 50
+              xaxis:
+                showline: true
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false

@@ -10,17 +10,163 @@ cards:
         ha-card {
           box-shadow: none !important;
         }
+
+  - type: custom:plotly-graph
+    style: |
+      ha-card {
+        box-shadow: none !important;
+      }
+    entities:
+      - entity: sensor.archive_waternsw_chaffeydam_30day
+        name: Chaffey Dam
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_chaffeydam_30day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        # fill: tozeroy
+        line:
+          width: 2
+          shape: spline
+      - entity: sensor.archive_waternsw_keepitdam_30day
+        name: Keepit Dam
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_keepitdam_30day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        # fill: tozeroy
+        line:
+          width: 2
+          shape: spline
+      - entity: sensor.archive_waternsw_splitrockdam_30day
+        name: Split Rock Dam
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_splitrockdam_30day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        # fill: tozeroy
+        line:
+          width: 2
+          shape: spline
+    hours_to_show: 1y
+    refresh_interval: auto
+    autorange_after_scroll: true
+    layout:
+      showlegend: true
+      height: 300
+      margin:
+        autoexpand: true
+        l: 40
+        r: 20
+        b: 10
+        t: 2
+      xaxis:
+        showline: true
+        tickformat: "%b %Y"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        rangeslider: true
+        rangeselector:
+          x: 0
+          "y": 1.2
+          buttons:
+            - count: 7
+              step: day
+            - count: 14
+              step: day
+            - count: 1
+              step: month
+            - count: 6
+              step: month
+            - count: 1
+              step: year
+      yaxis:
+        title: ""
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: true
+    config:
+      scrollZoom: true
+
   - type: entities
     show_header_toggle: false
     state_color: true
     card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
-        }
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
     entities:
       - type: custom:fold-entity-row
         card_mod:
@@ -332,141 +478,16 @@ cards:
             config:
               scrollZoom: false
 
-  - type: custom:plotly-graph
-    style: |
-      ha-card {
-        box-shadow: none !important;
-      }
-    entities:
-      - entity: sensor.archive_waternsw_chaffeydam_30day
-        name: Chaffey Dam
-        connectgaps: true
-        period: day
-        filters:
-          - fn: |-
-              ({xs, ys, hass}) => {
-                let xx = [];
-                let yy = [];
-                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_chaffeydam_30day"].attributes)) {
-                    let d = new Date(key).getTime();
-                    if (d > 0) {
-                        xx.push(d);
-                        yy.push(value);
-                    }
-                }
-                return {
-                  xs: xx,
-                  ys: yy
-                };
-              }
-        texttemplate: <b>%{y:,.0f}</b>
-        # fill: tozeroy
-        line:
-          width: 2
-          shape: spline
-      - entity: sensor.archive_waternsw_keepitdam_30day
-        name: Keepit Dam
-        connectgaps: true
-        period: day
-        filters:
-          - fn: |-
-              ({xs, ys, hass}) => {
-                let xx = [];
-                let yy = [];
-                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_keepitdam_30day"].attributes)) {
-                    let d = new Date(key).getTime();
-                    if (d > 0) {
-                        xx.push(d);
-                        yy.push(value);
-                    }
-                }
-                return {
-                  xs: xx,
-                  ys: yy
-                };
-              }
-        texttemplate: <b>%{y:,.0f}</b>
-        # fill: tozeroy
-        line:
-          width: 2
-          shape: spline
-      - entity: sensor.archive_waternsw_splitrockdam_30day
-        name: Split Rock Dam
-        connectgaps: true
-        period: day
-        filters:
-          - fn: |-
-              ({xs, ys, hass}) => {
-                let xx = [];
-                let yy = [];
-                for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_splitrockdam_30day"].attributes)) {
-                    let d = new Date(key).getTime();
-                    if (d > 0) {
-                        xx.push(d);
-                        yy.push(value);
-                    }
-                }
-                return {
-                  xs: xx,
-                  ys: yy
-                };
-              }
-        texttemplate: <b>%{y:,.0f}</b>
-        # fill: tozeroy
-        line:
-          width: 2
-          shape: spline
-    hours_to_show: 1y
-    refresh_interval: auto
-    autorange_after_scroll: true
-    layout:
-      showlegend: true
-      height: 300
-      margin:
-        autoexpand: true
-        l: 40
-        r: 20
-        b: 10
-        t: 2
-      xaxis:
-        showline: true
-        tickformat: "%b %Y"
-        showgrid: false
-        showticklabels: true
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        autotick: true
-        ticks: outside
-        tickwidth: 2
-        ticklen: 5
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-        rangeslider: true
-        rangeselector:
-          x: 0
-          "y": 1.2
-          buttons:
-            - count: 7
-              step: day
-            - count: 14
-              step: day
-            - count: 1
-              step: month
-            - count: 6
-              step: month
-            - count: 1
-              step: year
-      yaxis:
-        title: ""
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        autotick: true
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      dragmode: true
-    config:
-      scrollZoom: true
+      - type: buttons
+        entities:
+          - entity: sensor.helper_weblink
+            name: Real Time Data
+            tap_action:
+              action: url
+              url_path: https://realtimedata.waternsw.com.au/water.stm
+
+          - entity: sensor.helper_weblink
+            name: WaterInsights
+            tap_action:
+              action: url
+              url_path: https://waterinsights.waternsw.com.au/

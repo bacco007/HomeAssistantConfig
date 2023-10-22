@@ -1,83 +1,57 @@
 ---
-type: entities
-card_mod:
-  style:
-    fold-entity-row$: |
-      ha-icon {
-        color: rgb(var(--rgb-disabled-color));
-        margin-right: 24px;
-      }
-    hui-section-row $: |
-      .divider { display: none; }
-    .: |
-      .card-content {
-        padding: 0;
-      }
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: Current Outages
+  icon: mdi:alert
+  state: >
+    {{states('sensor.essential_energy_outages_current')}} Incidents
+  color: >
+    {% if states('sensor.essential_energy_outages_current') != "0" %} red {% endif %}
+padding: 0
 entities:
-  - type: custom:fold-entity-row
-    head:
-      type: custom:mushroom-template-card
-      entity: ""
-      primary: Current Outages
-      secondary: |
-        {{states('sensor.essential_energy_outages_current')}} Incidents
-      icon: mdi:alert
-      icon_color: >
-        {% if states('sensor.essential_energy_outages_current') == "0" %} grey
-        {%else%} red {% endif %}
-      fill_container: true
-      multiline_secondary: false
-      card_mod:
-        style: |
-          ha-card {
-            background: none;
-            border: 0;
-            box-shadow: none;
-          }
-    padding: 0
+  - type: custom:hui-element
+    card_type: custom:flex-table-card
     entities:
-      - type: custom:hui-element
-        card_type: custom:flex-table-card
-        entities:
-          include: sensor.essential_energy_outages_current
-        clickable: true
-        sort_by: data+
-        columns:
-          - hidden: true
-            name: sort
-            data: data
-            modify: x.dist_km
-          - data: data
-            name: Reason
-            modify: >-
-              if(x != null) { x.reason + " (" + x.dist_km + "km away)"
-              } else { "-" }
-          - data: data
-            name: Impact
-            modify: x.customers_impacted + " Customers"
-          - data: data
-            name: Dates
-            modify: >
-              if (x.length == 0) {
-                "-"
-              } else {
-                var startstring = "Start: " + x.starttime
-                var endstring = "<br/>End: " + x.endtime
-                var updatestring = "<br/>Last Update: " + x.lastupdate
-                startstring + endstring + updatestring
-              }
-        css:
-          table+: "border-collapse: collapse; padding: 0px;"
-        card_mod:
-          style: |
-            ha-card {
-              background: none;
-              border: 0;
-              box-shadow: none;
-              overflow: auto;
-              padding-top: 5px;
-              font-size: 12px;
-            }
-            tbody tr:hover {
-              background-color: coral !important
-            }
+      include: sensor.essential_energy_outages_current
+    clickable: true
+    sort_by: data+
+    columns:
+      - hidden: true
+        name: sort
+        data: data
+        modify: x.dist_km
+      - data: data
+        name: Reason
+        modify: >-
+          if(x != null) { x.reason + " (" + x.dist_km + "km away)"
+          } else { "-" }
+      - data: data
+        name: Impact
+        modify: x.customers_impacted + " Customers"
+      - data: data
+        name: Dates
+        modify: >
+          if (x.length == 0) {
+            "-"
+          } else {
+            var startstring = "Start: " + x.starttime
+            var endstring = "<br/>End: " + x.endtime
+            var updatestring = "<br/>Last Update: " + x.lastupdate
+            startstring + endstring + updatestring
+          }
+    css:
+      table+: "border-collapse: collapse; padding: 0px;"
+    card_mod:
+      style: |
+        ha-card {
+          background: none;
+          border: 0;
+          box-shadow: none;
+          overflow: auto;
+          padding-top: 5px;
+          font-size: 12px;
+        }
+        tbody tr:hover {
+          background-color: coral !important
+        }

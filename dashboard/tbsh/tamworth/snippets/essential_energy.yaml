@@ -6,6 +6,37 @@ cards:
     name: Outage Count
     fill_container: true
     icon_color: red
+  - type: entities
+    card_mod:
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
+    entities:
+      - entity: binary_sensor.essential_energy_nearby_active_outage
+        name: Outages Near Me
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info: last-changed
+        entities:
+          - attribute: count_current
+            name: Current
+            unit: ""
+          - attribute: count_future
+            name: Future
+            unit: ""
+          - attribute: count_cancelled
+            name: Cancelled
+            unit: ""
   - type: custom:plotly-graph
     entities:
       - entity: sensor.essential_energy_outages_near_me
@@ -70,3 +101,41 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
+  - type: entities
+    card_mod:
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
+    entities:
+      - !include ../essential_energy/current.yaml
+      - !include ../essential_energy/future.yaml
+      - !include ../essential_energy/cancelled.yaml
+      - type: buttons
+        entities:
+          - entity: sensor.helper_weblink
+            name: Current Outages
+            tap_action:
+              action: url
+              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=current
+
+          - entity: sensor.helper_weblink
+            name: Future Outages
+            tap_action:
+              action: url
+              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=future
+
+          - entity: sensor.helper_weblink
+            name: Cancelled Outages
+            tap_action:
+              action: url
+              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=cancelled          

@@ -6,6 +6,31 @@ cards:
     name: Incident Count
     fill_container: true
     icon_color: red
+  - type: entities
+    card_mod:
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
+    entities:
+      - entity: binary_sensor.livetrafficnsw_nearby_active_incident
+        name: Incidents Near Me
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info: last-changed
+        entities:
+          - attribute: count
+            name: Current
+            unit: ""
   - type: custom:plotly-graph
     entities:
       - entity: sensor.stats_livetraffic
@@ -86,3 +111,33 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
+  - type: entities
+    card_mod:
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
+    entities:
+      - !include ../livetraffic/alpine.yaml
+      - !include ../livetraffic/fire.yaml
+      - !include ../livetraffic/flood.yaml
+      - !include ../livetraffic/incidents.yaml
+      - !include ../livetraffic/incidentslga.yaml
+      - !include ../livetraffic/majorevents.yaml
+      - !include ../livetraffic/roadwork.yaml
+      - type: buttons
+        entities:
+          - entity: sensor.helper_weblink
+            name: Live Traffic NSW
+            tap_action:
+              action: url
+              url_path: https://www.livetraffic.com/

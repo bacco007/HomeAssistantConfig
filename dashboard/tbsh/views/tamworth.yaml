@@ -22,22 +22,8 @@ cards:
           width: 300
           max_width: 1000
         cards: &cards
-          - type: vertical-stack
-            cards:
-              - !include ../tamworth/snippets/livetraffic.yaml
-              - !include ../tamworth/livetraffic/alpine.yaml
-              - !include ../tamworth/livetraffic/fire.yaml
-              - !include ../tamworth/livetraffic/flood.yaml
-              - !include ../tamworth/livetraffic/incidents.yaml
-              - !include ../tamworth/livetraffic/incidentslga.yaml
-              - !include ../tamworth/livetraffic/majorevents.yaml
-              - !include ../tamworth/livetraffic/roadwork.yaml
-          - type: vertical-stack
-            cards:
-              - !include ../tamworth/snippets/essential_energy.yaml
-              - !include ../tamworth/essential_energy/current.yaml
-              - !include ../tamworth/essential_energy/future.yaml
-              - !include ../tamworth/essential_energy/cancelled.yaml
+          - !include ../tamworth/snippets/livetraffic.yaml
+          - !include ../tamworth/snippets/essential_energy.yaml
           - !include ../tamworth/snippets/fuel.yaml
           - !include ../tamworth/snippets/hospital.yaml
           - !include ../tamworth/dams.yaml

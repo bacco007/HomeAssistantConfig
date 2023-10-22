@@ -92,6 +92,7 @@ binary_sensor:
     unique_id: connected_eufysecurity
     icon: mdi:cctv-off
     device_class: connectivity
+    picture: https://brands.home-assistant.io/eufy_security/icon.png
     state: "{{ integration_entities('eufy_security')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -99,6 +100,7 @@ binary_sensor:
     unique_id: connected_bureauofmeteorology
     icon: mdi:weather-lightning-rainy
     device_class: connectivity
+    picture: https://brands.home-assistant.io/bureau_of_meteorology/icon.png
     state: "{{ integration_entities('bureau_of_meteorology')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -106,6 +108,7 @@ binary_sensor:
     unique_id: connected_adguard
     icon: mdi:shield-account
     device_class: connectivity
+    picture: https://brands.home-assistant.io/adguard/icon.png
     state: "{{ integration_entities('adguard')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -113,6 +116,7 @@ binary_sensor:
     unique_id: connected_solcast_solar
     icon: mdi:solar-power-variant
     device_class: connectivity
+    picture: https://brands.home-assistant.io/solcast_solar/icon.png
     state: "{{ integration_entities('solcast_solar')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -120,6 +124,7 @@ binary_sensor:
     unique_id: connected_forecast_solar
     icon: mdi:solar-power-variant
     device_class: connectivity
+    picture: https://brands.home-assistant.io/forecast_solar/icon.png
     state: "{{ integration_entities('forecast_solar')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -127,6 +132,7 @@ binary_sensor:
     unique_id: connected_lg_smartthinq
     icon: si:lg
     device_class: connectivity
+    picture: https://brands.home-assistant.io/smartthinq_sensors/icon.png
     state: "{{ integration_entities('smartthinq_sensors')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -134,6 +140,7 @@ binary_sensor:
     unique_id: connected_synology_dsm
     icon: mdi:nas
     device_class: connectivity
+    picture: https://brands.home-assistant.io/synology_dsm/icon.png
     state: "{{ integration_entities('synology_dsm')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -141,6 +148,7 @@ binary_sensor:
     unique_id: connected_spotify
     icon: mdi:spotify
     device_class: connectivity
+    picture: https://brands.home-assistant.io/spotify/icon.png
     state: "{{ integration_entities('spotify')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -148,6 +156,7 @@ binary_sensor:
     unique_id: connected_apple_tv
     icon: mdi:apple
     device_class: connectivity
+    picture: https://brands.home-assistant.io/apple_tv/icon.png
     state: "{{ integration_entities('apple_tv')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -155,6 +164,7 @@ binary_sensor:
     unique_id: connected_hdhomerun
     icon: mdi:television-box
     device_class: connectivity
+    picture: https://brands.home-assistant.io/hdhomerun/icon.png
     state: "{{ integration_entities('hdhomerun')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
@@ -203,6 +213,7 @@ binary_sensor:
     unique_id: connected_bluetooth
     icon: mdi:bluetooth
     device_class: connectivity
+    picture: https://brands.home-assistant.io/bluetooth/icon.png
     state: >
       {{ (expand(state_attr('sensor.devices_bluetooth', 'entity_id'))
             | selectattr('state', 'eq', 'home') | list | count > 0

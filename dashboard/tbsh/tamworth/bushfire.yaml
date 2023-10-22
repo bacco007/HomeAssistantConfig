@@ -97,3 +97,19 @@ cards:
           - attribute: danger_level_today
             name: Danger Level
             unit: ""
+  - type: entities
+    card_mod:
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+    entities:
+      - type: buttons
+        entities:
+          - entity: sensor.helper_weblink
+            name: RFS NSW
+            tap_action:
+              action: url
+              url_path: https://www.rfs.nsw.gov.au
