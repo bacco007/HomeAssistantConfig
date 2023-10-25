@@ -20,3 +20,9 @@ query_forecast_data:
       selector:
         datetime:
 
+set_dampening:
+  name: Set forecasts dampening
+  description: Set the hourly forecast dampening factor
+  fields:
+    damp_factor:
+      example: "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"

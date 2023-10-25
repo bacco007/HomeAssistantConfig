@@ -15,7 +15,15 @@ from homeassistant.helpers import aiohttp_client, intent
 from homeassistant.helpers.device_registry import async_get as device_registry
 from homeassistant.util import dt as dt_util
 
-from .const import (DOMAIN, SERVICE_CLEAR_DATA, SERVICE_UPDATE, SERVICE_QUERY_FORECAST_DATA, SOLCAST_URL)
+from .const import (
+    DOMAIN, 
+    SERVICE_CLEAR_DATA, 
+    SERVICE_UPDATE, 
+    SERVICE_QUERY_FORECAST_DATA, 
+    SERVICE_SET_DAMPENING, 
+    SOLCAST_URL
+)
+
 from .coordinator import SolcastUpdateCoordinator
 from .solcastapi import ConnectionOptions, SolcastApi
 
@@ -27,6 +35,12 @@ PLATFORMS = [Platform.SENSOR]
 
 _LOGGER = logging.getLogger(__name__)
 
+DAMP_FACTOR = "damp_factor"
+SERVICE_DAMP_SCHEMA: Final = vol.All(
+        {
+            vol.Required(DAMP_FACTOR): cv.string,
+        }
+)
 
 EVENT_START_DATETIME = "start_date_time"
 EVENT_END_DATETIME = "end_date_time"
@@ -40,11 +54,26 @@ SERVICE_QUERY_SCHEMA: Final = vol.All(
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up solcast parameters."""
+
+    optdamp = {}
+    try:
+        #if something goes wrong ever with the damp factors just create a blank 1.0
+        for a in range(0,24):
+            optdamp[str(a)] = entry.options[f"damp{str(a).zfill(2)}"]
+    except Exception as ex:
+        new = {**entry.options}
+        for a in range(0,24):
+            new[f"damp{str(a).zfill(2)}"] = 1.0
+        entry.options = {**new}
+        for a in range(0,24):
+            optdamp[str(a)] = 1.0
+
     options = ConnectionOptions(
         entry.options[CONF_API_KEY],
         SOLCAST_URL,
         hass.config.path('solcast.json'),
         dt_util.get_time_zone(hass.config.time_zone),
+        optdamp,
     )
 
     solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options)
@@ -77,8 +106,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry.async_on_unload(entry.add_update_listener(async_update_options))
 
-    
-
     _LOGGER.info(f"SOLCAST - Solcast API data UTC times are converted to {hass.config.time_zone}")
 
     async def handle_service_update_forecast(call: ServiceCall):
@@ -108,8 +135,44 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         return None
     
+    async def handle_service_set_dampening(call: ServiceCall):
+        """Handle service call"""
+        try:
+            _LOGGER.info(f"SOLCAST - Service call: {SERVICE_SET_DAMPENING}")
 
-    hass.services.async_register(DOMAIN, SERVICE_UPDATE, handle_service_update_forecast)
+            factors = call.data.get(DAMP_FACTOR, None)
+
+            if factors == None:
+                raise HomeAssistantError(f"Error processing {SERVICE_SET_DAMPENING}: Empty factor string")
+            else:
+                factors = factors.strip().replace(" ","")
+                if len(factors) == 0:
+                    raise HomeAssistantError(f"Error processing {SERVICE_SET_DAMPENING}: Empty factor string")
+                else:
+                    sp = factors.split(",")
+                    if (len(sp)) != 24:
+                        raise HomeAssistantError(f"Error processing {SERVICE_SET_DAMPENING}: Not 24 hourly factor items")
+                    else:
+                        for i in sp:
+                            #this will fail is its not a number
+                            if float(i) < 0 or float(i) > 1:
+                                raise HomeAssistantError(f"Error processing {SERVICE_SET_DAMPENING}: Factor value outside 0.0 to 1.0")
+                        d= {}
+                        opt = {**entry.options}
+                        for i in range(0,24):
+                            d.update({f"{i}": float(sp[i])})
+                            opt[f"damp{i:02}"] = float(sp[i])
+
+                        solcast._damp = d
+                        hass.config_entries.async_update_entry(entry, options=opt)
+
+            await coordinator.service_event_delete_old_solcast_json_file()
+        except intent.IntentHandleError as err:
+            raise HomeAssistantError(f"Error processing {SERVICE_SET_DAMPENING}: {err}") from err
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_UPDATE, handle_service_update_forecast
+    )
 
     hass.services.async_register(
         DOMAIN, SERVICE_CLEAR_DATA, handle_service_clear_solcast_data
@@ -117,6 +180,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.services.async_register(
         DOMAIN, SERVICE_QUERY_FORECAST_DATA, handle_service_get_solcast_data, SERVICE_QUERY_SCHEMA, SupportsResponse.ONLY,
+    )
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_SET_DAMPENING, handle_service_set_dampening, SERVICE_DAMP_SCHEMA
     )
 
     return True
@@ -130,6 +197,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_remove(DOMAIN, SERVICE_UPDATE)
     hass.services.async_remove(DOMAIN, SERVICE_CLEAR_DATA)
     hass.services.async_remove(DOMAIN, SERVICE_QUERY_FORECAST_DATA)
+    hass.services.async_remove(DOMAIN, SERVICE_SET_DAMPENING)
 
     return unload_ok
 
@@ -139,7 +207,6 @@ async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEnt
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
     """Reload entry if options change."""
-    _LOGGER.debug("Reloading entry %s", entry.entry_id)
     await hass.config_entries.async_reload(entry.entry_id)
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
@@ -152,6 +219,17 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
 
         config_entry.version = 4
         hass.config_entries.async_update_entry(config_entry, options=new_options)
+
+    #new 4.0.8
+    #power factor for each hour
+    if config_entry.version == 4:
+        new = {**config_entry.options}
+        for a in range(0,24):
+            new[f"damp{str(a).zfill(2)}"] = 1.0
+
+        config_entry.options = {**new}
+
+        config_entry.version = 5
 
     _LOGGER.debug("Solcast Migration to version %s successful", config_entry.version)
 

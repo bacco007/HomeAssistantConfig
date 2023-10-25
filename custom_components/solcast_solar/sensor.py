@@ -6,9 +6,6 @@ import logging
 import traceback
 from dataclasses import dataclass
 
-from datetime import datetime as dt
-from datetime import timedelta, timezone
-
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -62,7 +59,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         name="Peak Time Today",
         icon="mdi:clock",
         device_class=SensorDeviceClass.TIMESTAMP,
-        suggested_display_precision=0,
+        #suggested_display_precision=0,
     ),
     "forecast_this_hour": SensorEntityDescription(
         key="forecast_this_hour",
@@ -115,7 +112,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         name="Peak Time Tomorrow",
         icon="mdi:clock",
         device_class=SensorDeviceClass.TIMESTAMP,
-        suggested_display_precision=0,
+        # suggested_display_precision=0,
     ),
     "api_counter": SensorEntityDescription(
         key="api_counter",
