@@ -111,14 +111,16 @@ from   homeassistant.util.location import distance
 def process_update_service_request(call):
     """ icloud3.update service call request """
 
-    action       = call.data.get('command').lower() or call.data.get('action').lower()
+    action = call.data.get('command') or call.data.get('action')
+    if action is None: return
+
+    action       = action.lower()
     action_fname = call.data.get('action_fname')
     devicename   = call.data.get(CONF_DEVICENAME)
 
     action, devicename = resolve_action_devicename_values(action, devicename)
 
-    if action is not None:
-        update_service_handler(action, action_fname, devicename)
+    update_service_handler(action, action_fname, devicename)
 
 #--------------------------------------------------------------------
 def process_restart_icloud3_service_request(call):
@@ -285,7 +287,7 @@ def update_service_handler(action_entry=None, action_fname=None, devicename=None
     action_option = action_entry.replace(action, '').strip()
 
     # EvLog version sent from the EvLog program already set, ignore the svc call
-    if action == 'event_log_version' and Gb.evlog_version == action_option:
+    if action == 'event_log_version': # and Gb.evlog_version == action_option:
         return
 
     devicename_msg = devicename if devicename in Gb.Devices_by_devicename else None
@@ -408,10 +410,11 @@ def _handle_global_action(global_action, action_option):
         return
 
     elif global_action == 'event_log_version':
+        return
         # Gb.evlog_version = action_option
         # Gb.EvLog.evlog_attrs["version_evlog"] = action_option
-        Gb.conf_profile['event_log_version'] = action_option
-        config_file.write_storage_icloud3_configuration_file()
+        # Gb.conf_profile['event_log_version'] = action_option
+        # config_file.write_storage_icloud3_configuration_file()
 
 
 #--------------------------------------------------------------------
@@ -488,9 +491,20 @@ def _handle_action_device_locate(Device, action_option):
         _handle_action_device_location_iosapp(Device)
         return
 
-    if Gb.primary_data_source_ICLOUD is False or Device.is_data_source_ICLOUD is False:
+    if (Gb.primary_data_source_ICLOUD is False
+            or (Device.device_id_famshr is None and Device.device_id_fmf is None)
+            or Device.is_offline
+            or Device.is_data_source_ICLOUD is False):
         post_event(Device.devicename, "iCloud Location Tracking is not available")
         return
+
+    if Device.old_loc_poor_gps_cnt > 3:
+        post_event(Device.devicename, "Location request canceled. Old Location Retry is "
+                        "handling Location Updates")
+        post_event(Device.devicename, "iCloud Location Tracking is not available")
+        Gb.icloud_force_update_flag = False
+        return
+
     try:
         interval_secs = time_str_to_secs(action_option)
         if interval_secs == 0:
@@ -498,7 +512,8 @@ def _handle_action_device_locate(Device, action_option):
     except:
         interval_secs = 5
 
-    Gb.force_icloud_update_flag = True
+    Gb.icloud_force_update_flag = True
+    Device.icloud_force_update_flag = True
     det_interval.update_all_device_fm_zone_sensors_interval(Device, interval_secs)
     Device.icloud_update_reason = f"Location Requested@{time_now()}"
     post_event(Device.devicename, f"Location will be updated at {Device.sensors[NEXT_UPDATE_TIME]}")

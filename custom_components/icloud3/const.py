@@ -4,7 +4,7 @@
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-VERSION                         = '3.0pr1'
+VERSION                         = '3.0.rc7.1'
 
 DOMAIN                          = 'icloud3'
 ICLOUD3                         = 'iCloud3'
@@ -102,7 +102,7 @@ OTHER                           = 'other'
 
 # Apple is using a country specific iCloud server based on the country code in pyicloud_ic3.
 # Add to the HOME_ENDPOINT & SETUP_ENDPOINT urls if the HA country code is one of these values.
-APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE = ['cn']
+APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE = ['cn', 'CN']
 
 DEVICE_TYPES = [
         IPHONE, IPAD, IPOD, WATCH, ICLOUD_FNAME, AIRPODS,
@@ -146,11 +146,11 @@ RANGE_UM = 3
 #Other constants
 IOSAPP_DT_ENTITY = True
 ICLOUD_DT_ENTITY = False
-ICLOUD_LOCATION_DATA_ERROR = False
-CMD_RESET_PYICLOUD_SESSION = 'reset_session'
-NEAR_DEVICE_DISTANCE       = 20
+ICLOUD_LOCATION_DATA_ERROR   = False
+CMD_RESET_PYICLOUD_SESSION   = 'reset_session'
+NEAR_DEVICE_DISTANCE         = 20
 PASS_THRU_ZONE_INTERVAL_SECS = 60       # Delay time before moving into a non-tracked zone to see if if just passing thru
-STATZONE_BASE_RADIUS_M     = 100
+STATZONE_RADIUS_1M       = 1
 ICLOUD3_ERROR_MSG        = "ICLOUD3 ERROR-SEE EVENT LOG"
 
 # Event Log variables
@@ -194,9 +194,11 @@ WAZE_NO_DATA      = 4
 # poor_location_gps cnt, icloud_authentication cnt (default)
 OLD_LOC_POOR_GPS_CNT   = 1.1
 AUTH_ERROR_CNT         = 1.2
-RETRY_INTERVAL_RANGE_1 = {0:.25, 4:1, 8:5, 12:30, 16:60, 20:120, 22:240, 24:240}
+RETRY_INTERVAL_RANGE_1 = {0:.25, 4:1, 8:5, 12:30, 16:60, 20:60}
+# RETRY_INTERVAL_RANGE_1 = {0:.25, 4:1, 8:5, 12:30, 16:60, 20:120, 22:240, 24:240}
 IOSAPP_REQUEST_LOC_CNT = 2.1
-RETRY_INTERVAL_RANGE_2 = {0:.5, 4:2, 8:30, 12:60, 14:120, 16:180, 18:240, 20:240}
+RETRY_INTERVAL_RANGE_2 = {0:.5, 4:2, 8:30, 12:60, 16:60}
+# RETRY_INTERVAL_RANGE_2 = {0:.5, 4:2, 8:30, 12:60, 14:120, 16:180, 18:240, 20:240}
 
 # Used by the 'update_method' in the polling_5_sec loop
 IOSAPP_UPDATE     = "IOSAPP"
@@ -243,7 +245,7 @@ CIRCLE_LETTERS_LITE =  {'a':'Ⓐ', 'b':'Ⓑ', 'c':'Ⓒ', 'd':'Ⓓ', 'e':'Ⓔ', '
 lite_circled_letters = "Ⓐ Ⓑ Ⓒ Ⓓ Ⓔ Ⓕ Ⓖ Ⓗ Ⓘ Ⓙ Ⓚ Ⓛ Ⓜ Ⓝ Ⓞ Ⓟ Ⓠ Ⓡ Ⓢ Ⓣ Ⓤ Ⓥ Ⓦ Ⓧ Ⓨ Ⓩ"
 dark_circled_letters = "🅐 🅑 🅒 🅓 🅔 🅕 🅖 🅗 🅘 🅙 🅚 🅛 🅜 🅝 🅞 🅟 🅠 🅡 🅢 🅣 🅤 🅥 🅦 🅧 🅨 🅩 ✪"
 Symbols = ±▪•●▬⮾ ⊗ ⊘✓×ø¦ ▶◀ ►◄▲▼ ∙▪ »« oPhone=►▶→⟾➤➟➜➔➤🡆🡪🡺⟹🡆➔ᐅ◈🝱☒☢⛒❌⊘Ɵ⊗ⓧⓍ⛒🜔
-  — – ⁃ » ━▶ ━➤🡺 —> > > ❯↦ … 🡪ᗕ ᗒ ᐳ ─🡢 ──ᗒ 🡢 ─ᐅ ↣ ➙ →《》◆◈◉●▐‖  ▹▻▷◁◅◃▶➤➜➔❰❰❱❱ ⠤
+  — –ᗒ ⁃ » ━▶ ━➤🡺 —> > > ❯↦ … 🡪ᗕ ᗒ ᐳ ─🡢 ──ᗒ 🡢 ─ᐅ ↣ ➙ →《》◆◈◉●▐‖  ▹▻▷◁◅◃▶➤➜➔❰❰❱❱ ⠤
  ⣇⠈⠉⠋⠛⠟⠿⡿⣿       https://www.fileformat.info/info/unicode/block/braille_patterns/utf8test.htm
 '''
 NBSP              = '⠈' #'&nbsp;'
@@ -324,8 +326,9 @@ RADIUS            = 'radius'
 NON_ZONE_ITEM_LIST = {
         'not_home': 'Away',
         'Not_Home': 'Away',
-        'not_set': 'NotSet',
-        'Not_Set': 'NotSet',
+        'not_set': '──',
+        'Not_Set': '──',
+        '──': 'NotSet',
         # 'stationary': 'Stationary',
         # 'Stationary': 'Stationary',
         STATIONARY: STATIONARY_FNAME,
@@ -360,8 +363,7 @@ BATTERY_STATUS_CODES = {
         'notcharging': 'not charging',
         'not charging': 'not charging',
         'not_charging': 'not charging',
-        'unknown': 'unknown',
-        '': 'unknown',
+        'unknown': '',
         }
 BATTERY_STATUS_FNAME = {
         # 'full, full': 'Full, Not Charging',
@@ -702,6 +704,8 @@ MOVED_DISTANCE                 = "moved_distance"
 MOVED_TIME_FROM                = 'moved_from'
 MOVED_TIME_TO                  = 'moved_to'
 
+# TfZ Sensors are not configured via config_flow but built in
+# config_flow from the distance, time & zone sensors
 CONF_SENSORS_TRACK_FROM_ZONES = 'track_from_zones'
 TFZ_ZONE_INFO                 = 'tfz_zone_info'
 TFZ_DISTANCE                  = 'tfz_distance'

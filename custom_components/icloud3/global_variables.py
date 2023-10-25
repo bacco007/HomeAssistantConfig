@@ -117,6 +117,7 @@ class GlobalVariables(object):
     username                     = ''
     username_base                = ''
     password                     = ''
+    icloud_server_endpoint_suffix = ''
     encode_password_flag         = True
     all_famshr_devices           = True
     entity_registry_file         = ''
@@ -137,6 +138,7 @@ class GlobalVariables(object):
     TrackedZones_by_zone              = {HOME, None}  # Tracked zones object by zone name set up with Devices.DeviceFmZones object
     ActiveZones                       = []  # Active Zones - Not passive, radius > 0
     StatZones                         = []  # Stationary Zone objects
+    StatZones_to_delete               = []  # Stationary Zone  to delete after the devices that we're in it have  been updated
     StatZones_by_zone                 = {}  # Stationary Zone objects by their id number (1-10 --> ic3_#_stationary)
     HomeZone                          = None # Home Zone object
 
@@ -232,7 +234,7 @@ class GlobalVariables(object):
     device_trackers_cnt         = 0               # Number of device_trackers that will be creted (__init__.py)
     device_trackers_created_cnt = 0               # Number of device_trackers that have been set up (incremented in device_tracker.py)
     area_id_personal_device     = None
-    
+
     # restore_state file
     restore_state_file_data = {}
     restore_state_profile   = {}
@@ -310,6 +312,7 @@ class GlobalVariables(object):
     used_data_source_FAMSHR  = False
     used_data_source_FMF     = False
     used_data_source_IOSAPP  = False
+    iosapp_monitor_any_devices_false_flag = False
 
     # Primary data source being used that can be turned off if errors
     primary_data_source_ICLOUD = conf_data_source_ICLOUD

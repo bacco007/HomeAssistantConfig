@@ -71,11 +71,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     '''Set up iCloud3 sensors'''
 
     # Save the hass `add_entities` call object for use in config_flow for adding new sensors
+    Gb.hass = hass
     Gb.async_add_entities_sensor = async_add_entities
 
     try:
         if Gb.conf_file_data == {}:
-            Gb.hass = hass
             start_ic3.initialize_directory_filenames()
             start_ic3.load_storage_icloud3_configuration_file()
 
@@ -245,7 +245,6 @@ def _create_track_from_zone_sensors(devicename, conf_device, sensors_list):
             devicename_sensor_zone = f"{devicename}_{sensor}_{from_zone}"
 
             if devicename_sensor_zone in excluded_sensors_list:
-                # Gb.sensors_created_cnt += 1
                 log_debug_msg(f"Sensor entity excluded: sensor.{devicename_sensor_zone}")
                 continue
 
@@ -508,8 +507,6 @@ class SensorBase(SensorEntity):
             if instr(_sensor_attr_name, ZONE_DISTANCE_M_EDGE):
                 extra_attrs[_sensor_attr_name] = _sensor_value
 
-                # if attr_units_flag == False:
-                    # attr_units_flag = True
                 if Gb.um == 'mi':
                     extra_attrs['distance_units_(attributes)'] = 'mi'
                     if self._get_sensor_value(ZONE_DISTANCE_M):
@@ -899,7 +896,7 @@ class Sensor_Info(SensorBase):
             return Gb.broadcast_info_msg
 
         elif self.sensor_not_set:
-            return f"◈◈ Starting iCloud3 ◈◈"
+            return f"◈◈ Starting iCloud3 v{Gb.version} ◈◈"
 
         else:
             return self.sensor_value
@@ -1117,7 +1114,7 @@ class Sensor_Battery(SensorBase):
     @property
     def extra_state_attributes(self):
         extra_attrs = self._get_extra_attributes(self.sensor)
-        extra_attrs.update({'device_class': 'battery', 'state_class': 'battery'})
+        extra_attrs.update({'device_class': 'battery', 'state_class': 'measurement'})
 
         return extra_attrs
 

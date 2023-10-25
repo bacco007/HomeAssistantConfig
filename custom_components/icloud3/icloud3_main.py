@@ -35,7 +35,7 @@ from homeassistant import config_entries
 
 from .global_variables  import GlobalVariables as Gb
 from .const             import (VERSION,
-                                HOME, NOT_HOME, NOT_SET, HIGH_INTEGER, RARROW, RARROW2, CRLF,
+                                HOME, NOT_HOME, NOT_SET, NOT_SET_FNAME, HIGH_INTEGER,
                                 STATIONARY, TOWARDS, AWAY_FROM, EVLOG_IC3_STAGE_HDR,
                                 ICLOUD, ICLOUD_FNAME, TRACKING_NORMAL,
                                 CMD_RESET_PYICLOUD_SESSION, NEAR_DEVICE_DISTANCE,
@@ -45,7 +45,7 @@ from .const             import (VERSION,
                                 EVLOG_UPDATE_START, EVLOG_UPDATE_END, EVLOG_ALERT, EVLOG_NOTICE,
                                 FMF, FAMSHR, IOSAPP, IOSAPP_FNAME,
                                 ENTER_ZONE, EXIT_ZONE, GPS, INTERVAL, NEXT_UPDATE, NEXT_UPDATE_TIME,
-                                CONF_LOG_LEVEL,
+                                ZONE, CONF_LOG_LEVEL,
                                 )
 from .const_sensor      import (SENSOR_LIST_DISTANCE, )
 from .support           import start_ic3
@@ -59,7 +59,7 @@ from .support           import service_handler
 from .support           import determine_interval as det_interval
 
 from .helpers.common    import (instr, is_zone, is_statzone, isnot_statzone, isnot_zone,
-                                zone_display_as, )
+                                list_to_str,)
 from .helpers.messaging import (broadcast_info_msg,
                                 post_event, post_error_msg, post_monitor_msg, post_internal_error,
                                 open_ic3_log_file, post_alert, clear_alert,
@@ -78,6 +78,7 @@ ZD_ZONE       = 1
 ZD_NAME       = 2
 ZD_RADIUS     = 3
 ZD_DISPLAY_AS = 4
+ZD_CNT        = 5
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 class iCloud3:
@@ -161,6 +162,7 @@ class iCloud3:
 
             start_ic3_control.stage_3_setup_configured_devices()
             stage_4_success = start_ic3_control.stage_4_setup_data_sources()
+
             if stage_4_success is False:
                 start_ic3_control.stage_4_setup_data_sources(retry=True)
 
@@ -200,9 +202,6 @@ class iCloud3:
         if Gb.restart_icloud3_request_flag:
             self.start_icloud3()
             Gb.restart_icloud3_request_flag = False
-        # elif Gb.restart_ha_flag:
-        #     log_info_msg(f"HA has started {Gb.restart_ha_flag=}")
-        #     start_ic3.ha_restart()
 
         # Exit 5-sec loop if no devices, updating a device now, or restarting iCloud3
         if (self.loop_ctrl_master_update_in_process_flag
@@ -240,6 +239,19 @@ class iCloud3:
             #<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
             self._main_5sec_loop_special_time_control()
 
+            # Start of uncommented out code to test of moving device into a statzone while home
+            # if Gb.this_update_time.endswith('5:00'):
+            #     if Gb.Devices[0].StatZone is None:
+            #         _trace(f"{Gb.Devices[0].fname} creating")
+            #         statzone.move_device_into_statzone(Gb.Devices[0])
+            #         _trace(f"{Gb.Devices[0].StatZone.zone} created")
+            # if Gb.this_update_time.endswith('0:00'):
+            #     if Gb.Devices[0].StatZone:
+            #         _trace(f"{Gb.Devices[0].StatZone.zone} removing")
+            #         statzone.remove_statzone(Gb.Devices[0].StatZone, Gb.Devices[0])
+            #         _trace(f"{Gb.Devices[0].StatZone.zone} removed")
+            # End of uncommented out code to test of moving device into a statzone while home
+
             if Gb.all_tracking_paused_flag:
                 return
 
@@ -263,6 +275,15 @@ class iCloud3:
 
                 self._display_secs_to_next_update_info_msg(Device)
                 self._clear_loop_control_device()
+
+            # Remove all StatZones from HA flagged for removal in StatZone module
+            # Removing them after the devices have been updated lets HA process the
+            # statzone 'leave' automation trigger associated with a device before
+            # the zone is deleted.
+            if Gb.StatZones_to_delete:
+                for StatZone in Gb.StatZones_to_delete:
+                    StatZone.remove_ha_zone()
+                Gb.StatZones_to_delete = []
 
 
             #<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
@@ -297,7 +318,7 @@ class iCloud3:
         Gb.trace_prefix = 'WRAPUP > '
 
         #<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
-        #   UPDATE DISPLAYED DEVICE INFO FIELD
+        #   POST UPDATE LOOP TASKS
         #<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
         # Update the EvLog display if the displayed device was updated after
         # the last EvLog refresh
@@ -305,11 +326,7 @@ class iCloud3:
             if Device := Gb.Devices_by_devicename.get(Gb.EvLog.devicename):
                 if Device.last_evlog_msg_secs > Gb.EvLog.last_refresh_secs:
                     Gb.EvLog.update_event_log_display(devicename=Device.devicename)
-                                                    # show_one_screen=show_one_screen)
 
-        #<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
-        #   UPDATE DISTANCE TO DEVICES SENSORS
-        #<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
         # Update distance sensors (_zone/home.waze/calc_distace) to update the
         # distance to each device
         if Gb.dist_to_other_devices_update_sensor_list:
@@ -329,7 +346,6 @@ class iCloud3:
 #   MAIN 5-SEC LOOP PROCESSING CONTROLLERS
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
     def _main_5sec_loop_update_tracked_devices_iosapp(self, Device):
         '''
         Update the device based on iOS App data
@@ -355,10 +371,6 @@ class iCloud3:
             post_event(devicename, event_msg)
             return
 
-        if Device.isnot_set is False:
-            Device.moved_since_last_update_km = \
-                        Device.distance_km(Device.iosapp_data_latitude, Device.iosapp_data_longitude)
-
         # If the iOS App is the primary data source next_update time is reached, get the
         # old location threshold. Send a location request to the iosapp device if the
         # data is older than the threshold, the next_update is newer than the iosapp data
@@ -375,6 +387,15 @@ class iCloud3:
                 elif ((Gb.this_update_secs - Device.next_update_secs) % Device.interval_secs == 0
                         and Device.interval_secs >= 900):
                     iosapp_interface.request_location(Device, is_alive_check=False, force_request=True)
+
+        # The Device is in a StatZone but the iosapp is not home. Send a location request to try to
+        # sync them. Do this every 10-mins if the time since the last request is older than 10-min ago
+        elif (Device.is_in_statzone
+                and Device.iosapp_data_state == NOT_HOME
+                and (secs_since(Device.iosapp_request_loc_sent_secs) > 36000
+                    or Device.iosapp_request_loc_sent_secs == 0)
+                and Gb.this_update_time.endswith('0:00')):
+            iosapp_interface.request_location(Device, is_alive_check=False, force_request=True)
 
         # The iosapp may be entering or exiting another Device's Stat Zone. If so,
         # reset the iosapp information to this Device's Stat Zone and continue
@@ -396,23 +417,25 @@ class iCloud3:
                 elif instr(Device.iosapp_data_change_reason, EXIT_ZONE):
                     Device.reset_passthru_zone_delay()
 
-            # Make sure exit distance is outside of statzone, relocate statzone if not
+            # Make sure exit distance is outside of statzone. If inside StatZone,
+            # the zone needs to be removed and another on assigned out the iosapp
+            # will keep exiting  when the device is still in it. it also seems to
+            # stop monitoring the zone for this device but other devices seem to
+            # be ok
             if (instr(Device.iosapp_data_change_reason, EXIT_ZONE)
                     and is_statzone(Device.iosapp_zone_exit_zone)
                     and Device.StatZone
                     and Device.iosapp_zone_exit_dist_m < Device.StatZone.radius_m):
-                Device.iosapp_data_change_reason = (f"Relocate StatZone ("
-                                f"{zone_display_as(Device.iosapp_zone_exit_zone)})")
-                event_msg =(f"Trigger Changed > {Device.iosapp_data_change_reason}, "
-                            f"Distance less than zone size")
+
+                event_msg =(f"{EVLOG_ALERT}Trigger Changed > {Device.iosapp_data_change_reason}, "
+                            f"Distance less than zone size "
+                            f"{Device.StatZone.display_as} {Device.iosapp_zone_exit_dist_m} < {Device.StatZone.radius_m}")
                 post_event(devicename, event_msg)
 
-                statzone.move_statzone_to_device_location(Device,
-                                latitude=Device.loc_data_latitude,
-                                longitude=Device.loc_data_longitude)
-                return
+                statzone.kill_and_recreate_unuseable_statzone(Device)
 
-            iosapp_data_handler.reset_statzone_on_enter_exit_trigger(Device)
+            else:
+                iosapp_data_handler.reset_statzone_on_enter_exit_trigger(Device)
 
             self._validate_new_iosapp_data(Device)
             self.process_updated_location_data(Device,IOSAPP_FNAME)
@@ -445,7 +468,7 @@ class iCloud3:
         if (Device.is_tracking_resumed
                 or icloud_data_handler.is_icloud_update_needed_timers(Device)
                 or icloud_data_handler.is_icloud_update_needed_general(Device)):
-            pass
+            Device.tracking_status = TRACKING_NORMAL
         else:
             return
 
@@ -481,7 +504,6 @@ class iCloud3:
         self._post_before_update_monitor_msg(Device)
         self.process_updated_location_data(Device, ICLOUD_FNAME)
 
-        Device.tracking_status = TRACKING_NORMAL
 
         # Refresh the EvLog if this is an initial locate
         if self.initial_locate_complete_flag == False:
@@ -498,32 +520,34 @@ class iCloud3:
         '''
 
         Gb.trace_prefix = 'MONITOR > '
-        if (Device.is_tracking_paused
-                or Device.is_next_update_time_reached is False):
+        if Device.is_tracking_paused:
             return
 
-        if (Device.iosapp_monitor_flag
-                and Gb.conf_data_source_IOSAPP):
+        Device.FromZone_NextToUpdate = Device.FromZone_Home
+        Device.FromZone_TrackFrom    = Device.FromZone_Home
+        Device.last_track_from_zone  = HOME
+
+        if Device.iosapp_monitor_flag and Gb.conf_data_source_IOSAPP:
             iosapp_data_handler.check_iosapp_state_trigger_change(Device)
 
-        Device.FromZone_TrackFrom = Device.FromZone_Home
-        Device.last_track_from_zone = HOME
-        Device.update_sensors_flag = True
+        if Device.is_tracking_resumed:
+            Device.tracking_status = TRACKING_NORMAL
+        elif Device.is_next_update_time_reached is False:
+            Device.calculate_distance_moved()
+            if Device.loc_data_dist_moved_km < .05:
+                return
+        elif Device.loc_data_latitude == 0:
+            return
 
+        Device.update_sensors_flag  = True
+        Device.icloud_initial_locate_done = True
         Device.icloud_update_reason = 'Monitored Device Update'
 
-        event_msg =(f"Trigger > {Gb.any_device_was_updated_reason}")
+        event_msg =(f"Trigger > Moved {format_dist_km(Device.loc_data_dist_moved_km)}") #{Gb.any_device_was_updated_reason}")
         post_event(Device.devicename, event_msg)
 
         self.process_updated_location_data(Device, '')
         Device.update_sensor_values_from_data_fields()
-
-        # Device.FromZone_TrackFrom = Device.FromZone_Home
-        # Device.last_track_from_zone = HOME
-        # Device.update_sensors_flag = True
-
-        # self.process_updated_location_data(Device, '')
-        # Device.update_sensor_values_from_data_fields()
 
 #----------------------------------------------------------------------------
     def _main_5sec_loop_icloud_prefetch_control(self):
@@ -753,7 +777,12 @@ class iCloud3:
                     post_event(Device.devicename, offline_msg)
 
             # 'Verify Location' update reason overrides all other checks and forces an iCloud update
-            if Device.icloud_update_reason == 'Verify Location':
+            # if Device.icloud_update_reason == 'Verify Location':
+            #     pass
+
+            # Bypass all update needed checks and force an iCloud update
+            if Device.icloud_force_update_flag:
+                # Device.icloud_force_update_flag = False
                 pass
 
             elif Device.icloud_devdata_useable_flag is False or Device.icloud_acct_error_flag:
@@ -814,11 +843,18 @@ class iCloud3:
     def process_updated_location_data(self, Device, update_requested_by):
         try:
             devicename = Gb.devicename = Device.devicename
+            # Device.tracking_status = TRACKING_NORMAL
+
+            # Makw sure the Device iosapp_state is set to the statzone if the device is in a statzone
+            # and the Device iosapp state value is not_nome. The Device state value can be out of sync
+            # if the iosapp was updated but no trigger or state change was detected when a FamShr
+            # update is processed since the Device's location gps did not actually change
+            iosapp_data_handler.sync_iosapp_data_state_statzone(Device)
 
             # Location is good or just setup the StatZone. Determine next update time and update interval,
             # next_update_time values and sensors with the good data
             if Device.update_sensors_flag:
-                self._update_all_tracking_sensors(Device, update_requested_by)
+                self._get_tracking_results_and_update_sensors(Device, update_requested_by)
 
             else:
                 # Old location, poor gps etc. Determine the next update time to request new location info
@@ -828,6 +864,7 @@ class iCloud3:
                         and (Device.old_loc_poor_gps_cnt % 4) == 0):
                     iosapp_interface.request_location(Device)
 
+            Device.icloud_force_update_flag = False
             Device.write_ha_sensors_state()
             Device.write_ha_device_from_zone_sensors_state()
             Device.write_ha_device_tracker_state()
@@ -879,12 +916,11 @@ class iCloud3:
         elif (Device.is_passthru_timer_set
                 and Gb.this_update_secs >= Device.passthru_zone_timer):
             Device.reset_passthru_zone_delay()
-            # return True
 
         return False
 
 #----------------------------------------------------------------------------
-    def _update_all_tracking_sensors(self, Device, update_requested_by):
+    def _get_tracking_results_and_update_sensors(self, Device, update_requested_by):
         '''
         All sensor update checked passed and an update is needed. Get the latest icloud
         data, verify it's usability, and update the location data, determine the next
@@ -977,6 +1013,17 @@ class iCloud3:
             # Determine zone to be tracked from now that all of the zone distances have been determined
             det_interval.determine_TrackFrom_zone(Device)
 
+            # pr1.4
+            # If the location is old and an update is being done (probably from an iosapp trigger),
+            # see if the error interval is greater than this update interval. Is it is, Reset the counter
+            if Device.old_loc_poor_gps_cnt > 8:
+                error_interval_secs, error_cnt, max_error_cnt = det_interval.get_error_retry_interval(Device)
+                if error_interval_secs > Device.interval_secs:
+                    event_msg =(f"Location Old #{Device.old_loc_poor_gps_cnt} > Old Loc Counter Reset, "
+                                f"NextUpdate-{secs_to_age_str(Device.interval_sec)}, "
+                                f"OldLocRetryUpdate-{secs_to_age_str(error_interval_secs)}")
+                    Device.old_loc_poor_gps_cnt = 0
+
             log_start_finish_update_banner('finish', devicename, Device.dev_data_source, from_zone)
 
         except Exception as err:
@@ -985,6 +1032,32 @@ class iCloud3:
 
         return True
 
+#------------------------------------------------------------------------------
+    def _request_update_devices_no_iosapp_same_zone_on_exit(self, Device):
+        '''
+        The Device is exiting a zone. Check all other Devices that were in the same
+        zone that do not have the iosapp installed and set the next update time to
+        5-seconds to see if that device also exited instead of waiting for the other
+        devices inZone interval time to be reached.
+
+        Check the next update time to make sure it has not already been updated when
+        the device without the iOS app is with several devices that left the zone.
+        '''
+        devices_to_update = [_Device
+                        for _Device in Gb.Devices_by_devicename_tracked.values()
+                        if (Device is not _Device
+                            and _Device.is_data_source_IOSAPP is False
+                            and _Device.loc_data_zone == Device.loc_data_zone
+                            and secs_to(_Device.FromZone_Home.next_update_secs) > 60)]
+
+        if devices_to_update == []:
+            return
+
+        for _Device in devices_to_update:
+            _Device.icloud_force_update_flag = True
+            det_interval.update_all_device_fm_zone_sensors_interval(_Device, 15)
+            event_msg = f"Trigger > Check Zone Exit, GeneratedBy-{Device.fname}"
+            post_event(_Device.devicename, event_msg)
 
 #------------------------------------------------------------------------------
 #
@@ -1010,8 +1083,6 @@ class iCloud3:
         calling hass on all polls
         '''
 
-        gps_accuracy_adj = int(Device.loc_data_gps_accuracy / 2)
-
         # Zone selected may have been done when determing if the device just entered a zone
         # during the passthru check. If so, use it and then reset it
         if Device.selected_zone_results == []:
@@ -1033,34 +1104,8 @@ class iCloud3:
         # In a zone but if not in a track from zone and was in a Stationary Zone,
         # reset the stationary zone
         elif Device.is_in_statzone and isnot_statzone(zone_selected):
-                statzone.exit_statzone(Device)
+            statzone.exit_statzone(Device)
 
-        zones_distance_list.sort()
-        zones_distance_list = ', '.join([v.split('|')[1] for v in zones_distance_list])
-
-        if display_zone_msg:
-            selected_zone_msg = other_zones_msg = gps_accuracy_msg = ''
-            if ZoneSelected.radius_m > 0:
-                selected_zone_msg = f"-{format_dist_m(zone_selected_dist_m)}"
-            if (zone_selected == NOT_HOME
-                    or (is_statzone(zone_selected) and isnot_statzone(Device.loc_data_zone))):
-                other_zones_msg = f" > {zones_distance_list}"
-            if zone_selected_dist_m > ZoneSelected.radius_m:
-                gps_accuracy_msg = f", AccuracyAdjustment-{gps_accuracy_adj}m"
-
-            zones_msg =(f"Zone > "
-                        f"{ZoneSelected.display_as}"
-                        f"{selected_zone_msg}"
-                        f"{other_zones_msg}"
-                        f"{gps_accuracy_msg}"
-                        f", GPS-{Device.loc_data_fgps}")
-            post_event(Device.devicename, zones_msg)
-
-            if other_zones_msg == '':
-                zones_msg =(f"Zone > "
-                            f"{ZoneSelected.display_as} > "
-                            f"{zones_distance_list}")
-                post_monitor_msg(Device.devicename, zones_msg)
 
         # Get distance between zone selected and current zone to see if they overlap.
         # If so, keep the current zone
@@ -1071,9 +1116,21 @@ class iCloud3:
 
         # The zone changed
         elif Device.loc_data_zone != zone_selected:
+            # See if any device without the iosapp was in this zone. If so, request a
+            # location update since it was running on the inzone timer instead of
+            # exit triggers from the ios app
+            if (Gb.iosapp_monitor_any_devices_false_flag
+                    and zone_selected == NOT_HOME
+                    and Device.loc_data_zone != NOT_HOME):
+                self._request_update_devices_no_iosapp_same_zone_on_exit(Device)
+
             Device.loc_data_zone        = zone_selected
             Device.zone_change_datetime = datetime_now()
             Device.zone_change_secs     = time_now_secs()
+
+        if display_zone_msg:
+            self._post_zone_selected_msg(Device, ZoneSelected, zone_selected,
+                                            zone_selected_dist_m, zones_distance_list)
 
         return ZoneSelected, zone_selected
 
@@ -1098,7 +1155,7 @@ class iCloud3:
             gps_accuracy_adj = int(Device.loc_data_gps_accuracy / 2)
 
         # [distance from zone, Zone, zone_name, redius, display_as]
-        zone_data_selected = [HIGH_INTEGER, None, '', HIGH_INTEGER, '']
+        zone_data_selected = [HIGH_INTEGER, None, '', HIGH_INTEGER, '', 1]
 
         # Exit if no location data is available
         if Device.no_location_data:
@@ -1114,7 +1171,6 @@ class iCloud3:
                 and Device.StatZone.distance_m(latitude, longitude) > Device.StatZone.radius_m):
             statzone.exit_statzone(Device)
 
-        # Get a list of all the zones, their distance, size and display_as
         zones_data = [[Zone.distance_m(latitude, longitude), Zone, Zone.zone,
                         Zone.radius_m, Zone.display_as]
                                 for Zone in Gb.Zones
@@ -1125,6 +1181,9 @@ class iCloud3:
         # Select all the zones the device is in
         inzone_zones = [zone_data   for zone_data in zones_data
                                     if zone_data[ZD_DIST_M] <= zone_data[ZD_RADIUS] + gps_accuracy_adj]
+
+        # if Device.devicename == 'gary_iphone':
+        #     inzone_zones = []
 
         for zone_data in inzone_zones:
             if zone_data[ZD_RADIUS] <= zone_data_selected[ZD_RADIUS]:
@@ -1142,14 +1201,88 @@ class iCloud3:
         if (zone_selected != Device.iosapp_zone_enter_zone
                 and is_zone(zone_selected) and isnot_zone(Device.iosapp_zone_enter_zone)):
             Device.iosapp_zone_enter_secs = Gb.this_update_secs
-            Device.iosapp_zone_enter_time = Gb.this_update_tine
+            Device.iosapp_zone_enter_time = Gb.this_update_time
             Device.iosapp_zone_enter_zone = zone_selected
 
+        # Build an item for each zone (dist-from-zone|zone_name|display_name-##km)
         zones_distance_list = \
-            [f"{int(zone_data[ZD_DIST_M]):08}| {zone_data[ZD_DISPLAY_AS]}-{format_dist_m(zone_data[ZD_DIST_M])}"
+            [(f"{int(zone_data[ZD_DIST_M]):08}|{zone_data[ZD_NAME]}|{zone_data[ZD_DIST_M]}")
                     for zone_data in zones_data if zone_data[ZD_NAME] != zone_selected]
 
         return ZoneSelected, zone_selected, zone_selected_dist_m, zones_distance_list
+
+#--------------------------------------------------------------------
+    @staticmethod
+    def _post_zone_selected_msg(Device, ZoneSelected, zone_selected,
+                                    zone_selected_dist_m, zones_distance_list):
+
+        device_zones      = [_Device.loc_data_zone for _Device in Gb.Devices]
+        zones_cnt_by_zone = {zone:device_zones.count(zone) for zone in set(device_zones)}
+
+        zones_cnt_summary = [f"{Gb.zone_display_as[_zone]} ({cnt}), "
+                                        for _zone, cnt in zones_cnt_by_zone.items()]
+        zones_cnt_summary_msg = list_to_str(zones_cnt_summary).replace('──', 'NotSet')
+
+        zones_distance_msg = ''
+        zones_displayed = [zone_selected]
+        if (zone_selected == NOT_HOME
+                or (is_statzone(zone_selected)
+                        and isnot_statzone(Device.loc_data_zone))):
+            zones_distance_list.sort()
+            for zone_distance_list in zones_distance_list:
+                zdl_items  = zone_distance_list.split('|')
+                _zone      = zdl_items[1]
+                _zone_dist = float(zdl_items[2])
+
+                zones_displayed.append(_zone)
+                zones_distance_msg += f"{Gb.zone_display_as[_zone]}-{format_dist_m(_zone_dist)} "
+                if zones_cnt_by_zone.get(_zone, 0) > 0:
+                    zones_distance_msg += f" ({zones_cnt_by_zone[_zone]}), "
+                else:
+                    zones_distance_msg += ", "
+
+        zones_cnt_list = [f"{Gb.zone_display_as[_zone]} ({zones_cnt_by_zone[_zone]}), "
+                                        for _zone, cnt in zones_cnt_by_zone.items()
+                                        if _zone not in zones_displayed]
+        zones_cnt_msg = list_to_str(zones_cnt_list)
+        if zones_cnt_msg: zones_cnt_msg += ', '
+
+        # if display_zone_msg:
+        # Format the Zone Selected Msg (ZoneName (#))
+        zone_selected_msg = Gb.zone_display_as[zone_selected]
+
+        if ZoneSelected.radius_m > 0:
+            zone_selected_msg += f"-{format_dist_m(zone_selected_dist_m)}"
+        if zone_selected in zones_cnt_by_zone:
+            zone_selected_msg += f" ({zones_cnt_by_zone[zone_selected]})"
+
+        # Format the Zones with devices when in a zone (ZoneName (#))
+        zones_cnt_summary = [f"{Gb.zone_display_as[_zone]} ({cnt}), "
+                                    for _zone, cnt in zones_cnt_by_zone.items()]
+
+        # if zones_distance_msg: zones_distance_msg = f" > {zones_distance_msg}"
+        if zones_cnt_msg: zones_cnt_msg = f"{zones_cnt_msg.replace('──', 'NotSet')}"
+
+        gps_accuracy_msg = ''
+        if zone_selected_dist_m > ZoneSelected.radius_m:
+            gps_accuracy_msg = (f"AccuracyAdjustment-"
+                                f"{int(Device.loc_data_gps_accuracy / 2)}m, ")
+
+        zones_msg =(f"Zone > "
+                    f"{zone_selected_msg} > "
+                    f"{zones_distance_msg}"
+                    f"{zones_cnt_msg}"
+                    f"{gps_accuracy_msg}"
+                    f"GPS-{Device.loc_data_fgps}")
+        post_event(Device.devicename, zones_msg)
+
+        if Device.loc_data_zone != Device.sensors[ZONE]:
+            if NOT_SET not in zones_cnt_by_zone:
+            # if 'xxx' not in zones_cnt_by_zone:
+                for _Device in Gb.Devices:
+                    if Device is not _Device:
+                        event_msg = f"Zone-Device Counts > {zones_cnt_summary_msg}"
+                        post_event(_Device.devicename, event_msg)
 
 #--------------------------------------------------------------------
     def _move_into_statzone_if_timer_reached(self, Device):
@@ -1327,7 +1460,6 @@ class iCloud3:
         # An update is in process, must wait until done
 
         wait_cnt = 0
-        # while Gb.master_update_in_process_flag:
         while self.loop_ctrl_master_update_in_process_flag:
             wait_cnt += 1
             if Device:
@@ -1434,8 +1566,6 @@ class iCloud3:
                     Device.old_loc_poor_gps_msg = f"Poor GPS > {cnt_msg}, Accuracy-±{Device.loc_data_gps_accuracy:.0f}m"
                 else:
                     Device.old_loc_poor_gps_msg = f"Locaton > Unknown {cnt_msg}, {secs_to_age_str(Device.loc_data_secs)}"
-                # if Device.old_loc_poor_gps_cnt > 2:
-                #    Device.old_loc_poor_gps_msg += f", Threshold-{secs_to_time_str(Device.old_loc_threshold_secs)}"
 
         except Exception as err:
             log_exception(err)

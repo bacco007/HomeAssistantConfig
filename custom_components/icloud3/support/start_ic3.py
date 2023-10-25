@@ -11,7 +11,7 @@ from ..const            import (ICLOUD3,
                                 CRLF, CRLF_DOT, CRLF_CHK, CRLF_SP3_DOT, CRLF_SP5_DOT, CRLF_HDOT, CRLF_SP3_STAR, CRLF_INDENT,
                                 CRLF_RED_X, RED_X, CRLF_STAR,
                                 RARROW, NBSP4, NBSP6, CIRCLE_STAR, INFO_SEPARATOR, DASH_20, CHECK_MARK,
-                                ICLOUD, FMF, FAMSHR,
+                                ICLOUD, FMF, FAMSHR, APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE,
                                 DEVICE_TYPE_FNAME,
                                 IPHONE, IPAD, IPOD, WATCH, AIRPODS,
                                 IOSAPP, NO_IOSAPP, ICLOUD_DEVICE_STATUS, TIMESTAMP,
@@ -243,6 +243,7 @@ def initialize_global_variables():
     Gb.used_data_source_FMF         = False
     Gb.used_data_source_FAMSHR      = False
     Gb.used_data_source_IOSAPP      = False
+    Gb.any_data_source_IOSAPP_none  = False
 
     initialize_on_initial_load()
 
@@ -337,7 +338,6 @@ def set_global_variables_from_conf_parameters(evlog_msg=True):
         config_event_msg += (   f"{CRLF_DOT}Set Default Tracking Method "
                                 f"({DATA_SOURCE_FNAME.get(Gb.primary_data_source, Gb.primary_data_source)})")
 
-        # log_level = 'debug' if Gb.conf_profile[CONF_VERSION] <= 0 else Gb.log_level
         set_log_level(Gb.log_level)
 
         config_event_msg += f"{CRLF_DOT}Initialize Debug Control ({Gb.log_level})"
@@ -394,6 +394,9 @@ def initialize_icloud_data_source():
     Gb.username_base                = Gb.username.split('@')[0]
     Gb.password                     = Gb.conf_tracking[CONF_PASSWORD]
     Gb.encode_password_flag         = Gb.conf_tracking[CONF_ENCODE_PASSWORD]
+    Gb.icloud_server_endpoint_suffix= \
+        icloud_server_endpoint_suffix(Gb.conf_tracking[CONF_ICLOUD_SERVER_ENDPOINT_SUFFIX])
+
     Gb.conf_data_source_FAMSHR     = instr(Gb.conf_tracking[CONF_DATA_SOURCE], FAMSHR)
     Gb.conf_data_source_FMF        = instr(Gb.conf_tracking[CONF_DATA_SOURCE], FMF)
     Gb.conf_data_source_IOSAPP     = instr(Gb.conf_tracking[CONF_DATA_SOURCE], IOSAPP)
@@ -401,13 +404,22 @@ def initialize_icloud_data_source():
     Gb.primary_data_source_ICLOUD   = Gb.conf_data_source_ICLOUD
     Gb.primary_data_source          = ICLOUD if Gb.primary_data_source_ICLOUD else IOSAPP
     Gb.devices                      = Gb.conf_devices
-    Gb.force_icloud_update_flag     = False
+    Gb.icloud_force_update_flag     = False
 
     Gb.stage_4_no_devices_found_cnt = 0
 
-#------------------------------------------------------------------------------
-# def initialize_PyiCloud():
-#     Gb.PyiCloud = None
+def icloud_server_endpoint_suffix(endpoint_suffix):
+    '''
+    Determine the suffix to be used based on the country_code and the value of the
+    configuration file field.
+    '''
+    if endpoint_suffix != '':
+        return endpoint_suffix.replace('.', '')
+
+    if Gb.country_code in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE:
+        return Gb.country_code.lower()
+
+    return ''
 
 #------------------------------------------------------------------------------
 def set_primary_data_source(data_source):
@@ -614,8 +626,6 @@ def process_config_flow_parameter_updates():
         check_ic3_event_log_file_version()
         Gb.hass.loop.create_task(update_lovelace_resource_event_log_js_entry())
         Gb.EvLog.setup_event_log_trackable_device_info()
-        #if 'profile' in Gb.config_flow_updated_parms:
-        #    Gb.EvLog.display_user_message('The Browser may need to be refreshed')
 
     if 'reauth' in Gb.config_flow_updated_parms:
         Gb.evlog_action_request = CMD_RESET_PYICLOUD_SESSION
@@ -725,11 +735,18 @@ def check_ic3_event_log_file_version():
                         f"{CRLF_DOT}File-{www_evlog_js_filename_msg}")
             post_event(event_msg)
 
+            if Gb.evlog_version != www_version_text:
+                Gb.evlog_version = Gb.conf_profile['event_log_version'] = www_version_text
+                config_file.write_storage_icloud3_configuration_file()
+
             return
 
         try:
             _copy_image_files_to_www_directory(www_evlog_js_directory)
             shutil.copy(ic3_evlog_js_filename, www_evlog_js_filename)
+
+            Gb.evlog_version = Gb.conf_profile['event_log_version'] = www_version_text
+            config_file.write_storage_icloud3_configuration_file()
 
             post_startup_alert('Event Log was updated. Browser refresh needed')
             event_msg =(f"{EVLOG_ALERT}"
@@ -865,6 +882,7 @@ def create_Zones_object():
 
     zone_entities = Gb.hass.states.entity_ids(ZONE)
     er_zones, zone_entity_data = entity_io.get_entity_registry_data(platform=ZONE)
+    yaml_zones = [zone for zone in zone_entities if zone.replace('zone.', '') not in er_zones]
 
     Gb.state_to_zone = STATE_TO_ZONE_BASE.copy()
     OldZones_by_zone = Gb.Zones_by_zone.copy()
@@ -891,7 +909,9 @@ def create_Zones_object():
 
     # Add HA zones that are saved in the HA Entity Registry. This does not include
     # current Stationary Zones
-    for zone in er_zones:
+    # for zone in er_zones:
+    for raw_zone in zone_entities:
+        zone = raw_zone.replace('zone.', '')
         zone_entity_name = f"zone.{zone}"
         zone_data = entity_io.get_attributes(zone_entity_name)
         if (zone_entity_name in zone_entity_data
@@ -971,11 +991,9 @@ def create_Zones_object():
 
     if Gb.is_statzone_used:
         event_msg += (  f"{CRLF_DOT}Stationary Zone > "
-                        f"Radius-{Gb.HomeZone.radius_m * 2}m, "
+                        f"Radius-{Gb.HomeZone.radius_m}m, "
                         f"DistMoveLimit-{format_dist_km(Gb.statzone_dist_move_limit_km)}, "
-                        f"MinDistFromAnotherZone-{format_dist_km(Gb.statzone_min_dist_from_zone_km)}, "
-                        f"BaseDistFromHome-{format_dist_km(dist)}, "
-                        f"BaseLocation-{format_gps(Gb.statzone_base_latitude, Gb.statzone_base_longitude, 0)}")
+                        f"MinDistFromAnotherZone-{format_dist_km(Gb.statzone_min_dist_from_zone_km)}")
     else:
         event_msg += f"{CRLF_DOT}STATIONARY ZONES ARE NOT BEING USED"
 
@@ -1916,7 +1934,7 @@ def setup_trackable_devices():
             tracking_mode = ''
         else:
             Gb.reinitialize_icloud_devices_flag = (Gb.conf_famshr_device_cnt > 0)
-            tracking_mode = f"{CIRCLE_STAR} NOT "
+            tracking_mode = f"{RED_X} NOT "
 
         tracking_mode += 'Monitored' if Device.is_monitored else 'Tracked'
         event_msg =(f"{tracking_mode} Device > {devicename} ({Device.fname_devtype})")
@@ -1933,6 +1951,9 @@ def setup_trackable_devices():
                 Gb.used_data_source_FMF = True
                 event_msg += f"{CRLF_DOT}FmF Device: {Device.conf_fmf_email}"
 
+        # Set a flag indicating there is a tracked device that does not use the ios app
+        if Device.iosapp_monitor_flag is False and Device.is_tracked:
+            Gb.iosapp_monitor_any_devices_false_flag = True
 
         # Initialize iosapp state & location fields
         if Device.iosapp_monitor_flag:

@@ -19,10 +19,6 @@ These modules and updates have been incorporated into the pyicloud_ic3.py versio
 used by iCloud3.
 '''
 
-VERSION = '3.0.0'
-
-
-
 from ..global_variables     import GlobalVariables as Gb
 from ..const                import (AIRPODS_FNAME, NONE_FNAME,
                                     EVLOG_NOTICE, EVLOG_ALERT,
@@ -31,8 +27,10 @@ from ..const                import (AIRPODS_FNAME, NONE_FNAME,
                                     APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE,
                                     ICLOUD_HORIZONTAL_ACCURACY,
                                     LOCATION, TIMESTAMP, LOCATION_TIME, DATA_SOURCE,
+                                    ICLOUD_BATTERY_LEVEL,
                                     ICLOUD_BATTERY_STATUS, BATTERY_STATUS_CODES, ICLOUD_DEVICE_STATUS,
                                     CONF_PASSWORD, CONF_MODEL_DISPLAY_NAME, CONF_RAW_MODEL,
+                                    CONF_ICLOUD_SERVER_ENDPOINT_SUFFIX,
                                     CONF_IC3_DEVICENAME, CONF_FNAME, CONF_FAMSHR_DEVICENAME, CONF_FMF_EMAIL,
                                     )
 from ..helpers.time_util    import (time_now_secs, secs_to_time, timestamp_to_time_utcsecs, )
@@ -394,16 +392,9 @@ class PyiCloudService():
         pyicloud.iphone.location()
     '''
 
-    # See if a country code suffix is needed to access iCloud servers in specific countries
-    # Gb.country_code = 'cn'
-    url_suffix = f".{Gb.country_code}" if Gb.country_code in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE else ''
-
-    HOME_ENDPOINT = f"https://www.icloud.com{url_suffix}"
-    SETUP_ENDPOINT = f"https://setup.icloud.com{url_suffix}/setup/ws/1"
-    AUTH_ENDPOINT = "https://idmsa.apple.com/appleauth/auth"
-
     def __init__(   self, apple_id, password=None,
                     cookie_directory=None, session_directory=None,
+                    endpoint_suffix=None,
                     verify=True, client_id=None, with_family=True,
                     called_from='notset',
                     verify_password=False,
@@ -426,6 +417,15 @@ class PyiCloudService():
         self.called_from         = called_from
         self.verify_password     = verify_password
         self.update_requested_by = ''
+        self.endpoint_suffix     = endpoint_suffix if endpoint_suffix else Gb.icloud_server_endpoint_suffix
+
+        self.HOME_ENDPOINT  = f"https://www.icloud.com"
+        self.SETUP_ENDPOINT = f"https://setup.icloud.com/setup/ws/1"
+        self.AUTH_ENDPOINT  = f"https://idmsa.apple.com/appleauth/auth"
+
+        # if Gb.icloud_server_endpoint_suffix in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE:
+        if self.endpoint_suffix in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE:
+            self._setup_url_endpoint_suffix()
 
         try:
             if 'Complete' in self.init_step_complete:
@@ -520,6 +520,7 @@ class PyiCloudService():
         login_successful         = False
         self.authenticate_method = ""
 
+
         # Do not reset requires_2fa flag on a reautnenticate session
         # It may have been set on first authentication
         if refresh_session is False:
@@ -561,7 +562,10 @@ class PyiCloudService():
 
         # Authenticate - Sign into icloud account (POST=/signin)
         if login_successful is False:
-            log_info_msg(f"Authenticating account {obscure_field(self.user['accountName'])}")
+            info_msg = f"Authenticating account {obscure_field(self.user['accountName'])}"
+            if self.endpoint_suffix != '':
+                info_msg += f", iCloudServerCountrySuffix-'{self.endpoint_suffix}' "
+            log_info_msg(info_msg)
 
             if self.verify_password is False:
                 # Verify that the Token is still valid, if it is we are done
@@ -576,13 +580,13 @@ class PyiCloudService():
                         self.authenticate_method += ", Password"
                     else:
                         login_successful = False
-                        msg = "Login Error (Invalid username/password)/555"
+                        msg = "Login Error (Invalid username/password)/593"
                         raise PyiCloudFailedLoginException(msg)
 
 
                 except PyiCloudAPIResponseException as error:
                     login_successful = False
-                    msg = "Login Error (Invalid username/password)/562"
+                    msg = "Login Error (Invalid username/password)/599"
                     raise PyiCloudFailedLoginException(msg)
 
                 if self._authenticate_with_token():
@@ -591,7 +595,7 @@ class PyiCloudService():
 
         if login_successful == False:
             self.authenticate_method += ", ERROR-Invalid username/password"
-            msg = "Login Error (Invalid username/password)/571"
+            msg = "Login Error (Invalid username/password)/609"
             raise PyiCloudFailedLoginException(msg)
 
         self.requires_2fa = self.requires_2fa or self._check_2fa_needed
@@ -831,6 +835,10 @@ class PyiCloudService():
         self.Session = PyiCloudSession(self)
 
 
+        #if Gb.icloud_server_endpoint_suffix in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE:
+        #if self.endpoint_suffix in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE:
+        self._setup_url_endpoint_suffix()
+
         self.Session.verify = True
         self.Session.headers.update({"Origin": self.HOME_ENDPOINT, "Referer": self.HOME_ENDPOINT,})
 
@@ -842,6 +850,29 @@ class PyiCloudService():
 
             except:
                 log_warning_msg(f"Failed to read cookie file {self.cookie_directory_filename}")
+
+#----------------------------------------------------------------------------
+    def _setup_url_endpoint_suffix(self):
+        '''
+        Reset the url endpoint suffix if it has changed. This applies to China (.cn)
+        '''
+
+        if (self.endpoint_suffix and self.HOME_ENDPOINT.endswith(self.endpoint_suffix)):
+            return
+
+        #self.endpoint_suffix = Gb.icloud_server_endpoint_suffix
+        if self.endpoint_suffix in APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE:
+            self.endpoint_suffix = f".{self.endpoint_suffix}"
+            post_event(f"iCloud Web Server URL Country Suffix > {self.endpoint_suffix}")
+        else:
+            self.endpoint_suffix = ''
+
+        # Comment out the following line for non-texting
+        # self.endpoint_suffix = ''
+
+        self.HOME_ENDPOINT  = f"https://www.icloud.com{self.endpoint_suffix}"
+        self.SETUP_ENDPOINT = f"https://setup.icloud.com{self.endpoint_suffix}/setup/ws/1"
+        self.AUTH_ENDPOINT  = f"https://idmsa.apple.com/appleauth/auth"
 
 #----------------------------------------------------------------------------
     '''
@@ -1004,7 +1035,6 @@ class PyiCloudService():
             log_exception(err)
             return False
 
-        # _trace(f"{len(req)=} {req=}")
         try:
             data = req.json()
         except ValueError:
@@ -1397,10 +1427,14 @@ class PyiCloud_FamilySharing():
                             # {'raw': _RawData.device_data})
 
                 if requested_by_prefix == '': requested_by_prefix = CRLF_DOT
+                rawdata_battery_level = round(_RawData.device_data.get(ICLOUD_BATTERY_LEVEL, 0) * 100)
                 monitor_msg += (f"{requested_by_prefix}"
                                 f"{_Device.devicename}, "
                                 f"{last_loc_time_gps_msg}"
-                                f"{_RawData.loc_time_gps}")
+                                f"{_RawData.loc_time_gps} "
+                                f", {rawdata_battery_level}%")
+                if rawdata_battery_level != _Device.dev_data_battery_level:
+                    monitor_msg += f"/{_Device.dev_data_battery_level}%"
 
             post_monitor_msg(monitor_msg)
 
