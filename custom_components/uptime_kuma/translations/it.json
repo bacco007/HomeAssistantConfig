@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Configurazione già esistente",
+            "existing_instance_updated": "Configurazione aggiornata"
+        },
+        "error": {
+            "cannot_connect": "Connessione fallita",
+            "invalid_auth": "Autenticazione fallita",
+            "unknown": "Errore imprevisto"
+        },
+        "step": {
+            "user": {
+                "description": "Configurazione per la connessione al servizio Uptime Kuma:",
+                "data": {
+                    "host": "Host/URL",
+                    "password": "Password",
+                    "port": "Porta",
+                    "username": "Utente",
+                    "verify_ssl": "Verifica certificato SSL"
+                }
+            }
+        }
+    }
+}
