@@ -137,8 +137,15 @@ cards:
             card_param: cards
             filter:
               template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%} {% for
-                s in state_attr('sensor.frontpage_sonarr_upcoming','data') -%}
+                {% from 'easy_time.jinja' import custom_relative_time -%} 
+                {% for s in state_attr('sensor.frontpage_sonarr_upcoming','data') -%}
+                  {% if s.poster is defined -%}
+                    {% set image = s.poster -%}
+                  {% elif s.fanart is defined -%}
+                    {% set image = s.fanart -%}
+                  {% else -%}
+                    {% set image = 'null' -%}
+                  {% endif -%}
                   {{
                     {
                     "type": "custom:mushroom-template-card",
@@ -155,7 +162,7 @@ cards:
                     "layout": "horizontal",
                     "card_mod": {
                         "style": {
-                          ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                          ".": "ha-card {\n  background: url( '" + image + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
                         }
                     }
                     }
