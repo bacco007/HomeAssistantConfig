@@ -25,3 +25,15 @@
   - service: multiscrape.trigger_bom_average
     data: {}
   mode: single
+- id: '1698401002727'
+  alias: AWTRIX Night Clock
+  description: ''
+  use_blueprint:
+    path: awtrix_night.yaml
+    input:
+      awtrix:
+      - da38247c02359f48562a1b102b5d4ac4
+      sleep_settings_atrans: true
+      sleep_settings_abri: true
+      sleep_weekday_bar: true
+      wakeup_settings_abri: true
