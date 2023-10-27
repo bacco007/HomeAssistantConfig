@@ -25,6 +25,7 @@ sensor:
             |rejectattr('entity_id','search','_color')
             |rejectattr('entity_id','search','wunder')
             |rejectattr('entity_id','search','gosungrow')
+            |rejectattr('entity_id','search','z2m_plug')
             |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('gdacs'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('github'))|map(attribute='entity_id')|list)
