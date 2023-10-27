@@ -137,7 +137,7 @@ cards:
             card_param: cards
             filter:
               template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%} 
+                {% from 'easy_time.jinja' import custom_relative_time -%}
                 {% for s in state_attr('sensor.frontpage_sonarr_upcoming','data') -%}
                   {% if s.poster is defined -%}
                     {% set image = s.poster -%}

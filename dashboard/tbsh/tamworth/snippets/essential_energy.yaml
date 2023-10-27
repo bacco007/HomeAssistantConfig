@@ -138,4 +138,4 @@ cards:
             name: Cancelled Outages
             tap_action:
               action: url
-              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=cancelled          
+              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=cancelled

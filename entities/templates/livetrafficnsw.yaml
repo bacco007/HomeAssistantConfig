@@ -15,7 +15,6 @@ binary_sensor:
         {%- endfor %}
       {%- endfor %}
       {{ ns.items > 0 }}
-    unit_of_measurement: "Incidents"
     attributes:
       category: livetrafficnsw
       count: >
@@ -29,7 +28,7 @@ binary_sensor:
             {%- endif %}
           {%- endfor %}
         {%- endfor %}
-        {{ ns.items }}          
+        {{ ns.items }}
     availability: >
       {{ states|selectattr('entity_id','search','sensor.getdata_livetrafficnsw_')|map(attribute='entity_id')|list|count > 0 }}
 
