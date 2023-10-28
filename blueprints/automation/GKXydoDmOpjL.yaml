@@ -1,0 +1,170 @@
+blueprint:
+  name: Awtrix current playing song
+  description: Shows the  title and artist of your current playing song on Awtrix.
+  domain: automation 
+  author: N1c093
+  input:
+    awtrix_light:
+      name: Awtrix Display
+      description: Select the target Awtrix display.
+      selector:
+        device:
+          model: "AWTRIX Light"
+    media_player:
+      name: Media Player Entity
+      description: Select your Media Player. 
+      selector:
+        entity:
+          filter:
+            - domain: media_player
+          multiple: false
+    icon_in:
+      name: Icon
+      description: Enter the Icon Name or ID of the icon.
+      selector:
+        text:
+      default: ""
+    push_icon:
+      name: Push Icon
+      description: Icon behavior
+      selector:
+        select:
+          options:
+            - label: "Icon doesn't move"
+              value: "0"
+            - label: "Icon moves with text and will not appear again"
+              value: "1"
+            - label: "Icon moves with text but appears again when the text starts"
+              value: "2"
+          mode: dropdown
+      default: "2"
+    repeat_text:
+      name: Repeat
+      description: Select how how often the text should be repeated.
+      default: "2"
+      selector:
+        text:
+    text_case:
+      name: Text Case
+      description: Select how you would like your text to display.
+      selector:
+        select:
+          options:
+            - label: "Use global setting"
+              value: "0"
+            - label: "Force Uppercase"
+              value: "1"
+            - label: "Show as the media player reports it"
+              value: "2"
+          mode: dropdown
+      default: "0"
+    display_type:
+      name: Custom App/Notification
+      description: Select if you want the information as a single notification or an custom app.
+      selector:
+        select:
+          options:
+            - label: "Notification"
+              value: "0"
+            - label: "Custom App"
+              value: "1"
+          mode: dropdown
+      default: "1"
+    background_color:
+      name: Background Color
+      description: Select the Background color
+      selector:
+        color_rgb:
+      default: [0, 0, 0]
+    text_color:
+      name: Text Color
+      description: Select the Text color.
+      selector:
+        color_rgb:
+      default: [255, 255, 255]
+    show_rainbow:
+      name: Rainbow Colors
+      description: Should the notification be shown in Rainbow colors?
+      selector:
+        boolean:
+      default: false
+
+
+mode: queued
+
+trigger:
+  - platform: state
+    entity_id: !input media_player
+    attribute: media_title
+    from: 
+  - platform: state
+    entity_id: !input media_player
+    from: 
+
+variables:
+  device_id: !input awtrix_light
+  awtrix_light: "{{ iif( device_attr(device_id, 'name_by_user') != none, device_attr(device_id, 'name_by_user'), device_attr(device_id, 'name') ) }}"
+  repeat_text: !input repeat_text
+  show_rainbow: !input show_rainbow
+  push_icon: !input push_icon
+  icon_in: !input icon_in
+  background_color: !input background_color
+  text_color: !input text_color
+  text_case: !input text_case
+  media_player: !input media_player
+  display_type: !input display_type
+  all_text: "{{state_attr(media_player, 'media_title')}} - {{state_attr(media_player, 'media_artist')}}"
+
+
+
+action:  
+  if:
+    - condition: state
+      entity_id: !input media_player
+      state: playing
+  then:
+    if: "{{ display_type == '1' }}"
+    then:
+      - service: mqtt.publish
+        data:
+          qos: 0
+          retain: false
+          topic: "{{awtrix_light}}/custom/mediaplayer"
+          payload: |-
+            {   
+              "text": "{{ all_text }}",
+              "icon": "{{ icon_in }}",
+              "background": {{ background_color }},
+              "color": {{ text_color }},
+              "textCase": {{ text_case }},
+              "pushIcon": {{ push_icon }},
+              "rainbow": {{ iif(show_rainbow, "true", "false") }},
+              "repeat": {{ repeat_text }}
+            }
+    else:
+      - service: mqtt.publish
+        data:
+          qos: 0
+          retain: false
+          topic: "{{awtrix_light}}/notify"
+          payload: |-
+            {   
+              "text": "{{ all_text }}",
+              "icon": "{{ icon_in }}",
+              "background": {{ background_color }},
+              "color": {{ text_color }},
+              "textCase": {{ text_case }},
+              "pushIcon": {{ push_icon }},
+              "rainbow": {{ iif(show_rainbow, "true", "false") }},
+              "repeat": {{ repeat_text }}
+            }
+  else:
+    - if: "{{ display_type == '1' }}"
+      then:
+        - service: mqtt.publish
+          data:
+            qos: 0
+            retain: false
+            topic: "{{awtrix_light}}/custom/mediaplayer"
+            payload: |-
+              {}

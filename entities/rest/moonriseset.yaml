@@ -1,0 +1,10 @@
+---
+resource: !secret ipgeolocation_astronomy_url
+scan_interval: 300
+sensor:
+  name: moonriseset
+  value_template: "OK"
+  json_attributes:
+    - moonrise
+    - moonset
+    - moon_altitude

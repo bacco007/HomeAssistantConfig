@@ -25,15 +25,59 @@
   - service: multiscrape.trigger_bom_average
     data: {}
   mode: single
-- id: '1698401002727'
-  alias: AWTRIX Night Clock
+- id: '1698469814256'
+  alias: '[pixelclock] Weather + Forecast'
   description: ''
   use_blueprint:
-    path: awtrix_night.yaml
+    path: jeeftor/awtrix_weatherflow.yaml
     input:
       awtrix:
       - da38247c02359f48562a1b102b5d4ac4
-      sleep_settings_atrans: true
-      sleep_settings_abri: true
-      sleep_weekday_bar: true
-      wakeup_settings_abri: true
+      forecast_var: weather.weather_home_hourly
+      forecast_temp_field: temperature
+      temp_digits: 1
+      temp_suffix: °C
+      current_temp_var: sensor.weather_temperature
+      color_matrix_json: '{"-12": "#D977DF","-6": "#9545BC","-1": "#4B379C","0": "#FEC4FF","4":
+        "#31B8DB","10": "#31DB8B","15": "#6ED228","21": "#FFFF28","27": "#F87E27","32":
+        "#CF3927","38": "#A12527"}'
+      moon: sensor.moon
+      when_show_moon: night
+      sun_time_format: '%H:%M'
+      moon_rise_set: sensor.moonriseset
+      sun_time_type: Relative
+      message_duration_forecast: 45
+- id: '1698470577800'
+  alias: '[pixelclock] Currently Playing'
+  description: ''
+  use_blueprint:
+    path: GKXydoDmOpjL.yaml
+    input:
+      awtrix_light: da38247c02359f48562a1b102b5d4ac4
+      media_player: media_player.currently_playing
+      text_case: '2'
+      show_rainbow: false
+      icon_in: '29944'
+      push_icon: '0'
+- id: '1698473315369'
+  alias: '[pixelclock] Flight Tracker Stats'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.flighttracker_aircraft_total
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      payload: '{%- set value = states(''sensor.flighttracker_aircraft_total'') -%}
+        {%- set nearest_rego = state_attr(''sensor.plane_overhead_detail'', ''aircraft_rego'')
+        -%} {%- set nearest_type = state_attr(''sensor.plane_overhead_detail'', ''aircraft'')
+        -%} {%- set nearest_trip = state_attr(''sensor.plane_overhead_detail'', ''origin_airport_code'')
+        + " > " + state_attr(''sensor.plane_overhead_detail'', ''destination_airport_code'')
+        -%} { "icon": 2933, "pushIcon": 0, "repeat": 1, "textCase": 2, "text": "{{
+        value }}, {{ nearest_type }}, {{ nearest_rego }}, {{nearest_trip}}" }'
+      topic: pixelclock/custom/flighttracker
+      qos: 0
+      retain: false
+  mode: single

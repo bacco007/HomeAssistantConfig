@@ -1,0 +1,15 @@
+---
+alias: "[pixelclock] Night Clock"
+description: ""
+use_blueprint:
+  path: awtrix_night.yaml
+  input:
+    awtrix:
+      - da38247c02359f48562a1b102b5d4ac4
+    sleep_settings_atrans: true
+    sleep_settings_abri: true
+    sleep_weekday_bar: true
+    wakeup_settings_abri: true
+    sleep_time: "21:00:00"
+    wake_up_time: "06:00:00"
+    wakeup_calendar_style: "0"

@@ -11,7 +11,7 @@ fields:
     selector:
       entity:
         domain: light
-    example: light.kitchen
+    example: light.office_lamp
     required: true
   lampBrightnessScale:
     name: The lamp’s internal brightness scale

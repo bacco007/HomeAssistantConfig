@@ -21,6 +21,7 @@ ignore: |
   blueprints/
   zigbee2mqtt/
   .shortumations/
+  storage-lovelace-ui.yaml
 rules:
   braces:
     level: error
