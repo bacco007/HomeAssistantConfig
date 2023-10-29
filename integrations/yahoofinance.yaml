@@ -1,39 +1,78 @@
 ---
 # https://github.com/iprak/yahoofinance
 yahoofinance:
+  decimal_places: 3
   scan_interval:
     minutes: 30
   show_trending_icon: true
-  decimal_places: 3
   symbols:
-    - AMX.AX
-    - RIO.AX
-    - TLS.AX
-    - TNE.AX
-    - NEC.AX
-    - JBH.AX
-    - SWM.AX
-    - SXL.AX
-    - REX.AX
-    - MGH.AX
+    - 9432.T
     - A1N.AX
-    - SEG.AX
-    - NWS.AX
-    - SKT.AX
-    - AMZN
+    - AAL.L
     - AAPL
-    - GOOG
-    - TSLA
-    - NFLX
-    - MANU
-    - FWONA
-    - FWONK
-    - ^AXJO
-    - ^AORD
-    - ^DJI
-    - ^IXIC
-    - ^FTSE
-    - AUDUSD=X
+    - ADSK
+    - AMX.AX
+    - AMZN
+    - AUDEUR=X
     - AUDGBP=X
     - AUDNZD=X
-    - AUDEUR=X
+    - AUDUSD=X
+    - BHP.AX
+    - BHP.L
+    - BLD.AX
+    - BMW.HM
+    - BRK-B
+    - BTC-AUD
+    - CBA.AX
+    - CMCSA
+    - COL.AX
+    - DOGE-AUD
+    - FWONA
+    - FWONK
+    - GE
+    - GOOG
+    - GOOGL
+    - IOZ.AX
+    - JBH.AX
+    - MANU
+    - MBG.DE
+    - MCD
+    - MGH.AX
+    - MSFT
+    - NEC.AX
+    - NFLX
+    - NWS.AX
+    - QOZ.AX
+    - REX.AX
+    - RIO
+    - RIO.AX
+    - RIO.L
+    - SEG.AX
+    - SHIB-AUD
+    - SKT.AX
+    - STW.AX
+    - SWM.AX
+    - SXL.AX
+    - T
+    - TEAM
+    - TLS.AX
+    - TNE.AX
+    - TPG.AX
+    - TSLA
+    - VOD.L
+    - VOW.F
+    - VOW3.F
+    - WBD
+    - WES.AX
+    - WMT
+    - WOW.AX
+    - ^AORD
+    - ^AXJO
+    - ^DJI
+    - ^FTSE
+    - ^GSPC
+    - ^HSI
+    - ^IXIC
+    - ^N225
+    - ^NZ50
+    - COST

@@ -4,70 +4,133 @@ recorder:
   db_url: !secret mariadb_connection
   purge_keep_days: 7
   commit_interval: 30
-  include:
-    entities:
-      - sensor.unifi_gateway_www_uptime
-      - sensor.unifi_gateway_wan_uptimeavail
-      - sensor.unifi_gateway_wan_uptimeavail_stats
-      - sensor.unifi_networkstats_connected_devices
-      - sensor.unifi_networkstats_switchap
-      - sensor.load_power
-      - sensor.tamhospital_waitingtime
   exclude:
+    domains:
+      - anniversaries
+      - automation
+      - button
+      - calendar
+      - camera
+      - counter
+      - device_tracker
+      - event
+      - geo_location
+      - group
+      - input_boolean
+      - input_datetime
+      - input_number
+      - input_select
+      - input_text
+      - media_player
+      - persistent_notification
+      - remote
+      - switch
+      - update
+      - weather
+      - weblink
+      - zone
     entities:
-      - sun.sun
-      - sensor.ha_uptime_hours
-      - sensor.iss
-      - sensor.date_time
-      - sensor.radarr_movies
-      - sensor.unavailable_entities
+      - sensor.adsb_aircraft_tracked
       - sensor.adsb_fa_feeder
+      - sensor.date_time
+      - sensor.e_ink_display_data
+      - sensor.ha_automation_run_history
+      - sensor.ha_uptime_hours
+      - sensor.hub_hb_00045437_status
       - sensor.internet_time
-      - weather.east_tamworth_hourly
-      - sensor.udm_unifios
-      - sensor.sungrowsolar_runtime
-      - sensor.sungrowsolar_runtime
+      - sensor.iss
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
-      - sensor.adsb_aircraft_tracked
-      - sensor.e_ink_display_data
+      - sensor.lastfm_user_monthlytrackchart
+      - sensor.lastfm_user_recenttracks
       - sensor.lastfm_user_topalbums
       - sensor.lastfm_user_topartists
       - sensor.lastfm_user_toptracks
-      - sensor.lastfm_user_monthlytrackchart
-      - sensor.lastfm_user_recenttracks
       - sensor.lastfm_user_weeklytrackchart
-      - sensor.sungrowsolar_alldata
-      - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
-      - sensor.uptime_sensor
+      - sensor.radarr_movies
       - sensor.sonarr_commands
+      - sensor.sungrowsolar_alldata
+      - sensor.sungrowsolar_runtime
+      - sensor.sungrowsolar_runtime
       - sensor.systemuptime
-      - sensor.unknown_unavailable_none_entities
       - sensor.tautulli_activity
-      - sensor.z2m_office_airquality_temperature
-      - sensor.z2m_office_airquality_humidity
-      - sensor.z2m_office_airquality_co2
-      - sensor.z2m_office_airquality_voc
-      - sensor.z2m_office_airquality_pm25
-      - sensor.z2m_office_airquality_formaldehyd
-      - sensor.z2m_office_airquality_z2m_office_airquality_last_seen
-      - sensor.z2m_office_airquality_linkquality
+      - sensor.udm_unifios
+      - sensor.unavailable_entities
+      - sensor.unknown_unavailable_none_entities
+      - sensor.uptime_sensor
       - sensor.weather_wind_bearing
-      - sensor.ha_automation_run_history
+      - sensor.z2m_office_airquality_co2
+      - sensor.z2m_office_airquality_formaldehyd
+      - sensor.z2m_office_airquality_humidity
+      - sensor.z2m_office_airquality_linkquality
+      - sensor.z2m_office_airquality_pm25
+      - sensor.z2m_office_airquality_temperature
+      - sensor.z2m_office_airquality_voc
+      - sensor.z2m_office_airquality_z2m_office_airquality_last_seen
+      - sun.sun
+      - weather.east_tamworth_hourly
     entity_globs:
-      - sensor.browser_*
+      - binary_sensor.node_pve*
+      - binary_sensor.node_pvetbsh*
+      - binary_sensor.ping*
+      - binary_sensor.pve*
       - binary_sensor.vmtbsh03*
-      - sensor.192_168_1_50*
-      - sensor.date*
-      - sensor.plexstats_*
-      - sensor.rssfeed_*
-      - sensor.time*
-      - sensor.sport_*
+      - binary_sensor.wud*
+      - sensor.*_thermal_comfort_*
+      - sensor.*_upcoming_media
       - sensor.*_uptime
-      - sensor.pvetbsh*
-      - sensor.pvenuc*
+      - sensor.*icloud3*
+      - sensor.192.168.1.132_*
+      - sensor.192.168.1.133_*
+      - sensor.192_168_1_131_*
+      - sensor.192_168_1_50*
+      - sensor.2340_*
+      - sensor.anniversary*
+      - sensor.archive_*
+      - sensor.b7158737*
+      - sensor.ble_*
+      - sensor.browser_*
+      - sensor.bus_stop_*
+      - sensor.current_weather*
+      - sensor.date*
+      - sensor.daylight_savings*
+      - sensor.espresense_*
+      - sensor.flighttracker_planeoverhead*
+      - sensor.formula_one*
+      - sensor.frontpage_*
+      - sensor.gdacs*
+      - sensor.getdata_*
+      - sensor.haserver*
+      - sensor.helper_*
+      - sensor.homeassistant_*
+      - sensor.ical*
+      - sensor.international_space_station*
+      - sensor.iss*
+      - sensor.load*
+      - sensor.lxc*
+      - sensor.memory_*
+      - sensor.mqtt_load*
+      - sensor.mqtt_total*
+      - sensor.mqtt_total*
+      - sensor.mqtt_uptime*
+      - sensor.next_launch_*
+      - sensor.noaa*
+      - sensor.node_*
+      - sensor.pi4srv*
       - sensor.piserv*
+      - sensor.plane_overhead_detail*
+      - sensor.plex_tautulli*
+      - sensor.plexstats_*
+      - sensor.processor_use*
+      - sensor.pve_ha_*
+      - sensor.pvenuc*
+      - sensor.pvetbsh*
+      - sensor.qemu*
+      - sensor.rssfeed_*
+      - sensor.scoreboard_*
+      - sensor.space_*
+      - sensor.sport_*
       - sensor.tbsh01*
       - sensor.tbsh02*
       - sensor.tbsh03*
@@ -76,117 +139,55 @@ recorder:
       - sensor.tbsh3*
       - sensor.tbsh4*
       - sensor.tbsh5*
+      - sensor.tbsmarthome_*_overhead_satellites
+      - sensor.teamtracker*
+      - sensor.tempest_st_00056115*
+      - sensor.tempest_st_00056115_wind*
+      - sensor.time*
+      - sensor.unifi_*
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
-      - sensor.pi4srv*
-      - sensor.load*
-      - sensor.processor_use*
-      - sensor.memory_*
-      - sensor.tbsmarthome_*_overhead_satellites
-      - sensor.bus_stop_*
-      - sensor.archive_*
-      - sensor.2340_*
-      - sensor.getdata_*
-      - sensor.next_launch_*
-      - sensor.unifi_*
-      - sensor.space_*
-      - sensor.plex_tautulli*
-      - sensor.*_upcoming_media
-      - sensor.plane_overhead_detail*
-      - sensor.iss*
-      - sensor.international_space_station*
-      - sensor.mqtt_total*
-      - sensor.mqtt_uptime*
-      - sensor.mqtt_load*
-      - sensor.mqtt_total*
-      - sensor.teamtracker*
-      - sensor.flighttracker_planeoverhead*
-      - sensor.formula_one*
-      - sensor.haserver*
-      - sensor.node_*
-      - sensor.b7158737*
-      - sensor.pve_ha_*
+      - sensor.washer*
       - sensor.watchman_*
       - sensor.waveshare_75_eink*
-      - sensor.washer*
-      - sensor.noaa*
-      - sensor.ical*
-      - sensor.homeassistant_*
-      - sensor.*_thermal_comfort_*
-      - binary_sensor.ping*
-      - binary_sensor.node_pvetbsh*
-      - binary_sensor.node_pve*
-      - binary_sensor.pve*
-      - sensor.anniversary*
-      - sensor.gdacs*
-      - sensor.daylight_savings*
-      - sensor.frontpage_*
-      - sensor.helper_*
-      - sensor.espresense_*
-      - sensor.scoreboard_*
-      - sensor.ble_*
       - sensor.yourspotify_*
-      - sensor.192_168_1_131_*
-      - sensor.192.168.1.132_*
-      - sensor.192.168.1.133_*
-      - sensor.tempest_st_00056115_wind*
-      - sensor.qemu*
-      - sensor.*icloud3*
-      - sensor.current_weather*
-      - sensor.lxc*
-      - sensor.tempest_st_00056115*
-      - binary_sensor.wud*
       - sensor.z2m_bedroom_vindstyrka*
-    domains:
-      - anniversaries
-      - automation
-      - calendar
-      - camera
-      - counter
-      - device_tracker
-      - group
-      - geo_location
-      - persistent_notification
-      - switch
-      - weblink
-      - zone
-      - weather
-      - input_boolean
-      - input_select
-      - input_number
-      - input_text
-      - input_datetime
-      - update
-      - media_player
-      - button
-      - event
-      - remote
     event_types:
-      - service_removed
-      - service_executed
-      - platform_discovered
-      - homeassistant_start
-      - homeassistant_stop
-      - feedreader
-      - service_registered
+      - automation_triggered
       - call_service
       - component_loaded
-      - logbook_entry
-      - automation_triggered
-      - script_started
-      - timer_out_of_sync
-      - hacs/repository
-      - system_log_event
-      - transmission_removed_torrent
-      - transmission_downloaded_torrent
-      - transmission_started_torrent
       - dwains_dashboard_reload
+      - feedreader
+      - hacs/repository
+      - homeassistant_start
+      - homeassistant_stop
       - ios.became_active
       - ios.entered_background
       - ios.finished_launching
+      - logbook_entry
       - lovelace_updated
       - nodered
-      - pyscript_running
       - persistent_notifications_updated
+      - platform_discovered
+      - pyscript_running
       - recorder_5min_statistics_generated
+      - script_started
+      - service_executed
+      - service_registered
+      - service_removed
+      - system_log_event
+      - timer_out_of_sync
+      - transmission_downloaded_torrent
+      - transmission_removed_torrent
+      - transmission_started_torrent
+  include:
+    entities:
+      - sensor.load_power
+      - sensor.tamhospital_waitingtime
+      - sensor.unifi_gateway_wan_uptimeavail
+      - sensor.unifi_gateway_wan_uptimeavail_stats
+      - sensor.unifi_gateway_www_uptime
+      - sensor.unifi_networkstats_connected_devices
+      - sensor.unifi_networkstats_switchap
+

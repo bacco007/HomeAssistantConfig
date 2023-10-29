@@ -56,7 +56,7 @@ cards:
                      {
                         "type": "custom:mushroom-template-card",
                         "entity": s.entity_id,
-                        "primary": "{{states(entity)}}\n",
+                         "primary": "{% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}\n",
                         "tap_action": {
                            "action": "more-info"
                         },
@@ -73,75 +73,20 @@ cards:
                "padding": 0,
                "entities": [
                   {
-                     "type": "custom:plotly-graph",
+                     "chart_type": "line",
+                     "period": "week",
+                     "type": "custom:hui-element",
+                     "card_type": "statistics-graph",
                      "entities": [
-                        {
-                           "entity": s.entity_id
-                        }
+                        s.entity_id
                      ],
-                     "hours_to_show": "1w",
-                     "refresh_interval": "auto",
-                     "defaults": {
-                        "entity": {
-                           "connectgaps": true,
-                           "legendgroup": 1,
-                           "filters": [
-                              "force_numeric",
-                              {
-                                 "resample": "30m"
-                              }
-                           ],
-                           "texttemplate": "<b>%{y:,.3f}</b>",
-                           "show_value": true,
-                           "line": {
-                              "width": 2
-                           }
-                        }
-                     },
-                     "layout": {
-                        "showlegend": false,
-                        "height": 300,
-                        "margin": {
-                           "autoexpand": true,
-                           "l": 45,
-                           "r": 30
-                        },
-                        "xaxis": {
-                           "autorange": true,
-                           "showline": true,
-                           "showgrid": false,
-                           "tickformat": "%a",
-                           "showticklabels": true,
-                           "linecolor": "rgb(204,204,204)",
-                           "linewidth": 2,
-                           "autotick": false,
-                           "ticks": "outside",
-                           "tickwidth": 2,
-                           "ticklen": 5,
-                           "tickfont": {
-                              "family": "Roboto",
-                              "size": 12,
-                              "color": "rgb(204,204,204)"
-                           }
-                        },
-                        "yaxis": {
-                           "title": "",
-                           "autorange": true,
-                           "zeroline": true,
-                           "fixedrange": true,
-                           "linecolor": "rgb(204,204,204)",
-                           "linewidth": 2,
-                           "tickfont": {
-                              "family": "Roboto",
-                              "size": 12,
-                              "color": "rgb(204,204,204)"
-                           }
-                        },
-                        "dragmode": false
-                     },
-                     "config": {
-                        "scrollZoom": false
-                     }
+                     "stat_types": [
+                        "mean",
+                        "min",
+                        "max"
+                     ],
+                     "days_to_show": 365,
+                     "hide_legend": true
                   }
                ]
             }

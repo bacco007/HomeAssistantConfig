@@ -1,19 +1,19 @@
 ---
 logbook:
-  include:
-    domains:
-      - light
-      - automation
-      - binary_sensor
-      - device_tracker
-      - media_player
-      - switch
-      - script
   exclude:
     domains:
       - alert
-      - camera
-      - sun
       - calendar
-      - sensor
+      - camera
       - group
+      - sensor
+      - sun
+  include:
+    domains:
+      - automation
+      - binary_sensor
+      - device_tracker
+      - light
+      - media_player
+      - script
+      - switch

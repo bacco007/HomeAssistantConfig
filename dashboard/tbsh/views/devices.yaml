@@ -23,13 +23,13 @@ cards:
           max_width: 1000
         cards: &cards
           - !include ../devices/appletv/appletv.yaml
-          - !include ../devices/zigbee2mqtt.yaml
           - !include ../devices/synology.yaml
           - !include ../devices/hdhomerun.yaml
           - !include ../devices/weatherflow.yaml
+          - !include ../devices/einkdisplay.yaml
+          - !include ../devices/zigbee2mqtt.yaml
           - !include ../devices/lg_washer.yaml
           - !include ../devices/dyson_fan.yaml
-          - !include ../devices/einkdisplay.yaml
       "(max-width: 1370px)":
         type: "custom:layout-card"
         layout_type: custom:masonry-layout

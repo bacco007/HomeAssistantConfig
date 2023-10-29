@@ -1,0 +1,85 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: NFL - National Football Conference, North Division
+  icon: mdi:football-helmet
+  state: ""
+padding: 0
+entities:
+  - type: custom:hui-element
+    card_type: custom:flex-table-card
+    css:
+      table+: "padding-left: 10px; padding-right: 10px"
+      tbody tr td:first-child: "width: 5%;"
+      tbody tr td:nth-child(2): "width: 30%;"
+      tbody tr td:nth-child(n+3): "width: 5%;"
+      tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+      tbody tr:hover: "background-color: green!important; color:white!important;"
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            overflow: auto;
+            box-shadow: none !important;
+            }
+    entities:
+      include: sensor.scoreboard_nfl_nfc_north
+    sort_by: entries-
+    columns:
+      - hidden: true
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
+      - name: C
+        data: entries
+        modify: >-
+          if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
+          'undefined' ){x.stats.find(y=>y.abbreviation ==
+          'CLINCH').displayValue}else{'-'}
+      - name: Team
+        data: entries
+        modify: >-
+          '<div><img src="' + x.team.logos[0].href + '" style="height:
+          20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+      - name: GP
+        data: entries
+        modify: >-
+          x.stats.find(y=>y.abbreviation == 'L').value +
+          x.stats.find(y=>y.abbreviation == 'W').value +
+          x.stats.find(y=>y.abbreviation == 'T').value
+      - name: W
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'W').value
+      - name: L
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'L').value
+      - name: T
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'T').value
+      - name: PCT
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
+      - name: HOME
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'HOME').displayValue
+      - name: AWAY
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'AWAY').displayValue
+      - name: DIV
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'DIV').displayValue
+      - name: CONF
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'CONF').displayValue
+      - name: PF
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'PF').displayValue
+      - name: PA
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'PA').displayValue
+      - name: DIFF
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'DIFF').displayValue
+      - name: STRK
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'STRK').displayValue

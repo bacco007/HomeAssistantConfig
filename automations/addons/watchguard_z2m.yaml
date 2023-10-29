@@ -1,0 +1,53 @@
+---
+alias: "[Addon Watchguard] Zigbee2MQTT"
+description: ""
+trigger:
+  - platform: time_pattern
+    minutes: "*"
+condition:
+  - condition: state
+    entity_id: binary_sensor.zigbee2mqtt_edge_running
+    state: "off"
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+action:
+  - repeat:
+      until:
+        - condition: state
+          entity_id: binary_sensor.zigbee2mqtt_edge_running
+          state: "on"
+          for:
+            hours: 0
+            minutes: 5
+            seconds: 0
+      sequence:
+        - if:
+            - condition: state
+              entity_id: binary_sensor.zigbee2mqtt_edge_running
+              state: "off"
+          then:
+            - service: hassio.addon_start
+              data:
+                addon: 45df7312_zigbee2mqtt_edge
+            - delay:
+                hours: 0
+                minutes: 1
+                seconds: 0
+                milliseconds: 0
+            - service: homeassistant.update_entity
+              data: {}
+              target:
+                entity_id: binary_sensor.zigbee2mqtt_edge_running
+          else:
+            - delay:
+                hours: 0
+                minutes: 0
+                seconds: 30
+                milliseconds: 0
+            - service: homeassistant.update_entity
+              data: {}
+              target:
+                entity_id: binary_sensor.zigbee2mqtt_edge_running
+mode: single

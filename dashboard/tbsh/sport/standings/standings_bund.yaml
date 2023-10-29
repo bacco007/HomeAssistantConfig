@@ -2,8 +2,8 @@
 type: custom:fold-entity-row
 head:
   type: custom:template-entity-row
-  name: NRL
-  icon: mdi:football
+  name: Bundesliga
+  icon: mdi:soccer
   state: ""
 padding: 0
 entities:
@@ -24,7 +24,7 @@ entities:
             box-shadow: none !important;
             }
     entities:
-      include: sensor.scoreboard_nrl
+      include: sensor.scoreboard_bund
     sort_by: entries
     columns:
       - name: "#"
@@ -44,19 +44,15 @@ entities:
         align: center
       - name: W
         data: entries
-        modify: x.stats.find(y=>y.name == 'gamesWon').displayValue
+        modify: x.stats.find(y=>y.name == 'wins').displayValue
         align: center
       - name: D
         data: entries
-        modify: x.stats.find(y=>y.name == 'gamesDrawn').displayValue
+        modify: x.stats.find(y=>y.name == 'ties').displayValue
         align: center
       - name: L
         data: entries
-        modify: x.stats.find(y=>y.name == 'gamesLost').displayValue
-        align: center
-      - name: B
-        data: entries
-        modify: x.stats.find(y=>y.name == 'gamesBye').displayValue
+        modify: x.stats.find(y=>y.name == 'losses').displayValue
         align: center
       - name: GD
         data: entries

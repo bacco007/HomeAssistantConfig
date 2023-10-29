@@ -125,3 +125,40 @@ cards:
                         border-radius: 50%;
                         background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
                       }
+
+              - type: custom:mushroom-template-card
+                icon: mdi:gift
+                primary: |
+                  {%- from 'next_birthday.jinja' import next_birthday_friendly_name -%}
+                  {%- from 'next_birthday.jinja' import next_birthday_years -%}
+                  {{ next_birthday_friendly_name() }} ({{next_birthday_years()|trim}})
+                icon_color: green
+                secondary: >
+                  {%- from 'next_birthday.jinja' import next_birthday_days -%}
+                  {{ next_birthday_days() }}  days
+                badge_icon: |-
+                  {%- from 'next_birthday.jinja' import next_birthday_days -%}
+                  {%- set event = int(next_birthday_days()) %}
+                  {% if (event) <= 10 %}
+                  mdi:exclamation-thick
+                  {% endif %}
+                badge_color: red
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
+                    mushroom-shape-icon$: |
+                      {%- from 'next_birthday.jinja' import next_birthday_days -%}
+                      .shape {
+                        background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(next_birthday_days()))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+                      }
+                      .shape:after {
+                        content: "";
+                        height: 100%;
+                        width: 100%;
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+                      }

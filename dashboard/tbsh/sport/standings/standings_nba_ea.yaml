@@ -1,0 +1,79 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: NBA - Eastern Conference, Atlantic Division
+  icon: si:nba
+  state: ""
+padding: 0
+entities:
+  - type: custom:hui-element
+    card_type: custom:flex-table-card
+    css:
+      table+: 'padding-left: 10px; padding-right: 10px'
+      tbody tr td:first-child: 'width: 5%;'
+      tbody tr td:nth-child(2): 'width: 30%;'
+      tbody tr td:nth-child(n+3): 'width: 5%;'
+      tbody tr:nth-child(8): 'border-bottom: 1.2px dashed red !important;'
+      tbody tr:hover: 'background-color: green!important; color:white!important;'
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            overflow: auto;
+            box-shadow: none !important;
+            }
+    entities:
+      include: sensor.scoreboard_nba_eastern_atlantic
+    sort_by: entries-
+    columns:
+      - hidden: true
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'PCT').value
+      - name: C
+        data: entries
+        modify: >-
+          if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
+          'undefined' ){x.stats.find(y=>y.abbreviation ==
+          'CLINCH').displayValue}else{'-'}
+      - name: Team
+        data: entries
+        modify: >-
+          '<div><img src="' + x.team.logos[0].href + '" style="height:
+          20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+      - name: W
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+      - name: L
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+      - name: GB
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'GB').displayValue
+      - name: HOME
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'HOME').displayValue
+      - name: AWAY
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'AWAY').displayValue
+      - name: DIV
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'DIV').displayValue
+      - name: CONF
+        data: entries
+        modify: x.stats.find(y=>y.shortDisplayName == 'CONF').displayValue
+      - name: PPG
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'PPG').displayValue
+      - name: OPP PPG
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'OPP PPG').displayValue
+      - name: DIFF
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'DIFF').displayValue
+      - name: STRK
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
+      - name: L10
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'L10').displayValue

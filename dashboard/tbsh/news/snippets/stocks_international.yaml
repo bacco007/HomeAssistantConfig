@@ -33,37 +33,63 @@ cards:
             sort(attribute="attributes.friendly_name")  -%}
             {% if s.attributes.quoteType != "INDEX" and s.attributes.quoteType != "CURRENCY" -%}
           {{
-          {
-             "type": "horizontal-stack",
-             "cards": [
-                {
-                   "type": "custom:mushroom-template-card",
-                   "entity": s.entity_id,
-                   "primary": "{{state_attr(entity, 'symbol')}}",
-                   "secondary": "{{state_attr(entity, 'friendly_name')}}",
-                   "icon": "{{state_attr(entity,\"icon\")}}",
-                   "icon_color": "{% if state_attr(entity, 'trending') == \"up\" %}green{% else %}red{% endif %}\n",
-                   "card_mod": {
-                      "style": "ha-card {\n  border: 0;\n}\n"
-                   }
-                },
-                {
-                   "type": "custom:mushroom-template-card",
-                   "entity": s.entity_id,
-                   "primary": "{% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}\n",
-                   "tap_action": {
-                      "action": "more-info"
-                   },
-                   "secondary": "{% if state_attr(entity, 'trending') == \"up\" %}+{% endif\n%}{{state_attr(entity,'regularMarketChangePercent')}}%\n",
-                   "card_mod": {
-                      "style": {
-                         "mushroom-state-info$": "* {\n  text-align: end;\n}\n",
-                         ".": "ha-card {\n  margin: 3px 8px 0px 0px;\n  border: 0;\n  --secondary-text-color: {% if state_attr(config.entity, 'trending') == \"up\" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};\n}\n"
-                      }
-                   }
-                }
-             ]
-          }
+            {
+               "type": "custom:fold-entity-row",
+               "head": {
+                  "type": "custom:stack-in-card",
+                  "mode": "horizontal",
+                  "card_mod": {
+                     "style": "ha-card {\n  border: 0;\n  box-shadow: none;\n}\n"
+                  },
+                  "cards": [
+                     {
+                        "type": "custom:mushroom-template-card",
+                        "entity": s.entity_id,
+                        "primary": "{{state_attr(entity, 'symbol')}}",
+                        "secondary": "{{state_attr(entity, 'friendly_name')}}",
+                        "icon": "{{state_attr(entity,\"icon\")}}",
+                        "icon_color": "{% if state_attr(entity, 'trending') == \"up\" %}green{% else %}red{% endif %}\n",
+                        "card_mod": {
+                           "style": "ha-card {\n  border: 0;\n  box-shadow: none;\n}\n"
+                        }
+                     },
+                     {
+                        "type": "custom:mushroom-template-card",
+                        "entity": s.entity_id,
+                        "primary": "{% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}\n",
+                        "tap_action": {
+                           "action": "more-info"
+                        },
+                        "secondary": "{% if state_attr(entity, 'trending') == \"up\" %}+{% endif\n%}{{state_attr(entity,'regularMarketChangePercent')}}%\n",
+                        "card_mod": {
+                           "style": {
+                              "mushroom-state-info$": "* {\n  text-align: end;\n}\n",
+                              ".": "ha-card {\n  margin: 3px 8px 0px 0px;\n  border: 0;\n  box-shadow: none;\n  --secondary-text-color: {% if state_attr(config.entity, 'trending') == \"up\" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};\n}\n"
+                           }
+                        }
+                     }
+                  ]
+               },
+               "padding": 0,
+               "entities": [
+                  {
+                     "chart_type": "line",
+                     "period": "week",
+                     "type": "custom:hui-element",
+                     "card_type": "statistics-graph",
+                     "entities": [
+                        s.entity_id
+                     ],
+                     "stat_types": [
+                        "mean",
+                        "min",
+                        "max"
+                     ],
+                     "days_to_show": 365,
+                     "hide_legend": true
+                  }
+               ]
+            }
           }},
         {%- endif %}
         {%- endfor %}
