@@ -21,7 +21,7 @@ update_sensor:
     replace_attributes:
       name: Replace Attributes
       description: Replace or merge current attributes [boolean] (optional) (default false = merge)
-      required: true
+      required: false
       default: false
       example: "false"
       selector:
@@ -57,7 +57,7 @@ update_binary_sensor:
     replace_attributes:
       name: Replace Attributes
       description: Replace or merge current attributes [boolean] (optional) (default false = merge)
-      required: true
+      required: false
       default: false
       example: "false"
       selector:
@@ -137,7 +137,7 @@ update_device_tracker:
     replace_attributes:
       name: Replace Attributes
       description: Replace or merge current attributes [boolean] (optional) (default false = merge)
-      required: true
+      required: false
       default: false
       example: "false"
       selector:
@@ -160,7 +160,7 @@ toggle_binary_sensor:
     replace_attributes:
       name: Replace Attributes
       description: Replace or merge current attributes [boolean] (optional) (default false = merge)
-      required: true
+      required: false
       default: false
       example: "false"
       selector:
@@ -195,7 +195,7 @@ set_variable:
     replace_attributes:
       name: Replace Attributes
       description: Replace or merge current attributes [boolean] (optional) (default false = merge)
-      required: true
+      required: false
       default: false
       example: "false"
       selector:
@@ -229,7 +229,7 @@ set_entity:
     replace_attributes:
       name: Replace Attributes
       description: Replace or merge current attributes [boolean] (optional) (default false = merge)
-      required: true
+      required: false
       default: false
       example: "false"
       selector:

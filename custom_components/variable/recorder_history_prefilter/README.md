@@ -10,15 +10,13 @@ This module fixes that problem.
 
 #### The Home Assistant Recorder Component
 
-When Home Assistant starts, it loads the recorder component. The recorder component gets it's parameters from the HA configuration file (configuration.yaml) and builds the list of entities, globs, etc. to be filtered. It then starts a state change listener to call the filter module whenever an entity's state is changed. The filter determines if the entity should be added to the History database,
+When Home Assistant starts, it loads the recorder component. The recorder component gets its parameters from the HA configuration file (configuration.yaml) and builds the list of entities, globs, etc. to be filtered. It then starts a state change listener to call the filter module whenever an entity's state is changed. The filter determines if the entity should be added to the History database,
 
 For efficiency, Home Assistant builds the filter that is checked one time when Home Assistant is loaded. The filter can not be changed or added to by a custom_component.
 
 #### The Recorder History Prefilter
 
-This module injects it's own filter (actually a copy of the recorder's filter) into the HA Recorder component, removes the HA listener that was set up by the HA Recorder and sets up a new state change listener. It is called when an entity's state changes instead of the HA Recorder filter and checks to see if the entity should be filtered. It the entity is not in it's list, the entity is passed to the HA Recorder filter module as it normally would be.
-
-
+This module injects its own filter (actually a copy of the recorder's filter) into the HA Recorder component, removes the HA listener that was set up by the HA Recorder and sets up a new state change listener. It is called when an entity's state changes instead of the HA Recorder filter and checks to see if the entity should be filtered. It the entity is not in its list, the entity is passed to the HA Recorder filter module as it normally would be.
 
 ### Using the Recorder Prefilter
 
@@ -30,11 +28,11 @@ The recorder prefilter is contained in the *recorder_prefilter.py* module.
 
 - Download it and add it to your code base.
 
-Import it into the your module that determines the entities to be filtered. This may be in  *\__init__.py*, *sensor.py* or another module.
+Import it into your module that determines the entities to be filtered. This may be in  *\__init__.py*, *sensor.py* or another module.
 
 - `import recorder_prefilter`
 
-The a single entity or a list of entities can be added at one time using the *add_filter* function call.
+A single entity or a list of entities can be added at one time using the *add_filter* function call.
 
 - `recorder_prefilter.add_filter(hass, 'icloud3_event_log')`
 - `recorder_prefilter.add_filter(hass, ['icloud3_event_log', 'icloud3_wazehist_track', 'gary_iphone_info'])`
@@ -42,14 +40,14 @@ The a single entity or a list of entities can be added at one time using the *ad
 
 Notes: 
 
-- The entity_type (*input_boolean, light, etc* ) needs to be used if it is a non-sensor entity. 
+- The entity_type (*input_boolean, light, etc.* ) needs to be used if it is a non-sensor entity. 
 - The first custom component to use the *add_filter* function call will inject the *recorder_prefilter* into the HA Recorder component. All subsequent *add_filter* calls will update the filter list.
 
 #### Removing Entities
 
 Entities can be removed from the filter list using the *remove_filter* function call.
 
-The a single entity or a list of entities can be removed at one time.
+A single entity or a list of entities can be removed at one time.
 
 - `recorder_prefilter.remove_filter(hass, 'icloud3_event_log')`
 

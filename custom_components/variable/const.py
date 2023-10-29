@@ -1,6 +1,6 @@
 from homeassistant.const import Platform
 
-PLAFORM_NAME = "Variables+History"
+PLATFORM_NAME = "Variables+History"
 DOMAIN = "variable"
 
 PLATFORMS: list[str] = [

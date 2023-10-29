@@ -310,7 +310,7 @@ class Variable(RestoreEntity, TrackerEntity):
 
     @property
     def source_type(self) -> SourceType:
-        """Return the source type, eg gps or router, of the device."""
+        """Return the source type, e.g. gps or router, of the device."""
         return self._attr_source_type
 
     @property

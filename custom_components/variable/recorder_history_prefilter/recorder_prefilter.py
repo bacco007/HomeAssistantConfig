@@ -4,7 +4,7 @@
 #
 #
 #   The HA Recorder module was modified in HA 2023.6.0 to no longer allow a
-#   custom component to insert entity entity names in the '_exclude_e' list
+#   custom component to insert entity names in the '_exclude_e' list
 #   that defined entity entities to not be added to the History database
 #   (home_assistant_v2.db).
 #
@@ -63,7 +63,7 @@ def add_filter(hass: HomeAssistant, entities=None):
       hass - HomeAssistant
       entities - A list of entity entities
                 (['gary_last_update', 'lillian_last_update', '*_next_update'])
-                - A single entity entity ('gary_last_zone')
+                - A single entity ('gary_last_zone')
 
     Returns:
         True - The injection was successful
