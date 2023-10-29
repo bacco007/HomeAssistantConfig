@@ -1,6 +1,6 @@
 ---
 # theme: noctis
-icon: mdi:news
+icon: mdi:newspaper
 subview: true
 path: news
 title: News
@@ -22,6 +22,7 @@ cards:
           width: 300
           max_width: 1000
         cards: &cards
+          - !include ../news/rssfeeds.yaml
           - !include ../news/snippets/stocks.yaml
           - !include ../news/snippets/stocks_international.yaml
           - !include ../news/snippets/indicies.yaml

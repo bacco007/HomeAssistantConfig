@@ -5,179 +5,256 @@ homeassistant:
       icon: si:bbc
     sensor.rssfeed_cnn:
       icon: si:cnn
-    sensor.rssfeed_news_com_au:
-      icon: mdi:newspaper
-    sensor.rssfeed_sky_news_uk:
-      icon: si:sky
-    sensor.rssfeed_sydney_morning_herald:
-      icon: mdi:newspaper
     sensor.rssfeed_fox_sports:
       icon: si:foxtel
+    sensor.rssfeed_news_com_au:
+      icon: mdi:newspaper
     sensor.rssfeed_newsnation:
       icon: mdi:newspaper
     sensor.rssfeed_northern_daily_leader:
+      icon: mdi:newspaper
+    sensor.rssfeed_sky_news_uk:
+      icon: si:sky
+    sensor.rssfeed_sky_sports_uk:
+      icon: si:sky
+    sensor.rssfeed_sydney_morning_herald:
       icon: mdi:newspaper
     sensor.rssfeed_the_guardian_au:
       icon: mdi:newspaper
     sensor.rssfeed_the_guardian_uk:
       icon: mdi:newspaper
-    sensor.rssfeed_sky_sports_uk:
-      icon: si:sky
-
 sensor:
-  - platform: feedparser
-    name: ESPN Australia
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
     entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
-    scan_interval:
-      minutes: 15
     feed_url: https://www.espn.com.au/espn/rss/news
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: BBC
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: ESPN Australia
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: http://feeds.bbci.co.uk/news/rss.xml
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: CNN
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: BBC
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: http://rss.cnn.com/rss/cnn_latest.rss
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: news.com.au
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: CNN
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: http://www.news.com.au/feed
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: Sky News UK
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: news.com.au
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: http://feeds.skynews.com/feeds/rss/home.xml
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: Sydney Morning Herald
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: Sky News UK
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: https://www.smh.com.au/rss/feed.xml
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: Fox Sports
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: Sydney Morning Herald
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://www.smh.com.au/rss/sport.xml
+    inclusions:
+      - image
+      - link
+      - published
+      - title
+    name: Sydney Morning Herald Sport
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: https://www.foxsports.com.au/content-feeds/breaking-news/
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: Northern Daily Leader
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: Fox Sports
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: https://www.northerndailyleader.com.au/rss.xml
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: The Guardian (AU)
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: Northern Daily Leader
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: https://www.theguardian.com/au/rss
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: The Guardian (UK)
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: The Guardian (AU)
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: https://www.theguardian.com/uk/rss
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: Sky Sports (UK)
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: The Guardian (UK)
+    platform: feedparser
     scan_interval:
       minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
     feed_url: https://www.skysports.com/rss/12040
-    show_topn: 10
     inclusions:
-      - title
       - image
-      - published
       - link
-  - platform: feedparser
-    name: NewsNation
-    entity_namespace: rssfeed
-    date_format: "%a, %d %b %Y %H:%M:%S %Z"
+      - published
+      - title
+    name: Sky Sports (UK)
+    platform: feedparser
     scan_interval:
       minutes: 15
-    feed_url: https://www.newsnationnow.com/feed/
     show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://www.newsnationnow.com/feed/
     inclusions:
-      - title
       - image
-      - published
       - link
+      - published
+      - title
+    name: NewsNation
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
+    inclusions:
+      - image
+      - link
+      - published
+      - title
+    name: New York Times
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://www.itnews.com.au/RSS/rss.ashx
+    inclusions:
+      - image
+      - link
+      - published
+      - title
+    name: iTNews
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://www.nasa.gov/news-release/feed/
+    inclusions:
+      - image
+      - link
+      - published
+      - title
+    name: NASA
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://www.speedcafe.com/feed/
+    inclusions:
+      - image
+      - link
+      - published
+      - title
+    name: Speedcafe
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10
+  - date_format: "%a, %d %b %Y %H:%M:%S %Z"
+    entity_namespace: rssfeed
+    feed_url: https://www.v8sleuth.com.au/feed/
+    inclusions:
+      - image
+      - link
+      - published
+      - title
+    name: V8 Sleuth
+    platform: feedparser
+    scan_interval:
+      minutes: 15
+    show_topn: 10

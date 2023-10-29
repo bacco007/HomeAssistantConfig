@@ -1,0 +1,98 @@
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: RSS Feeds
+    icon: mdi:newspaper-plus
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: custom:auto-entities
+    unique: true
+    show_empty: true
+    card:
+      type: entities
+      show_header_toggle: false
+      card_mod:
+        style: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
+    options: null
+    sort:
+      method: friendly_name
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            background: none !important;
+            margin-right: 24px !important;
+            --toggle-icon-width: 21px !important;
+            color: rgb(var(--rgb-disabled-color));
+          }
+          ha-icon:active {
+            animation: rotate 200ms linear forwards;
+          }
+          @keyframes rotate {
+            100% { transform: rotate(180deg); }
+          }
+        .: |
+          ha-card {
+            background: none;
+            box-shadow: none;
+          }
+          .card-content {
+            padding: 0;
+          }
+          * {
+            margin: 0 !important;
+          }
+    filter:
+      template: >
+        {% for s in
+        expand(states.group.rssfeeds)|map(attribute='entity_id')|list|sort -%}
+          {{
+            {
+               "type": "custom:fold-entity-row",
+               "head": {
+                  "type": "custom:template-entity-row",
+                  "name": "{{ state_attr('" + s + "', 'friendly_name') }} ",
+                  "icon": "{{ state_attr('" + s + "', 'icon') }}",
+                  "state": ""
+               },
+               "padding": 0,
+               "entities": [
+                  {
+                     "type": "custom:hui-element",
+                     "card_type": "custom:flex-table-card",
+                     "card_mod": {
+                        "style": {
+                           ".": "ha-card {\n  overflow: auto;\n  box-shadow: none !important;\n  }\n"
+                        }
+                     },
+                     "entities": {
+                        "include": s
+                     },
+                     "sort_by": "entries",
+                     "columns": [
+                        {
+                           "name": "Headline",
+                           "data": "entries",
+                           "modify": "'<a style=\"text-decoration: none; color: var(--text-on);\" href=\"' + x.link + '\">' + x.title + '</a>'"
+                        },
+                        {
+                           "name": "Date",
+                           "data": "entries",
+                           "modify": "x.published"
+                        }
+                     ]
+                  }
+               ]
+            }
+          }},
+        {%- endfor %}
