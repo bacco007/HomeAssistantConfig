@@ -10,12 +10,12 @@ entities:
   - type: custom:hui-element
     card_type: custom:flex-table-card
     css:
-      table+: 'padding-left: 10px; padding-right: 10px'
-      tbody tr td:first-child: 'width: 5%;'
-      tbody tr td:nth-child(2): 'width: 30%;'
-      tbody tr td:nth-child(n+3): 'width: 5%;'
-      tbody tr:nth-child(8): 'border-bottom: 1.2px dashed red !important;'
-      tbody tr:hover: 'background-color: green!important; color:white!important;'
+      table+: "padding-left: 10px; padding-right: 10px"
+      tbody tr td:first-child: "width: 5%;"
+      tbody tr td:nth-child(2): "width: 30%;"
+      tbody tr td:nth-child(n+3): "width: 5%;"
+      tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+      tbody tr:hover: "background-color: green!important; color:white!important;"
     card_mod:
       style:
         .: |
