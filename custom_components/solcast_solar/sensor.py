@@ -229,7 +229,6 @@ async def async_setup_entry(
                 icon="mdi:home",
                 device_class=SensorDeviceClass.ENERGY,
                 native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-                entity_category=EntityCategory.CONFIG,
                 suggested_display_precision=2,
                 rooftop_id=site["resource_id"],
             )
@@ -350,6 +349,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
 
         self._attributes = {}
         self._attr_extra_state_attributes = {}
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
         try:
             self._sensor_data = coordinator.get_site_sensor_value(self.rooftop_id, key)

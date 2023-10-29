@@ -317,9 +317,11 @@ class SolcastApi:
             )
         
         _LOGGER.debug(f"SOLCAST - Data records contained {len(tup)} of 48 for {da}")
-        if len(tup) < 48:
-            _LOGGER.info("SOLCAST - Data records not complete - Values therefor maybe inaccurate nor complete")
         
+        if len(tup) < 48:
+            _LOGGER.info(f"SOLCAST - Data records not complete - Data records contained {len(tup)} of 48 for {da} - Values therefor maybe inaccurate nor complete")
+            _LOGGER.info(f"Data - {tup}")
+
         hourlyturp = []
         for index in range(0,len(tup),2):
             if len(tup)>0:
@@ -398,8 +400,8 @@ class SolcastApi:
                 for d in self._data_forecasts
                 if d["period_start"].astimezone(tz).date() == da
             )
-            d = max((z for z in g), key=lambda x: x["pv_estimate"])["period_start"]
-            return dt.astimezone(d,tz)
+            #HA strips any TZ info set and forces UTC tz, so dont need to return with local tz info
+            return max((z for z in g), key=lambda x: x["pv_estimate"])["period_start"]
         except Exception as ex:
             return None
 
