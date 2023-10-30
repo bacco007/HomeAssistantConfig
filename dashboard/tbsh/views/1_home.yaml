@@ -24,6 +24,7 @@ cards:
           - !include ../me/cakeday.yaml
           - !include ../tamworth/nbn_fttnupgrade.yaml
           - !include ../home/binday.yaml
+          - !include ../home/solar.yaml
           - !include ../home/flighttracker.yaml
           - !include ../home/network.yaml
           - !include ../home/col3-row1.yaml

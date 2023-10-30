@@ -161,3 +161,40 @@ cards:
                     --ha-card-box-shadow: 0px;
                     margin: -8px -4px -4px -8px;
                   }
+          - type: conditional
+            conditions:
+              - condition: numeric_state
+                entity: sensor.east_tamworth_warnings
+                above: 0
+            card:
+              type: custom:auto-entities
+              card_param: cards
+              show_empty: false
+              unique: true
+              card:
+                type: grid
+                columns: 1
+                square: false
+              filter:
+                template: |-
+                  {% for s in state_attr('sensor.east_tamworth_warnings','warnings') -%}
+                    {{
+                      {
+                      "type": "custom:mushroom-template-card",
+                      "primary": s.short_title,
+                      "secondary": s.title,
+                      "multiline_secondary": true,
+                      "badge_icon": "mdi:alert-circle",
+                      "badge_color": "red",
+                      "icon": "phu:weather-page-alt",
+                      "tap_action": "none",
+                      "hold_action": "none",
+                      "fill_container": true,
+                      "layout": "horizontal",
+                      "card_mod": {
+                        "style": {
+                          ".": "ha-card {\n  background-color: var(--background-color);\n}\n"
+                        }}
+                      }
+                    }},
+                  {%- endfor %}
