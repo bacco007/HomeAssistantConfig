@@ -40,23 +40,23 @@ sensor:
       media_playing_artist: >
         {{ state_attr('media_player.currently_playing', 'media_artist') | title }} (on {{ state_attr('media_player.currently_playing', 'media_channel') | title }})
       current_weather_condition: >
-        {%- set cond_now = states('weather.east_tamworth') %}
+        {%- set cond_now = states('weather.weather_home_daily') %}
         {%- if states('sun.sun') == 'below_horizon' %}
         {%- if cond_now == 'sunny' %} night {% elif cond_now == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond_now }} {% endif %}
         {%- else %}
         {{ cond_now }}
         {%- endif %}
       forecast_day1: >
-        {{ state_attr('weather.east_tamworth', 'forecast')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.east_tamworth', 'forecast')[1].templow | int }}°C - {{ state_attr('weather.east_tamworth', 'forecast')[1].temperature  | int}}°C
+        {{ state_attr('weather.weather_home_daily', 'forecast')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[1].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[1].temperature  | int}}°C
       forecast_day2: >
-        {{ state_attr('weather.east_tamworth', 'forecast')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.east_tamworth', 'forecast')[2].templow | int }}°C - {{ state_attr('weather.east_tamworth', 'forecast')[2].temperature  | int}}°C
+        {{ state_attr('weather.weather_home_daily', 'forecast')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[2].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[2].temperature  | int}}°C
       forecast_day3: >
-        {{ state_attr('weather.east_tamworth', 'forecast')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.east_tamworth', 'forecast')[3].templow | int }}°C - {{ state_attr('weather.east_tamworth', 'forecast')[3].temperature  | int}}°C
+        {{ state_attr('weather.weather_home_daily', 'forecast')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[3].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[3].temperature  | int}}°C
       forecast_day4: >
-        {{ state_attr('weather.east_tamworth', 'forecast')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.east_tamworth', 'forecast')[4].templow | int }}°C - {{ state_attr('weather.east_tamworth', 'forecast')[4].temperature  | int}}°C
+        {{ state_attr('weather.weather_home_daily', 'forecast')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[4].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[4].temperature  | int}}°C
       forecast_day5: >
-        {{ state_attr('weather.east_tamworth', 'forecast')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.east_tamworth', 'forecast')[5].templow | int }}°C - {{ state_attr('weather.east_tamworth', 'forecast')[5].temperature  | int}}°C
+        {{ state_attr('weather.weather_home_daily', 'forecast')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[5].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[5].temperature  | int}}°C
       forecast_day6: >
-        {{ state_attr('weather.east_tamworth', 'forecast')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.east_tamworth', 'forecast')[6].templow | int }}°C - {{ state_attr('weather.east_tamworth', 'forecast')[6].temperature  | int}}°C
+        {{ state_attr('weather.weather_home_daily', 'forecast')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[6].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[6].temperature  | int}}°C
       solar_yield_today: >
         {{ states('solar.sungrowsolar_daily_power_yields')}}

@@ -7,7 +7,7 @@ weather_raining:
   done_message: clear_notification
   entity_id: binary_sensor.weather_rain_alert
   state: "on"
-  repeat: 1800
+  repeat: 1440
   notifiers: alert
   data:
     tag: weather_raining

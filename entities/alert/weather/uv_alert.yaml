@@ -6,7 +6,7 @@ uv_risk:
   done_message: clear_notification
   entity_id: binary_sensor.uv_risk_alert
   state: "on"
-  repeat: 86400
+  repeat: 1440
   notifiers: alert
   data:
     tag: uv_alert

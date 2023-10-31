@@ -7,7 +7,7 @@ air_quality:
   entity_id: binary_sensor.waqi_air_quality_alert
   state: "on"
   skip_first: true
-  repeat: 10800
+  repeat: 1440
   notifiers: alert
   data:
     tag: air_quality_alert

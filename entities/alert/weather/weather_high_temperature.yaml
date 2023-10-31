@@ -7,7 +7,7 @@ weather_high_temperature:
   entity_id: binary_sensor.weather_high_temperature_alert
   state: "on"
   skip_first: true
-  repeat: 10800
+  repeat: 1440
   notifiers: alert
   data:
     tag: weather_high_temperature

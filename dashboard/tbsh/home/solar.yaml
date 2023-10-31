@@ -17,7 +17,7 @@ cards:
                 color: var(--title)
               icon:
                 filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                '--mdc-icon-size': 20px
+                "--mdc-icon-size": 20px
                 color: var(--title)
           - icon: mdi:close
             layout: icon
@@ -26,7 +26,7 @@ cards:
               navigation_path: /solar
             style:
               icon:
-                '--mdc-icon-size': 15px
+                "--mdc-icon-size": 15px
         style: |
           div.flex-box {
             margin-top: -6px;
@@ -37,443 +37,304 @@ cards:
       - type: custom:vertical-stack-in-card
         style: |
           ha-card {
-            background-color: var(--card-background-color);
-            padding: 2px;
+            background-color: transparent !important;
+            padding: 1px;
             box-shadow: none;
           }
         cards:
-          - type: custom:vertical-stack-in-card
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: var(--background-color);
-                  --ha-card-box-shadow: 0px;
-                }
+          - type: custom:layout-card
+            layout_type: grid
+            layout:
+              width: 100%
+              grid-template-columns: 1fr 1fr 1fr
+              grid-template-rows: auto
+              margin: 0px
+              padding: 0px
             cards:
-              - type: custom:layout-card
-                layout_type: grid
-                layout:
-                  width: 100%
-                  grid-template-columns: 1fr 1fr 1fr
-                cards:
-                  - type: custom:mushroom-template-card
-                    entity: sensor.active_import_from_grid
-                    primary: Active Grid Import
-                    secondary: '{{(states(''sensor.active_import_from_grid''))}} W'
-                    layout: vertical
-                    fill_container: false
-                    icon: mdi:transmission-tower-export
-                    icon_color: '#f77c7c'
-                    secondary_info: state
-                    multiline_secondary: false
-                    badge_icon: ''
-                    badge_color: ''
-                    tap_action:
-                      action: more-info
-                    card_mod:
-                      style:
-                        mushroom-shape-icon$: |
-                          .shape {
-                            --shape-color: none !important;
-
-                          }
-                        .: |
-                          ha-card {
-                            background-color: var(--background-color);
-                            margin-top: 10px;
-                            --icon-size: 50px;
-                            --icon-symbol-size: 30px;
-                            --card-secondary-font-size: 10px;
-                            --card-primary-font-size: 12px;
-                            padding-top: 5px !important;
-                            padding-bottom: 5px !important;
-                          }
-                  - type: custom:mushroom-template-card
-                    entity: sensor.active_export_to_grid
-                    primary: Active Grid Export
-                    secondary: '{{(states(''sensor.active_export_to_grid''))}} W'
-                    layout: vertical
-                    fill_container: false
-                    icon: mdi:transmission-tower-import
-                    icon_color: '#9ACD32'
-                    secondary_info: state
-                    multiline_secondary: false
-                    tap_action:
-                      action: more-info
-                    card_mod:
-                      style:
-                        mushroom-shape-icon$: |
-                          .shape {
-                            --shape-color: none !important;
-                            }
-                        .: |
-                          ha-card {
-                            background-color: var(--background-color);
-                            margin-top: 10px;
-                            --icon-size: 50px;
-                            --icon-symbol-size: 30px;
-                            --card-secondary-font-size: 10px;
-                            --card-primary-font-size: 12px;
-                            padding-top: 5px !important;
-                            padding-bottom: 5px !important;
-                          }
-                  - type: custom:mushroom-template-card
-                    entity: sensor.active_generation
-                    primary: PV Power
-                    secondary: |-
-                      {% set state=states('sensor.active_generation') %}
-                            {% if state | is_number and state | float > 0 %}
-                              {{(states('sensor.active_generation'))}} W
-                            {% elif state | is_number and state | float < 0 %}
-                              {{(states('sensor.active_generation'))}} W
-                            {% else %}
-                              {{(states('sensor.active_generation'))}} W
-                            {% endif %}
-                    layout: vertical
-                    fill_container: false
-                    icon: |-
-                      {% set state=states('sensor.active_generation') %}
-                            {% if state | is_number and state | float > 5 %}
-                              mdi:solar-panel-large
-                            {% elif state | is_number and state | float < 0 %}
-                              mdi:solar-panel-large
-                            {% else %}
-                              mdi:grid-off
-                            {% endif %}
-                    icon_color: |-
-                      {% set state=states('sensor.active_generation') %}
-                            {% if state | is_number and state | float > 0 %}
-                              #FFA500
-                            {% elif state | is_number and state | float < 0 %}
-                              #9ACD32
-                            {% else %}
-                              disabled
-                            {% endif %}
-                    secondary_info: state
-                    multiline_secondary: true
-                    tap_action:
-                      action: more-info
-                    card_mod:
-                      style:
-                        mushroom-shape-icon$: |
-                          .shape {
-                            --shape-color: none !important; }
-                        .: |
-                          ha-card {
-                            background-color: var(--background-color);
-                            margin-top: 10px;
-                            --icon-size: 50px;
-                            --icon-symbol-size: 30px;
-                            --card-secondary-font-size: 10px;
-                            --card-primary-font-size: 12px;
-                            padding-top: 5px !important;
-                            padding-bottom: 5px !important;
-                            }
-                          }
+              - type: custom:mushroom-template-card
+                entity: sensor.active_import_from_grid
+                primary: Active Grid Import
+                secondary: "{{(states('sensor.active_import_from_grid'))}} W"
+                layout: vertical
+                fill_container: false
+                icon: mdi:transmission-tower-export
+                icon_color: "#f77c7c"
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
                 card_mod:
-                  style: |
-                    ha-card {
-                      height: 150px;
-                    }
-              - type: custom:layout-card
-                layout_type: grid
-                layout:
-                  width: 100%
-                  grid-template-columns: 1fr 2fr
-                  grid-template-rows: auto
-                  margin: 0px
-                  padding: 0px
-                cards:
-                  - type: custom:stack-in-card
-                    cards:
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.load_power
-                        icon_color: '#FFA500'
-                        icon: mdi:solar-power-variant
-                        hold_action:
-                          action: none
-                        primary_info: name
-                        secondary_info: state
-                        name: Current Consumption
-                        card_mod:
-                          style: |
-                            :host {
-                              --mush-card-primary-font-size: 12px;
-                              --mush-card-secondary-font-size: 10px;
-                            }
-                            ha-card {
-                              background-color: var(--background-color);
-                              margin-top: -10px;
-                              margin-right: -8px;
-                            }
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.daily_direct_energy_consumption
-                        icon: mdi:solar-power-variant
-                        icon_color: '#FFA500'
-                        hold_action:
-                          action: none
-                        primary_info: name
-                        secondary_info: state
-                        name: Daily Solar Consumption
-                        card_mod:
-                          style: |
-                            :host {
-                              --mush-card-primary-font-size: 12px;
-                              --mush-card-secondary-font-size: 10px;
-                            }
-                            ha-card {
-                              background-color: var(--background-color);
-                              margin-top: -10px;
-                              margin-right: -8px;
-                            }
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.solcast_pv_forecast_forecast_today
-                        icon_color: '#9ACD32'
-                        hold_action:
-                          action: none
-                        primary_info: name
-                        secondary_info: state
-                        name: Predicted Yield Today
-                        card_mod:
-                          style: |
-                            :host {
-                              --mush-card-primary-font-size: 12px;
-                              --mush-card-secondary-font-size: 10px;
-                            }
-                            ha-card {
-                              background-color: var(--background-color);
-                              margin-top: -10px;
-                              margin-right: -8px;
-                            }
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: var(--background-color);
-                          --ha-card-box-shadow: 0px;
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.active_export_to_grid
+                primary: Active Grid Export
+                secondary: "{{(states('sensor.active_export_to_grid'))}} W"
+                layout: vertical
+                fill_container: false
+                icon: mdi:transmission-tower-import
+                icon_color: "#9ACD32"
+                secondary_info: state
+                multiline_secondary: false
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
                         }
-                  # - type: custom:stack-in-card
-                  #   card_mod:
-                  #     style: |
-                  #       ha-card {
-                  #         background-color: var(--background-color);
-                  #         --ha-card-box-shadow: 0px;
-                  #       }
-                  #   cards:
-                  #     - type: custom:apexcharts-card
-                  #       experimental:
-                  #         color_threshold: true
-                  #       chart_type: radialBar
-                  #       graph_span: 5day1s
-                  #       span:
-                  #         end: day
-                  #       show:
-                  #         loading: false
-                  #       cache: true
-                  #       update_interval: 10min
-                  #       apex_config:
-                  #         chart:
-                  #           height: 250px
-                  #         plotOptions:
-                  #           radialBar:
-                  #             offsetY: -20
-                  #             startAngle: -135
-                  #             endAngle: 135
-                  #             hollow:
-                  #               size: 45%
-                  #             dataLabels:
-                  #               name:
-                  #                 show: false
-                  #               value:
-                  #                 show: false
-                  #         legend:
-                  #           show: false
-                  #         stroke:
-                  #           dashArray: 0
-                  #           lineCap: flat
-                  #       series:
-                  #         - entity: sensor.daily_export_to_grid
-                  #           type: area
-                  #           name: CPU
-                  #           color_threshold:
-                  #             - value: 0
-                  #               color: rgb(183, 201, 145)
-                  #             - value: 10
-                  #               color: rgb(173, 199, 117)
-                  #             - value: 30
-                  #               color: rgb(154, 205, 50)
-                  #           group_by:
-                  #             func: diff
-                  #             duration: 1d
-                  #         - entity: sensor.daily_import_from_grid
-                  #           type: area
-                  #           name: RAM
-                  #           color_threshold:
-                  #             - value: 0
-                  #               color: rgb(245, 201, 201)
-                  #             - value: 25
-                  #               color: rgb(245, 154, 154)
-                  #             - value: 35
-                  #               color: rgb(247, 124, 124)
-                  #           group_by:
-                  #             func: diff
-                  #             duration: 1d
-                  #         - entity: sensor.daily_generation
-                  #           type: area
-                  #           name: SSD
-                  #           color_threshold:
-                  #             - value: 0
-                  #               color: rgb(247, 210, 141)
-                  #             - value: 15
-                  #               color: rgb(247, 197, 104)
-                  #             - value: 30
-                  #               color: rgb(255, 165, 0)
-                  #           group_by:
-                  #             func: diff
-                  #             duration: 1d
-                  #       card_mod:
-                  #         style: |
-                  #           ha-card {
-                  #             background-color: var(--background-color);
-                  #             --ha-card-box-shadow: 0px;
-                  #           }
-                  #     - type: custom:mushroom-template-card
-                  #       entity: sensor.p1_aktiv_teljesitmeny
-                  #       tap_action:
-                  #         action: more-info
-                  #       primary: |-
-                  #         {% set state=states('sensor.daily_generation') %}
-                  #           {% if state | is_number and state | float > 0 %}
-                  #             - {{(states('sensor.daily_generation'))}} kWh
-                  #           {% elif state | is_number and state | float < 0 %}
-                  #             {{(states('sensor.daily_generation'))}} kWh
-                  #           {% else %}
-                  #             No data
-                  #           {% endif %}
-                  #       icon_color: |-
-                  #         {% set state=states('sensor.daily_generation') %}
-                  #           {% if state | is_number and state | float > 0 %}
-                  #             #f77c7c
-                  #           {% elif state | is_number and state | float < 0 %}
-                  #             #9ACD32
-                  #           {% else %}
-                  #             disabled
-                  #           {% endif %}
-                  #       icon: |-
-                  #         {% set state=states('sensor.daily_generation') %}
-                  #           {% if state | is_number and state | float > 0 %}
-                  #             mdi:transmission-tower-export
-                  #           {% elif state | is_number and state | float < 0 %}
-                  #             mdi:transmission-tower-import
-                  #           {% else %}
-                  #             mdi:transmission-tower-off
-                  #           {% endif %}
-                  #       layout: vertical
-                  #       card_mod:
-                  #         style: |
-                  #           :host {
-                  #             --mush-card-primary-font-size: 12px;
-                  #             --mush-icon-border-radius: 50%;
-                  #             --mush-icon-size: 72px;
-                  #             --primary-text-color:  {% set state=states('sensor.sensor.daily_generation') %} {% if state | is_number
-                  #             and state | float > 0 %}
-                  #             #f77c7c
-                  #           {% elif state | is_number and state | float < 0 %}
-                  #             #32CD32
-                  #           {% else %}
-                  #             black
-                  #           {% endif %};
-                  #           }
-                  #           ha-card {
-                  #             background: transparent;
-                  #             margin-top: -112px;
-                  #             width: 120px;
-                  #             margin-left: auto;
-                  #             margin-right: auto;
-                  #           }
-              - type: custom:layout-card
-                layout_type: grid
-                layout:
-                  width: 100%
-                  grid-template-columns: 1fr 1fr 1fr
-                  grid-template-rows: auto
-                  margin: 0px
-                  padding: 0px
-                cards:
-                  - type: custom:mushroom-template-card
-                    icon: mdi:transmission-tower-export
-                    layout: vertical
-                    primary: Grid Consumption
-                    icon_color: '#f77c7c'
-                    secondary: '{{(states(''sensor.daily_import_from_grid''))}} kWh'
-                    entity: sensor.daily_import_from_grid
-                    tap_action:
-                      action: more-info
-                    badge_icon: ''
-                    badge_color: ''
-                    fill_container: false
-                    card_mod:
-                      style: |
-                        :host {
-                          margin-top: -10px;
-                          --mush-icon-size: 60px;
-                          --mush-card-primary-font-size: 12px;
-                          --mush-card-secondary-font-size: 10px;
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.active_generation
+                primary: PV Power
+                secondary: |-
+                  {% set state=states('sensor.active_generation') %}
+                        {% if state | is_number and state | float > 0 %}
+                          {{(states('sensor.active_generation'))}} W
+                        {% elif state | is_number and state | float < 0 %}
+                          {{(states('sensor.active_generation'))}} W
+                        {% else %}
+                          {{(states('sensor.active_generation'))}} W
+                        {% endif %}
+                layout: vertical
+                fill_container: false
+                icon: |-
+                  {% set state=states('sensor.active_generation') %}
+                        {% if state | is_number and state | float > 5 %}
+                          mdi:solar-panel-large
+                        {% elif state | is_number and state | float < 0 %}
+                          mdi:solar-panel-large
+                        {% else %}
+                          mdi:grid-off
+                        {% endif %}
+                icon_color: |-
+                  {% set state=states('sensor.active_generation') %}
+                        {% if state | is_number and state | float > 0 %}
+                          #FFA500
+                        {% elif state | is_number and state | float < 0 %}
+                          #9ACD32
+                        {% else %}
+                          disabled
+                        {% endif %}
+                secondary_info: state
+                multiline_secondary: true
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                        mushroom-shape-icon {
-                          --shape-color: none !important;
+                      }
+              - type: custom:mushroom-entity-card
+                entity: sensor.load_power
+                icon_color: blue
+                icon: mdi:solar-power-variant
+                hold_action:
+                  action: none
+                primary_info: name
+                secondary_info: state
+                name: Current Usage
+                layout: vertical
+                fill_container: false
+                multiline_secondary: true
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                        ha-card {
-                          background-color: var(--background-color);
-                          padding-top: 5px !important;
-                          padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-entity-card
+                entity: sensor.daily_direct_energy_consumption
+                icon: mdi:solar-power-variant
+                icon_color: "#FFA500"
+                hold_action:
+                  action: none
+                primary_info: name
+                secondary_info: state
+                name: Daily Solar Use
+                layout: vertical
+                fill_container: false
+                multiline_secondary: true
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                  - type: custom:mushroom-template-card
-                    icon: mdi:transmission-tower-import
-                    layout: vertical
-                    primary: Return to grid
-                    icon_color: '#9ACD32'
-                    tap_action:
-                      action: more-info
-                    secondary: '{{(states(''sensor.daily_export_to_grid''))}} kWh'
-                    entity: sensor.daily_export_to_grid
-                    card_mod:
-                      style: |
-                        :host {
-                          margin-top: -10px;
-                          --mush-icon-size: 60px;
-                          --mush-card-primary-font-size: 12px;
-                          --mush-card-secondary-font-size: 10px;
+                      }
+              - type: custom:mushroom-entity-card
+                entity: sensor.solcast_pv_forecast_forecast_today
+                icon_color: "#9ACD32"
+                hold_action:
+                  action: none
+                primary_info: name
+                secondary_info: state
+                name: Est. Yield Today
+                layout: vertical
+                fill_container: false
+                multiline_secondary: true
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                        mushroom-shape-icon {
-                          --shape-color: none !important;
+                      }
+              - type: custom:mushroom-template-card
+                icon: mdi:transmission-tower-export
+                layout: vertical
+                primary: Grid Consumption
+                icon_color: "#f77c7c"
+                secondary: "{{(states('sensor.daily_import_from_grid'))}} kWh"
+                entity: sensor.daily_import_from_grid
+                tap_action:
+                  action: more-info
+                badge_icon: ""
+                badge_color: ""
+                fill_container: false
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                        ha-card {
-                          background-color: var(--background-color);
-                          padding-top: 5px !important;
-                          padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                icon: mdi:transmission-tower-import
+                layout: vertical
+                primary: Return to grid
+                icon_color: "#9ACD32"
+                tap_action:
+                  action: more-info
+                secondary: "{{(states('sensor.daily_export_to_grid'))}} kWh"
+                entity: sensor.daily_export_to_grid
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                  - type: custom:mushroom-template-card
-                    icon: mdi:sun-wireless
-                    layout: vertical
-                    primary: Daily Yield
-                    icon_color: '#FFA500'
-                    tap_action:
-                      action: more-info
-                    secondary: '{{(states(''sensor.daily_generation''))}} kWh'
-                    entity: sensor.daily_generation
-                    card_mod:
-                      style: |
-                        :host {
-                          margin-top: -10px;
-                          --mush-icon-size: 60px;
-                          --mush-card-primary-font-size: 12px;
-                          --mush-card-secondary-font-size: 10px;
+                      }
+              - type: custom:mushroom-template-card
+                icon: mdi:sun-wireless
+                layout: vertical
+                primary: Daily Yield
+                icon_color: "#FFA500"
+                tap_action:
+                  action: more-info
+                secondary: "{{(states('sensor.daily_generation'))}} kWh"
+                entity: sensor.daily_generation
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important; }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        margin-top: 10px;
+                        --icon-size: 50px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                         }
-                        mushroom-shape-icon {
-                          --shape-color: none !important;
-                        }
-                        ha-card {
-                          background-color: var(--background-color);
-                          padding-top: 5px !important;
-                          padding-bottom: 5px !important;
-                        }
+                      }
