@@ -42,7 +42,7 @@
         "#31B8DB","10": "#31DB8B","15": "#6ED228","21": "#FFFF28","27": "#F87E27","32":
         "#CF3927","38": "#A12527"}'
       moon: sensor.moon
-      when_show_moon: night
+      when_show_moon: never
       sun_time_format: '%H:%M'
       moon_rise_set: sensor.moonriseset
       sun_time_type: Relative
