@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import time
 import logging
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 import voluptuous as vol
 
@@ -31,17 +31,27 @@ from homeassistant.helpers.typing import UNDEFINED
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import LGEDevice
-from .const import DEFAULT_ICON, DEFAULT_SENSOR, DOMAIN, LGE_DEVICES, LGE_DISCOVERY_NEW
+from .const import (
+    ATTR_CURRENT_COURSE,
+    ATTR_FREEZER_TEMP,
+    ATTR_FRIDGE_TEMP,
+    ATTR_INITIAL_TIME,
+    ATTR_OVEN_LOWER_TARGET_TEMP,
+    ATTR_OVEN_UPPER_TARGET_TEMP,
+    ATTR_REMAIN_TIME,
+    ATTR_RESERVE_TIME,
+    DEFAULT_ICON,
+    DEFAULT_SENSOR,
+    DOMAIN,
+    LGE_DEVICES,
+    LGE_DISCOVERY_NEW,
+)
 from .device_helpers import (
     DEVICE_ICONS,
     WASH_DEVICE_TYPES,
     LGEBaseDevice,
-    LGERangeDevice,
-    LGERefrigeratorDevice,
-    LGETempDevice,
-    LGEWashDevice,
     get_entity_name,
-    get_multiple_devices_types,
+    get_wrapper_device,
 )
 from .wideq import (
     SET_TIME_DEVICE_TYPES,
@@ -61,27 +71,6 @@ SERVICE_REMOTE_START = "remote_start"
 SERVICE_WAKE_UP = "wake_up"
 SERVICE_SET_TIME = "set_time"
 
-# general sensor attributes
-ATTR_CURRENT_COURSE = "current_course"
-ATTR_ERROR_STATE = "error_state"
-ATTR_INITIAL_TIME = "initial_time"
-ATTR_REMAIN_TIME = "remain_time"
-ATTR_RESERVE_TIME = "reserve_time"
-ATTR_START_TIME = "start_time"
-ATTR_END_TIME = "end_time"
-ATTR_RUN_COMPLETED = "run_completed"
-
-# refrigerator sensor attributes
-ATTR_DOOR_OPEN = "door_open"
-ATTR_FRIDGE_TEMP = "fridge_temp"
-ATTR_FREEZER_TEMP = "freezer_temp"
-ATTR_TEMP_UNIT = "temp_unit"
-
-# range sensor attributes
-ATTR_OVEN_LOWER_TARGET_TEMP = "oven_lower_target_temp"
-ATTR_OVEN_UPPER_TARGET_TEMP = "oven_upper_target_temp"
-ATTR_OVEN_TEMP_UNIT = "oven_temp_unit"
-
 # supported features
 SUPPORT_REMOTE_START = 1
 SUPPORT_WAKE_UP = 2
@@ -99,7 +88,7 @@ class ThinQSensorEntityDescription(SensorEntityDescription):
     feature_attributes: dict[str, str] | None = None
 
 
-WASH_DEV_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+WASH_DEV_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=DEFAULT_SENSOR,
         icon=DEFAULT_ICON,
@@ -191,7 +180,7 @@ WASH_DEV_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
 )
-REFRIGERATOR_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+REFRIGERATOR_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=DEFAULT_SENSOR,
         icon=DEFAULT_ICON,
@@ -214,7 +203,7 @@ REFRIGERATOR_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         value_fn=lambda x: x.temp_freezer,
     ),
 )
-AC_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+AC_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=AirConditionerFeatures.ROOM_TEMP,
         name="Room temperature",
@@ -261,6 +250,27 @@ AC_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
     ),
     ThinQSensorEntityDescription(
+        key=AirConditionerFeatures.PM1,
+        name="PM1",
+        state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.PM1,
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    ),
+    ThinQSensorEntityDescription(
+        key=AirConditionerFeatures.PM10,
+        name="PM10",
+        state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.PM10,
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    ),
+    ThinQSensorEntityDescription(
+        key=AirConditionerFeatures.PM25,
+        name="PM2.5",
+        state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.PM25,
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    ),
+    ThinQSensorEntityDescription(
         key=AirConditionerFeatures.FILTER_MAIN_LIFE,
         name="Filter Remaining Life",
         icon="mdi:air-filter",
@@ -279,7 +289,7 @@ AC_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MINUTES,
     ),
 )
-RANGE_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+RANGE_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=DEFAULT_SENSOR,
         icon=DEFAULT_ICON,
@@ -366,7 +376,7 @@ RANGE_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         unit_fn=lambda x: x.oven_temp_unit,
     ),
 )
-AIR_PURIFIER_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+AIR_PURIFIER_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=AirPurifierFeatures.HUMIDITY,
         name="Current Humidity",
@@ -451,7 +461,7 @@ AIR_PURIFIER_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         },
     ),
 )
-DEHUMIDIFIER_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+DEHUMIDIFIER_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=DehumidifierFeatures.HUMIDITY,
         name="Current Humidity",
@@ -468,7 +478,7 @@ DEHUMIDIFIER_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
 )
-WATER_HEATER_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+WATER_HEATER_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=WaterHeaterFeatures.HOT_WATER_TEMP,
         name="Hot water temperature",
@@ -485,7 +495,14 @@ WATER_HEATER_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfPower.WATT,
     ),
 )
-MICROWAVE_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
+HOOD_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
+    ThinQSensorEntityDescription(
+        key=DEFAULT_SENSOR,
+        icon=DEFAULT_ICON,
+        value_fn=lambda x: x.power_state,
+    ),
+)
+MICROWAVE_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
     ThinQSensorEntityDescription(
         key=DEFAULT_SENSOR,
         icon=DEFAULT_ICON,
@@ -502,6 +519,18 @@ MICROWAVE_SENSORS: Tuple[ThinQSensorEntityDescription, ...] = (
         icon="mdi:inbox-full",
     ),
 )
+
+SENSOR_ENTITIES = {
+    DeviceType.AC: AC_SENSORS,
+    DeviceType.AIR_PURIFIER: AIR_PURIFIER_SENSORS,
+    DeviceType.DEHUMIDIFIER: DEHUMIDIFIER_SENSORS,
+    DeviceType.HOOD: HOOD_SENSORS,
+    DeviceType.MICROWAVE: MICROWAVE_SENSORS,
+    DeviceType.RANGE: RANGE_SENSORS,
+    DeviceType.REFRIGERATOR: REFRIGERATOR_SENSORS,
+    DeviceType.WATER_HEATER: WATER_HEATER_SENSORS,
+    **{dev_type: WASH_DEV_SENSORS for dev_type in WASH_DEVICE_TYPES},
+}
 
 
 def _sensor_exist(
@@ -534,89 +563,13 @@ async def async_setup_entry(
         if not lge_devices:
             return
 
-        lge_sensors = []
-
-        # add WASH devices
-        lge_sensors.extend(
-            [
-                LGEWashDeviceSensor(lge_device, sensor_desc)
-                for sensor_desc in WASH_DEV_SENSORS
-                for lge_device in get_multiple_devices_types(
-                    lge_devices, WASH_DEVICE_TYPES
-                )
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add refrigerators
-        lge_sensors.extend(
-            [
-                LGERefrigeratorSensor(lge_device, sensor_desc)
-                for sensor_desc in REFRIGERATOR_SENSORS
-                for lge_device in lge_devices.get(DeviceType.REFRIGERATOR, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add AC
-        lge_sensors.extend(
-            [
-                LGESensor(lge_device, sensor_desc, LGETempDevice(lge_device))
-                for sensor_desc in AC_SENSORS
-                for lge_device in lge_devices.get(DeviceType.AC, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add ranges
-        lge_sensors.extend(
-            [
-                LGERangeSensor(lge_device, sensor_desc)
-                for sensor_desc in RANGE_SENSORS
-                for lge_device in lge_devices.get(DeviceType.RANGE, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add air purifiers
-        lge_sensors.extend(
-            [
-                LGESensor(lge_device, sensor_desc)
-                for sensor_desc in AIR_PURIFIER_SENSORS
-                for lge_device in lge_devices.get(DeviceType.AIR_PURIFIER, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add dehumidifier
-        lge_sensors.extend(
-            [
-                LGESensor(lge_device, sensor_desc)
-                for sensor_desc in DEHUMIDIFIER_SENSORS
-                for lge_device in lge_devices.get(DeviceType.DEHUMIDIFIER, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add water_heater
-        lge_sensors.extend(
-            [
-                LGESensor(lge_device, sensor_desc, LGETempDevice(lge_device))
-                for sensor_desc in WATER_HEATER_SENSORS
-                for lge_device in lge_devices.get(DeviceType.WATER_HEATER, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
-
-        # add microwave devices
-        lge_sensors.extend(
-            [
-                LGEMicrowaveSensor(lge_device, sensor_desc, LGEBaseDevice(lge_device))
-                for sensor_desc in MICROWAVE_SENSORS
-                for lge_device in lge_devices.get(DeviceType.MICROWAVE, [])
-                if _sensor_exist(lge_device, sensor_desc)
-            ]
-        )
+        lge_sensors = [
+            LGESensor(lge_device, sensor_desc, get_wrapper_device(lge_device, dev_type))
+            for dev_type, sensor_descs in SENSOR_ENTITIES.items()
+            for sensor_desc in sensor_descs
+            for lge_device in lge_devices.get(dev_type, [])
+            if _sensor_exist(lge_device, sensor_desc)
+        ]
 
         async_add_entities(lge_sensors)
 
@@ -719,6 +672,9 @@ class LGESensor(CoordinatorEntity, SensorEntity):
     @property
     def extra_state_attributes(self):
         """Return the optional state attributes."""
+        if self._is_default and self._wrap_device:
+            return self._wrap_device.extra_state_attributes
+
         features = self.entity_description.feature_attributes
         if not (features and self._api.state):
             return None
@@ -756,113 +712,3 @@ class LGESensor(CoordinatorEntity, SensorEntity):
         if self._api.type not in SET_TIME_DEVICE_TYPES:
             raise NotImplementedError()
         await self._api.device.set_time(time_wanted)
-
-
-class LGEWashDeviceSensor(LGESensor):
-    """A sensor to monitor LGE Wash devices"""
-
-    _wrap_device: LGEWashDevice
-
-    def __init__(
-        self,
-        api: LGEDevice,
-        description: ThinQSensorEntityDescription,
-    ):
-        """Initialize the sensor."""
-        super().__init__(api, description, LGEWashDevice(api))
-
-    @property
-    def extra_state_attributes(self):
-        """Return the optional state attributes."""
-        if not self._is_default:
-            return super().extra_state_attributes
-
-        data = {
-            ATTR_RUN_COMPLETED: self._wrap_device.run_completed,
-            ATTR_ERROR_STATE: self._wrap_device.error_state,
-            ATTR_START_TIME: self._wrap_device.start_time,
-            ATTR_END_TIME: self._wrap_device.end_time,
-            ATTR_INITIAL_TIME: self._wrap_device.initial_time,
-            ATTR_REMAIN_TIME: self._wrap_device.remain_time,
-            ATTR_RESERVE_TIME: self._wrap_device.reserve_time,
-            ATTR_CURRENT_COURSE: self._wrap_device.current_course,
-        }
-        features = self._wrap_device.get_features_attributes()
-        data.update(features)
-
-        return data
-
-
-class LGERefrigeratorSensor(LGESensor):
-    """A sensor to monitor LGE Refrigerator devices"""
-
-    _wrap_device: LGERefrigeratorDevice
-
-    def __init__(
-        self,
-        api: LGEDevice,
-        description: ThinQSensorEntityDescription,
-    ):
-        """Initialize the sensor."""
-        super().__init__(api, description, LGERefrigeratorDevice(api))
-
-    @property
-    def extra_state_attributes(self):
-        """Return the optional state attributes."""
-        if not self._is_default:
-            return super().extra_state_attributes
-
-        data = {
-            ATTR_FRIDGE_TEMP: self._wrap_device.temp_fridge,
-            ATTR_FREEZER_TEMP: self._wrap_device.temp_freezer,
-            ATTR_TEMP_UNIT: self._wrap_device.temp_unit,
-            ATTR_DOOR_OPEN: self._wrap_device.dooropen_state,
-        }
-
-        if self._api.state:
-            features = self._wrap_device.get_features_attributes()
-            data.update(features)
-
-        return data
-
-
-class LGERangeSensor(LGESensor):
-    """A sensor to monitor LGE range devices"""
-
-    _wrap_device: LGERangeDevice
-
-    def __init__(
-        self,
-        api: LGEDevice,
-        description: ThinQSensorEntityDescription,
-    ):
-        """Initialize the sensor."""
-        super().__init__(api, description, LGERangeDevice(api))
-
-    @property
-    def extra_state_attributes(self):
-        """Return the optional state attributes."""
-        if not self._is_default:
-            return super().extra_state_attributes
-
-        data = {
-            ATTR_OVEN_LOWER_TARGET_TEMP: self._wrap_device.oven_lower_target_temp,
-            ATTR_OVEN_UPPER_TARGET_TEMP: self._wrap_device.oven_upper_target_temp,
-            ATTR_OVEN_TEMP_UNIT: self._wrap_device.oven_temp_unit,
-        }
-        features = self._wrap_device.get_features_attributes()
-        data.update(features)
-
-        return data
-
-
-class LGEMicrowaveSensor(LGESensor):
-    """A sensor to monitor LGE Microwave devices"""
-
-    @property
-    def extra_state_attributes(self):
-        """Return the optional state attributes."""
-        if not self._is_default:
-            return super().extra_state_attributes
-
-        return self._wrap_device.get_features_attributes()

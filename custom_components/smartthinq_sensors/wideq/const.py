@@ -41,6 +41,9 @@ class AirConditionerFeatures(StrEnum):
     MODE_AIRCLEAN = "mode_airclean"
     MODE_AWHP_SILENT = "mode_awhp_silent"
     MODE_JET = "mode_jet"
+    PM1 = "pm1"
+    PM10 = "pm10"
+    PM25 = "pm25"
     RESERVATION_SLEEP_TIME = "reservation_sleep_time"
     ROOM_TEMP = "room_temperature"
     WATER_IN_TEMP = "water_in_temperature"
@@ -173,3 +176,11 @@ class MicroWaveFeatures(StrEnum):
     SOUND = "sound"
     VENT_SPEED = "vent_speed"
     WEIGHT_UNIT = "weight_unit"
+
+
+class HoodFeatures(StrEnum):
+    """Features for LG Hood devices."""
+
+    LIGHT_MODE = "light_mode"
+    HOOD_STATE = "hood_state"
+    VENT_SPEED = "vent_speed"

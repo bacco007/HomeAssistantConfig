@@ -8,6 +8,7 @@ import asyncio
 import base64
 from copy import deepcopy
 from datetime import datetime
+from enum import Enum
 import json
 import logging
 from numbers import Number
@@ -345,6 +346,15 @@ class Monitor:
         await self.stop()
 
 
+def _remove_duplicated(elem: list) -> list:
+    """Remove duplicated values from a list."""
+    return list(dict.fromkeys(elem))
+
+
+class DeviceNotInitialized(Exception):
+    """Device exception occurred when device is not initialized."""
+
+
 class Device:
     """
     A higher-level interface to a specific device.
@@ -403,8 +413,10 @@ class Device:
         return self._attr_name
 
     @property
-    def model_info(self) -> ModelInfo | None:
+    def model_info(self) -> ModelInfo:
         """Return 'model_info' for this device."""
+        if self._model_info is None:
+            raise DeviceNotInitialized()
         return self._model_info
 
     @property
@@ -471,6 +483,16 @@ class Device:
         key = self._get_state_key(key_name[2])
 
         return [ctrl, cmd, key]
+
+    def _get_property_values(self, prop_key: list | str, prop_enum: Enum) -> list[str]:
+        """Return a list of available values for a specific device property."""
+        key = self._get_state_key(prop_key)
+        if not self.model_info.is_enum_type(key):
+            return []
+        options = self.model_info.value(key).options
+        mapping = _remove_duplicated(list(options.values()))
+        valid_props = [e.value for e in prop_enum]
+        return [prop_enum(o).name for o in mapping if o in valid_props]
 
     async def _set_control(
         self,
@@ -867,7 +889,7 @@ class DeviceStatus:
 
     @property
     def has_data(self) -> bool:
-        """Check if status cointain valid data."""
+        """Check if status contain valid data."""
         return bool(self._data)
 
     @property

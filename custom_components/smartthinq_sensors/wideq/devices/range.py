@@ -45,6 +45,8 @@ class RangeStatus(DeviceStatus):
     :param data: JSON data from the API.
     """
 
+    _device: RangeDevice
+
     def __init__(self, device: RangeDevice, data: dict | None = None):
         """Initialize device status."""
         super().__init__(device, data)
@@ -199,7 +201,7 @@ class RangeStatus(DeviceStatus):
         else:
             return None
         status = self.to_int_or_none(self._data.get(key))
-        if not status:  # 0 means not availabe
+        if not status:  # 0 means not available
             status = None
         return status
 
@@ -214,7 +216,7 @@ class RangeStatus(DeviceStatus):
         else:
             return None
         status = self.to_int_or_none(self._data.get(key))
-        if not status:  # 0 means not availabe
+        if not status:  # 0 means not available
             status = None
         return status
 
@@ -229,7 +231,7 @@ class RangeStatus(DeviceStatus):
         else:
             return None
         status = self.to_int_or_none(self._data.get(key))
-        if not status:  # 0 means not availabe
+        if not status:  # 0 means not available
             status = None
         return self._update_feature(
             RangeFeatures.OVEN_LOWER_CURRENT_TEMP, status, False, allow_none=True
@@ -246,7 +248,7 @@ class RangeStatus(DeviceStatus):
         else:
             return None
         status = self.to_int_or_none(self._data.get(key))
-        if not status:  # 0 means not availabe
+        if not status:  # 0 means not available
             status = None
         return self._update_feature(
             RangeFeatures.OVEN_UPPER_CURRENT_TEMP, status, False, allow_none=True
