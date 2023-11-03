@@ -27,7 +27,7 @@ from homeassistant.core import State, callback
 from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import async_track_state_change
-from homeassistant.util.temperature import convert as convert_temperature
+from .temperature import convert as convert_temperature
 
 from .const import (
     ATTR_SOURCE_INDEX_TPL,
