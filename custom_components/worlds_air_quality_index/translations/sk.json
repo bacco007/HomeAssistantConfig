@@ -1,0 +1,41 @@
+{
+  "config": {
+    "error": {
+      "invalid_token": "Neplatný Token",
+      "unknow_station_id": "WAQI API nepodporuje túto ID stanice",
+      "server_error": "Server error",
+      "server_not_available": "Server nie je dostupný",
+      "invalid_station_name": "Neplatný názov stanice"
+    },
+    "step": {
+      "user": {
+        "title": "Vyberte spôsob pridávania staníc WAQI",
+        "description": "Vyberte si spôsob pridávania stanice WAQI, čo preferujete: pomocou geografickej lokalizácie alebo pomocou ID stanice",
+        "data": {
+          "geographic_localization": "Geografická lokalizácia",
+          "station_id": "ID stanice",
+          "scan_interval": "Interval skenovania aktualizácie stanice"
+        }
+      },
+      "geographic_localization": {
+        "title": "Pridajte stanicu WAQI pomocou grografickej lokalizácie",
+        "description": "Vyplňte svoj WAQI token, zemepisnú šírku a dĺžku svojej stanice alebo domova a voliteľne vlastný názov pre inštanciu služby. WAQI token nájdete tu https://aqicn.org/data-platform/token/",
+        "data": {
+          "token": "Tokenový kľúč účtu World's Air Quality Index",
+          "latitude": "Zemepisná šírka stanice",
+          "longitude": "Zemepisná dĺžka stanice",
+          "name": "Názov služby"
+        }
+      },
+      "station_id": {
+        "title": "Pridajte stanicu WAQI pomocou ID",
+        "description": "Vyplňte svoj WAQI token, ID vašej stanice (bez predpony @) a voliteľne vlastný názov pre inštanciu služby. WAQI token nájdete tuhttps://aqicn.org/data-platform/token/",
+        "data": {
+          "token": "Tokenový kľúč účtu World's Air Quality Index",
+          "id": "ID stanice",
+          "name": "Názov služby"
+        }
+      }
+    }
+  }
+}

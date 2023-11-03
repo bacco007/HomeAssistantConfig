@@ -29,6 +29,7 @@ from homeassistant.const import (
     CONF_NAME,
     CONF_TEMPERATURE_UNIT,
     CONF_TOKEN,
+    STATE_UNAVAILABLE,
     TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
 )
@@ -102,6 +103,9 @@ async def async_setup_entry(
     
     if not "forecast" in scannedData['data']:
         _LOGGER.warning(f"Station {name} doesn't support forecast")
+        scannedDataForecast = None
+    else:
+        scannedDataForecast = scannedData['data']['forecast']['daily']
     scannedDataSensors = scannedData["data"]["iaqi"]
 
     entities = []
@@ -109,6 +113,9 @@ async def async_setup_entry(
     for res in SENSORS:
         if res == "aqi" or res in scannedDataSensors:
             entities.append(WorldsAirQualityIndexSensor(res, requester, tempUnit))
+        elif scannedDataForecast is not None:
+            if res in scannedDataForecast:
+                entities.append(WorldsAirQualityIndexSensor(res, requester, tempUnit))
 
     async_add_entities(entities, update_before_add=True)
 
@@ -175,25 +182,31 @@ class WorldsAirQualityIndexSensor(SensorEntity):
         self._data = self._requester.GetData()
         self._updateLastTime = self._requester.GetUpdateLastTime()
 
+        self._attr_extra_state_attributes = {
+            "StationName": self._requester.GetStationName(),
+            "LastUpdate": self._requester.GetUpdateLastTime()
+        }
+        
         if self._resType == 'aqi':
             if self._data["data"]["aqi"] == "-":
                 _LOGGER.warning("aqi value from json waqi api was undefined ('-' value)")
                 self._state = 0
             else:
                 self._state = int(self._data["data"]["aqi"])
-        elif self._resType == 't':
-            if self._tempUnit == TEMP_FAHRENHEIT:
-                self._state = 9.0 * float(self._data["data"]["iaqi"]['t']["v"]) / 5.0 + 32.0
-            else:
-                self._state = float(self._data["data"]["iaqi"]['t']["v"])
-        else:
-            self._state = float(self._data["data"]["iaqi"][self._resType]["v"])
+                self._attr_extra_state_attributes['dominentpol'] = self._data["data"]["dominentpol"]
 
+        elif self._resType in self._data["data"]["iaqi"]:
+            if self._resType == 't':
+                if self._tempUnit == TEMP_FAHRENHEIT:
+                    self._state = 9.0 * float(self._data["data"]["iaqi"]['t']["v"]) / 5.0 + 32.0
+                else:
+                    self._state = float(self._data["data"]["iaqi"]['t']["v"])
+            else:
+                self._state = float(self._data["data"]["iaqi"][self._resType]["v"])
+        elif "forecast" in self._data['data']:
+            if self._resType in self._data['data']['forecast']['daily']:
+                self._state = STATE_UNAVAILABLE
         
-        self._attr_extra_state_attributes = {
-            "StationName": self._requester.GetStationName(),
-            "LastUpdate": self._requester.GetUpdateLastTime()
-        }
         if "forecast" in self._data['data']:
             if self._resType in self._data['data']['forecast']['daily']:
                 scannedDataForecast = self._data['data']['forecast']['daily'][self._resType]
