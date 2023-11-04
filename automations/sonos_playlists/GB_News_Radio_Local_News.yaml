@@ -1,0 +1,21 @@
+---
+alias: "[Sonos, Playlist] GB News Radio (Local News)"
+description: Play GB News Radio (Local News) on Sonos
+id: GB_News_Radio_Local_News
+trigger:
+  - platform: webhook
+    webhook_id: sonos_GB_News_Radio_Local_News
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "GB News Radio (Local News)"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "GB News Radio (Local News)"

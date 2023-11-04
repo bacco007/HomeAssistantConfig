@@ -1,0 +1,21 @@
+---
+alias: "[Sonos, Playlist] BBC Radio 1 Dance"
+description: Play BBC Radio 1 Dance on Sonos
+id: BBC_Radio_1_Dance
+trigger:
+  - platform: webhook
+    webhook_id: sonos_BBC_Radio_1_Dance
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "BBC Radio 1 Dance"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "BBC Radio 1 Dance"

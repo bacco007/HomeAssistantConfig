@@ -1,0 +1,21 @@
+---
+alias: "[Sonos, Playlist] BBC Radio 3"
+description: Play BBC Radio 3 on Sonos
+id: BBC_Radio_3
+trigger:
+  - platform: webhook
+    webhook_id: sonos_BBC_Radio_3
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "BBC Radio 3"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "BBC Radio 3"
