@@ -188,6 +188,9 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_aflw_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.bayern_munich
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -548,6 +551,13 @@ action:
     target:
       entity_id: calendar.ical_aflw_all_teams
     response_variable: ical_aflw_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 24
+    target:
+      entity_id: calendar.ical_bayern_munich
+    response_variable: ical_bayern_munich
   - variables:
       all_events: >
         {{ ical_formula_1.events + ical_extreme_e.events + ical_nascar_cup_series.events
@@ -569,7 +579,8 @@ action:
         + ical_sydney_swans_vfl.events + ical_sydney_swans_aflw.events
         + ical_toronto_maple_leafs.events + ical_manchester_united_women.events
         + ical_newcastle_knights_nrlw.events + ical_nrlw_all_teams.events
-        + ical_sydney_fc_women.events + ical_sydney_fc.events + ical_aflw_all_teams.events }}
+        + ical_sydney_fc_women.events + ical_sydney_fc.events + ical_aflw_all_teams.events
+        + ical_bayern_munich.events }}
       events: >
         {{ all_events | list }}
 sensor:
