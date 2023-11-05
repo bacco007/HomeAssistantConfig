@@ -5,7 +5,7 @@
   sensor:
     - unique_id: flighttracker_planefinder_aircraft_list
       name: flighttracker_planefinder_aircraft_list
-      icon: mdi:plane
+      icon: mdi:airplane
       value_template: "ADS-B"
       attributes:
         - name: Aircraft

@@ -6,9 +6,9 @@
     "lukas-tr.materialdesignicons-intellisense",
     "oderwat.indent-rainbow",
     "redhat.vscode-yaml",
-    // "usernamehw.errorlens",
+    "usernamehw.errorlens",
     // "vscode-icons-team.vscode-icons",
-    // "ESPHome.esphome-vscode",
+    "ESPHome.esphome-vscode",
     "eamodio.gitlens",
     "esbenp.prettier-vscode",
     "DavidAnson.vscode-markdownlint",
@@ -16,6 +16,7 @@
     // "bierner.lit-html",
     // "runem.lit-plugin",
     "yzhang.markdown-all-in-one",
-    "softwaredotcom.swdc-vscode"
+    "softwaredotcom.swdc-vscode",
+    "netcorext.uuid-generator"
   ]
 }
