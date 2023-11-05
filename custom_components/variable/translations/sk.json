@@ -1,0 +1,141 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "menu_options": {
+          "add_sensor": "Vytvorte premennú snímača",
+          "add_binary_sensor": "Vytvorte binárnu premennú snímača",
+          "add_device_tracker": "Vytvorte premennú sledovania zariadenia (GPS)."
+        }
+      },
+      "add_sensor": {
+        "title": "Premenné+história - Snímač",
+        "data": {
+          "name": "Názov premennej",
+          "variable_id": "ID premennej",
+          "icon": "Ikona",
+          "device_class": "Trieda zariadenia",
+          "restore": "Obnoviť pri reštarte",
+          "force_update": "Vynútiť aktualizáciu",
+          "exclude_from_recorder": "Vylúčiť zo záznamu"
+        },
+        "description": "Vytvorte novú premennú snímača\nPozri [Configuration Options]({component_config_url}) na GitHube pre detaily"
+      },
+      "sensor_page_2": {
+        "title": "Premenné+história - Snímač Strana 2",
+        "data": {
+          "value": "Počiatočná hodnota",
+          "attributes": "Počiatočné atribúty",
+          "state_class": "Trieda stavu",
+          "unit_of_measurement": "Jednotky merania"
+        },
+        "description": "Vytvorte novú stránku premennej snímača 2\n\n**Premenná:&nbsp;{disp_name}**\n**Trieda zariadenia:&nbsp;{device_class}**\n**Typ hodnoty:&nbsp;{value_type}**"
+      },
+      "add_binary_sensor": {
+        "title": "Premenné+história - Binárny snímač",
+        "data": {
+          "name": "Názov premennej",
+          "variable_id": "ID premennej",
+          "icon": "Ikona",
+          "value": "Počiatočná hodnota",
+          "attributes": "Počiatočné atribúty",
+          "device_class": "Trieda zariadenia",
+          "restore": "Obnoviť pri reštarte",
+          "force_update": "Vynútiť aktualizáciu",
+          "exclude_from_recorder": "Vylúčiť zo záznamu"
+        },
+        "description": "Vytvorte novú premennú binárneho snímača\nPozri [Configuration Options]({component_config_url}) na GitHube pre detaily"
+      },
+      "add_device_tracker": {
+        "title": "Premenné+história - Sledovanie zariadení (GPS)",
+        "data": {
+          "name": "Názov premennej",
+          "variable_id": "ID premennej",
+          "icon": "Ikona",
+          "latitude": "Počiatočná zemepisná šírka",
+          "longitude": "Počiatočná zemepisná dĺžka",
+          "location_name": "Názov počiatočného miesta",
+          "gps_accuracy": "Počiatočná presnosť GPS",
+          "battery_level": "Počiatočná úroveň nabitia batérie",
+          "attributes": "Počiatočné atribúty",
+          "restore": "Obnoviť pri reštarte",
+          "force_update": "Vynútiť aktualizáciu",
+          "exclude_from_recorder": "Vylúčiť zo záznamu"
+        },
+        "description": "Vytvorte novú premennú sledovania zariadenia (GPS)\nPozri [Configuration Options]({component_config_url}) na GitHube pre detaily"
+      }
+    },
+    "error": {
+      "invalid_value_type": "Zadaná hodnota nie je kompatibilná s vybratou hodnotou device_class: {device_class}. Očakávané {value_type}.",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {},
+      "sensor_options": {
+        "title": "Premenné+história - snímač",
+        "data": {
+          "device_class": "Trieda zariadenia",
+          "restore": "Obnoviť pri reštarte",
+          "force_update": "Vynútiť aktualizáciu",
+          "exclude_from_recorder": "Vylúčiť zo záznamu"
+        },
+        "description": "**Aktualizácia snímača:&nbsp;{disp_name}**\nPozri [Configuration Options]({component_config_url}) na GitHube pre detaily"
+      },
+      "sensor_options_page_2": {
+        "title": "Premenné+história - snímač Strana 2",
+        "data": {
+          "value": "Hodnota (zvyčajne užitočná iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "attributes": "Atribúty (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "state_class": "Trieda stavu",
+          "unit_of_measurement": "Jednotky merania"
+        },
+        "description": "Aktualizácia premennej snímača Strana 2\n\n**Premenná:&nbsp;{disp_name}**\n**Trieda zariadenia:&nbsp;{device_class}**\n**Typ hodnoty:&nbsp;{value_type}**"
+      },
+      "binary_sensor_options": {
+        "title": "Premenné+história - binárny snímač",
+        "data": {
+          "value": "Hodnota (zvyčajne užitočná iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "attributes": "Atribúty (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "device_class": "Trieda zariadenia",
+          "restore": "Obnoviť pri reštarte",
+          "force_update": "Vynútiť aktualizáciu",
+          "exclude_from_recorder": "Vylúčiť zo záznamu"
+        },
+        "description": "**Aktualizácia binárneho snímača:&nbsp;{disp_name}**\nPozri [Configuration Options]({component_config_url}) na GitHube pre detaily"
+      },
+      "device_tracker_options": {
+        "title": "Premenné+história - Sledovanie zariadení (GPS)",
+        "data": {
+          "latitude": "Zemepisná šírka (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "longitude": "Zemepisná dĺžka (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "location_name": "Názov miesta (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "gps_accuracy": "Presnosť GPS (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "battery_level": "Úroveň nabitia batérie (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "attributes": "Atribúty (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "restore": "Obnoviť pri reštarte",
+          "force_update": "Vynútiť aktualizáciu",
+          "exclude_from_recorder": "Vylúčiť zo záznamu"
+        },
+        "description": "**Aktualizácia nástroja na sledovanie zariadenia (GPS):&nbsp;{disp_name}**\nPozri [Configuration Options]({component_config_url}) na GitHube pre detaily"
+      }
+    },
+    "abort": {
+      "yaml_variable": "Tu nie je možné zmeniť možnosti pre premenné vytvorené pomocou YAML.\n\nAk chcete na správu tejto premennej použiť používateľské rozhranie, budete musieť:\n1. Odstráňte ho z YAML\n2. Reštartujte domáceho asistenta\n3. Manuálne ho znova vytvorte v Home Assistant, Integrácie, + Pridať integráciu.",
+      "yaml_update_error": "Nie je možné aktualizovať premennú snímača YAML"
+    },
+    "error": {
+      "invalid_value_type": "Zadaná hodnota nie je kompatibilná s vybratou triedou zariadenia: {device_class}. Očakávané {value_type}.",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    }
+  },
+  "selector": {
+    "boolean_options": {
+      "options": {
+        "true": "true",
+        "false": "false"
+      }
+    }
+  }
+}
