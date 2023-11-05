@@ -1,0 +1,51 @@
+---
+type: custom:fold-entity-row
+head:
+  type: custom:template-entity-row
+  name: Sheffield Shield
+  icon: mdi:cricket
+  state: ''
+padding: 0
+entities:
+  - type: custom:hui-element
+    card_type: custom:flex-table-card
+    css:
+      table+: 'padding-left: 10px; padding-right: 10px'
+      tbody tr:hover: 'background-color: green!important; color:white!important;'
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            overflow: auto;
+            box-shadow: none !important;
+            }
+    entities:
+      include: sensor.scoreboard_sheffshield
+    sort_by: entries+
+    columns:
+      - hidden: true
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'R').value
+      - name: Team
+        data: entries
+        modify: >-
+          '<div><img src="' + x.team.logos[0].href + '" style="height:
+          20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+      - name: M
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
+      - name: W
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+      - name: L
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+      - name: D
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'D').displayValue
+      - name: N/R
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
+      - name: PT
+        data: entries
+        modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue

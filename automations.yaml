@@ -81,3 +81,32 @@
       qos: 0
       retain: false
   mode: single
+- id: '1699144146961'
+  alias: '[Test] Show media player when playing'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.currently_playing
+    to: playing
+  - platform: state
+    entity_id:
+    - media_player.nesthub4ce4
+    to:
+    enabled: false
+  - platform: state
+    entity_id:
+    - media_player.currently_playing
+    attribute: media_title
+    enabled: false
+  condition:
+  - condition: state
+    entity_id: media_player.currently_playing
+    state: playing
+  action:
+  - service: cast.show_lovelace_view
+    data:
+      entity_id: media_player.nesthub4ce4
+      dashboard_path: tbsh-dashboard
+      view_path: cast-media
+  mode: single

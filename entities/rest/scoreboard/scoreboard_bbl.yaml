@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/cricket/8044/standings?type=0&level=0
+sensor:
+  name: scoreboard_bbl
+  value_template: "{{ now() }}"
+  json_attributes_path: "$['children'][0]['standings']"
+  json_attributes:
+    - entries
+scan_interval: 3600
