@@ -72,3 +72,39 @@ sensor:
       device_class: precipitation
       obsDate: >-
         {{ as_datetime(state_attr('sensor.wunder_raw_nicko', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_steve_temperature
+    unique_id: wunder_steve_temperature
+    unit_of_measurement: "°C"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_steve', 'observations')[0]['metric']['temp']}}
+    attributes:
+      device_class: temperature
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_steve', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_steve_humidity
+    unique_id: wunder_steve_humidity
+    unit_of_measurement: "%"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_steve', 'observations')[0]['humidity']}}
+    attributes:
+      device_class: humidity
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_steve', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_steve_pressure
+    unique_id: wunder_steve_pressure
+    unit_of_measurement: "hPa"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_steve', 'observations')[0]['metric']['pressure']}}
+    attributes:
+      device_class: pressure
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_steve', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_steve_rainfall
+    unique_id: wunder_steve_rainfall
+    unit_of_measurement: "mm"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_steve', 'observations')[0]['metric']['precipTotal']}}
+    attributes:
+      device_class: precipitation
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_steve', 'observations')[0]['obsTimeUtc'])}}

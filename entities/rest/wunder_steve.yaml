@@ -1,0 +1,9 @@
+---
+resource: !secret wunder_steve_url
+sensor:
+  name: wunder_raw_steve
+  value_template: >
+    {{ value_json.observations[0].stationID }}
+  json_attributes:
+    - observations
+scan_interval: 600
