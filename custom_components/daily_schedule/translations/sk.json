@@ -1,0 +1,47 @@
+{
+    "config": {
+        "error": {
+            "duplicated": "Názov by mal byť jedinečný.",
+            "overlap": "Časové rozsahy sa nemôžu prekrývať. Znova zadajte nový časový rozsah.",
+            "length": "Dĺžka časového rozsahu by mala byť kladná. Znova zadajte nový časový rozsah."
+        },
+        "step": {
+            "user": {
+                "title": "Pridajte snímač denného plánu",
+                "description": "Vytvorte binárny senzor, ktorý sa zapne podľa denného plánu.",
+                "data": {
+                    "name": "Názov",
+                    "add_range": "Pridajte časový rozsah",
+                    "utc": "Čas UTC namiesto miestneho času (ak si nie ste istý, nepoužívajte ho)"
+                }
+            },
+            "time_range": {
+                "title": "Pridať časový rozsah",
+                "description": "Nastavte časový rozsah, kedy bude senzor zapnutý.",
+                "data": {
+                    "from": "Od",
+                    "to": "Do",
+                    "add_range": "Pridajte ďalší časový rozsah"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "overlap": "Časové rozsahy sa nemôžu prekrývať. Znova zadajte nový časový rozsah.",
+            "length": "Dĺžka časového rozsahu by mala byť kladná. Znova zadajte nový časový rozsah."
+        },
+        "step": {
+            "init": {
+                "title": "Upraviť snímač denného plánu",
+                "description": "Upravte časové rozsahy v dennom pláne.",
+                "data": {
+                    "add_range": "Pridajte nový časový rozsah",
+                    "from": "Od (nový)",
+                    "to": "Do (nový)",
+                    "utc": "Čas UTC namiesto miestneho času (ak si nie ste istý, nepoužívajte ho)"
+                }
+            }
+        }
+    }
+}
