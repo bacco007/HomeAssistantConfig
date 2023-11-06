@@ -19,9 +19,9 @@ var compare = function(a, b) {
 			var b1 = b.split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
         return (a1 - b1);
 	}   else if (isNaN(a))
-        return a.toString().localeCompare(b);
+        return a.toString().localeCompare(b, navigator.language);
     else if (isNaN(b))
-        return -1 * b.toString().localeCompare(a);
+        return -1 * b.toString().localeCompare(a, navigator.language);
 	else
         return parseFloat(a) - parseFloat(b);
 }
@@ -55,7 +55,7 @@ class CellFormatters {
         this.failed = false;
     }
     number(data) {
-        return parseFloat(data) || null;
+        return parseFloat(data);
     }
     full_datetime(data) {
         return Date.parse(data);
@@ -98,15 +98,17 @@ class CellFormatters {
 /** flex-table data representation and keeper */
 class DataTable {
     constructor(cfg) {
-        this.cols = cfg.columns;
         this.cfg = cfg;
+        this.sort_by = cfg.sort_by;
 
-        this.col_ids = this.cols.map(col => col.prop || col.attr || col.attr_as_list);
+        // Provide default column name option if not supplied
+        this.cols = cfg.columns.map((col, idx) => {
+            return { name: col.name || `Col${idx}`, ...col }
+            });
 
         this.headers = this.cols.filter(col => !col.hidden).map(
             (col, idx) => new Object({
-                // if no 'col.name' use 'col_ids[idx]' only if there is no col.icon set!
-                name: col.name || ((!col.icon) ? this.col_ids[idx] : ""),
+                name: col.name,
                 icon: col.icon || null
             }));
 
@@ -126,10 +128,10 @@ class DataTable {
     }
 
     get_rows() {
-        // sorting is allowed asc/desc for one column
-        if (this.cfg.sort_by) {
-            let sort_cols = listify(this.cfg.sort_by);
-            
+        // sorting is allowed asc/desc for multiple columns
+        if (this.sort_by) {
+            let sort_cols = listify(this.sort_by);
+
             let sort_conf = sort_cols.map((sort_col) => {
                 let out = { dir: 1, col: sort_col, idx: null };
                 if (["-", "+"].includes(sort_col.slice(-1))) {
@@ -140,7 +142,7 @@ class DataTable {
                 // DEPRECATION CHANGES ALSO TO BE DONE HERE:
                 // determine col-by-idx to be sorted with...
                 out.idx = this.cols.findIndex((col) =>
-                    ["id", "attr", "prop", "attr_as_list", "data"].some(attr =>
+                    ["id", "attr", "prop", "attr_as_list", "data", "name"].some(attr =>
                         attr in col && out.col == col[attr]));
                 return out;
             });
@@ -172,6 +174,15 @@ class DataTable {
             this.rows = this.rows.slice(0, this.cfg.max_rows);
 
         return this.rows;
+    }
+
+    updateSortBy(idx) {
+        let new_sort = this.headers[idx].name;
+        if (this.sort_by && new_sort === this.sort_by.slice(0, -1)) {
+            this.sort_by = new_sort + (this.sort_by.slice(-1) === "-" ? "+" : "-");
+        } else {
+            this.sort_by = new_sort + "+";
+        }
     }
 }
 
@@ -368,13 +379,7 @@ class DataRow {
                 raw_content = raw_content.map((obj) => String(obj)).join(delim);
             else
                 raw_content = raw_content[0];
-
-            let fmt = new CellFormatters();
-            if (col.fmt) {
-                raw_content = fmt[col.fmt](raw_content);
-                if (fmt.failed)
-                    raw_content = null;
-            }
+            
             return ([null, undefined].every(x => raw_content !== x)) ? raw_content : new Array();
         });
         return null;
@@ -386,6 +391,14 @@ class DataRow {
         this.data = this.raw_data.map((raw, idx) => {
             let x = raw;
             let cfg = col_cfgs[idx];
+						
+						let fmt = new CellFormatters();
+            if (cfg.fmt) {
+                x = fmt[cfg.fmt](x);
+                if (fmt.failed)
+                   x = null;
+            }
+
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
@@ -420,6 +433,7 @@ class FlexTableCard extends HTMLElement {
 
     // Used to detect changes requiring a table refresh.
     #old_last_updated = "";
+    #old_rowcount = 0;
 
     _getRegEx(pats, invert=false) {
         // compile and convert wildcardish-regex to real RegExp
@@ -461,6 +475,14 @@ class FlexTableCard extends HTMLElement {
 
     setConfig(config) {
         // get & keep card-config and hass-interface
+        if (!config.entities) {
+            throw new Error('Please provide the "entities" option as a list.');
+        }
+
+        if (!config.columns) {
+            throw new Error('Please provide the "columns" option as a list.');
+        }
+
         const root = this.shadowRoot;
         if (root.lastChild)
             root.removeChild(root.lastChild);
@@ -487,6 +509,12 @@ class FlexTableCard extends HTMLElement {
             "th.center":                "text-align: center; ",
             "tr td.right":              "text-align: right; ",
             "th.right":                 "text-align: right; ",
+            ".headerSortDown::after, .headerSortUp::after":
+                                        "content: ''; position: relative; left: 2px; border: 6px solid transparent; ",
+            ".headerSortDown::after":   "top: 12px; border-top-color: var(--primary-text-color); ",
+            ".headerSortUp::after":     "bottom: 12px; border-bottom-color: var(--primary-text-color); ",
+            ".headerSortDown, .headerSortUp":
+                                        "text-decoration: underline; ",
             "tbody tr:nth-child(odd)":  "background-color: var(--table-row-background-color); ",
             "tbody tr:nth-child(even)": "background-color: var(--table-row-alternative-background-color); ",
             "th ha-icon":               "height: 1em; vertical-align: top; "
@@ -512,7 +540,7 @@ class FlexTableCard extends HTMLElement {
 
         // temporary for generated header html stuff
         let my_headers = this.tbl.headers.map((obj, idx) => new Object({
-            th_html_begin: `<th class="${cfg.columns[idx].align || 'left'}">`,
+            th_html_begin: `<th class="${cfg.columns[idx].align || 'left'}" id="${obj.name}">`,
             th_html_end: `${obj.name}</th>`,
             icon_html: ((obj.icon) ? `<ha-icon id='icon' icon='${obj.icon}'></ha-icon>` : "")
         }));
@@ -535,6 +563,28 @@ class FlexTableCard extends HTMLElement {
         card.appendChild(content);
         // append card to _root_ node...
         root.appendChild(card);
+
+        // add sorting click handler to header elements
+        this.tbl.headers.map((obj, idx) => {
+            root.getElementById(obj.name).onclick = (click) => {
+                // remove previous sort by
+                this.tbl.headers.map((obj, idx) => {
+                    root.getElementById(obj.name).classList.remove("headerSortDown");
+                    root.getElementById(obj.name).classList.remove("headerSortUp");
+                });
+                this.tbl.updateSortBy(idx);
+                if (this.tbl.sort_by.indexOf("+") != -1) {
+                    root.getElementById(obj.name).classList.add("headerSortUp");
+                } else {
+                    root.getElementById(obj.name).classList.add("headerSortDown");
+                }
+                this._updateContent(
+                    root.getElementById("flextbl"),
+                    this.tbl.get_rows()
+                );
+            };
+        });
+
         this._config = cfg;
     }
 
@@ -570,10 +620,14 @@ class FlexTableCard extends HTMLElement {
 
         // Check for changes requiring a table refresh.
         // Return if no changes detected.
-        let last_updated_arr = entities.map(a => a.last_updated);
-        let max = last_updated_arr.sort().slice(-1)[0];
-        if (max == this.#old_last_updated) return;
-        this.#old_last_updated = max;
+        let rowcount = entities.length;
+        if (rowcount == this.#old_rowcount) {
+            let last_updated_arr = entities.map(a => a.last_updated);
+            let max = last_updated_arr.sort().slice(-1)[0];
+            if (max == this.#old_last_updated) return;
+            this.#old_last_updated = max;
+        }
+        this.#old_rowcount = rowcount;
 
         // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
         // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
@@ -608,3 +662,12 @@ class FlexTableCard extends HTMLElement {
 
 customElements.define('flex-table-card', FlexTableCard);
 
+
+window.customCards = window.customCards || [];
+window.customCards.push({
+    type: "flex-table-card",
+    name: "Flex Table Card",
+    description: "The Flex Table card gives you the ability to visualize tabular data." // optional
+});
+
+console.info(`%c FLEX-TABLE-CARD %c Version ${VERSION} `, "font-weight: bold; color: #000; background: #aeb", "font-weight: bold; color: #000; background: #ddd");
