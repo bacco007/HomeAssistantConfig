@@ -20,6 +20,7 @@ from homeassistant.helpers.schema_config_entry_flow import (
 from . import const, create_holidays
 
 supported_countries: dict = holidays.list_supported_countries()
+localised_countries: dict = holidays.list_localized_countries()
 sorted_countries: list = sorted([holiday for holiday in supported_countries])
 country_codes = [selector.SelectOptionDict(value=c, label=c) for c in sorted_countries]
 
@@ -27,14 +28,24 @@ country_codes = [selector.SelectOptionDict(value=c, label=c) for c in sorted_cou
 @callback
 async def choose_second_step(options: Dict[str, Any]) -> str:
     """Return next step_id for options flow."""
-    subdivs = supported_countries[options.get(const.CONF_COUNTRY)]
-    if subdivs:
+    country = options.get(const.CONF_COUNTRY)
+    subdivs = supported_countries[country]
+    languages = localised_countries.get(country, "")
+    if subdivs or languages:
         # If country was changed, remove subdivs for the wrong country
-        if const.CONF_SUBDIV in options and options[const.CONF_SUBDIV] not in subdivs:
+        if const.CONF_SUBDIV in options and (
+            not subdivs or options[const.CONF_SUBDIV] not in subdivs
+        ):
             del options[const.CONF_SUBDIV]
+        if const.CONF_LANGUAGES in options and (
+            not languages or options[const.CONF_LANGUAGES] not in languages
+        ):
+            del options[const.CONF_LANGUAGES]
         return "subdiv"
     if const.CONF_SUBDIV in options:
         del options[const.CONF_SUBDIV]
+    if const.CONF_LANGUAGES in options:
+        del options[const.CONF_LANGUAGES]
     return await choose_third_step(options)
 
 
@@ -49,6 +60,7 @@ async def choose_third_step(options: Dict[str, Any]) -> str:
             years,
             options.get(const.CONF_COUNTRY, ""),
             options.get(const.CONF_SUBDIV, ""),
+            options.get(const.CONF_LANGUAGES, ""),
             False,
         )
         holiday_names = list(dict.fromkeys(hol.values()))
@@ -135,17 +147,25 @@ async def subdiv_config_schema(
     handler: SchemaConfigFlowHandler | SchemaOptionsFlowHandler,
 ) -> vol.Schema:
     """Second step."""
-    subdivs = [
-        selector.SelectOptionDict(value=s, label=s)
-        for s in supported_countries[handler.options.get(const.CONF_COUNTRY)]
-    ]
-    return vol.Schema(
-        {
-            optional(const.CONF_SUBDIV, handler.options): selector.SelectSelector(
-                selector.SelectSelectorConfig(options=subdivs)
-            ),
-        }
-    )
+    country = handler.options.get(const.CONF_COUNTRY)
+    options = {}
+    if country in supported_countries:
+        subdivs = [
+            selector.SelectOptionDict(value=s, label=s)
+            for s in supported_countries[handler.options.get(const.CONF_COUNTRY)]
+        ]
+        options[optional(const.CONF_SUBDIV, handler.options)] = selector.SelectSelector(
+            selector.SelectSelectorConfig(options=subdivs)
+        )
+    if country in localised_countries:
+        languages = [
+            selector.SelectOptionDict(value=s, label=s)
+            for s in localised_countries[handler.options.get(const.CONF_COUNTRY)]
+        ]
+        options[
+            optional(const.CONF_LANGUAGES, handler.options)
+        ] = selector.SelectSelector(selector.SelectSelectorConfig(options=languages))
+    return vol.Schema(options)
 
 
 async def pop_config_schema(
@@ -158,6 +178,7 @@ async def pop_config_schema(
         years,
         handler.options.get(const.CONF_COUNTRY, ""),
         handler.options.get(const.CONF_SUBDIV, ""),
+        handler.options.get(const.CONF_LANGUAGES, ""),
         False,
     )
     holiday_names = sorted(list(dict.fromkeys(hol.values())))

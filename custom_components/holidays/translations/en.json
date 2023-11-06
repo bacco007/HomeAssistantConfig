@@ -17,7 +17,8 @@
                 "title": "Holidays - (1½/2)",
                 "description": "More info on https://github.com/bruxy70/Holidays",
                 "data": {
-                    "subdiv": "Holidays - subdividion"
+                    "subdiv": "Holidays - subdividion",
+                    "languages": "Holidays - language"
                 }
             },
             "pop": {
@@ -53,7 +54,8 @@
                 "title": "Holidays - (1½/2)",
                 "description": "More info on https://github.com/bruxy70/Holidays",
                 "data": {
-                    "subdiv": "Holidays - subdividion"
+                    "subdiv": "Holidays - subdividion",
+                    "languages": "Holidays - language"
                 }
             },
             "pop": {

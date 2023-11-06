@@ -17,7 +17,8 @@
                 "title": "Holidays - (1½/2)",
                 "description": "Více na https://github.com/bruxy70/Holidays",
                 "data": {
-                    "subdiv": "Státní svátky - subdiv"
+                    "subdiv": "Státní svátky - subdiv",
+                    "languages": "Státní svátky - jazyk"
                 }
             },
             "pop": {
@@ -53,7 +54,8 @@
                 "title": "Holidays - (1½/2)",
                 "description": "Více na https://github.com/bruxy70/Holidays",
                 "data": {
-                    "subdiv": "Státní svátky - subdiv"
+                    "subdiv": "Státní svátky - subdiv",
+                    "languages": "Státní svátky - jazyk"
                 }
             },
             "pop": {

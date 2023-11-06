@@ -27,6 +27,7 @@ CONF_HOLIDAY_POP_NAMED = "holiday_pop_named"
 CONF_PROV = "prov"  # obsolete
 CONF_STATE = "state"  # obsolete
 CONF_SUBDIV = "subdiv"  # Subdivision - replaces state and prov
+CONF_LANGUAGES = "languages"
 CONF_OBSERVED = "observed"
 CONF_CALENDARS = "calendars"
 
