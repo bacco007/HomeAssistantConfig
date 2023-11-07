@@ -215,7 +215,6 @@ layout:
   font:
     family: Roboto,Noto,sans-serif
     color: $fn ({css_vars}) => css_vars['primary-text-color']
-  
   grid:
     rows: 6
     columns: 1
