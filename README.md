@@ -587,6 +587,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Custom Components List</summary>
 
 ### Integrations
+
 - [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Astroweather](https://github.com/mawinkler/astroweather)
@@ -720,6 +721,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap)
 
 ### Themes
+
 - [Animated Weather Card](https://github.com/wowgamr/animated-weather-card)
 - [Metrology   Metro + Fluent + Windows Themes   By Mmak.Es](https://github.com/Madelena/Metrology-for-Hass)
 - [Noctis](https://github.com/aFFekopp/noctis)
@@ -729,16 +731,17 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
-
-
 ---
 
 ## Screenshots
 
 ![Screenshot - Home](./.assets/home.png?raw=True)
+![Screenshot - Devices](./.assets/devices.png?raw=True)
 ![Screenshot - Home Assistant](./.assets/homeassistant.png?raw=True)
 ![Screenshot - Sports](./.assets/sports.png?raw=True)
+![Screenshot - Solar](./.assets/solar.png?raw=True)
 ![Screenshot - Untappd](./.assets/untappd.png?raw=True)
+![Screenshot - Weather](./.assets/weather.png?raw=True)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -749,6 +752,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
+
 - Advanced SSH & Web Terminal (15.0.7)
 - Cloudflared (4.2.5)
 - EMQX (0.2.10)
