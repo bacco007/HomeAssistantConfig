@@ -25,6 +25,653 @@ cards:
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
+          name: Temperature
+          icon: mdi:thermometer-check
+          state: ''
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 24
+            time_offset: |-
+              $fn () =>  {
+                now = new Date();
+                tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0,0,0,0);                                           // midnight
+                HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+                return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+              }
+            entities:
+              - entity: sensor.weather_temperature
+                name: Air Temp
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 2
+                  color: '#3D82FF'
+                  shape: spline
+              - entity: sensor.st_00056115_wet_bulb_temperature
+                name: Wet Bulb
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 3
+                  color: '#8F3BB8'
+                  shape: spline
+              - entity: sensor.weather_dew_point
+                name: Dew Point
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 1.5
+                  color: '#cc32ff'
+                  shape: spline
+              - entity: sensor.weather_temperature_feels_like
+                name: Feels Like
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 1.5
+                  color: orange
+                  shape: spline
+
+            refresh_interval: auto
+            layout:
+              showlegend: true
+              height: 400
+              margin:
+                autoexpand: true
+                l: 30
+                r: 20
+              xaxis:
+                showline: true
+                tickformat: '%a %H'
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ''
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Barometric Pressure
+          icon: mdi:gauge
+          state: ''
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 24
+            time_offset: |-
+              $fn () =>  {
+                now = new Date();
+                tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0,0,0,0);                                           // midnight
+                HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+                return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+              }
+            entities:
+              - entity: sensor.weather_barometric_pressure
+                name: Pressure
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 2
+                  color: "#3D82FF"
+                  shape: spline
+              - entity: sensor.barometric_pressure_24h_spread
+                name: 24hr Spread
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 2
+                  color: "#B6B8BA"
+                  shape: spline
+            refresh_interval: auto
+            layout:
+              showlegend: true
+              height: 400
+              margin:
+                autoexpand: true
+                l: 30
+                r: 20
+              xaxis:
+                showline: true
+                tickformat: '%a %H'
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ''
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Humidity
+          icon: mdi:cloud-percent
+          state: ''
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 24
+            time_offset: |-
+              $fn () =>  {
+                now = new Date();
+                tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0,0,0,0);                                           // midnight
+                HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+                return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+              }
+            entities:
+              - entity: sensor.weather_humidity
+                name: Humidity
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 2
+                  color: "#B6B8BA"
+                  shape: spline
+
+            refresh_interval: auto
+            layout:
+              showlegend: true
+              height: 400
+              margin:
+                autoexpand: true
+                l: 30
+                r: 20
+              xaxis:
+                showline: true
+                tickformat: '%a %H'
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ''
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Temperature - Airport
+          icon: mdi:thermometer-alert
+          state: ''
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 24
+            time_offset: |-
+              $fn ({ getFromConfig }) => {
+                const ms_to_show = getFromConfig('hours_to_show') * 60 * 60 * 1000;
+                const now_utc = Date.now() - new Date().getTimezoneOffset() * 60 * 1000;
+                return ms_to_show - now_utc % ms_to_show + 'ms'
+              }
+            entities:
+              - entity: sensor.tamworth_airport_temp
+                yaxis: y1
+                legendgroup: 1
+                name: Temp Today
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                line:
+                  width: 3
+                  color: rgba(255,155,255, 0.8)
+                  shape: spline
+              - entity: sensor.tamworth_airport_temp
+                yaxis: y1
+                legendgroup: 2
+                name: Temp Yesterday
+                connectgaps: true
+                time_offset: 1d
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                line:
+                  width: 1
+                  color: rgba(255,155,255, 0.5)
+                  shape: spline
+              - entity: sensor.tamworth_airport_temp_feels_like
+                yaxis: y1
+                legendgroup: 1
+                name: Feels Like Temp Today
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                line:
+                  width: 3
+                  dash: dashdot
+                  color: rgba(155,255,255, 0.8)
+                  shape: spline
+              - entity: sensor.tamworth_airport_temp_feels_like
+                yaxis: y1
+                legendgroup: 2
+                name: Feels Like Temp Yesterday
+                connectgaps: true
+                time_offset: 1d
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                line:
+                  width: 1
+                  dash: dashdot
+                  color: rgba(155,255,255, 0.5)
+                  shape: spline
+            layout:
+              height: 300
+              dragmode: false
+              margin:
+                autoexpand: true
+                l: 35
+                r: 20
+              grid:
+                rows: 1
+                columns: 1
+                roworder: top to bottom
+              xaxis:
+                showline: true
+                autorange: true
+                tickformat: "%H:%M"
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                zeroline: true
+                showgrid: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+                title:
+                  text:
+                  font:
+                    family: Roboto
+                    size: 12
+                    color: rgb(204,204,204)
+            config:
+              scrollZoom: false
+            defaults:
+              yaxes:
+                side: left
+                overlaying: "y"
+                visible: true
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Rainfall - Airport
+          icon: mdi:water-alert-outline
+          state: ''
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 24
+            time_offset: |-
+              $fn ({ getFromConfig }) => {
+                const ms_to_show = getFromConfig('hours_to_show') * 60 * 60 * 1000;
+                const now_utc = Date.now() - new Date().getTimezoneOffset() * 60 * 1000;
+                return ms_to_show - now_utc % ms_to_show + 'ms'
+              }
+            entities:
+              - entity: sensor.tamworth_airport_rain_since_9am
+                yaxis: y1
+                legendgroup: 1
+                name: Rain Today
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 5m
+                line:
+                  width: 3
+                  color: rgba(128,128,255, 0.8)
+                  shape: spline
+
+              - entity: sensor.tamworth_airport_rain_since_9am
+                yaxis: y1
+                legendgroup: 2
+                name: Rain Yesterday
+                connectgaps: true
+                time_offset: 1d
+                filters:
+                  - force_numeric
+                  - resample: 5m
+                line:
+                  width: 1
+                  color: rgba(128,128,255, 0.8)
+                  shape: spline
+
+            layout:
+              height: 300
+              dragmode: false
+              margin:
+                autoexpand: true
+                l: 35
+                r: 20
+              grid:
+                rows: 1
+                columns: 1
+                roworder: top to bottom
+              xaxis:
+                showline: true
+                autorange: true
+                tickformat: "%H:%M"
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                zeroline: true
+                showgrid: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+                title:
+                  text:
+                  font:
+                    family: Roboto
+                    size: 12
+                    color: rgb(204,204,204)
+            config:
+              scrollZoom: false
+            defaults:
+              yaxes:
+                side: left
+                overlaying: "y"
+                visible: true
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Temperature - Indoor Comparison
+          icon: mdi:thermometer-alert
+          state: ''
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            hours_to_show: 48
+            time_offset: |-
+              $fn () =>  {
+                now = new Date();
+                tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0,0,0,0);                                           // midnight
+                HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+                return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+              }
+            entities:
+              - entity: sensor.tamworth_airport_temp
+                name: Airport
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 0.5
+                  color: lightgray
+                  shape: spline
+              - entity: sensor.weather_temperature
+                name: Outside
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 2
+                  color: goldenrod
+                  shape: spline
+              - entity: sensor.z2m_bedroom_climate_temperature
+                name: Bedroom
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 1.5
+                  color: hotpink
+                  shape: spline
+              - entity: sensor.z2m_office_climate_temperature
+                name: Office
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 1.5
+                  color: orange
+                  shape: spline
+              - entity: sensor.z2m_lounge_climate_temperature
+                name: Lounge
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 1.5
+                  color: green
+                  shape: spline
+              - entity: sensor.indoor_average_temperature
+                name: Indoor Avg
+                connectgaps: true
+                show_value: true
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.1f}</b>
+                line:
+                  width: 2
+                  dash: dashdot
+                  color: yellow
+                  shape: spline
+            refresh_interval: auto
+            layout:
+              showlegend: true
+              height: 400
+              margin:
+                autoexpand: true
+                l: 30
+                r: 20
+              xaxis:
+                showline: true
+                tickformat: "%a %H"
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
           name: Temperature Comparison, the lads
           icon: mdi:thermometer-check
           state: ''

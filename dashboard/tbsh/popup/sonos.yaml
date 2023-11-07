@@ -15,7 +15,7 @@ browser_mod:
         grid-template-columns: auto
         grid-template-rows: 1fr
         grid-template-areas: |
-              "col1"
+          "col1"
       cards:
         - type: custom:tabbed-card
           view_layout:
@@ -65,7 +65,6 @@ browser_mod:
                   - Local Media
                   - My Bad Playlist
 
-
             - attributes:
                 label: Favourites
               card:
@@ -95,7 +94,6 @@ browser_mod:
                 mediaBrowserTitlesToIgnore:
                   - Local Media
                   - My Bad Playlist
-
 
             - attributes:
                 label: Devices

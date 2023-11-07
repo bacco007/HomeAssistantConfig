@@ -1,0 +1,21 @@
+---
+platform: gtfs_rt
+trip_update_url: https://api.transport.nsw.gov.au/v1/gtfs/realtime/sydneytrains
+vehicle_position_url: https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/sydneytrains
+api_key: !secret tfnsw_apikey2
+departures:
+  - name: Xplorer to Tamworth (Sydney Trains)
+    route: "CTY_NW1b"
+    stopid: "2340108"
+    icon: mdi:train
+    service_type: train
+  - name: Xplorer to Tamworth 2 (Sydney Trains)
+    route: "CTY_NW1d"
+    stopid: "2340108"
+    icon: mdi:train
+    service_type: train
+  - name: Xplorer to Sydney (Sydney Trains)
+    route: "CTY_NW2b"
+    stopid: "2340108"
+    icon: mdi:train
+    service_type: train

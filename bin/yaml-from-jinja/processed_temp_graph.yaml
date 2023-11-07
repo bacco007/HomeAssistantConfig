@@ -1,3 +1,4 @@
+---
 type: custom:plotly-graph
 raw_plotly_config: true
 hours_to_show: 24
@@ -207,7 +208,7 @@ layout:
   dragmode: pan
   height: 840
   margin:
-    t: 40
+    t: 10
     r: 70
     b: 50
     l: 60

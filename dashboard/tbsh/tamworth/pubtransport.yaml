@@ -1,0 +1,93 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Public Transport
+    icon: mdi:bus-clock
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: sensor.bus_stop_home
+        type: custom:multiple-entity-row
+        name: Home - Next Bus
+        show_state: false
+        entities:
+          - attribute: route
+            name: Route
+          - attribute: delay
+            name: Delay
+            unit: min
+          - attribute: due
+            name: Due in
+            unit: min
+      - entity: sensor.bus_home_430
+        type: custom:multiple-entity-row
+        name: Bus Route 430 - Home
+        show_state: false
+        entities:
+          - attribute: Due at
+            name: Time
+            unit: ""
+          - attribute: Due in
+            name: Due In
+            unit: min
+      - entity: sensor.bus_home_431
+        type: custom:multiple-entity-row
+        name: Bus Route 431 - Home
+        show_state: false
+        entities:
+          - attribute: Due at
+            name: Time
+            unit: ""
+          - attribute: Due in
+            name: Due In
+            unit: min
+      - type: section
+      - entity: sensor.bus_stop_work
+        type: custom:multiple-entity-row
+        name: Work - Next Bus
+        show_state: false
+        entities:
+          - attribute: route
+            name: Route
+          - attribute: delay
+            name: Delay
+            unit: min
+          - attribute: due
+            name: Due in
+            unit: min
+      - entity: sensor.bus_work_430
+        type: custom:multiple-entity-row
+        name: Bus Route 430 - Work
+        show_state: false
+        entities:
+          - attribute: Due at
+            name: Time
+            unit: ""
+          - attribute: Due in
+            name: Due In
+            unit: min
+      - entity: sensor.bus_work_431
+        type: custom:multiple-entity-row
+        name: Bus Route 431 - Work
+        show_state: false
+        entities:
+          - attribute: Due at
+            name: Time
+            unit: ""
+          - attribute: Due in
+            name: Due In
+            unit: min
