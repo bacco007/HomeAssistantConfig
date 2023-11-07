@@ -12,7 +12,8 @@ from homeassistant.components.climate import (
     DOMAIN as CLIMATE,
 )
 from homeassistant.components.group import expand_entity_ids
-from homeassistant.components.recorder.models import LazyState
+from homeassistant.components.number import NumberDeviceClass
+from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.components.weather import (
     ATTR_WEATHER_HUMIDITY,
     ATTR_WEATHER_TEMPERATURE,
@@ -29,16 +30,13 @@ from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     EVENT_HOMEASSISTANT_START,
     PERCENTAGE,
-    SPEED_KILOMETERS_PER_HOUR,
-    SPEED_METERS_PER_SECOND,
-    SPEED_MILES_PER_HOUR,
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
-    TEMP_CELSIUS,
+    UnitOfSpeed,
+    UnitOfTemperature,
 )
-from homeassistant.core import HomeAssistant, callback, split_entity_id
+from homeassistant.core import HomeAssistant, State, callback, split_entity_id
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_state_change
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util.unit_conversion import TemperatureConverter
@@ -89,45 +87,37 @@ async def async_setup_platform(
 
 
 WIND_SPEED_UNITS = {
-    SPEED_METERS_PER_SECOND: 1,
-    SPEED_KILOMETERS_PER_HOUR: 3.6,
-    SPEED_MILES_PER_HOUR: 2.237,
+    UnitOfSpeed.METERS_PER_SECOND: 1,
+    UnitOfSpeed.KILOMETERS_PER_HOUR: 3.6,
+    UnitOfSpeed.MILES_PER_HOUR: 2.237,
 }
 
 
-class TemperatureFeelingSensor(Entity):
+class TemperatureFeelingSensor(SensorEntity):
     """temperature_feels_like Sensor class."""
+
+    _attr_icon = "mdi:thermometer-lines"
+    _attr_device_class = NumberDeviceClass.TEMPERATURE
+    _attr_state_class: SensorStateClass = SensorStateClass.MEASUREMENT
+    _attr_should_poll: bool = False
+    _attr_native_unit_of_measurement: str = UnitOfTemperature.CELSIUS
 
     def __init__(
         self, unique_id: Optional[str], name: Optional[str], sources: List[str]
     ):
         """Class initialization."""
-        self._unique_id = unique_id
+        self._attr_unique_id = unique_id
+        self._attr_native_value = None
+
         self._name = name
         self._sources = sources
 
-        self._state = None
         self._temp = None
         self._humd = None
         self._wind = None
         self._temp_val = None
         self._humd_val = None
         self._wind_val = None
-
-    @property
-    def unique_id(self):
-        """Return a unique ID to use for this entity."""
-        return self._unique_id
-
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
-
-    @property
-    def device_class(self):
-        """Return the class of this sensor."""
-        return DEVICE_CLASS_TEMPERATURE
 
     @property
     def name(self):
@@ -142,18 +132,8 @@ class TemperatureFeelingSensor(Entity):
         return name
 
     @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self) -> Optional[str]:
-        """Return the unit of measurement of this entity."""
-        return self.hass.config.units.temperature_unit
-
-    @property
-    def state_attributes(self):
-        """Return the state attributes."""
+    def extra_state_attributes(self):
+        """Return entity specific state attributes."""
         return {
             ATTR_TEMPERATURE_SOURCE: self._temp,
             ATTR_TEMPERATURE_SOURCE_VALUE: self._temp_val,
@@ -178,7 +158,7 @@ class TemperatureFeelingSensor(Entity):
             """Update entity on startup."""
             entities = set()
             for entity_id in self._sources:
-                state: LazyState = self.hass.states.get(entity_id)
+                state: State = self.hass.states.get(entity_id)
                 domain = split_entity_id(state.entity_id)[0]
                 device_class = state.attributes.get(ATTR_DEVICE_CLASS)
                 unit_of_measurement = state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
@@ -210,7 +190,7 @@ class TemperatureFeelingSensor(Entity):
                     entities.add(entity_id)
 
             if not self._name:
-                state: LazyState = self.hass.states.get(self._temp)
+                state: State = self.hass.states.get(self._temp)
                 self._name = state.name
                 if self._name.lower().find("temperature") < 0:
                     self._name += " Temperature"
@@ -236,7 +216,7 @@ class TemperatureFeelingSensor(Entity):
         """Get temperature value (in °C) from entity."""
         if entity_id is None:
             return None
-        state: LazyState = self.hass.states.get(entity_id)
+        state: State = self.hass.states.get(entity_id)
         if state is None:
             return None
 
@@ -256,7 +236,7 @@ class TemperatureFeelingSensor(Entity):
 
         try:
             temperature = TemperatureConverter.convert(
-                float(temperature), entity_unit, TEMP_CELSIUS
+                float(temperature), entity_unit, UnitOfTemperature.CELSIUS
             )
         except ValueError as exc:
             _LOGGER.error('Could not convert value "%s" to float: %s', state, exc)
@@ -268,7 +248,7 @@ class TemperatureFeelingSensor(Entity):
         """Get humidity value from entity."""
         if entity_id is None:
             return None
-        state: LazyState = self.hass.states.get(entity_id)
+        state: State = self.hass.states.get(entity_id)
         if state is None:
             return None
 
@@ -289,7 +269,7 @@ class TemperatureFeelingSensor(Entity):
         """Get wind speed value from entity."""
         if entity_id is None:
             return 0.0
-        state: LazyState = self.hass.states.get(entity_id)
+        state: State = self.hass.states.get(entity_id)
         if state is None:
             return 0.0
 
@@ -297,9 +277,9 @@ class TemperatureFeelingSensor(Entity):
         if domain == WEATHER:
             wind_speed = state.attributes.get(ATTR_WEATHER_WIND_SPEED)
             entity_unit = (
-                SPEED_KILOMETERS_PER_HOUR
+                UnitOfSpeed.KILOMETERS_PER_HOUR
                 if self.hass.config.units is METRIC_SYSTEM
-                else SPEED_MILES_PER_HOUR
+                else UnitOfSpeed.MILES_PER_HOUR
             )
         else:
             wind_speed = state.state
@@ -308,7 +288,7 @@ class TemperatureFeelingSensor(Entity):
         if not self._has_state(wind_speed):
             return None
 
-        if entity_unit != SPEED_METERS_PER_SECOND:
+        if entity_unit != UnitOfSpeed.METERS_PER_SECOND:
             wind_speed = float(wind_speed) / WIND_SPEED_UNITS[entity_unit]
 
         return float(wind_speed)
@@ -325,7 +305,7 @@ class TemperatureFeelingSensor(Entity):
             _LOGGER.warning(
                 "Can't calculate sensor value: some sources are unavailable."
             )
-            self._state = None
+            self._attr_native_value = None
             return
 
         if wind is None:
@@ -335,13 +315,9 @@ class TemperatureFeelingSensor(Entity):
             wind = 0
 
         e_value = humd * 0.06105 * math.exp((17.27 * temp) / (237.7 + temp))
-        feeling = temp + 0.348 * e_value - 0.7 * wind - 4.25
-        self._state = round(
-            TemperatureConverter.convert(
-                feeling, TEMP_CELSIUS, self.unit_of_measurement
-            ),
-            1,
-        )
+        self._attr_native_value = round(temp + 0.348 * e_value - 0.7 * wind - 4.25, 1)
         _LOGGER.debug(
-            "New sensor state is %s %s", self._state, self.unit_of_measurement
+            "New sensor state is %s %s",
+            self._attr_native_value,
+            self._attr_native_unit_of_measurement,
         )

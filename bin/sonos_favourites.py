@@ -119,3 +119,14 @@ for fav in favorites:
     f.write("    data:" + "\n")
     f.write('      value: "' + title + '"\n')
     f.close()
+
+### SONOS CARD ###
+f = open ("dashboard/tbsh/popup/sonos_thumbnails.yaml", "w")
+f.write("---")
+f.write("\n")
+for fav in favorites:
+    title = fav.title
+    titleClean = make_safe_filename(title)
+    f.write(title + ": /local/radioicons/" + titleClean + ".png\n")
+f.write ("")
+f.close()

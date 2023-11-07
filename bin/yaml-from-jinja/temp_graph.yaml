@@ -1,0 +1,32 @@
+---
+entities:
+  - entity: sensor.weather_temperature
+    name: Thomas
+    colors:
+      temperature: 'rgb(0,191,255)'
+      temperature_fill: 'rgba(0,191,255,0.2)'
+  - entity: sensor.weather_aidan_temp
+    name: Aidan
+    colors:
+      temperature: 'rgb(255,0,0)'
+      temperature_fill: 'rgba(255,0,0,0.2)'
+  - entity: sensor.wunder_lachy_temperature
+    name: Lachy
+    colors:
+      temperature: 'rgb(255,215,0)'
+      temperature_fill: 'rgba(255,215,0,0.2)'
+  - entity: sensor.wunder_nicko_temperature
+    name: Nick
+    colors:
+      temperature: '#329af6'
+      temperature_fill: '#329af6'
+  - entity: sensor.wunder_steve_temperature
+    name: Steve
+    colors:
+      temperature: 'rgb(249, 167, 62)'
+      temperature_fill: 'rgba(249, 167, 62, 0.2)'
+  - entity: sensor.tamworth_airport_temp
+    name: Airport
+    colors:
+      temperature: 'rgb(39, 179, 118)'
+      temperature_fill: 'rgba(39, 179, 118, 0.2)'

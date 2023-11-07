@@ -1,0 +1,6 @@
+---
+name: "[Weather] Temperature Feels Like"
+unique_id: weather_temperature_feels_like
+platform: temperature_feels_like
+source:
+  - weather.weather_home_hourly

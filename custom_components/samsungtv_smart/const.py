@@ -31,8 +31,8 @@ MIN_HA_MAJ_VER = 2023
 MIN_HA_MIN_VER = 7
 __min_ha_version__ = f"{MIN_HA_MAJ_VER}.{MIN_HA_MIN_VER}.0"
 
+DATA_CFG = "cfg"
 DATA_CFG_YAML = "cfg_yaml"
-DATA_DEV_INFO = "dev_info"
 DATA_OPTIONS = "options"
 LOCAL_LOGO_PATH = "local_logo_path"
 WS_PREFIX = "[Home Assistant]"

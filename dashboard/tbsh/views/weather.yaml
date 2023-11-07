@@ -25,6 +25,7 @@ cards:
           - !include ../weather/snippets/forecast_hour_day.yaml
           - !include ../weather/current_weather.yaml
           - !include ../weather/weather_other.yaml
+          - !include ../weather/weather_graphs.yaml
           - !include ../weather/settings_controls.yaml
           - !include ../weather/today_vs_history.yaml
           - !include ../weather/long_term_stats.yaml

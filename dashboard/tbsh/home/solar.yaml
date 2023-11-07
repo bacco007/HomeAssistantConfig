@@ -76,7 +76,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -105,7 +105,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -157,7 +157,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -188,7 +188,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -219,7 +219,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -249,7 +249,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -278,7 +278,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -304,7 +304,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;
@@ -330,7 +330,7 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                         margin-top: 10px;
-                        --icon-size: 50px;
+                        --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
                         --card-primary-font-size: 12px;

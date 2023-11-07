@@ -27,8 +27,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.service import CONF_SERVICE_ENTITY_ID, async_call_from_config
 
-from . import SamsungTVDeviceInfo
-from .const import DATA_DEV_INFO, DOMAIN
+from .const import DATA_CFG, DOMAIN
+from .entity import SamsungTVEntity
 from .media_player import MEDIA_TYPE_KEY
 
 JOIN_COMMAND = "+"
@@ -55,25 +55,23 @@ async def async_setup_entry(
         if mp_entity_id is None:
             return
 
-        dev_info: SamsungTVDeviceInfo = hass.data[DOMAIN][entry.entry_id][DATA_DEV_INFO]
-        async_add_entities([SamsungTVRemote(mp_entity_id, dev_info)])
+        config = hass.data[DOMAIN][entry.entry_id][DATA_CFG]
+        async_add_entities([SamsungTVRemote(config, entry.entry_id, mp_entity_id)])
 
     # we wait for TV media player entity to be created
     async_call_later(hass, 5, _add_remote_entity)
 
 
-class SamsungTVRemote(RemoteEntity):
+class SamsungTVRemote(SamsungTVEntity, RemoteEntity):
     """Device that sends commands to a SamsungTV."""
 
-    _attr_has_entity_name = True
     _attr_name = None
     _attr_should_poll = False
 
-    def __init__(self, mp_entity_id: str, dev_info: SamsungTVDeviceInfo):
+    def __init__(self, config: dict[str, Any], entry_id: str, mp_entity_id: str):
         """Initialize the remote."""
+        super().__init__(config, entry_id)
         self._mp_entity_id = mp_entity_id
-        self._attr_unique_id = dev_info.unique_id
-        self._attr_device_info = dev_info.device_info
 
     async def _async_call_service(
         self,

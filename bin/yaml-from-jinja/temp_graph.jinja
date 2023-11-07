@@ -1,0 +1,126 @@
+type: custom:plotly-graph
+raw_plotly_config: true
+hours_to_show: 24
+time_offset: |-
+  $fn () =>  {
+    now = new Date();
+    tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0,0,0,0);                                           // midnight
+    HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+    return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+  }
+entities:
+{%- for entity in entities %}
+  - entity: {{ entity['entity'] }}
+    yaxis: y{{ loop.index }}
+    filters:
+      - force_numeric
+      - resample: 15m
+    connectgaps: true
+    time_offset: 1d
+    line:
+      color: '{{ entity['colors']['temperature'] }}'
+      dash: dot
+      width: 1
+    hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+    x: $fn ({xs}) => xs
+    'y': $fn ({ys}) => ys
+  - entity: {{ entity['entity'] }}
+    yaxis: y{{ loop.index }}
+    fill: tozeroy
+    fillcolor: '{{ entity['colors']['temperature_fill'] }}'
+    filters:
+      - force_numeric
+      - resample: 15m
+    connectgaps: true
+    line:
+      color: '{{ entity['colors']['temperature'] }}'
+    hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+    x: $fn ({xs}) => xs
+    'y': $fn ({ys}) => ys
+    fnmin: >-
+      $fn ({ ys, vars }) => {vars.miny{{ loop.index }} = Math.min(...ys.filter(Number){% if entity['entity'].startswith('climate') %}, vars.miny{{ loop.index }}{% endif %})}
+    fnmax: >-
+      $fn ({ ys, vars }) => {vars.maxy{{ loop.index }} = Math.max(...ys.filter(Number){% if entity['entity'].startswith('climate') %}, vars.maxy{{ loop.index }}{% endif %})}
+{%- endfor %}
+defaults:
+  entity:
+    mode: lines
+    line:
+      width: 2
+    showlegend: false
+layout:
+  dragmode: pan
+  height: {{ entities|length * 140 }}
+  margin:
+    t: 10
+    r: 70
+    b: 50
+    l: 60
+  font:
+    family: Roboto,Noto,sans-serif
+    color: $fn ({css_vars}) => css_vars['primary-text-color']
+  {# title:
+    text: {{ title }}
+    xref: paper
+    yref: paper
+    x: 0
+    'y': 1
+    xanchor: left
+    yanchor: bottom
+    pad:
+      b: 20
+      l: -44
+    font:
+      size: 24 #}
+  grid:
+    rows: {{ entities|length }}
+    columns: 1
+    roworder: top to bottom
+    shared_xaxes: true
+  xaxis:
+    showgrid: false
+    tickformat: '%H:%M<br>%e %b'
+    hoverformat: '%H:%M:%S<br>%e %b'
+  {%- for entity in entities %}
+  yaxis{% if loop.index > 1 %}{{ loop.index }}{% endif %}:
+    title:
+      text: {{ entity['name'] }}
+      font:
+        size: 14
+        color: '{{ entity['colors']['temperature'] }}'
+      standoff: 0
+    autorange: false
+    fixedrange: true
+    range:
+      - $fn ({vars}) => vars.miny{{ loop.index }} - 0.5
+      - $fn ({vars}) => vars.maxy{{ loop.index }} + 0.5
+    ticksuffix: °
+    griddash: dot
+  {%- endfor %}
+  annotations:
+    {%- for entity in entities %}
+    - text: |-
+        $fn ({hass}) =>
+          "<span style='font-size: 14px;'><span style='font-weight: bold; color: {{ entity['colors']['current_temperature'] }}'>"
+          + hass.states['{{ entity['entity'] }}'].state + "</span>°</span><br>"
+      xref: x domain
+      yref: y{{ loop.index }} domain
+      xanchor: center
+      yanchor: top
+      x: 1.1
+      'y': 0.9
+      showarrow: false
+  {%- endfor %}
+config:
+  scrollZoom: true
+  displaylogo: false
+  modeBarButtonsToRemove:
+    - resetScale2d
+    - autoScale2d
+    - toImage
+    - zoom
+    - lasso2d
+    - pan2d
+    - select2d
