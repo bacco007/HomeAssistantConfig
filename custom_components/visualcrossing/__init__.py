@@ -1,7 +1,6 @@
 """Visual Crossing Weather Platform."""
 from __future__ import annotations
 
-from collections.abc import Callable
 from datetime import timedelta
 import logging
 from random import randrange
@@ -26,9 +25,8 @@ from homeassistant.const import (
     CONF_LANGUAGE,
     CONF_LATITUDE,
     CONF_LONGITUDE,
-    EVENT_CORE_CONFIG_UPDATE,
 )
-from homeassistant.core import Event, HomeAssistant
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -82,7 +80,7 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize global Visual Crossing data updater."""
-        self._unsub_track_home: Callable[[], None] | None = None
+        # self._unsub_track_home: Callable[[], None] | None = None
         self.weather = VCWeatherData(hass, config_entry.data, config_entry.options)
         self.weather.initialize_data()
 
@@ -96,27 +94,6 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
             return await self.weather.fetch_data()
         except Exception as err:
             raise UpdateFailed(f"Update failed: {err}") from err
-
-    def track_home(self) -> None:
-        """Start tracking changes to HA home setting."""
-        if self._unsub_track_home:
-            return
-
-        async def _async_update_weather_data(_event: Event | None = None) -> None:
-            """Update weather data."""
-            if self.weather.initialize_data():
-                _LOGGER.debug("Refreshing called")
-                await self.async_refresh()
-
-        self._unsub_track_home = self.hass.bus.async_listen(
-            EVENT_CORE_CONFIG_UPDATE, _async_update_weather_data
-        )
-
-    def untrack_home(self) -> None:
-        """Stop tracking changes to HA home setting."""
-        if self._unsub_track_home:
-            self._unsub_track_home()
-            self._unsub_track_home = None
 
 
 class VCWeatherData:

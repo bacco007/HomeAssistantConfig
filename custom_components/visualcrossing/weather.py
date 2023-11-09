@@ -35,10 +35,11 @@ DEFAULT_NAME = "Visual Crossing Weather"
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup_entry(
-        hass: HomeAssistant,
-        config_entry: ConfigEntry,
-        async_add_entities: AddEntitiesCallback,
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Add a weather entity from a config_entry."""
     coordinator: VCDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
@@ -52,19 +53,19 @@ async def async_setup_entry(
     elif TYPE_CHECKING:
         assert isinstance(name, str)
 
-    entities = [VCWeather(coordinator, config_entry.data,
-                                   False, name, is_metric)]
+    entities = [VCWeather(coordinator, config_entry.data, False, name, is_metric)]
 
     # Add hourly entity to legacy config entries
     if entity_registry.async_get_entity_id(
-        WEATHER_DOMAIN,
-        DOMAIN,
-        _calculate_unique_id(config_entry.data, True)
+        WEATHER_DOMAIN, DOMAIN, _calculate_unique_id(config_entry.data, True)
     ):
         name = f"{name} hourly"
-        entities.append(VCWeather(coordinator, config_entry.data, True, name, is_metric))
+        entities.append(
+            VCWeather(coordinator, config_entry.data, True, name, is_metric)
+        )
 
     async_add_entities(entities)
+
 
 def _calculate_unique_id(config: MappingProxyType[str, Any], hourly: bool) -> str:
     """Calculate unique ID."""
@@ -73,6 +74,7 @@ def _calculate_unique_id(config: MappingProxyType[str, Any], hourly: bool) -> st
         name_appendix = "-hourly"
 
     return f"{config[CONF_LATITUDE]}-{config[CONF_LONGITUDE]}{name_appendix}"
+
 
 def format_condition(condition: str) -> str:
     """Return condition from dict CONDITIONS_MAP."""
@@ -85,9 +87,7 @@ def format_condition(condition: str) -> str:
 class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     """Implementation of a Visual Crossing weather condition."""
 
-    _attr_attribution = (
-        "Weather Data delivered by Visual Crossing"
-    )
+    _attr_attribution = "Weather Data delivered by Visual Crossing"
     _attr_has_entity_name = True
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_precipitation_unit = UnitOfPrecipitationDepth.MILLIMETERS
@@ -98,12 +98,12 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     )
 
     def __init__(
-            self,
-            coordinator: VCDataUpdateCoordinator,
-            config: MappingProxyType[str, Any],
-            hourly: bool,
-            name: str,
-            is_metric: bool,
+        self,
+        coordinator: VCDataUpdateCoordinator,
+        config: MappingProxyType[str, Any],
+        hourly: bool,
+        name: str,
+        is_metric: bool,
     ) -> None:
         """Initialise the platform with a data instance and station."""
         super().__init__(coordinator)
@@ -242,6 +242,14 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
                 ha_forecast.append(ha_item)
 
         return ha_forecast
+
+    # For backwards compatability, uncomment the below.
+    # Will stop working with HA 2024.3
+
+    # @property
+    # def forecast(self) -> list[Forecast] | None:
+    #     """Return the forecast array."""
+    #     return self._forecast(False)
 
     @callback
     def _async_forecast_daily(self) -> list[Forecast] | None:
