@@ -37,7 +37,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
         self,
         hass: HomeAssistant,
         proxmox: ProxmoxAPI,
-        host_name: str,
+        api_category: str,
         node_name: str,
     ) -> None:
         """Initialize the Proxmox Node coordinator."""
@@ -45,7 +45,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
         super().__init__(
             hass,
             LOGGER,
-            name=f"proxmox_coordinator_{host_name}_{node_name}",
+            name=f"proxmox_coordinator_{api_category}_{node_name}",
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
 
@@ -53,6 +53,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
         self.config_entry: ConfigEntry = self.config_entry
         self.proxmox = proxmox
         self.node_name = node_name
+        self.resource_id = node_name
 
     async def _async_update_data(self) -> ProxmoxNodeData:
         """Update data  for Proxmox Node."""
@@ -112,6 +113,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
             )
 
         return ProxmoxNodeData(
+            type="NODE",
             model=api_status["cpuinfo"]["model"],
             status=api_status["status"],
             version=api_status["version"]["version"],
@@ -135,7 +137,7 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
         self,
         hass: HomeAssistant,
         proxmox: ProxmoxAPI,
-        host_name: str,
+        api_category: str,
         qemu_id: int,
     ) -> None:
         """Initialize the Proxmox QEMU coordinator."""
@@ -143,7 +145,7 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
         super().__init__(
             hass,
             LOGGER,
-            name=f"proxmox_coordinator_{host_name}_{qemu_id}",
+            name=f"proxmox_coordinator_{api_category}_{qemu_id}",
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
 
@@ -152,6 +154,7 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
         self.proxmox = proxmox
         self.node_name: str
         self.vm_id = qemu_id
+        self.resource_id = qemu_id
 
     async def _async_update_data(self) -> ProxmoxVMData:
         """Update data  for Proxmox QEMU."""
@@ -218,6 +221,7 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
 
         update_device_via(self, ProxmoxType.QEMU)
         return ProxmoxVMData(
+            type="QEMU",
             status=api_status["status"],
             name=api_status["name"],
             node=self.node_name,
@@ -241,7 +245,7 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
         self,
         hass: HomeAssistant,
         proxmox: ProxmoxAPI,
-        host_name: str,
+        api_category: str,
         container_id: int,
     ) -> None:
         """Initialize the Proxmox LXC coordinator."""
@@ -249,15 +253,16 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
         super().__init__(
             hass,
             LOGGER,
-            name=f"proxmox_coordinator_{host_name}_{container_id}",
+            name=f"proxmox_coordinator_{api_category}_{container_id}",
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
 
         self.hass = hass
         self.config_entry: ConfigEntry = self.config_entry
         self.proxmox = proxmox
-        self.vm_id = container_id
         self.node_name: str
+        self.vm_id = container_id
+        self.resource_id = container_id
 
     async def _async_update_data(self) -> ProxmoxLXCData:
         """Update data  for Proxmox LXC."""
@@ -324,6 +329,7 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
 
         update_device_via(self, ProxmoxType.LXC)
         return ProxmoxLXCData(
+            type="LXC",
             status=api_status["status"],
             name=api_status["name"],
             node=self.node_name,
