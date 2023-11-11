@@ -11,7 +11,9 @@
                     "forecast_interval": "Aktualisierungsintervall (Min)",
                     "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
                     "seeing_weight": "Gewichtung des Seeings",
-                    "transparency_weight": "Gewichtung der Transparenz"                }
+                    "transparency_weight": "Gewichtung der Transparenz",
+                    "uptonight_path": "Pfad zu conf/www"
+                }
             }
         }
     },
@@ -26,7 +28,9 @@
                     "forecast_interval": "Aktualisierungsintervall (Min)",
                     "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
                     "seeing_weight": "Gewichtung des Seeings",
-                    "transparency_weight": "Gewichtung der Transparenz"                }
+                    "transparency_weight": "Gewichtung der Transparenz",
+                    "uptonight_path": "Pfad zu conf/www"
+                }
             }
         }
     }

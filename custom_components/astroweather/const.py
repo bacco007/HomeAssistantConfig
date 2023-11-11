@@ -10,9 +10,11 @@ CONF_TIMEZONE_INFO = "timezone_info"
 CONF_CONDITION_CLOUDCOVER_WEIGHT = "cloudcover_weight"
 CONF_CONDITION_SEEING_WEIGHT = "seeing_weight"
 CONF_CONDITION_TRANSPARENCY_WEIGHT = "transparency_weight"
+CONF_UPTONIGHT_PATH = "uptonight_path"
 
 ASTROWEATHER_PLATFORMS = ["binary_sensor", "sensor", "weather"]
 DEVICE_TYPE_WEATHER = "weather"
+UPTONIGHT = "uptonight"
 
 DEFAULT_ATTRIBUTION = "Powered by 7Timer and Met.no"
 DEFAULT_FORECAST_INTERVAL = 5
@@ -20,12 +22,12 @@ FORECAST_INTERVAL_MIN = 1
 FORECAST_INTERVAL_MAX = 240
 DEFAULT_ELEVATION = 0
 DEFAULT_TIMEZONE_INFO = "Etc/UTC"
-
-# In progress, make condition calculation customizable
 DEFAULT_CONDITION_CLOUDCOVER_WEIGHT = 3
 DEFAULT_CONDITION_SEEING_WEIGHT = 2
 DEFAULT_CONDITION_TRANSPARENCY_WEIGHT = 1
+DEFAULT_UPTONIGHT_PATH = "/config/www"
 
+ATTR_WEATHER_TIME_SHIFT = "time_shift"
 ATTR_WEATHER_CLOUDCOVER = "cloudcover_percentage"
 ATTR_WEATHER_CLOUDLESS = "cloudless_percentage"
 ATTR_WEATHER_CLOUD_AREA_FRACTION = "cloud_area_fraction"
@@ -55,6 +57,7 @@ ATTR_WEATHER_MOON_NEXT_RISING = "moon_next_rising"
 ATTR_WEATHER_MOON_NEXT_SETTING = "moon_next_setting"
 ATTR_WEATHER_MOON_PHASE = "moon_phase"
 ATTR_WEATHER_MOON_NEXT_NEW_MOON = "moon_next_new_moon"
+ATTR_WEATHER_MOON_NEXT_FULL_MOON = "moon_next_full_moon"
 ATTR_WEATHER_DEEP_SKY_DARKNESS = "deep_sky_darkness"
 ATTR_FORECAST_CLOUDCOVER = "cloudcover_percentage"
 ATTR_FORECAST_CLOUDLESS = "cloudless_percentage"

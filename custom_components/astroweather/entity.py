@@ -51,9 +51,11 @@ class AstroWeatherEntity(Entity):
     @property
     def extra_state_attributes(self):
         """Return common attributes."""
-        return {
+        attr = {
             ATTR_ATTRIBUTION: DEFAULT_ATTRIBUTION,
         }
+
+        return attr
 
     async def async_added_to_hass(self):
         """When entity is added to hass."""

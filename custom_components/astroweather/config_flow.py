@@ -21,9 +21,11 @@ from .const import (
     CONF_CONDITION_CLOUDCOVER_WEIGHT,
     CONF_CONDITION_SEEING_WEIGHT,
     CONF_CONDITION_TRANSPARENCY_WEIGHT,
+    CONF_UPTONIGHT_PATH,
     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
     DEFAULT_CONDITION_SEEING_WEIGHT,
     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
+    DEFAULT_UPTONIGHT_PATH,
     DEFAULT_FORECAST_INTERVAL,
     FORECAST_INTERVAL_MIN,
     FORECAST_INTERVAL_MAX,
@@ -72,6 +74,7 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_CONDITION_CLOUDCOVER_WEIGHT: user_input.get(CONF_CONDITION_CLOUDCOVER_WEIGHT),
                 CONF_CONDITION_SEEING_WEIGHT: user_input.get(CONF_CONDITION_SEEING_WEIGHT),
                 CONF_CONDITION_TRANSPARENCY_WEIGHT: user_input.get(CONF_CONDITION_TRANSPARENCY_WEIGHT),
+                CONF_UPTONIGHT_PATH: user_input.get(CONF_UPTONIGHT_PATH),
             },
         )
 
@@ -105,7 +108,10 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
                     ),
-                    vol.Optional(CONF_CONDITION_SEEING_WEIGHT, default=DEFAULT_CONDITION_SEEING_WEIGHT,): vol.All(
+                    vol.Optional(
+                        CONF_CONDITION_SEEING_WEIGHT,
+                        default=DEFAULT_CONDITION_SEEING_WEIGHT,
+                    ): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
                     ),
@@ -115,6 +121,12 @@ class AstroWeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
+                    ),
+                    vol.Optional(
+                        CONF_UPTONIGHT_PATH,
+                        default=DEFAULT_UPTONIGHT_PATH,
+                    ): vol.All(
+                        vol.Coerce(str),
                     ),
                 }
             ),
@@ -191,6 +203,15 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     ): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=0, max=5),
+                    ),
+                    vol.Required(
+                        CONF_UPTONIGHT_PATH,
+                        default=self.config_entry.options.get(
+                            CONF_UPTONIGHT_PATH,
+                            DEFAULT_UPTONIGHT_PATH,
+                        ),
+                    ): vol.All(
+                        vol.Coerce(str),
                     ),
                 }
             ),

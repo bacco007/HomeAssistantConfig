@@ -11,7 +11,9 @@
                     "forecast_interval": "Intervallo tra gli aggiornamenti delle previsioni (min)",
                     "cloudcover_weight": "Peso della copertura nuvolosa per il calcolo delle condizioni",
                     "seeing_weight": "Vedere il peso per il calcolo delle condizioni",
-                    "transparency_weight": "Peso della trasparenza per il calcolo delle condizioni"                }
+                    "transparency_weight": "Peso della trasparenza per il calcolo delle condizioni",
+                    "uptonight_path": "Percorso verso conf/www"
+                }
             }
         }
     },
@@ -26,7 +28,9 @@
                     "forecast_interval": "Intervallo tra gli aggiornamenti delle previsioni (min)",
                     "cloudcover_weight": "Peso della copertura nuvolosa per il calcolo delle condizioni",
                     "seeing_weight": "Vedere il peso per il calcolo delle condizioni",
-                    "transparency_weight": "Peso della trasparenza per il calcolo delle condizioni"                }
+                    "transparency_weight": "Peso della trasparenza per il calcolo delle condizioni",
+                    "uptonight_path": "Percorso verso conf/www"
+                }
             }
         }
     }

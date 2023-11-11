@@ -36,8 +36,10 @@ from .const import (
     CONF_CONDITION_CLOUDCOVER_WEIGHT,
     CONF_CONDITION_SEEING_WEIGHT,
     CONF_CONDITION_TRANSPARENCY_WEIGHT,
+    CONF_UPTONIGHT_PATH,
     DEFAULT_ELEVATION,
     DEFAULT_TIMEZONE_INFO,
+    DEFAULT_UPTONIGHT_PATH,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -63,6 +65,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         or entry.options.get(CONF_CONDITION_CLOUDCOVER_WEIGHT, None) is None
         or entry.options.get(CONF_CONDITION_SEEING_WEIGHT, None) is None
         or entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT, None) is None
+        or entry.options.get(CONF_UPTONIGHT_PATH, None) is None
     ):
         hass.config_entries.async_update_entry(
             entry,
@@ -83,6 +86,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                 CONF_CONDITION_TRANSPARENCY_WEIGHT: entry.data.get(
                     CONF_CONDITION_TRANSPARENCY_WEIGHT,
                     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
+                ),
+                CONF_UPTONIGHT_PATH: entry.data.get(
+                    CONF_UPTONIGHT_PATH,
+                    DEFAULT_UPTONIGHT_PATH,
                 ),
             },
         )
@@ -110,6 +117,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                 CONF_CONDITION_TRANSPARENCY_WEIGHT: entry.data.get(
                     CONF_CONDITION_TRANSPARENCY_WEIGHT,
                     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
+                ),
+                CONF_UPTONIGHT_PATH: entry.data.get(
+                    CONF_UPTONIGHT_PATH,
+                    DEFAULT_UPTONIGHT_PATH,
                 ),
             },
         )
@@ -140,6 +151,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                     CONF_CONDITION_TRANSPARENCY_WEIGHT,
                     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
                 ),
+                CONF_UPTONIGHT_PATH: entry.data.get(
+                    CONF_UPTONIGHT_PATH,
+                    DEFAULT_UPTONIGHT_PATH,
+                ),
             },
         )
 
@@ -157,6 +172,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         "Options transparency_weight %s",
         str(entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT)),
     )
+    _LOGGER.debug("Uptonight path %s", str(entry.options.get(CONF_UPTONIGHT_PATH)))
 
     astroweather = AstroWeather(
         session,
@@ -167,6 +183,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         cloudcover_weight=entry.options.get(CONF_CONDITION_CLOUDCOVER_WEIGHT),
         seeing_weight=entry.options.get(CONF_CONDITION_SEEING_WEIGHT),
         transparency_weight=entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT),
+        uptonight_path=entry.options.get(CONF_UPTONIGHT_PATH),
     )
     _LOGGER.debug("Connected to AstroWeather platform")
 

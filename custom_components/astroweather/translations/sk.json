@@ -1,0 +1,35 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Konfigurácia geografickej polohy, interval aktualizácie prognózy a výpočet stavu.",
+                "data": {
+                    "latitude": "Zemepisná šírka (-89° to 89°)",
+                    "longitude": "Zemepisná dĺžka (-180° to 180°)",
+                    "elevation": "Nadmorská výška (0m do 4000m)",
+                    "timezone_info": "Časové pásmo v databáze TZ",
+                    "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
+                    "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
+                    "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
+                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "latitude": "Zemepisná šírka (-89° to 89°)",
+                    "longitude": "Zemepisná dĺžka (-180° to 180°)",
+                    "elevation": "Nadmorská dĺžka (0m do 4000m)",
+                    "timezone_info": "Časové pásmo v databáze TZ",
+                    "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
+                    "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
+                    "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
+                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu"
+                }
+            }
+        }
+    }
+}

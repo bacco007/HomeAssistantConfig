@@ -11,7 +11,9 @@
                     "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
                     "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
                     "seeing_weight": "Widząc wagę do obliczenia stanu",
-                    "transparency_weight": "Waga przezroczystości do obliczania stanu"                }
+                    "transparency_weight": "Waga przezroczystości do obliczania stanu",
+                    "uptonight_path": "ścieżka do conf/www"
+                }
             }
         }
     },
@@ -26,7 +28,9 @@
                     "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
                     "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
                     "seeing_weight": "Widząc wagę do obliczenia stanu",
-                    "transparency_weight": "Waga przezroczystości do obliczania stanu"                }
+                    "transparency_weight": "Waga przezroczystości do obliczania stanu",
+                    "uptonight_path": "ścieżka do conf/www"
+                }
             }
         }
     }

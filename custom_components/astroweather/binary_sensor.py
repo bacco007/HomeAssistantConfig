@@ -44,6 +44,12 @@ SENSOR_TYPES = {
         "mdi:arrow-up-bold-circle-outline",
         None,
     ],
+    "deep_sky_darkness_moon_always_down": [
+        "Moon always down during darkness",
+        None,
+        "mdi:arrow-down-bold-circle-outline",
+        None,
+    ],
 }
 
 

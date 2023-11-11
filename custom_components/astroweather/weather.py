@@ -43,6 +43,7 @@ from .const import (
     ATTR_FORECAST_LIFTED_INDEX,
     ATTR_FORECAST_HUMIDITY,
     ATTR_FORECAST_PRECIPITATION_AMOUNT,
+    ATTR_WEATHER_TIME_SHIFT,
     ATTR_WEATHER_CLOUDCOVER,
     ATTR_WEATHER_CLOUDLESS,
     ATTR_WEATHER_SEEING,
@@ -67,6 +68,7 @@ from .const import (
     ATTR_WEATHER_MOON_NEXT_SETTING,
     ATTR_WEATHER_MOON_PHASE,
     ATTR_WEATHER_MOON_NEXT_NEW_MOON,
+    ATTR_WEATHER_MOON_NEXT_FULL_MOON,
     ATTR_WEATHER_DEEP_SKY_DARKNESS,
     CONDITION_CLASSES,
     DEFAULT_ATTRIBUTION,
@@ -135,12 +137,19 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return self._name
 
     @property
-    def timestamp(self) -> datetime:
-        """Return the current data timestamp."""
+    def forecast_time(self) -> datetime:
+        """Return the current data forecast_time."""
         if self._current is not None:
-            return self._current.timestamp
+            return self._current.forecast_time
         return None
 
+    @property
+    def time_shift(self) -> int:
+        """Return the humidity."""
+        if self._current is not None:
+            return self._current.time_shift
+        return None
+    
     @property
     def cloudcover_percentage(self) -> int:
         """Return current cloud coverage."""
@@ -390,6 +399,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def moon_next_full_moon(self) -> datetime:
+        """Return moon next full moon."""
+        if self._current is not None:
+            return self._current.moon_next_full_moon
+        return None
+
+    @property
     def deep_sky_darkness(self) -> float:
         """Return length of deep sky darkness."""
         if self._current is not None:
@@ -406,7 +422,8 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         """Return the sensor state attributes."""
         return {
             **super().extra_state_attributes,
-            "timestamp": self.timestamp,
+            "forecast_time": self.forecast_time,
+            ATTR_WEATHER_TIME_SHIFT: self.time_shift,
             ATTR_WEATHER_CLOUDCOVER: self.cloudcover_percentage,
             ATTR_WEATHER_CLOUDLESS: self.cloudless_percentage,
             ATTR_FORECAST_CLOUD_AREA_FRACTION: self.cloud_area_fraction,
@@ -438,6 +455,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_MOON_NEXT_SETTING: self.moon_next_setting,
             ATTR_WEATHER_MOON_PHASE: self.moon_phase,
             ATTR_WEATHER_MOON_NEXT_NEW_MOON: self.moon_next_new_moon,
+            ATTR_WEATHER_MOON_NEXT_FULL_MOON: self.moon_next_full_moon,
             ATTR_WEATHER_DEEP_SKY_DARKNESS: self.deep_sky_darkness,
         }
 
@@ -460,7 +478,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         for forecast in self.fcst_coordinator.data:
             forecasts.append(
                 {
-                    ATTR_FORECAST_TIME: forecast.timestamp,
+                    ATTR_FORECAST_TIME: forecast.forecast_time,
                     ATTR_FORECAST_PRECIPITATION: None,
                     ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
                     ATTR_FORECAST_CLOUDCOVER: forecast.cloudcover_percentage,
