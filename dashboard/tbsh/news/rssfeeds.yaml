@@ -84,12 +84,7 @@ cards:
                         {
                            "name": "Headline",
                            "data": "entries",
-                           "modify": "'<a style=\"text-decoration: none; color: var(--text-on);\" href=\"' + x.link + '\">' + x.title + '</a>'"
-                        },
-                        {
-                           "name": "Date",
-                           "data": "entries",
-                           "modify": "x.published"
+                           "modify": "'<a style=\"text-decoration: none; color: var(--text-on);\" href=\"' + x.link + '\">' + x.title + '</a><br/>' + x.published "
                         }
                      ]
                   }

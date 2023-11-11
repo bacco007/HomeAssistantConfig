@@ -1,0 +1,103 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - icon: mdi:calendar-end
+            layout: icon|name
+            name: Countdown
+            style:
+              name:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                margin-left: 18px
+                font-size: 15px
+                font-weight: 600
+                color: var(--title)
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                "--mdc-icon-size": 20px
+                color: var(--title)
+        style: |
+          div.flex-box {
+            margin-top: -6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+      - type: custom:hui-element
+        card_type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            padding: 2px;
+            box-shadow: none;
+          }
+        cards:
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:calendar-end
+                primary: Month End
+                icon_color: orange
+                secondary: >
+                  {% set month_days = (31 if now().month == 12 else
+                  (now().replace(month=now().month+1, day=1) - timedelta(days=1)).day) %}
+
+                  {{ now().day }}/{{ month_days }} Days | {{ ((month_days - now().day) /
+                  month_days * 100) | round(2) }}%
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
+                    mushroom-shape-icon$: |
+                      .shape {
+                        {% set month_days = (31 if now().month == 12 else (now().replace(month=now().month+1, day=1) - timedelta(days=1)).day) %}
+                        background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+                                    conic-gradient(rgb(var(--rgb-{{ config.icon_color }}))
+                                    {{ ((month_days - now().day) / month_days * 100) | round(2) }}% 0%,
+                                    var(--card-background-color) 0% 100%);
+                      }
+                      .shape:after {
+                        content: "";
+                        height: 100%;
+                        width: 100%;
+                        position: absolute;
+                        border-radius: var(--icon-border-radius);
+                        background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+                      }
+              - type: custom:mushroom-template-card
+                icon: mdi:calendar-end
+                primary: Year End
+                icon_color: orange
+                secondary: >
+                  {{ now().strftime('%j') }}/365 Days | {{ ((365 -
+                  (now().strftime('%j')|int)) / 365 * 100) | round(2) }}%
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
+                    mushroom-shape-icon$: |
+                      .shape {
+                        background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+                                    conic-gradient(rgb(var(--rgb-{{ config.icon_color }}))
+                                    {{ (100+(((now().strftime('%j')|int) - 365) / 365) * 100) | round(2) }}% 0%,
+                                    var(--card-background-color) 0% 100%);
+                      }
+                      .shape:after {
+                        content: "";
+                        height: 100%;
+                        width: 100%;
+                        position: absolute;
+                        border-radius: var(--icon-border-radius);
+                        background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+                      }
+            columns: 2

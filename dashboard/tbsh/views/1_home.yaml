@@ -22,6 +22,7 @@ cards:
         cards: &cards
           - !include ../home/weather.yaml
           - !include ../me/cakeday.yaml
+          - !include ../home/countdown.yaml
           - !include ../tamworth/nbn_fttnupgrade.yaml
           - !include ../home/binday.yaml
           - !include ../home/solar.yaml

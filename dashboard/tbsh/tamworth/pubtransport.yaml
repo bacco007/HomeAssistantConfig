@@ -91,3 +91,8 @@ cards:
           - attribute: Due in
             name: Due In
             unit: min
+      - type: section
+      - entity: sensor.tfnsw_train_tosydney
+        name: Train, Xplorer to Sydney
+      - entity: sensor.tfnsw_train_totamworth
+        name: Train, Xplorer to Tamworth
