@@ -128,11 +128,11 @@ const Ee=1,Qe=2,he=e=>(...t)=>({_$litDirective$:e,values:t});class ge{constructo
         <div class="progress">
           <span>${Ue(this.playingProgress)}</span>
           <div class="bar">
-            <paper-progress value="${this.playingProgress}" max="${t}"></paper-progress>
+            <div class="progress-bar" style=${this.progressBarStyle(t)}></div>
           </div>
           <span> -${Ue(t-this.playingProgress)}</span>
         </div>
-      `):k``}trackProgress(){var e,t,A;const i=(null===(e=this.activePlayer)||void 0===e?void 0:e.attributes.media_position)||0,s=null===(t=this.activePlayer)||void 0===t?void 0:t.isPlaying(),r=(null===(A=this.activePlayer)||void 0===A?void 0:A.attributes.media_position_updated_at)||0;this.playingProgress=s?i+(Date.now()-new Date(r).getTime())/1e3:i,this.tracker||(this.tracker=setInterval((()=>this.trackProgress()),1e3)),s||(clearInterval(this.tracker),this.tracker=void 0)}static get styles(){return o`
+      `):k``}progressBarStyle(e){return ue({width:this.playingProgress/e*100+"%"})}trackProgress(){var e,t,A;const i=(null===(e=this.activePlayer)||void 0===e?void 0:e.attributes.media_position)||0,s=null===(t=this.activePlayer)||void 0===t?void 0:t.isPlaying(),r=(null===(A=this.activePlayer)||void 0===A?void 0:A.attributes.media_position_updated_at)||0;this.playingProgress=s?i+(Date.now()-new Date(r).getTime())/1e3:i,this.tracker||(this.tracker=setInterval((()=>this.trackProgress()),1e3)),s||(clearInterval(this.tracker),this.tracker=void 0)}static get styles(){return o`
       .progress {
         width: 100%;
         font-size: x-small;
@@ -147,9 +147,9 @@ const Ee=1,Qe=2,he=e=>(...t)=>({_$litDirective$:e,values:t});class ge{constructo
         padding: 5px;
       }
 
-      paper-progress {
-        flex-grow: 1;
-        --paper-progress-active-color: var(--accent-color);
+      .progress-bar {
+        background-color: var(--accent-color);
+        height: 50%;
       }
     `}}e([ie()],Ge.prototype,"store",void 0),e([se()],Ge.prototype,"playingProgress",void 0);const Ue=e=>{const t=new Date(1e3*e).toISOString().substring(11,19);return t.startsWith("00:")?t.substring(3):t};customElements.define("sonos-progress",Ge);class Te extends ee{constructor(){super(...arguments),this.updateMembers=!0}render(){this.config=this.store.config,this.mediaControlService=this.store.mediaControlService;const e=100*this.player.attributes.volume_level;let t=100;return e<20&&this.config.dynamicVolumeSlider&&(t=30),k`
       <div class="volume">
@@ -700,7 +700,7 @@ const Wt=(e,t)=>{var A,i;const s=e._$AN;if(void 0===s)return!1;for(const e of s)
         ${Ot(!t,(()=>ve("M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z",(()=>{this.showSwitches[e.id]=!this.showSwitches[e.id],this.requestUpdate()}),{additionalStyle:this.showSwitches[e.id]?{color:"var(--accent-color)"}:{}})))}
       </div>
       <div class="switches">
-        ${Ot(!e.members.length&&this.showSwitches[e.id],(()=>_t(this.getAdditionalControls(e))))}
+        ${Ot(!t&&this.showSwitches[e.id],(()=>_t(this.getAdditionalControls(e))))}
       </div>
     </div>`}async getAdditionalControls(e){return(await this.hassService.getRelatedEntities(e)).map((t=>{var A,i,s;return t.attributes.friendly_name=null!==(s=null===(i=null===(A=t.attributes.friendly_name)||void 0===A?void 0:A.replaceAll(e.name,""))||void 0===i?void 0:i.trim())&&void 0!==s?s:"",k`
         <div>
