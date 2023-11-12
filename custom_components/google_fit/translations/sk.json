@@ -1,0 +1,46 @@
+{
+  "application_credentials": {
+    "description": "Nasledujte [instructions]({more_info_url}) pre [OAuth consent screen]({oauth_consent_url}) aby ste Asistentovi domácnosti poskytli prístup k aplikácii Google Fit. Musíte si tiež vytvoriť poverenia aplikácie prepojené s vaším účtom Fit:\n1. Ísť na [Credentials]({oauth_creds_url}) a kliknúť **Create Credentials**.\n1. Z rozbaľovacieho zoznamu vyberte **OAuth client ID**.\n1. Zvoliť **Web Application** pre Typ aplikácie a pridajte 'https://my.home-assistant.io/redirect/oauth' ako URI presmerovania.\n\n"
+  },
+  "config": {
+    "abort": {
+      "already_configured": "Účet je už nakonfigurovaný",
+      "already_in_progress": "Tok konfigurácie už prebieha",
+      "access_error": "Chyba prístupu Fit API:\n{reason}\nPrerušuje sa nastavenie.",
+      "cannot_connect": "Nepodarilo sa pripojiť",
+      "code_expired": "Platnosť overovacieho kódu vypršala alebo nastavenie poverení je neplatné, skúste to znova.",
+      "invalid_access_token": "Neplatný prístupový token",
+      "missing_configuration": "Komponent nie je nakonfigurovaný. Postupujte podľa dokumentácie.",
+      "oauth_error": "Prijaté neplatné údaje tokenu.",
+      "reauth_successful": "Opätovné overenie bolo úspešné",
+      "timeout_connect": "Časový limit nadviazania spojenia"
+    },
+    "create_entry": {
+      "default": "Úspešne overené"
+    },
+    "step": {
+      "auth": {
+        "title": "Link Google účet"
+      },
+      "pick_implementation": {
+        "title": "Vyberte metódu overenia"
+      },
+      "reauth_confirm": {
+        "description": "Integrácia služby Google Fit vyžaduje opätovné overenie vášho účtu",
+        "title": "Znovu overiť integráciu"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Google Fit nastavenia",
+        "description": "Pomoc s nastaveniami nájdete v časti [Configuration Options](https://github.com/YorkshireIoT/ha-google-fit#configuration)",
+        "data": {
+          "scan_interval": "Minúty medzi dopytmi REST API.",
+          "use_zero": "Keď na účte nie sú k dispozícii žiadne údaje pre snímač nastavený na nulu. Ak nie je začiarknuté, nastavte na neznáme."
+        }
+      }
+    }
+  }
+}
