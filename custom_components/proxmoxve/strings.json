@@ -13,11 +13,12 @@
         }
       },
       "expose": {
-        "description": "Select the Proxmox instance nodes ans Virtual Machines (QEMU) and Containers (LXC) you want to expose",
+        "description": "Select the Proxmox instance nodes, Virtual Machines (QEMU), Containers (LXC) and Storages you want to expose",
         "data": {
           "nodes": "Nodes",
           "qemu": "Virtual Machines (QEMU)",
-          "lxc": "Linux Containers (LXC)"
+          "lxc": "Linux Containers (LXC)",
+          "storage": "Storages"
         }
       },
       "reauth_confirm": {
@@ -80,7 +81,7 @@
       "description": "Configuration of the {integration} (`{platform}`) in YAML is deprecated and should be removed in {version}.\n\nResolve the import issues and remove the YAML configuration from your `configuration.yaml` file."
     },
     "resource_nonexistent": {
-      "description": "{resource_type} {resource} does not exist on ({host}:{port}), remove it in integration options.\n\nThis can also be caused if the user doesn't have enough permission to access the resource.",
+      "description": "{resource_type} {resource} does not exist on ({host}:{port}), remove it in integration options.\n\nThis can also be caused if the user doesn't have enough permission to access the resource.\n\nTip on required permissions:\n* `{permission}`",
       "title": "{resource_type} {resource} does not exist"
     },
     "no_permissions": {
@@ -88,8 +89,12 @@
       "title": "User `{user}` does not have the required permissions"
     },
     "resource_exception_forbiden": {
-      "description": "User {user} does not have sufficient permissions to access resource {resource}.\n\nPlease check documentation and user permissions.",
+      "description": "User `{user}` does not have sufficient permissions to access resource `{resource}`.\n\nTip on required permissions:\n* `{permission}`\n\nPlease check documentation and user permissions.",
       "title": "Permissions error for `{resource}`"
+    },
+    "resource_command_forbiden": {
+      "description": "User `{user}` does not have sufficient permissions to execute command `{command}` on resource `{resource}`.\n\nTip on required permissions:\n* `{permission}`\n\nPlease check documentation and user permissions.",
+      "title": "Permission error for `{resource}` command"
     }
   },
   "options": {
@@ -97,7 +102,7 @@
       "menu": {
         "menu_options": {
           "host_auth": "Change host authentication information",
-          "change_expose": "Add or remove Nodes, VMs or Containers"
+          "change_expose": "Add or remove Nodes, VMs, Containers or Storages"
         }
       },
       "host_auth": {
@@ -114,7 +119,8 @@
         "data": {
           "nodes": "[%key:component::proxmoxve::config::step::expose::data::nodes%]",
           "qemu": "[%key:component::proxmoxve::config::step::expose::data::qemu%]",
-          "lxc": "[%key:component::proxmoxve::config::step::expose::data::lxc%]"
+          "lxc": "[%key:component::proxmoxve::config::step::expose::data::lxc%]",
+          "storage": "[%key:component::proxmoxve::config::step::expose::data::storage%]"
         }
       }
     },
@@ -140,6 +146,9 @@
       },
       "health": {
         "name": "Health"
+      },
+      "update_avail": {
+        "name": "Updates packages"
       }
     },
     "button": {
@@ -214,6 +223,14 @@
       "node": {
         "name": "Node"
       },
+      "status_raw": {
+        "name": "Status",
+        "state": {
+          "paused": "Paused",
+          "stopped": "Stopped",
+          "running": "Running"
+        }
+      },
       "swap_free": {
         "name": "Swap free"
       },
@@ -228,6 +245,14 @@
       },
       "swap_used_perc": {
         "name": "Swap used percentage"
+      },
+      "updates_total": {
+        "name": "Total updates",
+        "state_attributes": {
+          "updates_list": {
+            "name": "Updates list"
+          }
+        }
       },
       "uptime": {
         "name": "Uptime"

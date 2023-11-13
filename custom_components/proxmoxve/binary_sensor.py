@@ -42,6 +42,16 @@ PROXMOX_BINARYSENSOR_NODES: Final[tuple[ProxmoxBinarySensorEntityDescription, ..
     ),
 )
 
+PROXMOX_BINARYSENSOR_UPDATES: Final[tuple[ProxmoxBinarySensorEntityDescription, ...]] = (
+    ProxmoxBinarySensorEntityDescription(
+        key=ProxmoxKeyAPIParse.UPDATE_AVAIL,
+        name="Updates packages",
+        device_class=BinarySensorDeviceClass.UPDATE,
+        on_value=True,
+        translation_key="update_avail",
+    ),
+)
+
 PROXMOX_BINARYSENSOR_VM: Final[tuple[ProxmoxBinarySensorEntityDescription, ...]] = (
     ProxmoxBinarySensorEntityDescription(
         key=ProxmoxKeyAPIParse.STATUS,
@@ -73,7 +83,11 @@ async def async_setup_entry(
     coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
 
     for node in config_entry.data[CONF_NODES]:
-        coordinator = coordinators[node]
+        if node in coordinators:
+            coordinator = coordinators[node]
+        else:
+            continue
+
         # unfound node case
         if coordinator.data is not None:
             for description in PROXMOX_BINARYSENSOR_NODES:
@@ -92,8 +106,30 @@ async def async_setup_entry(
                     )
                 )
 
+            if f"{ProxmoxType.Update}_{node}" in coordinators:
+                coordinator_updates = coordinators[f"{ProxmoxType.Update}_{node}"]
+                for description in PROXMOX_BINARYSENSOR_UPDATES:
+                    sensors.append(
+                        create_binary_sensor(
+                            coordinator=coordinator_updates,
+                            config_entry=config_entry,
+                            info_device=device_info(
+                                hass=hass,
+                                config_entry=config_entry,
+                                api_category=ProxmoxType.Update,
+                                node=node,
+                            ),
+                            description=description,
+                            resource_id=node,
+                        )
+                    )
+
     for vm_id in config_entry.data[CONF_QEMU]:
-        coordinator = coordinators[vm_id]
+        if vm_id in coordinators:
+            coordinator = coordinators[vm_id]
+        else:
+            continue
+
         # unfound vm case
         if coordinator.data is None:
             continue
@@ -107,7 +143,7 @@ async def async_setup_entry(
                             hass=hass,
                             config_entry=config_entry,
                             api_category=ProxmoxType.QEMU,
-                            vm_id=vm_id,
+                            resource_id=vm_id,
                         ),
                         description=description,
                         resource_id=vm_id,
@@ -115,7 +151,11 @@ async def async_setup_entry(
                 )
 
     for container_id in config_entry.data[CONF_LXC]:
-        coordinator = coordinators[container_id]
+        if container_id in coordinators:
+            coordinator = coordinators[container_id]
+        else:
+            continue
+
         # unfound container case
         if coordinator.data is None:
             continue
@@ -129,7 +169,7 @@ async def async_setup_entry(
                             hass=hass,
                             config_entry=config_entry,
                             api_category=ProxmoxType.LXC,
-                            vm_id=container_id,
+                            resource_id=container_id,
                         ),
                         description=description,
                         resource_id=container_id,

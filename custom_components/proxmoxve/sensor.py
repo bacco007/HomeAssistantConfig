@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Any, Final
+from typing import Any, Final, Mapping
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -26,6 +26,7 @@ from .const import (
     CONF_LXC,
     CONF_NODES,
     CONF_QEMU,
+    CONF_STORAGE,
     COORDINATORS,
     DOMAIN,
     ProxmoxKeyAPIParse,
@@ -42,6 +43,7 @@ class ProxmoxSensorEntityDescription(ProxmoxEntityDescription, SensorEntityDescr
     conversion_fn: Callable | None = None  # conversion factor to be applied to units
     value_fn: Callable[[Any], bool | str] | None = None
     api_category: ProxmoxType | None = None  # Set when the sensor applies to only QEMU or LXC, if None applies to both.
+    extra_attrs: list[str] | None = None
 
 
 PROXMOX_SENSOR_DISK: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
@@ -281,7 +283,17 @@ PROXMOX_SENSOR_CPU: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         translation_key="cpu_used",
     ),
 )
-
+PROXMOX_SENSOR_UPDATE: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
+    ProxmoxSensorEntityDescription(
+        key=ProxmoxKeyAPIParse.UPDATE_TOTAL,
+        name="Total updates",
+        icon="mdi:update",
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        translation_key="updates_total",
+        extra_attrs=[ProxmoxKeyAPIParse.UPDATE_LIST],
+    ),
+)
 PROXMOX_SENSOR_NODES: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
     *PROXMOX_SENSOR_CPU,
     *PROXMOX_SENSOR_DISK,
@@ -296,6 +308,13 @@ PROXMOX_SENSOR_QEMU: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         name="Node",
         icon="mdi:server",
         translation_key="node",
+    ),
+    ProxmoxSensorEntityDescription(
+        key="status_raw",
+        name="Status",
+        icon="mdi:server",
+        translation_key="status_raw",
+        value_fn=lambda x: "paused" if x.health == "paused" else x.status,
     ),
     *PROXMOX_SENSOR_CPU,
     *PROXMOX_SENSOR_DISK,
@@ -318,6 +337,14 @@ PROXMOX_SENSOR_LXC: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
     *PROXMOX_SENSOR_UPTIME,
 )
 
+PROXMOX_SENSOR_STORAGE: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
+    ProxmoxSensorEntityDescription(
+        key="node",
+        name="Node",
+        icon="mdi:server",
+    ),
+    *PROXMOX_SENSOR_DISK,
+)
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -331,7 +358,11 @@ async def async_setup_entry(
     coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
 
     for node in config_entry.data[CONF_NODES]:
-        coordinator = coordinators[node]
+        if node in coordinators:
+            coordinator = coordinators[node]
+        else:
+            continue
+
         # unfound vm case
         if coordinator.data is not None:
             for description in PROXMOX_SENSOR_NODES:
@@ -350,8 +381,30 @@ async def async_setup_entry(
                     )
                 )
 
+            if f"{ProxmoxType.Update}_{node}" in coordinators:
+                coordinator_updates = coordinators[f"{ProxmoxType.Update}_{node}"]
+                for description in PROXMOX_SENSOR_UPDATE:
+                    sensors.append(
+                        create_sensor(
+                            coordinator=coordinator_updates,
+                            info_device=device_info(
+                                hass=hass,
+                                config_entry=config_entry,
+                                api_category=ProxmoxType.Update,
+                                node=node,
+                            ),
+                            description=description,
+                            resource_id=node,
+                            config_entry=config_entry,
+                        )
+                    )
+
     for vm_id in config_entry.data[CONF_QEMU]:
-        coordinator = coordinators[vm_id]
+        if vm_id in coordinators:
+            coordinator = coordinators[vm_id]
+        else:
+            continue
+
         # unfound vm case
         if coordinator.data is None:
             continue
@@ -364,7 +417,7 @@ async def async_setup_entry(
                             hass=hass,
                             config_entry=config_entry,
                             api_category=ProxmoxType.QEMU,
-                            vm_id=vm_id,
+                            resource_id=vm_id,
                         ),
                         description=description,
                         resource_id=vm_id,
@@ -373,7 +426,11 @@ async def async_setup_entry(
                 )
 
     for ct_id in config_entry.data[CONF_LXC]:
-        coordinator = coordinators[ct_id]
+        if ct_id in coordinators:
+            coordinator = coordinators[ct_id]
+        else:
+            continue
+
         # unfound container case
         if coordinator.data is None:
             continue
@@ -386,10 +443,36 @@ async def async_setup_entry(
                             hass=hass,
                             config_entry=config_entry,
                             api_category=ProxmoxType.LXC,
-                            vm_id=ct_id,
+                            resource_id=ct_id,
                         ),
                         description=description,
                         resource_id=ct_id,
+                        config_entry=config_entry,
+                    )
+                )
+
+    for storage_id in config_entry.data[CONF_STORAGE]:
+        if storage_id in coordinators:
+            coordinator = coordinators[storage_id]
+        else:
+            continue
+
+        # unfound container case
+        if coordinator.data is None:
+            continue
+        for description in PROXMOX_SENSOR_STORAGE:
+            if description.api_category in (None, ProxmoxType.Storage):
+                sensors.append(
+                    create_sensor(
+                        coordinator=coordinator,
+                        info_device=device_info(
+                            hass=hass,
+                            config_entry=config_entry,
+                            api_category=ProxmoxType.Storage,
+                            resource_id=storage_id,
+                        ),
+                        description=description,
+                        resource_id=storage_id,
                         config_entry=config_entry,
                     )
                 )
@@ -440,7 +523,7 @@ class ProxmoxSensorEntity(ProxmoxEntity, SensorEntity):
         if not getattr(data, self.entity_description.key, False):
             if value := self.entity_description.value_fn:
                 native_value = value(data)
-            elif self.entity_description.key is ProxmoxKeyAPIParse.CPU:
+            elif self.entity_description.key in (ProxmoxKeyAPIParse.CPU, ProxmoxKeyAPIParse.UPDATE_TOTAL):
                 return 0
             else:
                 return None
@@ -457,3 +540,17 @@ class ProxmoxSensorEntity(ProxmoxEntity, SensorEntity):
         """Return sensor availability."""
 
         return super().available and self.coordinator.data is not None
+
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Return the extra attributes of the sensor."""
+        if self.entity_description.extra_attrs is None:
+            return None
+
+        if (data := self.coordinator.data) is None:
+            return None
+
+        return {
+            attr: getattr(data, attr, False)
+            for attr in self.entity_description.extra_attrs
+        }
