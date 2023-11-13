@@ -11,6 +11,7 @@ from astral import LocationInfo
 from astral.location import Location
 import voluptuous as vol
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_ELEVATION,
     CONF_LATITUDE,
@@ -20,6 +21,13 @@ from homeassistant.const import (
 )
 from homeassistant.core import CALLBACK_TYPE, Event
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.device_registry import DeviceEntryType
+
+# Device Info moved to device_registry in 2023.9
+try:
+    from homeassistant.helpers.device_registry import DeviceInfo
+except ImportError:
+    from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.dispatcher import (
     async_dispatcher_connect,
     dispatcher_send,
@@ -113,17 +121,28 @@ class Sun2Entity(Entity):
 
     @abstractmethod
     def __init__(
-        self, loc_params: LocParams | None, domain: str, object_id: str
+        self,
+        loc_params: LocParams | None,
+        entry: ConfigEntry | None,
     ) -> None:
         """Initialize base class.
 
         self.name must be set up to return name before calling this.
         E.g., set up self.entity_description.name first.
         """
-        # Note that entity_platform will add namespace prefix to object ID.
-        self.entity_id = f"{domain}.{slugify(object_id)}"
-        self._attr_unique_id = self.name
+        if entry:
+            self._attr_translation_key = self.entity_description.key
+            self._attr_has_entity_name = True
+            self._attr_device_info = DeviceInfo(
+                entry_type=DeviceEntryType.SERVICE,
+                identifiers={(DOMAIN, entry.entry_id)},
+                name=entry.title,
+            )
+            self._attr_unique_id = f"{entry.title} {self.entity_description.name}"
+        else:
+            self._attr_unique_id = self.name
         self._loc_params = loc_params
+        self.async_on_remove(self._cancel_update)
 
     async def async_update(self) -> None:
         """Update state."""
@@ -134,10 +153,6 @@ class Sun2Entity(Entity):
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added to hass."""
         self._setup_fixed_updating()
-
-    async def async_will_remove_from_hass(self) -> None:
-        """Run when entity will be removed from hass."""
-        self._cancel_update()
 
     def _cancel_update(self) -> None:
         """Cancel update."""

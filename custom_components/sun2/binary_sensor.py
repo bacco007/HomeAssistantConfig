@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from numbers import Real
-from typing import cast
+from typing import Any, Iterable, cast
 
 import voluptuous as vol
 
@@ -13,21 +13,33 @@ from homeassistant.components.binary_sensor import (
     DOMAIN as BINARY_SENSOR_DOMAIN,
     PLATFORM_SCHEMA,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_ABOVE,
+    CONF_BINARY_SENSORS,
     CONF_ELEVATION,
     CONF_ENTITY_NAMESPACE,
     CONF_MONITORED_CONDITIONS,
     CONF_NAME,
+    CONF_PLATFORM,
 )
 from homeassistant.core import CoreState, HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.util import dt as dt_util
+from homeassistant.util import dt as dt_util, slugify
 
-from .const import ATTR_NEXT_CHANGE, LOGGER, MAX_ERR_BIN, ONE_DAY, ONE_SEC, SUNSET_ELEV
+from .const import (
+    ATTR_NEXT_CHANGE,
+    DOMAIN,
+    LOGGER,
+    MAX_ERR_BIN,
+    ONE_DAY,
+    ONE_SEC,
+    SUNSET_ELEV,
+)
 from .helpers import (
     LOC_PARAMS,
     LocParams,
@@ -83,7 +95,7 @@ def _val_cfg(config: str | ConfigType) -> ConfigType:
     return config
 
 
-_BINARY_SENSOR_SCHEMA = vol.All(
+SUN2_BINARY_SENSOR_SCHEMA = vol.All(
     vol.Any(
         vol.In(_SENSOR_TYPES),
         vol.Schema(
@@ -106,7 +118,7 @@ _BINARY_SENSOR_SCHEMA = vol.All(
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_MONITORED_CONDITIONS): vol.All(
-            cv.ensure_list, [_BINARY_SENSOR_SCHEMA]
+            cv.ensure_list, [SUN2_BINARY_SENSOR_SCHEMA]
         ),
         **LOC_PARAMS,
     }
@@ -119,18 +131,20 @@ class Sun2ElevationSensor(Sun2Entity, BinarySensorEntity):
     def __init__(
         self,
         loc_params: LocParams | None,
-        namespace: str | None,
+        extra: ConfigEntry | str | None,
         name: str,
         above: float,
     ) -> None:
         """Initialize sensor."""
-        object_id = name
-        if namespace:
-            name = f"{namespace} {name}"
+        if not isinstance(extra, ConfigEntry):
+            # Note that entity_platform will add namespace prefix to object ID.
+            self.entity_id = f"{BINARY_SENSOR_DOMAIN}.{slugify(name)}"
+            if extra:
+                name = f"{extra} {name}"
         self.entity_description = BinarySensorEntityDescription(
             key=CONF_ELEVATION, name=name
         )
-        super().__init__(loc_params, BINARY_SENSOR_DOMAIN, object_id)
+        super().__init__(loc_params, extra if isinstance(extra, ConfigEntry) else None)
         self._event = "solar_elevation"
 
         self._threshold: float = above
@@ -309,6 +323,23 @@ class Sun2ElevationSensor(Sun2Entity, BinarySensorEntity):
         self._attr_extra_state_attributes = {ATTR_NEXT_CHANGE: nxt_dttm}
 
 
+def _sensors(
+    loc_params: LocParams | None,
+    extra: ConfigEntry | str | None,
+    sensors_config: Iterable[str | dict[str, Any]],
+) -> list[Entity]:
+    sensors = []
+    for config in sensors_config:
+        if CONF_ELEVATION in config:
+            options = config[CONF_ELEVATION]
+            sensors.append(
+                Sun2ElevationSensor(
+                    loc_params, extra, options[CONF_NAME], options[CONF_ABOVE]
+                )
+            )
+    return sensors
+
+
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
@@ -316,15 +347,35 @@ async def async_setup_platform(
     discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Set up sensors."""
-    loc_params = get_loc_params(config)
-    namespace = config.get(CONF_ENTITY_NAMESPACE)
-    sensors = []
-    for cfg in config[CONF_MONITORED_CONDITIONS]:
-        if CONF_ELEVATION in cfg:
-            options = cfg[CONF_ELEVATION]
-            sensors.append(
-                Sun2ElevationSensor(
-                    loc_params, namespace, options[CONF_NAME], options[CONF_ABOVE]
-                )
-            )
-    async_add_entities(sensors, True)
+    LOGGER.warning(
+        "%s: %s under %s is deprecated. Move to %s: ...",
+        CONF_PLATFORM,
+        DOMAIN,
+        BINARY_SENSOR_DOMAIN,
+        DOMAIN,
+    )
+
+    async_add_entities(
+        _sensors(
+            get_loc_params(config),
+            config.get(CONF_ENTITY_NAMESPACE),
+            config[CONF_MONITORED_CONDITIONS],
+        ),
+        True,
+    )
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the sensor platform."""
+    config = entry.options
+    if not (sensors_config := config.get(CONF_BINARY_SENSORS)):
+        return
+
+    async_add_entities(
+        _sensors(get_loc_params(config), entry, sensors_config),
+        True,
+    )
