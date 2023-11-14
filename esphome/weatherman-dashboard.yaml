@@ -1,0 +1,868 @@
+substitutions:
+########################################
+#  The following lines may be modified #
+########################################
+  software_version: Date 2023 10 26, v140
+
+  log_level: debug  # Enable levels logging https://esphome.io/components/logger.html
+                    # none, error, warn, info, debug (default), verbose, very_verbose
+
+
+############################################
+#  DO NOT CHANGE ANYTHING BELOW THIS LINE  #
+############################################
+  esphome_name: weatherman-dashboard
+  esphome_friendly_name: Weatherman Dashboard
+  esphome_board: esp32dev # ESP32-D0WDQ6(version 1)
+  esphome_framework_type: arduino
+  esphome_comment: Local Weatherman, Home Maintenance Dashboard
+  esphome_project_name: RCB.Local Weatherman, Home Maintenance Dashboard
+  esphome_project_version: Weatherman Dashboard, $software_version
+  devicename: weatherman_dashboard
+  upper_devicename: "Weatherman Dashboard"
+
+  gpio_dc_pin: GPIO04
+  gpio_cs_pin: GPIO05
+  gpio_reset_pin: GPIO16
+  gpio_spi_clk_pin: GPIO18
+  gpio_busy_pin: GPIO19
+  gpio_spi_mosi_pin: GPIO23
+  
+  gpio_sda_pin: GPIO21
+  gpio_scl_pin: GPIO22
+
+i2c:
+  id: bus_a
+  sda: $gpio_sda_pin
+  scl: $gpio_scl_pin
+
+esphome:
+  name: $esphome_name
+  friendly_name: $esphome_friendly_name
+  comment: $esphome_comment
+  project:
+    name: $esphome_project_name
+    version: $esphome_project_version
+  on_boot:
+      priority: 200.0
+      then:
+        - component.update: eink_display
+        - wait_until:
+            condition:
+              lambda: 'return id(data_updated) == true;'
+              # Wait a bit longer so all the items are received
+        - delay: 8s
+        - logger.log: "Initial sensor data received: Refreshing display..."
+        - lambda: 'id(initial_data_received) = true;'
+        - script.execute: update_screen
+  
+esp32:
+  board: $esphome_board
+  framework: 
+    type: $esphome_framework_type
+
+light:
+  - platform: status_led
+    pin: GPIO2
+    id: led_status_light
+    restore_mode: ALWAYS_ON
+    internal: true
+    effects:
+    - strobe:
+        name: "Slow Blink" # 0.1s on, 2s off
+        colors:
+          - state: true
+            brightness: 100%
+            duration: 100ms
+          - state: false
+            duration: 2s
+    on_turn_on:
+      then:
+      - light.turn_on:
+          id: led_status_light
+          effect: "Slow Blink"
+wifi:
+  ssid: !secret 'wifi_ssid'
+  password: !secret 'wifi_password'
+
+logger:
+  level: ${log_level}
+  logs:
+    text_sensor: WARN
+
+ota:
+  password: !secret 'ota_password'
+
+captive_portal:
+
+web_server:
+  port: 80
+
+time:
+  - platform: sntp
+    timezone: Australia/Sydney
+    id: sntp_time
+    on_time_sync:
+      then:
+        - ds1307.write_time
+        - logger.log:
+            level: INFO
+            format:  "Time synchronized and written to DS1307"
+   
+  - platform: ds1307
+    id: ds1307_time
+    update_interval: never
+    on_time:
+      - seconds: 0
+        minutes: 0
+        hours: 6-23
+        then:
+          - if:
+              condition:
+                lambda: 'return id(data_updated) == true;'
+              then:
+                - logger.log: "Sensor data updated and activity in home detected: Refreshing display..."
+                - script.execute: update_screen
+              else:
+                - logger.log: "No sensors updated - skipping display refresh."
+api:
+  encryption:
+    key: !secret 'api_encryption'
+
+button:
+  - platform: shutdown
+    name: "Weatherman - Shutdown"
+  - platform: restart
+    name: "Weatherman - Restart"
+  - platform: template
+    name: "Weatherman - Refresh Screen"
+    entity_category: config
+    on_press:
+      - script.execute: update_screen
+
+globals:
+  - id: data_updated
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: initial_data_received
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: recorded_display_refresh
+    type: int
+    restore_value: yes
+    initial_value: '0'
+  - id: moon_phase_text
+    type: std::string
+    restore_value: no
+    initial_value: ''
+
+script:
+  - id: update_screen
+    then:
+      - lambda: 'id(data_updated) = false;'
+      - component.update: eink_display
+      - lambda: 'id(recorded_display_refresh) += 1;'
+      - lambda: 'id(display_last_update).publish_state(id(ds1307_time).now().timestamp);'
+
+text_sensor:
+  # Expose ESPHome version as sensor.
+  - platform: version
+    name: Version
+
+  # Expose WiFi information as sensor.
+  - platform: wifi_info
+    ip_address:
+      id: our_ip_address
+      name: IP
+    ssid:
+      id: network_ssid
+      name: SSID
+
+  # Pressure Trend
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: pressure_trend
+    id: pressure_trend
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  # Temp Trend
+  - platform: homeassistant
+    entity_id: binary_sensor.outside_temperature
+    id: temp_trend
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  # Weather Alert
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_alert
+    id: weather_alert
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_now
+    id: weather_condition_now
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_0
+    id: weather_condition_0
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_0
+    id: weather_timestamp_0
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_1
+    id: weather_condition_1
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_1
+    id: weather_timestamp_1
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_2
+    id: weather_condition_2
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_2
+    id: weather_timestamp_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_3
+    id: weather_condition_3
+    internal: true
+    on_value:
+      then:
+
+        - lambda: 'id(data_updated) = true;'
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_3
+    id: weather_timestamp_3
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  # Sunrise
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: sunrise_time
+    id: sunrise_time
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  # Sunset
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: sunset_time
+    id: sunset_time
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  # Sun Position
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: sun_position
+    id: sun_position
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+
+  # Moon phase
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: moon_phase
+    id: moon_phase
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+sensor:
+  - platform: uptime
+    name: Uptime
+
+  - platform: wifi_signal
+    name: "WiFi RSSI dBm"
+    id: wifisignal
+    unit_of_measurement: "dBm"
+    entity_category: "diagnostic"
+    update_interval: 60s
+
+  - platform: template
+    name: "Display Last Update"
+    device_class: timestamp
+    entity_category: "diagnostic"
+    id: display_last_update
+    
+  - platform: template
+    name: "Recorded Display Refresh"
+    accuracy_decimals: 0
+    unit_of_measurement: "Refreshes"
+    state_class: "total_increasing"
+    entity_category: "diagnostic"
+    lambda: 'return id(recorded_display_refresh);'
+
+  - platform: homeassistant
+    entity_id: weather.stratford_hourly
+    attribute: temperature
+    id: weather_temperature
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: humidity
+    id: humidity
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: barometric_pressure
+    id: barometric_pressure
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: wind_bearing
+    id: wind_bearing
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: wind_speed
+    id: wind_speed
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: uv_index
+    id: uv_index
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: aqhi
+    id: aqhi
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: visibility
+    id: visibility
+    internal: true
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_0
+    id: weather_temperature_0
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_1
+    id: weather_temperature_1
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_2
+    id: weather_temperature_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_3
+    id: weather_temperature_3
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+
+# Include custom fonts
+font:
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 500
+    id: Medium_10pt
+    size: 10
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 500
+    id: Medium_12pt
+    size: 12
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 500
+    id: Medium_14pt
+    size: 14
+    glyphs: ['W', 'A', 'I', 'T', 'N', 'G', 'F', 'O', 'R', 'D', '.', ' ']
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 700
+    id: Bold_24pt
+    size: 24
+    glyphs: ['E', 'H', 'L', 'M', 'W', 'e', 'a', 't', 'h', 'r', 'S', 'f', 'o', 'd', 'C', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '°', ' ']
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 700
+    id: Bold_60pt
+    size: 60
+    glyphs: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '.']
+
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: mdi_font_22pt
+    size: 22
+    glyphs: &mdi-weather-glyphs
+      - "\U000F0590" # mdi-weather-cloudy
+      - "\U000F0E6E" # mdi-weather-cloudy-arrow-right
+      - "\U000F0592" # mdi-weather-hail
+      - "\U000F0F30" # mdi-weather-hazy
+      - "\U000F0593" # mdi-weather-lightning
+      - "\U000F0594" # mdi-weather-clear-night
+      - "\U000F0F31" # mdi-weather-night-partly-cloudy
+      - "\U000F0595" # mdi-weather-partly-cloudy
+      - "\U000F0F32" # mdi-weather-partly-lightning
+      - "\U000F0F33" # mdi-weather-partly-rainy
+      - "\U000F0F34" # mdi-weather-partly-snowy
+      - "\U000F0597" # mdi-weather-rainy
+      - "\U000F067F" # mdi-weather-snowy-rainy
+      - "\U000F0599" # mdi-weather-sunny
+      - "\U000F0F37" # mdi-weather-sunny-alert
+      - "\U000F14E4" # mdi-weather-sunny-off
+      - "\U000F059A" # mdi-weather-sunset
+      - "\U000F059B" # mdi-weather-sunset-down
+      - "\U000F059C" # mdi-weather-sunset-up
+      - "\U000F0D43" # mdi-air-filter
+      - "\U000F058E" # mdi-water-percent
+      - "\U000F0F61" # mdi-moon-first-quarter
+      - "\U000F0F62" # mdi-moon-full
+      - "\U000F0F63" # mdi-moon-last-quarter
+      - "\U000F0F64" # mdi-moon-new
+      - "\U000F0F65" # mdi-moon-waning-crescent
+      - "\U000F0F66" # mdi-moon-waning-gibbous
+      - "\U000F0F67" # mdi-moon-waxing-crescent
+      - "\U000F0F68" # mdi-moon-waxing-gibbous
+      - "\U000F15FA" # mdi-windsock
+      - "\U000F0535" # mdi-trending-up
+      - "\U000F0533" # mdi-trending-down
+      - "\U000F00A5" # mdi-binoculars
+      - "\U000F018C" # mdi-compass-outline
+      - "\U000F0928" # mdi-wifi-strength-4
+      - "\U000F0925" # mdi-wifi-strength-3 
+      - "\U000F0922" # mdi-wifi-strength-2
+      - "\U000F091F" # mdi-wifi-strength-1
+      - "\U000F092B" # mdi-wifi-strength-alert-outline
+      - "\U000F0E03" # mdi-thermometer-chevron-up
+      - "\U000F0E02" # mdi-thermometer-chevron-down
+      - "\U000F0F36" # mdi-weather-snowy-heavy, Blizzard, Winter storm, WATCH, WARNING
+      - "\U000F059E" # mdi-weather-windy-variant, Blowing snow, ADVISORY
+      - "\U000F0E04" # mdi-thermometer-minus, Extreme cold, WARNING
+      - "\U000F0E01" # mdi-thermometer-alert, Flash freeze, WARNING
+      - "\U000F0591" # mdi-weather-fog, Fog, ADVISORY
+      - "\U000F0F35" # mdi-weather-partly-snowy-rainy, Freezing drizzle, Freezing rain, WARNING, ADVISORY
+      - "\U000F0F29" # mdi-snowflake-alert, Frost, ADVISORY
+      - "\U000F1A45" # mdi-heat-wave, heat, WARNING
+      - "\U000F0898" # mdi-weather-hurricane, Hurricane, WATCH, WARNING
+      - "\U000F0596" # mdi-weather-pouring, Rainfall, WARNING
+      - "\U000F067E" # mdi-weather-lightning-rainySevere thunderstorm, WATCH, WARNING
+      - "\U000F0598" # mdi-weather-snowy, Snowfall, WARNING
+      - "\U000F0026" # mdi-alert, Snow squall, WATCH, WARNING
+      - "\U000F0F38" # mdi-weather-tornado, Tornado, WATCH, WARNING
+      - "\U000F1C78" # mdi-weather-hurricane-outline, Tropical storm, WATCH, WARNING
+      - "\U000F0F2F" # mdi-weather-cloudy-alert, Weather, ADVISORY, WARNING
+      - "\U000F059D" # mdi-weather-windy, Wind, WARNING
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: mdi_font_36pt
+    size: 36
+    glyphs: *mdi-weather-glyphs
+
+# Define colors
+# This design is white on black so this is necessary.
+color:
+  - id: color_bg
+    red: 0%
+    green: 0%
+    blue: 0%
+    white: 50%
+  - id: color_text
+    red: 0%
+    green: 0%
+    blue: 0%
+    white: 0%
+spi:
+  clk_pin: $gpio_spi_clk_pin
+  mosi_pin: $gpio_spi_mosi_pin
+
+display:
+
+  - platform: waveshare_epaper
+    id: eink_display
+    cs_pin: $gpio_cs_pin
+    busy_pin: $gpio_busy_pin
+    reset_pin: $gpio_reset_pin
+    dc_pin: $gpio_dc_pin
+    update_interval: never
+    # waveshare 4.2" display, 400px x 300px.
+    model: 4.20in
+    lambda: |-
+      // Map weather states to MDI characters.
+      std::map<std::string, std::string> weather_icon_map
+        {
+          {"cloudy", "\U000F0590"},
+          {"cloudy-alert", "\U000F0F2F"},
+          {"cloudy-arrow-right", "\U000F0E6E"},
+          {"fog", "\U000F0591"},
+          {"hail", "\U000F0592"},
+          {"hazy", "\U000F0F30"},
+          {"hurricane", "\U000F0898"},
+          {"lightning", "\U000F0593"},
+          {"lightning-rainy", "\U000F067E"},
+          {"clear-night", "\U000F0594"},
+          {"night-partly-cloudy", "\U000F0F31"},
+          {"partlycloudy", "\U000F0595"},
+          {"partly-lightning", "\U000F0F32"},
+          {"partly-rainy", "\U000F0F33"},
+          {"partly-snowy", "\U000F0F34"},
+          {"partly-snowy-rainy", "\U000F0F35"},
+          {"pouring", "\U000F0596"},
+          {"rainy", "\U000F0597"},
+          {"snowy", "\U000F0598"},
+          {"snowy-heavy", "\U000F0F36"},
+          {"snowy-rainy", "\U000F067F"},
+          {"sunny", "\U000F0599"},
+          {"sunny-alert", "\U000F0F37"},
+          {"sunny-off", "\U000F14E4"},
+          {"sunset", "\U000F059A"},
+          {"sunset-down", "\U000F059B"},
+          {"sunset-up", "\U000F059C"},
+          {"tornado", "\U000F0F38"},
+          {"windy", "\U000F059D"},
+          {"windy-variant", "\U000F059E"},
+        };
+      std::map<std::string, std::string> moon_icon_map
+        {
+          {"first_quarter", "\U000F0F61"},
+          {"full_moon", "\U000F0F62"},
+          {"last_quarter", "\U000F0F63"},
+          {"new_moon", "\U000F0F64"},
+          {"waning_crescent", "\U000F0F65"},
+          {"waning_gibbous", "\U000F0F66"},
+          {"waxing_crescent", "\U000F0F67"},
+          {"waxing_gibbous", "\U000F0F68"},
+        };
+      std::map<std::string, std::string> warning_icon_map
+        {
+          {"Blizzard", "\U000F0F36"},
+          {"Blowing snow", "\U000F059E"},
+          {"Extreme cold", "\U000F0E04"},
+          {"Flash freeze", "\U000F0E01"},
+          {"Fog", "\U000F0591"},
+          {"Freezing drizzle", "\U000F0F35"},
+          {"Freezing rain", "\U000F0F35"},
+          {"Frost", "\U000F0F29"},
+          {"Heat", "\U000F1A45"},
+          {"Hurricane", "\U000F0898"},
+          {"Rainfall", "\U000F0596"},
+          {"Severe thunderstorm", "\U000F067E"},
+          {"Snowfall", "\U000F0598"},
+          {"Snow squall", "\U000F0026"},
+          {"Tornadao", "\U000F0F38"},
+          {"Tropical storm", "\U000F1C78"},
+          {"Weather", "\U000F0F2F"},
+          {"Wind", "\U000F059D"},
+          {"Winter storm", "\U000F0F36"},
+        };
+
+      // Fill background.
+      it.fill(color_bg);
+
+      // Show loading screen before data is received.
+      if (id(initial_data_received) == false) {
+        it.printf(200, 150, id(Medium_14pt), color_text, TextAlign::TOP_CENTER, "WAITING FOR DATA...");
+      } else {
+
+        // Weather Section
+        it.printf(200, 4, id(Bold_24pt), color_text, TextAlign::TOP_CENTER, "Stratford Weather");
+
+
+        // ----------------------------------------------------------------------------------- WEATHER STATE ICON
+        it.printf(57, 76, id(mdi_font_36pt), color_text, TextAlign::BASELINE_CENTER, "%s", weather_icon_map[id(weather_condition_now).state.c_str()].c_str());
+
+        // ----------------------------------------------------------------------------------- WARNINGS
+        if(id(weather_alert).has_state ()) {
+            if(id(weather_alert).state != "") {
+              it.printf(10, 81, id(mdi_font_22pt), color_text, TextAlign::BASELINE_LEFT, "\U000F0026");
+              it.printf(10, 90, id(Medium_10pt), color_text, TextAlign::BASELINE_LEFT, id(weather_alert).state.c_str());
+            }
+        }
+
+        // ----------------------------------------------------------------------------------- CURRENT TEMPERATURE
+        it.printf(215, 90, id(Bold_60pt), color_text, TextAlign::BASELINE_RIGHT, "%2.1f", id(weather_temperature).state);
+        it.printf(218, 40, id(Bold_24pt), color_text, TextAlign::TOP_LEFT, "°C");
+
+        if(id(temp_trend).has_state ()) {
+          if(id(temp_trend).state == "on") {
+            it.printf(218, 90, id(mdi_font_22pt), color_text, TextAlign::BASELINE_LEFT, "\U000F0E03");
+          } else if(id(temp_trend).state == "off") {
+            it.printf(218, 90, id(mdi_font_22pt), color_text, TextAlign::BASELINE_LEFT, "\U000F0E02");
+          }
+        }
+
+        // ----------------------------------------------------------------------------------- WIND
+        if(id(wind_speed).has_state ()) {
+          it.printf(280, 76, id(mdi_font_36pt), color_text, TextAlign::BASELINE_CENTER, "\U000F15FA");
+          it.printf(280, 90, id(Medium_12pt), color_text, TextAlign::BASELINE_CENTER, "%2.0f kmh", id(wind_speed).state);
+        }
+
+        // ----------------------------------------------------------------------------------- WIND DIRECTION
+        if(id(wind_bearing).has_state ()) {
+          it.printf(350, 76, id(mdi_font_36pt), color_text, TextAlign::BASELINE_CENTER, "\U000F018C");
+          if (id(wind_bearing).state > 337.5) {
+              it.printf(350, 42, id(Medium_12pt), color_text, TextAlign::BASELINE_CENTER, "N");
+          } else if(id(wind_bearing). state > 292.5) {
+              it.printf(338, 45, id(Medium_12pt), color_text, TextAlign::CENTER_RIGHT, "NW");
+          } else if(id(wind_bearing). state > 247.5) {
+              it.printf(330, 62, id(Medium_12pt), color_text, TextAlign::CENTER_RIGHT, "W");
+          } else if(id(wind_bearing). state > 202.5) {
+              it.printf(338, 78, id(Medium_12pt), color_text, TextAlign::CENTER_RIGHT, "SW");
+          } else if(id(wind_bearing). state > 157.5) {
+              it.printf(350, 90, id(Medium_12pt), color_text, TextAlign::BASELINE_CENTER, "S");
+          } else if(id(wind_bearing). state > 112.5) {
+              it.printf(362, 78, id(Medium_12pt), color_text, TextAlign::CENTER_LEFT, "SE");
+          } else if(id(wind_bearing). state > 67.5) {
+              it.printf(370, 62, id(Medium_12pt), color_text, TextAlign::CENTER_LEFT, "E");
+          } else if(id(wind_bearing). state > 22.5) {
+              it.printf(362, 45, id(Medium_12pt), color_text, TextAlign::CENTER_LEFT, "NE");
+          } else if(id(wind_bearing). state >= 0) {
+              it.printf(350, 42, id(Medium_12pt), color_text, TextAlign::BASELINE_CENTER, "N");
+          }
+        }
+
+        // ----------------------------------------------------------------------------------- LINE
+        it.filled_rectangle(10, 100, 380, 2, color_text);
+
+        // ----------------------------------------------------------------------------------- FORECAST
+
+        it.printf(57, 110, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_0).state.c_str());
+        it.printf(57, 128, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_0).state.c_str()].c_str());
+        it.printf(57, 166, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f°C", id(weather_temperature_0).state);
+
+        it.printf(114, 110, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_1).state.c_str());
+        it.printf(114, 128, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_1).state.c_str()].c_str());
+        it.printf(114, 166, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f°C", id(weather_temperature_1).state);
+
+        it.printf(171, 110, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_2).state.c_str());
+        it.printf(171, 128, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_2).state.c_str()].c_str());
+        it.printf(171, 166, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f°C", id(weather_temperature_2).state);
+
+        it.printf(228, 110, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_3).state.c_str());
+        it.printf(228, 128, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_3).state.c_str()].c_str());
+        it.printf(228, 166, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f°C", id(weather_temperature_3).state);
+
+        // ----------------------------------------------------------------------------------- AQHI
+        if(id(aqhi).has_state ()) {
+          it.printf(285, 110, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "AQHI");
+          it.printf(285, 128, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F0D43");
+          it.printf(285, 166, id(Medium_12pt), color_text, TextAlign::TOP_RIGHT, "%2.1f", id(aqhi).state);
+          if (id(aqhi).state <= 3) {
+              // Low Risk # 1-3  Low health risk
+              it.printf(286, 166, id(Medium_12pt), color_text, TextAlign::TOP_LEFT, "(L)");
+          } else if (id(aqhi).state  <= 6) {
+              //Moderate Rsik # 4-6  Moderate health risk
+              it.printf(286, 166, id(Medium_12pt), color_text, TextAlign::TOP_LEFT, "(M)");
+          } else if (id(aqhi).state  <= 10) {
+              //High Risk # 7-10  High health risk
+              it.printf(286, 166, id(Medium_12pt), color_text, TextAlign::TOP_LEFT, "(H)");
+          } else {
+              //Extreme # 10 +  Very high health risk
+              it.printf(286, 166, id(Medium_12pt), color_text, TextAlign::TOP_LEFT, "(E)");
+          }
+        }
+
+        // ----------------------------------------------------------------------------------- UV INDEX
+        if(id(uv_index).has_state ()) {
+          it.printf(343, 110, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "UV Index");
+          it.printf(343, 128, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F0F37");
+          it.printf(343, 166, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f", id(uv_index).state);
+        }
+
+        // ----------------------------------------------------------------------------------- LINE
+        it.filled_rectangle(10, 186, 380, 2, color_text);
+
+        // ----------------------------------------------------------------------------------- VISIBILITY
+        if(id(visibility).has_state ()) {
+          it.printf(66, 196, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "Visibility");
+          it.printf(66, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F00A5");
+          it.printf(66, 252, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.1f km", id(visibility).state);
+        }
+
+        // ----------------------------------------------------------------------------------- HUMIDITY
+        if(id(humidity).has_state ()) {
+          it.printf(133, 196, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "Humidity");
+          it.printf(133, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F058E");
+          it.printf(133, 252, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f %%", id(humidity).state);
+        }
+
+        // ----------------------------------------------------------------------------------- PRESSURE
+        if(id(barometric_pressure).has_state ()) {
+          // pressure trend
+          it.printf(200, 196, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "Pressure");
+          if(id(pressure_trend).state == "Rising") {
+            it.printf(200, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F0535");
+          } else if(id(pressure_trend).state == "Falling") {
+            it.printf(200, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F0533");
+          }
+          it.printf(200, 252, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%2.0f hPa", id(barometric_pressure).state);
+        }
+
+        if(id(sun_position).state == "above_horizon") {
+          // ------------------------------------------------------------------------------------ SUNSET
+          it.printf(267, 196, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "Sunset");
+          it.printf(267, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F059B");
+          it.printf(267, 252, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(sunset_time).state.c_str());
+        } else {
+          // ----------------------------------------------------------------------------------- SUNRISE
+          it.printf(267, 196, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "Sunrise");
+          it.printf(267, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "\U000F059C");
+          it.printf(267, 252, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(sunrise_time).state.c_str());
+        }
+
+        // ------------------------------------------------------------------------------------- MOON PHASE ICON
+        if(id(moon_phase).has_state ()) {
+          if(id(moon_phase).state.c_str() == "new_moon") {
+            id(moon_phase_text) = "New Moon";
+          } else if(id(moon_phase).state == "waxing_crescent") {
+            id(moon_phase_text) = "Waxing Crescent";
+          } else if(id(moon_phase).state == "first_quarter") {
+            id(moon_phase_text) = "First Quarter";
+          } else if(id(moon_phase).state == "waxing_gibbous") {
+            id(moon_phase_text) = "Waxing Gibbous";
+          } else if(id(moon_phase).state == "full_moon") {
+            id(moon_phase_text) = "Full Moon";
+          } else if(id(moon_phase).state == "waning_gibbous") {
+            id(moon_phase_text) = "Waning Gibbous";
+          } else if(id(moon_phase).state == "last_quarter") {
+            id(moon_phase_text) = "Last Quarter";
+          } else if(id(moon_phase).state == "waning_crescent") {
+            id(moon_phase_text) = "Waning Crescent";
+          } else {
+            id(moon_phase_text) = "Unknown";
+          }
+
+          it.printf(334, 196, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "Moon Phase");
+          it.printf(334, 214, id(mdi_font_36pt), color_text, TextAlign::TOP_CENTER, "%s", moon_icon_map[id(moon_phase).state.c_str()].c_str());
+          it.printf(334, 252, id(Medium_12pt), color_text, TextAlign::TOP_CENTER, "%s", id(moon_phase_text).c_str());
+        }
+
+        // ------------------------------------------------------------------------------------- LINE
+        it.filled_rectangle(10, 272, 380, 2, color_text);
+
+        // ----------------------------------------------------------------------------------- WiFi
+        if(id(wifisignal).has_state ()) {
+          if (id(wifisignal).state >= -50) {
+              // Excellent # mdi-wifi-strength-4 "\U000F0928" 255, 230
+              it.printf(350, 285, id(mdi_font_22pt), color_text, TextAlign::CENTER, "\U000F0928");
+          } else if (id(wifisignal).state  >= -60) {
+              //Good # mdi-wifi-strength-3 "\U000F0925"
+              it.printf(350, 285, id(mdi_font_22pt), color_text, TextAlign::CENTER, "\U000F0925");
+          } else if (id(wifisignal).state  >= -67) {
+              //Fair # mdi-wifi-strength-2 "\U000F0922"
+              it.printf(350, 285, id(mdi_font_22pt), color_text, TextAlign::CENTER, "\U000F0922");
+          } else if (id(wifisignal).state  >= -70) {
+              //Weak # mdi-wifi-strength-1 "\U000F091F"
+              it.printf(350, 285, id(mdi_font_22pt), color_text, TextAlign::CENTER, "\U000F091F");
+          } else {
+              //Unlikely working signal # mdi-wifi-strength-alert-outline "\U000F092B"
+              it.printf(350, 285, id(mdi_font_22pt), color_text, TextAlign::CENTER, "\U000F092B");
+          }
+        }
+          // Refresh Timestamp
+          // Code by EnsconcE from https://community.home-assistant.io/t/esphome-show-time/348903
+          char str[40];
+          time_t currTime = id(ds1307_time).now().timestamp;
+          strftime(str, sizeof(str), "%A %B %d, %Y at %I:%M %p", localtime(&currTime));
+          it.printf(200, 285, id(Medium_12pt), color_text, TextAlign::CENTER, "%s", str);
+      }

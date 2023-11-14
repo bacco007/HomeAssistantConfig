@@ -17,6 +17,16 @@ sensors:
     friendly_name: Temp Trend - Tamworth Airport
     max_samples: 60
     sample_duration: 10800
+  weather_temperature_trend:
+    entity_id: sensor.weather_temperature
+    friendly_name: "[Weather] Temperature Trend"
+    max_samples: 60
+    sample_duration: 10800
+  weather_pressure_trend:
+    entity_id: sensor.weather_barometric_pressure
+    friendly_name: "[Weather] Pressure Trend"
+    max_samples: 60
+    sample_duration: 10800
 
   # 0.25 deg change over 30min (0.25/(30*60))
   temptrend_outdoor_rising:
