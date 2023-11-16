@@ -8,6 +8,8 @@
       Items that do not evaluate as bool will be defaulted to null/undefined.
       If there are one or more that match, 
       True is returned, else False, defaults to False.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be certain
       of the result.
@@ -18,9 +20,7 @@
       {{- true_any(['entity_1','entity_2']) | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') 
     | map('bool', null) | select('eq', True)
     | list | count > 0 -}}
@@ -39,6 +39,8 @@
       Items that do not evaluate as bool will be defaulted to null/undefined.
       If there are one or more that match, 
       True is returned, else False, defaults to False.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be certain
       of the result.
@@ -49,9 +51,7 @@
       {{- false_any(['entity_1','entity_2']) | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') 
     | map('bool', null) | select('eq', False)
     | list | count > 0 -}}
@@ -70,6 +70,8 @@
       Items that do not evaluate as bool will be defaulted to null/undefined.
       If there is only one that matches, 
       True is returned, else False, defaults to False.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be certain
       of the result.
@@ -80,9 +82,7 @@
       {{- true_one(['entity_1','entity_2]') | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') 
     | map('bool', null) | select('eq', True)
     | list | count == 1 -}}
@@ -102,6 +102,8 @@
       The number of entities are counted.
       If the 2 counts are the same, True is returned, else False,
       defaults to False.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be certain
       of the result.
@@ -112,9 +114,7 @@
       {{- true_all(['entity_1','entity_2']) | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') 
     | map('bool', True) | select('eq', True)
     | list | count == entity_list | count -}}
@@ -133,6 +133,8 @@
       Items that do not evaluate as bool will be defaulted to null/undefined.
       If there is only one that matches, True is returned,
       else False, defaults to False.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be certain
       of the result.
@@ -143,9 +145,7 @@
       {{- false_one(['entity_1','entity_2']) | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') 
     | map('bool', null) | select('eq', False)
     | list | count == 1 -}}
@@ -165,6 +165,8 @@
       The number of entities are counted.
       If the 2 counts are the same, True is returned, else False,
       defaults to False.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be certain
       of the result.
@@ -175,9 +177,7 @@
       {{- false_all(['entity_1','entity_2']) | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') 
     | map('bool', False) | select('eq', False)
     | list | count == entity_list | count -}}

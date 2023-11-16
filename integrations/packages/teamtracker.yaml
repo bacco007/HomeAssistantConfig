@@ -1,38 +1,43 @@
 ---
 sensor:
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: soccer
+  - league_id: XXX
     league_path: aus.1
-    team_id: SYD
     name: teamtracker_sydneyfc
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: rugby
-    league_path: 8326
-    team_id: WARAT
-    name: teamtracker_nswwaratahs
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: cricket
-    league_path: 8044
-    team_id: SS
-    name: teamtracker_sydneysixers
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: cricket
-    league_path: 8043
-    team_id: NSW
-    name: teamtracker_cricketnswss
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: australian-football
-    league_path: afl
+    platform: teamtracker
+    sport_path: soccer
     team_id: SYD
+
+  - league_id: XXX
+    league_path: 8326
+    name: teamtracker_nswwaratahs
+    platform: teamtracker
+    sport_path: rugby
+    team_id: WARAT
+
+  - league_id: XXX
+    league_path: 8044
+    name: teamtracker_sydneysixers
+    platform: teamtracker
+    sport_path: cricket
+    team_id: SS
+
+  - league_id: XXX
+    league_path: 8043
+    name: teamtracker_cricketnswss
+    platform: teamtracker
+    sport_path: cricket
+    team_id: NSW
+
+  - league_id: XXX
+    league_path: afl
     name: teamtracker_sydneyswans
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: rugby-league
+    platform: teamtracker
+    sport_path: australian-football
+    team_id: SYD
+
+  - league_id: XXX
     league_path: 3
-    team_id: KNI
     name: teamtracker_newcastleknights
+    platform: teamtracker
+    sport_path: rugby-league
+    team_id: KNI

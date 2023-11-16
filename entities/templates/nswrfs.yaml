@@ -4,7 +4,6 @@ binary_sensor:
     unique_id: nsw_rfs_alert_active
     icon: mdi:fire-alert
     state: "{{ states.geo_location|selectattr('attributes.source','eq','nsw_rural_fire_service_feed')|list|count|int(-1) > 0 }}"
-    unit_of_measurement: "Incidents"
     attributes:
       category: nswrfs
       last_alert: >

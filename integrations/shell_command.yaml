@@ -1,7 +1,7 @@
 ---
 # https://www.home-assistant.io/integrations/shell_command/
 shell_command:
+  convert_ui_lovelace: python /config/bin/json2yaml.py /config/.storage/lovelace /config/storage-lovelace-ui.yaml
   gen_fakesecrets: bash /config/bin/make_fake_secrets.sh
-  push_to_github: "bash /config/bin/ha_gitpush.sh"
-  run_chores: "bash /config/chores"
-  convert_ui_lovelace: "python /config/bin/json2yaml.py /config/.storage/lovelace /config/storage-lovelace-ui.yaml"
+  push_to_github: bash /config/bin/ha_gitpush.sh
+  run_chores: bash /config/chores

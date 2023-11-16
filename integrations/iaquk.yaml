@@ -1,34 +1,34 @@
 ---
 iaquk:
-  lounge:
-    sources:
-      temperature: sensor.z2m_lounge_climate_temperature
-      humidity: sensor.z2m_lounge_climate_humidity
-      # tvoc:
+  bedroom:
     sensors:
-      - iaq_level
       - iaq_index
-  office:
+      - iaq_level
     sources:
-      temperature: sensor.z2m_office_airquality_temperature_filtered
-      humidity: sensor.z2m_office_airquality_humidity_filtered
+      humidity: sensor.z2m_bedroom_vindstyrka_humidity
+      pm: sensor.z2m_bedroom_vindstyrka_pm25
+      temperature: sensor.z2m_bedroom_vindstyrka_temperature
+      # co2:
+      tvoc: sensor.z2m_bedroom_vindstyrka_voc_index
+  lounge:
+    sensors:
+      - iaq_index
+      - iaq_level
+    sources:
+      humidity: sensor.z2m_lounge_climate_humidity
+      temperature: sensor.z2m_lounge_climate_temperature
+  office:
+    # tvoc:
+    sensors:
+      - iaq_index
+      - iaq_level
+    sources:
       co2: sensor.z2m_office_airquality_co2_filtered
+      hcho: sensor.z2m_office_airquality_formaldehyd_filtered
+      humidity: sensor.z2m_office_airquality_humidity_filtered
+      # radon:
+      pm: sensor.z2m_office_airquality_pm25_filtered
+      temperature: sensor.z2m_office_airquality_temperature_filtered
       # co:
       # no2:
       tvoc: sensor.z2m_office_airquality_voc_filtered
-      hcho: sensor.z2m_office_airquality_formaldehyd_filtered
-      # radon:
-      pm: sensor.z2m_office_airquality_pm25_filtered
-    sensors:
-      - iaq_level
-      - iaq_index
-  bedroom:
-    sources:
-      temperature: sensor.z2m_bedroom_vindstyrka_temperature
-      humidity: sensor.z2m_bedroom_vindstyrka_humidity
-      pm: sensor.z2m_bedroom_vindstyrka_pm25
-      # co2:
-      tvoc: sensor.z2m_bedroom_vindstyrka_voc_index
-    sensors:
-      - iaq_level
-      - iaq_index

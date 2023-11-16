@@ -1,15 +1,15 @@
 ---
 proximity:
   home:
-    ignored_zones:
-      - work
     devices:
       - person.thomas_baxter
+    ignored_zones:
+      - work
     tolerance: 500
     unit_of_measurement: m
   work:
-    zone: trc
     devices:
       - person.thomas_baxter
     tolerance: 500
     unit_of_measurement: m
+    zone: trc

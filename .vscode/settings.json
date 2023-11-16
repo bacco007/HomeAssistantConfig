@@ -19,5 +19,6 @@
   "python.formatting.blackArgs": ["--line-length=99"],
   "python.sortImports.args": ["-rc", "-sp isort.cfg"],
   "files.eol": "\n",
-  "files.trimTrailingWhitespace": true
+  "files.trimTrailingWhitespace": true,
+  "vscode-yaml-sort.schema": "HOMEASSISTANT_SCHEMA"
 }

@@ -4,6 +4,8 @@
       The number of entities that are NOT unknown, unavailable, empty,
       or none are counted.
       If the 2 counts are the same, true is returned, else false, defaults to false.
+    homeassistant:
+      min_version: 2023.11.0
     REMEMBER!!
       This always returns text, so cast to bool on the other end to be
       certain of the result.
@@ -14,9 +16,7 @@
       {{- avail(['entity_1','entity_2']) | bool -}}
   #}
   {# First tests to make sure this is a list #}
-  {%- if entity_list is iterable and
-    (entity_list is not string and entity_list is not mapping)
-  -%}
+  {%- if entity_list is list -%}
     {{- entity_list | map('states') | reject('in', ['unknown','unavailable','','none'])
     | list | count == entity_list | count -}}
   {%- else -%}

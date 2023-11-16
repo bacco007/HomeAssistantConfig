@@ -1,34 +1,34 @@
 ---
 binary_sensor:
-  - platform: sun2
-    monitored_conditions:
-      - elevation
+  - monitored_conditions:
       - elevation:
           above: 25
           name: Sun Above 25
+      - elevation
+    platform: sun2
 
 sensor:
-  - platform: sun2
-    monitored_conditions:
-      - solar_midnight
+  - monitored_conditions:
       - astronomical_dawn
-      - nautical_dawn
-      - dawn
-      - sunrise
-      - solar_noon
-      - sunset
-      - dusk
-      - nautical_dusk
-      - astronomical_dusk
-      - daylight
-      - civil_daylight
-      - nautical_daylight
       - astronomical_daylight
-      - night
-      - civil_night
-      - nautical_night
+      - astronomical_dusk
       - astronomical_night
+      - civil_daylight
+      - civil_night
+      - dawn
+      - daylight
+      - deconz_daylight
+      - dusk
       - elevation
       - max_elevation
-      - deconz_daylight
+      - nautical_dawn
+      - nautical_daylight
+      - nautical_dusk
+      - nautical_night
+      - night
+      - solar_midnight
+      - solar_noon
       - sun_phase
+      - sunrise
+      - sunset
+    platform: sun2

@@ -1,7 +1,11 @@
 ---
 - name: Tamworth Hospital Waiting Scraper
-  resource: https://ws-spsl-ext-non-auth.webapp.health.nsw.gov.au/rted/api/GetHospitalDetails/179
+  resource: https://rted-web-external.citc.health.nsw.gov.au/api/GetHospitalDetails/179
   verify_ssl: false
+  log_response: true
+  timeout: 60
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
   sensor:
     - unique_id: tamhospital_waitingtime
       name: Tamworth Hospital Emergency Waiting Time

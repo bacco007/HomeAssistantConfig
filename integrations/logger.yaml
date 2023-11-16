@@ -3,58 +3,56 @@
 # Log Severities: notset, debug, info, warn, warning, error, fatal, critical
 logger:
   default: error
+  filters:
+    TransportNSW.transportnsw:
+      - No stop events for this query
+    custom_components.ical:
+      - Exception can't compare datetime.datetime to datetime.date in starts/ends
+    custom_components.monitor_docker.helpers:
+      - Can not determine network usage for container ('networks')
+      - No 'networks' found in raw packet
+      - Too many errors on 'networks' stats, disabling monitoring
+    custom_components.unifi_status.switch:
+      - Failed to scan aps
+    custom_components.unifics.sensor:
+      - Unexpected error fetching sensor data
+    custom_components.unifigateway.sensor:
+      - Failed to access health info
+    custom_components.waternsw.sensor:
+      - Cannot retrieve date, check config
+    homeassistant:
+      - "Error doing job: Task exception was never retrieved"
+    homeassistant.components.media_player:
+      - Updating spotify media_player took longer than the scheduled update interval 0:00:30
+    homeassistant.components.recorder:
+      - Unhandled database error while processing task EventTask
+    homeassistant.components.template.template_entity:
+      - Template loop detected while processing event
+    homeassistant.components.waze_travel_time.sensor:
+      - "Error on retrieving data: empty response"
+    homeassistant.helpers.entity:
+      - Expected positive event duration
+      - Update of media_player.spotify_thomas_baxter is taking over 10 seconds
+    homeassistant.helpers.script.trigger_update_coordinator:
+      - "Trigger Update Coordinator: Executing step call service"
+      - "Trigger Update Coordinator: Executing step setting variables"
+    homeassistant.loader:
+      - We found a custom integration
+    py.warnings:
+      - "InsecureRequestWarning: Unverified HTTPS request is being made to host"
+    spotipy.client:
+      - Max Retries reached
   logs:
-    # root: debug
+    aioharmony.harmonyclient: fatal
+    custom_components.aio_geojson_query: debug
+    custom_components.monitor_docker: fatal
+    custom_components.monitor_docker.helpers: fatal
     homeassistant: fatal
-    homeassistant.core: info
     homeassistant.config: debug
+    homeassistant.core: info
     homeassistant.helpers.entity: error
     homeassistant.helpers.script: debug
     homeassistant.loader: error
+    pychromecast.socket_client: fatal
     slixmpp.basexmpp: error
     slixmpp.stringprep: fatal
-    aioharmony.harmonyclient: fatal
-    pychromecast.socket_client: fatal
-    custom_components.monitor_docker: fatal
-    custom_components.monitor_docker.helpers: fatal
-    custom_components.aio_geojson_query: debug
-    # custom_components.gtfs_rt: debug
-    # homeassistant.components.websocket_api: debug
-    # custom_components.nodered: debug
-
-  filters:
-    homeassistant:
-      - "Error doing job: Task exception was never retrieved"
-    homeassistant.loader:
-      - "We found a custom integration"
-    homeassistant.components.template.template_entity:
-      - "Template loop detected while processing event"
-    homeassistant.components.media_player:
-      - "Updating spotify media_player took longer than the scheduled update interval 0:00:30"
-    homeassistant.helpers.entity:
-      - "Update of media_player.spotify_thomas_baxter is taking over 10 seconds"
-      - "Expected positive event duration"
-    spotipy.client:
-      - "Max Retries reached"
-    custom_components.ical:
-      - "Exception can't compare datetime.datetime to datetime.date in starts/ends"
-    homeassistant.components.waze_travel_time.sensor:
-      - "Error on retrieving data: empty response"
-    TransportNSW.transportnsw:
-      - "No stop events for this query"
-    homeassistant.components.recorder:
-      - "Unhandled database error while processing task EventTask"
-    custom_components.monitor_docker.helpers:
-      - "Can not determine network usage for container ('networks')"
-      - "No 'networks' found in raw packet"
-      - "Too many errors on 'networks' stats, disabling monitoring"
-    custom_components.unifigateway.sensor:
-      - "Failed to access health info"
-    custom_components.unifi_status.switch:
-      - "Failed to scan aps"
-    custom_components.unifics.sensor:
-      - "Unexpected error fetching sensor data"
-    custom_components.waternsw.sensor:
-      - "Cannot retrieve date, check config"
-    py.warnings:
-      - "InsecureRequestWarning: Unverified HTTPS request is being made to host"
