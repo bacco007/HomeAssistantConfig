@@ -1,6 +1,14 @@
 {
     "title": "Zon2",
-    "service_name": "Zon",
+    "misc": {
+        "above": "Boven",
+        "above_horizon": "Boven Horizon",
+        "elevation_at": "Hoogte bij",
+        "minus": "min",
+        "rising": "Zonsopkomst",
+        "service_name": "Zon",
+        "setting": "Zonsondergang"
+    },
     "entity": {
         "sensor": {
             "astronomical_daylight": {

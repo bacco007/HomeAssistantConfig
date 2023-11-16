@@ -1,6 +1,14 @@
 {
     "title": "Sun2",
-    "service_name": "Sun",
+    "misc": {
+        "above": "Above",
+        "above_horizon": "Above Horizon",
+        "elevation_at": "Elevation at",
+        "minus": "minus",
+        "rising": "Rising",
+        "service_name": "Sun",
+        "setting": "Setting"
+    },
     "entity": {
         "sensor": {
             "astronomical_daylight": {
