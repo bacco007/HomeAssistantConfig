@@ -1,0 +1,88 @@
+substitutions:
+########################################
+#  The following lines may be modified #
+########################################
+  software_version: Date 2023 10 26, v140
+
+  log_level: debug  # Enable levels logging https://esphome.io/components/logger.html
+                    # none, error, warn, info, debug (default), verbose, very_verbose
+
+
+############################################
+#  DO NOT CHANGE ANYTHING BELOW THIS LINE  #
+############################################
+  esphome_name: weatherman-dash
+  esphome_friendly_name: Weatherman Dashboard
+  esphome_board: esp32dev # ESP32-D0WDQ6(version 1)
+  esphome_framework_type: arduino
+  esphome_comment: Local Weatherman, Home Maintenance Dashboard
+  esphome_project_name: RCB.Local Weatherman, Home Maintenance Dashboard
+  esphome_project_version: Weatherman Dashboard, $software_version
+  devicename: weatherman_dashboard
+  upper_devicename: "Weatherman Dashboard"
+
+  gpio_dc_pin: GPIO04
+  gpio_cs_pin: GPIO05
+  gpio_reset_pin: GPIO16
+  gpio_spi_clk_pin: GPIO18
+  gpio_busy_pin: GPIO19
+  gpio_spi_mosi_pin: GPIO23
+  
+  gpio_sda_pin: GPIO21
+  gpio_scl_pin: GPIO22
+
+esphome:
+  name: $esphome_name
+  friendly_name: $esphome_friendly_name
+  comment: $esphome_comment
+  project:
+    name: $esphome_project_name
+    version: $esphome_project_version
+
+esp32:
+  board: $esphome_board
+  framework: 
+    type: $esphome_framework_type
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "apLwtsM/ptP8SoDd8ClADRAvHjOL0amg298j/lOj9CY="
+
+wifi:
+  ssid: !secret 'wifi_ssid'
+  password: !secret 'wifi_password'
+
+logger:
+  level: ${log_level}
+  logs:
+    text_sensor: WARN
+
+ota:
+  password: !secret 'ota_password'
+
+captive_portal:
+
+web_server:
+  port: 80
+
+font:
+  - file: 'fonts/GoogleSans-Bold.ttf'
+    id: font1
+    size: 8
+
+spi:
+  clk_pin: $gpio_spi_clk_pin
+  mosi_pin: $gpio_spi_mosi_pin
+
+display:
+  - platform: waveshare_epaper
+    id: eink_display
+    cs_pin: $gpio_cs_pin
+    busy_pin: $gpio_busy_pin
+    reset_pin: $gpio_reset_pin
+    dc_pin: $gpio_dc_pin
+    update_interval: never
+    model: 4.20in
+    lambda: |-
+      it.print(0, 0, id(font1), "Hello World!");

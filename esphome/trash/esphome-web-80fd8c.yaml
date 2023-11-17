@@ -27,7 +27,7 @@ substitutions:
   gpio_spi_clk_pin: GPIO18
   gpio_busy_pin: GPIO19
   gpio_spi_mosi_pin: GPIO23
-
+  
   gpio_sda_pin: GPIO21
   gpio_scl_pin: GPIO22
 
@@ -55,10 +55,10 @@ esphome:
         - logger.log: "Initial sensor data received: Refreshing display..."
         - lambda: 'id(initial_data_received) = true;'
         - script.execute: update_screen
-
+  
 esp32:
   board: $esphome_board
-  framework:
+  framework: 
     type: $esphome_framework_type
 
 light:
@@ -108,7 +108,7 @@ time:
         - logger.log:
             level: INFO
             format:  "Time synchronized and written to DS1307"
-
+   
   - platform: ds1307
     id: ds1307_time
     update_interval: never
@@ -149,7 +149,7 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'false'
-  - id: recorded_display_refresh 
+  - id: recorded_display_refresh
     type: int
     restore_value: yes
     initial_value: '0'
@@ -346,7 +346,7 @@ sensor:
     device_class: timestamp
     entity_category: "diagnostic"
     id: display_last_update
-
+    
   - platform: template
     name: "Recorded Display Refresh"
     accuracy_decimals: 0
@@ -362,7 +362,7 @@ sensor:
     on_value:
       then:
         - lambda: 'id(data_updated) = true;'
-
+  
   - platform: homeassistant
     entity_id: sensor.weatherman_data
     attribute: humidity
@@ -530,7 +530,7 @@ font:
       - "\U000F00A5" # mdi-binoculars
       - "\U000F018C" # mdi-compass-outline
       - "\U000F0928" # mdi-wifi-strength-4
-      - "\U000F0925" # mdi-wifi-strength-3
+      - "\U000F0925" # mdi-wifi-strength-3 
       - "\U000F0922" # mdi-wifi-strength-2
       - "\U000F091F" # mdi-wifi-strength-1
       - "\U000F092B" # mdi-wifi-strength-alert-outline
