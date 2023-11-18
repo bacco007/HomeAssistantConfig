@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta, tzinfo
 from typing import Any, TypeVar, Union, cast
 
@@ -32,7 +32,17 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, ONE_DAY, SIG_HA_LOC_UPDATED
+from .const import (
+    ATTR_NEXT_CHANGE,
+    ATTR_TODAY_HMS,
+    ATTR_TOMORROW,
+    ATTR_TOMORROW_HMS,
+    ATTR_YESTERDAY,
+    ATTR_YESTERDAY_HMS,
+    DOMAIN,
+    ONE_DAY,
+    SIG_HA_LOC_UPDATED,
+)
 
 
 Num = Union[float, int]
@@ -74,8 +84,8 @@ class LocData:
 class Sun2Data:
     """Sun2 shared data."""
 
-    locations: dict[LocParams | None, LocData]
-    translations: dict[str, str]
+    locations: dict[LocParams | None, LocData] = field(default_factory=dict)
+    translations: dict[str, str] = field(default_factory=dict)
 
 
 def get_loc_params(config: ConfigType) -> LocParams | None:
@@ -117,6 +127,16 @@ def next_midnight(dttm: datetime) -> datetime:
 class Sun2Entity(Entity):
     """Sun2 Entity."""
 
+    _unreported_attributes = frozenset(
+        {
+            ATTR_NEXT_CHANGE,
+            ATTR_TODAY_HMS,
+            ATTR_TOMORROW,
+            ATTR_TOMORROW_HMS,
+            ATTR_YESTERDAY,
+            ATTR_YESTERDAY_HMS,
+        }
+    )
     _attr_should_poll = False
     _loc_data: LocData = None  # type: ignore[assignment]
     _unsub_update: CALLBACK_TYPE | None = None
@@ -128,6 +148,7 @@ class Sun2Entity(Entity):
         self,
         loc_params: LocParams | None,
         entry: ConfigEntry | None,
+        unique_id: str | None = None,
     ) -> None:
         """Initialize base class.
 
@@ -142,7 +163,9 @@ class Sun2Entity(Entity):
                 identifiers={(DOMAIN, entry.entry_id)},
                 name=entry.title,
             )
-            self._attr_unique_id = f"{entry.title} {self.entity_description.name}"
+            self._attr_unique_id = (
+                f"{entry.unique_id}-{unique_id or self.entity_description.key}"
+            )
         else:
             self._attr_unique_id = self.name
         self._loc_params = loc_params
