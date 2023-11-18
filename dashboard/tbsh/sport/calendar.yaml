@@ -3,17 +3,16 @@ type: custom:auto-entities
 unique: true
 show_empty: true
 card:
-  type: entities
-  show_header_toggle: false
-  card_mod:
-    style: |
-      ha-card {
-        background: none;
-        box-shadow: none;
-      }
-      .card-content {
-        padding: 0 !important
-      }
+  type: custom:layout-card
+  layout_type: grid
+  layout:
+    grid-template-columns: auto auto auto auto
+    grid-template-rows: auto
+    mediaquery:
+      '(max-width: 500px)':
+        grid-template-columns: auto
+      '(max-width: 1370px)':
+        grid-template-columns: auto auto
 filter:
   template: >
     {% for s in expand(states.group.upcomingsport_withevents)|map(attribute='entity_id')|list|sort -%}

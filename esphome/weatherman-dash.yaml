@@ -5,11 +5,12 @@ substitutions:
                     # none, error, warn, info, debug (default), verbose, very_verbose
 
   esphome_name: "weatherman-dash"
+  node_name: "weathermandash"
   esphome_friendly_name: Weatherman Dashboard
   esphome_board: esp32dev # ESP32-D0WDQ6(version 1)
   esphome_framework_type: arduino
-  esphome_comment: Local Weatherman, Home Maintenance Dashboard  
-  esphome_project_name: RCB.Local Weatherman, Home Maintenance Dashboard
+  esphome_comment: Weatherman, HA Dashboard  
+  esphome_project_name: tbSH.Weatherman, HA Dashboard
   esphome_project_version: Weatherman Dashboard, $software_version    
   devicename: weatherman_dashboard
   upper_devicename: "Weatherman Dashboard"
@@ -204,6 +205,11 @@ text_sensor:
     internal: true
     update_interval: never
 
+  - platform: template
+    name: ${esphome_name} Uptime
+    id: ${node_name}_uptime
+    icon: mdi:clock-start
+    entity_category: "diagnostic"
 
   # Pressure Trend
   - platform: homeassistant
@@ -304,6 +310,7 @@ text_sensor:
       then:
 
         - lambda: 'id(data_updated) = true;'
+
   - platform: homeassistant
     entity_id: sensor.weatherman_data
     attribute: weather_timestamp_3
@@ -355,23 +362,73 @@ text_sensor:
 
 sensor:
   - platform: uptime
-    name: Uptime
+    name: "${esphome_name} Uptime Sensor"
+    id: ${node_name}_uptime_raw
+    update_interval: 60s
+    entity_category: "diagnostic"
+    on_raw_value:
+      then:
+        - logger.log:
+            format: "Raw Value of Uptime sensor: %f"
+            args: ['id(${node_name}_uptime_raw).raw_state']
+            level: INFO
+        - text_sensor.template.publish:
+            id: ${node_name}_uptime
+            state: !lambda |-
+              int seconds = round(id(${node_name}_uptime_raw).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              if ( days ) {
+                return { (String(days) +"d " + String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
+              } else if ( hours ) {
+                return { (String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
+              } else if ( minutes ) {
+                return { (String(minutes) +"m "+ String(seconds) +"s").c_str() };
+              } else {
+                return { (String(seconds) +"s").c_str() };
+              }
 
   - platform: wifi_signal
-    name: "WiFi RSSI dBm"
+    name: "${esphome_name} WiFi RSSI dBm"
     id: wifisignal
     unit_of_measurement: "dBm"
     entity_category: "diagnostic"
     update_interval: 60s
+    on_value:
+      - component.update: wifisignal_percentage
 
   - platform: template
-    name: "Display Last Update"
+    id: wifisignal_percentage
+    name: "${esphome_name} Wi-Fi Signal Percentage"
+    icon: "mdi:wifi"
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    update_interval: never
+    lambda: |-
+      if (id(wifisignal).state) {
+        if (id(wifisignal).state <= -100 ) {
+          return 0;
+        } else if (id(wifisignal).state >= -50) {
+          return 100;
+        } else {
+          return 2 * (id(wifisignal).state + 100);
+        }
+      } else {
+        return NAN;
+      }
+
+  - platform: template
+    name: "${esphome_name} Display Last Update"
     device_class: timestamp
     entity_category: "diagnostic"
     id: display_last_update
     
   - platform: template
-    name: "Recorded Display Refresh"
+    name: "${esphome_name} Recorded Display Refresh"
     accuracy_decimals: 0
     unit_of_measurement: "Refreshes"
     state_class: "total_increasing"

@@ -1,0 +1,65 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Weatherman Dash (eInk Display)
+    icon: mdi:tablet
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - sensor.weatherman_data
+      - type: section
+      - entity: button.weatherman_dash_weatherman_dash_refresh
+        name: Refresh
+      - entity: button.weatherman_dash_weatherman_dash_restart
+        name: Restart
+      - entity: button.weatherman_dash_weatherman_dash_shutdown
+        name: Shutdown
+      - type: section
+      - entity: sensor.weatherman_dash_weatherman_dash_uptime
+        name: Uptime
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          entity: sensor.weatherman_dash_ip
+          name: Network Connectivity
+          icon: mdi:wifi
+        padding: 5
+        entities:
+          - entity: sensor.weatherman_dash_ssid
+            name: Connected SSID
+          - entity: sensor.weatherman_dash_weatherman_dash_wi_fi_signal_percentage
+            name: WiFi Signal Percentage
+          - entity: sensor.weatherman_dash_weatherman_dash_wifi_rssi_dbm
+            name: WiFi Signal
+      - entity: sensor.weatherman_dash_weatherman_dash_recorded_display_refresh
+        name: Screen Refresh Count
+      - entity: sensor.weatherman_dash_weatherman_dash_display_last_update
+        name: Last Update
+      - entity: switch.weatherman_dash_weatherman_dash_status_led
+        name: Status LED
+      - type: section
+      - entity: update.weatherman_dashboard_firmware
+        type: custom:template-entity-row
+        name: "{{ state_attr(config.entity, 'friendly_name').split(':',1)[0] }}"
+        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
+        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"

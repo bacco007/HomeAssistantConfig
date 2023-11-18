@@ -1,339 +1,49 @@
 ---
-type: custom:stack-in-card
-cards:
-  - type: custom:mushroom-climate-card
-    entity: climate.bedroom
-    name: Bedroom Dyson
-    icon: phu:dyson-floor
-    fill_container: true
-    show_temperature_control: true
-    collapsible_controls: false
-    tap_action:
-      action: more-info
-    icon_type: icon
+features:
+  - type: climate-hvac-modes
     hvac_modes:
-      - heat
-      - cool
       - "off"
-  - type: conditional
-    conditions:
-      - entity: fan.bedroom
-        state: "on"
-    card:
-      type: vertical-stack
-      cards:
-        - type: horizontal-stack
-          cards:
-            - type: custom:button-card
-              icon: hass:autorenew
-              name: Oscillate
-              show_state: false
-              state_display: |
-                [[[ return 'Value :
-                  '+states['fan.bedroom'].attributes.oscillating ]]]
-              state:
-                - color: var(--paper-item-icon-active-color)
-                  operator: template
-                  value: |
-                    [[[ return
-                      states['fan.bedroom'].attributes.oscillating==true ]]]
-                - color: var(--paper-item-icon-color)
-                  operator: template
-                  value: |
-                    [[[ return
-                      !states['fan.bedroom'].attributes.oscillating==true ]]]
-              tap_action:
-                action: call-service
-                service: fan.oscillate
-                service_data:
-                  entity_id: fan.bedroom
-                  oscillating: |
-                    [[[ return !states['fan.bedroom'].attributes.oscillating
-                      ]]]
-            - type: custom:button-card
-              name: Focus Mode
-              show_state: false
-              icon: mdi:fan-auto
-              entity: switch.bedroom_focus_mode
-            - type: custom:button-card
-              name: Night mode
-              show_state: false
-              icon: mdi:weather-night
-              entity: switch.bedroom_night_mode
-        - type: horizontal-stack
-          cards:
-            - type: custom:button-card
-              icon: hass:fire
-              state:
-                - color: var(--paper-item-icon-active-color)
-                  operator: template
-                  value: |
-                    [[[ return states['climate.bedroom'].state=='heat' ]]]
-              tap_action:
-                action: call-service
-                service: climate.set_hvac_mode
-                service_data:
-                  entity_id: climate.bedroom
-                  hvac_mode: heat
-            - type: custom:button-card
-              icon: hass:snowflake
-              state:
-                - color: var(--paper-item-icon-active-color)
-                  operator: template
-                  value: |
-                    [[[ return states['climate.bedroom'].state=='cool' ]]]
-              tap_action:
-                action: call-service
-                service: climate.set_hvac_mode
-                service_data:
-                  entity_id: climate.bedroom
-                  hvac_mode: cool
-        - type: conditional
-          conditions:
-            - entity: climate.bedroom
-              state: cool
-          card:
-            type: vertical-stack
-            cards:
-              - type: horizontal-stack
-                cards:
-                  - type: custom:button-card
-                    icon: hass:numeric-1
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==10 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 10
-                  - type: custom:button-card
-                    icon: hass:numeric-2
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==20 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 20
-                  - type: custom:button-card
-                    icon: hass:numeric-3
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==30 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 30
-              - type: horizontal-stack
-                cards:
-                  - type: custom:button-card
-                    icon: hass:numeric-4
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==40 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 40
-                  - type: custom:button-card
-                    icon: hass:numeric-5
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==50 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 50
-                  - type: custom:button-card
-                    icon: hass:numeric-6
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==60 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 60
-              - type: horizontal-stack
-                cards:
-                  - type: custom:button-card
-                    icon: hass:numeric-7
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==70 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 70
-                  - type: custom:button-card
-                    icon: hass:numeric-8
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==80 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 80
-                  - type: custom:button-card
-                    icon: hass:numeric-9
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: >
-                          [[[ return
-                          states['fan.bedroom'].attributes.percentage==90 ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 90
-              - type: horizontal-stack
-                cards:
-                  - type: custom:button-card
-                    icon: hass:arrow-collapse-horizontal
-                    name: Focus
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: |
-                          [[[ return
-                            states['climate.bedroom'].attributes.fan_mode=='focus'
-                            ]]]
-                    tap_action:
-                      action: call-service
-                      service: climate.set_fan_mode
-                      service_data:
-                        entity_id: climate.bedroom
-                        fan_mode: focus
-                  - type: custom:button-card
-                    icon: hass:numeric-10
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: |
-                          [[[ return
-                            states['fan.bedroom'].attributes.percentage==100
-                            ]]]
-                    tap_action:
-                      action: call-service
-                      service: fan.set_percentage
-                      service_data:
-                        entity_id: fan.bedroom
-                        percentage: 100
-                  - type: custom:button-card
-                    icon: hass:arrow-decision
-                    name: Diffuse
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: |
-                          [[[ return
-                            states['climate.bedroom'].attributes.fan_mode=='diffuse'
-                            ]]]
-                    tap_action:
-                      action: call-service
-                      service: climate.set_fan_mode
-                      service_data:
-                        entity_id: climate.bedroom
-                        fan_mode: diffuse
-        - type: conditional
-          conditions:
-            - entity: climate.bedroom
-              state: heat
-          card:
-            type: vertical-stack
-            cards:
-              - type: horizontal-stack
-                cards:
-                  - type: custom:button-card
-                    icon: hass:arrow-collapse-horizontal
-                    name: Focus
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: |
-                          [[[ return
-                            states['climate.bedroom'].attributes.fan_mode=='focus'
-                            ]]]
-                    tap_action:
-                      action: call-service
-                      service: climate.set_fan_mode
-                      service_data:
-                        entity_id: climate.bedroom
-                        fan_mode: focus
-                  - type: custom:simple-thermostat
-                    entity: climate.bedroom
-                    control: false
-                    hide:
-                      state: true
-                      temperature: true
-                    decimals: "0"
-                    name: false
-                    step_size: "1"
-                    layout:
-                      mode:
-                        headings: false
-                        icons: false
-                        names: false
-                    header: false
-                    view_layout:
-                      mode:
-                        headings: false
-                        icons: false
-                        names: false
-                  - type: custom:button-card
-                    icon: hass:arrow-decision
-                    name: Diffuse
-                    state:
-                      - color: var(--paper-item-icon-active-color)
-                        operator: template
-                        value: |
-                          [[[ return
-                            states['climate.bedroom'].attributes.fan_mode=='diffuse'
-                            ]]]
-                    tap_action:
-                      action: call-service
-                      service: climate.set_fan_mode
-                      service_data:
-                        entity_id: climate.bedroom
-                        fan_mode: diffuse
+      - cool
+      - heat
+  - type: target-temperature
+  - type: custom:service-call
+    buttons:
+      - service: fan.set_preset_mode
+        icon: mdi:fan
+        data:
+          preset_mode: Normal
+          entity_id: fan.bedroom
+      - service: fan.set_preset_mode
+        icon: mdi:fan-auto
+        data:
+          preset_mode: Auto
+          entity_id: fan.bedroom
+  - type: custom:mushroom-fan-card
+    entity: fan.bedroom
+    primary_info: none
+    show_percentage_control: true
+    layout: horizontal
+    secondary_info: none
+    icon_type: none
+    icon_animation: false
+    fill_container: true
+    show_oscillate_control: true
+    collapsible_controls: true
+    card_mod:
+      style: |
+        ha-card {
+          margin: 0px 0px 0px 0px;
+          --rgb-state-fan: {{ 'var(--rgb-deep-orange)' if is_state('climate.pure_hot_cool','heat') else 'var(--rgb-blue)' }}
+        }
+
+type: tile
+name: Bedroom Dyson
+entity: climate.bedroom
+icon: phu:dyson-floor
+vertical: false
+show_entity_picture: false
+hide_state: false
+state_content:
+  - state
+  - current_temperature
+  - current_humidity

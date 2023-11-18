@@ -9,41 +9,73 @@ layout: !include ../includes/layout-grid.yaml
 cards:
   - !include ../includes/sidebar.yaml
 
-  - type: custom:state-switch
-    entity: mediaquery
+  - type: vertical-stack
     view_layout:
       grid-area: content
-    states:
-      "(max-width: 500px)":
-        type: "custom:layout-card"
-        layout_type: custom:masonry-layout
-        layout:
-          max_cols: 1
-          width: 300
-          max_width: 1000
-        cards: &cards
-          - !include ../sport/snippets/calendar.yaml
-          - !include ../sport/teamtracker.yaml
-          - !include ../sport/standings.yaml
-          - !include ../sport/formula1.yaml
-      "(max-width: 1370px)":
-        type: "custom:layout-card"
-        layout_type: custom:masonry-layout
-        layout:
-          max_cols: 2
-          width: 300
-          max_width: 1000
-          reflow: true
-        cards: *cards
-      "all":
-        type: "custom:layout-card"
-        layout_type: custom:masonry-layout
-        layout:
-          max_cols: 4
-          width: 300
-          max_width: 1000
-          reflow: true
-        cards: *cards
+    cards:
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(max-width: 500px)":
+            type: vertical-stack
+            cards: &cards
+              - !include ../sport/snippets/calendar.yaml
+          "(max-width: 1370px)":
+            type: horizontal-stack
+            cards: *cards
+          "all":
+            type: horizontal-stack
+            cards: *cards
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(max-width: 500px)":
+            type: "custom:layout-card"
+            layout_type: custom:masonry-layout
+            layout:
+              max_cols: 1
+              width: 300
+              max_width: 1000
+            cards: &cards
+              - !include ../sport/standings.yaml
+              - !include ../sport/standings_cricket.yaml
+              - !include ../sport/standings_football.yaml
+              - !include ../sport/standings_nhl.yaml
+              - !include ../sport/standings_nfl.yaml
+              - !include ../sport/standings_nba.yaml
+              - !include ../sport/formula1.yaml
+          "(max-width: 1370px)":
+            type: "custom:layout-card"
+            layout_type: custom:masonry-layout
+            layout:
+              max_cols: 2
+              width: 300
+              max_width: 1000
+              reflow: true
+            cards: *cards
+          "all":
+            type: "custom:layout-card"
+            layout_type: custom:masonry-layout
+            layout:
+              max_cols: 4
+              width: 300
+              max_width: 1000
+              reflow: true
+              min_height: 10
+            cards: *cards
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(max-width: 500px)":
+            type: vertical-stack
+            cards: &cards
+              - !include ../sport/teamtracker.yaml
+          "(max-width: 1370px)":
+            type: horizontal-stack
+            cards: *cards
+          "all":
+            type: horizontal-stack
+            cards: *cards
 
   - !include ../includes/actions.yaml
 

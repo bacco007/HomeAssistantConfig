@@ -29,8 +29,10 @@ cards:
           - !include ../devices/sonos_symfonisk.yaml
           - !include ../devices/weatherflow.yaml
           - !include ../devices/einkdisplay.yaml
+          - !include ../devices/weathermandash.yaml
           - !include ../devices/zigbee2mqtt.yaml
           - !include ../devices/lg_washer.yaml
+          - !include ../devices/office_splitty.yaml
           - !include ../devices/dyson_fan.yaml
       "(max-width: 1370px)":
         type: "custom:layout-card"

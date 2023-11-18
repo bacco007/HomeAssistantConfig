@@ -1,0 +1,288 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: National Hockey League
+    icon: mdi:hockey-puck
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Overall
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_*
+            sort_by: entries-
+            columns: &nhlcols
+              - hidden: true
+                name: sort
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'PTS').displayValue
+              - name: >-
+                  <div>C</div>
+                data: entries
+                modify: >-
+                  if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
+                  'undefined' ){x.stats.find(y=>y.abbreviation ==
+                  'CLINCH').displayValue}else{'-'}
+              - name: Team
+                data: entries
+                modify: >-
+                  '<div><a href="' + x.team.links[0].href + '" target="_blank"><img
+                  src="' + x.team.logos[0].href + '" style="height:
+                  20px;vertical-align:middle;"></a>&nbsp;' + x.team.displayName +
+                  '</div>'
+              - name: <div>GP</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'GP').displayValue
+              - name: <div>W</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+              - name: <div>L</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+              - name: <div>OTL</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'OTL').displayValue
+              - name: <div>PTS</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'PTS').displayValue
+              - name: <div>RW</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'RW').displayValue
+              - name: <div>ROW</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'ROW').displayValue
+              - name: <div>SOW</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'SOW').displayValue
+              - name: <div>SOL</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'SOL').displayValue
+              - name: <div>HOME</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'HOME').displayValue
+              - name: <div>AWAY</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'AWAY').displayValue
+              - name: <div>GF</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'GF').displayValue
+              - name: <div>GA</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'GA').displayValue
+              - name: <div>DIFF</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'DIFF').displayValue
+              - name: <div>L10</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'L10').summary
+              - name: <div>STRK</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Eastern Conference
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_east_*
+            sort_by: entries-
+            columns: *nhlcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Eastern Conference, Atlantic Division
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_east_atlantic
+            sort_by: entries-
+            columns: *nhlcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Eastern Conference, Metropolitan Division
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_east_metropolitan
+            sort_by: entries-
+            columns: *nhlcols
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Western Conference
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_west_*
+            sort_by: entries-
+            columns: *nhlcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Western Conference, Central Division
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_west_central
+            sort_by: entries-
+            columns: *nhlcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Western Conference, Pacific Division
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 10px; padding-right: 10px"
+              tbody tr td:first-child: "width: 5%;"
+              tbody tr td:nth-child(2): "width: 30%;"
+              tbody tr td:nth-child(n+3): "width: 5%;"
+              tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_west_pacific
+            sort_by: entries-
+            columns: *nhlcols
