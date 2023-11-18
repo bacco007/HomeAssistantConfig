@@ -7,7 +7,7 @@ features:
       - fan_only
       - heat
       - heat_cool
-      - 'off'
+      - "off"
     type: climate-hvac-modes
   - type: target-temperature
 hide_state: false
