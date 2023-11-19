@@ -21,7 +21,7 @@ from homeassistant.helpers.typing import UNDEFINED, UndefinedType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import CONF_NODE, DOMAIN, LOGGER, UPDATE_INTERVAL, ProxmoxType
-from .models import ProxmoxLXCData, ProxmoxNodeData, ProxmoxStorageData, ProxmoxUpdateData, ProxmoxVMData
+from .models import ProxmoxDiskData, ProxmoxLXCData, ProxmoxNodeData, ProxmoxStorageData, ProxmoxUpdateData, ProxmoxVMData
 
 
 class ProxmoxCoordinator(
@@ -93,7 +93,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
                         },
                     )
                     raise UpdateFailed(
-                        "User not allowed to access the resource, check user permissions as per the documentation."
+                        "User not allowed to access the resource, check user permissions as per the documentation, see details in the repair created by the integration."
                     ) from error
 
             async_delete_issue(
@@ -205,7 +205,7 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
                         },
                     )
                     raise UpdateFailed(
-                        "User not allowed to access the resource, check user permissions as per the documentation."
+                        "User not allowed to access the resource, check user permissions as per the documentation, see details in the repair created by the integration."
                     ) from error
 
             async_delete_issue(
@@ -316,7 +316,7 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
                         },
                     )
                     raise UpdateFailed(
-                        "User not allowed to access the resource, check user permissions as per the documentation."
+                        "User not allowed to access the resource, check user permissions as per the documentation, see details in the repair created by the integration."
                     ) from error
 
             async_delete_issue(
@@ -362,7 +362,7 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
         hass: HomeAssistant,
         proxmox: ProxmoxAPI,
         api_category: str,
-        storage_id: int,
+        storage_id: str,
     ) -> None:
         """Initialize the Proxmox LXC coordinator."""
 
@@ -380,10 +380,10 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
         self.resource_id = storage_id
 
     async def _async_update_data(self) -> ProxmoxLXCData:
-        """Update data  for Proxmox LXC."""
+        """Update data  for Proxmox Update."""
 
         def poll_api() -> dict[str, Any] | None:
-            """Return data from the Proxmox LXC API."""
+            """Return data from the Proxmox Update API."""
             node_name = None
             try:
                 api_status = None
@@ -429,7 +429,7 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
                         },
                     )
                     raise UpdateFailed(
-                        "User not allowed to access the resource, check user permissions as per the documentation."
+                        "User not allowed to access the resource, check user permissions as per the documentation, see details in the repair created by the integration."
                     ) from error
 
             async_delete_issue(
@@ -521,7 +521,7 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
                         },
                     )
                     raise UpdateFailed(
-                        "User not allowed to access the resource, check user permissions as per the documentation."
+                        "User not allowed to access the resource, check user permissions as per the documentation, see details in the repair created by the integration."
                     ) from error
 
             async_delete_issue(
@@ -563,6 +563,158 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
             updates_list=list,
             update=update_avail,
         )
+
+class ProxmoxDiskCoordinator(ProxmoxCoordinator):
+    """Proxmox VE Update data disk coordinator."""
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        proxmox: ProxmoxAPI,
+        api_category: str,
+        node_name: str,
+        disk_id: str
+    ) -> None:
+        """Initialize the Proxmox Disk coordinator."""
+
+        super().__init__(
+            hass,
+            LOGGER,
+            name=f"proxmox_coordinator_{api_category}_{node_name}_{disk_id}",
+            update_interval=timedelta(seconds=UPDATE_INTERVAL),
+        )
+
+        self.hass = hass
+        self.config_entry: ConfigEntry = self.config_entry
+        self.proxmox = proxmox
+        self.node_name = node_name
+        self.resource_id = disk_id
+
+    async def _async_update_data(self) -> ProxmoxLXCData:
+        """Update data  for Proxmox Disk."""
+
+        def poll_api() -> dict[str, Any] | None:
+            """Return data from the Proxmox Disk API."""
+            try:
+                api_status = None
+
+                if self.node_name is None:
+                    raise UpdateFailed(f"{self.resource_id} node not found")
+
+                api_status = (
+                    self.proxmox.nodes(self.node_name)
+                    .disks
+                    .list.get()
+                )
+
+            except (
+                AuthenticationError,
+                SSLError,
+                ConnectTimeout,
+            ) as error:
+                raise UpdateFailed(error) from error
+            except ResourceException as error:
+                if error.status_code == 403:
+                    async_create_issue(
+                        self.hass,
+                        DOMAIN,
+                        f"{self.config_entry.entry_id}_{self.resource_id}_forbiden",
+                        is_fixable=False,
+                        severity=IssueSeverity.ERROR,
+                        translation_key="resource_exception_forbiden",
+                        translation_placeholders={
+                            "resource": f"Disk {self.node_name}/{self.resource_id}",
+                            "user": self.config_entry.data[CONF_USERNAME],
+                            "permission": f"['perm','/nodes/{self.node_name}',['Sys.Modify']]"
+                        },
+                    )
+                    raise UpdateFailed(
+                        "User not allowed to access the resource, check user permissions as per the documentation, see details in the repair created by the integration."
+                    ) from error
+
+            async_delete_issue(
+                self.hass,
+                DOMAIN,
+                f"{self.config_entry.entry_id}_{self.resource_id}_forbiden",
+            )
+
+            LOGGER.debug("API Response - Disk: %s", api_status)
+            return api_status
+
+
+        def poll_api_attributes() -> dict[str, Any] | None:
+            """Return data from the Proxmox Disk Attributes API."""
+            try:
+                disk_attributes = None
+
+                if self.node_name is None:
+                    raise UpdateFailed(f"{self.resource_id} node not found")
+
+                disk_attributes = (
+                    self.proxmox.nodes(self.node_name)
+                    .disks
+                    .smart.get(disk=self.resource_id)
+                )
+
+            except (
+                AuthenticationError,
+                SSLError,
+                ConnectTimeout,
+                ResourceException,
+            ) as error:
+                raise UpdateFailed(error) from error
+
+            LOGGER.debug("API Response - Disk attributes: %s", disk_attributes)
+            return disk_attributes
+
+        api_status = await self.hass.async_add_executor_job(poll_api)
+
+        if api_status is None:
+            raise UpdateFailed("No data returned.")
+
+        for disk in api_status:
+            if disk["devpath"] == self.resource_id:
+                disk_attributes = {}
+                disk_attributes_api = await self.hass.async_add_executor_job(poll_api_attributes)
+
+                attributes_json = []
+                if "attributes" in disk_attributes_api:
+                    attributes_json = disk_attributes_api["attributes"]
+                else:
+                    if "type" in disk_attributes_api and disk_attributes_api["type"] == "text":
+                        attributes_text = disk_attributes_api["text"].split("\n")
+                        for value_text in attributes_text:
+                            value_json = value_text.split(":")
+                            if len(value_json) >= 2:
+                                attributes_json.append(
+                                    {
+                                        "name": value_json[0].strip(),
+                                        "raw": value_json[1].strip(),
+                                    }
+                                )
+
+                for disk_attribute in attributes_json:
+                    if disk_attribute["name"] in ("Power_Cycle_Count", "Power Cycles"):
+                        disk_attributes["Power_Cycle_Count"]=disk_attribute["raw"]
+                    elif disk_attribute["name"] in ("Temperature_Celsius", "Temperature"):
+                        disk_attributes["Temperature_Celsius"]=disk_attribute["raw"].split(" ", 1)[0]
+
+                return ProxmoxDiskData(
+                    type=ProxmoxType.Disk,
+                    node=self.node_name,
+                    path=self.resource_id,
+                    size=disk["size"] if "size" in disk else None,
+                    health=disk["health"] if "health" in disk else None,
+                    vendor=disk["vendor"] if "vendor" in disk else None,
+                    serial=disk["serial"] if "serial" in disk else None,
+                    model=disk["model"] if "model" in disk else None,
+                    disk_rpm=disk["rpm"] if "rpm" in disk else None,
+                    disk_type=disk["type"] if "type" in disk else None,
+                    temperature=disk_attributes["Temperature_Celsius"] if "Temperature_Celsius" in disk_attributes else None,
+                    power_cycles=disk_attributes["Power_Cycle_Count"] if "Power_Cycle_Count" in disk_attributes else None,
+                )
+
+        raise UpdateFailed(f"Disk {self.resource_id} not found on node {self.node_name}.")
 
 
 def update_device_via(

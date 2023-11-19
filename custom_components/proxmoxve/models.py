@@ -128,3 +128,21 @@ class ProxmoxUpdateData:
     updates_list: list
     total: float
     update: bool
+
+
+@dataclasses.dataclass
+class ProxmoxDiskData:
+    """Data parsed from the Proxmox API for Disks."""
+
+    type: str
+    node: str
+    size: float
+    health: str
+    serial: str
+    model: str
+    vendor: str
+    path: str
+    disk_rpm: float
+    disk_type: str
+    temperature: float
+    power_cycles: int

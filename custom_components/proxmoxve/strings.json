@@ -190,6 +190,12 @@
       "disk_free_perc": {
         "name": "Disk free percentage"
       },
+      "disk_rpm": {
+        "name": "Disk speed"
+      },
+      "disk_size": {
+        "name": "Size"
+      },
       "disk_total": {
         "name": "Disk total"
       },
@@ -220,6 +226,9 @@
       "network_out": {
         "name": "Network out"
       },
+      "power_cycles": {
+        "name": "Power cycles"
+      },
       "node": {
         "name": "Node"
       },
@@ -245,6 +254,9 @@
       },
       "swap_used_perc": {
         "name": "Swap used percentage"
+      },
+      "temperature": {
+        "name": "Temperature"
       },
       "updates_total": {
         "name": "Total updates",
