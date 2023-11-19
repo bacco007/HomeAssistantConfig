@@ -153,6 +153,8 @@ recorder:
       - sensor.waveshare_75_eink*
       - sensor.yourspotify_*
       - sensor.z2m_bedroom_vindstyrka*
+      - sensor.upcoming_sport*
+      - sensor.weatherman_dash*
     event_types:
       - automation_triggered
       - call_service

@@ -6,7 +6,7 @@ trigger:
     hours: "/6"
   - platform: calendar
     event: end
-    entity_id: calendar.ical_formula_1
+    entity_id: calendar.ical_nba_all_teams
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -14,7 +14,7 @@ action:
     data:
       end_date_time: "{{now() + timedelta(days=365)}}"
     target:
-      entity_id: calendar.ical_formula_1
+      entity_id: calendar.ical_nba_all_teams
     response_variable: agenda
   - variables:
       all_events: "{{ agenda.events | list }}"
@@ -22,10 +22,10 @@ action:
       dump: "{{agenda}}"
       countnumb: "{{agenda.events | count}}"
 sensor:
-  - name: "[Upcoming Sport] Formula 1"
-    unique_id: upcoming_sport_formula_1
-    icon: "mdi:flag-checkered"
-    picture: /local/sportlogos/f1.png
+  - name: "[Upcoming Sport] NBA (All Teams)"
+    unique_id: upcoming_sport_nba_all_teams
+    icon: "mdi:basketball"
+    picture: /local/sportlogos/nba_all_teams.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled
@@ -33,7 +33,7 @@ sensor:
         {%- from 'easy_time.jinja' import easy_relative_time %}
         {%- set tmpdate = as_timestamp(next_5_events[0]['start']) %}
         {%- set timeto = (as_timestamp(next_5_events[0]['start'])-as_timestamp(now())) / 86400 %}
-        {{next_5_events[0]['summary']|replace('[F1] ','')}} @ {{next_5_events[0]['location']}} - {{ easy_relative_time(tmpdate, 'day, hour, minute') }} ({{ iif(timeto < 6, tmpdate|timestamp_custom ('%a %H:%M'), tmpdate|timestamp_custom ('%d/%m %H:%M'), "None Recorded")}})
+        {{next_5_events[0]['summary']}} @ {{next_5_events[0]['location']}} - {{ easy_relative_time(tmpdate, 'day, hour, minute') }} ({{ iif(timeto < 6, tmpdate|timestamp_custom ('%a %H:%M'), tmpdate|timestamp_custom ('%d/%m %H:%M'), "None Recorded")}})
       {%- endif %}
     attributes:
       category: sport
@@ -55,7 +55,7 @@ sensor:
         {%- if countnumb == 0 %}
           No Event Scheduled
         {%- else %}
-          {{next_5_events[0]['summary']|replace('[F1] ','')}}
+          {{next_5_events[0]['summary'].split(' - ')[0]}}
         {%- endif %}
       nextevent_locn: >
         {%- if countnumb == 0 %}
@@ -83,7 +83,7 @@ sensor:
         {%- if countnumb == 0 or countnumb == 1 %}
           No Event Scheduled
         {%- else %}
-          {{next_5_events[1]['summary']|replace('[F1] ','')}}
+          {{next_5_events[1]['summary'].split(' - ')[0]}}
         {%- endif %}
       afterevent_locn: >
         {%- if countnumb == 0 or countnumb == 1 %}

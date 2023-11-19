@@ -1,6 +1,10 @@
 ---
 # trigger:
-#   {%- for s in states|selectattr('entity_id','search','calendar.ical_*')|list %}
+#   - platform: homeassistant
+#     event: start
+#   - platform: time_pattern
+#     event: "/6"
+#   {%- for s in states|selectattr('entity_id','search','calendar.ical_*')|sort(attribute='entity_id')|list %}
 #   - platform: calendar
 #     event: end
 #     entity_id: {{ s.entity_id }}
@@ -8,30 +12,34 @@
 #   - platform: event
 #     event_type: event_template_reloaded
 # action:
-#   {%- for s in states|selectattr('entity_id','search','calendar.ical_*')|list %}
+#   {%- for s in states|selectattr('entity_id','search','calendar.ical_*')|sort(attribute='entity_id')|list %}
 #   - service: calendar.list_events
 #     data:
 #       duration:
-#         hours: 168
+#          hours: 168
 #     target:
 #       entity_id: {{ s.entity_id }}
-#     response_variable: {{ s.entity_id | replace("calendar.","") }}
+#    response_variable: {{ s.entity_id | replace("calendar.","") }}
 # {%- endfor %}
 #   - variables:
-#       all_events: >
-#         {{ states.calendar
-#           |selectattr('entity_id','search','calendar.ical_*')
-#           |map(attribute='entity_id')
-#           |join('.events + ')
-#           |replace("calendar.","") }}.events
-#       events: >
-#         {{ all_events | selectattr('start', 'search', now().date() | string) | list }}
+#      all_events: >
+#        {% raw %}{{{% endraw %}{{ states.calendar
+#          |selectattr('entity_id','search','calendar.ical_*')
+#          |map(attribute='entity_id')
+#          |join('.events + ')
+#          |replace("calendar.","") }}.events{% raw %}}}{% endraw %}
+#      events: >
+#        {% raw %}{{ all_events | list }}{% endraw %}
 # sensor:
-#   - name: "[Sport] Next 24 Hours"
-#     unique_id: sport_next_24_hours
-#     state: "{{ events | count }}"
-#     attributes:
-#       scheduled_events: "{{ events }}"
+# - name: "[Upcoming Sport] This Week"
+#   unique_id: upcoming_sport_this_week
+#   state: "{% raw %}{{ events | count }}{% endraw %}"
+#   state_class: measurement
+#   unit_of_measurement: Events
+#   icon: mdi:calendar
+#   attributes:
+#     category: sport
+#     scheduled_events: "{% raw %}{{ events|sort(attribute='start')}}{% endraw %}"
 
 trigger:
   - platform: homeassistant
@@ -92,9 +100,6 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_misc_motorsport
-  - platform: calendar
-    event: end
-    entity_id: calendar.ical_f1
   - platform: calendar
     event: end
     entity_id: calendar.ical_wallabies
@@ -191,6 +196,15 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_bayern_munich
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nfl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nba_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nhl_all_teams
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -327,13 +341,6 @@ action:
     target:
       entity_id: calendar.ical_misc_motorsport
     response_variable: ical_misc_motorsport
-  - service: calendar.list_events
-    data:
-      duration:
-        hours: 168
-    target:
-      entity_id: calendar.ical_f1
-    response_variable: ical_f1
   - service: calendar.list_events
     data:
       duration:
@@ -558,6 +565,27 @@ action:
     target:
       entity_id: calendar.ical_bayern_munich
     response_variable: ical_bayern_munich
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 24
+    target:
+      entity_id: calendar.ical_nba_all_teams
+    response_variable: ical_nba_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 24
+    target:
+      entity_id: calendar.ical_nhl_all_teams
+    response_variable: ical_nhl_all_teams
+  - service: calendar.list_events
+    data:
+      duration:
+        hours: 24
+    target:
+      entity_id: calendar.ical_nfl_all_teams
+    response_variable: ical_nfl_all_teams
   - variables:
       all_events: >
         {{ ical_formula_1.events + ical_extreme_e.events + ical_nascar_cup_series.events
@@ -566,7 +594,7 @@ action:
         + ical_newcastle_knights.events + ical_nsw_waratahs.events + ical_wrc.events
         + ical_motogp.events + ical_btcc.events + ical_dtm.events + ical_igtc.events
         + ical_imsa.events + ical_manchester_united.events + ical_wec.events
-        + ical_misc_motorsport.events + ical_f1.events + ical_wallabies.events
+        + ical_misc_motorsport.events + ical_wallabies.events
         + ical_socceroos.events + ical_sydney_kings.events + ical_sydney_sixers.events
         + ical_sydney_sixers_women.events + ical_australia_cricket_women.events
         + ical_supercars.events + ical_sydney_swans.events + ical_australia_cricket.events
@@ -580,7 +608,8 @@ action:
         + ical_toronto_maple_leafs.events + ical_manchester_united_women.events
         + ical_newcastle_knights_nrlw.events + ical_nrlw_all_teams.events
         + ical_sydney_fc_women.events + ical_sydney_fc.events + ical_aflw_all_teams.events
-        + ical_bayern_munich.events }}
+        + ical_bayern_munich.events + ical_nba_all_teams.events + ical_nhl_all_teams.events
+        + ical_nfl_all_teams.events}}
       events: >
         {{ all_events | list }}
 sensor:
