@@ -45,8 +45,12 @@ from homeassistant.util.dt import utc_from_timestamp
 from . import WeatherFlowForecastDataUpdateCoordinator
 from .const import (
     ATTR_ATTRIBUTION,
+    ATTR_DESCRIPTION,
+    ATTR_HW_FIRMWARE_REVISION,
+    ATTR_HW_SERIAL_NUMBER,
+    ATTR_HW_STATION_ID,
+    BATTERY_MODE_DESCRIPTION,
     CONCENTRATION_GRAMS_PER_CUBIC_METER,
-    CONF_FIRMWARE_REVISION,
     CONF_STATION_ID,
     DOMAIN,
     MANUFACTURER,
@@ -103,6 +107,12 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         name="Beaufort",
         icon="mdi:windsock",
         state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WeatherFlowSensorEntityDescription(
+        key="beaufort_description",
+        name="Beaufort Description",
+        icon="mdi:windsock",
+        translation_key="beaufort",
     ),
     WeatherFlowSensorEntityDescription(
         key="brightness",
@@ -185,6 +195,13 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         key="lightning_strike_last_epoch",
         name="Time of last lightning strike",
         device_class=SensorDeviceClass.TIMESTAMP,
+    ),
+    WeatherFlowSensorEntityDescription(
+        key="power_save_mode",
+        name="Power Save Mode",
+        icon="mdi:power-plug-battery",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=True,
     ),
     WeatherFlowSensorEntityDescription(
         key="precip_rate",
@@ -292,6 +309,11 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     WeatherFlowSensorEntityDescription(
+        key="station_name",
+        name="Station Name",
+        icon="mdi:hubspot",
+    ),
+    WeatherFlowSensorEntityDescription(
         key="station_pressure",
         name="Station Pressure",
         native_unit_of_measurement=UnitOfPressure.HPA,
@@ -313,6 +335,12 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:sun-wireless",
         suggested_display_precision=1,
+    ),
+    WeatherFlowSensorEntityDescription(
+        key="uv_description",
+        name="UV Description",
+        icon="mdi:sun-wireless",
+        translation_key="uv_description",
     ),
     WeatherFlowSensorEntityDescription(
         key="visibility",
@@ -419,6 +447,8 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
         super().__init__(coordinator)
         self.entity_description = description
         self._config = config
+        self._coordinator = coordinator
+        self._hw_version = " - Not Available" if self._coordinator.data.station_data.firmware_revision is None else self._coordinator.data.station_data.firmware_revision
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._config.data[CONF_STATION_ID])},
@@ -427,7 +457,7 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
             model=MODEL,
             name=f"{self._config.data[CONF_NAME]} Sensors",
             configuration_url=f"https://tempestwx.com/station/{self._config.data[CONF_STATION_ID]}/grid",
-            hw_version=f"FW V{self._config.data.get(CONF_FIRMWARE_REVISION, ' - Not Available')}",
+            hw_version=f"FW V{self._hw_version}",
         )
         self._attr_attribution = ATTR_ATTRIBUTION
         self._attr_unique_id = f"{config.data[CONF_STATION_ID]} {description.key}"
@@ -445,6 +475,27 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
             getattr(self.coordinator.data.sensor_data, self.entity_description.key)
             if self.coordinator.data.sensor_data else None
         )
+
+    @property
+    def extra_state_attributes(self) -> None:
+        """Return non standard attributes."""
+
+        if self.entity_description.key == "power_save_mode":
+            sensor_value = getattr(self.coordinator.data.sensor_data,
+                                   self.entity_description.key) if self.coordinator.data.sensor_data else None
+            if sensor_value is not None:
+                return {
+                    ATTR_DESCRIPTION: BATTERY_MODE_DESCRIPTION[sensor_value],
+                }
+        if self.entity_description.key == "station_name":
+            sensor_value = getattr(self.coordinator.data.sensor_data,
+                                   self.entity_description.key) if self.coordinator.data.sensor_data else None
+            if sensor_value is not None:
+                return {
+                    ATTR_HW_FIRMWARE_REVISION: self._coordinator.data.station_data.firmware_revision,
+                    ATTR_HW_SERIAL_NUMBER: self._coordinator.data.station_data.serial_number,
+                    ATTR_HW_STATION_ID: str(self._config.data[CONF_STATION_ID]),
+                }
 
     async def async_added_to_hass(self):
         """When entity is added to hass."""

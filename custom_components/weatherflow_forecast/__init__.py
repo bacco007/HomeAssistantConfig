@@ -17,6 +17,7 @@ from pyweatherflow_forecast import (
     WeatherFlowForecastInternalServerError,
     WeatherFlowForecastWongStationId,
     WeatherFlowSensorData,
+    WeatherFlowStationData,
 )
 
 from homeassistant.config_entries import ConfigEntry
@@ -34,7 +35,7 @@ from .const import (
     CONF_STATION_ID,
 )
 
-PLATFORMS = [Platform.WEATHER, Platform.SENSOR]
+PLATFORMS = [Platform.WEATHER, Platform.SENSOR, Platform.BINARY_SENSOR]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -121,6 +122,7 @@ class WeatherFlowForecastWeatherData:
         self.daily_forecast: WeatherFlowForecastDaily = []
         self.hourly_forecast: WeatherFlowForecastHourly = []
         self.sensor_data: WeatherFlowSensorData = {}
+        self.station_data: WeatherFlowStationData = {}
 
     def initialize_data(self) -> bool:
         """Establish connection to API."""
@@ -157,6 +159,7 @@ class WeatherFlowForecastWeatherData:
         if self._add_sensors:
             try:
                 resp: WeatherFlowForecastData = await self._weather_data.async_fetch_sensor_data()
+                station_info: WeatherFlowStationData = await self._weather_data.async_get_station()
             except WeatherFlowForecastWongStationId as unauthorized:
                 _LOGGER.debug(unauthorized)
                 raise Unauthorized from unauthorized
@@ -170,9 +173,10 @@ class WeatherFlowForecastWeatherData:
                 _LOGGER.debug(notreadyerror)
                 raise ConfigEntryNotReady from notreadyerror
 
-            if not resp:
+            if not resp or not station_info:
                 raise CannotConnect()
             self.sensor_data = resp
+            self.station_data = station_info
             # _LOGGER.debug(vars(self.sensor_data))
 
         return self

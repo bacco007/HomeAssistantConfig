@@ -59,6 +59,33 @@
                     "rising": "Rising",
                     "steady": "Steady"
                 }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Calm",
+                    "light_air": "Light air",
+                    "light_breeze": "Light breeze",
+                    "gentle_breeze": "Gentle breeze",
+                    "moderate_breeze": "Moderate breeze",
+                    "fresh_breeze": "Fresh breeze",
+                    "strong_breeze": "Strong breeze",
+                    "moderate_gale": "Moderate Gale",
+                    "fresh_gale": "Fresh Gale",
+                    "strong_gale": "Strong Gale",
+                    "storm": "Storm",
+                    "violent_storm": "Violent Storm",
+                    "hurricane": "Hurricane"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Extreme",
+                    "very-high": "Very High",
+                    "high": "High",
+                    "moderate": "Moderate",
+                    "low": "Low",
+                    "none": "None"
+                }
             }
         }
     }

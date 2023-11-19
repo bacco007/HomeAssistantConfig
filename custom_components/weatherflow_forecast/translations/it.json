@@ -59,6 +59,33 @@
                     "nw": "NO",
                     "nnw": "NNO"
                 }
+            },
+            "beaufort": {
+                "state": {
+                    "calm": "Calma",
+                    "light_air": "Bava di vento",
+                    "light_breeze": "Brezza leggera",
+                    "gentle_breeze": "Brezza leggera",
+                    "moderate_breeze": "Brezza moderata",
+                    "fresh_breeze": "Brezza moderata",
+                    "strong_breeze": "Brezza forte",
+                    "moderate_gale": "Burrasca moderata",
+                    "fresh_gale": "Burrasca moderata",
+                    "strong_gale": "Burrasca intensa",
+                    "storm": "Bufera",
+                    "violent_storm": "Bufera violenta",
+                    "hurricane": "Uragano"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Estremo",
+                    "very-high": "Molto Elevato",
+                    "high": "Elevato",
+                    "moderate": "Moderato",
+                    "low": "Basso",
+                    "none": "Nessuno"
+                }
             }
         }
     }
