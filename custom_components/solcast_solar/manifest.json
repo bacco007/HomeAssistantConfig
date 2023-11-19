@@ -9,6 +9,6 @@
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/oziee/ha-solcast-solar/issues",
-  "requirements": ["aiohttp>=3.6.2", "datetime>=4.3", "isodate>=0.6.1"],
-  "version": "4.0.12"
+  "requirements": ["aiohttp>=3.8.5", "datetime>=4.3", "isodate>=0.6.1"],
+  "version": "4.0.13"
 }

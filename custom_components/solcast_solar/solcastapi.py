@@ -304,6 +304,8 @@ class SolcastApi:
         
     def get_forecast_day(self, futureday) -> Dict[str, Any]:
         """Return Solcast Forecasts data for N days ahead"""
+        noDataError = True
+
         tz = self._tz
         da = dt.now(tz).date() + timedelta(days=futureday)
         h = tuple(
@@ -315,12 +317,9 @@ class SolcastApi:
         tup = tuple(
                 {**d, "period_start": d["period_start"].astimezone(tz)} for d in h
             )
-        
-        _LOGGER.debug(f"SOLCAST - Data records contained {len(tup)} of 48 for {da}")
-        
+
         if len(tup) < 48:
-            _LOGGER.info(f"SOLCAST - Data records not complete - Data records contained {len(tup)} of 48 for {da} - Values therefor maybe inaccurate nor complete")
-            _LOGGER.info(f"Data - {tup}")
+            noDataError = False
 
         hourlyturp = []
         for index in range(0,len(tup),2):
@@ -341,6 +340,7 @@ class SolcastApi:
             "detailedForecast": tup,
             "detailedHourly": hourlyturp,
             "dayname": da.strftime("%A"),
+            "dataCorrect": noDataError,
         }
 
     def get_forecast_n_hour(self, hourincrement) -> int:
@@ -462,10 +462,6 @@ class SolcastApi:
         lastday = dt.now(self._tz) + timedelta(days=7)
         lastday = lastday.replace(hour=23,minute=59).astimezone(timezone.utc)
 
-        pastdays = dt.now(self._tz).date() + timedelta(days=-730)
-        
-        #_s = {}
-        #_LOGGER.debug(f"SOLCAST - Polling API.")
         for site in self._sites:
             _LOGGER.debug(f"SOLCAST - API polling for rooftop {site['resource_id']}")
             #site=site['resource_id'], apikey=site['apikey'],
@@ -530,6 +526,8 @@ class SolcastApi:
         af = resp_dict.get("forecasts", None)
         if not isinstance(af, list):
             raise TypeError(f"forecasts must be a list, not {type(af)}")
+        
+        _LOGGER.debug(f"SOLCAST - Solcast returned {len(af)} records (should be 168)")
 
         for x in af:
             z = parse_datetime(x["period_end"]).astimezone(timezone.utc)
@@ -590,7 +588,7 @@ class SolcastApi:
             url=f"{self.options.host}/rooftop_sites/{site}/{path}"
             _LOGGER.debug(f"SOLCAST - fetch_data code url - {url}")
 
-            async with async_timeout.timeout(60):
+            async with async_timeout.timeout(120):
                 apiCacheFileName = cachedname + "_" + site + ".json"
                 if self.apiCacheEnabled and file_exists(apiCacheFileName):
                     _LOGGER.debug(f"SOLCAST - Getting cached testing data for site {site}")
@@ -713,9 +711,28 @@ class SolcastApi:
             _forecasts = sorted(_forecasts, key=itemgetter("period_start"))     
             
             self._data_forecasts = _forecasts 
+
+            await self.checkDataRecords()
                     
             self._dataenergy = {"wh_hours": self.makeenergydict()}
                 
         except Exception as e:
             _LOGGER.error("SOLCAST - http_data error: %s", traceback.format_exc())
         
+    async def checkDataRecords(self):
+        tz = self._tz
+        for i in range(0,6):
+            da = dt.now(tz).date() + timedelta(days=i)
+            h = tuple(
+                d
+                for d in self._data_forecasts
+                if d["period_start"].astimezone(tz).date() == da
+            )
+
+            if len(h) == 48:
+                _LOGGER.debug(f"SOLCAST - Data for {da} contains all 48 records")
+            else:
+                _LOGGER.debug(f"SOLCAST - Data for {da} contains only {len(h)} of 48 records and may produce inaccurate forecast data")
+            
+            
+    
