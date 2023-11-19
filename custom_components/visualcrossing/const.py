@@ -37,18 +37,14 @@ CONDITIONS_MAP = {
         "partly-cloudy-day",
         "partly-cloudy-night",
     },
-    ATTR_CONDITION_POURING: {
-        "heavy-rain"
-    },
-    ATTR_CONDITION_RAINY: {
-        "rain",
-        "showers-day",
-        "showers-night"
-    },
+    ATTR_CONDITION_POURING: {"heavy-rain"},
+    ATTR_CONDITION_RAINY: {"rain", "showers-day", "showers-night"},
     ATTR_CONDITION_SNOWY: {
         "snow",
         "snow-showers_day",
         "snow-showers_night",
+        "snow-showers-day",
+        "snow-showers-night",
     },
     ATTR_CONDITION_SNOWY_RAINY: {
         "sleet",
