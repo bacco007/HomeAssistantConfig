@@ -33,7 +33,7 @@ features:
       style: |
         ha-card {
           margin: 0px 0px 0px 0px;
-          --rgb-state-fan: {{ 'var(--rgb-deep-orange)' if is_state('climate.pure_hot_cool','heat') else 'var(--rgb-blue)' }}
+          --rgb-state-fan: {{ 'var(--rgb-deep-orange)' if is_state('climate.bedroom','heat') else 'var(--rgb-blue)' }}
         }
 
 type: tile

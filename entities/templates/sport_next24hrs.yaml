@@ -187,7 +187,7 @@ trigger:
     entity_id: calendar.ical_aflw_all_teams
   - platform: calendar
     event: end
-    entity_id: calendar.bayern_munich
+    entity_id: calendar.ical_bayern_munich
   - platform: calendar
     event: end
     entity_id: calendar.ical_nfl_all_teams

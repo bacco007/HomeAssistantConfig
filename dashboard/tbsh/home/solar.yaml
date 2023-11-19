@@ -55,7 +55,7 @@ cards:
                 entity: sensor.active_import_from_grid
                 primary: Active Grid Import
                 secondary: "{{(states('sensor.active_import_from_grid'))}} W"
-                layout: vertical
+                layout: horizontal
                 fill_container: false
                 icon: mdi:transmission-tower-export
                 icon_color: "#f77c7c"
@@ -75,7 +75,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -87,7 +86,7 @@ cards:
                 entity: sensor.active_export_to_grid
                 primary: Active Grid Export
                 secondary: "{{(states('sensor.active_export_to_grid'))}} W"
-                layout: vertical
+                layout: horizontal
                 fill_container: false
                 icon: mdi:transmission-tower-import
                 icon_color: "#9ACD32"
@@ -104,7 +103,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -124,7 +122,7 @@ cards:
                         {% else %}
                           {{(states('sensor.active_generation'))}} W
                         {% endif %}
-                layout: vertical
+                layout: horizontal
                 fill_container: false
                 icon: |-
                   {% set state=states('sensor.active_generation') %}
@@ -156,7 +154,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -174,7 +171,7 @@ cards:
                 primary_info: name
                 secondary_info: state
                 name: Current Usage
-                layout: vertical
+                layout: horizontal
                 fill_container: false
                 multiline_secondary: true
                 tap_action:
@@ -187,7 +184,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -205,7 +201,7 @@ cards:
                 primary_info: name
                 secondary_info: state
                 name: Daily Solar Use
-                layout: vertical
+                layout: horizontal
                 fill_container: false
                 multiline_secondary: true
                 tap_action:
@@ -218,7 +214,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -235,7 +230,7 @@ cards:
                 primary_info: name
                 secondary_info: state
                 name: Est. Yield Today
-                layout: vertical
+                layout: horizontal
                 fill_container: false
                 multiline_secondary: true
                 tap_action:
@@ -248,7 +243,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -259,7 +253,7 @@ cards:
                       }
               - type: custom:mushroom-template-card
                 icon: mdi:transmission-tower-export
-                layout: vertical
+                layout: horizontal
                 primary: Grid Consumption
                 icon_color: "#f77c7c"
                 secondary: "{{(states('sensor.daily_import_from_grid'))}} kWh"
@@ -277,7 +271,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -288,7 +281,7 @@ cards:
                       }
               - type: custom:mushroom-template-card
                 icon: mdi:transmission-tower-import
-                layout: vertical
+                layout: horizontal
                 primary: Return to grid
                 icon_color: "#9ACD32"
                 tap_action:
@@ -303,7 +296,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;
@@ -314,7 +306,7 @@ cards:
                       }
               - type: custom:mushroom-template-card
                 icon: mdi:sun-wireless
-                layout: vertical
+                layout: horizontal
                 primary: Daily Yield
                 icon_color: "#FFA500"
                 tap_action:
@@ -329,7 +321,6 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
-                        margin-top: 10px;
                         --icon-size: 40px;
                         --icon-symbol-size: 30px;
                         --card-secondary-font-size: 10px;

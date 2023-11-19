@@ -415,7 +415,7 @@ action:
       icon: mdi:toggle-switch
       entities: >
         {{ states
-            |selectattr('entity_id','search','switch.addon__*')
+            |selectattr('entity_id','search','switch.addon_*')
             |map(attribute='entity_id')|list|sort }}
 
   - service: group.set

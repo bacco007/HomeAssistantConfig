@@ -23,6 +23,101 @@ cards:
         }
     entities:
       - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Add-ons
+            icon: mdi:home-assistant
+            state: >
+              {{ expand(integration_entities('Supervisor')) | selectattr('entity_id','search','_running') | list | count}}
+            secondary: "Running: {{expand(integration_entities('Supervisor'))|selectattr('entity_id','search','running')|selectattr('state','search','on')|list|count}}, Stopped: {{expand(integration_entities('Supervisor'))|selectattr('entity_id','search','running')|selectattr('state','search','off')|list|count}}"
+        filter:
+          template: >
+            {%- set dev = namespace() %}
+            {%- set dev.name = '' %}
+            {%- set dev.running = '' %}
+            {%- set dev.newest_version = '' %}
+            {%- set dev.version = '' %}
+            {%- set dev.cpu_percent = '' %}
+            {%- set dev.memory_percent = '' %}
+            {%- set dev.update = '' %}
+
+            {%- for devid in (integration_entities('Supervisor') | map('device_id') | unique) | sort %}
+              {%- set dev.name = device_attr(devid, "name") %}
+              {%- for ent in device_entities(devid) %}
+                {%- if (ent.find("running") | int>=0) %}
+                  {%- set dev.running = ent %}
+                {%- endif %}
+                {%- if (ent.find("newest_version") | int>=0) %}
+                  {%- set dev.newest_version = ent %}
+                {%- endif %}
+                {%- if (ent.find("version") | int>=0) %}
+                  {%- set dev.version = ent %}
+                {%- endif %}
+                {%- if (ent.find("cpu_percent") | int>=0) %}
+                  {%- set dev.cpu_percent = ent %}
+                {%- endif %}
+                {%- if (ent.find("memory_percent") | int>=0) %}
+                  {%- set dev.memory_percent = ent %}
+                {%- endif %}
+                {%- if (ent.find("update") | int>=0) %}
+                  {%- set dev.update = ent %}
+                {%- endif %}
+              {%- endfor %}
+              {%- if dev.version > '' %}
+                {{-
+                  {
+                    "type": "custom:fold-entity-row",
+                    "card_mod": {
+                        "style": "#items {\n  padding-left: 12px !important;\n  padding-right: 12px !important;\n}\n#measure {\n  padding-top: 0 !important;\n}\n#measure > * {\n  margin: 0 !important;\n}\n"
+                    },
+                    "padding": 0,
+                    "head": {
+                        "type": "custom:template-entity-row",
+                        "name": dev.name,
+                        "icon": "mdi:home-assistant",
+                        "state": is_state(dev.running, 'on') | iif('Running', 'Stopped', 'Unknown')
+                    },
+                    "entities": [
+                        {
+                          "entity": dev.running,
+                          "name": "Status"
+                        },
+                        {
+                          "entity": dev.cpu_percent,
+                          "name": "CPU Percentage"
+
+                        },
+                        {
+                          "entity": dev.memory_percent,
+                          "name": "Memory Percentage"
+                        },
+                        {
+                          "type": "custom:template-entity-row",
+                          "entity": dev.update,
+                          "name": dev.name,
+                          "state": "New: {{ state_attr(config.entity, 'latest_version') }}",
+                          "secondary": "Current: {{ state_attr(config.entity, 'installed_version')}}"
+                        }
+                    ]
+                  }
+                }},
+
+              {%- endif %}
+            {%- endfor %}
+        sort:
+          method: friendly_name
+        card_mod:
+          style: |
+            #states {
+              padding-top: 0 !important;
+            }
+            #states > * {
+              margin: 0 !important;
+            }
+      - type: custom:auto-entities
         show_empty: true
         unique: true
         filter:
@@ -38,96 +133,3 @@ cards:
             name: "Add-on Switches"
             icon: mdi:toggle-switch
             state: ""
-  - type: custom:auto-entities
-    card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
-        }
-    card:
-      type: entities
-      card_mod:
-        style: |
-          #states {
-            padding-top: 0 !important;
-          }
-          #states > * {
-            margin: 0 !important;
-          }
-    filter:
-      template: >
-        {%- set dev = namespace() %}
-        {%- set dev.name = '' %}
-        {%- set dev.running = '' %}
-        {%- set dev.newest_version = '' %}
-        {%- set dev.version = '' %}
-        {%- set dev.cpu_percent = '' %}
-        {%- set dev.memory_percent = '' %}
-        {%- set dev.update = '' %}
-
-        {%- for devid in (integration_entities('Supervisor') | map('device_id') | unique) | sort %}
-          {%- set dev.name = device_attr(devid, "name") %}
-          {%- for ent in device_entities(devid) %}
-            {%- if (ent.find("running") | int>=0) %}
-              {%- set dev.running = ent %}
-            {%- endif %}
-            {%- if (ent.find("newest_version") | int>=0) %}
-              {%- set dev.newest_version = ent %}
-            {%- endif %}
-            {%- if (ent.find("version") | int>=0) %}
-              {%- set dev.version = ent %}
-            {%- endif %}
-            {%- if (ent.find("cpu_percent") | int>=0) %}
-              {%- set dev.cpu_percent = ent %}
-            {%- endif %}
-            {%- if (ent.find("memory_percent") | int>=0) %}
-              {%- set dev.memory_percent = ent %}
-            {%- endif %}
-            {%- if (ent.find("update") | int>=0) %}
-              {%- set dev.update = ent %}
-            {%- endif %}
-          {%- endfor %}
-          {%- if dev.version > '' %}
-            {{-
-              {
-                 "type": "custom:fold-entity-row",
-                 "card_mod": {
-                    "style": "#items {\n  padding-left: 12px !important;\n  padding-right: 12px !important;\n}\n#measure {\n  padding-top: 0 !important;\n}\n#measure > * {\n  margin: 0 !important;\n}\n"
-                 },
-                 "padding": 0,
-                 "head": {
-                    "type": "custom:template-entity-row",
-                    "name": dev.name,
-                    "icon": "mdi:home-assistant",
-                    "state": ""
-                 },
-                 "entities": [
-                    {
-                       "entity": dev.running,
-                       "name": "Status"
-                    },
-                    {
-                       "entity": dev.cpu_percent,
-                       "name": "CPU Percentage"
-
-                    },
-                    {
-                       "entity": dev.memory_percent,
-                       "name": "Memory Percentage"
-                    },
-                    {
-                       "type": "custom:template-entity-row",
-                       "entity": dev.update,
-                       "name": dev.name,
-                       "state": "New: {{ state_attr(config.entity, 'latest_version') }}",
-                       "secondary": "Current: {{ state_attr(config.entity, 'installed_version')}}"
-                    }
-                 ]
-              }
-            }},
-
-          {%- endif %}
-        {%- endfor %}

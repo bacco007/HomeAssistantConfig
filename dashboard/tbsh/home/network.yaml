@@ -38,7 +38,7 @@ cards:
           }
       - type: custom:hui-element
         card_type: grid
-        columns: 1
+        columns: 2
         square: false
         style: |
           ha-card {

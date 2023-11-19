@@ -1,5 +1,5 @@
 ---
-type: custom:vertical-stack-in-card
+type: custom:stack-in-card
 cards:
   - type: custom:mushroom-entity-card
     entity: sensor.flighttracker_aircraft_total
