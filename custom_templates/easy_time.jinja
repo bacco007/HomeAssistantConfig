@@ -1195,10 +1195,11 @@
       {%- else %}
         {%- set chosen = value %}
       {%- endif %}
+      {%- set chosen = chosen | int %}
       {%- if short %}
         {%- set units = translate('time', item, index=0, language=language) %}
       {%- else %}
-        {%- set units = translate('time', item, index=2, language=language) if value != 1 else translate('time', item, index=1, language=language) %}
+        {%- set units = translate('time', item, index=2, language=language) if chosen != 1 else translate('time', item, index=1, language=language) %}
         {%- set units = ' %s' % units %}
       {%- endif %}
       {%- set ns.ret = ns.ret + [ '%s%s' % (chosen, units) ] %}
