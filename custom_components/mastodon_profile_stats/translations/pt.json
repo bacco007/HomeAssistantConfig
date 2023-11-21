@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Caso queiras ajuda na configuração visita este site: https://github.com/andrew-codechimp/ha-mastodon-profile-stats",
+                "data": {
+                    "url": "Perfil ( @nomedeutilizador@intancia ou link completo)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Autenticação invalida.",
+            "connection": "Erro a ligar ao servidor.",
+            "unknown": "Erro desconhecido."
+        }
+    },
+    "entity": {
+        "sensor": {
+            "followers": {
+                "name": "Seguidores"
+            },
+            "following": {
+                "name": "A Seguir"
+            },
+            "statuses": {
+                "name": "Estado"
+            }
+        }
+    }
+}
