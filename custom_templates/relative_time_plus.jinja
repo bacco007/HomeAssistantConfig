@@ -139,7 +139,7 @@
   macro to split a timedelta in years, months, weeks, days, hours, minutes, seconds
   used by the relative time plus macro, set up as a seperate macro so it can be reused
 #}
-{%- macro time_split(date, compare_date=now(), month=true, week=true, millisecond=false, time=true) -%}
+{%- macro time_split(date, compare_date=now(), time=true, not_use=[]) -%}
   {# set defaults for variables #}
     {%- set date = date | as_local if time else date.date()-%}
     {%- set time = time | bool(true) -%}
@@ -152,34 +152,31 @@
     {%- set yrs = date_max.year - date_min.year - (1 if date_min.replace(year=date_max.year) < date_min else 0) -%}
     {%- set date_max = date_max.replace(year=date_max.year - yrs) -%}
   {#- set numer of months, and set lowest date using this number of months #}
-    {%- if month -%}
+    {%- if 'month' not in not_use -%}
       {%- set mth = (date_max.month - date_min.month - (1 if date_max.day < date_min.day else 0) + 12) % 12 -%}
       {%- set month_new = (((date_max.month - mth) + 12) % 12) | default(12, true) -%}
       {%- set day_max = ((date_max.replace(day=1, month=month_new) + timedelta(days=31)).replace(day=1) - timedelta(days=1)).day -%}
       {%- set date_temp = date_max.replace(month=month_new, day=[date_max.day, day_max]|min) -%}
       {%- set date_max = date_temp if date_temp <= date_max else date_temp.replace(year=a.year-1) -%}
+      {%- set mth = mth + yrs * 12 if 'year' in not_use else mth -%}
     {%- endif -%}
+    {%- set date_max = date_max.replace(year=date_max.year + yrs) if 'year' in not_use and 'month' in not_use else date_max -%}
+    {%- set yrs = 0 if 'year' in not_use else yrs -%}
   {#- set other time period variables #}
     {%- set s = (date_max - date_min).total_seconds() -%}
-    {%- set wks = 0 if not week else (s // w) | int -%}
-    {%- set day = ((s - wks * w) // d) | int -%}
-    {%- set hrs = ((s - wks * w - day * d) // h) | int -%}
-    {%- set min = ((s - wks * w - day * d - hrs * h) // m) | int -%}
-    {%- set sec = (s - wks * w - day * d - hrs * h - min * m) | int -%}
+    {%- set wks = 0 if 'week' in not_use else (s // w) | int -%}
+    {%- set day = 0 if 'day' in not_use else ((s - wks * w) // d) | int -%}
+    {%- set hrs = 0 if 'hour' in not_use else ((s - wks * w - day * d) // h) | int -%}
+    {%- set min = 0 if 'minute' in not_use else ((s - wks * w - day * d - hrs * h) // m) | int -%}
+    {%- set sec = 0 if 'second' in not_use else (s - wks * w - day * d - hrs * h - min * m) | int -%}
     {%- set ms = (s % 1 * 1000) | round | int -%}
   {# output result #}
     {%- set output = dict(year=yrs, month=mth | default(0), week=wks, day=day, hour=hrs, minute=min, second=sec, millisecond=ms) %}
-    {{- dict(output.items()
-              | rejectattr('0', 'eq', 'month' if not month)
-              | rejectattr('0', 'eq', 'week' if not week)
-              | rejectattr('0', 'eq', 'millisecond' if not millisecond)
-              | rejectattr('0', 'in', ['hour', 'minute', 'second'] if not time else [])
-            ) | to_json
-    -}}
+    {{- dict(output.items() | rejectattr('0', 'in', not_use)) | to_json -}}
 {%- endmacro -%}
 
 {# macro to output a timedelta in a readable format #}
-{%- macro relative_time_plus(date, parts=1, abbr=false, verbose=false, language='en', compare_date=now(), month=true, week=true, millisecond=false, time=true) -%}
+{%- macro relative_time_plus(date, parts=1, abbr=false, verbose=false, language='en', compare_date=now(), month=none, week=none, millisecond=none, not_use=['millisecond'], time=true) -%}
   {#- set defaults for input if not entered #}
     {%- set date = date if date is datetime else date | as_datetime -%}
     {%- set compare_date = compare_date if compare_date is datetime else compare_date | as_datetime -%}
@@ -190,29 +187,48 @@
     {%- set phr = phrases | selectattr('language', 'eq', language) | map(attribute='phrases') | list | first -%}
   {#- perform smart stuff #}
     {%- if date is datetime and compare_date is datetime -%}
+    {# determine not_use list #}
+      {%- set abbr_to_full = dict(yr='year', mth='month', wk='week', hr='hour', min='minute', sec='second', ms='millisecond') -%}
+      {%- set add = [('month', month),('week',week),('millisecond',millisecond)] | selectattr('1', 'eq', false) | map(attribute='0') | list -%}
+      {%- set not_use = not_use if not_use is list else (not_use | replace(' ', '')).split(',') -%}
+      {%- set not_use = (not_use + add) | unique | list -%}
+      {%- if not_use | select('in', abbr_to_full) | list | count > 0 -%}
+        {%- set ns = namespace(not_use=[]) -%}
+        {%- for i in not_use -%}
+          {%- set ns.not_use = ns.not_use + [abbr_to_full[i] | default(i)] -%}
+        {%- endfor -%}
+        {%- set not_use = ns.not_use | unique | list -%}
+      {%- endif -%}
+    {# set variables #}
       {%- set date, compare_date = date | as_local, compare_date | as_local -%}
       {%- set parts = parts | int(1) -%}
-      {%- set week = week | bool(true) -%}
       {%- set time = time | bool(true) -%}
       {%- set abbr = abbr | bool(false) or verbose | bool(false) -%}
-      {%- set date = date if time else date.date() -%}
-      {%- set time_parts = time_split(date, compare_date, month, week, time) | from_json -%}
+    {# split timedelta #}
+      {%- set time_parts = time_split(date, compare_date, time, not_use) | from_json -%}
     {#- find first non zero time period #}
-      {%- set always_return = 'millisecond' if millisecond else 'second' if time else 'day' -%}
-      {%- set first = time_parts.items() | selectattr('1') | map(attribute='0') | first | default(always_return) -%}
-    {#-select non zero items based on input #}
-      {%- set index_first = (time_parts.keys() | list).index(first) -%}
-      {%- set items = (time_parts.keys() | list)[index_first:index_first + parts] -%}
-    {# convert to phrases #}
-      {%- set ns = namespace(phrases=[]) -%}
-      {%- for i in items if time_parts[i] or i == first -%}
-        {%- set phr_abbr = phr[i][2] -%}
-        {%- set phr_verb = phr[i][1] if time_parts[i] != 1 else phr[i][0] -%}
-        {%- set phrase = '{} {}'.format(time_parts[i], phr_abbr if abbr else phr_verb) -%} 
-        {%- set ns.phrases = ns.phrases + [phrase] -%}
-      {%- endfor -%}
-    {#- join phrases in a string, using phr.combine for the last item #}
-      {{- '{} {} {}'.format(ns.phrases[:-1] | join(', '), phr.combine, ns.phrases[-1]) if ns.phrases | count > 1 else ns.phrases | first -}} 
+      {%- set time_periods = ['year', 'month', 'week', 'day', 'hour', 'minute', 'second', 'millisecond'] -%}
+      {%- set do_use = time_periods | reject('in', not_use) | list -%}
+    {# continue if there are still time periods to use #}
+      {%- if do_use | count > 0 -%}
+        {%- set always_return = do_use | last | default('second') -%}
+        {%- set first = time_parts.items() | selectattr('1') | map(attribute='0') | first | default(always_return) -%}
+      {#-select non zero items based on input #}
+        {%- set index_first = (time_parts.keys() | list).index(first) -%}
+        {%- set items = (time_parts.keys() | list)[index_first:index_first + parts] -%}
+      {# convert to phrases #}
+        {%- set ns = namespace(phrases=[]) -%}
+        {%- for i in items if time_parts[i] or i == first -%}
+          {%- set phr_abbr = phr[i][2] -%}
+          {%- set phr_verb = phr[i][1] if time_parts[i] != 1 else phr[i][0] -%}
+          {%- set phrase = '{} {}'.format(time_parts[i], phr_abbr if abbr else phr_verb) -%} 
+          {%- set ns.phrases = ns.phrases + [phrase] -%}
+        {%- endfor -%}
+      {#- join phrases in a string, using phr.combine for the last item #}
+        {{- '{} {} {}'.format(ns.phrases[:-1] | join(', '), phr.combine, ns.phrases[-1]) if ns.phrases | count > 1 else ns.phrases | first -}} 
+      {%- else -%}
+        All time periods are excluded
+      {%- endif -%}
     {%- else -%}
       {{- phr.error -}}
     {%- endif -%}
