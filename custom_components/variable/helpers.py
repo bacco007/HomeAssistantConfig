@@ -3,6 +3,8 @@ from __future__ import annotations
 import datetime
 import logging
 
+import homeassistant.util.dt as dt_util
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -61,6 +63,11 @@ def value_to_type(init_val, dest_type):  # noqa: C901
                 _LOGGER.debug(
                     f"[value_to_type] return value: {value_datetime}, type: {type(value_datetime)}"
                 )
+                if (
+                    value_datetime.tzinfo is None
+                    or value_datetime.tzinfo.utcoffset(value_datetime) is None
+                ):
+                    return value_datetime.replace(tzinfo=dt_util.UTC)
                 return value_datetime
 
         elif dest_type == "number":
@@ -113,6 +120,11 @@ def value_to_type(init_val, dest_type):  # noqa: C901
                 _LOGGER.debug(
                     f"[value_to_type] return value: {value_datetime}, type: {type(value_datetime)}"
                 )
+                if (
+                    value_datetime.tzinfo is None
+                    or value_datetime.tzinfo.utcoffset(value_datetime) is None
+                ):
+                    return value_datetime.replace(tzinfo=dt_util.UTC)
                 return value_datetime
         elif dest_type == "number":
             _LOGGER.debug(
