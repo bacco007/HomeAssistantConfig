@@ -114,6 +114,21 @@ class TraktApi:
 
         return response
 
+    def is_show_excluded(self, show, excluded_shows: list, hidden_shows: list) -> bool:
+        """Check if a show should be excluded or not."""
+        try:
+            ids = show["show"]["ids"]
+            return ids["slug"] in excluded_shows or ids["trakt"] in hidden_shows
+        except IndexError:
+            return False
+
+    def is_show_finished(self, show) -> bool:
+        """Check if a show is finished or not."""
+        try:
+            return show["aired"] == show["completed"]
+        except KeyError:
+            return False
+
     async def fetch_watched(self, excluded_shows: list):
         """First, let's retrieve hidden items from user as a workaround for a potential bug in show progress_watch API"""
         cache_key = f"user_hidden_shows"
@@ -147,35 +162,41 @@ class TraktApi:
         """Then, let's retrieve progress for current user by removing hidden or excluded shows"""
         raw_shows = await self.request("get", f"sync/watched/shows?extended=noseasons")
         raw_medias = []
-        if raw_shows is not None:
-            for show in raw_shows:
-                try:
-                    ids = show["show"]["ids"]
-                    is_excluded = (
-                        ids["slug"] in excluded_shows or ids["trakt"] in hidden_shows
-                    )
-                except IndexError:
-                    is_excluded = False
+
+        for show in raw_shows or []:
+            try:
+                ids = show["show"]["ids"]
+
+                is_excluded = self.is_show_excluded(show, excluded_shows, hidden_shows)
 
                 if is_excluded:
                     continue
 
-                try:
-                    raw_episode = await self.fetch_show_progress(ids["trakt"])
-                    if raw_episode is not None:
-                        if raw_episode.get("next_episode") is not None:
-                            if raw_episode["next_episode"].get("season") is not None:
-                                raw_episode_full = await self.fetch_show_informations(
-                                    ids["trakt"],
-                                    raw_episode["next_episode"].get("season"),
-                                    raw_episode["next_episode"].get("number"),
-                                )
-                                show["episode"] = raw_episode_full
-                                show["first_aired"] = raw_episode_full["first_aired"]
-                                raw_medias.append(show)
-                except IndexError:
-                    LOGGER.warning("Show %s doesn't contain any trakt ID", ids["slug"])
+                identifier = ids["slug"]
+                raw_show_progress = await self.fetch_show_progress(ids["trakt"])
+                is_finished = self.is_show_finished(raw_show_progress)
+
+                if is_finished:
                     continue
+
+                raw_next_episode = await self.fetch_show_informations(
+                    ids["trakt"],
+                    raw_show_progress["next_episode"]["season"],
+                    raw_show_progress["next_episode"]["number"],
+                )
+
+                show["episode"] = raw_next_episode
+                show["first_aired"] = raw_next_episode["first_aired"]
+                raw_medias.append(show)
+            except IndexError:
+                LOGGER.warning(f"Show {identifier} doesn't contain any trakt ID")
+                continue
+            except TypeError as e:
+                LOGGER.warning(f"Show {identifier} can't be extracted due to {e}")
+                continue
+            except KeyError as e:
+                LOGGER.warning(f"Show {identifier} can't be extracted due to {e}")
+                continue
 
         return raw_medias
 
@@ -183,6 +204,7 @@ class TraktApi:
         cache_key = f"show_progress_{id}"
 
         maybe_answer = cache_retrieve(self.cache(), cache_key)
+
         if maybe_answer is not None:
             return maybe_answer
 
