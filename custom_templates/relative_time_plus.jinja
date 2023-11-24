@@ -149,7 +149,7 @@
   {#- set time periods in seconds #}
     {%- set m, h, d, w = 60, 3600, 86400, 604800 -%}
   {#- set numer of years, and set lowest date using this number of years #}
-    {%- set yrs = date_max.year - date_min.year - (1 if date_min.replace(year=date_max.year) < date_min else 0) -%}
+    {%- set yrs = date_max.year - date_min.year - (1 if date_max.replace(year=date_min.year) < date_min else 0) -%}
     {%- set date_max = date_max.replace(year=date_max.year - yrs) -%}
   {#- set numer of months, and set lowest date using this number of months #}
     {%- if 'month' not in not_use -%}
@@ -157,7 +157,7 @@
       {%- set month_new = (((date_max.month - mth) + 12) % 12) | default(12, true) -%}
       {%- set day_max = ((date_max.replace(day=1, month=month_new) + timedelta(days=31)).replace(day=1) - timedelta(days=1)).day -%}
       {%- set date_temp = date_max.replace(month=month_new, day=[date_max.day, day_max]|min) -%}
-      {%- set date_max = date_temp if date_temp <= date_max else date_temp.replace(year=a.year-1) -%}
+      {%- set date_max = date_temp if date_temp <= date_max else date_temp.replace(year=date_max.year-1) -%}
       {%- set mth = mth + yrs * 12 if 'year' in not_use else mth -%}
     {%- endif -%}
     {%- set date_max = date_max.replace(year=date_max.year + yrs) if 'year' in not_use and 'month' in not_use else date_max -%}
@@ -176,7 +176,7 @@
 {%- endmacro -%}
 
 {# macro to output a timedelta in a readable format #}
-{%- macro relative_time_plus(date, parts=1, abbr=false, verbose=false, language='en', compare_date=now(), month=none, week=none, millisecond=none, not_use=['millisecond'], time=true) -%}
+{%- macro relative_time_plus(date, parts=1, abbr=false, verbose=false, language='en', compare_date=now(), month=none, week=none, millisecond=none, not_use=['millisecond'], always_show=[], time=true) -%}
   {#- set defaults for input if not entered #}
     {%- set date = date if date is datetime else date | as_datetime -%}
     {%- set compare_date = compare_date if compare_date is datetime else compare_date | as_datetime -%}
@@ -211,14 +211,23 @@
       {%- set do_use = time_periods | reject('in', not_use) | list -%}
     {# continue if there are still time periods to use #}
       {%- if do_use | count > 0 -%}
-        {%- set always_return = do_use | last | default('second') -%}
-        {%- set first = time_parts.items() | selectattr('1') | map(attribute='0') | first | default(always_return) -%}
-      {#-select non zero items based on input #}
+        {%- set always_return = do_use | last -%}
+        {%- set always_show = always_show if always_show is list else (always_show | replace(' ', '')).split(',') -%}
+        {%- if always_show | select('in', abbr_to_full) | list | count > 0 -%}
+          {%- set ns = namespace(always_show=[]) -%}
+          {%- for i in always_show -%}
+            {%- set ns.always_show = ns.always_show + [abbr_to_full[i] | default(i)] -%}
+          {%- endfor -%}
+          {%- set always_show = ns.always_show | unique | list -%}
+        {%- endif -%}
+        {%- set to_show = (time_parts.items() | selectattr('1') | map(attribute='0') | list + always_show) | unique | list | default([always_return], true) -%}
+        {%- set first = do_use | select('in', to_show) | first -%}
+      {#-select itemw to show based on input #}
         {%- set index_first = (time_parts.keys() | list).index(first) -%}
         {%- set items = (time_parts.keys() | list)[index_first:index_first + parts] -%}
       {# convert to phrases #}
         {%- set ns = namespace(phrases=[]) -%}
-        {%- for i in items if time_parts[i] or i == first -%}
+        {%- for i in items if i in to_show or i == first -%}
           {%- set phr_abbr = phr[i][2] -%}
           {%- set phr_verb = phr[i][1] if time_parts[i] != 1 else phr[i][0] -%}
           {%- set phrase = '{} {}'.format(time_parts[i], phr_abbr if abbr else phr_verb) -%} 

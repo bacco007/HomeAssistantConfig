@@ -5,7 +5,7 @@ primary: Sport
 secondary: >
   {{ states('sensor.upcoming_sport_this_week') }} This Week
 multiline_secondary: true
-icon: mdi:football-australian
+icon: mdi:run-fast
 icon_color: >-
   {%- if states('sensor.upcoming_sport_this_week') | int > 0 %}
     green
