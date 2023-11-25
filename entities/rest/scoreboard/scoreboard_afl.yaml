@@ -6,4 +6,6 @@ sensor:
   json_attributes_path: "$['standings']"
   json_attributes:
     - entries
+    - season
+    - seasonDisplayName
 scan_interval: 3600

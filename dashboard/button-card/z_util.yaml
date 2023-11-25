@@ -24,18 +24,20 @@ utilities:
       card:
         type: "custom:button-card"
         show_icon: false
-        entity: sensor.opennem_nsw
+        name: Rainfall
+        entity: sensor.weather_precipitation_today
         template:
           - utility
-          - icon_lightning
+          - icon_water
     waste:
       card:
         type: "custom:button-card"
+        name: Temperature
         show_icon: false
         template:
           - utility
-          - icon_trash_can
-        entity: sensor.binday_nextcollectionday
+          - icon_thermometer
+        entity: sensor.weather_temperature
 
 utility:
   show_state: true
@@ -54,7 +56,7 @@ utility:
           return `${formattedState.toFixed(2)} €/kWh`;
         }
 
-        return `${value.state}`;
+        return `${value.state} ${value.attributes.unit_of_measurement}`;
       }
 
       return null;

@@ -1,0 +1,8 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/baseball/mlb/standings?seasontype=1&type=0&level=4
+sensor:
+  name: scoreboard_mlb_spring
+  value_template: "{{ now() }}"
+  json_attributes:
+    - children
+scan_interval: 3600

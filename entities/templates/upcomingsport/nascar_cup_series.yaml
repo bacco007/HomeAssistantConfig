@@ -21,6 +21,7 @@ action:
       next_5_events: "{{ agenda.events[:5] | list }}"
       dump: "{{agenda}}"
       countnumb: "{{agenda.events | count}}"
+      lastevent: "{{agenda.events[-1]}}"
 sensor:
   - name: "[Upcoming Sport] Nascar Cup Series"
     unique_id: upcoming_sport_nascar_cup_series
@@ -38,6 +39,7 @@ sensor:
     attributes:
       category: sport
       remaining_events: "{{countnumb}}"
+      last_event: "{{lastevent.end}}"
       next_5_events: >
         {%- if countnumb == 0 %}
           No Events
