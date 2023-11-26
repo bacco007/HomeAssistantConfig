@@ -37,8 +37,7 @@
         "title": "Google Fit Settings",
         "description": "For help with settings, see [Configuration Options](https://github.com/YorkshireIoT/ha-google-fit#configuration)",
         "data": {
-          "scan_interval": "Minutes between REST API queries.",
-          "use_zero": "When there is no data available on the account for a sensor set to zero. If unchecked, set to unknown."
+          "scan_interval": "Minutes between REST API queries."
         }
       }
     }

@@ -16,7 +16,6 @@ from homeassistant.const import CONF_SCAN_INTERVAL
 
 from .api import AsyncConfigEntryAuth, GoogleFitParse
 from .api_types import (
-    FitService,
     FitnessData,
     FitnessObject,
     FitnessDataPoint,
@@ -30,8 +29,7 @@ from .const import (
     LOGGER,
     ENTITY_DESCRIPTIONS,
     DEFAULT_SCAN_INTERVAL,
-    DEFAULT_NO_DATA_USE_ZERO,
-    CONF_NO_DATA_USE_ZERO,
+    NANOSECONDS_SECONDS_CONVERSION,
 )
 
 
@@ -42,7 +40,6 @@ class Coordinator(DataUpdateCoordinator):
     _auth: AsyncConfigEntryAuth
     _config: ConfigEntry
     fitness_data: FitnessData | None = None
-    _use_zero: bool
 
     def __init__(
         self,
@@ -53,13 +50,9 @@ class Coordinator(DataUpdateCoordinator):
         """Initialise."""
         self._auth = auth
         self._config = config
-        self._use_zero = config.options.get(
-            CONF_NO_DATA_USE_ZERO, DEFAULT_NO_DATA_USE_ZERO
-        )
         update_time = config.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
         LOGGER.debug(
-            "Setting up Google Fit Coordinator. Use zero=%s and updating every %u minutes",
-            str(self._use_zero),
+            "Setting up Google Fit Coordinator. Updating every %u minutes",
             update_time,
         )
         super().__init__(
@@ -81,11 +74,6 @@ class Coordinator(DataUpdateCoordinator):
         """Return the current data, or None is data is not available."""
         return self.fitness_data
 
-    @property
-    def use_zero(self) -> bool:
-        """Return the config option on whether to use zero for when there is no sensor data."""
-        return self._use_zero
-
     def _get_interval(self, interval_period: int = 0) -> str:
         """Return the necessary interval for API queries, with start and end time in nanoseconds.
 
@@ -100,19 +88,23 @@ class Coordinator(DataUpdateCoordinator):
                         datetime.today().date(), datetime.min.time()
                     ).timestamp()
                 )
-                * 1000000000
+                * NANOSECONDS_SECONDS_CONVERSION
             )
         else:
-            start = (int(datetime.today().timestamp()) - interval_period) * 1000000000
-        now = int(datetime.today().timestamp() * 1000000000)
+            start = (int(datetime.today().timestamp()) - interval_period)
+            start = start * NANOSECONDS_SECONDS_CONVERSION
+        now = int(datetime.today().timestamp() * NANOSECONDS_SECONDS_CONVERSION)
         return f"{start}-{now}"
 
-    async def _async_update_data(self) -> FitService | None:
+    async def _async_update_data(self) -> FitnessData | None:
         """Update data via library."""
         LOGGER.debug(
             "Fetching data for account %s",
             self._auth.oauth_session.config_entry.unique_id,
         )
+
+        # Start by initialising data to None
+        self.fitness_data = None
         try:
             async with async_timeout.timeout(30):
                 service = await self._auth.get_resource(self.hass)
@@ -180,14 +172,13 @@ class Coordinator(DataUpdateCoordinator):
                             _get_session, entity.activity_id
                         )
                         parser.parse(entity, fit_session=response)
-                    # Single data point fetches
                     else:
                         raise UpdateFailed(
                             f"Unknown sensor type for {entity.data_key}. Got: {type(entity)}"
                         )
 
+                # Update globally stored data with fetched and parsed data
                 self.fitness_data = parser.fit_data
-
         except HttpError as err:
             if 400 <= err.status_code < 500:
                 raise ConfigEntryAuthFailed(
@@ -196,3 +187,5 @@ class Coordinator(DataUpdateCoordinator):
             raise err
         except Exception as err:
             raise UpdateFailed(f"Error communicating with API: {err}") from err
+
+        return self.fitness_data

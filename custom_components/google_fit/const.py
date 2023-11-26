@@ -29,12 +29,11 @@ NAME: Final = "Google Fit"
 DOMAIN: Final = "google_fit"
 MANUFACTURER: Final = "Google, Inc."
 
-# Configuration schema
-CONF_NO_DATA_USE_ZERO: Final = "use_zero"
-
 # Default Configuration Values
 DEFAULT_SCAN_INTERVAL = 5
-DEFAULT_NO_DATA_USE_ZERO = True
+
+# Useful constants
+NANOSECONDS_SECONDS_CONVERSION: Final = 1000000000
 
 # Required Scopes
 DEFAULT_ACCESS = [
@@ -54,6 +53,7 @@ DEFAULT_ACCESS = [
 # Sleep Data Enum. Taken from:
 # https://developers.google.com/fit/scenarios/read-sleep-data
 SLEEP_STAGE: Final = {
+    0: "unspecified",
     1: "awakeSeconds",
     2: "sleepSeconds",
     3: "Out-of-bed",  # Not supported

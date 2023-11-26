@@ -32,6 +32,7 @@ class GoogleFitBlueprintSensor(GoogleFitEntity, SensorEntity):
     """Google Fit Template Sensor class."""
 
     entity_description: GoogleFitSensorDescription
+    coordinator: Coordinator
 
     def __init__(
         self,
@@ -41,6 +42,7 @@ class GoogleFitBlueprintSensor(GoogleFitEntity, SensorEntity):
         """Initialise the sensor class."""
         super().__init__(coordinator)
         self.entity_description = entity_description
+        self.coordinator = coordinator
         # Follow method in core Google Mail component and use oauth session to create unique ID
         if coordinator.oauth_session:
             self._attr_unique_id = (
@@ -62,10 +64,6 @@ class GoogleFitBlueprintSensor(GoogleFitEntity, SensorEntity):
             value = self.coordinator.current_data.get(self.entity_description.data_key)
             if value is not None:
                 self._attr_native_value = value
-                self.async_write_ha_state()
-            # If value is None but config says to use zero value to prevent unknown
-            elif self.coordinator.use_zero:
-                self._attr_native_value = 0
                 self.async_write_ha_state()
 
     @callback

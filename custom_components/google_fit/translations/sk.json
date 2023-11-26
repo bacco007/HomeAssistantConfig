@@ -37,8 +37,7 @@
         "title": "Google Fit nastavenia",
         "description": "Pomoc s nastaveniami nájdete v časti [Configuration Options](https://github.com/YorkshireIoT/ha-google-fit#configuration)",
         "data": {
-          "scan_interval": "Minúty medzi dopytmi REST API.",
-          "use_zero": "Keď na účte nie sú k dispozícii žiadne údaje pre snímač nastavený na nulu. Ak nie je začiarknuté, nastavte na neznáme."
+          "scan_interval": "Minúty medzi dopytmi REST API."
         }
       }
     }
