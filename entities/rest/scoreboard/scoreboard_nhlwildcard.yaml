@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/hockey/nhl/standings?region=us&lang=en&contentorigin=espn&type=3&level=2&sort=playoffseed%3Aasc%2Cpoints%3Adesc%2Cgamesplayed%3Aasc%2Crotwins%3Adesc&seasontype=2
+sensor:
+  name: scoreboard_nhlwildcard
+  value_template: "{{ now() }}"
+  json_attributes:
+    - children
+    - overall
+scan_interval: 3600

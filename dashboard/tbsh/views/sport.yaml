@@ -42,6 +42,7 @@ cards:
               - !include ../sport/standings_football.yaml
               - !include ../sport/standings_nhl.yaml
               - !include ../sport/standings_nfl.yaml
+              - !include ../sport/standings_mlb.yaml
               - !include ../sport/standings_nba.yaml
               - !include ../sport/formula1.yaml
           "(max-width: 1370px)":

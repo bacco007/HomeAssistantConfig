@@ -56,6 +56,54 @@ sensor:
     state: "{{ now() }}"
     attributes:
       entries: "{{ state_attr('sensor.scoreboard_nhl','children')[1]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_nhl_wildcard
+    unique_id: sensor.scoreboard_nhl_wildcard
+    state: "{{ now() }}"
+    attributes:
+      east_atlantic_top: "{{ state_attr('sensor.scoreboard_nhlwildcard','overall')[0]['children'][0]['standings']['entries'] }}"
+      east_metropolitan_top: "{{ state_attr('sensor.scoreboard_nhlwildcard','overall')[0]['children'][1]['standings']['entries'] }}"
+      east_wildcard: "{{ state_attr('sensor.scoreboard_nhlwildcard','children')[0]['standings']['entries'][:2] }}"
+      east_hunt: >
+        {% set hteams = namespace(hteam=[]) %}
+        {% for team in state_attr('sensor.scoreboard_nhlwildcard','children')[0]['standings']['entries'][2:] %}
+          {% for stat in team['stats'] | selectattr('name','eq','clincher') %}
+          {% else %}
+                {% set hteams.hteam = hteams.hteam + [team] %}
+          {% endfor %}
+        {% endfor %}
+        {{ hteams.hteam }}
+      east_eliminated: >
+        {% set eteams = namespace(eteam=[]) %}
+        {% for team in state_attr('sensor.scoreboard_nhlwildcard','children')[0]['standings']['entries'][2:] %}
+          {% for stat in team['stats'] %}
+            {% if stat.name == 'clincher' %}
+                {% set eteams.eteam = eteams.eteam + [team] %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {{ eteams.eteam }}
+      west_central_top: "{{ state_attr('sensor.scoreboard_nhlwildcard','overall')[1]['children'][0]['standings']['entries'] }}"
+      west_pacific_top: "{{ state_attr('sensor.scoreboard_nhlwildcard','overall')[1]['children'][1]['standings']['entries'] }}"
+      west_wildcard: "{{ state_attr('sensor.scoreboard_nhlwildcard','children')[1]['standings']['entries'][:2] }}"
+      west_hunt: >
+        {% set hteams = namespace(hteam=[]) %}
+        {% for team in state_attr('sensor.scoreboard_nhlwildcard','children')[1]['standings']['entries'][2:] %}
+          {% for stat in team['stats'] | selectattr('name','eq','clincher') %}
+          {% else %}
+                {% set hteams.hteam = hteams.hteam + [team] %}
+          {% endfor %}
+        {% endfor %}
+        {{ hteams.hteam }}
+      west_eliminated: >
+        {% set eteams = namespace(eteam=[]) %}
+        {% for team in state_attr('sensor.scoreboard_nhlwildcard','children')[1]['standings']['entries'][2:] %}
+          {% for stat in team['stats'] %}
+            {% if stat.name == 'clincher' %}
+                {% set eteams.eteam = eteams.eteam + [team] %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {{ eteams.eteam }}
   ###
   ### NFL Divisions
   ###
@@ -132,3 +180,18 @@ sensor:
     state: "{{ now() }}"
     attributes:
       entries: "{{ state_attr('sensor.scoreboard_nba','children')[1]['children'][2]['standings']['entries'] }}"
+
+  ###
+  ### MLS Conferences
+  ###
+  - name: scoreboard_mls_eastern
+    unique_id: scoreboard_mls_eastern
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mls','children')[0]['standings']['entries'] }}"
+
+  - name: scoreboard_mls_western
+    unique_id: scoreboard_mls_western
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mls','children')[1]['standings']['entries'] }}"

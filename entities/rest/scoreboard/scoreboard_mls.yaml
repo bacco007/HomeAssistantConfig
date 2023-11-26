@@ -1,0 +1,8 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/soccer/usa.1/standings
+sensor:
+  name: scoreboard_mls
+  value_template: "{{ now() }}"
+  json_attributes:
+    - children
+scan_interval: 3600
