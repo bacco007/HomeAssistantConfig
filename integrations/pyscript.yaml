@@ -30,3 +30,5 @@ pyscript:
       clientsecret: !secret untappd_secret
     getdata_yourspotify:
       friendly_name: "Your Spotify"
+    getdata_hazardwatch:
+      friendly_name: "Hazard Watch"
