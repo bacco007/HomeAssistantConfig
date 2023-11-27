@@ -65,7 +65,7 @@ from .const import (
     PRECISION,
 )
 
-VERSION = "1.14"
+VERSION = "1.15"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -279,7 +279,7 @@ class DockerAPI:
                     # Remove the docker info sensors
                     self.remove_entities()
 
-                    # Remove all the sensors/switches, they will be auto created if connection is working again
+                    # Remove all the sensors/switches/buttons, they will be auto created if connection is working again
                     for cname in list(self._containers.keys()):
                         try:
                             await self._container_remove(cname)
@@ -357,7 +357,7 @@ class DockerAPI:
                             self._loop.create_task(self._container_create_destroy())
                     elif event["Action"] == "rename":
                         # during a docker-compose up -d <container> the old container can be renamed
-                        # sensors/switch should be removed before the new container is monitored
+                        # sensors/switch/button should be removed before the new container is monitored
 
                         # New name
                         cname = event["Actor"]["Attributes"]["name"]
@@ -445,7 +445,7 @@ class DockerAPI:
         result = await self._containers[cname]._initGetContainer()
 
         if result:
-            # Lets wait 1 second before we try to create sensors/switches
+            # Lets wait 1 second before we try to create sensors/switches/buttons
             await asyncio.sleep(1)
 
             for component in COMPONENTS:
@@ -500,8 +500,8 @@ class DockerAPI:
 
                 self._info[ATTR_MEMORY_LIMIT] = info.get("MemTotal")
                 self._info[ATTR_ONLINE_CPUS] = info.get("NCPU")
-                self._info[ATTR_VERSION_OS] = info.get("OperationSystem")
-                self._info[ATTR_VERSION_OS_TYPE] = info.get("OStype")
+                self._info[ATTR_VERSION_OS] = info.get("OperatingSystem")
+                self._info[ATTR_VERSION_OS_TYPE] = info.get("OSType")
                 self._info[ATTR_VERSION_ARCH] = info.get("Architecture")
                 self._info[ATTR_VERSION_KERNEL] = info.get("KernelVersion")
 
@@ -795,9 +795,11 @@ class DockerContainerAPI:
 
         self._info[CONTAINER_INFO_STATE] = raw["State"]["Status"]
         self._info[CONTAINER_INFO_IMAGE] = raw["Config"]["Image"]
-        self._info[CONTAINER_INFO_NETWORK_AVAILABLE] = (
-            False if raw["HostConfig"]["NetworkMode"] in ["host", "none"] else True
-        )
+
+        if CONTAINER_INFO_NETWORK_AVAILABLE not in self._info:
+            self._info[CONTAINER_INFO_NETWORK_AVAILABLE] = (
+                False if raw["HostConfig"]["NetworkMode"] in ["host", "none"] else True
+            )
 
         try:
             self._info[CONTAINER_INFO_HEALTH] = raw["State"]["Health"]["Status"]
@@ -1035,9 +1037,9 @@ class DockerContainerAPI:
             self._memory_prev_breach = False
 
         """
-        self._memory_prev = None 
+        self._memory_prev = None
         self._memory_prev_breach = False
-        self._memory_percent_prev = None 
+        self._memory_percent_prev = None
         self._memory_percent_prev_breach = False
         """
 
@@ -1257,6 +1259,14 @@ class DockerContainerAPI:
             self._busy = False
 
     #############################################################
+    async def _restart_button(self):
+        """Called from HA button."""
+        _LOGGER.info("[%s] %s: Restart container", self._instance, self._name)
+
+        self._busy = True
+        self._loop.create_task(self._restart())
+
+    #############################################################
     async def restart(self):
         """Called from service call."""
         _LOGGER.info("[%s] %s: Restart container", self._instance, self._name)
@@ -1286,7 +1296,7 @@ class DockerContainerAPI:
 
     #############################################################
     def register_callback(self, callback, variable):
-        """Register callback from sensor/switch."""
+        """Register callback from sensor/switch/button."""
         if callback not in self._subscribers:
             _LOGGER.debug(
                 "[%s] %s: Added callback to container, entity: %s",

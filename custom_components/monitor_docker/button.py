@@ -1,11 +1,9 @@
-"""Monitor Docker switch component."""
-
 import asyncio
 import logging
 import re
 import voluptuous as vol
 
-from homeassistant.components.switch import ENTITY_ID_FORMAT, SwitchEntity
+from homeassistant.components.button import ENTITY_ID_FORMAT, ButtonEntity
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.util import slugify
@@ -18,8 +16,8 @@ from .const import (
     CONF_CONTAINERS_EXCLUDE,
     CONF_PREFIX,
     CONF_RENAME,
-    CONF_SWITCHENABLED,
-    CONF_SWITCHNAME,
+    CONF_BUTTONENABLED,
+    CONF_BUTTONNAME,
     CONFIG,
     CONTAINER,
     CONTAINER_INFO_STATE,
@@ -33,7 +31,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Set up the Monitor Docker Switch."""
+    """Set up the Monitor Docker Button."""
 
     async def async_restart(parm):
         cname = parm.data[ATTR_NAME]
@@ -90,14 +88,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if config[CONF_PREFIX]:
         prefix = config[CONF_PREFIX]
 
-    # Don't create any switch if disabled
-    if config[CONF_SWITCHENABLED] == False:
-        _LOGGER.debug("[%s]: Switch(es) are disabled", instance)
+    # Don't create any butoon if disabled
+    if config[CONF_BUTTONENABLED] == False:
+        _LOGGER.debug("[%s]: Button(s) are disabled", instance)
         return True
 
-    _LOGGER.debug("[%s]: Setting up switch(es)", instance)
+    _LOGGER.debug("[%s]: Setting up button(s)", instance)
 
-    switches = []
+    buttons = []
 
     # We support add/re-add of a container
     if CONTAINER in discovery_info:
@@ -115,28 +113,28 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         if includeContainer:
             if (
-                config[CONF_SWITCHENABLED] == True
-                or cname in config[CONF_SWITCHENABLED]
+                config[CONF_BUTTONENABLED] == True
+                or cname in config[CONF_BUTTONENABLED]
             ):
-                _LOGGER.debug("[%s] %s: Adding component Switch", instance, cname)
-                switches.append(
-                    DockerContainerSwitch(
+                _LOGGER.debug("[%s] %s: Adding component Button", instance, cname)
+                buttons.append(
+                    DockerContainerButton(
                         api.get_container(cname),
                         instance,
                         prefix,
                         cname,
                         find_rename(config[CONF_RENAME], cname),
-                        config[CONF_SWITCHNAME],
+                        config[CONF_BUTTONNAME],
                     )
                 )
             else:
-                _LOGGER.debug("[%s] %s: NOT Adding component Switch", instance, cname)
+                _LOGGER.debug("[%s] %s: NOT Adding component Button", instance, cname)
 
-    if not switches:
+    if not buttons:
         _LOGGER.info("[%s]: No containers set-up", instance)
         return False
 
-    async_add_entities(switches, True)
+    async_add_entities(buttons, True)
 
     # platform = entity_platform.current_platform.get()
     # platform.async_register_entity_service(SERVICE_RESTART, {}, "async_restart")
@@ -146,9 +144,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     return True
 
-
 #################################################################
-class DockerContainerSwitch(SwitchEntity):
+class DockerContainerButton(ButtonEntity):
     def __init__(self, container, instance, prefix, cname, alias, name_format):
         self._loop = asyncio.get_running_loop()
         self._container = container
@@ -164,7 +161,7 @@ class DockerContainerSwitch(SwitchEntity):
 
     @property
     def entity_id(self):
-        """Return the entity id of the switch."""
+        """Return the entity id of the button."""
         return self._entity_id
 
     @property
@@ -188,13 +185,8 @@ class DockerContainerSwitch(SwitchEntity):
     def is_on(self):
         return self._state
 
-    async def async_turn_on(self):
-        await self._container.start()
-        self._state = True
-        self.async_schedule_update_ha_state()
-
-    async def async_turn_off(self):
-        await self._container.stop()
+    async def async_press(self):
+        await self._container.restart()
         self._state = False
         self.async_schedule_update_ha_state()
 
@@ -213,7 +205,7 @@ class DockerContainerSwitch(SwitchEntity):
             if self._removed:
                 return
 
-            _LOGGER.info("[%s] %s: Removing switch entity", self._instance, self._cname)
+            _LOGGER.info("[%s] %s: Removing button entity", self._instance, self._cname)
             self._loop.create_task(self.async_remove())
             self._removed = True
             return
