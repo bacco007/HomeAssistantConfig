@@ -7,16 +7,15 @@ from math import sin, cos, asin, sqrt, degrees, radians
 
 @service
 def getdata_hazardwatch(
-    entity_id=None,
-    dataseturl=None,
-    friendly_name=None,
-    icon=None,
+    entity_id="sensor.hazardwatch_current",
+    friendly_name="[Hazard Watch] Current",
+    icon="mdi:home-flood",
 ):
     if entity_id is None:
         log.error("getdata_hazardwatch: No Entity ID provided")
         return
 
-    URL = dataseturl
+    URL = "https://hazardwatch.gov.au/app-api/alerts"
     locn_lat = -31.081265
     locn_lng = 150.941741
     max_dist = 100
@@ -90,8 +89,8 @@ def getdata_hazardwatch(
                     "warninglevel": b['info']['parameter']['AustralianWarningSystem:WarningLevel'],
                     "warningaction": b['info']['parameter']['AustralianWarningSystem:CallToAction'],
                     "location": b['info']['parameter']['AffectedLocation'],
-                    "nextupdate": b['info']['parameter']['NextUpdateDate'],
-                });
+                    "nextupdate": b['info']['parameter']['NextUpdateDate']
+                })
 
     d = defaultdict(dict)
     for l in (tmpdata3, tmpdata2):
@@ -108,8 +107,8 @@ def getdata_hazardwatch(
     attributes["data"] = OUTPUT_DATA
     attributes["category"] = "hazardwatch"
     attributes["lastcheck"] = datetime.datetime.now()
-    state.set(entity_id, value=len(OUTPUT_DATA), new_attributes=attributes)
-
+    state.set(entity_id, value=countval, new_attributes=attributes)
+    # , new_attributes=attributes
 
 def get_config(name):
     value = pyscript.app_config.get(name)
