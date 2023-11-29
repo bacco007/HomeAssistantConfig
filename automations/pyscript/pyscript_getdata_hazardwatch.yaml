@@ -11,8 +11,3 @@ condition: []
 mode: single
 action:
   - service: pyscript.getdata_hazardwatch
-    data:
-      entity_id: sensor.getdata_hazardwatch_current
-      dataseturl: https://hazardwatch.gov.au/app-api/alerts
-      friendly_name: "[Hazard Watch] Current"
-      icon: mdi:home-flood
