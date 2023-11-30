@@ -89,7 +89,7 @@ def getdata_hazardwatch(
                     "warninglevel": b['info']['parameter']['AustralianWarningSystem:WarningLevel'],
                     "warningaction": b['info']['parameter']['AustralianWarningSystem:CallToAction'],
                     "location": b['info']['parameter']['AffectedLocation'],
-                    s"nextupdate": b['info']['parameter']['NextUpdateDate']
+                    "nextupdate": b['info']['parameter']['NextUpdateDate']
                 })
 
     d = defaultdict(dict)

@@ -1,0 +1,6 @@
+---
+waste_collection_schedule:
+  sources:
+    - name: ics
+      args:
+        file: /config/bin_schedule.ics
