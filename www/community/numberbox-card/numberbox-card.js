@@ -1,6 +1,6 @@
 ((LitElement) => {
 
-console.info('NUMBERBOX_CARD 4.15');
+console.info('NUMBERBOX_CARD 4.16');
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 class NumberBox extends LitElement {
@@ -11,7 +11,7 @@ constructor() {
 	this.pending = false;
 	this.rolling = false;
 	this.state = 0;
-	this.old = {state: undefined, t:{}, h:''};
+	this.old = {state: NaN, t:{}, h:''};
 }
 
 render() {
