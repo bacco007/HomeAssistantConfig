@@ -1,6 +1,26 @@
 ---
 waste_collection_schedule:
   sources:
-    - name: ics
+    - name: static
       args:
-        file: /config/bin_schedule.ics
+        type: General Garbage
+        frequency: WEEKLY
+        interval: 1
+        weekdays: TH
+    - name: static
+      args:
+        type: Green Waste
+        frequency: WEEKLY
+        interval: 2
+        weekdays: TH
+        start: '2023-11-23'
+    - name: static
+      args:
+        type: Recycling
+        frequency: WEEKLY
+        interval: 2
+        weekdays: TH
+        start: '2023-11-30'
+    # - name: ics
+    #   args:
+    #     file: /config/bin_schedule.ics
