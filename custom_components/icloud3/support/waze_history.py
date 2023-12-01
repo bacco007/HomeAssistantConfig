@@ -203,7 +203,7 @@ class WazeRouteHistory(object):
             self._sql(CREATE_ZONES_TABLE)
             self._sql(CREATE_LOCATIONS_TABLE)
 
-            self.compress_wazehist_database()
+            # self.compress_wazehist_database()
 
         except:
             post_internal_error(traceback.format_exc)
@@ -217,8 +217,7 @@ class WazeRouteHistory(object):
         '''
         Close the Waze History Database
         '''
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         try:
             self.connection.commit()
@@ -377,8 +376,7 @@ class WazeRouteHistory(object):
                                     in the zones table and the zone time/dist values need to be
                                     recalculated. Get the info from Waze and do not update the db.
         '''
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         try:
             zone_id = Gb.wazehist_zone_id.get(from_zone, 0)
@@ -411,12 +409,10 @@ class WazeRouteHistory(object):
 #--------------------------------------------------------------------
     def add_location_record(self, zone_id, latitude, longitude, time, distance):
 
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         try:
-            if zone_id < 1:
-                return
+            if zone_id < 1: return
 
             lat_long_key = (f"{latitude:.04f}:{longitude:.04f}")
             latitude     = round(latitude, 6)
@@ -424,7 +420,7 @@ class WazeRouteHistory(object):
             datetime     = datetime_now()
 
             location_data = [zone_id, lat_long_key, latitude, longitude,
-                             time, distance, datetime, datetime, 1]
+                                time, distance, datetime, datetime, 1]
 
             location_id = self._add_record(ADD_LOCATION_RECORD, location_data)
 
@@ -442,8 +438,7 @@ class WazeRouteHistory(object):
         Update the location record's last_used date & update the usage counter
         '''
 
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         try:
             if location_id < 1:
@@ -478,23 +473,29 @@ class WazeRouteHistory(object):
     def compress_wazehist_database(self):
         """ Compress the WazeHist Database """
 
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
-        self.cursor.execute(DUPLICATE_LOCATION_RECDS_SELECT)
-        records = self.cursor.fetchall()
+        cursor = self.connection.cursor()
 
-        if records != []:
-            post_event(f"Waze History Database > Deleted Duplicate Recds, Count-{len(records)}")
-            self.cursor.execute(DUPLICATE_LOCATION_RECDS_DELETE)
+        try:
+            cursor.execute(DUPLICATE_LOCATION_RECDS_SELECT)
+            records = cursor.fetchall()
+
+            if records != []:
+                post_event(f"Waze History Database > Deleted Duplicate Recds, Count-{len(records)}")
+                cursor.execute(DUPLICATE_LOCATION_RECDS_DELETE)
+                self.connection.commit()
+
+            cursor.execute("VACUUM;")
             self.connection.commit()
 
-        self._sql("VACUUM;")
+        except Exception as err:
+            log_exception(err)
 
-        self.cursor.execute(GET_LOCATIONS_TABLE_RECD_COUNT)
-        recd_cnt = self.cursor.fetchone()[0]
-
+        cursor.execute(GET_LOCATIONS_TABLE_RECD_COUNT)
+        recd_cnt = cursor.fetchone()[0]
         post_event(f"Waze History Database > Compressed, Record Count-{recd_cnt}")
+        cursor.close()
 
 #--------------------------------------------------------------------
     def __repr__(self):
@@ -516,8 +517,7 @@ class WazeRouteHistory(object):
             & times or deleted.
         '''
 
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         try:
             # Check to see if all tracked from zones are in the zones table
@@ -591,8 +591,7 @@ class WazeRouteHistory(object):
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     def wazehist_recalculate_time_dist_all_zones(self):
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         self.wazehist_recalculate_time_dist(all_zones_flag=True)
 
@@ -602,8 +601,7 @@ class WazeRouteHistory(object):
             1.  Recalculate the one time/distance values based on the current zone location for
                 zones that have been moved since they were added.
         '''
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         _Device = Gb.Devices[0] if len(Gb.Devices) > 0 else None
 
@@ -853,10 +851,9 @@ class WazeRouteHistory(object):
 #   WAZE HISTORY TRACK SENSOR UPDATE, RUNS EACH NIGHT AT MIDNIGHT
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    def wazehist_delete_invalid_rcords(self, zone_ids=None):
+    def wazehist_delete_invalid_records(self, zone_ids=None):
 
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         # Cycle through moved zones, delete any > 5km from db zone location
         moved_zones = {zone_name:abs(zone_id) for (zone_name, zone_id) in Gb.wazehist_zone_id.items() if zone_id < 0}
@@ -903,8 +900,7 @@ class WazeRouteHistory(object):
         in the wazehist database on a lovelace map.
         '''
 
-        if self.connection is None:
-            return
+        if self.connection is None: return
 
         _Device = Gb.Devices[0] if len(Gb.Devices) > 0 else None
 

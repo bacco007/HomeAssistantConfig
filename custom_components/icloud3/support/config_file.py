@@ -11,9 +11,11 @@ from ..const                import (
                                     CONF_UPDATE_DATE, CONF_VERSION_INSTALL_DATE, CONF_PASSWORD, CONF_ICLOUD_SERVER_ENDPOINT_SUFFIX,
                                     CONF_DEVICES, CONF_SETUP_ICLOUD_SESSION_EARLY,
                                     CONF_UNIT_OF_MEASUREMENT, CONF_TIME_FORMAT, CONF_LOG_LEVEL,
-                                    CONF_DATA_SOURCE, CONF_DISPLAY_GPS_LAT_LONG,
+                                    CONF_DATA_SOURCE, CONF_DISPLAY_GPS_LAT_LONG, CONF_LOG_ZONES,
                                     CONF_FAMSHR_DEVICENAME, CONF_FMF_EMAIL, CONF_IOSAPP_DEVICE, CONF_TRACKING_MODE,
                                     CONF_STAT_ZONE_FNAME, CONF_DEVICE_TRACKER_STATE_SOURCE,
+                                    CONF_AWAY_TIME_ZONE_1_OFFSET, CONF_AWAY_TIME_ZONE_1_DEVICES,
+                                    CONF_AWAY_TIME_ZONE_2_OFFSET, CONF_AWAY_TIME_ZONE_2_DEVICES,
                                     CF_DEFAULT_IC3_CONF_FILE,
                                     DEFAULT_PROFILE_CONF, DEFAULT_TRACKING_CONF, DEFAULT_GENERAL_CONF,
                                     DEFAULT_SENSORS_CONF,
@@ -221,6 +223,16 @@ def config_file_add_new_parameters():
             conf_device.pop(CONF_STAT_ZONE_FNAME)
             update_config_file_flag = True
 
+        # Add zones for logging enter/exit activity rc8.2
+        if CONF_LOG_ZONES not in conf_device:
+            conf_device[CONF_LOG_ZONES] = ['none']
+            update_config_file_flag = True
+
+        # Cleanup a bug introduced in v3.0.rc8
+        if 'action_items' in conf_device:
+            conf_device.pop('action_items')
+            update_config_file_flag = True
+
     # Add sensors.HOME_DISTANCE sensor to conf_sensors
     if HOME_DISTANCE not in Gb.conf_sensors[CONF_SENSORS_TRACKING_DISTANCE]:
         Gb.conf_sensors[CONF_SENSORS_TRACKING_DISTANCE].append(HOME_DISTANCE)
@@ -309,6 +321,14 @@ def config_file_add_new_parameters():
             or update_config_file_flag)
     if Gb.conf_general[CONF_DEVICE_TRACKER_STATE_SOURCE] == ICLOUD3:
         Gb.conf_general[CONF_DEVICE_TRACKER_STATE_SOURCE] = 'ic3_fname'
+        update_config_file_flag = True
+
+    # Add Local Zone Time display (rc9)
+    if CONF_AWAY_TIME_ZONE_1_OFFSET not in Gb.conf_general:
+        _add_config_file_parameter(Gb.conf_general, CONF_AWAY_TIME_ZONE_1_OFFSET, 0)
+        _add_config_file_parameter(Gb.conf_general, CONF_AWAY_TIME_ZONE_1_DEVICES, ['none'])
+        _add_config_file_parameter(Gb.conf_general, CONF_AWAY_TIME_ZONE_2_OFFSET, 0)
+        _add_config_file_parameter(Gb.conf_general, CONF_AWAY_TIME_ZONE_2_DEVICES, ['none'])
         update_config_file_flag = True
 
     if update_config_file_flag:

@@ -498,9 +498,15 @@ def _handle_action_device_locate(Device, action_option):
         post_event(Device.devicename, "iCloud Location Tracking is not available")
         return
 
-    if Device.old_loc_poor_gps_cnt > 3:
+    if Device.old_loc_cnt > 3:
+        # If older than 10-mins, resume tracking instead to initialize the device and reset
+        # all error s
+        if Device.FromZone_Home.interval_secs >= 600:
+            Device.resume_tracking()
+            return
+
         post_event(Device.devicename, "Location request canceled. Old Location Retry is "
-                        "handling Location Updates")
+                "handling Location Updates. Use `action resume` to reinitialize device")
         post_event(Device.devicename, "iCloud Location Tracking is not available")
         Gb.icloud_force_update_flag = False
         return

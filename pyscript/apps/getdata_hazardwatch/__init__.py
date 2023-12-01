@@ -7,8 +7,8 @@ from math import sin, cos, asin, sqrt, degrees, radians
 
 @service
 def getdata_hazardwatch(
-    entity_id="sensor.hazardwatch_current",
-    friendly_name="[Hazard Watch] Current",
+    entity_id="sensor.nswhazardwatch_current",
+    friendly_name="[NSW Hazard Watch] Current",
     icon="mdi:home-flood",
 ):
     if entity_id is None:
@@ -77,19 +77,19 @@ def getdata_hazardwatch(
             #print(b)
             tmpdata3.append(
                 {
-                    "identifier": b['identifier'],
-                    "sent": b['sent'],
-                    "status": b['status'],
-                    "msgtype": b['msgType'],
-                    "eventtype": b['info']['event'],
-                    "responsetype": b['info']['responseType'],
-                    "severity": b['info']['severity'],
-                    "urgency": b['info']['urgency'],
-                    "sender": b['info']['senderName'],
-                    "warninglevel": b['info']['parameter']['AustralianWarningSystem:WarningLevel'],
-                    "warningaction": b['info']['parameter']['AustralianWarningSystem:CallToAction'],
-                    "location": b['info']['parameter']['AffectedLocation'],
-                    "nextupdate": b['info']['parameter']['NextUpdateDate']
+                    "hazard_identifier": b['identifier'],
+                    "hazard_sent": b['sent'],
+                    "hazard_status": b['status'],
+                    "hazard_msgtype": b['msgType'],
+                    "hazard_eventtype": b['info']['event'],
+                    "hazard_responsetype": b['info']['responseType'],
+                    "hazard_severity": b['info']['severity'],
+                    "hazard_urgency": b['info']['urgency'],
+                    "hazard_sender": b['info']['senderName'],
+                    "hazard_warninglevel": b['info']['parameter']['AustralianWarningSystem:WarningLevel'],
+                    "hazard_warningaction": b['info']['parameter']['AustralianWarningSystem:CallToAction'],
+                    "hazard_location": b['info']['parameter']['AffectedLocation'],
+                    "hazard_nextupdate": b['info']['parameter']['NextUpdateDate']
                 })
 
     d = defaultdict(dict)
@@ -101,11 +101,11 @@ def getdata_hazardwatch(
     countval = len(OUTPUT_DATA)
 
     attributes = {}
-    attributes["unit_of_measurement"] = "Incidents"
+    attributes["unit_of_measurement"] = "Hazards"
     attributes["friendly_name"] = friendly_name
     attributes["icon"] = icon
     attributes["data"] = OUTPUT_DATA
-    attributes["category"] = "hazardwatch"
+    attributes["category"] = "nswhazardwatch"
     attributes["lastcheck"] = datetime.datetime.now()
     state.set(entity_id, value=countval, new_attributes=attributes)
     # , new_attributes=attributes

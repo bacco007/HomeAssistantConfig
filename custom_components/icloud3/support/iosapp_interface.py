@@ -1,8 +1,7 @@
 
 
 from ..global_variables     import GlobalVariables as Gb
-from ..const                import (NOTIFY,
-                                    EVLOG_NOTICE,
+from ..const                import (NOTIFY, EVLOG_NOTICE, NEXT_UPDATE,
                                     CRLF_DOT,
                                     )
 from ..helpers.common       import (instr, )
@@ -230,18 +229,16 @@ def request_location(Device, is_alive_check=False, force_request=False):
                         f"LastContact-{secs_to_time_age_str(Device.iosapp_data_secs)}")
 
             if Device.iosapp_request_loc_last_secs > 0:
-                event_msg +=  f", LastRequest-{secs_to_time(Device.iosapp_request_loc_last_secs)}"
+                event_msg +=  f", LastRequest-{secs_to_time_age_str(Device.iosapp_request_loc_last_secs)}"
         else:
             event_msg =(f"iOSApp Location Requested > "
                         f"LastLocated-{secs_to_time_age_str(Device.iosapp_data_secs)}")
-            if Device.old_loc_poor_gps_cnt > 2:
+            if Device.old_loc_cnt > 2:
                 event_msg += f", OldThreshold-{secs_to_time_str(Device.old_loc_threshold_secs)}"
         post_event(devicename, event_msg)
 
         if Device.iosapp_request_loc_first_secs == 0:
             Device.iosapp_request_loc_first_secs = Gb.this_update_secs
-        Device.iosapp_request_loc_last_secs = Gb.this_update_secs
-        Device.iosapp_request_loc_sent_secs = Gb.this_update_secs
         message = {"message": "request_location_update"}
         return_code = send_message_to_device(Device, message)
 
@@ -249,8 +246,13 @@ def request_location(Device, is_alive_check=False, force_request=False):
         #    Gb.hass.services.async_call('notify',  entity_id, service_data))
 
         if return_code:
+            Device.iosapp_request_loc_last_secs = Gb.this_update_secs
+            Device.iosapp_request_loc_sent_secs = Gb.this_update_secs
+            Device.write_ha_sensor_state(NEXT_UPDATE, 'LOC RQSTD')
             Device.display_info_msg(event_msg)
         else:
+            Device.iosapp_request_loc_last_secs = 0
+            Device.iosapp_request_loc_sent_secs = 0
             event_msg = f"{EVLOG_NOTICE}{event_msg} > Failed to send message"
             post_event(devicename, event_msg)
 

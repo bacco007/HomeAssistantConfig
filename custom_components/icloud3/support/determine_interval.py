@@ -20,7 +20,7 @@
 
 from ..global_variables     import GlobalVariables as Gb
 from ..const                import (HOME, NOT_HOME, AWAY, NOT_SET, HIGH_INTEGER,
-                                    CRLF, CHECK_MARK, CIRCLE_X, LTE, LT, PLUS_MINUS, RED_X, CIRCLE_STAR2,
+                                    CRLF, CHECK_MARK, CIRCLE_X, LTE, LT, PLUS_MINUS, RED_X, CIRCLE_STAR2, CRLF_DOT, 
                                     STATIONARY, STATIONARY_FNAME, WATCH, IOSAPP_FNAME,
                                     AWAY_FROM, TOWARDS, PAUSED, INZONE, NEAR, NEAR_HOME,
                                     ERROR, UNKNOWN,
@@ -28,7 +28,7 @@ from ..const                import (HOME, NOT_HOME, AWAY, NOT_SET, HIGH_INTEGER,
                                     WAZE,
                                     NEAR_DEVICE_DISTANCE,
                                     WAZE_USED, WAZE_NOT_USED, WAZE_PAUSED, WAZE_OUT_OF_RANGE, WAZE_NO_DATA,
-                                    OLD_LOC_POOR_GPS_CNT, AUTH_ERROR_CNT, RETRY_INTERVAL_RANGE_1, IOSAPP_REQUEST_LOC_CNT,
+                                    OLD_LOCATION_CNT, AUTH_ERROR_CNT, RETRY_INTERVAL_RANGE_1, IOSAPP_REQUEST_LOC_CNT,
                                     RETRY_INTERVAL_RANGE_2,
                                     EVLOG_TIME_RECD, EVLOG_ALERT,
                                     RARROW, NEAR_DEVICE_USEABLE_SYM,
@@ -191,7 +191,7 @@ def determine_interval(Device, FromZone):
             #inzone & old location
             if Device.is_location_old_or_gps_poor and battery10_flag is False:
                 interval_method = '1.OldLocPoorGPS'
-                interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOC_POOR_GPS_CNT)
+                interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOCATION_CNT)
 
             elif Device.isnot_in_statzone:
                 interval_method = "1.EnterZone"
@@ -230,15 +230,15 @@ def determine_interval(Device, FromZone):
             and inzone_flag
             and Gb.discard_poor_gps_inzone_flag is False):
         interval_method = '3.PoorGPSinZone'
-        interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOC_POOR_GPS_CNT)
+        interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOCATION_CNT)
 
     elif Device.is_gps_poor:
         interval_method = '3.PoorGPS'
-        interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOC_POOR_GPS_CNT)
+        interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOCATION_CNT)
 
     elif Device.is_location_old_or_gps_poor:
         interval_method = '3.OldLocPoorGPS'
-        interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOC_POOR_GPS_CNT)
+        interval_secs   = _get_interval_for_error_retry_cnt(Device, OLD_LOCATION_CNT)
 
     # elif Device.is_in_statzone:
     #    interval_method = "3.StatZone"
@@ -494,7 +494,7 @@ def determine_interval(Device, FromZone):
     FromZone.last_distance_str = (f"{format_km_to_mi(dist_from_zone_km)}")
 
     if Device.is_location_gps_good:
-        Device.old_loc_poor_gps_cnt = 0
+        Device.old_loc_cnt = 0
 
     Device.display_info_msg(Device.format_info_msg, new_base_msg=True)
     post_results_message_to_event_log(Device, FromZone)
@@ -509,14 +509,20 @@ def post_results_message_to_event_log(Device, FromZone):
     Post the final tracking results to the Event Log and HA log file
     '''
     Device.last_update_msg_secs = time_now_secs()
-    event_msg = (f"Results: From-{FromZone.from_zone_display_as} > ")
+    if Device.only_track_from_home:
+        event_msg = (f"Results > ")
+    else:
+        event_msg = (f"Results: From-{FromZone.from_zone_display_as} > ")
 
-    if True is True:  #Device.is_tracked:
-        event_msg += (  f"NextUpdate-{FromZone.next_update_time}, "
-                        f"Interval-{FromZone.interval_str}, ")
-    if FromZone.zone_dist > 0:
-        event_msg += (  f"TravTime-{FromZone.last_travel_time}, "
-                        f"Distance-{format_km_to_mi(FromZone.zone_dist)}, ")
+    if (Device.is_inzone and FromZone.from_zone != Device.loc_data_zone
+            or Device.isnot_inzone):
+        event_msg += f"Arrive-{FromZone.sensors[ARRIVAL_TIME]}, "
+
+    event_msg += (  f"NextUpdate-{FromZone.next_update_time},  ")
+    #               f"Interval-{FromZone.interval_str}, ")
+    # if FromZone.zone_dist > 0:
+    #     event_msg += (  f"TravTime-{FromZone.last_travel_time}, "
+    #                     f"Distance-{format_km_to_mi(FromZone.zone_dist)}, ")
     if FromZone.dir_of_travel == STATIONARY_FNAME:
         event_msg +=    STATIONARY_FNAME + ", "
     elif FromZone.dir_of_travel not in [INZONE, '_', '___', ' ', '']:
@@ -527,10 +533,10 @@ def post_results_message_to_event_log(Device, FromZone):
     #     event_msg +=    f"Moved-{format_dist_km(Device.statzone_dist_moved_km)}, "
     if Device.loc_data_dist_moved_km > 0:
         event_msg +=    f"Moved-{format_dist_km(Device.loc_data_dist_moved_km)}, "
-    if Device.dev_data_battery_level > 0:
+    if Device.dev_data_battery_level > 0 and FromZone is Device.FromZone_Home:
         event_msg +=    f"Battery-{Device.dev_data_battery_level}%, "
-    if Device.is_monitored:
-        event_msg +=     f"{Device.dev_data_source}, "
+    #if Device.is_monitored:
+    #    event_msg +=     f"Source-{Device.dev_data_source}, "
     if Gb.log_debug_flag and FromZone.interval_method and Device.is_tracked:
         event_msg += (  f"Method-{FromZone.interval_method}, "
                         f"{'Went3km, ' if Device.went_3km else ''}")
@@ -538,7 +544,7 @@ def post_results_message_to_event_log(Device, FromZone):
         event_msg +=    "Waze-OverMaxDist, "
     if (Device.iosapp_monitor_flag
             and secs_since(Device.iosapp_data_secs) > 3600):
-        event_msg += (  f"iOSAppLastUpdate-"
+        event_msg += (  f"iOSAppLocated-"
                         f"{secs_to_age_str(Device.iosapp_data_secs)}, ")
 
     post_event(Device.devicename, event_msg[:-2])
@@ -630,7 +636,7 @@ def determine_interval_monitored_device_offline(Device):
 #   retry intervals based on current retry count.
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
+def determine_interval_after_error(Device, counter=OLD_LOCATION_CNT):
     '''
     Handle errors where the device can not be or should not be updated with
     the current data. The update will be retried 4 times on a 15 sec interval.
@@ -656,6 +662,11 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
         # Pause tracking when the max count is exceeded, send paused msg when the cnt is reached
         if error_cnt >= max_error_cnt and Device.is_tracking_paused is False:
             Device.pause_tracking()
+            event_msg = (f"{EVLOG_ALERT}Tracking has been Paused due to a failure to "
+                        f"get valid location information from iCloud Web Services. "
+                        f"To resume tracking, use:"
+                        f"{CRLF_DOT}Event Log > Actions > Resume Tracking this Device")
+            post_event(Device.devicename, event_msg)
 
             if error_cnt == max_error_cnt:
                 message = {
@@ -665,6 +676,7 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
                                 f"Event Log > Actions > Resume to restart tracking."),
                     "data": {"subtitle": "Tracking has been Paused"}}
                 iosapp_interface.send_message_to_device(Device, message)
+            return
 
         if (Device.is_offline and Device.offline_secs == 0):
             Device.offline_secs = Gb.this_update_secs
@@ -674,11 +686,13 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
         # happens after a reauthentication. If so, do not display an error on the
         # first retry.
 
-        threshold_msg = ''  if interval_secs == Device.FromZone_Home.interval_secs \
-                            else f", OldThreshold-{secs_to_time_str(Device.old_loc_threshold_secs)}"
+        if interval_secs == Device.FromZone_Home.interval_secs:
+            threshold_msg = ''
+        else:
+            threshold_msg = f", OldThreshold-{secs_to_time_str(Device.old_loc_threshold_secs)}"
 
         next_update_secs = Gb.this_update_secs + interval_secs
-        Device.update_sensors_error_msg = Device.update_sensors_error_msg or Device.old_loc_poor_gps_msg
+        Device.update_sensors_error_msg = Device.update_sensors_error_msg or Device.old_loc_msg
 
         update_all_device_fm_zone_sensors_interval(Device, interval_secs)
 
@@ -691,9 +705,9 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
                         f"RetryAt-{secs_to_time(next_update_secs)}, "
                         f"DeviceStatus-{Device.device_status}")
 
-        elif ((Device.old_loc_poor_gps_cnt > 0
-                    and secs_since(Device.FromZone_Home.next_update_secs) < \
-                        (Device.FromZone_Home.interval_secs + 5))
+        elif ((Device.old_loc_cnt > 0
+                and secs_since(Device.FromZone_Home.next_update_secs) < \
+                    (Device.FromZone_Home.interval_secs + 5))
                 or Device.outside_no_exit_trigger_flag):
             pass
 
@@ -709,7 +723,7 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
                         f"{threshold_msg}")
             Device.icloud_update_reason = "Newer Data is Available"
 
-        if event_msg and Device.old_loc_poor_gps_cnt > 2:
+        if event_msg and Device.old_loc_cnt > 2:
             post_event(devicename, event_msg)
             log_info_msg(Device.devicename, f"Old Location/Other Error-{event_msg}")
             # log_rawdata(f"{Device_devicename} - {from_zone}", FromZone.sensors)
@@ -718,7 +732,7 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
         log_exception(err)
 
 #----------------------------------------------------------------------------
-def get_error_retry_interval(Device, counter=OLD_LOC_POOR_GPS_CNT):
+def get_error_retry_interval(Device, counter=OLD_LOCATION_CNT):
     '''
     Determine the interval value based on the error counter and current retry_count
 
@@ -739,8 +753,8 @@ def get_error_retry_interval(Device, counter=OLD_LOC_POOR_GPS_CNT):
 
         interval_secs = 0
 
-        if counter == OLD_LOC_POOR_GPS_CNT:
-            error_cnt = Device.old_loc_poor_gps_cnt
+        if counter == OLD_LOCATION_CNT:
+            error_cnt = Device.old_loc_cnt
             range_tbl = RETRY_INTERVAL_RANGE_1
 
         elif counter == AUTH_ERROR_CNT:
@@ -751,7 +765,7 @@ def get_error_retry_interval(Device, counter=OLD_LOC_POOR_GPS_CNT):
             error_cnt = Device.iosapp_request_loc_retry_cnt
             range_tbl = RETRY_INTERVAL_RANGE_2
         else:
-            error_cnt = Device.old_loc_poor_gps_cnt
+            error_cnt = Device.old_loc_cnt
             range_tbl = RETRY_INTERVAL_RANGE_1
             interval_secs = 60
 
@@ -766,6 +780,10 @@ def get_error_retry_interval(Device, counter=OLD_LOC_POOR_GPS_CNT):
             interval_list = [cnt_time for cnt, cnt_time in range_tbl.items() if cnt <= error_cnt]
             interval_secs = interval_list[-1]
             interval_secs = interval_secs * 60
+
+            # Increase threshold when interval was updated (rc9) to try to get an acceptable location
+            if Device.old_loc_threshold_secs < 300:
+                Device.old_loc_threshold_secs += 60
 
     except Exception as err:
         log_exception(err)
@@ -1063,7 +1081,7 @@ def _get_distance_data(Device, FromZone):
     return  distance_data
 
 #--------------------------------------------------------------------------------
-def _get_interval_for_error_retry_cnt(Device, counter=OLD_LOC_POOR_GPS_CNT, pause_control_flag=False):
+def _get_interval_for_error_retry_cnt(Device, counter=OLD_LOCATION_CNT, pause_control_flag=False):
     '''
     Get the interval time based on the retry_cnt.
     retry_cnt   =   poor_location_gps count (default)
@@ -1082,8 +1100,8 @@ def _get_interval_for_error_retry_cnt(Device, counter=OLD_LOC_POOR_GPS_CNT, paus
         interval_range_2 = {0:.5,  4:2, 8:30, 12:60, 16:120}
 
     '''
-    if counter == OLD_LOC_POOR_GPS_CNT:
-        retry_cnt = Device.old_loc_poor_gps_cnt
+    if counter == OLD_LOCATION_CNT:
+        retry_cnt = Device.old_loc_cnt
         range_tbl = RETRY_INTERVAL_RANGE_1
 
     elif counter == AUTH_ERROR_CNT:
@@ -1247,7 +1265,7 @@ def update_near_device_info(Device):
                 and _Device.is_tracked
                 and useable_symbol == NEAR_DEVICE_USEABLE_SYM
                 and _Device.FromZone_Home.interval_secs > 0
-                and _Device.old_loc_poor_gps_cnt == 0
+                and _Device.old_loc_cnt == 0
                 and _Device.is_online):
 
             if dist_apart_m < closest_device_distance:

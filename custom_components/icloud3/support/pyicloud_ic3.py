@@ -33,9 +33,10 @@ from ..const                import (AIRPODS_FNAME, NONE_FNAME,
                                     CONF_ICLOUD_SERVER_ENDPOINT_SUFFIX,
                                     CONF_IC3_DEVICENAME, CONF_FNAME, CONF_FAMSHR_DEVICENAME, CONF_FMF_EMAIL,
                                     )
+from ..helpers.common       import (instr, obscure_field, list_to_str, delete_file, more_info, )
 from ..helpers.time_util    import (time_now_secs, secs_to_time, timestamp_to_time_utcsecs, )
-from ..helpers.common       import (instr, obscure_field, list_to_str, delete_file, )
-from ..helpers.messaging    import (post_event, post_monitor_msg, post_startup_alert, _trace, _traceha,
+from ..helpers.messaging    import (post_event, post_monitor_msg, post_startup_alert,
+                                    _trace, _traceha, post_internal_error,
                                     log_info_msg, log_error_msg, log_debug_msg, log_warning_msg, log_rawdata, log_exception)
 from .config_file            import (encode_password, decode_password)
 
@@ -46,6 +47,7 @@ from os         import path, mkdir
 from re         import match
 import inspect
 import json
+import traceback
 import http.cookiejar as cookielib
 import logging
 LOGGER = logging.getLogger(f"icloud3.pyicloud_ic3")
@@ -63,6 +65,22 @@ INVALID_GLOBAL_SESSION_421 = 421
 APPLE_ID_VERIFICATION_CODE_INVALID_404 = 404
 AUTHENTICATION_NEEDED_421_450_500 = [421, 450, 500]
 AUTHENTICATION_NEEDED_450 = 450
+
+ICLOUD_ERROR_CODES = {
+    200: 'iCloud Server Responded',
+    204: 'Authentication Successful',
+    421: 'Authentication Needed',
+    450: 'Authentication Needed',
+    500: 'Authentication Needed',
+    503: 'iCloud Server not Available',
+    400: 'Invalid Verification Code',
+    403: 'Verification Code Requested',
+    404: 'iCloud http Error, Web Page not Found',
+    201: 'Device Offline',
+    -2:  'iCloud Server not Available',
+    302: 'iCloud Server not Available',
+}
+ICLOUD_ERROR_CODE_IDX = {str(code): code for code in ICLOUD_ERROR_CODES.keys()}
 '''
 https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/ErrorCodes.html#//apple_ref/doc/uid/TP40015240-CH4-SW1
 
@@ -305,8 +323,11 @@ class PyiCloudSession(Session):
             reason = f"Apple Verification Code not requested ({code})"
             return
 
-        elif code in [400, 404]:
+        elif code == 400:
             reason = f"Apple Verification Code Invalid ({code})"
+
+        elif code == 404:
+            reason = f"iCloud Web Page not Found ({code})"
 
         elif code == -2:
             reason = f"Could not connect to iCloud Location Servers ({code})"
@@ -1286,12 +1307,16 @@ class PyiCloud_FamilySharing():
         if devices_not_set_up == '':
             return
 
-        post_startup_alert(f"FamShr Device Config Error > Device Not found{devices_not_set_up.replace(CRLF_STAR, CRLF_HDOT)}")
-        log_msg = ( f"{EVLOG_ALERT}iCloud3 Alert > Some FamShr devices were not initialized. "
-                    f"Check the FamShr Device Name assigned to the iCloud3 device "
-                    f"in the iCloud3 Configuration."
-                    f"{devices_not_set_up}")
+        post_startup_alert( f"FamShr Device Config Error > "
+                            f"Device Not found{devices_not_set_up.replace(CRLF_STAR, CRLF_HDOT)}")
+        log_msg = ( f"{EVLOG_ALERT}FamShr Devices were not all Initialized > Information for some of "
+                    f"configured devices was not returned from your Apple iCloud account Family Sharing List."
+                    f"{devices_not_set_up}"
+                    f"{more_info('famshr_device_not_available')}")
         post_event(log_msg)
+        log_error_msg(f"iCloud3 Error > Some FamShr Devices were not Initialized > "
+                    f"{devices_not_set_up.replace(CRLF, ', ')}. "
+                    f"See iCloud3 Event Log > Startup Stage 4 for more info.")
 
 #----------------------------------------------------------------------------
     def _set_service_available(self, available):
@@ -2067,8 +2092,8 @@ class PyiCloud_RawData():
     @property
     def device_data_fname_dup_check(self):
         '''
-        Determine if the FamShr devie being set up is the same name as one that has already
-        been set up. Is so, add (#) to the end of the fname and set the fname suffi value.
+        Determine if the FamShr device being set up is the same name as one that has already
+        been set up. Is so, add (#) to the end of the fname and set the fname suffix value.
         '''
         # Remove non-breakable space and right quote mark
         fname = self._remove_fname_special_chars(self.name)
@@ -2271,7 +2296,7 @@ class PyiCloudAPIResponseException(PyiCloudException):
         self.code = code
         message = reason or ""
         if code:
-            message += (f" (Status Code {code})")
+            message += (f" (Error Code {code})")
         if retry:
             message += ". Retrying ..."
 
