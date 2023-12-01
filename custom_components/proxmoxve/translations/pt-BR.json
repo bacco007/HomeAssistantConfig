@@ -18,7 +18,11 @@
                   "lxc": "Contêiners Linux (LXC)",
                   "nodes": "Nós",
                   "qemu": "Maquinas Virtuais (QEMU)",
-                  "storage": "Armazenamentos"
+                  "storage": "Armazenamentos",
+                  "disks_enable": "Habilitar informações dos discos físicos"
+              },
+              "data_description": {
+                  "disks_enable": "Se você trabalha com a hibernação dos discos, você deverá desabilitar esta opção da integração para que não cause a reativação dos discos indevidamente."
               },
               "description": "Selecione os nós da instância Proxmox, as máquinas virtuais (QEMU), contêineres (LXC) e armazenamentos que deseja expor"
           },
@@ -149,6 +153,7 @@
             "state": {
               "paused": "Pausado",
               "stopped": "Desligado",
+              "suspended": "Suspenso",
               "running": "Executando"
             }
           },
@@ -252,13 +257,17 @@
       },
       "step": {
           "change_expose": {
+              "description": "Selecione os nós da instância Proxmox, as máquinas virtuais (QEMU), contêineres (LXC) e armazenamentos que deseja expor",
               "data": {
                   "lxc": "Contêiners Linux (LXC)",
                   "nodes": "Nós",
                   "qemu": "Maquinas Virtuais (QEMU)",
-                  "storage": "Armazenamentos"
+                  "storage": "Armazenamentos",
+                  "disks_enable": "Habilitar informações dos discos físicos"
               },
-              "description": "Selecione os nós da instância Proxmox, as máquinas virtuais (QEMU), contêineres (LXC) e armazenamentos que deseja expor"
+              "data_description": {
+                  "disks_enable": "Se você trabalha com a hibernação dos discos, você deverá desabilitar esta opção da integração para que não cause a reativação dos discos indevidamente."
+              }
           },
           "host_auth": {
               "data": {
