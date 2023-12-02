@@ -104,7 +104,7 @@ def getdata_hazardwatch(
     attributes["unit_of_measurement"] = "Hazards"
     attributes["friendly_name"] = friendly_name
     attributes["icon"] = icon
-    attributes["data"] = OUTPUT_DATA
+    attributes["data"] = list(OUTPUT_DATA)
     attributes["category"] = "nswhazardwatch"
     attributes["lastcheck"] = datetime.datetime.now()
     state.set(entity_id, value=countval, new_attributes=attributes)

@@ -1,5 +1,0 @@
----
-platform: ping
-host: 192.168.1.1
-name: ping_modem
-scan_interval: 30

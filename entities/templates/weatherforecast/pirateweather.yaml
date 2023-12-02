@@ -11,26 +11,26 @@ action:
     data:
       type: daily
     target:
-      entity_id: weather.forecast_home
+      entity_id: weather.pirateweather
     response_variable: forecast_daily
   - service: weather.get_forecasts
     data:
       type: hourly
     target:
-      entity_id: weather.forecast_home
+      entity_id: weather.pirateweather
     response_variable: forecast_hourly
 sensor:
-  - name: "[Weather Forecast] Yr.No (Daily)"
-    unique_id: weather_forecast_yrno_daily
+  - name: "[Weather Forecast] Pirate Weather (Daily)"
+    unique_id: weather_forecast_pirateweather_daily
     state: "{{ now().isoformat() }}"
     attributes:
       forecast: "{{ forecast_daily }}"
       category: weatherforecast
-      provider: Yr.No
-  - name: "[Weather Forecast] Yr.No (Hourly)"
-    unique_id: weather_forecast_yrno_hourly
+      provider: Pirate Weather
+  - name: "[Weather Forecast] Pirate Weather (Hourly)"
+    unique_id: weather_forecast_pirateweather_hourly
     state: "{{ now().isoformat() }}"
     attributes:
       forecast: "{{ forecast_hourly }}"
       category: weatherforecast
-      provider: Yr.No
+      provider: Pirate Weather

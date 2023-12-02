@@ -32,3 +32,5 @@ pyscript:
       friendly_name: "Your Spotify"
     getdata_hazardwatch:
       friendly_name: "Hazard Watch"
+    getdata_test:
+      friendly_name: "Test"

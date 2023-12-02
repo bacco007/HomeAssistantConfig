@@ -21,7 +21,7 @@ waste_collection_schedule:
       calendar_title: greenwaste
       customize:
         - alias: Green Waste
-          icon: mdi:tree-outline
+          icon: mdi:leaf
           type: greenwaste
       name: static
     - args:
@@ -47,7 +47,6 @@ sensor:
     source_index: 0
     types:
       - General Garbage
-    value_template: "{{ value.daysTo }}"
   - add_days_to: true
     details_format: generic
     name: "[Next Bin Day] Greenwaste (Green Bin)"
@@ -55,7 +54,6 @@ sensor:
     source_index: 1
     types:
       - Green Waste
-    value_template: "{{ value.daysTo }}"
   - add_days_to: true
     details_format: generic
     name: "[Next Bin Day] Recycling (Yellow Bin)"
@@ -63,4 +61,3 @@ sensor:
     source_index: 2
     types:
       - Recycling
-    value_template: "{{ value.daysTo }}"

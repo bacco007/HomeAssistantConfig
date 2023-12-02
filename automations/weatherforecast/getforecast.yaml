@@ -10,7 +10,7 @@ trigger:
 condition: []
 action:
   # OpenWeatherMap - Hourly
-  - service: weather.get_forecast
+  - service: weather.get_forecasts
     data:
       type: hourly
     target:

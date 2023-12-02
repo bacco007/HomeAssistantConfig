@@ -19,7 +19,7 @@ def getdata_essentialenergyoutages(
     locn_lat = -31.081265
     locn_lng = 150.941741
     max_dist = 20
-    
+
     Earth_radius_km = 6371.0
     RADIUS = Earth_radius_km
 
@@ -59,7 +59,7 @@ def getdata_essentialenergyoutages(
     dist_2_5 = 0
     dist_5_10 = 0
     dist_10_20 = 0
-    
+
     data = xmltodict.parse(r.content)
     locn = data['kml']['Document']['Folder']['Placemark']
     for l in locn:
@@ -91,9 +91,9 @@ def getdata_essentialenergyoutages(
             elif (distance_to_locn > 2 and distance_to_locn <= 5):
                 dist_2_5 += 1
             elif (distance_to_locn > 5 and distance_to_locn <= 10):
-                dist_5_10 += 1  
+                dist_5_10 += 1
             elif (distance_to_locn > 10 and distance_to_locn <= 20):
-                dist_10_20 += 1             
+                dist_10_20 += 1
             OUTPUT_DATA.append(
                 {
                     "id": incident,
@@ -120,7 +120,7 @@ def getdata_essentialenergyoutages(
     attributes["unit_of_measurement"] = "Incidents"
     attributes["friendly_name"] = friendly_name
     attributes["icon"] = icon
-    attributes["data"] = OUTPUT_DATA
+    attributes["data"] = list(OUTPUT_DATA)
     attributes["distances"] = dist_detail
     attributes["category"] = "essential_energy"
     attributes["lastcheck"] = datetime.datetime.now()
