@@ -33,7 +33,7 @@
     input:
       awtrix:
       - da38247c02359f48562a1b102b5d4ac4
-      forecast_var: weather.weather_home_hourly
+      forecast_var: weather.tempest_hourly
       forecast_temp_field: temperature
       temp_digits: 1
       temp_suffix: °C
@@ -95,3 +95,19 @@
       skip_if_zero_watts: true
       power_source: sensor.active_generation
       threshold_high: 3500
+- id: '1701573647510'
+  alias: '[Logging] Persistent Notifications'
+  description: ''
+  trigger:
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: persistent_notification
+      service: create
+  action:
+  - service: notify.persist_notify
+    data_template:
+      message: '{{ now().strftime(''%Y%m%d %H%M%S'') }}:  {{ trigger.event.data.service_data.title
+        }} /  {{ trigger.event.data.service_data.message }}
+
+        '

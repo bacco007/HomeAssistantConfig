@@ -1,0 +1,4 @@
+---
+platform: file
+name: persist_notify
+filename: /config/persist_notify.log

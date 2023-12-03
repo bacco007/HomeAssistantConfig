@@ -1,0 +1,258 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - icon: mdi:calendar
+            layout: icon|name
+            name: Sports Calendar
+            style:
+              name:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                margin-left: 18px
+                font-size: 15px
+                font-weight: 600
+                color: var(--title)
+              icon:
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                '--mdc-icon-size': 20px
+                color: var(--title)
+        style: |
+          div.flex-box {
+            margin-top: -6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+  - type: custom:button-card
+    show_state: false
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+        - background-color: var(--card-background-color)
+        - padding: 5px
+      grid:
+        - grid-template-areas: '"karte"'
+        - grid-template-columns: 100%
+        - grid-template-rows: 100%
+      custom_fields:
+        karte:
+          - filter: opacity(100%)
+          - overflow: visible
+    custom_fields:
+      karte:
+        card:
+          type: custom:mod-card
+          card_mod:
+            style:
+              tabbed-card:
+                $:
+                  mwc-tab:
+                    $:
+                      mwc-tab-indicator $: ''
+                      .: |
+                        .mdc-tab {
+                          min-width: 55px !important;
+                        }
+                        .material-icons {
+                          display: contents !important;
+                        }
+                .: |
+                  tabbed-card {
+                    --mdc-tab-horizontal-padding: 0px;
+                  }
+          card:
+            type: custom:tabbed-card
+            attributes:
+              minWidth: true
+            styles:
+              '--mdc-tab-horizontal-padding': 0px !important
+              '--mdc-theme-primary': var(--energy-solar-color)
+            tabs:
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: Today
+                card:
+                  <<: &card
+                    type: custom:atomic-calendar-revive
+                    enableModeChange: true
+                    entities:
+                      - entity: calendar.ical_afl_all_teams
+                      - entity: calendar.ical_aflw_all_teams
+                      - entity: calendar.ical_anaheim_ducks
+                      - entity: calendar.ical_australia_cricket
+                      - entity: calendar.ical_australia_cricket_women
+                      - entity: calendar.ical_bayern_munich
+                      - entity: calendar.ical_btcc
+                      - entity: calendar.ical_dtm
+                      - entity: calendar.ical_extreme_e
+                      - entity: calendar.ical_formula_1
+                      - entity: calendar.ical_formula_2
+                      - entity: calendar.ical_formula_3
+                      - entity: calendar.ical_formula_e
+                      - entity: calendar.ical_gt_world_challenge_asia
+                      - entity: calendar.ical_gt_world_challenge_australia
+                      - entity: calendar.ical_igtc
+                      - entity: calendar.ical_imsa
+                      - entity: calendar.ical_indycar
+                      - entity: calendar.ical_international_cricket_mens
+                      - entity: calendar.ical_international_rugby_all_teams
+                      - entity: calendar.ical_manchester_united
+                      - entity: calendar.ical_manchester_united_women
+                      - entity: calendar.ical_misc_motorsport
+                      - entity: calendar.ical_motogp
+                      - entity: calendar.ical_nascar_cup_series
+                      - entity: calendar.ical_nascar_xfinity_series
+                      - entity: calendar.ical_nba_all_teams
+                      - entity: calendar.ical_new_england_patriots
+                      - entity: calendar.ical_new_york_yankees
+                      - entity: calendar.ical_newcastle_knights
+                      - entity: calendar.ical_newcastle_knights_nrlw
+                      - entity: calendar.ical_nfl_all_teams
+                      - entity: calendar.ical_nhl_all_teams
+                      - entity: calendar.ical_nrl_all_teams
+                      - entity: calendar.ical_nrlw_all_teams
+                      - entity: calendar.ical_nsw_waratahs
+                      - entity: calendar.ical_socceroos
+                      - entity: calendar.ical_supercars
+                      - entity: calendar.ical_swifts
+                      - entity: calendar.ical_sydney_fc
+                      - entity: calendar.ical_sydney_fc_women
+                      - entity: calendar.ical_sydney_kings
+                      - entity: calendar.ical_sydney_sixers
+                      - entity: calendar.ical_sydney_sixers_women
+                      - entity: calendar.ical_sydney_swans
+                      - entity: calendar.ical_sydney_swans_aflw
+                      - entity: calendar.ical_sydney_swans_vfl
+                      - entity: calendar.ical_tcr_australia
+                      - entity: calendar.ical_test
+                      - entity: calendar.ical_toronto_maple_leafs
+                      - entity: calendar.ical_wallabies
+                      - entity: calendar.ical_wec
+                      - entity: calendar.ical_worldsbk
+                      - entity: calendar.ical_wrc
+                    cardHeight: 100%
+                    showDeclined: false
+                    showDate: true
+                    offsetHeaderDate: false
+                    showLocation: false
+                    hideFinishedEvents: false
+                    showRelativeTime: true
+                    compactMode: false
+                    showProgressBar: true
+                    showCurrentEventLine: false
+                    showMonth: false
+                    showWeekDay: false
+                    showDescription: false
+                    showEventIcon: false
+                    showCalendarName: true
+                    showHiddenText: false
+                    showDatePerEvent: true
+                    showEventDate: false
+                    hideDuplicates: true
+                    showMultiDayEventParts: true
+                    showMultiDay: true
+                    maxDaysToShow: 1
+                    sortBy: start
+                    allDayBottom: true
+                    disableLocationLink: true
+                    disableEventLink: true
+                    showNoEventsForToday: true
+                    showFullDayProgress: true
+                    hoursOnSameLine: false
+                    showTimeRemaining: true
+                    showAllDayHours: true
+                    showAllDayEvents: true
+                    defaultMode: Event
+                    titleLength: 150
+                    showWeekNumber: false
+                    card_mod:
+                      style: |
+                        ha-card {
+                          box-shadow: none;
+                          background: none;
+                          font-size: 12px;
+                        }
+
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: |
+                    [[[
+                      var days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+                      var currentDate = new Date(states['sensor.date'].state);
+                      currentDate.setDate(currentDate.getDate() + 1);
+                      return days[currentDate.getDay()];
+                    ]]]
+                card:
+                  <<: *card
+                  startDaysAhead: 1
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: |
+                    [[[
+                      var days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+                      var currentDate = new Date(states['sensor.date'].state);
+                      currentDate.setDate(currentDate.getDate() + 2);
+                      return days[currentDate.getDay()];
+                    ]]]
+                card:
+                  <<: *card
+                  startDaysAhead: 2
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: |
+                    [[[
+                      var days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+                      var currentDate = new Date(states['sensor.date'].state);
+                      currentDate.setDate(currentDate.getDate() + 3);
+                      return days[currentDate.getDay()];
+                    ]]]
+                card:
+                  <<: *card
+                  startDaysAhead: 3
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: |
+                    [[[
+                      var days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+                      var currentDate = new Date(states['sensor.date'].state);
+                      currentDate.setDate(currentDate.getDate() + 4);
+                      return days[currentDate.getDay()];
+                    ]]]
+                card:
+                  <<: *card
+                  startDaysAhead: 4
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: |
+                    [[[
+                      var days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+                      var currentDate = new Date(states['sensor.date'].state);
+                      currentDate.setDate(currentDate.getDate() + 5);
+                      return days[currentDate.getDay()];
+                    ]]]
+                card:
+                  <<: *card
+                  startDaysAhead: 5
+              - attributes:
+                  minWidth: true
+                  stacked: false
+                  label: |
+                    [[[
+                      var days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+                      var currentDate = new Date(states['sensor.date'].state);
+                      currentDate.setDate(currentDate.getDate() + 6);
+                      return days[currentDate.getDay()];
+                    ]]]
+                card:
+                  <<: *card
+                  startDaysAhead: 6

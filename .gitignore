@@ -73,6 +73,7 @@ solcast.json
 rtsp*
 sonos_playlist.yaml
 icloud3*.log
+persist_notify.log
 
 node-red/*
 !node-red/flows.json

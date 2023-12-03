@@ -97,6 +97,17 @@ action:
 
   - service: group.set
     data_template:
+      object_id: calendars_sport
+      name: "[Group] Calendars (Sport)"
+      icon: mdi:calendar
+      entities: >-
+        {{ states.calendar
+          |selectattr('entity_id','search','calendar.ical_*')
+          |rejectattr('entity_id','search','home_assistant*')
+          |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data_template:
       object_id: geo_location
       name: "[Group] Geo Locations"
       icon: mdi:map-marker-alert
