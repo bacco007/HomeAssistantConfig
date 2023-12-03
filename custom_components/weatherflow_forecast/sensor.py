@@ -16,7 +16,6 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_NAME,
-    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     DEGREE,
     EntityCategory,
     LIGHT_LUX,
@@ -41,6 +40,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
 )
 from homeassistant.util.dt import utc_from_timestamp
+from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import WeatherFlowForecastDataUpdateCoordinator
 from .const import (
@@ -51,6 +51,8 @@ from .const import (
     ATTR_HW_STATION_ID,
     BATTERY_MODE_DESCRIPTION,
     CONCENTRATION_GRAMS_PER_CUBIC_METER,
+    CONCENTRATION_KILO_PER_CUBIC_METER,
+    CONCENTRATION_POUND_PER_CUBIC_FOOT,
     CONF_STATION_ID,
     DOMAIN,
     MANUFACTURER,
@@ -75,10 +77,10 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
     WeatherFlowSensorEntityDescription(
         key="air_density",
         name="Air Density",
-        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        device_class=SensorDeviceClass.VOLATILE_ORGANIC_COMPOUNDS,
+        native_unit_of_measurement=CONCENTRATION_KILO_PER_CUBIC_METER,
         state_class=SensorStateClass.MEASUREMENT,
-        suggested_display_precision=0,
+        suggested_display_precision=2,
+        icon="mdi:air-filter",
     ),
     WeatherFlowSensorEntityDescription(
         key="air_temperature",
@@ -234,6 +236,12 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRECIPITATION,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
+    ),
+    WeatherFlowSensorEntityDescription(
+        key="precip_intensity",
+        name="Precipitation Intensity",
+        icon="mdi:weather-rainy",
+        translation_key="precip_intensity",
     ),
     WeatherFlowSensorEntityDescription(
         key="precip_minutes_local_day",
@@ -463,6 +471,14 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
         self._attr_unique_id = f"{config.data[CONF_STATION_ID]} {description.key}"
 
     @property
+    def native_unit_of_measurement(self) -> str | None:
+        """Return unit of sensor."""
+
+        if self.entity_description.key == "air_density":
+            return super().native_unit_of_measurement if self.hass.config.units is METRIC_SYSTEM else CONCENTRATION_POUND_PER_CUBIC_FOOT
+        return super().native_unit_of_measurement
+
+    @property
     def native_value(self) -> StateType:
         """Return state of the sensor."""
 
@@ -470,6 +486,11 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
             raw_data = getattr(self.coordinator.data.sensor_data,
                                self.entity_description.key) if self.coordinator.data.sensor_data else None
             return utc_from_timestamp(raw_data) if raw_data else None
+
+        if self.entity_description.key == "air_density":
+            raw_data = getattr(self.coordinator.data.sensor_data,
+                               self.entity_description.key) if self.coordinator.data.sensor_data else None
+            return raw_data if self.hass.config.units is METRIC_SYSTEM else (raw_data * 0.06243)
 
         return (
             getattr(self.coordinator.data.sensor_data, self.entity_description.key)

@@ -77,6 +77,17 @@
                     "hurricane": "Hurricane"
                 }
             },
+            "precip_intensity": {
+                "state": {
+                    "no_rain": "None",
+                    "very_light": "Very Light",
+                    "light": "Light",
+                    "moderate": "Moderate",
+                    "heavy": "Heavy",
+                    "very_heavy": "Very Heavy",
+                    "extreme": "Extreme"
+                }
+            },
             "uv_description": {
                 "state": {
                     "extreme": "Extreme",

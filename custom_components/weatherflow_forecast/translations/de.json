@@ -77,6 +77,17 @@
                     "hurricane": "Orkan"
                 }
             },
+            "precip_intensity": {
+                "state": {
+                    "no_rain": "kein",
+                    "very_light": "sehr leicht",
+                    "light": "leicht",
+                    "moderate": "mäßig",
+                    "heavy": "stark",
+                    "very_heavy": "sehr stark",
+                    "extreme": "extrem"
+                }
+            },
             "uv_description": {
                 "state": {
                     "extreme": "extrem",

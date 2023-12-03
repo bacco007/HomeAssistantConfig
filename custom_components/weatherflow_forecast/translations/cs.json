@@ -77,6 +77,17 @@
                     "hurricane": "Vichřice"
                 }
             },
+            "precip_intensity": {
+                "state": {
+                    "no_rain": "Žádné",
+                    "very_light": "Velmi lehké",
+                    "light": "Lehké",
+                    "moderate": "Střední",
+                    "heavy": "Silné",
+                    "very_heavy": "Velmi silné",
+                    "extreme": "Extrémní"
+                }
+            },
             "uv_description": {
                 "state": {
                     "extreme": "Extrémní",

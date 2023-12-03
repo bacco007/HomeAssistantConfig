@@ -77,6 +77,17 @@
                     "hurricane": "Orkaan"
                 }
             },
+            "precip_intensity": {
+                "state": {
+                    "no_rain": "Geen",
+                    "very_light": "Zeer licht",
+                    "light": "Licht",
+                    "moderate": "Matig",
+                    "heavy": "Zwaar",
+                    "very_heavy": "Zeer zwaar",
+                    "extreme": "Extreem"
+                }
+            },
             "uv_description": {
                 "state": {
                     "extreme": "Extreem",

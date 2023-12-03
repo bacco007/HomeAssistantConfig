@@ -77,6 +77,17 @@
                     "hurricane": "Uragano"
                 }
             },
+            "precip_intensity": {
+                "state": {
+                    "no_rain": "Nessuna",
+                    "very_light": "Molto leggera",
+                    "light": "Leggera",
+                    "moderate": "Moderata",
+                    "heavy": "Intensa",
+                    "very_heavy": "Molto intensa",
+                    "extreme": "Estrema"
+                }
+            },
             "uv_description": {
                 "state": {
                     "extreme": "Estremo",
