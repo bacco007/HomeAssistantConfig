@@ -16,7 +16,7 @@ TEST_CASES = {
     "de.k4systems.bonnorange Auf dem Hügel": {
         "app_id": "de.k4systems.bonnorange",
         "strasse": "Auf dem Hügel",
-        "hnr": "6",
+        "hnr": 6,
     },
     "de.ucom.abfallavr Brühl Habichtstr. 4A": {
         "app_id": "de.ucom.abfallavr",
@@ -34,6 +34,19 @@ TEST_CASES = {
         "strasse": "Aakweg",
         "hnr": "Alle Hausnummern",
         "city": "Wurster Nordseeküste",
+    },
+    "de.abfallwecker Mutzschen, Am Lindigt 1": {
+        "app_id": "de.abfallwecker",
+        "city": "Dahlen",
+        "strasse": "Hauptstraße",
+        "hnr": 2,
+        "bundesland": "Sachsen",
+        "landkreis": "Landkreis Nordsachsen",
+    },
+    "de.k4systems.leipziglk Brandis Brandis": {
+        "app_id": "de.k4systems.leipziglk",
+        "city": "Brandis",
+        "bezirk": "Brandis",
     },
     # MORE TEST CASES UNCOMMENT IF NEEDED FOR DEBUGGING
     # "de.k4systems.zakb Fürth Ahornweg 3 A": {
@@ -89,19 +102,21 @@ class Source:
     def __init__(
         self,
         app_id: str,
-        strasse: str,
+        strasse: str | None = None,
         hnr: str | int | None = None,
-        city: str = None,
-        bundesland: str = None,
-        landkreis: str = None,
+        bezirk: str | None = None,
+        city: str | None = None,
+        bundesland: str | None = None,
+        landkreis: str | None = None,
     ):
         self._app = AppAbfallplusDe.AppAbfallplusDe(
             app_id=app_id,
             kommune=city,
             strasse=strasse,
-            hnr=hnr,
+            hnr=str(hnr) if isinstance(hnr, int) else hnr,
             bundesland=bundesland,
             landkreis=landkreis,
+            bezirk=bezirk,
         )
 
     def fetch(self):
