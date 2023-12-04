@@ -1,0 +1,32 @@
+# Describes the format for available ADS services
+update_gtfs:
+  name: Update GTFS Data
+  description: Unpacks source to gtfs-db
+  fields:
+    extract_from:
+      name: Indicate source of the data
+      description: Select if you update from url or zip
+      required: true
+      example: "url"
+      default: "url"
+      selector:
+        select:
+          translation_key: "extract_from"
+          options:
+            - "url"
+            - "zip"
+    file:
+      name: Name of the transport service, without .zip
+      description: If you use the same name as an existing one, the existing one will be overwitten
+      required: true
+      example: "mytransportservice"
+      selector:
+        text:            
+    url:
+      name: URL
+      description: provide the full path to the zip file itself
+      required: true
+      default: "na"
+      example: "https://path-to-my-zip-file-location/filename.zip"
+      selector:
+        text:            

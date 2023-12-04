@@ -1,0 +1,107 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "file": "Sélectionnez la source"
+        },
+        "description": "Sélectionnez parmi les sources existantes dans votre dossier gtfs2"
+      },
+      "source": {
+        "data": {
+          "file": "Nom de la nouvelle source de données",
+          "url": "URL externe vers le fichier (zip) des données GTFS",
+		  "extract_from": "Collecte données de:"
+        },
+        "description": "REMARQUE: avec une nouvelle URL/zip, cela peut prendre du temps après la soumission, selon la taille du fichier et performance du serveur"
+      },
+      "route": {
+        "data": {
+          "route": "Nom de la route",
+          "direction": "Direction principale/initiale du véhicule"
+        }
+      },
+      "stops": {
+        "data": {
+          "origin": "Arrêt d'origine",
+          "destination": "Arrêt de destination",
+          "name": "Nom de la ligne",
+          "refresh_interval": "Intervalle d'actualisation en minutes",
+          "include_tomorrow": "Inclure le lendemain?"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "stop_incorrect": "Arrêt de départ et/ou de fin incorrecte, éventuellement pas de transport « aujourd'hui » ou pas dans la même direction, vérifiez les logs d'érreur",
+      "generic_failure": "Échec global, vérifiez les logs d'érreur",
+      "no_data_file": "Problème de collecte de données : URL incorrecte ou nom de fichier ne se trouve pas dans le bon dossier",
+	  "no_zip_file": "Problème de collecte de données : fichier ZIP ne se trouve pas dans le bon dossier"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "files_deleted": "Source de données supprimée, cela peut affecter les itinéraires existants",
+      "stop_incorrect": "Arrêt de départ et/ou de fin incorrecte, éventuellement pas de transport « aujourd'hui » ou pas dans la même direction, vérifiez logs d'érreur",
+	  "no_data_file": "Problème de collecte de données : URL incorrecte ou nom de fichier ne se trouve pas dans le bon dossier",
+	  "no_zip_file": "Problème de collecte de données : fichier ZIP ne se trouve pas dans le bon dossier, note: sensible à la casse",
+	  "extracting": "Extraction des données, cela prend du temps"
+    }
+  },
+   "options": {
+    "step": {
+      "init": {
+        "description": "Personnalisez le fonctionnement de l'intégration",
+        "data": {
+          "refresh_interval": "Intervalle d'actualisation en minutes",
+		  "offset": "Décalage en minutes",
+		  "real_time": "Ajoute intégration temps réel? \n (nécessite données de la même source)"
+        }
+      },
+	  "real_time": {
+        "description": "URL vers données temps réel",
+        "data": {
+          "trip_update_url": "URL vers: trip data",
+		  "vehicle_position_url": "URL vers: position véhicule",
+		  "api_key": "API key, si nécessaire",
+		  "x_api_key": "X_API key, si nécessaire"
+        }
+      }
+    }
+  },
+ "selector": {
+    "extract_from": {
+      "options": {
+        "zip": "ZIP: attend un fichier dans dossier 'gtfs2' avec le même nom, sans extension .zip",
+        "url": "URL: utilise l'URL, laisse 'na' si zip"
+      }
+    },
+	"direction": {
+      "options": {
+        "0": "Aller",
+        "1": "Retour"
+      }
+    }
+  },
+  "services": {
+    "update_gtfs": {
+      "name": "MAJ d'un GTFS2 datasource",
+      "description": "Utiliser un lien ou placer votre fichier ZIP dans le dossier gtfs2",
+      "fields": {
+        "extract_from": {
+          "name": "Collecte données de:",
+		  "description": ""
+		},
+		"file": {
+          "name": "Nom du Service, sans ajouter .zip",
+		  "description": "A noter: si déjà existant, l'ancien sera remplacé"
+		},
+		"url": {
+          "name": "URL externe vers le fichier (zip) des données GTFS, laissez le 'na' si zip",
+		  "description": "A noter: si déjà existant, l'ancien sera remplacé"
+		}
+	  }
+	}
+  }
+}

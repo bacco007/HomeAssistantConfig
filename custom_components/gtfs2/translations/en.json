@@ -1,0 +1,108 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "file": "Select source"
+        },
+        "description": "Select from existing sources in your gtfs2 folder"
+      },
+      "source": {
+        "data": {
+          "file": "New datasource name",
+          "url": "external url to gtfs data (zip) file",
+		  "extract_from": "Extract data from:"
+        },
+        "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance"
+      },
+      "route": {
+        "data": {
+          "route": "Name of the route",
+          "direction": "Principal/initial direction of the vehicle"
+        }
+      },
+      "stops": {
+        "data": {
+          "origin": "Origin Stop",
+          "destination": "Destination Stop",
+          "name": "Name of the route",
+          "refresh_interval": "Refresh interval in minutes",
+          "include_tomorrow": "Include tomorrow"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
+      "generic_failure": "Overall failure, check logs",
+      "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
+	  "no_zip_file": "Data collection issue: ZIP file not in the correct folder"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "files_deleted": "Datasource deleted, this may affect existing routes",
+      "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
+	  "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
+	  "no_zip_file": "Data collection issue: ZIP file not existing in the correct folder, note that it is capital-sensitive",
+	  "extracting": "Extracting data, this can take a while"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Customize the way the integration works",
+        "data": {
+          "refresh_interval": "Data refresh interval (in minutes)",
+		  "offset": "Offset in minutes",
+		  "real_time": "Setup Realtime integration? \n (needs data from the same source)"
+        }
+      },
+	  "real_time": {
+        "description": "Provide url to real time API",
+        "data": {
+          "trip_update_url": "URL to trip data",
+		  "vehicle_position_url": "URL to vehicle position",
+		  "alerts_url": "URL to alerts",
+		  "api_key": "API key, if required",
+		  "x_api_key": "X_API key, if required"
+        }
+      }
+    }
+  },
+  "selector": {
+    "extract_from": {
+      "options": {
+        "zip": "ZIP: expects a file in gtfs2-folder with below name, without extension .zip",
+        "url": "URL: uses your URL below, leave 'na' if using zip"
+      }
+    },
+	"direction": {
+      "options": {
+        "0": "Outbound",
+        "1": "Return"
+      }
+    }
+  },
+  "services": {
+    "update_gtfs": {
+      "name": "Updates a GTFS2 datasource",
+      "description": "Either via Link or placing a Zip yourselves in gtfs2",
+      "fields": {
+        "extract_from": {
+          "name": "Indicate source to use zip or url",
+		  "description": ""
+		},
+		"file": {
+          "name": "Name of the transport service, without .zip",
+		  "description": "If you use the same name as an existing one, the existing one will be overwitten"
+		},
+		"url": {
+          "name": "URL",
+		  "description": "provide the full path to the zip file itself"
+		}
+	  }
+	}
+  }
+}
