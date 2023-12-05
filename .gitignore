@@ -18,6 +18,7 @@ neighbours
 zigbee2mqtt
 image
 multiscrape
+gtfs2
 
 # Ignore File Extensions
 *.conf
