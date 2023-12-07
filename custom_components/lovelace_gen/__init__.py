@@ -64,8 +64,6 @@ def _uncache_file(ldr, node):
     return f"{path}?{timestamp}"
 
 loader.load_yaml = load_yaml
-if loader.HAS_C_LOADER:
-    loader.HAS_C_LOADER = False
 loader.PythonSafeLoader.add_constructor("!include", _include_yaml)
 loader.PythonSafeLoader.add_constructor("!file", _uncache_file)
 
