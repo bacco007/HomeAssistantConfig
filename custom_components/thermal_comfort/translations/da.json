@@ -44,14 +44,6 @@
   },
   "entity": {
     "sensor": {
-      "frost_risk": {
-        "state": {
-          "no_risk": "Ingen risiko",
-          "unlikely": "Usandsynlig",
-          "probable": "Sandsynlig",
-          "high": "Høj sandsynlighed"
-        }
-      },
       "dew_point_perception": {
         "state": {
           "dry": "Lidt tørt for nogle",
@@ -62,6 +54,14 @@
           "quite_uncomfortable": "Meget fugtigt, ret ubehageligt",
           "extremely_uncomfortable": "Ekstremt ubehageligt, undertrykkende",
           "severely_high": "Alvorligt høj, endda dødelig for astmarelaterede sygdomme"
+        }
+      },
+      "frost_risk": {
+        "state": {
+          "no_risk": "Ingen risiko",
+          "unlikely": "Usandsynlig",
+          "probable": "Sandsynlig",
+          "high": "Høj sandsynlighed"
         }
       },
       "humidex_perception": {
@@ -84,6 +84,24 @@
           "extreme_discomfort": "Ekstremt ubehag"
         }
       },
+      "summer_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Uden for det beregnelige område",
+          "comfortable": "Komfortabel",
+          "slightly_uncomfortable": "Lidt ubehageligt",
+          "moderatly_uncomfortable": "Moderat ubehageligt",
+          "highly_uncomfortable": "Meget ubehageligt"
+        }
+      },
+      "winter_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Uden for det beregnelige område",
+          "comfortable": "Komfortabel",
+          "slightly_uncomfortable": "Lidt ubehageligt",
+          "moderatly_uncomfortable": "Moderat ubehageligt",
+          "highly_uncomfortable": "Meget ubehageligt"
+        }
+      },
       "summer_simmer_perception": {
         "state": {
           "cool": "Køligt",
@@ -97,20 +115,11 @@
           "circulatory_collapse_imminent": "Kredsløbskollaps nært forestående"
         }
       },
-      "scharlau_perception": {
-        "state": {
-          "outside_calculable_range": "Uden for det beregnelige område",
-          "comfortable": "Komfortabel",
-          "slightly_uncomfortable": "Lidt ubehageligt",
-          "moderatly_uncomfortable": "Moderat ubehageligt",
-          "highly_uncomfortable": "Meget ubehageligt"
-        }
-      },
       "thoms_discomfort_perception": {
         "state": {
           "no_discomfort": "Intet ubehag",
-          "less_then_half": "Mindre end halvdelen af befolkningen føler ubehag",
-          "more_then_half": "Mere end halvdelen af befolkningen føler ubehag",
+          "less_than_half": "Mindre end halvdelen af befolkningen føler ubehag",
+          "more_than_half": "Mere end halvdelen af befolkningen føler ubehag",
           "most": "De fleste individer føler ubehag og forværring af psykofysiske tilstande",
           "everyone": "Alle føler betydeligt ubehag",
           "dangerous": "Farligt, meget stærkt ubehag, som kan forårsage hedeslag"

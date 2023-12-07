@@ -44,14 +44,6 @@
   },
   "entity": {
     "sensor": {
-      "frost_risk": {
-        "state": {
-          "no_risk": "Nessun rischio",
-          "unlikely": "Improbabile",
-          "probable": "Probabile",
-          "high": "Alta probabilità"
-        }
-      },
       "dew_point_perception": {
         "state": {
           "dry": "Secco per qualcuno",
@@ -62,6 +54,14 @@
           "quite_uncomfortable": "Significativo disagio, molto umido",
           "extremely_uncomfortable": "Forte disagio, opprimente",
           "severely_high": "Estremo disagio, rischioso per malattie correlate all'asma"
+        }
+      },
+      "frost_risk": {
+        "state": {
+          "no_risk": "Nessun rischio",
+          "unlikely": "Improbabile",
+          "probable": "Probabile",
+          "high": "Alta probabilità"
         }
       },
       "humidex_perception": {
@@ -84,6 +84,24 @@
           "extreme_discomfort": "Disagio estremo"
         }
       },
+      "summer_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Fuori scala",
+          "comfortable": "Confortevole",
+          "slightly_uncomfortable": "Leggero disagio",
+          "moderatly_uncomfortable": "Moderato disagio",
+          "highly_uncomfortable": "Forte disagio"
+        }
+      },
+      "winter_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Fuori scala",
+          "comfortable": "Confortevole",
+          "slightly_uncomfortable": "Leggero disagio",
+          "moderatly_uncomfortable": "Moderato disagio",
+          "highly_uncomfortable": "Forte disagio"
+        }
+      },
       "summer_simmer_perception": {
         "state": {
           "cool": "Freddo",
@@ -97,20 +115,11 @@
           "circulatory_collapse_imminent": "Imminente colasso circolatorio"
         }
       },
-      "scharlau_perception": {
-        "state": {
-          "outside_calculable_range": "Fuori scala",
-          "comfortable": "Confortevole",
-          "slightly_uncomfortable": "Leggero disagio",
-          "moderatly_uncomfortable": "Moderato disagio",
-          "highly_uncomfortable": "Forte disagio"
-        }
-      },
       "thoms_discomfort_perception": {
         "state": {
           "no_discomfort": "Confortevole",
-          "less_then_half": "Meno della metà della popolazione avverte disagio",
-          "more_then_half": "Più della metà della popolazione avverte disagio",
+          "less_than_half": "Meno della metà della popolazione avverte disagio",
+          "more_than_half": "Più della metà della popolazione avverte disagio",
           "most": "La maggior parte delle persone avverte disagio e deterioramento delle condizioni psicofisiche",
           "everyone": "Forte disagio per chiunque",
           "dangerous": "Stato di emergenza medica, disagio molto forte che può causare colpi di calore"

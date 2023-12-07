@@ -44,15 +44,14 @@
   },
   "entity": {
     "sensor": {
-      "frost_risk": {
-        "state": {
-          "no_risk": "Niciun risc",
-          "unlikely": "Improbabil",
-          "probable": "Probabil",
-          "high": "Probabilitate mare"
-        }
+      "absolute_humidity": {
+        "name": "Umiditate absolută"
+      },
+      "dew_point": {
+        "name": "Punct de rouă"
       },
       "dew_point_perception": {
+        "name": "Punct de rouă perceput",
         "state": {
           "dry": "Cam uscat pentru unii",
           "very_comfortable": "Foarte confortabil",
@@ -64,7 +63,26 @@
           "severely_high": "Sever ridicat, chiar mortal pentru bolile legate de astm"
         }
       },
+      "frost_point": {
+        "name": "Punct de îngheț"
+      },
+      "frost_risk": {
+        "name": "Risc de îngheț",
+        "state": {
+          "no_risk": "Niciun risc",
+          "unlikely": "Improbabil",
+          "probable": "Probabil",
+          "high": "Probabilitate mare"
+        }
+      },
+      "heat_index": {
+        "name": "Indice termic"
+      },
+      "humidex": {
+        "name": "Indice de umezeală"
+      },
       "humidex_perception": {
+        "name": "Indice de umezeală perceput",
         "state": {
           "comfortable": "Confortabil",
           "noticable_discomfort": "Disconfort perceptibil",
@@ -74,7 +92,11 @@
           "heat_stroke": "Posibil accident vascular cerebral cauzat de căldură excesivă"
         }
       },
+      "moist_air_enthalpy": {
+        "name": "Entalpia aerului umed"
+      },
       "relative_strain_perception": {
+        "name": "Discomfort termic",
         "state": {
           "outside_calculable_range": "În afara intervalului calculabil",
           "comfortable": "Confortabil",
@@ -84,7 +106,28 @@
           "extreme_discomfort": "Disconfort extrem"
         }
       },
+      "summer_scharlau_perception": {
+        "name": "Percepție Scharlau (Vara)",
+        "state": {
+          "outside_calculable_range": "În afara intervalului calculabil",
+          "comfortable": "Confortabil",
+          "slightly_uncomfortable": "Ușor inconfortabil",
+          "moderatly_uncomfortable": "Moderat inconfortabil",
+          "highly_uncomfortable": "Foarte inconfortabil"
+        }
+      },
+      "winter_scharlau_perception": {
+        "name": "Percepție Scharlau (Iarna)",
+        "state": {
+          "outside_calculable_range": "În afara intervalului calculabil",
+          "comfortable": "Confortabil",
+          "slightly_uncomfortable": "Ușor inconfortabil",
+          "moderatly_uncomfortable": "Moderat inconfortabil",
+          "highly_uncomfortable": "Foarte inconfortabil"
+        }
+      },
       "summer_simmer_perception": {
+        "name": "Discomfort termic (Vara)",
         "state": {
           "cool": "Rece",
           "slightly_cool": "Ușor rece",
@@ -97,20 +140,12 @@
           "circulatory_collapse_imminent": "Colapsul circulator iminent"
         }
       },
-      "scharlau_perception": {
-        "state": {
-          "outside_calculable_range": "În afara intervalului calculabil",
-          "comfortable": "Confortabil",
-          "slightly_uncomfortable": "Ușor inconfortabil",
-          "moderatly_uncomfortable": "Moderat inconfortabil",
-          "highly_uncomfortable": "Foarte inconfortabil"
-        }
-      },
       "thoms_discomfort_perception": {
+        "name": "Percepție Thoms",
         "state": {
           "no_discomfort": "Niciun disconfort",
-          "less_then_half": "Mai puțin de jumătate din populație simte disconfort",
-          "more_then_half": "Mai mult de jumătate din populație simte disconfort",
+          "less_than_half": "Mai puțin de jumătate din populație simte disconfort",
+          "more_than_half": "Mai mult de jumătate din populație simte disconfort",
           "most": "Majoritatea persoanelor simt disconfort și deteriorarea condițiilor psihofizice",
           "everyone": "Toată lumea simte disconfort semnificativ",
           "dangerous": "Disconfort periculos, foarte puternic, care poate provoca epuizare termică"

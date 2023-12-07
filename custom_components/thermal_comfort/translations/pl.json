@@ -41,17 +41,9 @@
         }
       }
     }
-  },  
+  },
   "entity": {
     "sensor": {
-      "frost_risk": {
-        "state": {
-          "no_risk": "Brak",
-          "unlikely": "Małe",
-          "probable": "Możliwe",
-          "high": "Wysokie"
-        }
-      },
       "dew_point_perception": {
         "state": {
           "dry": "Dla niektórych może być sucho",
@@ -62,6 +54,14 @@
           "quite_uncomfortable": "Bardzo wilgotno, całkiem niekomfortowe",
           "extremely_uncomfortable": "Bardzo niekomfortowe, uciążliwe",
           "severely_high": "Wysoce niebezpieczne dla astmatyków, bardzo uciążliwe"
+        }
+      },
+      "frost_risk": {
+        "state": {
+          "no_risk": "Brak",
+          "unlikely": "Małe",
+          "probable": "Możliwe",
+          "high": "Wysokie"
         }
       },
       "humidex_perception": {
@@ -84,6 +84,24 @@
           "extreme_discomfort": "Ekstremalny dyskomfort"
         }
       },
+      "summer_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Poza obliczalnym zakresem",
+          "comfortable": "Komfortowo",
+          "slightly_uncomfortable": "Lekki dyskomfort",
+          "moderatly_uncomfortable": "Dyskomfort",
+          "highly_uncomfortable": "Wysoki dyskomfort"
+        }
+      },
+      "winter_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Poza obliczalnym zakresem",
+          "comfortable": "Komfortowo",
+          "slightly_uncomfortable": "Lekki dyskomfort",
+          "moderatly_uncomfortable": "Dyskomfort",
+          "highly_uncomfortable": "Wysoki dyskomfort"
+        }
+      },
       "summer_simmer_perception": {
         "state": {
           "cool": "Zimno",
@@ -97,20 +115,11 @@
           "circulatory_collapse_imminent": "Zdecydowane problemy z krążeniem, zapaść"
         }
       },
-      "scharlau_perception": {
-        "state": {
-          "outside_calculable_range": "Poza obliczalnym zakresem",
-          "comfortable": "Komfortowo",
-          "slightly_uncomfortable": "Lekki dyskomfort",
-          "moderatly_uncomfortable": "Dyskomfort",
-          "highly_uncomfortable": "Wysoki dyskomfort"
-        }
-      },
       "thoms_discomfort_perception": {
         "state": {
           "no_discomfort": "Brak dyskomfortu",
-          "less_then_half": "Mniej niż połowa populacji odczuwa dyskomfort",
-          "more_then_half": "Ponad połowa populacji odczuwa dyskomfort",
+          "less_than_half": "Mniej niż połowa populacji odczuwa dyskomfort",
+          "more_than_half": "Ponad połowa populacji odczuwa dyskomfort",
           "most": "Większość osób odczuwa dyskomfort i pogorszenie warunków psychofizycznych",
           "everyone": "Wszyscy odczuwają znaczny dyskomfort",
           "dangerous": "Niebezpieczny, bardzo silny dyskomfort, który może powodować udary cieplne"

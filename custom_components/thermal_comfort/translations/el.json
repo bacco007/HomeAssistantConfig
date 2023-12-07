@@ -44,14 +44,6 @@
   },
   "entity": {
     "sensor": {
-      "frost_risk": {
-        "state": {
-          "no_risk": "Κανένας κίνδυνος",
-          "unlikely": "Απίθανο",
-          "probable": "Πιθανό",
-          "high": "Μεγάλη πιθανότητα"
-        }
-      },
       "dew_point_perception": {
         "state": {
           "dry": "Λίγο ξηρή για κάποιους",
@@ -62,6 +54,14 @@
           "quite_uncomfortable": "Πολύ υγρό, αρκετά άβολη",
           "extremely_uncomfortable": "Εξαιρετικά άβολα, καταπιεστική",
           "severely_high": "Σοβαρά υψηλή, ακόμη και θανατηφόρα για ασθένειες που σχετίζονται με το άσθμα"
+        }
+      },
+      "frost_risk": {
+        "state": {
+          "no_risk": "Κανένας κίνδυνος",
+          "unlikely": "Απίθανο",
+          "probable": "Πιθανό",
+          "high": "Μεγάλη πιθανότητα"
         }
       },
       "humidex_perception": {
@@ -84,6 +84,24 @@
           "extreme_discomfort": "Ακραία δυσφορία"
         }
       },
+      "summer_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Εκτός του υπολογίσιμου εύρους",
+          "comfortable": "Άνετη",
+          "slightly_uncomfortable": "Ελαφρώς άβολη",
+          "moderatly_uncomfortable": "Μέτρια άβολη",
+          "highly_uncomfortable": "Ιδιαίτερα άβολη"
+        }
+      },
+      "winter_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Εκτός του υπολογίσιμου εύρους",
+          "comfortable": "Άνετη",
+          "slightly_uncomfortable": "Ελαφρώς άβολη",
+          "moderatly_uncomfortable": "Μέτρια άβολη",
+          "highly_uncomfortable": "Ιδιαίτερα άβολη"
+        }
+      },
       "summer_simmer_perception": {
         "state": {
           "cool": "Δροσερή",
@@ -97,20 +115,11 @@
           "circulatory_collapse_imminent": "Επικείμενη κυκλοφορική κατάρρευση"
         }
       },
-      "scharlau_perception": {
-        "state": {
-          "outside_calculable_range": "Εκτός του υπολογίσιμου εύρους",
-          "comfortable": "Άνετη",
-          "slightly_uncomfortable": "Ελαφρώς άβολη",
-          "moderatly_uncomfortable": "Μέτρια άβολη",
-          "highly_uncomfortable": "Ιδιαίτερα άβολη"
-        }
-      },
       "thoms_discomfort_perception": {
         "state": {
           "no_discomfort": "Καμία ενόχληση",
-          "less_then_half": "Λιγότερο από το ήμισυ του πληθυσμού αισθάνεται δυσφορία",
-          "more_then_half": "Περισσότερο από το ήμισυ του πληθυσμού αισθάνεται δυσφορία",
+          "less_than_half": "Λιγότερο από το ήμισυ του πληθυσμού αισθάνεται δυσφορία",
+          "more_than_half": "Περισσότερο από το ήμισυ του πληθυσμού αισθάνεται δυσφορία",
           "most": "Τα περισσότερα άτομα αισθάνονται δυσφορία και επιδείνωση των ψυχοφυσικών συνθηκών",
           "everyone": "Όλοι αισθάνονται σημαντική δυσφορία",
           "dangerous": "Επικίνδυνη, πολύ έντονη δυσφορία που μπορεί να προκαλέσει θερμοπληξία"

@@ -44,14 +44,6 @@
   },
   "entity": {
     "sensor": {
-      "frost_risk": {
-        "state": {
-          "no_risk": "Не опасно",
-          "unlikely": "Маловероятно",
-          "probable": "Вероятно",
-          "high": "Очень вероятно"
-        }
-      },
       "dew_point_perception": {
         "state": {
           "dry": "Сухо",
@@ -62,6 +54,14 @@
           "quite_uncomfortable": "Довольно влажно, некомфортно",
           "extremely_uncomfortable": "Очень влажно, угнетающе",
           "severely_high": "Очень высокая влажность, опасно для астматиков"
+        }
+      },
+      "frost_risk": {
+        "state": {
+          "no_risk": "Не опасно",
+          "unlikely": "Маловероятно",
+          "probable": "Вероятно",
+          "high": "Очень вероятно"
         }
       },
       "humidex_perception": {
@@ -84,6 +84,24 @@
           "extreme_discomfort": "Черезвычайно некомфортно"
         }
       },
+      "summer_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Значения датчиков вне допустимого диапазона",
+          "comfortable": "Комфортно",
+          "slightly_uncomfortable": "Слегка некомфортно",
+          "moderatly_uncomfortable": "Некомфортно",
+          "highly_uncomfortable": "Очень некомфортно"
+        }
+      },
+      "winter_scharlau_perception": {
+        "state": {
+          "outside_calculable_range": "Значения датчиков вне допустимого диапазона",
+          "comfortable": "Комфортно",
+          "slightly_uncomfortable": "Слегка некомфортно",
+          "moderatly_uncomfortable": "Некомфортно",
+          "highly_uncomfortable": "Очень некомфортно"
+        }
+      },
       "summer_simmer_perception": {
         "state": {
           "cool": "Холодно",
@@ -97,20 +115,11 @@
           "circulatory_collapse_imminent": "Возможны сосудистые нарушения"
         }
       },
-      "scharlau_perception": {
-        "state": {
-          "outside_calculable_range": "Значения датчиков вне допустимого диапазона",
-          "comfortable": "Комфортно",
-          "slightly_uncomfortable": "Слегка некомфортно",
-          "moderatly_uncomfortable": "Некомфортно",
-          "highly_uncomfortable": "Очень некомфортно"
-        }
-      },
       "thoms_discomfort_perception": {
         "state": {
           "no_discomfort": "Нет дискомфорта",
-          "less_then_half": "Менее половины населения испытывает дискомфорт",
-          "more_then_half": "Больше половины населения испытывает дискомфорт",
+          "less_than_half": "Менее половины населения испытывает дискомфорт",
+          "more_than_half": "Больше половины населения испытывает дискомфорт",
           "most": "Большинство испытывает дискомфорт и ухудшение психофизического состояния",
           "everyone": "Все испытывают существенный дискомфорт",
           "dangerous": "Опасно, очень сильный дискомфорт, который может вызвать тепловой удар"
