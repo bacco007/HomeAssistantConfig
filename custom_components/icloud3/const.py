@@ -4,7 +4,7 @@
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-VERSION                         = '3.0.rc9'
+VERSION                         = '3.0.rc8'
 
 DOMAIN                          = 'icloud3'
 ICLOUD3                         = 'iCloud3'
@@ -192,7 +192,7 @@ WAZE_NO_DATA      = 4
 # Interval range table used for setting the interval based on a retry count
 # The key is starting retry count range, the value is the interval (in minutes)
 # poor_location_gps cnt, icloud_authentication cnt (default)
-OLD_LOCATION_CNT   = 1.1
+OLD_LOC_POOR_GPS_CNT   = 1.1
 AUTH_ERROR_CNT         = 1.2
 RETRY_INTERVAL_RANGE_1 = {0:.25, 4:1, 8:5, 12:30, 16:60, 20:60}
 # RETRY_INTERVAL_RANGE_1 = {0:.25, 4:1, 8:5, 12:30, 16:60, 20:120, 22:240, 24:240}
@@ -286,7 +286,6 @@ CRLF_SP5_DOT      = f'{CRLF}{NBSP5}•{NBSP}'
 CRLF_SP3_HDOT     = f'{CRLF}{NBSP3}◦{NBSP}'
 CRLF_SP3_STAR     = f'{CRLF}{NBSP3}✪{NBSP}'
 CRLF_INDENT       = f'{CRLF}{NBSP6}{NBSP6}'
-CRLF_DASH_75      = f'{CRLF}{"-"*75}'
 
 NEAR_DEVICE_USEABLE_SYM = '✓'
 BLANK_SENSOR_FIELD = '———'
@@ -657,10 +656,9 @@ CONF_IOSAPP_DEVICE              = 'iosapp_device'
 CONF_IOSAPP_DEVICE2             = 'iosapp_device2'
 CONF_PICTURE                    = 'picture'
 CONF_TRACKING_MODE              = 'tracking_mode'
-CONF_TRACK_FROM_BASE_ZONE       = 'track_from_base_zone'        # Primary Zone a device is tracking from, normally Home
+CONF_TRACK_FROM_BASE_ZONE       = 'track_from_base_zone'          # Primary Zone a device is tracking from, normally Home
 CONF_TRACK_FROM_HOME_ZONE       = 'track_from_home_zone'
 CONF_TRACK_FROM_ZONES           = 'track_from_zones'            # All zones the device is tracking from
-CONF_LOG_ZONES                  = 'log_zones'                   # Log zone activity to 'icloud3-zone-log_[year]_[device]_[zone].csv' file
 CONF_DEVICE_TYPE                = 'device_type'
 CONF_INZONE_INTERVAL            = 'inzone_interval'
 CONF_UNIQUE_ID                  = 'unique_id'
@@ -672,12 +670,6 @@ CONF_COMMAND                    = 'command'
 CONF_NAME                       = 'name'
 CONF_IOSAPP_REQUEST_LOC_MAX_CNT = 'iosapp_request_loc_max_cnt'
 CONF_INTERVAL                   = 'interval'
-
-# Local Time Zone
-CONF_AWAY_TIME_ZONE_1_OFFSET    = 'away_time_zone_1_offset'
-CONF_AWAY_TIME_ZONE_1_DEVICES   = 'away_time_zone_1_devices'
-CONF_AWAY_TIME_ZONE_2_OFFSET    = 'away_time_zone_2_offset'
-CONF_AWAY_TIME_ZONE_2_DEVICES   = 'away_time_zone_2_devices'
 
 CONF_SENSORS_MONITORED_DEVICES = 'monitored_devices'
 
@@ -799,7 +791,6 @@ DEFAULT_DEVICE_CONF = {
         CONF_IOSAPP_DEVICE: 'None',
         CONF_TRACK_FROM_BASE_ZONE: HOME,
         CONF_TRACK_FROM_ZONES: [HOME],
-        CONF_LOG_ZONES: ['none'],
 }
 
 RANGE_DEVICE_CONF = {
@@ -869,11 +860,6 @@ DEFAULT_GENERAL_CONF = {
         CONF_STAT_ZONE_BASE_LONGITUDE: 0,
 
         CONF_DISPLAY_TEXT_AS: ['#1', '#2', '#3', '#4', '#5', '#6', '#7', '#8', '#9', '#10'],
-
-        CONF_AWAY_TIME_ZONE_1_OFFSET: 0,
-        CONF_AWAY_TIME_ZONE_1_DEVICES: ['none'],
-        CONF_AWAY_TIME_ZONE_2_OFFSET: 0,
-        CONF_AWAY_TIME_ZONE_2_DEVICES: ['none'],
 }
 
 RANGE_GENERAL_CONF = {

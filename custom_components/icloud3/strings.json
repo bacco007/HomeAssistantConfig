@@ -217,7 +217,7 @@
           "famshr_devicename": "FAMILY SHARING LIST DEVICE - Use location data from this iCloud Acct Family Sharing member",
           "fmf_email": "FIND-MY-FRIENDS DEVICE - Use location data from this FindMy device sharing their info with you",
           "iosapp_device": "IOS APP DEVICE_TRACKER ENTITY - Use this HA device location data & zone enter/exit triggers",
-          "track_from_zones": "aaaTRACK-FROM-ZONES - Track travel time & distance from Home and other zones",
+          "track_from_zones": "TRACK-FROM-ZONES - Track travel time & distance from Home and other zones",
           "track_from_base_zone": "PRIMARY HOME ZONE - Use another zone if you are away from Home for an extended period",
           "picture": "PICTURE - Photo image of the person normally using this device (40x40 pixels is best size)",
           "inzone_interval": "INZONE INTERVAL",

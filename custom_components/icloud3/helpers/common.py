@@ -2,7 +2,6 @@
 
 from ..global_variables import GlobalVariables as Gb
 from ..const            import (NOT_HOME, STATIONARY, CIRCLE_LETTERS_DARK, UNKNOWN, CRLF_DOT, CRLF, )
-from ..const_more_info  import more_info_text
 from collections        import OrderedDict
 import os
 
@@ -52,13 +51,6 @@ def str_to_list(str_value):
         str_value = str_value.replace( ', ', ',')
 
     return str_value.split(',')
-
-#--------------------------------------------------------------------
-def delete_from_list(list_value, item):
-    if item in list_value:
-        list_value.remove(item)
-
-    return list_value
 
 #--------------------------------------------------------------------
 def instr(string, substring):
@@ -174,13 +166,6 @@ def obscure_field(field):
     obscure_field = (f"{field[0:2]}{'.'*(len(field)-2)}")
     return obscure_field
 
-#--------------------------------------------------------------------
-def more_info(key):
-    if key in more_info_text:
-        return more_info_text[key]
-    else:
-        return f"{more_info_text['invalid_msg_key']} `{key}`"
-    #return more_info_text.get(key, f"Additional Information is not available for {key}")
 #--------------------------------------------------------------------
 def zone_display_as(zone):
     if is_statzone(zone) and zone not in Gb.zone_display_as:

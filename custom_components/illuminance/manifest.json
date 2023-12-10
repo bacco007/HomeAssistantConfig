@@ -1,12 +1,12 @@
 {
   "domain": "illuminance",
   "name": "Illuminance",
-  "after_dependencies": ["darksky"],
   "codeowners": ["@pnbruckner"],
+  "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/pnbruckner/ha-illuminance/blob/master/README.md",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/pnbruckner/ha-illuminance/issues",
   "requirements": [],
-  "version": "4.1.0"
+  "version": "5.1.0"
 }

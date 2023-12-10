@@ -1,6 +1,8 @@
 """Sun2 config validation."""
 from __future__ import annotations
 
+from typing import cast
+
 from astral import SunDirection
 import voluptuous as vol
 
@@ -64,16 +66,14 @@ _ELEVATION_AT_TIME_SCHEMA = ELEVATION_AT_TIME_SCHEMA_BASE.extend(
     {vol.Required(CONF_UNIQUE_ID): cv.string}
 )
 
-val_elevation = vol.All(
-    vol.Coerce(float), vol.Range(min=-90, max=90), msg="invalid elevation"
-)
-
-_DIRECTIONS = [dir.lower() for dir in SunDirection.__members__]
+SUN_DIRECTIONS = [dir.lower() for dir in SunDirection.__members__]
 
 TIME_AT_ELEVATION_SCHEMA_BASE = vol.Schema(
     {
-        vol.Required(CONF_TIME_AT_ELEVATION): val_elevation,
-        vol.Optional(CONF_DIRECTION, default=_DIRECTIONS[0]): vol.In(_DIRECTIONS),
+        vol.Required(CONF_TIME_AT_ELEVATION): vol.All(
+            vol.Coerce(float), vol.Range(min=-90, max=90), msg="invalid elevation"
+        ),
+        vol.Optional(CONF_DIRECTION, default=SUN_DIRECTIONS[0]): vol.In(SUN_DIRECTIONS),
         vol.Optional(CONF_ICON): cv.icon,
         vol.Optional(CONF_NAME): cv.string,
     }
@@ -87,9 +87,9 @@ _TIME_AT_ELEVATION_SCHEMA = TIME_AT_ELEVATION_SCHEMA_BASE.extend(
 def _sensor(config: ConfigType) -> ConfigType:
     """Validate sensor config."""
     if CONF_ELEVATION_AT_TIME in config:
-        return _ELEVATION_AT_TIME_SCHEMA(config)
+        return cast(ConfigType, _ELEVATION_AT_TIME_SCHEMA(config))
     if CONF_TIME_AT_ELEVATION in config:
-        return _TIME_AT_ELEVATION_SCHEMA(config)
+        return cast(ConfigType, _TIME_AT_ELEVATION_SCHEMA(config))
     raise vol.Invalid(f"expected {CONF_ELEVATION_AT_TIME} or {CONF_TIME_AT_ELEVATION}")
 
 
@@ -133,4 +133,4 @@ async def async_validate_config(
     """Validate configuration."""
     await init_translations(hass)
 
-    return _SUN2_CONFIG_SCHEMA(config)
+    return cast(ConfigType, _SUN2_CONFIG_SCHEMA(config))

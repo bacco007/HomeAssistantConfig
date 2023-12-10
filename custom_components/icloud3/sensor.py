@@ -41,7 +41,7 @@ from .helpers.common    import (instr,  round_to_zero, is_statzone, )
 from .helpers.messaging import (log_info_msg, log_debug_msg, log_error_msg, log_exception,
                                 _trace, _traceha, )
 from .helpers.time_util import (time_to_12hrtime, time_remove_am_pm, secs_to_time_str, mins_to_time_str,
-                                time_now_secs, datetime_now, adjust_time_hour_value, adjust_time_hour_values)
+                                time_now_secs, datetime_now, )
 from .helpers.dist_util import (km_to_mi, m_to_ft, )
 from .helpers.format    import (icon_circle, icon_box, )
 from collections        import OrderedDict
@@ -494,10 +494,7 @@ class SensorBase(SensorEntity):
         '''
         extra_attrs = OrderedDict()
         extra_attrs['integration'] = ICLOUD3
-        update_time = datetime_now()
-        if self.Device and self.Device.away_time_zone_offset != 0:
-            update_time = adjust_time_hour_values(update_time, self.Device.away_time_zone_offset)
-        extra_attrs['sensor_updated'] = update_time
+        extra_attrs['sensor_updated'] = datetime_now()
 
         for _sensor in self._get_sensor_definition(sensor, SENSOR_ATTRS):
             _sensor_attr_name = _sensor.replace('_date/time', '')
@@ -513,11 +510,8 @@ class SensorBase(SensorEntity):
                 if Gb.um == 'mi':
                     extra_attrs['distance_units_(attributes)'] = 'mi'
                     if self._get_sensor_value(ZONE_DISTANCE_M):
-                        sensor_value_mi = self._get_sensor_value(ZONE_DISTANCE_M)*Gb.um_km_mi_factor/1000
-                        extra_attrs['miles_distance'] = self._set_precision(sensor_value_mi)
-
-            if self.Device and self.Device.away_time_zone_offset != 0:
-                _sensor_value = adjust_time_hour_values(_sensor_value, self.Device.away_time_zone_offset)
+                        sensor_value = self._get_sensor_value(ZONE_DISTANCE_M)*Gb.um_km_mi_factor/1000
+                        extra_attrs['miles_distance'] = self._set_precision(sensor_value)
 
             extra_attrs[_sensor_attr_name] = _sensor_value
 
@@ -875,9 +869,6 @@ class Sensor_Text(SensorBase):
         if sensor_value.strip() == '':
             sensor_value = BLANK_SENSOR_FIELD
 
-        if self.Device and self.Device.away_time_zone_offset != 0:
-            sensor_value = adjust_time_hour_values(sensor_value, self.Device.away_time_zone_offset)
-
         return sensor_value
 
     @property
@@ -900,21 +891,15 @@ class Sensor_Info(SensorBase):
     @property
     def native_value(self):
         self._attr_unit_of_measurement = None
-        sensor_value = self._get_sensor_value(self.sensor)
 
         if Gb.broadcast_info_msg and Gb.broadcast_info_msg != '•  ':
-            broadcast_info_msg = Gb.broadcast_info_msg
-            if self.Device and self.Device.away_time_zone_offset != 0:
-                broadcast_info_msg = adjust_time_hour_values(broadcast_info_msg, self.Device.away_time_zone_offset)
-            return broadcast_info_msg
+            return Gb.broadcast_info_msg
 
         elif self.sensor_not_set:
             return f"◈◈ Starting iCloud3 v{Gb.version} ◈◈"
 
         else:
-            if self.Device and self.Device.away_time_zone_offset != 0:
-                sensor_value = adjust_time_hour_values(sensor_value, self.Device.away_time_zone_offset)
-            return sensor_value
+            return self.sensor_value
 
     @property
     def extra_state_attributes(self):
@@ -932,8 +917,7 @@ class Sensor_Timestamp(SensorBase):
     def native_value(self):
         sensor_value = self._get_sensor_value(self.sensor)
         sensor_value = time_to_12hrtime(sensor_value)
-        if self.Device and self.Device.away_time_zone_offset != 0:
-            sensor_value = adjust_time_hour_value(sensor_value, self.Device.away_time_zone_offset)
+        # self._attr_native_unit_of_measurement = None
 
         try:
             # Drop the 'a' or 'p' so the field will fit on an iPhone
@@ -1125,7 +1109,6 @@ class Sensor_Battery(SensorBase):
     def native_value(self):
         self._attr_native_unit_of_measurement = '%'
         sensor_value =  self._get_sensor_value(self.sensor)
-
         return sensor_value
 
     @property

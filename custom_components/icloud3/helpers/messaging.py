@@ -638,14 +638,10 @@ def post_internal_error(err_text, traceback_format_exec_obj='+'):
     - traceback_format_exc  = traceback.format_exec_obj object with the error information
 
     Example traceback_format_exec_obj():
-        [
-        'Traceback (most recent call last):'
-        '  File "/config/custom_components/icloud3/support/start_ic3.py", line 1268, in setup_tracked_devices_for_famshr'
-        "    a = 1 + 'a'"
-        '        ~~^~~~~'
-        "TypeError: unsupported operand type(s) for +: 'int' and 'str'"
-        ''
-        ]
+        Traceback (most recent call last):
+        File "/config/custom_components/icloud3_v3/determine_interval.py", line 74, in determine_interval
+        distance = location_data[76]
+        IndexError: list index out of range
     '''
     if traceback_format_exec_obj == '+':
         traceback_format_exec_obj = err_text
@@ -654,34 +650,29 @@ def post_internal_error(err_text, traceback_format_exec_obj='+'):
     tb_err_msg = traceback_format_exec_obj()
     log_error_msg(tb_err_msg)
 
-    # rc9 Reworked message extraction due to Python code change
     err_lines = tb_err_msg.split('\n')
-    err_error_msg = err_code = err_file_line_module = ""
-    err_lines.reverse()
-
+    err_lines_f = []
     for err_line in err_lines:
-        err_line = err_line.strip(' ')
-        if err_line == "":
-            continue
-        elif err_error_msg == "":
-            err_error_msg = err_line
-        elif err_line.find('~') >= 0 or err_line.find('^^') >= 0:
-            continue
-        elif err_code == "":
-            err_code = err_line
+        err_line_f = err_line.strip(' ').replace(Gb.icloud3_directory, '')
+        err_line_f = err_line_f.replace('File ', '').replace(', line ', f"{CRLF_DOT}Line.. > ")
+        if err_line_f:
+            err_lines_f.append(err_line_f)
 
-        elif err_line.startswith('File'):
-            err_file_line_module = err_line.replace(Gb.icloud3_directory, '')
-
+    err_msg = (f"{EVLOG_ERROR}INTERNAL ERROR > {err_text}")
     try:
-        err_msg =  (f"{CRLF_DOT}File... > {err_file_line_module})"
-                    f"{CRLF_DOT}Code > {err_code}"
-                    f"{CRLF_DOT}Error. > {err_error_msg}")
+        n = len(err_lines_f) - 1
 
+        if n >= 5:
+            err_msg += (f"{CRLF_DOT}File... > {err_lines_f[n-4]}(...)"
+                        f"{CRLF_DOT}Code > {err_lines_f[n-3]}")
+        err_msg += (f"{CRLF_DOT}File... > {err_lines_f[n-2]}(...)"
+                    f"{CRLF_DOT}Code > {err_lines_f[n-1]}"
+                    f"{CRLF_DOT}Error. > {err_lines_f[n]}")
     except Exception as err:
-        err_msg = f"{CRLF_DOT}Unknown Error, Review HA Logs"
+        err_msg += (f"{CRLF_DOT}Error > Unknown")
+        pass
 
-    post_event(f"{EVLOG_ERROR}INTERNAL ERROR > {err_text}{err_msg}")
+    post_event(err_msg)
 
     attrs = {}
     attrs[INTERVAL]         = '0 sec'
@@ -694,25 +685,14 @@ def post_internal_error(err_text, traceback_format_exec_obj='+'):
 #   DEBUG TRACE ROUTINES
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def dummy_trace():
-    _trace(None, None)
-    _traceha(None, None)
 
-#--------------------------------------------------------------------
 def _trace(devicename, log_text='+'):
-    '''
-    Display a message or variable in the Event Log
-    '''
+
     devicename, log_text = resolve_system_event_msg(devicename, log_text)
 
     log_text = log_text.replace('<', '&lt;')
     called_from = _called_from()
-
-    #rc9 Reworked post_event and write_config_file to call modules directly
-    Gb.EvLog.post_event(devicename, f"^3^{called_from} {log_text}")
-    save_trace_prefix, Gb.trace_prefix = Gb.trace_prefix, '::::::::: '
-    write_ic3_log_recd(log_text)
-    Gb.trace_prefix = save_trace_prefix
+    post_event(devicename, f"^3^{called_from} {log_text}")
 
 #--------------------------------------------------------------------
 def _traceha(log_text, v1='+++', v2='', v3='', v4='', v5=''):
@@ -752,9 +732,6 @@ def _called_from():
     while level < 5:
         level += 1
         caller = getframeinfo(stack()[level][0])
-        # Gb.HALogger.info(f"741 {level=}")
-        # Gb.HALogger.info(f"742 {caller.filename=} {caller.lineno=}")
-
         if caller.filename.endswith('messaging.py') is False:
             break
 

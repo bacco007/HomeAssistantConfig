@@ -62,13 +62,13 @@ def check_iosapp_state_trigger_change(Device):
         iosapp_data_trigger_secs = device_trkr_attrs[f"trigger_{TIMESTAMP_SECS}"] = entity_io.get_last_changed_time(entity_id)
         iosapp_data_trigger_time = device_trkr_attrs[f"trigger_{TIMESTAMP_TIME}"] = secs_to_time(iosapp_data_trigger_secs)
 
-        # Get the latest of the state time or trigger time for the new data (rc9)
-        if (iosapp_data_state_not_set_flag
-                and iosapp_data_state_secs == 0
-                and iosapp_data_trigger_secs == 0):
-            Device.iosapp_data_trigger_secs = iosapp_data_secs = iosapp_data_trigger_secs = Gb.this_update_secs
-            Device.iosapp_data_trigger_time = iosapp_data_time = iosapp_data_trigger_time = Gb.this_update_time
-            iosapp_data_change_flag = True
+        # Get the latest of the state time or trigger time for the new data
+        # if iosapp_data_state_secs > iosapp_data_trigger_secs:
+        #     iosapp_data_secs = device_trkr_attrs[TIMESTAMP_SECS] = iosapp_data_trigger_secs
+        #     iosapp_data_time = device_trkr_attrs[TIMESTAMP_TIME] = iosapp_data_trigger_time
+        # else:
+        #     iosapp_data_secs = device_trkr_attrs[TIMESTAMP_SECS] = iosapp_data_state_secs
+        #     iosapp_data_time = device_trkr_attrs[TIMESTAMP_TIME] = iosapp_data_state_time
 
         if iosapp_data_state_secs > iosapp_data_trigger_secs:
             iosapp_data_secs = device_trkr_attrs[TIMESTAMP_SECS] = iosapp_data_state_secs
@@ -162,8 +162,7 @@ def check_iosapp_state_trigger_change(Device):
 
         if iosapp_data_state_not_set_flag:
             Device.iosapp_data_change_reason = \
-                Device.iosapp_data_trigger   = f"Initial Locate@{iosapp_data_time}"
-                # Device.iosapp_data_trigger   = f"Initial Locate@{Gb.this_update_time}"
+                Device.iosapp_data_trigger   = f"Initial Locate@{Gb.this_update_time}"
 
         # Reject State and trigger changes older than the current data
         elif (Device.iosapp_data_secs <= Device.last_update_loc_secs):
@@ -196,7 +195,7 @@ def check_iosapp_state_trigger_change(Device):
                 and Device.iosapp_data_secs > Device.located_secs_plus_5
                 and Device.iosapp_data_gps_accuracy > Gb.gps_accuracy_threshold):
             Device.iosapp_data_reject_reason = (f"Poor GPS Accuracy-{Device.iosapp_data_gps_accuracy}m "
-                                                f"#{Device.old_loc_cnt}")
+                                                f"#{Device.old_loc_poor_gps_cnt}")
 
         # Discard StatZone entered if StatZone was created in the last 15-secs
         if (Device.iosapp_data_trigger == ENTER_ZONE

@@ -2,6 +2,16 @@
     "title": "Zon2",
     "config": {
         "step": {
+            "add_entities_menu": {
+                "title": "Entiteiten toevoegen",
+                "description": "Kies het type entiteit dat u wilt toevoegen",
+                "menu_options": {
+                    "done": "Klaar",
+                    "elevation_at_time_sensor_menu": "Hoogte toevoegen bij tijdsensor",
+                    "elevation_binary_sensor": "Binaire sensor voor elevatie toevoegen",
+                    "time_at_elevation_sensor": "Tijd toevoegen bij hoogtesensor"
+                }
+            },
             "elevation_at_time_sensor_menu": {
                 "title": "Hoogte op tijdtype",
                 "menu_options": {
@@ -26,7 +36,7 @@
             "elevation_binary_sensor": {
                 "title": "Opties voor binaire elevatiesensoren",
                 "data": {
-                    "use_horizon": "Horizon als elevatie gebruiken?"
+                    "use_horizon": "Gebruik horizon als elevatie"
                 }
             },
             "elevation_binary_sensor_2": {
@@ -39,18 +49,15 @@
             "entities_menu": {
                 "title": "Aanvullende entiteiten",
                 "menu_options": {
-                    "done": "Klaar",
-                    "elevation_at_time_sensor_menu": "Hoogte toevoegen bij tijdsensor",
-                    "elevation_binary_sensor": "Binaire sensor voor elevatie toevoegen",
-                    "time_at_elevation_sensor": "Tijd toevoegen bij hoogtesensor"
+                    "add_entities_menu": "Entiteiten toevoegen",
+                    "done": "Klaar"
                 }
             },
             "location": {
                 "title": "Locatie Opties",
                 "data": {
                     "elevation": "Hoogtehoek",
-                    "latitude": "Breedtegraad",
-                    "longitude": "Lengtegraad",
+                    "location": "Plaats",
                     "time_zone": "Tijdzone"
                 },
                 "data_description": {
@@ -63,12 +70,6 @@
                     "name": "Naam"
                 }
             },
-            "remove_entity": {
-                "title": "{name} verwijderen?",
-                "data": {
-                    "remove": "ReVerwijderenmove"
-                }
-            },
             "time_at_elevation_sensor": {
                 "title": "Opties voor tijdsensor op hoogte",
                 "data": {
@@ -80,7 +81,7 @@
             },
             "use_home": {
                 "data": {
-                    "use_home": "De naam en locatie van de Home Assistant gebruiken?"
+                    "use_home": "De naam en locatie van de Home Assistant gebruiken"
                 }
             }
         },
@@ -90,6 +91,16 @@
     },
     "options": {
         "step": {
+            "add_entities_menu": {
+                "title": "Entiteiten toevoegen",
+                "description": "Kies het type entiteit dat u wilt toevoegen",
+                "menu_options": {
+                    "done": "Klaar",
+                    "elevation_at_time_sensor_menu": "Hoogte toevoegen bij tijdsensor",
+                    "elevation_binary_sensor": "Binaire sensor voor elevatie toevoegen",
+                    "time_at_elevation_sensor": "Tijd toevoegen bij hoogtesensor"
+                }
+            },
             "elevation_at_time_sensor_menu": {
                 "title": "Hoogte op tijdtype",
                 "menu_options": {
@@ -114,7 +125,7 @@
             "elevation_binary_sensor": {
                 "title": "Opties voor binaire elevatiesensoren",
                 "data": {
-                    "use_horizon": "Horizon als elevatie gebruiken?"
+                    "use_horizon": "Gebruik horizon als elevatie"
                 }
             },
             "elevation_binary_sensor_2": {
@@ -127,28 +138,26 @@
             "entities_menu": {
                 "title": "Aanvullende entiteiten",
                 "menu_options": {
+                    "add_entities_menu": "Entiteiten toevoegen",
                     "done": "Klaar",
-                    "elevation_at_time_sensor_menu": "Hoogte toevoegen bij tijdsensor",
-                    "elevation_binary_sensor": "Binaire sensor voor elevatie toevoegen",
-                    "time_at_elevation_sensor": "Tijd toevoegen bij hoogtesensor"
+                    "remove_entities": "Entiteiten verwijderen"
                 }
             },
             "location": {
                 "title": "Locatie Opties",
                 "data": {
                     "elevation": "Hoogtehoek",
-                    "latitude": "Breedtegraad",
-                    "longitude": "Lengtegraad",
+                    "location": "Plaats",
                     "time_zone": "Tijdzone"
                 },
                 "data_description": {
                     "time_zone": "Zie de kolom \"TZ identifier\" bij https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List."
                 }
             },
-            "remove_entity": {
-                "title": "{name} verwijderen?",
+            "remove_entities": {
+                "title": "Entiteiten verwijderen",
                 "data": {
-                    "remove": "ReVerwijderenmove"
+                    "choices": "Entiteiten selecteren die u wilt verwijderen"
                 }
             },
             "time_at_elevation_sensor": {
@@ -162,7 +171,7 @@
             },
             "use_home": {
                 "data": {
-                    "use_home": "De naam en locatie van de Home Assistant gebruiken?"
+                    "use_home": "De naam en locatie van de Home Assistant gebruiken"
                 }
             }
         }

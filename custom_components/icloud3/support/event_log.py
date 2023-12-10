@@ -24,8 +24,7 @@ from ..const                import (HOME, HOME_FNAME, TOWARDS,
 
 from ..helpers.common       import instr, circle_letter, str_to_list, list_to_str
 from ..helpers.messaging    import log_exception, log_info_msg, log_warning_msg, _traceha, _trace
-from ..helpers.time_util    import (time_to_12hrtime, datetime_now, time_now_secs,
-                                    adjust_time_hour_value, adjust_time_hour_values, )
+from ..helpers.time_util    import time_to_12hrtime, datetime_now, time_now_secs
 
 
 import time
@@ -303,11 +302,6 @@ class EventLog(object):
             for from_text in self.display_text_as:
                 event_text = event_text.replace(from_text, self.display_text_as[from_text])
 
-            # if instr(event_text, ':'):
-            #     time_fields = extract_time_fields(event_text)
-            #     if time_fields != []:
-            #         event_text += f" -[{list_to_str(time_fields)}]"
-
             #Keep track of special colors so it will continue on the
             #next text chunk
             color_symbol = ''
@@ -411,7 +405,6 @@ class EventLog(object):
                 self.evlog_attrs['fname']      = self.fname_selected = self.devicename_by_fnames[devicename]
 
             self.evlog_sensor_state_value = devicename
-
             self.evlog_attrs['logs'] = self._filtered_evlog_recds(devicename, max_recds)
 
             self.update_evlog_sensor()
@@ -594,13 +587,13 @@ class EventLog(object):
             # Go from end of table to front
             for x in range(evlog_table_recd_cnt-2, 2, -1):
                 elr_recd     = self.evlog_table[x]
-                elr_text = elr_recd[ELR_TEXT]
+                el_recd_text = elr_recd[ELR_TEXT]
 
                 # Delete monitor recds or 20% of regular device at end of tble
-                if (elr_text.startswith(EVLOG_MONITOR)
+                if (el_recd_text.startswith(EVLOG_MONITOR)
                         or delete_cnt < delete_device_recd_cnt):
                     delete_cnt += 1
-                    if elr_text.startswith(EVLOG_MONITOR):
+                    if el_recd_text.startswith(EVLOG_MONITOR):
                         delete_mon_cnt += 1
                     else:
                         delete_reg_cnt += 1
@@ -699,10 +692,20 @@ class EventLog(object):
 
         # Select devicename recds, keep time & test elements, drop devicename
         try:
-            el_recds = [self._master_reformat_text(el_recd, Device)
-                                            for el_recd in self.evlog_table
-                                            if self._master_filter_recd(el_recd, devicename)]
-            return el_recds
+            devicename_recds = [el_recd for el_recd in self.evlog_table
+                                        if (el_recd[ELR_DEVICENAME] in el_devicename_check
+                                                and len(el_recd) == 3)]
+
+            if Gb.evlog_trk_monitors_flag:
+                return [el_recd[1:3] for el_recd in devicename_recds]
+
+            elif filter_record:
+                return [el_recd[1:3] for el_recd in devicename_recds
+                                                if (el_recd[ELR_TEXT].startswith(EVLOG_MONITOR) is False
+                                                    and self._filter_record(Device, el_recd[ELR_TEXT]))]
+            else:
+                return [el_recd[1:3] for el_recd in devicename_recds
+                                                if (el_recd[ELR_TEXT].startswith(EVLOG_MONITOR) is False)]
 
         except IndexError:
             for el_recd in self.evlog_table:
@@ -716,101 +719,56 @@ class EventLog(object):
         return []
 
 #--------------------------------------------------------------------
-    def _master_filter_recd(self, el_recd, devicename):
+    @staticmethod
+    def _apply_gps_filter(el_recd):
+        '''
+        Filter the gps coordinates out of the record based on the config parameter
+        Convert 'GPS-(27.72683, -80.39055/±33m)' to 'GPS-/±33m'
+        '''
+        el_time, el_text = el_recd
+        if el_text.find('GPS-(') == -1:
+            return [el_time, el_text]
 
-        # Drop recd if not startup or selected device or the recd has an error
+        check_for_gps_flag = True
+        while check_for_gps_flag:
+            gps_s_pos = el_text.find('GPS-(') + 4
+            gps_acc_pos = el_text.find('/±', gps_s_pos)
+            gps_e_pos = el_text.find(')', gps_s_pos)
+            el_text = el_text[:gps_s_pos] + el_text[gps_acc_pos:gps_e_pos] + el_text[gps_e_pos+1:]
+            check_for_gps_flag = el_text.find('GPS-(') >= 0
+        return [el_time, el_text.replace('GPS-, ', '')]
 
-        if (el_recd[ELR_DEVICENAME] not in ['*', '**', 'nodevices', devicename]
-                or len(el_recd) != 3):
-            return False
+#--------------------------------------------------------------------
+    @staticmethod
+    def _filter_record(Device, el_recd_text):
+        '''
+        Filter icloud account records from events for a device when its primary
+        data source it's the ios app
 
-        Device = Gb.Devices_by_devicename.get(devicename)
-        elr_devicename, elr_time, elr_text = el_recd
+        Return True if the record should be displayed
+        '''
 
-        # Return all of the time/text items if 'Show Tracking Monitors' was selected in the EvLog
-        if Gb.evlog_trk_monitors_flag:
-            return True
-
-        # Drop Tracking Monitor recds or iCloud Authentication recds
-        if elr_text.startswith(EVLOG_MONITOR):
-            return False
-
-        if (elr_text.startswith('iCloud Acct')
-                and Device
-                and (Device.is_monitored or Device.primary_data_source == IOSAPP)):
+        if el_recd_text.startswith('iCloud Acct'):
             return False
 
         return True
 
 #--------------------------------------------------------------------
-    def _master_reformat_text(self, el_recd, Device):
-        '''
-        Reformat the text in the current recd if needed:
-            - Keep/Remove gps
-            - Keep/Reformat the time fields from the Home time zone to the Away time zone
-        '''
-        elr_time_text = el_recd[1:3]
-
-        if Gb.display_gps_lat_long_flag is False:
-            elr_time_text = self._apply_gps_filter(elr_time_text)
-        if Device:
-            elr_time_text = self._apply_home_to_away_time_zone_update(elr_time_text, Device.away_time_zone_offset)
-        return elr_time_text
-
-#--------------------------------------------------------------------
-    @staticmethod
-    def _apply_gps_filter(elr_time_text):
-        '''
-        Filter the gps coordinates out of the record based on the config parameter
-        Convert 'GPS-(27.72683, -80.39055/±33m)' to 'GPS-/±33m'
-        '''
-        elr_time, elr_text = elr_time_text
-        if elr_text.find('GPS-(') == -1:  return elr_time_text
-
-        check_for_gps_flag = True
-        while check_for_gps_flag:
-            gps_s_pos = elr_text.find('GPS-(') + 4
-            gps_acc_pos = elr_text.find('/±', gps_s_pos)
-            gps_e_pos = elr_text.find(')', gps_s_pos)
-            elr_text = elr_text[:gps_s_pos] + elr_text[gps_acc_pos:gps_e_pos] + elr_text[gps_e_pos+1:]
-            check_for_gps_flag = elr_text.find('GPS-(') >= 0
-
-        return [elr_time, elr_text.replace('GPS-, ', '')]
-
-#--------------------------------------------------------------------
-    @staticmethod
-    def _apply_home_to_away_time_zone_update(elr_time_text, away_time_zone_offset):
-        '''
-        Change the Home zone time in the elr_text to the Away Zone time if needed
-
-        Return [elr_time, elr_text]
-        '''
-
-        if away_time_zone_offset == 0: return elr_time_text
-
-        elr_time, elr_text = elr_time_text
-        elr_time = adjust_time_hour_value(elr_time, away_time_zone_offset)
-        if instr(elr_text, (':')):
-            elr_text = adjust_time_hour_values(elr_text, away_time_zone_offset)
-
-        return [elr_time, elr_text]
-
-#--------------------------------------------------------------------
-    def _export_ic3_event_log_reformat_recds(self, devicename, el_recds):
+    def _export_ic3_event_log_reformat_recds(self, devicename, el_records):
 
         try:
-            if el_recds is None:
+            if el_records is None:
                 return ''
 
             record_str = ''
             inside_home_det_interval_flag = False
-            el_recds.reverse()
-            for record in el_recds:
+            el_records.reverse()
+            for record in el_records:
                 devicename = record[ELR_DEVICENAME]
                 time       = record[ELR_TIME] if record[ELR_TIME] not in ['Debug', 'Rawdata'] else ''
                 text       = record[ELR_TEXT]
 
-                # Time-record = {iosapp_state},{ic3_zone},{interval},{travelr_time},{distance
+                # Time-record = {iosapp_state},{ic3_zone},{interval},{travel_time},{distance
                 if text.startswith(EVLOG_UPDATE_START):
                     block_char = '\t\t\t┌─ '
                     inside_home_det_interval_flag = True

@@ -17,9 +17,8 @@ from ..helpers.messaging    import (post_event, post_error_msg, post_monitor_msg
                                     log_exception, log_start_finish_update_banner, log_rawdata,
                                     _trace, _traceha, )
 from ..helpers.time_util    import (time_now_secs, secs_to_time, secs_to_time_str, secs_to_age_str,
-                                    secs_since, secs_since_to_time_str, secs_to, )
-from .pyicloud_ic3          import (PyiCloudAPIResponseException, PyiCloud2FARequiredException,
-                                    ICLOUD_ERROR_CODES, )
+                                    secs_since, secs_to, )
+from .pyicloud_ic3          import (PyiCloudAPIResponseException, PyiCloud2FARequiredException, )
 
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -59,20 +58,16 @@ def is_icloud_update_needed_timers(Device):
                 Gb.passthru_zone_interval_secs * 4):
         Device.icloud_update_reason = f"PassThru Zone timer expired"
 
-    elif Device.is_statzone_timer_reached and Device.old_loc_cnt == 0:
-        Device.icloud_update_reason = ( f"Stationary Zone Time Reached@"
-                                        f"{secs_to_time(Device.statzone_timer)}")
+    elif Device.is_statzone_timer_reached and Device.old_loc_poor_gps_cnt == 0:
+        Device.icloud_update_reason = "Stationary Zone Time Reached"
 
     elif Device.is_passthru_timer_set and Gb.this_update_secs >= Device.passthru_zone_timer:
-        Device.icloud_update_reason = ( f"Enter Zone Delay Time Reached@"
-                                        f"{secs_to_time(Device.passthru_zone_timer)}")
+        Device.icloud_update_reason = "Enter Zone Delay Time Reached"
 
     elif Device.is_next_update_time_reached:
         Device.icloud_update_reason = 'Next Update Time Reached'
         if Device.is_statzone_timer_reached:
-            #Device.icloud_update_reason += " (Stationary)"
-            Device.icloud_update_reason = ( f"Stationary Zone Time Reached-2@"
-                                        f"{secs_to_time(Device.statzone_timer)}")
+            Device.icloud_update_reason += " (Stationary)"
         elif Device.isnot_inzone and Device.FromZone_NextToUpdate.from_zone != HOME:
             Device.icloud_update_reason += f" ({Device.FromZone_NextToUpdate.from_zone_display_as})"
 
@@ -196,13 +191,12 @@ def update_PyiCloud_RawData_data(Device, results_msg_flag=True):
         if is_PyiCloud_RawData_data_useable(Device, results_msg_flag=False):
             return update_device_with_latest_raw_data(Device)
 
-        famshr_ok, famshr_loc_time_ok, famshr_gps_ok, famshr_secs, \
-            famshr_gps_accuracy, famshr_time = \
-                    _get_devdata_useable_status(Device, FAMSHR)
-        fmf_ok, fmf_loc_time_ok, fmf_gps_ok, fmf_secs, \
-            fmf_gps_accuracy, fmf_time = \
-                    False, False, False, 0, 0, ''
-                    #_get_devdata_useable_status(Device, FMF)
+        famshr_ok, famshr_loc_time_ok, famshr_gps_ok, \
+            famshr_secs, famshr_gps_accuracy, \
+            famshr_time = _get_devdata_useable_status(Device, FAMSHR)
+        fmf_ok, fmf_loc_time_ok, fmf_gps_ok, \
+            fmf_secs, fmf_gps_accuracy, \
+            fmf_time = _get_devdata_useable_status(Device, FMF)
 
         if (famshr_ok and famshr_secs > fmf_secs) or fmf_ok:
             return update_all_devices_wih_latest_raw_data(Device)
@@ -221,6 +215,7 @@ def update_PyiCloud_RawData_data(Device, results_msg_flag=True):
                     or Device.icloud_initial_locate_done is False):
 
                 Gb.PyiCloud.FamilySharing.refresh_client(requested_by_devicename=Device.devicename)
+
 
         # Refresh FmF Data
         if Device.is_data_source_FMF:
@@ -246,26 +241,17 @@ def update_PyiCloud_RawData_data(Device, results_msg_flag=True):
         return True
 
     except (PyiCloud2FARequiredException, PyiCloudAPIResponseException) as err:
-        try:
-            _err_msg = ICLOUD_ERROR_CODES.get(Gb.PyiCloud.Session.response_status_code)
+        Device.icloud_acct_error_flag      = True
+        Device.icloud_devdata_useable_flag = False
 
-            Device.icloud_acct_error_flag      = True
-            Device.icloud_devdata_useable_flag = False
-
-            event_msg = (f"{EVLOG_ALERT}iCloud Location Request Error > An error occured refreshing "
-                            f"the iCloud Location Data.")
-            if _err_msg:
-                event_msg +=f"{CRLF_DOT}{_err_msg}, Error-{Gb.PyiCloud.Session.response_status_code}"
-            else:
-                event_msg+=(f"{CRLF_DOT}Error-{err}"
-                            f"{CRLF_DOT}iCloud may be down or there is a network connection or other issue."
-                            f"{CRLF}iCloud3 will try again later.")
-            post_event(Device.devicename, event_msg)
-            post_error_msg(event_msg)
-
-        except Exception as err:
-            # log_exception(err)
-            pass
+        error_msg = (f"{EVLOG_ALERT}iCloud Location Request Error > An error occured refreshing "
+                        f"the iCloud Location Data. "
+                        f"{CRLF_DOT}iCloud may be down, or"
+                        f"{CRLF_DOT}iCloud Account needs to be reauthorized, or"
+                        f"{CRLF_DOT}There may be an internet connection issue"
+                        f"{CRLF}iCloud3 will try to access the iCloud Account again later. ({err})")
+        post_event(Device.devicename, error_msg)
+        post_error_msg(error_msg)
 
         return False
 
@@ -292,9 +278,15 @@ def update_device_with_latest_raw_data(Device, all_devices=False):
             Update_Devices = [Device]
 
         for _Device in Update_Devices:
+            # if _Device.PyiCloud_RawData:
+            #     _RawData = _Device.PyiCloud_RawData
+
+            # elif _Device.PyiCloud_RawData_famshr and _Device.PyiCloud_RawData_fmf:
             _RawData = get_famshr_fmf_PyiCloud_RawData_to_use(_Device)
             if _RawData is None:
                 continue
+            # else:
+            #     continue
 
             # Make sure data is really a available
             try:
@@ -309,13 +301,12 @@ def update_device_with_latest_raw_data(Device, all_devices=False):
 
             requesting_device_flag = (_Device.devicename == Device.devicename)
 
-            famshr_ok, famshr_loc_time_ok, famshr_gps_ok, famshr_secs, \
-                famshr_gps_accuracy, famshr_time = \
-                    _get_devdata_useable_status(Device, FAMSHR)
-            fmf_ok, fmf_loc_time_ok, fmf_gps_ok, fmf_secs, \
-                fmf_gps_accuracy, fmf_time = \
-                    False, False, False, 0, 0, ''
-                    #_get_devdata_useable_status(Device, FMF)
+            famshr_ok, famshr_loc_time_ok, famshr_gps_ok, \
+                    famshr_secs, famshr_gps_accuracy, \
+                    famshr_time = _get_devdata_useable_status(_Device, FAMSHR)
+            fmf_ok, fmf_loc_time_ok, fmf_gps_ok, \
+                    fmf_secs, fmf_gps_accuracy, \
+                    fmf_time = _get_devdata_useable_status(_Device, FMF)
 
             # Add info for the Device that requested the update
             _Device.icloud_acct_error_flag = False
@@ -329,13 +320,13 @@ def update_device_with_latest_raw_data(Device, all_devices=False):
                                 and _Device.loc_data_time > _RawData.location_time
                                 and _Device.loc_data_gps_accuracy < _RawData.gps_accuracy)):
 
-                        if (Device.old_loc_cnt % 5) == 2:
+                        if (Device.old_loc_poor_gps_cnt % 5) == 2:
                             if Device.no_location_data:
                                 reason_msg = f"No Location Data, "
                             else:
                                 reason_msg = (  f"NewData-{_RawData.location_time}/±{_RawData.gps_accuracy:.0f}m "
                                                 f"vs {_Device.loc_data_time_gps}, ")
-                            event_msg =(f"Rejected  #{Device.old_loc_cnt} > "
+                            event_msg =(f"Rejected  #{Device.old_loc_poor_gps_cnt} > "
                                         f"{reason_msg}"
                                         f"Updated-{_RawData.data_source} data, "
                                         f"{Device.device_status_msg}")
@@ -349,7 +340,7 @@ def update_device_with_latest_raw_data(Device, all_devices=False):
             # Move the newest data from PyiCloud_RawData or the iOSApp data to the _Device's data fields
             # But, if there is a location error, select iCloud data so it will do another request
             elif (_RawData.location_secs >= _Device.iosapp_data_secs
-                    or _Device.old_loc_cnt > 0):
+                    or _Device.old_loc_poor_gps_cnt > 0):
                 if _RawData.location_secs != _Device.loc_data_secs:
                     _Device.moved_since_last_update = \
                             _Device.distance_km(_RawData.device_data[LOCATION][LATITUDE],
@@ -381,8 +372,8 @@ def update_device_with_latest_raw_data(Device, all_devices=False):
             # Display appropriate message for the Device being updated or a monitor msg for all other Devices
             event_msg = 'Located > ' #if _Device.is_location_gps_good else 'Location Old > '
             event_msg += f"{_Device.dev_data_source}-{_Device.loc_data_time_gps}"
-
             other_times = ""
+
             if famshr_secs > 0 and Gb.used_data_source_FAMSHR and _Device.dev_data_source != 'FamShr':
                 other_times += f"FamShr-{famshr_time}"
 
@@ -397,12 +388,7 @@ def update_device_with_latest_raw_data(Device, all_devices=False):
                 else:
                     other_times += f"iOSApp-{_Device.iosapp_data_time}"
 
-            # rc9 Check if new data is old. Can not use is_location_old since that checks
-            # icloud_devdata_useable_flag is True from the data update results
-            if secs_since(_Device.loc_data_secs) > _Device.old_loc_threshold_secs + 5:
-                event_msg += f", Old ({secs_since_to_time_str(_Device.loc_data_secs)}), Will Refresh"
-
-            elif other_times:
+            if other_times:# != "":
                 event_msg += f" ({other_times})"
 
             if _Device.is_offline:
@@ -434,13 +420,12 @@ def is_PyiCloud_RawData_data_useable(Device, results_msg_flag=True):
         False - The data for Device is old
     '''
 
-    famshr_ok, famshr_loc_time_ok, famshr_gps_ok, famshr_secs, \
-        famshr_gps_accuracy, famshr_time = \
-                    _get_devdata_useable_status(Device, FAMSHR)
-    fmf_ok, fmf_loc_time_ok, fmf_gps_ok, fmf_secs, \
-        fmf_gps_accuracy, fmf_time = \
-                    False, False, False, 0, 0, ''
-                    #_get_devdata_useable_status(Device, FMF)
+    famshr_ok, famshr_loc_time_ok, famshr_gps_ok, \
+            famshr_secs, famshr_gps_accuracy, \
+            famshr_time = _get_devdata_useable_status(Device, FAMSHR)
+    fmf_ok, fmf_loc_time_ok, fmf_gps_ok, \
+            fmf_secs, fmf_gps_accuracy, \
+            fmf_time = _get_devdata_useable_status(Device, FMF)
 
     if Gb.icloud_force_update_flag or Device.icloud_force_update_flag:
         Gb.icloud_force_update_flag = False
@@ -512,7 +497,7 @@ def _get_devdata_useable_status(Device, data_source):
     if device_id is None or RawData is None:
         return False, False, False, 0, 0, ''
 
-    # rc7.1 Added icloud_force_update_flag check
+    # v3.0.rc7.1 Added icloud_force_update_flag check
     loc_secs     = RawData.location_secs
     loc_age_secs = secs_since(loc_secs)
     loc_time_ok  = ((loc_age_secs <= Device.old_loc_threshold_secs) and Device.icloud_force_update_flag is False)
@@ -522,16 +507,10 @@ def _get_devdata_useable_status(Device, data_source):
     if (loc_time_ok
             and Device.FromZone_BeingUpdated.interval_secs >= 15
             and Device.is_passthru_timer_set is False):
-        loc_time_ok = (Device.FromZone_BeingUpdated.interval_secs > loc_age_secs)
+        loc_time_ok = (Device.FromZone_BeingUpdated.interval_secs > (loc_age_secs))
 
-        # rc9 Added loc_age_secs check so msg is only displayed after 20-secs
-        if loc_time_ok is False and loc_age_secs > 20:
-            event_msg = f"Location > Refresh Needed, "
-            if Device.loc_data_secs == Device.last_update_loc_secs:
-                event_msg += "Location not Updated"
-            else:
-                event_msg+=(f"Age-{secs_to_time_str(loc_age_secs)} "
-                            f"(> {secs_to_time_str(Device.FromZone_BeingUpdated.interval_secs)})")
+        if loc_time_ok is False:
+            event_msg = f"Location Refreshing > Older than Update Interval ({secs_to_time_str(loc_age_secs)})"
             post_event(Device.devicename, event_msg)
 
     gps_accuracy_ok = RawData.is_gps_good
@@ -567,7 +546,6 @@ def get_famshr_fmf_PyiCloud_RawData_to_use(_Device):
         elif _RawData_famshr is None and _RawData_famshr is None:
             _RawData = None
             _Device.data_source = IOSAPP
-            return
 
         # Is famshr raw data newer than fmf raw data
         elif _RawData_famshr.location_secs >= _RawData_fmf.location_secs:

@@ -78,14 +78,11 @@
       "verification_code_send_error": "Failed to send the Apple ID Verification Code",
 
       "inactive_device": "Device is INACTIVE. Change to `Track` to locate and track this device",
-      "inactive_all_devices": "✪✪ ALL DEVICES ARE INACTIVE. NOTHING WILL BE TRACKED ✪✪",
+      "inactive_all_devices": "✪ ✪ ALL DEVICES ARE INACTIVE. NO DEVICES WILL BE TRACKED ✪ ✪",
       "inactive_most_devices": "MOST Devices are INACTIVE and will not be located or tracked",
       "inactive_some_devices": "Some Devices are INACTIVE and will not be located or tracked",
       "inactive_few_devices": "A Few Devices are INACTIVE and will not be located or tracked",
       "inactive_no_devices": "No Devices have been set up, nothing will be located or tracked",
-
-      "away_time_zone_dup_devices_1": "One of these devices is also selected in the Other Device List",
-      "away_time_zone_dup_devices_2": "One of these devices is also selected in the Otner Device List",
 
       "review_filledin_fields": "Review the 'Filled in' fields",
       "not_numeric": "The value entered is not numeric",
@@ -99,21 +96,20 @@
 
       "unknown_devicename": "The device that was previously selected can no longer be identified. It`s name may have been changed or it may have been deleted. Reselect the device to be tracked or monitored",
       "unknown_value": "The value of this parameter in the iCloud3 configuration file is unknown or invalid. It must be selected again",
-      "unknown_famshr": "The FamShr device was not returned from iCloud when iCloud3 started. Check FindMy devices list & Family Share list. See Event Log Startup Stage 4 for more info and a list of the devices returned from the iCloud account",
-      "unknown_fmf": "The FmF device was not returned from iCloud when iCloud3 started. Check FindMy app devices Sharing location info. See Event Log Startup Stage 4 for more info and a list of the devices returned from the iCloud account",
-      "unknown_iosapp": "The mobile_app device_tracker entity was not found during HA Device Registry scan. Check mobile_app device list in HA Settings > Devices & Services > Devices. See Event Log Startup Stage 4 for more info and a list of mobile_app devices found in the HA Device Registry",
-      "unknown_picture": "The Picture filename was not found in the HA config/www directory. Reselect the filename or check to see if it has been deleted",
-
+      "unknown_famshr": "Check the FamShr parameter value (Not found or Invalid)",
       "unknown_famshr_fmf": "Check the FamShr and FmF parameter values (Not found or Invalid)",
       "unknown_famshr_fmf_iosapp": "Check the FamShr, FmF and iOS App parameter values (Not found or Invalid)",
       "unknown_famshr_fmf_iosapp_picture": "Check the FamShr, FmF, iOS App and Picture parameter values (Not found or Invalid)",
       "unknown_famshr_iosapp": "Check the FamShr and iOS App parameter values (Not found or Invalid)",
       "unknown_famshr_iosapp_picture": "Check the FamShr, iOS App and Picture parameter values (Not found or Invalid)",
       "unknown_famshr_picture": "Check the FamShr and Picture parameter values (Not found or Invalid)",
+      "unknown_fmf": "Check the FmF parameter value (Not found or Invalid)",
       "unknown_fmf_iosapp": "Check the FmF and iOS App parameter values (Not found or Invalid)",
       "unknown_fmf_iosapp_picture": "Check the FmF, iOS App and Picture parameter values (Not found or Invalid)",
       "unknown_fmf_picture": "Check the FmFand Picture parameter values (Not found or Invalid)",
+      "unknown_iosapp": "Check the iOS App parameter value (Not found or Invalid)",
       "unknown_iosapp_picture": "Check the iOS App and Picture parameter values (Not found or Invalid)",
+      "unknown_picture": "Check the Picture parameter value (Not found or Invalid)",
 
       "tfz_selection_invalid": "The value must be a zone that is being tracked from",
       "time_factor_invalid_range": "The 'travel_time_factor' must be between .1 and .9",
@@ -221,7 +217,6 @@
           "famshr_devicename": "FAMILY SHARING LIST DEVICE - Use location data from this iCloud Acct Family Sharing member",
           "fmf_email": "FIND-MY-FRIENDS DEVICE - Use location data from this FindMy device sharing their info with you",
           "iosapp_device": "IOS APP DEVICE_TRACKER ENTITY - Use this HA device location data & zone enter/exit triggers",
-          "log_zones": "LOG ACTIVITY FOR ZONES - Enter/exit zone info (date, time, distance) is saved to a spreadsheet .csv file",
           "track_from_zones": "TRACK-FROM-ZONES - Track travel time & distance from Home and other zones",
           "track_from_base_zone": "PRIMARY HOME ZONE - Use another zone if you are away from Home for an extended period",
           "picture": "PICTURE - Photo image of the person normally using this device (40x40 pixels is best size)",
@@ -253,21 +248,6 @@
         "data": {
           "device_desc": "═════════════════════════════════════════════════════ ICLOUD3 DEVICES",
           "action_items": "═════════════════════════════════════════════════════ ACTION COMMANDS"
-        }
-      },
-      "away_time_zone": {
-        "title": "Display Location Time Zone when Away",
-        "description": "The time displayed in the Event Log and Sensors show the time an event took place using the Home 'time zone' from your Home Assistant computer.  When you are away from Home and in another time zone, your tracking events are still based on the time at your Home 'time zone', not time in your current location. This screen lets you display time events using your current location's time zone.",
-        "data": {
-          "away_time_zone_1_devices": "Devices that will display time events based on this location time",
-          "away_time_zone_1_offset": "Current Location Time",
-          "away_time_zone_2_devices": "Devices that will display time events based on this location time",
-          "away_time_zone_2_offset": "Current Location Time",
-          "action_items": "═════════════════════════════════════════════════════ ACTION COMMANDS"
-        },
-        "data_description": {
-          "time_zone_1_offset": "PRIMARY DEVICES & LOCATION TIME - Devices and the current location time when away and in another time zone",
-          "time_zone_2_offset": "SECONDARY DEVICES & LOCATION TIME - Devices and the current location time when away and in another time zone"
         }
       },
       "format_settings": {

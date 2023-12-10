@@ -42,8 +42,6 @@ from .const          import (DEVICENAME_IOSAPP, VERSION, NOT_SET, HOME_FNAME, HO
                             CONF_IOSAPP_REQUEST_LOC_MAX_CNT, CONF_DISTANCE_BETWEEN_DEVICES,
                             CONF_PASSTHRU_ZONE_TIME, CONF_TRACK_FROM_BASE_ZONE, CONF_TRACK_FROM_HOME_ZONE,
                             CONF_TFZ_TRACKING_MAX_DISTANCE,
-                            CONF_AWAY_TIME_ZONE_1_OFFSET, CONF_AWAY_TIME_ZONE_1_DEVICES,
-                            CONF_AWAY_TIME_ZONE_2_OFFSET, CONF_AWAY_TIME_ZONE_2_DEVICES,
 
                             CONF_STAT_ZONE_STILL_TIME,
                             CONF_STAT_ZONE_INZONE_INTERVAL,
@@ -172,6 +170,7 @@ class GlobalVariables(object):
     reinitialize_icloud_devices_cnt = 0
     initial_icloud3_loading_flag    = False
 
+
     # Debug and trace flags
     log_debug_flag               = False
     log_rawdata_flag             = False
@@ -196,6 +195,7 @@ class GlobalVariables(object):
     iosapp_entities           = ''
     iosapp_notify_devicenames = ''
 
+
     # Configuration parameters that can be changed in config_ic3.yaml
     um                     = DEFAULT_GENERAL_CONF[CONF_UNIT_OF_MEASUREMENT]
     time_format_12_hour    = True
@@ -210,12 +210,6 @@ class GlobalVariables(object):
     # Time conversion variables used in global_utilities
     time_zone_offset_seconds    = 0
     timestamp_local_offset_secs = 0
-
-    # Away time zone offset used for displaying a devices time tracking sensors in the local time zone
-    away_time_zone_1_offset         = 0
-    away_time_zone_1_devices        = ['none']
-    away_time_zone_2_offset         = 0
-    away_time_zone_2_devices        = ['none']
 
     # Configuration parameters
     config_parm                     = {}        # Config parms from HA config.yaml and config_ic3.yaml

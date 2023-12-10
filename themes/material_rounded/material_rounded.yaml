@@ -22,14 +22,15 @@ Material Rounded:
             token-color-text-sidebar-selected: rgb(214, 215, 219)
             token-color-text-sidebar: var(--token-color-text-secondary)
             token-color-text-label-badge: rgb(198, 203, 210)
-            token-color-background-base: rgb(31, 31, 31)
+            token-color-background-base: rgb(19, 19, 20)
             token-color-background-secondary: rgb(40, 42, 46)
             token-color-background-tertiary: rgb(0, 0, 0)
-            token-color-background-sidebar: var(--token-color-background-base)
+            token-color-background-sidebar: var(--token-color-background-toolbar)
             token-color-background-input-base: rgb(46, 48, 56)
             token-color-background-input-disabled: rgba(37, 37, 40, 0.5)
             token-color-background-label-badge: rgb(54, 55, 67)
             token-color-background-card: rgb(50, 52, 58)
+            token-color-background-toolbar: rgb(45, 47, 51)
             token-color-background-skrim: rgba(0, 0, 3, 0.9)
             token-color-background-divider: var(--token-color-background-sidebar)
             token-color-background-scrollbar-thumb: rgb(46, 48, 56)
@@ -97,6 +98,7 @@ Material Rounded:
             token-color-background-input-disabled: rgba(218, 218, 215, 0.5)
             token-color-background-label-badge: rgb(201, 200, 188)
             token-color-background-card: rgb(238, 243, 252)
+            token-color-background-toolbar: rgb(242, 246, 252)
             token-color-background-skrim: rgba(205, 203, 197, 0.9)
             token-color-background-divider: var(--token-color-background-sidebar)
             token-color-background-scrollbar-thumb: rgb(46, 48, 56)
@@ -149,9 +151,8 @@ Material Rounded:
     token-size-radius-medium: 24px
     token-size-radius-large: 28px
     token-size-radius-card: var(--token-size-radius-large)
-    token-size-width-border-card: 0
+    token-size-width-border-card: 0px
     token-size-height-slider: 4px
-    # token-size-height-navbar: 80px
     token-size-font-title: 28px
 
     # Weight token
@@ -161,14 +162,9 @@ Material Rounded:
     horizontal-stack-card-margin: 0px 4px
     vertical-stack-card-margin: 4px 0px
 
-    # Shapes
-    mdc-shape-small: var(--token-size-radius-small)
-    mdc-shape-medium: var(--token-size-radius-medium)
-    mdc-shape-large: var(--token-size-radius-large)
-
     # Sizes
-    # header-height: var(--token-size-height-navbar)
     paper-slider-height: var(--token-size-height-slider)
+    footer-height: 80px
 
     # Typography
     primary-font-family: var(--token-font-family-primary)
@@ -212,9 +208,9 @@ Material Rounded:
     secondary-background-color: var(--token-color-background-secondary)
 
     # Navbar
-    app-header-background-color: var(--primary-background-color)
-    app-header-text-color: var(--token-color-icon-primary)
-    app-header-edit-background-color: var(--token-color-background-card)
+    app-header-background-color: var(--token-color-background-toolbar)
+    app-header-text-color: var(--primary-text-color)
+    app-header-edit-background-color: var(--token-color-background-toolbar)
 
     # Sidebar
     sidebar-icon-color: var(--token-color-icon-sidebar)
@@ -295,31 +291,6 @@ Material Rounded:
     codemirror-property: var(--accent-color)
     codemirror-atom: var(--codemirror-property)
 
-    # RGB colors
-    rgb-white-color: 240, 243, 255
-    rgb-purple-color: 189, 157, 255
-    rgb-pink-color: 255, 98, 192
-    rgb-red-color: 255, 97, 116
-    rgb-deep-purple-color: 166, 77, 255
-    rgb-indigo-color: 84, 132, 255
-    rgb-blue-color: 33, 150, 243
-    rgb-light-blue-color: 3, 169, 244
-    rgb-cyan-color: 0, 188, 212
-    rgb-teal-color: 107, 255, 237
-    rgb-green-color: 141, 253, 166
-    rgb-light-green-color: 156, 255, 166
-    rgb-lime-color: 205, 220, 57
-    rgb-yellow-color: 255, 235, 59
-    rgb-amber-color: 255, 211, 99
-    rgb-orange-color: 229, 145, 9
-    rgb-deep-orange-color: 255, 87, 34
-    rgb-brown-color: 121, 85, 72
-    rgb-grey-color: 158, 158, 158
-    rgb-blue-grey-color: 96, 125, 139
-    rgb-black-color: 0, 0, 0
-    rgb-disabled-color: 61, 65, 85
-    rgb-state-inactive-color: 123, 126, 139
-
     ### Card Mod theming ###
     # Turns header into a footer
     # Colors current view icon and background instead of underline
@@ -332,9 +303,13 @@ Material Rounded:
         .: |
           ha-tabs, paper-tabs {
             --paper-tabs-selection-bar-color: none !important;
+            margin: 0 !important;
+          }
+          paper-tabs {
+            height: 50%;
           }
 
-          paper-tab.iron-selected > ha-icon[title="Locks"] {
+          paper-tab.iron-selected > ha-icon[title="Locks"], paper-tab.iron-selected > ha-icon[title="Security"] {
             color: var(--green-color);
           }
           paper-tab.iron-selected > ha-icon[title="Lights"] {
@@ -343,72 +318,103 @@ Material Rounded:
           paper-tab.iron-selected > ha-icon[title="Climate"] {
             color: var(--red-color);
           }
+          paper-tab.iron-selected > ha-icon[title="Allergens"] {
+            color: var(--red-color);
+          }
           paper-tab.iron-selected > ha-icon[title="Bedroom"] {
             color: var(--purple-color);
+          }
+          paper-tab.iron-selected > ha-icon[title="Spotify"] {
+            color: rgb(29, 185, 84);
+          }
+          paper-tab.iron-selected > ha-icon[title="Weather"] {
+            color: var(--state-sun-above_horizon-color);
           }
           paper-tab.iron-selected > ha-icon {
             width: 100%;
             max-width: 72px;
             color: var(--accent-color);
             background-color: var(--primary-color);
-            border-radius: var(--mdc-shape-small);
+            border-radius: 16px;
           }
           paper-tab.iron-selected > .edit-icon {
             width: 100%;
             max-width: 72px;
-            width: 100%;
             padding-left: 0;
           }
           paper-tab.iron-selected > ha-svg-icon[title="Edit view"] {
             padding-left: 8px;
           }
           paper-tab > ha-icon {
+            top: -3px;
             width: 24px;
-            height: 36px;
+            height: 32px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            align-self: start;
+            align-self: center;
             position: relative;
-            top: 4px;
             transition: width 0.2s cubic-bezier(.2,0,0,1);
           }
           paper-tab {
             padding: 0;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+            align-content: space-between;
+            justify-content: space-around;
+            justify-items: stretch;
+          }
+
+          paper-tab::after {
+            content: attr(aria-label);
+            text-transform: none;
+            text-align: center;
+            position: relative;
+            top: -12px;
           }
 
           #view {
             padding-top: 0 !important;
-            padding-bottom: var(--header-height) !important;
+            padding-bottom: var(--footer-height) !important;
+            margin: 0px 12px !important;
           }
 
           .edit-mode > #view {
-            padding-top: 100px !important;
+            padding-top: calc(2*var(--footer-height)) !important;
             padding-bottom: 0 !important;
-            bottom: 100px !important;
+            bottom: calc(2*var(--footer-height)) !important;
+            margin: 0px 12px !important;
           }
 
           .edit-mode {
             --app-header-edit-text-color: var(--app-header-text-color);
           }
+
+          .edit-mode > .header > paper-tabs > paper-tab.iron-selected::after {
+            position: relative;
+            bottom: 12px;
+          }
+
+          .edit-mode > .header {
+            height: calc(2*var(--footer-height)) !important;
+          }
           
           .header {
             top: unset !important;
             bottom: 0 !important;
-          }
-
-          ha-menu-button {
-            top: -5px;
-          }
-
-          .action-items {
-            top: -5px;
-            position: relative;
+            height: var(--footer-height) !important;
           }
 
           #add-view {
             position: relative !important;
             vertical-align: top;
+          }
+
+          .toolbar {
+            height: var(--footer-height) !important;
+            padding: 0 !important;
           }
 
         ha-tabs:
@@ -437,21 +443,24 @@ Material Rounded:
             paper-ripple {
               display: none;
             }
+            .tab-content {
+              width: 100%
+            }
 
         hui-masonry-view:
           $: |
             ha-fab {
-              bottom: calc(2*var(--header-height)) !important;
+              bottom: calc(2*var(--footer-height)) !important;
             }
 
         hui-sidebar-view:
           $: |
             ha-fab {
-              bottom: calc(2*var(--header-height)) !important;
+              bottom: calc(2*var(--footer-height)) !important;
             }
 
         hui-panel-view:
           $: |
             ha-fab {
-              bottom: calc(2*var(--header-height)) !important;
+              bottom: calc(2*var(--footer-height)) !important;
             }

@@ -7,11 +7,8 @@ from .common                    import instr
 
 import homeassistant.util.dt    as dt_util
 import time
-from datetime                   import datetime, timedelta
 
-#import re
-#[m.start() for m in re.finditer('test', 'test test test test')]
-#[0, 5, 10, 15]
+
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
 #   Time conversion and formatting functions
@@ -420,9 +417,7 @@ def timestamp4(secs):
 def secs_to_time_age_str(time_secs):
     """ Secs to '17:36:05 (2 sec ago)' """
     if time_secs < 1 or time_secs == HIGH_INTEGER:
-        return '0 mins'
-        # rc9  Changed 00:00:00 to 0 mins
-        #return '00:00:00'
+        return '00:00:00'
 
     age_secs = secs_since(time_secs)
     if age_secs >= 86400:
@@ -435,10 +430,6 @@ def secs_to_time_age_str(time_secs):
 def secs_to_age_str(time_secs):
     """ Secs to `2 sec ago`, `3 mins ago`/, 1.5 hrs ago` """
     return f"{secs_to_time_str(secs_since(time_secs))} ago"
-
-#--------------------------------------------------------------------
-def secs_since_to_time_str(time_secs):
-    return secs_to_age_str(time_secs).replace(' ago', '')
 
 #--------------------------------------------------------------------
 def format_date_time_now(strftime_parameters):
@@ -511,107 +502,3 @@ def calculate_time_zone_offset():
     Gb.time_zone_offset_seconds = local_zone_offset_secs
 
     return local_zone_offset_secs
-
-#--------------------------------------------------------------------------------
-def adjust_time_hour_values(text_str, hh_adjustment):
-    '''
-    Adjust the hour value of all time fields in a text string
-    '''
-    
-    time_fields = extract_time_fields(text_str)
-    if time_fields == []: return text_str
-
-    for time_field in time_fields:
-        text_str = text_str.replace(time_field,
-                                    adjust_time_hour_value(time_field, hh_adjustment))
-
-    return text_str
-
-#--------------------------------------------------------------------------------
-def extract_time_fields(msg_str):
-    '''
-    Parse the str and extract all time fields:
-        h:mm:ss, hh:mm:ss, h:mm:ssa, h:mm:ssp, etc
-    Return:
-        List of Time fields or []
-    '''
-
-    if type(msg_str) is not str:
-        return []
-
-    hhmm_colon = 0
-    times_found = set()
-    while msg_str.find(':', hhmm_colon) >= 0:
-        hhmm_colon = msg_str.find(':',hhmm_colon)
-
-        if msg_str[hhmm_colon-1].isnumeric() is False:
-            hhmm_colon += 1
-            continue
-
-        if  msg_str[hhmm_colon+1:hhmm_colon+2].isnumeric() is False:
-            hhmm_colon += 3
-            continue
-
-        # hh:mm or hh:mm:ss
-        try:
-            mmss_colon = 3 if msg_str[hhmm_colon+3] == ':' else 0
-        except:
-            mmss_colon = 0
-
-        # if mmss_colon == len(msg_str): mmss_colon -= 1
-        end_pos = hhmm_colon + mmss_colon + 3
-        if hhmm_colon == 1: hhmm_colon = 2
-        time = msg_str[hhmm_colon-2:end_pos]
-        try:
-            if instr('apAP', msg_str[end_pos]): time += msg_str[end_pos]
-        except:
-            pass
-
-        if time[0].isnumeric() is False: time = time[1:]
-
-        times_found.add(time)
-        hhmm_colon += 4
-
-    return list(times_found)
-#--------------------------------------------------------------------------------
-def adjust_time_hour_value(hhmmss, hh_adjustment):
-    '''
-    All times are based on the HA server time. When the device is in another time
-    zone, convert the HA server time to the device's local time so the local time
-    can be displayed on the Event Log and in time-based sensors.
-
-    Input:
-        hhmmss - HA server time (hh:mm, hh:mm:ss, hh:mm(a/p), hh:mm:ss(a/p))
-        hh_adjustment - Number of hours between the HA server time and the
-            local time (-12 to 12)
-    Return:
-        new time value in the same format as the Input hhmmss time
-    '''
-
-    if hh_adjustment == 0 or hhmmss == HHMMSS_ZERO:
-        return hhmmss
-
-    hhmm_colon = hhmmss.find(':')
-    if hhmm_colon == -1: return hhmmss
-
-    ap = hhmmss_ap = hhmmss[-1]                # Get last character of time (#, a, p)
-    ap = f"{ap.lower()}m" if ap in ['a', 'p', 'A', 'P'] else '' # Reformat (pm or '')
-    hh = hhmmss[:hhmm_colon] + ap              # Create Hometime zonehours field (3pm, 15)
-
-    if hh.endswith('m'):
-        dt12 = datetime.strptime(hh, '%I%p')   # Get 12-hour datetime (1900-01-01 03:00:00pm)
-        h24  = dt12.strftime('%H')             # Convert to 24 hour time (03pm -> 15)
-        dt24 = datetime.strptime(h24, '%H')    # Get datetime value of 24-hour time (1900-01-01 15:00:00)
-        dt24 += timedelta(hours=hh_adjustment) # Add time zone offset (15-2=13)
-        ap = dt24.strftime("%p")[0].lower()    # Get a/p for new time (PM -> p)
-        hh_away_zone = dt24.strftime("%-I")    # Get Away time zone 12-hour value (1)
-        
-    else:
-        dt24 = datetime.strptime(hh, '%H')     # Get datetime value of 24-hour time (15)
-        dt24 += timedelta(hours=hh_adjustment) # Add time zone offset (15-2=13)
-        hh_away_zone = dt24.strftime("%H")    # Get Away time zone 12-hour value (15)
-
-    hhmmss = f"{hh_away_zone}{hhmmss[hhmm_colon:]}"
-    if ap: hhmmss = hhmmss.replace(hhmmss_ap, ap)
-
-    return hhmmss
