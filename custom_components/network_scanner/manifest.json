@@ -1,0 +1,12 @@
+{
+  "domain": "network_scanner",
+  "name": "Network Scanner",
+  "config_flow": true,
+  "documentation": "https://github.com/parvez/network_scanner",
+  "issue_tracker": "https://github.com/parvez/network_scanner/issues",
+  "dependencies": [],
+  "codeowners": ["@parvez"],
+  "requirements": ["python-nmap"],
+  "version": "1.0.2",
+  "iot_class": "local_polling"
+}
