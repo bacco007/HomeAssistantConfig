@@ -27,6 +27,7 @@ cards:
           - !include ../lastfm/graph_thisyear.yaml
           - !include ../spotify/graph_playcount.yaml
           - !include ../lastfm/lastfm.yaml
+          - !include ../lastfm/lastfm_bacco007.yaml
           - !include ../spotify/spotify.yaml
       "(max-width: 1370px)":
         type: "custom:layout-card"

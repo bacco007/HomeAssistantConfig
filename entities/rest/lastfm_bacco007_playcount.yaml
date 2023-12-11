@@ -1,0 +1,12 @@
+---
+resource: !secret lastfm_bacco007_playcount_url
+sensor:
+  name: lastfm_bacco007_user_playcount
+  unique_id: lastfm_bacco007_user_playcount
+  value_template: >
+    {{ value_json.user.playcount}}
+  unit_of_measurement: Songs
+  state_class: total_increasing
+  json_attributes:
+    - user
+scan_interval: 600
