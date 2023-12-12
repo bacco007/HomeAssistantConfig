@@ -78,12 +78,18 @@ class NetworkScanner(Entity):
             if 'mac' in self.nm[host]['addresses']:
                 ip = self.nm[host]['addresses']['ipv4']
                 mac = self.nm[host]['addresses']['mac']
+                vendor = "Unknown"
+                if 'vendor' in self.nm[host] and mac in self.nm[host]['vendor']:
+                    vendor = self.nm[host]['vendor'][mac]
+                hostname = self.nm[host].hostname()
                 device_name, device_type = self.get_device_info_from_mac(mac)
                 devices.append({
                     "ip": ip,
                     "mac": mac,
                     "name": device_name,
-                    "type": device_type
+                    "type": device_type,
+                    "vendor": vendor,
+                    "hostname": hostname
                 })
 
         # Sort the devices by IP address
