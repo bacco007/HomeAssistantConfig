@@ -1,5 +1,4 @@
-"""
-The Yahoo finance component.
+"""The Yahoo finance component.
 
 https://github.com/iprak/yahoofinance
 """
@@ -9,34 +8,34 @@ from __future__ import annotations
 from datetime import timedelta
 import logging
 
-from homeassistant.const import CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType
 import voluptuous as vol
 
 from custom_components.yahoofinance.coordinator import (
     CrumbCoordinator,
     YahooSymbolUpdateCoordinator,
 )
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import discovery
+import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     CONF_DECIMAL_PLACES,
     CONF_INCLUDE_FIFTY_DAY_VALUES,
+    CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
     CONF_INCLUDE_POST_VALUES,
     CONF_INCLUDE_PRE_VALUES,
     CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
-    CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
     DEFAULT_CONF_DECIMAL_PLACES,
     DEFAULT_CONF_INCLUDE_FIFTY_DAY_VALUES,
+    DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
     DEFAULT_CONF_INCLUDE_POST_VALUES,
     DEFAULT_CONF_INCLUDE_PRE_VALUES,
     DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
-    DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
     DEFAULT_CONF_SHOW_TRENDING_ICON,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,

@@ -1,5 +1,4 @@
-"""
-The Yahoo finance component.
+"""The Yahoo finance component.
 
 https://github.com/iprak/yahoofinance
 """
@@ -15,16 +14,16 @@ from typing import Final
 
 import aiohttp
 import async_timeout
+
+from custom_components.yahoofinance.const import CONSENT_HOST, CRUMB_URL, GET_CRUMB_URL
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import event
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util.dt import utcnow
-from homeassistant.util.file import write_utf8_file
 
-from custom_components.yahoofinance.const import CONSENT_HOST, CRUMB_URL
-
+#from homeassistant.util.file import write_utf8_file
 from .const import (
     BASE,
     DATA_REGULAR_MARKET_PRICE,
@@ -64,78 +63,103 @@ class CrumbCoordinator:
 
         try:
             async with async_timeout.timeout(WEBSESSION_TIMEOUT):
-                _LOGGER.debug("Getting crumb from from %s", CRUMB_URL)
+                _LOGGER.debug("Navigating to a base Yahoo page")
+
+                # Websession.get handles redirects by default
                 response = await websession.get(CRUMB_URL, headers=REQUEST_HEADERS)
-                _LOGGER.debug(
-                    "Response status: %d, URL: %s", response.status, response.url
-                )
 
-                if response.status == HTTPStatus.OK:
+                # Only keep cookies from initial response. Consent/crumb pages do not provide cookies.
+                self.cookies = response.cookies
+
+                _LOGGER.debug("Response %d, URL: %s", response.status, response.url)
+                _LOGGER.debug("Cookies: %s", str(self.cookies))
+
+                if (response.status == HTTPStatus.OK) and (response.url.host.lower() == CONSENT_HOST):
+                    _LOGGER.debug("Consent page detected")
                     content = await response.text()
+                    form_data=self.build_consent_form_data(content)
+                    _LOGGER.debug("Posting consent %s", str(form_data))
+                    response = await websession.post(response.url, data=form_data)
 
-                    if response.url.host == CONSENT_HOST:
-                        _LOGGER.debug("Cookies consent page detected")
-                        pattern = (
-                            r'<input.*?type="hidden".*?name="(.*?)".*?value="(.*?)".*?>'
-                        )
-                        matches = re.findall(pattern, content)
-                        form_data = {"reject": "reject"}
-                        for name, value in matches:
-                            _LOGGER.debug("Form field: name=%s value=%s", name, value)
-                            form_data[name] = value
-                        response = await websession.post(response.url, data=form_data)
-                        _LOGGER.debug(
-                            "Response Status: %d, URL: %s",
-                            response.status,
-                            response.url,
-                        )
+                    if response.status != HTTPStatus.OK:
+                        _LOGGER.info("Consent post responded with %d", response.status)
+                        return
 
-                        if response.status != HTTPStatus.OK:
-                            return
-                        content = await response.text()
+                    _LOGGER.debug("Consent post response %d, URL: %s", response.status, response.url)
+                    #content = await response.text()
+                    #await self.parse_crumb_from_content(content)
+                    #_LOGGER.debug("Crumb: %s", self.crumb)
 
-                    self.cookies = response.cookies
-                    _LOGGER.debug("Cookies: %s", str(self.cookies))
-
-                    start_pos = content.find('"crumb":"')
-                    _LOGGER.debug("Start position: %d", start_pos)
-                    end_pos = -1
-
-                    if start_pos != -1:
-                        start_pos = start_pos + 9
-                        end_pos = content.find('"', start_pos + 10)
-                        _LOGGER.debug("End position: %d", end_pos)
-                        if end_pos != -1:
-                            self.crumb = (
-                                content[start_pos:end_pos]
-                                .encode()
-                                .decode("unicode_escape")
-                            )
-                            _LOGGER.debug("Crumb=%s", self.crumb)
-
-                    # Crumb was not located
-                    if not self.crumb:
-                        _LOGGER.info(
-                            "Crumb not found, start position: %d, ending position: %d. Refer to YahooFinanceCrumbContent.log in the config folder.",
-                            start_pos,
-                            end_pos,
-                        )
-
-                        if _LOGGER.isEnabledFor(logging.INFO):
-                            await self._hass.async_add_executor_job(
-                                write_utf8_file,
-                                self._hass.config.path("YahooFinanceCrumbContent.log"),
-                                content,
-                            )
+                # Try another crumb page even if the consent response provided a crumb.
+                await self.try_crumb_page(websession)
 
         except asyncio.TimeoutError as ex:
             _LOGGER.error("Timed out getting crumb. %s", ex)
         except aiohttp.ClientError as ex:
             _LOGGER.error("Error accessing crumb url. %s", ex)
 
-        _LOGGER.debug("Got crumb %s", self.crumb)
+        _LOGGER.debug("Crumb: %s", self.crumb)
         return self.crumb
 
+    async def try_crumb_page(self,websession: aiohttp.ClientSession) -> None:
+        """Try to get crumb from the end point."""
+
+        _LOGGER.debug("Accessing crumb page")
+        response = await websession.get(GET_CRUMB_URL, headers=REQUEST_HEADERS)
+        _LOGGER.debug("Crumb response status: %d, URL: %s", response.status, response.url)
+
+        if response.status == HTTPStatus.OK:
+            self.crumb = await response.text()
+            _LOGGER.debug("Crumb page reported %s", self.crumb)
+        else:
+            _LOGGER.info("Crumb page responded with %d", response.status)
+
+    # async def parse_crumb_from_content(self, content: str) -> str:
+    #     """Parse and update crumb from response content."""
+
+    #     _LOGGER.debug("Parsing crumb from content (length: %d)", len(content))
+
+    #     start_pos = content.find('"crumb":"')
+    #     _LOGGER.debug("Start position: %d", start_pos)
+    #     end_pos = -1
+
+    #     if start_pos != -1:
+    #         start_pos = start_pos + 9
+    #         end_pos = content.find('"', start_pos + 10)
+    #         _LOGGER.debug("End position: %d", end_pos)
+    #         if end_pos != -1:
+    #             self.crumb = (
+    #                 content[start_pos:end_pos]
+    #                 .encode()
+    #                 .decode("unicode_escape")
+    #             )
+
+    #     # Crumb was not located
+    #     if not self.crumb:
+    #         _LOGGER.info(
+    #             "Crumb not found, start position: %d, ending position: %d. Refer to YahooFinanceCrumbContent.log in the config folder.",
+    #             start_pos,
+    #             end_pos,
+    #         )
+
+    #         if _LOGGER.isEnabledFor(logging.INFO):
+    #             await self._hass.async_add_executor_job(
+    #                 write_utf8_file,
+    #                 self._hass.config.path("YahooFinanceCrumbContent.log"),
+    #                 content,
+    #             )
+
+    def build_consent_form_data(self, content: str) -> dict[str,str]:
+        """Build consent form data from response content."""
+        pattern = (
+            r'<input.*?type="hidden".*?name="(.*?)".*?value="(.*?)".*?>'
+        )
+        matches = re.findall(pattern, content)
+        form_data = {"reject": "reject"}
+        for name, value in matches:
+            form_data[name] = value
+
+        return form_data
 
 class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
     """Yahoo finance data update coordinator."""
@@ -357,8 +381,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         return None
 
     async def _async_update(self) -> dict:
-        """
-        Return updated data if new JSON is valid.
+        """Return updated data if new JSON is valid.
 
         The exception will get properly handled in the caller (DataUpdateCoordinator.async_refresh)
         which also updates last_update_success. UpdateFailed is raised if JSON is invalid.

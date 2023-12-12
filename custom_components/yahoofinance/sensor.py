@@ -1,5 +1,4 @@
-"""
-A component which presents Yahoo Finance stock quotes.
+"""A component which presents Yahoo Finance stock quotes.
 
 https://github.com/iprak/yahoofinance
 """
@@ -9,6 +8,8 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 import logging
 
+from custom_components.yahoofinance import SymbolDefinition, convert_to_float
+from custom_components.yahoofinance.coordinator import YahooSymbolUpdateCoordinator
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
     SensorEntity,
@@ -20,9 +21,7 @@ from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-from custom_components.yahoofinance import SymbolDefinition, convert_to_float
-from custom_components.yahoofinance.coordinator import YahooSymbolUpdateCoordinator
+from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTR_CURRENCY_SYMBOL,
@@ -176,7 +175,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
         if dividend_date_timestamp is None:
             return None
 
-        dividend_date = datetime.utcfromtimestamp(dividend_date_timestamp)
+        dividend_date = datetime.fromtimestamp(dividend_date_timestamp,tz=dt_util.DEFAULT_TIME_ZONE)
         dividend_date_date = dividend_date.date()
         return dividend_date_date.isoformat()
 
