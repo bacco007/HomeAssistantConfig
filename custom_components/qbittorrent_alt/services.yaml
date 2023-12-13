@@ -1,0 +1,52 @@
+torrent_info:
+  name: Get torrent info
+  description: Returns detailed torrent information on a specific torrent (if hash is set) or all torrents
+  fields:
+    hash:
+      name: hash
+      description: The hash of the torrent
+      example: c99cb479e292ee67dab1030a027e223d4d2615db
+      required: false
+      selector:
+        text:
+    filter:
+      name: state
+      description: Filter Torrent by state
+      selector:
+        select:
+          options:
+            - downloading
+            - seeding
+            - completed
+            - resumed
+            - paused
+            - active
+            - inactive
+            - stalled
+            - stalled_uploading
+            - stalled_downloading
+            - errored
+
+pause_torrents:
+  name: Pause torrents
+  description: Pause a torrent (if hash is set) or all torrents
+  fields:
+    hash:
+      name: hash
+      description: The hash of the torrent
+      example: c99cb479e292ee67dab1030a027e223d4d2615db
+      required: false
+      selector:
+        text:
+
+resume_torrents:
+  name: Resume torrents
+  description: Resume a specific torrent (if hash is set) or all torrents
+  fields:
+    hash:
+      name: hash
+      description: The hash of the torrent
+      example: c99cb479e292ee67dab1030a027e223d4d2615db
+      required: false
+      selector:
+        text:
