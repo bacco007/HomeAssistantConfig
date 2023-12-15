@@ -345,3 +345,16 @@ cards:
                       padding-left: 4px ;
                       padding-right: 4px;
                       }
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.flightradar24_current_in_area
+        above: 0
+    card:
+      type: markdown
+      content: >-
+        {% set data = state_attr('sensor.flightradar24_current_in_area',
+        'flights') %} {% for flight in data %}
+          <ha-icon icon="mdi:airplane"></ha-icon> {%if flight.airline_short %}{{ flight.airline_short }}{% endif %}{% if flight.flight_number %} {{ flight.flight_number }}{% endif %}{% if flight.airline_short or flight.flight_number %}, {% endif %}{% if flight.aircraft_model %}{{ flight.aircraft_model }}{% endif %}
+          <div>{%if flight.airport_origin_city or flight.airport_destination_city %}{%if flight.airport_origin_city %}<div style="display: inline-block; margin-left: 28px;"><img style="vertical-align: middle;" src="https://flagsapi.com/{{ flight.airport_origin_country_code[:2] }}/shiny/16.png" />{% endif %} {{ flight.airport_origin_city }}</div>{%if flight.airport_destination_country_code %}<div style="display: inline-block;">&nbsp;-&nbsp;<img style="vertical-align: middle;" src="https://flagsapi.com/{{ flight.airport_destination_country_code[:2] }}/shiny/16.png" />{% endif %} {{ flight.airport_destination_city }}</div>{% else %}<div style="margin-left: 28px;">No data</div>{% endif %}</div></div>
+        {% endfor %}

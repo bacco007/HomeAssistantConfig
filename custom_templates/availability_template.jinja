@@ -17,7 +17,7 @@
   #}
   {# First tests to make sure this is a list #}
   {%- if entity_list is list -%}
-    {{- entity_list | map('states') | lower 
+    {{- entity_list | map('states')
     | reject('in', ["undefined", "unknown", "unavailable", "none", "null", ""])
     | list | count == entity_list | count -}}
   {%- else -%}
