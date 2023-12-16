@@ -351,10 +351,75 @@ cards:
         entity: sensor.flightradar24_current_in_area
         above: 0
     card:
-      type: markdown
-      content: >-
-        {% set data = state_attr('sensor.flightradar24_current_in_area',
-        'flights') %} {% for flight in data %}
-          <ha-icon icon="mdi:airplane"></ha-icon> {%if flight.airline_short %}{{ flight.airline_short }}{% endif %}{% if flight.flight_number %} {{ flight.flight_number }}{% endif %}{% if flight.airline_short or flight.flight_number %}, {% endif %}{% if flight.aircraft_model %}{{ flight.aircraft_model }}{% endif %}
-          <div>{%if flight.airport_origin_city or flight.airport_destination_city %}{%if flight.airport_origin_city %}<div style="display: inline-block; margin-left: 28px;"><img style="vertical-align: middle;" src="https://flagsapi.com/{{ flight.airport_origin_country_code[:2] }}/shiny/16.png" />{% endif %} {{ flight.airport_origin_city }}</div>{%if flight.airport_destination_country_code %}<div style="display: inline-block;">&nbsp;-&nbsp;<img style="vertical-align: middle;" src="https://flagsapi.com/{{ flight.airport_destination_country_code[:2] }}/shiny/16.png" />{% endif %} {{ flight.airport_destination_city }}</div>{% else %}<div style="margin-left: 28px;">No data</div>{% endif %}</div></div>
-        {% endfor %}
+      type: custom:flex-table-card
+      strict: false
+      sort_by:
+        - flights-
+      entities:
+        include: sensor.flightradar24_current_in_area
+      card_mod:
+        style: |
+          ha-card {
+            background: none;
+            border: 0;
+            box-shadow: none;
+            overflow: auto;
+            padding-top: 5px;
+            font-size: 12px;
+          }
+          tbody tr:hover {
+            background-color: coral !important
+          }
+      columns:
+        - name: FLIGHT
+          data: flights
+          align: center
+          modify: |
+            if(x.airline != null)
+              {x.airline + ' (' + x.airline_icao + ')'}
+            else {
+                '<div style="color:red;">' + "-" + '</div>';
+            }
+        - name: FLTNO
+          data: flights
+          align: center
+          modify: |
+            if(x.flight_number != null)
+              {x.flight_number}
+            else {
+                x.callsign
+            }
+        - name: REGO
+          data: flights
+          align: center
+          modify: |
+            if(x.aircraft_registration != null)
+              {x.aircraft_registration}
+            else {
+                '<div style="color:red;">' + "-" + '</div>';
+            }
+        - name: AIRCRAFT
+          data: flights
+          align: center
+          modify: |
+            if(x.aircraft_model != null)
+              {x.aircraft_model + ' (' + x.aircraft_code + ')'}
+            else {
+                '<div style="color:red;">' + "-" + '</div>';
+            }
+        - name: ORIGIN
+          data: flights
+          modify: |
+            if(x.airport_origin_name != null)
+              {x.airport_origin_name + ' (' + x.airport_origin_code_icao + ')'}
+            else {
+                '<div style="color:red;">' + "-" + '</div>';
+            }
+        - name: DESTINATION
+          data: flights
+          modify: |
+            if(x.airport_destination_name != null)
+              {x.airport_destination_name + ' (' + x.airport_destination_code_icao + ')'}
+            else {
+                '<div style="color:red;">' + "-" + '</div>';
+            }

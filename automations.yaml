@@ -111,3 +111,45 @@
         }} /  {{ trigger.event.data.service_data.message }}
 
         '
+- id: '1702689288792'
+  alias: '[pixelclock] Update Firmware'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.blueforcer_awtrix_light_latest_release
+    attribute: tag
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - service: mqtt.publish
+    data:
+      topic: pixelclock/doupdate
+  - service: notify.alert
+    data:
+      title: pixelclock Updated
+      message: pixelclock updated with latest firmware
+      data:
+        tag: pixelclock_updated
+        notification_id: pixelclock_updated
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+        - alert
+        - badge
+        group: alerts
+        actions:
+        - title: Pause Alert
+          action: pause_alert_pixelclock_updated
+  - service: persistent_notification.create
+    data:
+      notification_id: pixelclock_updated
+      title: pixelclock Update
+      message: pixelclock updated with latest firmware
+  mode: single

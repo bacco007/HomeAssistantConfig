@@ -43,12 +43,12 @@ cards:
             cards:
               - type: custom:mushroom-template-card
                 primary: Home
-                secondary: |-
+                secondary: &nbndata |-
                   {% set alt_reason_code = states(entity) %}
                   {% if alt_reason_code == 'NULL_NA' %}
                   Nup :(
                   {% elif alt_reason_code == 'FTTP_NA' %}
-                  Soon
+                  Soon, {{state_attr(entity, 'addressDetail')['techChangeStatus']}}, {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
                   {% elif alt_reason_code == 'FTTP_SA' %}
                   Yes!
                   {% else %}
@@ -66,7 +66,7 @@ cards:
                 double_tap_action:
                   action: none
                 entity: sensor.nbn_location_home
-                icon_color: |-
+                icon_color: &nbnicon |-
                   {% set alt_reason_code = states(entity) %}
                   {% if alt_reason_code == 'NULL_NA' %}
                     red
@@ -85,21 +85,7 @@ cards:
                       }
               - type: custom:mushroom-template-card
                 primary: Work
-                secondary: |-
-                  {% set alt_reason_code = states(entity) %}
-                  {% if alt_reason_code == 'NULL_NA' %}
-                  Nup :(
-                  {% elif alt_reason_code == 'FTTP_NA' %}
-                  Soon
-                  {% elif alt_reason_code == 'FTTP_SA' %}
-                  Yes!
-                  {% else %}
-                  {% if alt_reason_code %}
-                    {{ alt_reason_code }} was returned
-                  {% else %}
-                    Error
-                  {% endif %}
-                  {% endif %}
+                secondary: *nbndata
                 icon: mdi:check-network
                 tap_action:
                   action: none
@@ -108,17 +94,7 @@ cards:
                 double_tap_action:
                   action: none
                 entity: sensor.nbn_location_dadwork
-                icon_color: |-
-                  {% set alt_reason_code = states(entity) %}
-                  {% if alt_reason_code == 'NULL_NA' %}
-                    red
-                  {% elif alt_reason_code == 'FTTP_NA' %}
-                    yellow
-                  {% elif alt_reason_code == 'FTTP_SA' %}
-                    green
-                  {% else %}
-                    grey
-                  {% endif %}
+                icon_color: *nbnicon
                 card_mod:
                   style:
                     .: |

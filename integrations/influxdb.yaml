@@ -185,3 +185,4 @@ influxdb:
       - sensor.z2m_bedroom_vindstyrka*
       - sensor.upcoming_sport*
       - sensor.weatherman_dash*
+      - sensor.flightradar24*

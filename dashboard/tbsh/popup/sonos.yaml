@@ -25,103 +25,30 @@ browser_mod:
                 label: Controls
               card:
                 type: custom:sonos-card
-                title: ""
                 sections:
-                  - volumes
-                  - groups
-                  - grouping
-                  - media browser
                   - player
-                entityNameReplacement: ""
-                entities: []
-                groupsTitle: ""
-                hideGroupCurrentTrack: true
-                groupingTitle: ""
-                predefinedGroups:
-                  - name: Bedroom
-                    entities:
-                      - media_player.bedroom_symfonisk
-                  - name: Office
-                    entities:
-                      - media_player.office_sonos
-                labelWhenNoMediaIsSelected: No media selected
-                labelForTheAllVolumesSlider: All volumes
-                mediaArtworkOverrides: &mediaArtwork
-                  - mediaTitleEquals: TV
-                    imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
-                    sizePercentage: 40
-                  - mediaContentIdEquals: x-sonos-htastream:RINCON_949F3EC2E15B01450:spdif
-                    imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108783.png
-                  - mediaTitleEquals: p4malmo-aac-192
-                    imageUrl: >-
-                      https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
-                  - ifMissing: true
-                    imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
-                dynamicVolumeSlider: true
-                mediaTitle: ""
-                shuffleFavorites: false
-                customThumbnailIfMissing: !include sonos_thumbnails.yaml
-                mediaBrowserTitlesToIgnore:
-                  - Local Media
-                  - My Bad Playlist
+                widthPercentage: 100
+                heightPercentage: 100
 
             - attributes:
                 label: Favourites
               card:
                 type: custom:sonos-card
-                title: ""
                 sections:
                   - media browser
-                entityNameReplacement: ""
-                entities: []
-                groupsTitle: ""
-                hideGroupCurrentTrack: true
-                groupingTitle: ""
-                predefinedGroups:
-                  - name: Bedroom
-                    entities:
-                      - media_player.bedroom_symfonisk
-                  - name: Office
-                    entities:
-                      - media_player.office_sonos
-                labelWhenNoMediaIsSelected: No media selected
-                labelForTheAllVolumesSlider: All volumes
-                mediaArtworkOverrides: *mediaArtwork
-                dynamicVolumeSlider: true
-                mediaTitle: ""
-                shuffleFavorites: false
+                mediaBrowserItemsPerRow: 3
+                widthPercentage: 100
+                heightPercentage: 100
                 customThumbnailIfMissing: !include sonos_thumbnails.yaml
-                mediaBrowserTitlesToIgnore:
-                  - Local Media
-                  - My Bad Playlist
 
             - attributes:
                 label: Devices
               card:
                 type: custom:sonos-card
-                title: ""
                 sections:
-                  - volumes
                   - groups
-                entityNameReplacement: ""
-                entities: []
-                groupsTitle: ""
-                hideGroupCurrentTrack: true
-                groupingTitle: ""
-                predefinedGroups:
-                  - name: Bedroom
-                    entities:
-                      - media_player.bedroom_symfonisk
-                  - name: Office
-                    entities:
-                      - media_player.office_sonos
-                labelWhenNoMediaIsSelected: No media selected
-                labelForTheAllVolumesSlider: All volumes
-                mediaArtworkOverrides: *mediaArtwork
+                  - grouping
+                  - volumes
+                widthPercentage: 100
+                heightPercentage: 100
                 dynamicVolumeSlider: true
-                mediaTitle: ""
-                shuffleFavorites: false
-                customThumbnailIfMissing: !include sonos_thumbnails.yaml
-                mediaBrowserTitlesToIgnore:
-                  - Local Media
-                  - My Bad Playlist
