@@ -46,6 +46,3 @@ sensor:
         friendly_name: "All Components"
         icon_template: mdi:code-tags
         value_template: "{{ states.sensor.hass_main_config.attributes.components | count }}"
-# http://192.168.1.62:8123/api/supervisor/info
-# http://192.168.1.62:8123/api/hassio/snapshots
-# http://192.168.1.62:8123/api/hassio/info
