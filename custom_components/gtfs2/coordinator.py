@@ -58,13 +58,14 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
         )        
         self._data = {
             "schedule": self._pygtfs,
-            "origin": data["origin"].split(": ")[0],
-            "destination": data["destination"].split(": ")[0],
+            "origin": data["origin"],
+            "destination": data["destination"],
             "offset": options["offset"] if "offset" in options else 0,
             "include_tomorrow": data["include_tomorrow"],
             "gtfs_dir": DEFAULT_PATH,
             "name": data["name"],
             "file": data["file"],
+            "route_type": data["route_type"],
             "extracting": False,
             "next_departure": {},
             "next_departure_realtime_attr": {},

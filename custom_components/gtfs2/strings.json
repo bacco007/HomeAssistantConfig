@@ -3,27 +3,28 @@
     "step": {
       "user": {
         "data": {
-          "file": "Select existing source"
+          "file": "Select source"
         },
         "description": "Select from existing sources in your gtfs2 folder"
       },
       "source": {
         "data": {
           "file": "New datasource name",
-          "url": "external url to gtfs data file"
+          "url": "external url to gtfs data (zip) file",
+		  "extract_from": "Extract data from:"
         },
-        "description": "NOTE: with a new url/zip, this may take a long time after submit"
+        "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance"
       },
-      "remove": {
+      "route_type": {
         "data": {
-          "file": "Select existing source"
+          "route_type": "Select the type of transport"
         },
-        "description": "Select from existing sources in your gtfs2 folder"
-      },
+		"description": "Select from the options below"
+      },	  
       "route": {
         "data": {
           "route": "Name of the route",
-          "direction": "Principal/inital direction of the vehicle"
+          "direction": "Principal/initial direction of the vehicle"
         }
       },
       "stops": {
@@ -31,7 +32,15 @@
           "origin": "Origin Stop",
           "destination": "Destination Stop",
           "name": "Name of the route",
-          "offset": "Offset in minutes",
+          "refresh_interval": "Refresh interval in minutes",
+          "include_tomorrow": "Include tomorrow"
+        }
+      },
+	  "stops_train": {
+        "data": {
+          "origin": "Enter the city of departure",
+          "destination": "Enter the city of arrival",
+          "name": "Name of the route",
           "refresh_interval": "Refresh interval in minutes",
           "include_tomorrow": "Include tomorrow"
         }
@@ -41,7 +50,7 @@
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
       "unknown": "[%key:common::config_flow::error::unknown%]",
-      "stop_incorrect": "Start and/or End destination probably incorrect, check logs",
+      "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
       "generic_failure": "Overall failure, check logs",
       "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
 	  "no_zip_file": "Data collection issue: ZIP file not in the correct folder"
@@ -49,8 +58,9 @@
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
       "files_deleted": "Datasource deleted, this may affect existing routes",
-      "stop_incorrect": "Start and/or End destination incorrect, possibly not in same direction, check logs",
-	  "no_zip_file": "Data collection issue: ZIP file not in the correct folder",
+      "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
+	  "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
+	  "no_zip_file": "Data collection issue: ZIP file not existing in the correct folder, note that it is capital-sensitive",
 	  "extracting": "Extracting data, this can take a while"
     }
   },
@@ -59,7 +69,9 @@
       "init": {
         "description": "Customize the way the integration works",
         "data": {
-          "refresh_interval": "Data refresh interval (in minutes)"
+          "refresh_interval": "Data refresh interval (in minutes)",
+		  "offset": "Offset in minutes",
+		  "real_time": "Setup Realtime integration? \n (needs data from the same source)"
         }
       },
 	  "real_time": {
@@ -73,5 +85,49 @@
         }
       }
     }
+  },
+  "selector": {
+    "extract_from": {
+      "options": {
+        "zip": "ZIP: expects a file in gtfs2-folder with below name, without extension .zip",
+        "url": "URL: uses your URL below, leave 'na' if using zip"
+      }
+    },
+	"direction": {
+      "options": {
+        "0": "Outbound",
+        "1": "Return"
+      }
+    },
+	"route_type": {
+      "options": {
+        "0": "Tram, Streetcar, Light rail.",
+        "1": "Subway, Metro. Any underground rail system",
+		"2": "Rail, intercity or long-distance travel",
+		"3": "Bus, short- and long-distance bus routes",
+		"4": "Ferries, short- and long-distance boat service",
+		"99": "All, this includes also more obscure ones not in above"
+      }
+    }
+  },
+  "services": {
+    "update_gtfs": {
+      "name": "Updates a GTFS2 datasource",
+      "description": "Either via Link or placing a Zip yourselves in gtfs2",
+      "fields": {
+        "extract_from": {
+          "name": "Indicate source to use zip or url",
+		  "description": ""
+		},
+		"file": {
+          "name": "Name of the transport service, without .zip",
+		  "description": "If you use the same name as an existing one, the existing one will be overwitten"
+		},
+		"url": {
+          "name": "URL",
+		  "description": "provide the full path to the zip file itself"
+		}
+	  }
+	}
   }
 }

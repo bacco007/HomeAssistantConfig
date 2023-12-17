@@ -32,8 +32,9 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry) -> bool:
         new_options['x_api_key'] = ""
         new_options['offset'] = 0
         new_data.pop('offset')
+        new_data['route_type'] = '99'
         
-        config_entry.version = 5
+        config_entry.version = 6
         hass.config_entries.async_update_entry(config_entry, data=new_data)
         hass.config_entries.async_update_entry(config_entry, options=new_options)
     
@@ -46,8 +47,9 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry) -> bool:
         new_options['x_api_key'] = ""
         new_options['offset'] = 0
         new_data.pop('offset')
+        new_data['route_type'] = '99'
 
-        config_entry.version = 5
+        config_entry.version = 6
         hass.config_entries.async_update_entry(config_entry, options=new_options)  
         hass.config_entries.async_update_entry(config_entry, data=new_data)        
 
@@ -59,8 +61,9 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry) -> bool:
         new_options['x_api_key'] = ""
         new_options['offset'] = 0
         new_data.pop('offset')
+        new_data['route_type'] = '99'
 
-        config_entry.version = 5
+        config_entry.version = 6
         hass.config_entries.async_update_entry(config_entry, options=new_options)  
         hass.config_entries.async_update_entry(config_entry, data=new_data)
         
@@ -68,12 +71,21 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry) -> bool:
 
         new_options = {**config_entry.options}
         new_data = {**config_entry.data}
+        new_data['route_type'] = '99'
         new_options['offset'] = 0
         new_data.pop('offset')
 
-        config_entry.version = 5
+        config_entry.version = 6
         hass.config_entries.async_update_entry(config_entry, data=new_data)
         hass.config_entries.async_update_entry(config_entry, options=new_options)          
+        
+    if config_entry.version == 5:
+
+        new_data = {**config_entry.data}
+        new_data['route_type'] = '99'
+
+        config_entry.version = 6
+        hass.config_entries.async_update_entry(config_entry, data=new_data)              
 
     _LOGGER.warning("Migration to version %s successful", config_entry.version)
 
@@ -108,14 +120,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-    
-async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Remove a config entry."""
-    await hass.async_add_executor_job(_remove_token_file, hass, entry.data[CONF_HOST])
-    if DOMAIN in hass.data:
-        hass.data[DOMAIN].pop(entry.entry_id, None)
-        if not hass.data[DOMAIN]:
-            hass.data.pop(DOMAIN)    
+     
 
 def setup(hass, config):
     """Setup the service component."""

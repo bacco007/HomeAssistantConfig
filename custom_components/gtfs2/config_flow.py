@@ -30,6 +30,7 @@ from .gtfs_helper import (
     get_stop_list,
     get_datasources,
     remove_datasource,
+    check_datasource_index,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -45,7 +46,7 @@ STEP_SOURCE = vol.Schema(
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for GTFS."""
 
-    VERSION = 5
+    VERSION = 6
 
     def __init__(self) -> None:
         """Init ConfigFlow."""
@@ -82,8 +83,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             user_input["extract_from"] = "zip"
             self._user_inputs.update(user_input)
             _LOGGER.debug(f"UserInputs File: {self._user_inputs}")
-            return await self.async_step_route()
-            
+            return await self.async_step_route_type()
+                   
     async def async_step_source(self, user_input: dict | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""
         errors: dict[str, str] = {}
@@ -130,6 +131,26 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.error("Error while deleting : %s", {ex})
             return "generic_failure"
         return self.async_abort(reason="files_deleted")
+        
+    async def async_step_route_type(self, user_input: dict | None = None) -> FlowResult:
+        """Handle a flow initialized by the user."""
+        errors: dict[str, str] = {}
+        if user_input is None:
+            return self.async_show_form(
+                step_id="route_type",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required("route_type"): selector.SelectSelector(selector.SelectSelectorConfig(options=["99", "2"], translation_key="route_type")),
+                    },
+                ),
+                errors=errors,
+            )                
+        self._user_inputs.update(user_input)
+        _LOGGER.debug(f"UserInputs File: {self._user_inputs}")
+        if user_input["route_type"] == "2":
+            return await self.async_step_stops_train()
+        else:
+            return await self.async_step_route()          
 
     async def async_step_route(self, user_input: dict | None = None) -> FlowResult:
         """Handle the route."""
@@ -151,7 +172,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 step_id="route",
                 data_schema=vol.Schema(
                     {
-                        vol.Required("route"): vol.In(get_route_list(self._pygtfs)),
+                        vol.Required("route"): vol.In(get_route_list(self._pygtfs, self._user_inputs)),
                         vol.Required("direction"): selector.SelectSelector(selector.SelectSelectorConfig(options=["0", "1"], translation_key="direction")),
                     },
                 ),
@@ -197,6 +218,39 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_create_entry(
                 title=user_input["name"], data=self._user_inputs
             )
+            
+    async def async_step_stops_train(self, user_input: dict | None = None) -> FlowResult:
+        """Handle the stops when train, as often impossible to select ID"""
+        errors: dict[str, str] = {}
+        _LOGGER.debug(
+            f"UserInputs Route Type: {self._user_inputs['route_type']}"
+        )
+        if user_input is None:
+            return self.async_show_form(
+                step_id="stops_train",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required("origin"): str,
+                        vol.Required("destination"): str,
+                        vol.Required("name"): str,
+                        vol.Optional("include_tomorrow", default = False): selector.BooleanSelector(),
+                    },
+                ),
+                errors=errors,
+            )
+        self._user_inputs.update(user_input)
+        self._user_inputs["direction"] = 0
+        self._user_inputs["route"] = "train"
+        _LOGGER.debug(f"UserInputs Stops Train: {self._user_inputs}")
+        check_config = await self._check_config(self._user_inputs)
+        if check_config:
+            _LOGGER.debug(f"CheckConfig: {check_config}")
+            errors["base"] = check_config
+            return self.async_abort(reason=check_config)
+        else:
+            return self.async_create_entry(
+                title=user_input["name"], data=self._user_inputs
+            )            
 
     async def _check_data(self, data):
         self._pygtfs = await self.hass.async_add_executor_job(
@@ -215,16 +269,20 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return "no_data_file"
         self._data = {
             "schedule": self._pygtfs,
-            "origin": data["origin"].split(": ")[0],
-            "destination": data["destination"].split(": ")[0],
+            "origin": data["origin"],
+            "destination": data["destination"],
             "offset": 0,
             "include_tomorrow": True,
             "gtfs_dir": DEFAULT_PATH,
             "name": data["name"],
             "next_departure": None,
             "file": data["file"],
+            "route_type": data["route_type"]
         }
-
+        # check and/or add indexes
+        check_index = await self.hass.async_add_executor_job(
+                    check_datasource_index, self
+                )
         try:
             self._data["next_departure"] = await self.hass.async_add_executor_job(
                 get_next_departure, self

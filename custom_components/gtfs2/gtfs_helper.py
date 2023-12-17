@@ -9,6 +9,7 @@ import requests
 import pygtfs
 from sqlalchemy.sql import text
 import multiprocessing
+from multiprocessing import Process
 
 import homeassistant.util.dt as dt_util
 from homeassistant.core import HomeAssistant
@@ -31,8 +32,23 @@ def get_next_departure(self):
     else:
         timezone=dt_util.get_time_zone(self.hass.config.time_zone)
     schedule = self._data["schedule"]
-    start_station_id = self._data["origin"]
-    end_station_id = self._data["destination"]
+    route_type = self._data["route_type"]
+    
+    # if type 2 (train) then filter on that and use name-like search 
+    if route_type == "2":
+        route_type_where = f"route_type = :route_type"
+        start_station_id = str(self._data['origin'])+'%'
+        end_station_id = str(self._data['destination'])+'%'
+        start_station_where = f"AND start_station.stop_id in (select stop_id from stops where stop_name like :origin_station_id)"
+        end_station_where = f"AND end_station.stop_id in (select stop_id from stops where stop_name like :end_station_id)"
+    else:
+        route_type_where = "1=1"
+        start_station_id = self._data['origin'].split(': ')[0]
+        end_station_id = self._data['destination'].split(': ')[0]
+        start_station_where = f"AND start_station.stop_id = :origin_station_id"
+        end_station_where = f"AND end_station.stop_id = :end_station_id"
+    _LOGGER.debug("Start / end : %s / %s", start_station_id, end_station_id)
+    _LOGGER.debug("Query : %s", end_station_where)
     offset = self._data["offset"]
     include_tomorrow = self._data["include_tomorrow"]
     now = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset)
@@ -46,7 +62,7 @@ def get_next_departure(self):
     # up to an overkill maximum in case of a departure every minute for those
     # days.
     limit = 24 * 60 * 60 * 2
-    tomorrow_select = tomorrow_where = tomorrow_order = ""
+    tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
     tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today)"
     if include_tomorrow:
         _LOGGER.debug("Include Tomorrow")
@@ -56,9 +72,11 @@ def get_next_departure(self):
         tomorrow_where = f"OR calendar.{tomorrow_name} = 1"
         tomorrow_order = f"calendar.{tomorrow_name} DESC,"
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today or calendar_date_today.date = :tomorrow)"
-
+        tomorrow_select2 = f"'0' AS tomorrow,"
     sql_query = f"""
         SELECT trip.trip_id, trip.route_id,trip.trip_headsign,route.route_long_name,
+        	   start_station.stop_id as origin_stop_id,
+               start_station.stop_name as origin_stop_name,
                time(origin_stop_time.arrival_time) AS origin_arrival_time,
                time(origin_stop_time.departure_time) AS origin_depart_time,
                date(origin_stop_time.departure_time) AS origin_depart_date,
@@ -68,6 +86,7 @@ def get_next_departure(self):
                origin_stop_time.stop_headsign AS origin_stop_headsign,
                origin_stop_time.stop_sequence AS origin_stop_sequence,
                origin_stop_time.timepoint AS origin_stop_timepoint,
+               end_station.stop_name as dest_stop_name,
                time(destination_stop_time.arrival_time) AS dest_arrival_time,
                time(destination_stop_time.departure_time) AS dest_depart_time,
                destination_stop_time.drop_off_type AS dest_drop_off_type,
@@ -96,15 +115,16 @@ def get_next_departure(self):
                    ON destination_stop_time.stop_id = end_station.stop_id
         INNER JOIN routes route
                    ON route.route_id = trip.route_id 
-        LEFT OUTER JOIN calendar_dates calendar_date_today
-            on trip.service_id = calendar_date_today.service_id
-        WHERE start_station.stop_id = :origin_station_id
-                   AND end_station.stop_id = :end_station_id
+		WHERE {route_type_where}
+        {start_station_where}
+        {end_station_where}
         AND origin_stop_sequence < dest_stop_sequence
         AND calendar.start_date <= :today
         AND calendar.end_date >= :today
 		UNION ALL
 	    SELECT trip.trip_id, trip.route_id,trip.trip_headsign,route.route_long_name,
+               start_station.stop_id as origin_stop_id,
+               start_station.stop_name as origin_stop_name,
                time(origin_stop_time.arrival_time) AS origin_arrival_time,
                time(origin_stop_time.departure_time) AS origin_depart_time,
                date(origin_stop_time.departure_time) AS origin_depart_date,
@@ -114,6 +134,7 @@ def get_next_departure(self):
                origin_stop_time.stop_headsign AS origin_stop_headsign,
                origin_stop_time.stop_sequence AS origin_stop_sequence,
                origin_stop_time.timepoint AS origin_stop_timepoint,
+               end_station.stop_name as dest_stop_name,
                time(destination_stop_time.arrival_time) AS dest_arrival_time,
                time(destination_stop_time.departure_time) AS dest_depart_time,
                destination_stop_time.drop_off_type AS dest_drop_off_type,
@@ -122,16 +143,14 @@ def get_next_departure(self):
                destination_stop_time.stop_headsign AS dest_stop_headsign,
                destination_stop_time.stop_sequence AS dest_stop_sequence,
                destination_stop_time.timepoint AS dest_stop_timepoint,
-               calendar.{yesterday.strftime("%A").lower()} AS yesterday,
-               calendar.{now.strftime("%A").lower()} AS today,
-               {tomorrow_select}
-               calendar.start_date AS start_date,
-               calendar.end_date AS end_date,
+               '0' AS yesterday,
+               '0' AS today,
+               {tomorrow_select2}
+               :today AS start_date,
+               :today AS end_date,
                calendar_date_today.date as calendar_date,
                calendar_date_today.exception_type as today_cd
         FROM trips trip
-        INNER JOIN calendar calendar
-            ON trip.service_id = calendar.service_id
         INNER JOIN stop_times origin_stop_time
                    ON trip.trip_id = origin_stop_time.trip_id
         INNER JOIN stops start_station
@@ -144,9 +163,11 @@ def get_next_departure(self):
                    ON route.route_id = trip.route_id 
         INNER JOIN calendar_dates calendar_date_today
 				   ON trip.service_id = calendar_date_today.service_id
-		WHERE start_station.stop_id = :origin_station_id
-		AND end_station.stop_id = :end_station_id
+		WHERE {route_type_where}
+        {start_station_where}
+        {end_station_where}
 		AND origin_stop_sequence < dest_stop_sequence
+        AND today_cd = 1
 		{tomorrow_calendar_date_where}
         ORDER BY calendar_date,origin_depart_date, today_cd, origin_depart_time
         """  # noqa: S608
@@ -158,6 +179,7 @@ def get_next_departure(self):
             "today": now_date,
             "tomorrow": tomorrow_date,
             "limit": limit,
+            "route_type": route_type,
         },
     )
     # Create lookup timetable for today and possibly tomorrow, taking into
@@ -176,7 +198,7 @@ def get_next_departure(self):
                 idx = f"{now_date} {row['origin_depart_time']}"
                 timetable[idx] = {**row, **extras}
                 yesterday_last = idx
-        if row["today"] == 1 or row["today_cd"] > 0:
+        if row["today"] == 1 or row["today_cd"] == 1:
             extras = {"day": "today", "first": False, "last": False}
             if today_start is None:
                 today_start = row["origin_depart_date"]
@@ -317,10 +339,13 @@ def get_next_departure(self):
         "day": item["day"],
         "first": item["first"],
         "last": item["last"],
+        "origin_stop_id": item["origin_stop_id"],
+        "origin_stop_name": item["origin_stop_name"],
         "departure_time": depart_time,
         "arrival_time": arrival_time,
         "origin_stop_time": origin_stop_time,
         "destination_stop_time": destination_stop_time,
+        "destination_stop_name": item["dest_stop_name"],
         "next_departures": timetable_remaining,
         "next_departures_lines": timetable_remaining_line,
         "next_departures_headsign": timetable_remaining_headsign,
@@ -361,15 +386,33 @@ def get_gtfs(hass, path, data, update=False):
 
     sqlite_file = f"{gtfs_root}.sqlite?check_same_thread=False"
     joined_path = os.path.join(gtfs_dir, sqlite_file) 
-    gtfs = pygtfs.Schedule(joined_path) 
+    gtfs = pygtfs.Schedule(joined_path)
     if not gtfs.feeds:
-        _LOGGER.info("Starting gtfs file unpacking: %s", joined_path)
-        pygtfs.append_feed(gtfs, os.path.join(gtfs_dir, file))
+        extract = Process(target=extract_from_zip(gtfs,gtfs_dir,file))
+        extract.start()
+        extract.join()
+        _LOGGER.info("Exiting main after start subprocess for unpacking: %s", file)
+        return "unpacking"
     return gtfs
+ 
 
-def get_route_list(schedule):
+    
+def extract_from_zip(gtfs,gtfs_dir,file):
+    _LOGGER.debug("Extracting gtfs file: %s", file)
+    if os.fork() != 0:
+        return
+    pygtfs.append_feed(gtfs, os.path.join(gtfs_dir, file))
+    
+        
+
+def get_route_list(schedule, data):
+    _LOGGER.debug("Getting routes with data: %s", data)
+    route_type_where = ""
+    if data["route_type"] != "99":
+        route_type_where = f"where route_type = {data['route_type']}"
     sql_routes = f"""
     SELECT route_id, route_short_name, route_long_name from routes
+    {route_type_where}
     order by cast(route_id as decimal)
     """  # noqa: S608
     result = schedule.engine.connect().execute(
@@ -392,11 +435,10 @@ def get_stop_list(schedule, route_id, direction):
     sql_stops = f"""
     SELECT distinct(s.stop_id), s.stop_name
     from trips t
-    inner join routes r on r.route_id = t.route_id
     inner join stop_times st on st.trip_id = t.trip_id
     inner join stops s on s.stop_id = st.stop_id
-    where  r.route_id = '{route_id}'
-    and t.direction_id = {direction}
+    where  t.route_id = '{route_id}'
+    and (t.direction_id = {direction} or t.direction_id is null)
     order by st.stop_sequence
     """  # noqa: S608
     result = schedule.engine.connect().execute(
@@ -469,6 +511,12 @@ def check_datasource_index(self):
     WHERE
     type= 'index' and tbl_name = 'shapes' and name like '%shape_id%';
     """
+    sql_index_4 = f"""
+    SELECT count(*) as checkidx
+    FROM sqlite_master
+    WHERE
+    type= 'index' and tbl_name = 'stops' and name like '%stop_name%';
+    """
     sql_add_index_1 = f"""
     create index gtfs2_stop_times_trip_id on stop_times(trip_id)
     """
@@ -478,6 +526,9 @@ def check_datasource_index(self):
     sql_add_index_3 = f"""
     create index gtfs2_shapes_shape_id on shapes(shape_id)
     """
+    sql_add_index_4 = f"""
+    create index gtfs2_stops_stop_name on stops(stop_name)
+    """    
     result_1a = schedule.engine.connect().execute(
         text(sql_index_1),
         {"q": "q"},
@@ -485,7 +536,7 @@ def check_datasource_index(self):
     for row_cursor in result_1a:
         _LOGGER.debug("IDX result1: %s", row_cursor._asdict())
         if row_cursor._asdict()['checkidx'] == 0:
-            _LOGGER.debug("Adding index 1 to improve performance")
+            _LOGGER.warning("Adding index 1 to improve performance")
             result_1b = schedule.engine.connect().execute(
             text(sql_add_index_1),
             {"q": "q"},
@@ -498,7 +549,7 @@ def check_datasource_index(self):
     for row_cursor in result_2a:
         _LOGGER.debug("IDX result2: %s", row_cursor._asdict())
         if row_cursor._asdict()['checkidx'] == 0:
-            _LOGGER.debug("Adding index 2 to improve performance")
+            _LOGGER.warning("Adding index 2 to improve performance")
             result_2b = schedule.engine.connect().execute(
             text(sql_add_index_2),
             {"q": "q"},
@@ -511,11 +562,23 @@ def check_datasource_index(self):
     for row_cursor in result_3a:
         _LOGGER.debug("IDX result3: %s", row_cursor._asdict())
         if row_cursor._asdict()['checkidx'] == 0:
-            _LOGGER.debug("Adding index 3 to improve performance")
+            _LOGGER.warning("Adding index 3 to improve performance")
             result_3b = schedule.engine.connect().execute(
             text(sql_add_index_3),
             {"q": "q"},
-            )            
+            )    
+    result_4a = schedule.engine.connect().execute(
+        text(sql_index_4),
+        {"q": "q"},
+    )
+    for row_cursor in result_4a:
+        _LOGGER.debug("IDX result4: %s", row_cursor._asdict())
+        if row_cursor._asdict()['checkidx'] == 0:
+            _LOGGER.warning("Adding index 4 to improve performance")
+            result_4b = schedule.engine.connect().execute(
+            text(sql_add_index_4),
+            {"q": "q"},
+            )  
             
 def create_trip_geojson(self):
     _LOGGER.debug("GTFS Helper, create geojson with data: %s", self._data)
