@@ -1,6 +1,0 @@
----
-platform: custom_qbittorrent
-name: qbit
-host: !secret qbit_host
-username: !secret qbit_username
-password: !secret qbit_password

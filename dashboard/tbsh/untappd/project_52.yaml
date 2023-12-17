@@ -53,6 +53,81 @@ cards:
         name: Minimum Rating
         state: >
           {{ state_attr(config.entity, 'rating_minimum') }} / 5
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        span:
+          end: day
+        show:
+          loading: false
+        cache: true
+        update_interval: 10min
+        apex_config:
+          chart:
+            height: 250px
+          plotOptions:
+            radialBar:
+              offsetY: -20
+              startAngle: -135
+              endAngle: 135
+              hollow:
+                size: 45%
+              dataLabels:
+                name:
+                  show: false
+                value:
+                  show: false
+          legend:
+            show: false
+          stroke:
+            dashArray: 0
+            lineCap: flat
+        series:
+          - entity: sensor.untappd_project_52
+            attribute: rating_minimum
+            type: area
+            name: Minimum
+            max: 5
+            color: var(--color-img-cell-red)
+          - entity: sensor.untappd_project_52
+            attribute: rating_average
+            type: area
+            name: Average
+            max: 5
+            color: var(--color-img-cell-yellow)
+          - entity: sensor.untappd_project_52
+            attribute: rating_maximum
+            type: area
+            name: Maximum
+            max: 5
+            color: var(--color-img-cell-green)
+        card_mod:
+          style: |
+            ha-card {
+              background: none;
+              --ha-card-box-shadow: 0px;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.untappd_project_52
+        tap_action:
+          action: more-info
+        primary: '{{ state_attr(config.entity, ''rating_average'') }} / 5'
+        icon: mdi:beer-outline
+        layout: vertical
+        card_mod:
+          style: |
+            :host {
+              --mush-card-primary-font-size: 12px;
+              --mush-icon-border-radius: 50%;
+              --mush-icon-size: 72px;
+              }
+            ha-card {
+              background: transparent;
+              margin-top: -112px;
+              width: 120px;
+              margin-left: auto;
+              margin-right: auto;
+            }
+      - type: section
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row

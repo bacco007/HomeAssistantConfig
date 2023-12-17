@@ -1,0 +1,82 @@
+---
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: event_template_reloaded
+  - platform: time_pattern
+    hours: /1
+
+action:
+  - service: weather.get_forecasts
+    data:
+      type: hourly
+    target:
+      entity_id:
+        - weather.astroweather_31_08133085871397_150_9416770935059
+        - weather.forecast_home
+        - weather.openweathermap
+        - weather.pirateweather
+        - weather.tbsmarthome
+        - weather.tomorrow_io_tbsmarthome_hourly
+        - weather.tomorrow_io_tbsmarthome_nowcast
+        - weather.weather_home
+        - weather.weatherflow_forecast_brisbane_st
+    response_variable: hourly
+  - service: weather.get_forecasts
+    data:
+      type: daily
+    target:
+      entity_id:
+        - weather.forecast_home
+        - weather.pirateweather
+        - weather.tbsmarthome
+        - weather.tomorrow_io_tbsmarthome_daily
+        - weather.weatherflow_forecast_brisbane_st
+    response_variable: daily
+
+sensor:
+  - name: "[Weather] Forecasts"
+    unique_id: weather_forecasts
+    icon: mdi:weather-pouring
+    state: >
+      {{ now().isoformat() }}
+    attributes:
+      category: weatherforecast
+      met_no_daily: >
+        {{ daily['weather.forecast_home']['forecast'] }}
+      pirateweather_daily: >
+        {{ daily['weather.pirateweather']['forecast'] }}
+      accuweather_daily: >
+        {{ daily['weather.tbsmarthome']['forecast'] }}
+      tomorrow_io_daily: >
+        {{ daily['weather.tomorrow_io_tbsmarthome_daily']['forecast'] }}
+      weatherflow_daily: >
+        {{ daily['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
+      astroweather_hourly: >
+        {{ hourly['weather.astroweather_31_08133085871397_150_9416770935059']['forecast'] }}
+      met_no_hourly: >
+        {{ hourly['weather.forecast_home']['forecast'] }}
+      openweathermap_hourly: >
+        {{ hourly['weather.openweathermap']['forecast'] }}
+      pirateweather_hourly: >
+        {{ hourly['weather.pirateweather']['forecast'] }}
+      accuweather_hourly: >
+        {{ hourly['weather.tbsmarthome']['forecast'] }}
+      tomorrow_io_hourly: >
+        {{ hourly['weather.tomorrow_io_tbsmarthome_hourly']['forecast'] }}
+      tomorrow_io_nowcast_hourly: >
+        {{ hourly['weather.tomorrow_io_tbsmarthome_nowcast']['forecast'] }}
+      visualcrossing_hourly: >
+        {{ hourly['weather.weather_home']['forecast'] }}
+      weatherflow_hourly: >
+        {{ hourly['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
+
+# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
+# - {{s}}
+# {%- endfor %}
+
+# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
+# {{s | replace('weather.','') }}_hourly: >
+#   {% raw %}{{{% endraw %} hourly['{{s}}']['forecast'] {% raw %}}}{% endraw %}
+# {%- endfor %}

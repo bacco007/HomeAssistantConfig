@@ -64,7 +64,7 @@ browser_mod:
             - name: Event
               data: scheduled_events
               modify: |-
-                x.summary + '<br/><i>' + x.location + '</i>'
+                x.calendar + ": " + x.summary + '<br/><i>' + x.location + '</i>'
           card_mod:
             style: |
               ha-card {

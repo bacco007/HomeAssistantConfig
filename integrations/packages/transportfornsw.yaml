@@ -77,3 +77,7 @@ sensor:
               {{ states.sensor.tfnsw_train_tosydney.attributes.route }} - {{ states.sensor.tfnsw_train_tosydney.attributes.due }} m
             {%- endif %}
           {%- endif %}
+
+# RT Trip: https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/newenglandnorthwest
+# RT Vehicle: https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/regionbuses/newenglandnorthwest
+# RT Alerts: https://api.transport.nsw.gov.au/v2/gtfs/alerts/regionbuses
