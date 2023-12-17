@@ -409,11 +409,13 @@ def get_route_list(schedule, data):
     _LOGGER.debug("Getting routes with data: %s", data)
     route_type_where = ""
     if data["route_type"] != "99":
-        route_type_where = f"where route_type = {data['route_type']}"
+        route_type_where = f"and route_type = {data['route_type']}"
     sql_routes = f"""
-    SELECT route_id, route_short_name, route_long_name from routes
+    SELECT r.route_id, r.route_short_name, r.route_long_name, a.agency_name 
+    from routes r
+    left join agency a on a.agency_id = r.agency_id
     {route_type_where}
-    order by cast(route_id as decimal)
+    order by agency_name, cast(route_id as decimal)
     """  # noqa: S608
     result = schedule.engine.connect().execute(
         text(sql_routes),
@@ -425,7 +427,7 @@ def get_route_list(schedule, data):
         row = row_cursor._asdict()
         routes_list.append(list(row_cursor))
     for x in routes_list:
-        val = str(x[0]) + ": " + str(x[1]) + " (" + str(x[2]) + ")"
+        val = str(x[0]) + ": " + str(x[1]) + " (" + str(x[2]) + ")" + " - " + str(x[3])
         routes.append(val)
     _LOGGER.debug(f"routes: {routes}")
     return routes

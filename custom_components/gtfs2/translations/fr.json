@@ -5,7 +5,7 @@
         "data": {
           "file": "Sélectionnez la source"
         },
-        "description": "Sélectionnez parmi les sources existantes dans votre dossier gtfs2"
+        "description": "Sélectionnez parmi les sources existantes dans votre dossier gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
       "source": {
         "data": {
@@ -13,37 +13,38 @@
           "url": "URL externe vers le fichier (zip) des données GTFS",
 		  "extract_from": "Collecte données de:"
         },
-        "description": "REMARQUE: avec une nouvelle URL/zip, cela peut prendre du temps après la soumission, selon la taille du fichier et performance du serveur"
-      },
-      "route": {
-        "data": {
-          "route": "Nom de la route",
-          "direction": "Direction principale/initiale du véhicule"
-        }
+        "description": "REMARQUE: avec une nouvelle URL/zip, cela peut prendre du temps après la soumission, selon la taille du fichier et performance du serveur [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
       "route_type": {
         "data": {
           "route_type": "Type de transport"
         },
-		"description": "Selectionnez parmis des options"
-      },	  
+		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },		  
+      "route": {
+        "data": {
+          "route": "Nom de la route",
+          "direction": "Direction principale/initiale du véhicule"
+        },
+		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
       "stops": {
         "data": {
           "origin": "Arrêt d'origine",
           "destination": "Arrêt de destination",
           "name": "Nom de la ligne",
-          "refresh_interval": "Intervalle d'actualisation en minutes",
           "include_tomorrow": "Inclure le lendemain?"
-        }
+        },
+		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },
 	  "stops_train": {
         "data": {
           "origin": "Ville de départ",
           "destination": "Ville d'arrivée",
           "name": "Nom de la ligne",
-          "refresh_interval": "Intervalle d'actualisation en minutes",
           "include_tomorrow": "Inclure le lendemain?"
-        }
+        },
+		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2b.-Setup-route-for-trains)"
       }	  
     },
     "error": {
@@ -67,7 +68,7 @@
    "options": {
     "step": {
       "init": {
-        "description": "Personnalisez le fonctionnement de l'intégration",
+        "description": "Personnalisez le fonctionnement de l'intégration [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
         "data": {
           "refresh_interval": "Intervalle d'actualisation en minutes",
 		  "offset": "Décalage en minutes",
@@ -75,7 +76,7 @@
         }
       },
 	  "real_time": {
-        "description": "URL vers données temps réel",
+        "description": "URL vers données temps réel [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
         "data": {
           "trip_update_url": "URL vers: trip data",
 		  "vehicle_position_url": "URL vers: position véhicule",
@@ -108,7 +109,7 @@
   "services": {
     "update_gtfs": {
       "name": "MAJ d'un GTFS2 datasource",
-      "description": "Utiliser un lien ou placer votre fichier ZIP dans le dossier gtfs2",
+      "description": "Utiliser un lien ou placer votre fichier ZIP dans le dossier gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/4.-Service-call)",
       "fields": {
         "extract_from": {
           "name": "Collecte données de:",
