@@ -1,0 +1,32 @@
+---
+entities:
+  - entity: sensor.weather_humidity
+    name: Thomas
+    colors:
+      humidity: 'rgb(0,191,255)'
+      humidity_fill: 'rgba(0,191,255,0.2)'
+  - entity: sensor.weather_aidan_humidity
+    name: Aidan
+    colors:
+      humidity: 'rgb(255,0,0)'
+      humidity_fill: 'rgba(255,0,0,0.2)'
+  - entity: sensor.wunder_lachy_humidity
+    name: Lachy
+    colors:
+      humidity: 'rgb(255,215,0)'
+      humidity_fill: 'rgba(255,215,0,0.2)'
+  - entity: sensor.wunder_nicko_humidity
+    name: Nick
+    colors:
+      humidity: '#329af6'
+      humidity_fill: '#329af6'
+  - entity: sensor.wunder_steve_humidity
+    name: Steve
+    colors:
+      humidity: 'rgb(249, 167, 62)'
+      humidity_fill: 'rgba(249, 167, 62, 0.2)'
+  - entity: sensor.tamworth_airport_humidity
+    name: Airport
+    colors:
+      humidity: 'rgb(39, 179, 118)'
+      humidity_fill: 'rgba(39, 179, 118, 0.2)'

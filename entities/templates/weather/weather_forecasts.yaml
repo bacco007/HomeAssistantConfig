@@ -1,4 +1,13 @@
 ---
+# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
+# - {{s}}
+# {%- endfor %}
+
+# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
+# {{s | replace('weather.','') }}_hourly: >
+#   {% raw %}{{{% endraw %} hourly['{{s}}']['forecast'] {% raw %}}}{% endraw %}
+# {%- endfor %}
+
 trigger:
   - platform: homeassistant
     event: start
@@ -17,7 +26,6 @@ action:
         - weather.forecast_home
         - weather.openweathermap
         - weather.pirateweather
-        - weather.tbsmarthome
         - weather.tomorrow_io_tbsmarthome_hourly
         - weather.tomorrow_io_tbsmarthome_nowcast
         - weather.weather_home
@@ -30,7 +38,6 @@ action:
       entity_id:
         - weather.forecast_home
         - weather.pirateweather
-        - weather.tbsmarthome
         - weather.tomorrow_io_tbsmarthome_daily
         - weather.weatherflow_forecast_brisbane_st
     response_variable: daily
@@ -47,8 +54,6 @@ sensor:
         {{ daily['weather.forecast_home']['forecast'] }}
       pirateweather_daily: >
         {{ daily['weather.pirateweather']['forecast'] }}
-      accuweather_daily: >
-        {{ daily['weather.tbsmarthome']['forecast'] }}
       tomorrow_io_daily: >
         {{ daily['weather.tomorrow_io_tbsmarthome_daily']['forecast'] }}
       weatherflow_daily: >
@@ -61,8 +66,6 @@ sensor:
         {{ hourly['weather.openweathermap']['forecast'] }}
       pirateweather_hourly: >
         {{ hourly['weather.pirateweather']['forecast'] }}
-      accuweather_hourly: >
-        {{ hourly['weather.tbsmarthome']['forecast'] }}
       tomorrow_io_hourly: >
         {{ hourly['weather.tomorrow_io_tbsmarthome_hourly']['forecast'] }}
       tomorrow_io_nowcast_hourly: >
@@ -71,12 +74,3 @@ sensor:
         {{ hourly['weather.weather_home']['forecast'] }}
       weatherflow_hourly: >
         {{ hourly['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
-
-# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
-# - {{s}}
-# {%- endfor %}
-
-# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
-# {{s | replace('weather.','') }}_hourly: >
-#   {% raw %}{{{% endraw %} hourly['{{s}}']['forecast'] {% raw %}}}{% endraw %}
-# {%- endfor %}

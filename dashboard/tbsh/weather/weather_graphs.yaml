@@ -27,7 +27,7 @@ cards:
           type: custom:template-entity-row
           name: Temperature
           icon: mdi:thermometer-check
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -58,7 +58,7 @@ cards:
                 texttemplate: <b>%{y:,.1f}</b>
                 line:
                   width: 2
-                  color: '#3D82FF'
+                  color: "#3D82FF"
                   shape: spline
               - entity: sensor.st_00056115_wet_bulb_temperature
                 name: Wet Bulb
@@ -70,7 +70,7 @@ cards:
                 texttemplate: <b>%{y:,.1f}</b>
                 line:
                   width: 3
-                  color: '#8F3BB8'
+                  color: "#8F3BB8"
                   shape: spline
               - entity: sensor.weather_dew_point
                 name: Dew Point
@@ -82,7 +82,7 @@ cards:
                 texttemplate: <b>%{y:,.1f}</b>
                 line:
                   width: 1.5
-                  color: '#cc32ff'
+                  color: "#cc32ff"
                   shape: spline
               - entity: sensor.weather_temperature_feels_like
                 name: Feels Like
@@ -107,7 +107,7 @@ cards:
                 r: 20
               xaxis:
                 showline: true
-                tickformat: '%a %H'
+                tickformat: "%a %H"
                 showgrid: false
                 showticklabels: true
                 linecolor: rgb(204,204,204)
@@ -121,7 +121,7 @@ cards:
                   size: 12
                   color: rgb(204,204,204)
               yaxis:
-                title: ''
+                title: ""
                 autorange: true
                 zeroline: true
                 fixedrange: true
@@ -139,7 +139,7 @@ cards:
           type: custom:template-entity-row
           name: Barometric Pressure
           icon: mdi:gauge
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -194,7 +194,7 @@ cards:
                 r: 20
               xaxis:
                 showline: true
-                tickformat: '%a %H'
+                tickformat: "%a %H"
                 showgrid: false
                 showticklabels: true
                 linecolor: rgb(204,204,204)
@@ -208,7 +208,7 @@ cards:
                   size: 12
                   color: rgb(204,204,204)
               yaxis:
-                title: ''
+                title: ""
                 autorange: true
                 zeroline: true
                 fixedrange: true
@@ -226,7 +226,7 @@ cards:
           type: custom:template-entity-row
           name: Humidity
           icon: mdi:cloud-percent
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -270,7 +270,7 @@ cards:
                 r: 20
               xaxis:
                 showline: true
-                tickformat: '%a %H'
+                tickformat: "%a %H"
                 showgrid: false
                 showticklabels: true
                 linecolor: rgb(204,204,204)
@@ -284,7 +284,7 @@ cards:
                   size: 12
                   color: rgb(204,204,204)
               yaxis:
-                title: ''
+                title: ""
                 autorange: true
                 zeroline: true
                 fixedrange: true
@@ -303,7 +303,7 @@ cards:
           type: custom:template-entity-row
           name: Temperature - Airport
           icon: mdi:thermometer-alert
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -429,7 +429,7 @@ cards:
           type: custom:template-entity-row
           name: Rainfall - Airport
           icon: mdi:water-alert-outline
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -530,7 +530,7 @@ cards:
           type: custom:template-entity-row
           name: Temperature - Indoor Comparison
           icon: mdi:thermometer-alert
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -674,7 +674,7 @@ cards:
           type: custom:template-entity-row
           name: Temperature Comparison, the lads
           icon: mdi:thermometer-check
-          state: ''
+          state: ""
           card_mod:
             style: |
               #measures > * {
@@ -715,7 +715,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
               - entity: sensor.weather_temperature
                 yaxis: y1
                 fill: tozeroy
@@ -730,7 +730,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
                 fnmin: >-
                   $fn ({ ys, vars }) => {vars.miny1 =
                   Math.min(...ys.filter(Number))}
@@ -752,7 +752,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
               - entity: sensor.weather_aidan_temp
                 yaxis: y2
                 fill: tozeroy
@@ -767,7 +767,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
                 fnmin: >-
                   $fn ({ ys, vars }) => {vars.miny2 =
                   Math.min(...ys.filter(Number))}
@@ -789,7 +789,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
               - entity: sensor.wunder_lachy_temperature
                 yaxis: y3
                 fill: tozeroy
@@ -804,7 +804,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
                 fnmin: >-
                   $fn ({ ys, vars }) => {vars.miny3 =
                   Math.min(...ys.filter(Number))}
@@ -819,29 +819,29 @@ cards:
                 connectgaps: true
                 time_offset: 1d
                 line:
-                  color: '#329af6'
+                  color: "#329af6"
                   dash: dot
                   width: 1
                 hovertemplate: >-
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
               - entity: sensor.wunder_nicko_temperature
                 yaxis: y4
                 fill: tozeroy
-                fillcolor: '#329af6'
+                fillcolor: "#329af6"
                 filters:
                   - force_numeric
                   - resample: 15m
                 connectgaps: true
                 line:
-                  color: '#329af6'
+                  color: "#329af6"
                 hovertemplate: >-
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
                 fnmin: >-
                   $fn ({ ys, vars }) => {vars.miny4 =
                   Math.min(...ys.filter(Number))}
@@ -863,7 +863,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
               - entity: sensor.wunder_steve_temperature
                 yaxis: y5
                 fill: tozeroy
@@ -878,7 +878,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
                 fnmin: >-
                   $fn ({ ys, vars }) => {vars.miny5 =
                   Math.min(...ys.filter(Number))}
@@ -900,7 +900,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
               - entity: sensor.tamworth_airport_temp
                 yaxis: y6
                 fill: tozeroy
@@ -915,7 +915,7 @@ cards:
                   <span style="text-align: center; font-size:
                   20px;">%{y}</span><br>%{x}<extra></extra>
                 x: $fn ({xs}) => xs
-                'y': $fn ({ys}) => ys
+                "y": $fn ({ys}) => ys
                 fnmin: >-
                   $fn ({ ys, vars }) => {vars.miny6 =
                   Math.min(...ys.filter(Number))}
@@ -946,8 +946,8 @@ cards:
                 shared_xaxes: true
               xaxis:
                 showgrid: false
-                tickformat: '%H:%M<br>%e %b'
-                hoverformat: '%H:%M:%S<br>%e %b'
+                tickformat: "%H:%M<br>%e %b"
+                hoverformat: "%H:%M:%S<br>%e %b"
               yaxis:
                 title:
                   text: Thomas
@@ -995,7 +995,7 @@ cards:
                   text: Nick
                   font:
                     size: 14
-                    color: '#329af6'
+                    color: "#329af6"
                   standoff: 0
                 autorange: false
                 fixedrange: true
@@ -1042,7 +1042,7 @@ cards:
                   xanchor: center
                   yanchor: top
                   x: 1.1
-                  'y': 0.9
+                  "y": 0.9
                   showarrow: false
                 - text: |-
                     $fn ({hass}) =>
@@ -1053,7 +1053,7 @@ cards:
                   xanchor: center
                   yanchor: top
                   x: 1.1
-                  'y': 0.9
+                  "y": 0.9
                   showarrow: false
                 - text: |-
                     $fn ({hass}) =>
@@ -1064,7 +1064,7 @@ cards:
                   xanchor: center
                   yanchor: top
                   x: 1.1
-                  'y': 0.9
+                  "y": 0.9
                   showarrow: false
                 - text: |-
                     $fn ({hass}) =>
@@ -1075,7 +1075,7 @@ cards:
                   xanchor: center
                   yanchor: top
                   x: 1.1
-                  'y': 0.9
+                  "y": 0.9
                   showarrow: false
                 - text: |-
                     $fn ({hass}) =>
@@ -1086,7 +1086,7 @@ cards:
                   xanchor: center
                   yanchor: top
                   x: 1.1
-                  'y': 0.9
+                  "y": 0.9
                   showarrow: false
                 - text: |-
                     $fn ({hass}) =>
@@ -1097,7 +1097,409 @@ cards:
                   xanchor: center
                   yanchor: top
                   x: 1.1
-                  'y': 0.9
+                  "y": 0.9
+                  showarrow: false
+            config:
+              scrollZoom: true
+              displaylogo: false
+              modeBarButtonsToRemove:
+                - resetScale2d
+                - autoScale2d
+                - toImage
+                - zoom
+                - lasso2d
+                - pan2d
+                - select2d
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Humidity Comparison, the lads
+          icon: mdi:cloud-percent
+          state: ""
+          card_mod:
+            style: |
+              #measures > * {
+                margin: 0 !important;
+              }
+        padding: 0
+        open: false
+        entities:
+          - type: custom:plotly-graph
+            raw_plotly_config: true
+            hours_to_show: 24
+            time_offset: |-
+              $fn () =>  {
+                now = new Date();
+                tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0,0,0,0);                                           // midnight
+                HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+                return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+              }
+            entities:
+              - entity: sensor.weather_humidity
+                yaxis: y1
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                time_offset: 1d
+                line:
+                  color: "rgb(0,191,255)"
+                  dash: dot
+                  width: 1
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+              - entity: sensor.weather_humidity
+                yaxis: y1
+                fill: tozeroy
+                fillcolor: "rgba(0,191,255,0.2)"
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                line:
+                  color: "rgb(0,191,255)"
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: >-
+                  $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                fnmax: >-
+                  $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+              - entity: sensor.weather_aidan_humidity
+                yaxis: y2
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                time_offset: 1d
+                line:
+                  color: "rgb(255,0,0)"
+                  dash: dot
+                  width: 1
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+              - entity: sensor.weather_aidan_humidity
+                yaxis: y2
+                fill: tozeroy
+                fillcolor: "rgba(255,0,0,0.2)"
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                line:
+                  color: "rgb(255,0,0)"
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: >-
+                  $fn ({ ys, vars }) => {vars.miny2 = Math.min(...ys.filter(Number))}
+                fnmax: >-
+                  $fn ({ ys, vars }) => {vars.maxy2 = Math.max(...ys.filter(Number))}
+              - entity: sensor.wunder_lachy_humidity
+                yaxis: y3
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                time_offset: 1d
+                line:
+                  color: "rgb(255,215,0)"
+                  dash: dot
+                  width: 1
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+              - entity: sensor.wunder_lachy_humidity
+                yaxis: y3
+                fill: tozeroy
+                fillcolor: "rgba(255,215,0,0.2)"
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                line:
+                  color: "rgb(255,215,0)"
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: >-
+                  $fn ({ ys, vars }) => {vars.miny3 = Math.min(...ys.filter(Number))}
+                fnmax: >-
+                  $fn ({ ys, vars }) => {vars.maxy3 = Math.max(...ys.filter(Number))}
+              - entity: sensor.wunder_nicko_humidity
+                yaxis: y4
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                time_offset: 1d
+                line:
+                  color: "#329af6"
+                  dash: dot
+                  width: 1
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+              - entity: sensor.wunder_nicko_humidity
+                yaxis: y4
+                fill: tozeroy
+                fillcolor: "#329af6"
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                line:
+                  color: "#329af6"
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: >-
+                  $fn ({ ys, vars }) => {vars.miny4 = Math.min(...ys.filter(Number))}
+                fnmax: >-
+                  $fn ({ ys, vars }) => {vars.maxy4 = Math.max(...ys.filter(Number))}
+              - entity: sensor.wunder_steve_humidity
+                yaxis: y5
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                time_offset: 1d
+                line:
+                  color: "rgb(249, 167, 62)"
+                  dash: dot
+                  width: 1
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+              - entity: sensor.wunder_steve_humidity
+                yaxis: y5
+                fill: tozeroy
+                fillcolor: "rgba(249, 167, 62, 0.2)"
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                line:
+                  color: "rgb(249, 167, 62)"
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: >-
+                  $fn ({ ys, vars }) => {vars.miny5 = Math.min(...ys.filter(Number))}
+                fnmax: >-
+                  $fn ({ ys, vars }) => {vars.maxy5 = Math.max(...ys.filter(Number))}
+              - entity: sensor.tamworth_airport_humidity
+                yaxis: y6
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                time_offset: 1d
+                line:
+                  color: "rgb(39, 179, 118)"
+                  dash: dot
+                  width: 1
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+              - entity: sensor.tamworth_airport_humidity
+                yaxis: y6
+                fill: tozeroy
+                fillcolor: "rgba(39, 179, 118, 0.2)"
+                filters:
+                  - force_numeric
+                  - resample: 15m
+                connectgaps: true
+                line:
+                  color: "rgb(39, 179, 118)"
+                hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: >-
+                  $fn ({ ys, vars }) => {vars.miny6 = Math.min(...ys.filter(Number))}
+                fnmax: >-
+                  $fn ({ ys, vars }) => {vars.maxy6 = Math.max(...ys.filter(Number))}
+            defaults:
+              entity:
+                mode: lines
+                line:
+                  width: 2
+                showlegend: false
+            layout:
+              dragmode: pan
+              height: 840
+              margin:
+                t: 10
+                r: 70
+                b: 50
+                l: 60
+              font:
+                family: Roboto,Noto,sans-serif
+                color: $fn ({css_vars}) => css_vars['primary-text-color']
+
+              grid:
+                rows: 6
+                columns: 1
+                roworder: top to bottom
+                shared_xaxes: true
+              xaxis:
+                showgrid: false
+                tickformat: "%H:%M<br>%e %b"
+                hoverformat: "%H:%M:%S<br>%e %b"
+              yaxis:
+                title:
+                  text: Thomas
+                  font:
+                    size: 14
+                    color: "rgb(0,191,255)"
+                  standoff: 0
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny1 - 0.5
+                  - $fn ({vars}) => vars.maxy1 + 0.5
+                ticksuffix: °
+                griddash: dot
+              yaxis2:
+                title:
+                  text: Aidan
+                  font:
+                    size: 14
+                    color: "rgb(255,0,0)"
+                  standoff: 0
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny2 - 0.5
+                  - $fn ({vars}) => vars.maxy2 + 0.5
+                ticksuffix: °
+                griddash: dot
+              yaxis3:
+                title:
+                  text: Lachy
+                  font:
+                    size: 14
+                    color: "rgb(255,215,0)"
+                  standoff: 0
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny3 - 0.5
+                  - $fn ({vars}) => vars.maxy3 + 0.5
+                ticksuffix: °
+                griddash: dot
+              yaxis4:
+                title:
+                  text: Nick
+                  font:
+                    size: 14
+                    color: "#329af6"
+                  standoff: 0
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny4 - 0.5
+                  - $fn ({vars}) => vars.maxy4 + 0.5
+                ticksuffix: °
+                griddash: dot
+              yaxis5:
+                title:
+                  text: Steve
+                  font:
+                    size: 14
+                    color: "rgb(249, 167, 62)"
+                  standoff: 0
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny5 - 0.5
+                  - $fn ({vars}) => vars.maxy5 + 0.5
+                ticksuffix: °
+                griddash: dot
+              yaxis6:
+                title:
+                  text: Airport
+                  font:
+                    size: 14
+                    color: "rgb(39, 179, 118)"
+                  standoff: 0
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny6 - 0.5
+                  - $fn ({vars}) => vars.maxy6 + 0.5
+                ticksuffix: °
+                griddash: dot
+              annotations:
+                - text: |-
+                    $fn ({hass}) =>
+                      "<span style='font-size: 14px;'><span style='font-weight: bold; color: '>"
+                      + hass.states['sensor.weather_humidity'].state + "</span>°</span><br>"
+                  xref: x domain
+                  yref: y1 domain
+                  xanchor: center
+                  yanchor: top
+                  x: 1.1
+                  "y": 0.9
+                  showarrow: false
+                - text: |-
+                    $fn ({hass}) =>
+                      "<span style='font-size: 14px;'><span style='font-weight: bold; color: '>"
+                      + hass.states['sensor.weather_aidan_humidity'].state + "</span>°</span><br>"
+                  xref: x domain
+                  yref: y2 domain
+                  xanchor: center
+                  yanchor: top
+                  x: 1.1
+                  "y": 0.9
+                  showarrow: false
+                - text: |-
+                    $fn ({hass}) =>
+                      "<span style='font-size: 14px;'><span style='font-weight: bold; color: '>"
+                      + hass.states['sensor.wunder_lachy_humidity'].state + "</span>°</span><br>"
+                  xref: x domain
+                  yref: y3 domain
+                  xanchor: center
+                  yanchor: top
+                  x: 1.1
+                  "y": 0.9
+                  showarrow: false
+                - text: |-
+                    $fn ({hass}) =>
+                      "<span style='font-size: 14px;'><span style='font-weight: bold; color: '>"
+                      + hass.states['sensor.wunder_nicko_humidity'].state + "</span>°</span><br>"
+                  xref: x domain
+                  yref: y4 domain
+                  xanchor: center
+                  yanchor: top
+                  x: 1.1
+                  "y": 0.9
+                  showarrow: false
+                - text: |-
+                    $fn ({hass}) =>
+                      "<span style='font-size: 14px;'><span style='font-weight: bold; color: '>"
+                      + hass.states['sensor.wunder_steve_humidity'].state + "</span>°</span><br>"
+                  xref: x domain
+                  yref: y5 domain
+                  xanchor: center
+                  yanchor: top
+                  x: 1.1
+                  "y": 0.9
+                  showarrow: false
+                - text: |-
+                    $fn ({hass}) =>
+                      "<span style='font-size: 14px;'><span style='font-weight: bold; color: '>"
+                      + hass.states['sensor.tamworth_airport_humidity'].state + "</span>°</span><br>"
+                  xref: x domain
+                  yref: y6 domain
+                  xanchor: center
+                  yanchor: top
+                  x: 1.1
+                  "y": 0.9
                   showarrow: false
             config:
               scrollZoom: true
