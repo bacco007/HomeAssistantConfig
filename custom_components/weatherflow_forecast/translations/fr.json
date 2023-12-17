@@ -62,39 +62,39 @@
             },
             "beaufort": {
                 "state": {
-                    "calm": "Calm",
-                    "light_air": "Light air",
-                    "light_breeze": "Light breeze",
-                    "gentle_breeze": "Gentle breeze",
-                    "moderate_breeze": "Moderate breeze",
-                    "fresh_breeze": "Fresh breeze",
-                    "strong_breeze": "Strong breeze",
-                    "moderate_gale": "Moderate Gale",
-                    "fresh_gale": "Fresh Gale",
-                    "strong_gale": "Strong Gale",
-                    "storm": "Storm",
-                    "violent_storm": "Violent Storm",
-                    "hurricane": "Hurricane"
+                    "calm": "Calme",
+                    "light_air": "Très légère brise",
+                    "light_breeze": "Légère brise",
+                    "gentle_breeze": "Petite brise",
+                    "moderate_breeze": "Jolie brise",
+                    "fresh_breeze": "Bonne brise",
+                    "strong_breeze": "Vent frais",
+                    "moderate_gale": "Grand frais",
+                    "fresh_gale": "Coup de vent",
+                    "strong_gale": "Fort coup de vent",
+                    "storm": "Tempête",
+                    "violent_storm": "Violente tempête",
+                    "hurricane": "Ouragan"
                 }
             },
             "precip_intensity": {
                 "state": {
-                    "no_rain": "None",
-                    "very_light": "Very Light",
-                    "light": "Light",
-                    "moderate": "Moderate",
-                    "heavy": "Heavy",
-                    "very_heavy": "Very Heavy",
-                    "extreme": "Extreme"
+                    "no_rain": "Aucune",
+                    "very_light": "Très légère",
+                    "light": "Légère",
+                    "moderate": "Modérée",
+                    "heavy": "Élevé",
+                    "very_heavy": "Très élevé",
+                    "extreme": "Extrême"
                 }
             },
             "uv_description": {
                 "state": {
-                    "extreme": "Extreme",
-                    "very-high": "Very High",
-                    "high": "High",
-                    "moderate": "Moderate",
-                    "low": "Low",
+                    "extreme": "Extrême",
+                    "very-high": "Très élevé",
+                    "high": "Élevé",
+                    "moderate": "Modéré",
+                    "low": "Bas",
                     "none": "None"
                 }
             }
