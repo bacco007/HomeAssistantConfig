@@ -218,10 +218,16 @@ export function setSoccer(t, stateObj, c, team, oppo) {
 //    timeoutsDisplay = 'inline';
 //
 export function setTennis(t, stateObj, c, team, oppo) {
-    c.venue = stateObj.attributes.event_name;
-    c.pre1 = t.translate("common.tourney" + stateObj.attributes.odds)
-    c.in1 = c.pre1;
-    c.finalTerm = stateObj.attributes.clock + " - " + c.gameDatePOST  + " (" + c.pre1 + ")";
+    c.venue = stateObj.attributes.venue;
+    c.location = stateObj.attributes.location;
+
+    c.pre1 = stateObj.attributes.event_name
+    c.pre2 = stateObj.attributes.overunder
+    c.pre3 = stateObj.attributes.down_distance_text
+
+    c.in1 = c.pre1
+    c.in2 = c.pre3
+    c.finalTerm = stateObj.attributes.clock + " - " + c.gameDatePOST  + " (" + c.pre3 + ")";
 
     c.gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock);
     c.barLength[team] = stateObj.attributes.team_score;
