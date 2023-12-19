@@ -1,0 +1,41 @@
+{% macro pluralize(word, count, prefixcount=false) %}
+  {%- if prefixcount -%}{{ count }} {% endif -%}
+  {#- rules adapted from https://github.com/plurals/pluralize/blob/1c42761e49f7a78b756841528d99dfbbca8d903c/pluralize.js -#}
+  {%- set rules = [
+    ['$', 's'],
+    ['s$', 's'],
+    ['([^aeiou]ese)', '\\1'],
+    ['(ax|test)is', '\\1es'],
+    ['(alias|[^aou]us|t[lm]as|gas|ris)$', '\\1es'],
+    ['(e[mn]u)s?$', '\\1s'],
+    ['([^l]ias|[aeiou]las|[ejzr]as|[iu]am)$', '\\1'],
+    ['(alumn|syllab|vir|radi|nucle|fung|cact|stimul|termin|bacill|foc|uter|loc|strat)(?:us|i)$', '\\1i'],
+    ['(alumn|alg|vertebr)(?:a|ae)$', '\\1ae'],
+    ['(seraph|cherub)(?:im)?$', '\\1im'],
+    ['(her|at|gr)o$', '\\1oes'],
+    ['(agend|addend|millenni|dat|extrem|bacteri|desiderat|strat|candelabr|errat|ov|symposi|curricul|automat|quor)(?:a|um)$', '\\1a'],
+    ['(apheli|hyperbat|periheli|asyndet|noumen|phenomen|criteri|organ|prolegomen|hedr|automat)(?:a|on)$', '\\1a'],
+    ['sis$', 'ses'],
+    ['(?:(kni|wi|li)fe|(ar|l|ea|eo|oa|hoo)f)$', '\\1\\2ves'],
+    ['([^aeiouy]|qu)y$', '\\1ies'],
+    ['([^ch][ieo][ln])ey$', '\\1ies'],
+    ['(x|ch|ss|sh|zz)$', '\\1es'],
+    ['(matr|cod|mur|sil|vert|ind|append)(?:ix|ex)$', '\\1ices'],
+    ['\b((?:tit)?m|l)(?:ice|ouse)$', '\\1ice'],
+    ['(pe)(?:rson|ople)$', '\\1ople'],
+    ['(child)(?:ren)?$', '\\1ren'],
+    ['(eaux)$', '\\1'],
+    ['m[ae]n$', 'men'],
+    ['^thou$', 'you'],
+  ] -%}
+  {%- for rule, replacement in rules|reverse -%}
+    {%- if count|int == 1 -%}
+      {{ word }}
+      {%- break -%}
+    {%- endif -%}
+    {%- if word is search(rule, ignorecase=true) -%}
+      {{ word|regex_replace(rule, replacement) }}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{% endmacro %}
