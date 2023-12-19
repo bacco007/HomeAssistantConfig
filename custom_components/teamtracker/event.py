@@ -14,7 +14,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_process_event(
     values, sensor_name, data, sport_path, league_id, default_logo, team_id, lang
-) -> bool:
+) -> (dict, bool):
     """Loop throught the json data returned by the API to find the right event and set values"""
 
     prev_values = {}
@@ -35,94 +35,75 @@ async def async_process_event(
 
     for event in data["events"]:
         event_state = "NOT_FOUND"
-        #        _LOGGER.debug("%s: event() Processing event: %s", sensor_name, str(await async_get_value(event, "shortName")))
-        competition_index = -1
-        for competition_index in range(
-            0, len(await async_get_value(event, "competitions", default=[]))
-        ):
-            competition = await async_get_value(
-                event, "competitions", competition_index
-            )
-            team_index = -1
 
-            competition_date_str = await async_get_value(
-                competition, "date", default=(await async_get_value(event, "date"))
-            )
-            competition_date = datetime.strptime(
-                competition_date_str, "%Y-%m-%dT%H:%Mz"
-            )
-            if competition_date > last_date:
-                last_date = competition_date
-            if competition_date < first_date:
-                first_date = competition_date
-            for team_index in range(
-                0, len(await async_get_value(competition, "competitors", default=[]))
+        grouping_index = -1
+        for grouping_index, grouping in enumerate(
+            await async_get_value(event, "groupings", default=[])
+        ):
+
+            competition_index = -1
+            for competition_index, competition in enumerate(
+                await async_get_value(grouping, "competitions", default=[])
             ):
-                competitor = await async_get_value(
-                    competition, "competitors", team_index
-                )
-                matched_index = await async_find_search_key(
-                    values,
-                    sensor_name,
-                    search_key,
+
+                first_date, last_date = await  async_process_competition_dates(
                     event,
                     competition,
-                    competitor,
-                    team_index,
-                    sport_path,
+                    first_date,
+                    last_date
                 )
 
-                if matched_index is not None:
-                    found_competitor = True
-                    prev_values = values.copy()
-
-                    #
-                    # Capture the event state because in sports like tennis, it can be different that the competition state
-                    #
-                    event_state = str(
-                        await async_get_value(
-                            event, "status", "type", "state", default="NOT_FOUND"
-                        )
-                    ).upper()
-                    rc = await async_set_values(
-                        values,
-                        event,
-                        competition_index,
-                        matched_index,
-                        lang,
-                        sensor_name,
-                    )
-                    if not rc:
-                        _LOGGER.debug(
-                            "%s: event() Error occurred setting event values: %s",
-                            sensor_name,
-                            values,
-                        )
-
-                    if values["state"] == "IN":
-                        stop_flag = True
-                    time_diff = abs(
-                        (arrow.get(values["date"]) - arrow.now()).total_seconds()
-                    )
-                    if values["state"] == "PRE" and time_diff < 1200:
-                        stop_flag = True
-                    if stop_flag:
-                        break
-
-                    prev_flag = await async_use_prev_values_flag(
-                        prev_values, values, sensor_name, sport
-                    )
-                    if prev_flag:
-                        values = prev_values
-
-            if team_index == -1:
-                _LOGGER.debug(
-                    "%s: async_process_event() No competitors in this competition: %s",
+                values, event_state, found_competitor, stop_flag = await async_process_competition(
+                    prev_values, 
+                    values,
                     sensor_name,
-                    str(await async_get_value(competition, "id", default="{id}")),
+                    event,
+                    event_state,
+                    grouping_index,
+                    competition,
+                    competition_index,
+                    search_key,
+                    lang,
+                    sport, 
+                    found_competitor,
+                    stop_flag
                 )
-            if stop_flag:
-                break
+
+                if stop_flag:
+                    break
+            
+
+        if grouping_index == -1:
+            competition_index = -1
+            for competition_index, competition in enumerate(
+                await async_get_value(event, "competitions", default=[])
+            ):
+                
+                first_date, last_date = await  async_process_competition_dates(
+                    event,
+                    competition,
+                    first_date,
+                    last_date
+                )
+
+                values, event_state, found_competitor, stop_flag = await async_process_competition(
+                    prev_values, 
+                    values,
+                    sensor_name,
+                    event,
+                    event_state,
+                    grouping_index,
+                    competition,
+                    competition_index,
+                    search_key,
+                    lang,
+                    sport, 
+                    found_competitor,
+                    stop_flag
+                )
+
+                if stop_flag:
+                    break
         #
         #  if the competition state is POST but the event state is IN, stop looking
         #    this happens in tennis where an event has many competitions
@@ -139,37 +120,133 @@ async def async_process_event(
             )
 
     if not found_competitor:
-        if limit_hit:
-            values["api_message"] = (
-                "API_LIMIT hit.  No competition found for '"
-                + team_id
-                + "' between "
-                + first_date.strftime("%Y-%m-%dT%H:%MZ")
-                + " and "
-                + last_date.strftime("%Y-%m-%dT%H:%MZ")
-            )
-            _LOGGER.debug(
-                "%s: API_LIMIT hit (%s).  No competitor information '%s' returned by API",
-                sensor_name,
-                API_LIMIT,
-                search_key,
-            )
-        else:
-            values["api_message"] = (
-                "No competition scheduled for '"
-                + team_id
-                + "' between "
-                + first_date.strftime("%Y-%m-%dT%H:%MZ")
-                + " and "
-                + last_date.strftime("%Y-%m-%dT%H:%MZ")
-            )
-            _LOGGER.debug(
-                "%s: No competitor information '%s' returned by API",
-                sensor_name,
-                search_key,
-            )
+        await competitor_not_found(
+            values,
+            limit_hit,
+            first_date,
+            last_date,
+            team_id,
+            sensor_name,
+            search_key
+        )
 
     return values
+
+
+async def async_process_competition(
+    prev_values, 
+    values,
+    sensor_name,
+    event,
+    event_state,
+    grouping_index,
+    competition,
+    competition_index,
+    search_key,
+    lang,
+    sport, 
+    found_competitor,
+    stop_flag
+) -> (dict, str, bool, bool):
+    """Process a competition"""
+
+    competitor_index = -1
+
+    for competitor_index, competitor in enumerate(
+        await async_get_value(competition, "competitors", default=[])
+    ):
+        matched_index = await async_find_search_key(
+            values,
+            sensor_name,
+            search_key,
+            event,
+            competition,
+            competitor,
+            competitor_index,
+            sport,
+        )
+
+        if matched_index is not None:
+            values, event_state, found_competitor, stop_flag = await async_process_name_match(
+                prev_values, 
+                values, 
+                sensor_name, 
+                event,
+                grouping_index,
+                competition_index,
+                matched_index,
+                lang,
+                sport, 
+                found_competitor,
+                stop_flag
+            )
+            if stop_flag:
+                break
+    if competitor_index == -1:
+        _LOGGER.debug(
+            "%s: async_process_event() No competitors in this competition: %s",
+            sensor_name,
+            str(await async_get_value(competition, "id", default="{id}")),
+        )
+    return values, event_state, found_competitor, stop_flag
+
+
+async def async_process_name_match(
+    prev_values, 
+    values, 
+    sensor_name, 
+    event,
+    grouping_index,
+    competition_index,
+    matched_index,
+    lang,
+    sport, 
+    found_competitor, 
+    stop_flag
+)-> (dict, str, bool, bool):
+    """Process a name match"""
+
+    found_competitor = True
+    prev_values = values.copy()
+
+    event_state = str(
+        await async_get_value(
+            event, "status", "type", "state", default="NOT_FOUND"
+        )
+    ).upper()
+    rc = await async_set_values(
+        values,
+        event,
+        grouping_index,
+        competition_index,
+        matched_index,
+        lang,
+        sensor_name,
+    )
+    if not rc:
+        _LOGGER.debug(
+            "%s: event() Error occurred setting event values: %s",
+            sensor_name,
+            values,
+        )
+
+    if values["state"] == "IN":
+        stop_flag = True
+    time_diff = abs(
+        (arrow.get(values["date"]) - arrow.now()).total_seconds()
+    )
+    if values["state"] == "PRE" and time_diff < 1200:
+        stop_flag = True
+    if stop_flag:
+        return values, event_state, found_competitor, stop_flag
+
+    prev_flag = await async_use_prev_values_flag(
+        prev_values, values, sensor_name, sport
+    )
+    if prev_flag:
+        values = prev_values
+
+    return values, event_state, found_competitor, stop_flag
 
 
 async def async_find_search_key(
@@ -295,3 +372,67 @@ async def async_use_prev_values_flag(prev_values, values, sensor_name, sport):
                 return True
 
     return False
+
+async def competitor_not_found(
+    values,
+    limit_hit,
+    first_date,
+    last_date,
+    team_id,
+    sensor_name,
+    search_key
+):
+    """Handle messaging if competitor was not found"""
+
+    if limit_hit:
+        values["api_message"] = (
+            "API_LIMIT hit.  No competition found for '"
+            + team_id
+            + "' between "
+            + first_date.strftime("%Y-%m-%dT%H:%MZ")
+            + " and "
+            + last_date.strftime("%Y-%m-%dT%H:%MZ")
+        )
+        _LOGGER.debug(
+            "%s: API_LIMIT hit (%s).  No competitor information '%s' returned by API",
+            sensor_name,
+            API_LIMIT,
+            search_key,
+        )
+    else:
+        values["api_message"] = (
+            "No competition scheduled for '"
+            + team_id
+            + "' between "
+            + first_date.strftime("%Y-%m-%dT%H:%MZ")
+            + " and "
+            + last_date.strftime("%Y-%m-%dT%H:%MZ")
+        )
+        _LOGGER.debug(
+            "%s: No competitor information '%s' returned by API",
+            sensor_name,
+            search_key,
+        )
+    return
+
+
+async def async_process_competition_dates(
+    event,
+    competition,
+    first_date,
+    last_date
+) -> (datetime, datetime):
+    """Process dates"""
+
+    competition_date_str = await async_get_value(
+        competition, "date", default=(await async_get_value(event, "date"))
+    )
+    competition_date = datetime.strptime(
+        competition_date_str, "%Y-%m-%dT%H:%Mz"
+    )
+    if competition_date > last_date:
+        last_date = competition_date
+    if competition_date < first_date:
+        first_date = competition_date
+
+    return first_date, last_date
