@@ -15,6 +15,12 @@
         },
         "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
+      "agency": {
+        "data": {
+          "agency": "Select the service provider (or ALL)"
+        },
+		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },		  
       "route_type": {
         "data": {
           "route_type": "Train rides are setup between cities, not stops"

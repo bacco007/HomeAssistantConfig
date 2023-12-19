@@ -5,7 +5,7 @@
         "data": {
           "file": "Select source"
         },
-        "description": "Select from existing sources in your gtfs2 folder"
+        "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
       "source": {
         "data": {
@@ -13,28 +13,35 @@
           "url": "external url to gtfs data (zip) file",
 		  "extract_from": "Extract data from:"
         },
-        "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance"
+        "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
+      "agency": {
+        "data": {
+          "agency": "Select the service provider (or ALL)"
+        },
+		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },		  
       "route_type": {
         "data": {
-          "route_type": "Select the type of transport"
+          "route_type": "Train rides are setup between cities, not stops"
         },
-		"description": "Select from the options below"
+		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },	  
       "route": {
         "data": {
           "route": "Name of the route",
           "direction": "Principal/initial direction of the vehicle"
-        }
+        },
+		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },
       "stops": {
         "data": {
           "origin": "Origin Stop",
           "destination": "Destination Stop",
           "name": "Name of the route",
-          "refresh_interval": "Refresh interval in minutes",
           "include_tomorrow": "Include tomorrow"
-        }
+        },
+		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },
 	  "stops_train": {
         "data": {
@@ -43,7 +50,8 @@
           "name": "Name of the route",
           "refresh_interval": "Refresh interval in minutes",
           "include_tomorrow": "Include tomorrow"
-        }
+        },
+		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2b.-Setup-route-for-trains)"
       }
     },
     "error": {
@@ -61,13 +69,13 @@
       "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
 	  "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
 	  "no_zip_file": "Data collection issue: ZIP file not existing in the correct folder, note that it is capital-sensitive",
-	  "extracting": "Extracting data, this can take a while"
+	  "extracting": "(Still) extracting data, this will take time (read docu) "
     }
   },
   "options": {
     "step": {
       "init": {
-        "description": "Customize the way the integration works",
+        "description": "Customize the way the integration works [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
         "data": {
           "refresh_interval": "Data refresh interval (in minutes)",
 		  "offset": "Offset in minutes",
@@ -75,7 +83,7 @@
         }
       },
 	  "real_time": {
-        "description": "Provide url to real time API",
+        "description": "Provide url to real time API [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
         "data": {
           "trip_update_url": "URL to trip data",
 		  "vehicle_position_url": "URL to vehicle position",
@@ -101,19 +109,15 @@
     },
 	"route_type": {
       "options": {
-        "0": "Tram, Streetcar, Light rail.",
-        "1": "Subway, Metro. Any underground rail system",
-		"2": "Rail, intercity or long-distance travel",
-		"3": "Bus, short- and long-distance bus routes",
-		"4": "Ferries, short- and long-distance boat service",
-		"99": "All, this includes also more obscure ones not in above"
+		"99": "All, excluding trains",
+		"2": "Trains, intercity or long-distance travel"
       }
     }
   },
   "services": {
     "update_gtfs": {
       "name": "Updates a GTFS2 datasource",
-      "description": "Either via Link or placing a Zip yourselves in gtfs2",
+      "description": "Either via Link or placing a Zip yourselves in gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/4.-Service-call)",
       "fields": {
         "extract_from": {
           "name": "Indicate source to use zip or url",

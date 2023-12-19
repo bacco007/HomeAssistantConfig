@@ -15,6 +15,12 @@
         },
         "description": "REMARQUE: avec une nouvelle URL/zip, cela peut prendre du temps après la soumission, selon la taille du fichier et performance du serveur [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
+      "agency": {
+        "data": {
+          "agency": "Selectionnez le prestataire de services (ou: ALL)"
+        },
+		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },		  
       "route_type": {
         "data": {
           "route_type": "Type de transport"

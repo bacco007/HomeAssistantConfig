@@ -31,6 +31,7 @@ from .gtfs_helper import (
     get_datasources,
     remove_datasource,
     check_datasource_index,
+    get_agency_list,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ STEP_SOURCE = vol.Schema(
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for GTFS."""
 
-    VERSION = 6
+    VERSION = 7
 
     def __init__(self) -> None:
         """Init ConfigFlow."""
@@ -83,7 +84,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             user_input["extract_from"] = "zip"
             self._user_inputs.update(user_input)
             _LOGGER.debug(f"UserInputs File: {self._user_inputs}")
-            return await self.async_step_route_type()
+            return await self.async_step_agency()
                    
     async def async_step_source(self, user_input: dict | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""
@@ -132,8 +133,37 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return "generic_failure"
         return self.async_abort(reason="files_deleted")
         
+    async def async_step_agency(self, user_input: dict | None = None) -> FlowResult:
+        """Handle the agency."""
+        self._pygtfs = get_gtfs(
+            self.hass,
+            DEFAULT_PATH,
+            self._user_inputs,
+            False,
+        )
+        agencies = get_agency_list(self._pygtfs, self._user_inputs)
+        if len(agencies) > 1:
+            agencies[:0] = ["0: ALL"]
+            errors: dict[str, str] = {}
+            if user_input is None:
+                return self.async_show_form(
+                    step_id="agency",
+                    data_schema=vol.Schema(
+                        {
+                            vol.Required("agency"): vol.In(agencies),
+                        },
+                    ),
+                    errors=errors,
+                ) 
+        else:
+            user_input = {}
+            user_input["agency"] = "0: ALL"
+        self._user_inputs.update(user_input)
+        _LOGGER.debug(f"UserInputs File: {self._user_inputs}")
+        return await self.async_step_route_type()          
+        
     async def async_step_route_type(self, user_input: dict | None = None) -> FlowResult:
-        """Handle a flow initialized by the user."""
+        """Handle the route_type."""
         errors: dict[str, str] = {}
         if user_input is None:
             return self.async_show_form(

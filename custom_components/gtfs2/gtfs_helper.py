@@ -121,6 +121,7 @@ def get_next_departure(self):
         AND origin_stop_sequence < dest_stop_sequence
         AND calendar.start_date <= :today
         AND calendar.end_date >= :today
+        AND trip.service_id not in (select service_id from calendar_dates where date = :today and exception_type = 2)
 		UNION ALL
 	    SELECT trip.trip_id, trip.route_id,trip.trip_headsign,route.route_long_name,
                start_station.stop_id as origin_stop_id,
@@ -408,13 +409,18 @@ def extract_from_zip(gtfs,gtfs_dir,file):
 def get_route_list(schedule, data):
     _LOGGER.debug("Getting routes with data: %s", data)
     route_type_where = ""
+    agency_where = ""
+    if data["agency"].split(': ')[0] != "0":
+        agency_where = f"and r.agency_id = '{data['agency'].split(': ')[0]}'"
     if data["route_type"] != "99":
         route_type_where = f"and route_type = {data['route_type']}"
     sql_routes = f"""
     SELECT r.route_id, r.route_short_name, r.route_long_name, a.agency_name 
     from routes r
     left join agency a on a.agency_id = r.agency_id
+    where 1=1
     {route_type_where}
+    {agency_where}
     order by agency_name, cast(route_id as decimal)
     """  # noqa: S608
     result = schedule.engine.connect().execute(
@@ -458,6 +464,27 @@ def get_stop_list(schedule, route_id, direction):
     _LOGGER.debug(f"stops: {stops}")
     return stops
 
+def get_agency_list(schedule, data):
+    _LOGGER.debug("Getting agencies with data: %s", data)
+    sql_agencies = f"""
+    SELECT a.agency_id, a.agency_name 
+    from agency a
+    order by a.agency_name
+    """
+    result = schedule.engine.connect().execute(
+        text(sql_agencies),
+        {"q": "q"},
+    )
+    agencies_list = []
+    agencies = []
+    for row_cursor in result:
+        row = row_cursor._asdict()
+        agencies_list.append(list(row_cursor))
+    for x in agencies_list:
+        val = str(x[0]) + ": " + str(x[1])
+        agencies.append(val)
+    _LOGGER.debug(f"agencies: {agencies}")
+    return agencies
 
 def get_datasources(hass, path) -> dict[str]:
     _LOGGER.debug(f"Datasources path: {path}")
