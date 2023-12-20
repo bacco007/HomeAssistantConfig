@@ -46,32 +46,32 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, December 20th 2023_
+_Stats as at 05:00, Thursday, December 21st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.12.3 | 587     | 5524         | 3703 | 138 |
+| 2023.12.3 | 588     | 5133         | 3393 | 136 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 35
-Automation | 138
-Binary Sensor | 351
+Automation | 136
+Binary Sensor | 339
 Camera | 5
-Device Tracker | 97
+Device Tracker | 89
 Group | 43
 Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
 Light | 13
-Media Player | 20
+Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3703
+Sensor | 3393
 Sun | 1
-Switch | 219
+Switch | 235
 Weather | 20
 Zone | 3
 
@@ -534,6 +534,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -877,6 +878,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Glances (0.20.0)
 - GoSungrow (3.0.7)
 - Home Assistant Google Drive Backup (0.112.1)
+- Home Assistant Stream Deck (2023.11.0)
 - JupyterLab (0.12.1)
 - MariaDB (2.6.1)
 - Matter Server (5.0.1)
