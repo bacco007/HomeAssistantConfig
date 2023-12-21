@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, December 21st 2023_
+_Stats as at 05:00, Friday, December 22nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.12.3 | 588     | 5133         | 3393 | 136 |
+| 2023.12.3 | 588     | 5109         | 3393 | 136 |
 
 Type | Qty
 -- | --
@@ -712,7 +712,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -890,7 +890,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - SunGather (0.1.3)
 - Zigbee2MQTT Edge (edge)
 - ZigStar Silicon Labs FW Flasher (0.1.1)
-- ZigStar TI CC2652P/P7 FW Flasher (0.3.0)
+- ZigStar TI CC2652P/P7 FW Flasher (0.4.0)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
