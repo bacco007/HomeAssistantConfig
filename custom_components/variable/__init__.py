@@ -33,13 +33,13 @@ from .const import (
     DEFAULT_REPLACE_ATTRIBUTES,
     DOMAIN,
     PLATFORMS,
+    SERVICE_UPDATE_SENSOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 SERVICE_SET_VARIABLE_LEGACY = "set_variable"
 SERVICE_SET_ENTITY_LEGACY = "set_entity"
-SERVICE_UPDATE_SENSOR = "update_sensor"
 
 SERVICE_SET_VARIABLE_LEGACY_SCHEMA = vol.Schema(
     {

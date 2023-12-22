@@ -25,6 +25,7 @@
         "title": "Variables+History - Sensor Page 2",
         "data": {
           "value": "Initial Value",
+          "tz_offset": "Initial Time Zone Offset",
           "attributes": "Initial Attributes",
           "state_class": "State Class",
           "unit_of_measurement": "Unit of Measurement"
@@ -72,7 +73,16 @@
   },
   "options": {
     "step": {
-      "init": {},
+      "init": {
+        "menu_options": {
+          "change_sensor_value": "Change Value and Attributes",
+          "change_binary_sensor_value": "Change Value and Attributes",
+          "change_device_tracker_value": "Change Value and Attributes",
+          "sensor_options": "Change Options",
+          "binary_sensor_options": "Change Options",
+          "device_tracker_options": "Change Options"
+        }
+      },
       "sensor_options": {
         "title": "Variables+History - Sensor",
         "data": {
@@ -87,11 +97,42 @@
         "title": "Variables+History - Sensor Page 2",
         "data": {
           "value": "Value (typically only useful if Restore on Restart is False)",
+          "tz_offset": "Time Zone Offset (typically only useful if Restore on Restart is False)",
           "attributes": "Attributes (typically only useful if Restore on Restart is False)",
           "state_class": "State Class",
           "unit_of_measurement": "Unit of Measurement"
         },
         "description": "Update existing Sensor Variable"
+      },
+      "change_sensor_value": {
+        "title": "Variables+History - Change Sensor Value",
+        "data": {
+          "value": "Value",
+          "tz_offset": "Time Zone Offset",
+          "attributes": "Attributes"
+        },
+        "description": "Update existing Sensor Variable"
+      },
+      "change_binary_sensor_value": {
+        "title": "Variables+History - Change Binary Sensor Value",
+        "data": {
+          "value": "Value",
+          "attributes": "Attributes"
+        },
+        "description": "Update existing Binary Sensor Variable"
+      },
+      "change_device_tracker_value": {
+        "title": "Variables+History - Device Tracker (GPS)",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "location_name": "Location Name",
+          "delete_location_name": "Delete Location Name",
+          "gps_accuracy": "GPS Accuracy",
+          "battery_level": "Battery Level",
+          "attributes": "Attributes"
+        },
+        "description": "Update existing Device Tracker (GPS) Variable"
       },
       "binary_sensor_options": {
         "title": "Variables+History - Binary Sensor",
@@ -123,7 +164,8 @@
     },
     "abort": {
       "yaml_variable": "Cannot change options here for Variables created by YAML.\n\nTo use the User Interface to manage this Variable, you will need to:\n1. Remove it from YAML\n2. Restart Home Assistant\n3. Manually recreate it in Home Assistant, Integrations, +Add Integration.",
-      "yaml_update_error": "Unable to update YAML Sensor Variable"
+      "yaml_update_error": "Unable to update YAML Sensor Variable",
+      "value_changed": "Variable Changed"
     },
     "error": {
       "invalid_value_type": "The value entered is not compatible with the selected device_class",
