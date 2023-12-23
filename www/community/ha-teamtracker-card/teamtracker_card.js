@@ -1,4 +1,4 @@
-import { LitElement } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
+import { LitElement } from "https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js";
 import { Translator } from "./localize/translator.js";
 import { VERSION } from "./const.js";
 import { renderBye } from './render_bye.js';
