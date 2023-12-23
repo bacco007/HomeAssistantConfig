@@ -20,25 +20,25 @@ entities:
     connectgaps: true
     time_offset: 1d
     line:
-      color: 'rgb(0,191,255)'
+      color: "rgb(0,191,255)"
       dash: dot
       width: 1
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
   - entity: sensor.weather_humidity
     yaxis: y1
     fill: tozeroy
-    fillcolor: 'rgba(0,191,255,0.2)'
+    fillcolor: "rgba(0,191,255,0.2)"
     filters:
       - force_numeric
       - resample: 15m
     connectgaps: true
     line:
-      color: 'rgb(0,191,255)'
+      color: "rgb(0,191,255)"
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
     fnmin: >-
       $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
     fnmax: >-
@@ -51,25 +51,25 @@ entities:
     connectgaps: true
     time_offset: 1d
     line:
-      color: 'rgb(255,0,0)'
+      color: "rgb(255,0,0)"
       dash: dot
       width: 1
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
   - entity: sensor.weather_aidan_humidity
     yaxis: y2
     fill: tozeroy
-    fillcolor: 'rgba(255,0,0,0.2)'
+    fillcolor: "rgba(255,0,0,0.2)"
     filters:
       - force_numeric
       - resample: 15m
     connectgaps: true
     line:
-      color: 'rgb(255,0,0)'
+      color: "rgb(255,0,0)"
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
     fnmin: >-
       $fn ({ ys, vars }) => {vars.miny2 = Math.min(...ys.filter(Number))}
     fnmax: >-
@@ -82,25 +82,25 @@ entities:
     connectgaps: true
     time_offset: 1d
     line:
-      color: 'rgb(255,215,0)'
+      color: "rgb(255,215,0)"
       dash: dot
       width: 1
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
   - entity: sensor.wunder_lachy_humidity
     yaxis: y3
     fill: tozeroy
-    fillcolor: 'rgba(255,215,0,0.2)'
+    fillcolor: "rgba(255,215,0,0.2)"
     filters:
       - force_numeric
       - resample: 15m
     connectgaps: true
     line:
-      color: 'rgb(255,215,0)'
+      color: "rgb(255,215,0)"
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
     fnmin: >-
       $fn ({ ys, vars }) => {vars.miny3 = Math.min(...ys.filter(Number))}
     fnmax: >-
@@ -113,25 +113,25 @@ entities:
     connectgaps: true
     time_offset: 1d
     line:
-      color: '#329af6'
+      color: "#329af6"
       dash: dot
       width: 1
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
   - entity: sensor.wunder_nicko_humidity
     yaxis: y4
     fill: tozeroy
-    fillcolor: '#329af6'
+    fillcolor: "#329af6"
     filters:
       - force_numeric
       - resample: 15m
     connectgaps: true
     line:
-      color: '#329af6'
+      color: "#329af6"
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
     fnmin: >-
       $fn ({ ys, vars }) => {vars.miny4 = Math.min(...ys.filter(Number))}
     fnmax: >-
@@ -144,25 +144,25 @@ entities:
     connectgaps: true
     time_offset: 1d
     line:
-      color: 'rgb(249, 167, 62)'
+      color: "rgb(249, 167, 62)"
       dash: dot
       width: 1
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
   - entity: sensor.wunder_steve_humidity
     yaxis: y5
     fill: tozeroy
-    fillcolor: 'rgba(249, 167, 62, 0.2)'
+    fillcolor: "rgba(249, 167, 62, 0.2)"
     filters:
       - force_numeric
       - resample: 15m
     connectgaps: true
     line:
-      color: 'rgb(249, 167, 62)'
+      color: "rgb(249, 167, 62)"
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
     fnmin: >-
       $fn ({ ys, vars }) => {vars.miny5 = Math.min(...ys.filter(Number))}
     fnmax: >-
@@ -175,25 +175,25 @@ entities:
     connectgaps: true
     time_offset: 1d
     line:
-      color: 'rgb(39, 179, 118)'
+      color: "rgb(39, 179, 118)"
       dash: dot
       width: 1
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
   - entity: sensor.tamworth_airport_humidity
     yaxis: y6
     fill: tozeroy
-    fillcolor: 'rgba(39, 179, 118, 0.2)'
+    fillcolor: "rgba(39, 179, 118, 0.2)"
     filters:
       - force_numeric
       - resample: 15m
     connectgaps: true
     line:
-      color: 'rgb(39, 179, 118)'
+      color: "rgb(39, 179, 118)"
     hovertemplate: '<span style="text-align: center; font-size: 20px;">%{y}</span><br>%{x}<extra></extra>'
     x: $fn ({xs}) => xs
-    'y': $fn ({ys}) => ys
+    "y": $fn ({ys}) => ys
     fnmin: >-
       $fn ({ ys, vars }) => {vars.miny6 = Math.min(...ys.filter(Number))}
     fnmax: >-
@@ -215,7 +215,7 @@ layout:
   font:
     family: Roboto,Noto,sans-serif
     color: $fn ({css_vars}) => css_vars['primary-text-color']
-  
+
   grid:
     rows: 6
     columns: 1
@@ -223,14 +223,14 @@ layout:
     shared_xaxes: true
   xaxis:
     showgrid: false
-    tickformat: '%H:%M<br>%e %b'
-    hoverformat: '%H:%M:%S<br>%e %b'
+    tickformat: "%H:%M<br>%e %b"
+    hoverformat: "%H:%M:%S<br>%e %b"
   yaxis:
     title:
       text: Thomas
       font:
         size: 14
-        color: 'rgb(0,191,255)'
+        color: "rgb(0,191,255)"
       standoff: 0
     autorange: false
     fixedrange: true
@@ -244,7 +244,7 @@ layout:
       text: Aidan
       font:
         size: 14
-        color: 'rgb(255,0,0)'
+        color: "rgb(255,0,0)"
       standoff: 0
     autorange: false
     fixedrange: true
@@ -258,7 +258,7 @@ layout:
       text: Lachy
       font:
         size: 14
-        color: 'rgb(255,215,0)'
+        color: "rgb(255,215,0)"
       standoff: 0
     autorange: false
     fixedrange: true
@@ -272,7 +272,7 @@ layout:
       text: Nick
       font:
         size: 14
-        color: '#329af6'
+        color: "#329af6"
       standoff: 0
     autorange: false
     fixedrange: true
@@ -286,7 +286,7 @@ layout:
       text: Steve
       font:
         size: 14
-        color: 'rgb(249, 167, 62)'
+        color: "rgb(249, 167, 62)"
       standoff: 0
     autorange: false
     fixedrange: true
@@ -300,7 +300,7 @@ layout:
       text: Airport
       font:
         size: 14
-        color: 'rgb(39, 179, 118)'
+        color: "rgb(39, 179, 118)"
       standoff: 0
     autorange: false
     fixedrange: true
@@ -319,7 +319,7 @@ layout:
       xanchor: center
       yanchor: top
       x: 1.1
-      'y': 0.9
+      "y": 0.9
       showarrow: false
     - text: |-
         $fn ({hass}) =>
@@ -330,7 +330,7 @@ layout:
       xanchor: center
       yanchor: top
       x: 1.1
-      'y': 0.9
+      "y": 0.9
       showarrow: false
     - text: |-
         $fn ({hass}) =>
@@ -341,7 +341,7 @@ layout:
       xanchor: center
       yanchor: top
       x: 1.1
-      'y': 0.9
+      "y": 0.9
       showarrow: false
     - text: |-
         $fn ({hass}) =>
@@ -352,7 +352,7 @@ layout:
       xanchor: center
       yanchor: top
       x: 1.1
-      'y': 0.9
+      "y": 0.9
       showarrow: false
     - text: |-
         $fn ({hass}) =>
@@ -363,7 +363,7 @@ layout:
       xanchor: center
       yanchor: top
       x: 1.1
-      'y': 0.9
+      "y": 0.9
       showarrow: false
     - text: |-
         $fn ({hass}) =>
@@ -374,7 +374,7 @@ layout:
       xanchor: center
       yanchor: top
       x: 1.1
-      'y': 0.9
+      "y": 0.9
       showarrow: false
 config:
   scrollZoom: true

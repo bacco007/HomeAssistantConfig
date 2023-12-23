@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, December 23rd 2023_
+_Stats as at 05:00, Sunday, December 24th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.12.3 | 588     | 5258         | 3406 | 136 |
+| 2023.12.3 | 586     | 5261         | 3407 | 136 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3406
+Sensor | 3407
 Sun | 1
-Switch | 333
+Switch | 314
 Weather | 20
 Zone | 3
 
@@ -107,6 +107,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [assist_pipeline](https://www.home-assistant.io/components/assist_pipeline) |
 | [astroweather](https://www.home-assistant.io/components/astroweather) |
 | [auth](https://www.home-assistant.io/components/auth) |
+| [auto_backup](https://www.home-assistant.io/components/auto_backup) |
 | [automation](https://www.home-assistant.io/components/automation) |
 | [average](https://www.home-assistant.io/components/average) |
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
@@ -158,7 +159,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [button.esphome](https://www.home-assistant.io/components/button.esphome) |
 | [button.eufy_security](https://www.home-assistant.io/components/button.eufy_security) |
 | [button.hdhomerun](https://www.home-assistant.io/components/button.hdhomerun) |
-| [button.homekit_controller](https://www.home-assistant.io/components/button.homekit_controller) |
 | [button.monitor_docker](https://www.home-assistant.io/components/button.monitor_docker) |
 | [button.mqtt](https://www.home-assistant.io/components/button.mqtt) |
 | [button.plex](https://www.home-assistant.io/components/button.plex) |
@@ -331,7 +331,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
-| [media_player.homekit_controller](https://www.home-assistant.io/components/media_player.homekit_controller) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
@@ -432,6 +431,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.airvisual](https://www.home-assistant.io/components/sensor.airvisual) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.astroweather](https://www.home-assistant.io/components/sensor.astroweather) |
+| [sensor.auto_backup](https://www.home-assistant.io/components/sensor.auto_backup) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
 | [sensor.ble_monitor](https://www.home-assistant.io/components/sensor.ble_monitor) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
@@ -534,7 +534,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
-| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -582,7 +581,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.eufy_security](https://www.home-assistant.io/components/switch.eufy_security) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
-| [switch.homekit_controller](https://www.home-assistant.io/components/switch.homekit_controller) |
 | [switch.matter](https://www.home-assistant.io/components/switch.matter) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.mqtt](https://www.home-assistant.io/components/switch.mqtt) |
@@ -687,6 +685,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Astroweather](https://github.com/mawinkler/astroweather)
+- [Auto Backup](https://github.com/jcwillox/hass-auto-backup)
 - [Average Sensor](https://github.com/Limych/ha-average)
 - [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung)
 - [Browser Mod](https://github.com/thomasloven/hass-browser_mod)
@@ -712,7 +711,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -872,7 +871,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Advanced SSH & Web Terminal (17.0.0)
 - Bluetooth Presence Monitor (1.0.0)
 - Cloudflared (4.2.12)
-- ESPHome (2023.11.6)
+- ESPHome (2023.12.3)
 - eufy-security-ws (1.7.1)
 - File editor (5.7.0)
 - Glances (0.20.0)

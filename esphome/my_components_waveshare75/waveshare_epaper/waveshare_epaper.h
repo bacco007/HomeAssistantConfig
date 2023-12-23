@@ -17,7 +17,7 @@ class WaveshareEPaper : public PollingComponent,
   void set_reset_pin(GPIOPin *reset) { this->reset_pin_ = reset; }
   void set_busy_pin(GPIOPin *busy) { this->busy_pin_ = busy; }
   void set_reset_duration(uint32_t reset_duration) { this->reset_duration_ = reset_duration; }
-                                                
+
   void command(uint8_t value);
   void data(uint8_t value);
 
@@ -59,7 +59,7 @@ class WaveshareEPaper : public PollingComponent,
 
   uint32_t get_buffer_length_();
   uint32_t reset_duration_{200};
-                                                
+
   void start_command_();
   void end_command_();
   void start_data_();
@@ -295,7 +295,7 @@ class WaveshareEPaper7P5In : public WaveshareEPaper {
     this->command(0x07);
     this->data(0xA5);  // check byte
   }
-  
+
   int get_color_internal() override { return 2; }
 
   uint8_t get_color_list_internal(uint8_t indexColor) override {
@@ -357,7 +357,7 @@ class WaveshareEPaper7P5InV2B : public WaveshareEPaper {
   }
 
   display::DisplayType get_display_type() override { return display::DisplayType::DISPLAY_TYPE_COLOR; }
-  
+
  protected:
   int get_width_internal() override;
 

@@ -129,7 +129,9 @@ button:
 
 light:
   - platform: status_led
-    pin: GPIO2
+    pin: 
+      number: GPIO2
+      allow_other_uses: true
     id: led_status_light
     restore_mode: ALWAYS_ON
     internal: true
@@ -173,6 +175,7 @@ switch:
     pin:
       number: GPIO2
       mode: OUTPUT
+      allow_other_uses: true
     restore_mode: ALWAYS_OFF    
 
 text_sensor:

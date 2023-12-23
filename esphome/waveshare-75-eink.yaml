@@ -35,7 +35,15 @@ esp32:
 #     components: [waveshare_epaper]
 
 external_components:
-  - source: my_components_waveshare75
+  # twisterss fork of esphome-dev
+  - source:
+      type: git
+      url: https://github.com/twisterss/esphome-dev.git
+      ref: waveshare-red-black
+    components: [waveshare_epaper]
+
+# external_components:
+#   - source: my_components_waveshare75
 
 logger:
 
@@ -524,11 +532,14 @@ spi:
 
 display:
   - platform: waveshare_epaper
-    cs_pin: GPIO15
-    dc_pin: GPIO27
-    busy_pin: GPIO25
-    reset_pin: GPIO26
-    model: 7.50inv2b
+    cs_pin: 15
+    dc_pin: 27
+    busy_pin:
+      number: 25
+      inverted: True
+    reset_pin: 26
+    #model: 7.50inbv2
+    model: 7.50in-bv2-rb
     id: eink_display
     update_interval: never
     reset_duration: 2ms
