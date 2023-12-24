@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, December 24th 2023_
+_Stats as at 05:00, Monday, December 25th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.12.3 | 586     | 5261         | 3407 | 136 |
+| 2023.12.3 | 586     | 5434         | 3406 | 136 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3407
+Sensor | 3406
 Sun | 1
-Switch | 314
+Switch | 313
 Weather | 20
 Zone | 3
 
