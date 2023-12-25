@@ -26,7 +26,6 @@ recorder:
       - remote
       - switch
       - update
-      - weather
       - weblink
       - zone
     entities:

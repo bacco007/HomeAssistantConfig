@@ -3,7 +3,7 @@ panel_custom:
   #   PANEL_ADDONS
   - name: panel_addons
     sidebar_title: Add-ons
-    sidebar_icon: mdi:toy-brick-outline
+    sidebar_icon: mdi:puzzle
     js_url: /api/hassio/app/entrypoint.js
     url_path: "hassio/dashboard"
     embed_iframe: true
@@ -47,7 +47,7 @@ panel_custom:
   #   PANEL_INTEGRATIONS
   - name: panel_integrations
     sidebar_title: Integrations
-    sidebar_icon: mdi:chip
+    sidebar_icon: mdi:devices
     js_url: /api/hassio/app/entrypoint.js
     url_path: "config/integrations"
     embed_iframe: true
@@ -61,6 +61,26 @@ panel_custom:
     sidebar_icon: mdi:details
     js_url: /api/hassio/app/entrypoint.js
     url_path: "developer-tools/state"
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator
+
+  - name: panel_logs
+    sidebar_title: Logs
+    sidebar_icon: mdi:file-alert
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: "config/logs"
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator
+
+  - name: ha_system
+    sidebar_title: Supervisor
+    sidebar_icon: mdi:information-variant
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: "hassio/system/info"
     embed_iframe: true
     require_admin: true
     config:

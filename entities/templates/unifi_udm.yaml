@@ -80,7 +80,8 @@ sensor:
       friendly_name: "[UDM] Download Speed"
       category: udm
       icon: mdi:download
-      unit_of_measurement: 'MB'
+      unit_of_measurement: 'MB/s'
+      device_class: DATA_RATE
 
   - unique_id: udm_upload_speed
     state: >
@@ -89,7 +90,8 @@ sensor:
       friendly_name: "[UDM] Upload Speed"
       icon: mdi:upload
       category: udm
-      unit_of_measurement: 'MB'
+      unit_of_measurement: 'MB/s'
+      device_class: DATA_RATE
 
   - unique_id: udm_version
     state: >

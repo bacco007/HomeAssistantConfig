@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, December 25th 2023_
+_Stats as at 05:00, Tuesday, December 26th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.12.3 | 586     | 5434         | 3406 | 136 |
+| 2023.12.3 | 586     | 5226         | 3398 | 136 |
 
 Type | Qty
 -- | --
@@ -65,13 +65,13 @@ Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
 Light | 14
-Media Player | 18
+Media Player | 17
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3406
+Sensor | 3398
 Sun | 1
-Switch | 313
+Switch | 308
 Weather | 20
 Zone | 3
 
@@ -275,7 +275,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [homeassistant_hardware](https://www.home-assistant.io/components/homeassistant_hardware) |
 | [homeassistant_sky_connect](https://www.home-assistant.io/components/homeassistant_sky_connect) |
 | [homekit](https://www.home-assistant.io/components/homekit) |
-| [homekit_controller](https://www.home-assistant.io/components/homekit_controller) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
 | [humidifier.mqtt](https://www.home-assistant.io/components/humidifier.mqtt) |
@@ -534,6 +533,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |

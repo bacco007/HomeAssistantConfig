@@ -4,8 +4,8 @@ sensor:
     host: !secret unifi_ipaddress
     port: 443
     verify_ssl: false
-    username: !secret unifi_username
-    password: !secret unifi_password
+    username: !secret unifi_user2
+    password: !secret unifi_pass2
     version: "UDMP-unifiOS"
     monitored_conditions:
       - vpn
@@ -93,6 +93,6 @@ switch:
     host: !secret unifi_ipaddress
     port: 443
     verify_ssl: false
-    username: !secret unifi_username
-    password: !secret unifi_password
+    username: !secret unifi_user2
+    password: !secret unifi_pass2
     version: "UDMP-unifiOS"

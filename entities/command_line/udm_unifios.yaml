@@ -23,8 +23,8 @@ sensor:
 
     IP = get_secret("unifi_ipaddress")
     PORT = get_secret("unifi_port")
-    USER = get_secret("unifi_username")
-    PASS = get_secret("unifi_password")
+    USER = get_secret("unifi_user2")
+    PASS = get_secret("unifi_pass2")
     URL = f"https://{IP}:{PORT}"
 
     login = requests.request("POST", f"{URL}/api/auth/login", \

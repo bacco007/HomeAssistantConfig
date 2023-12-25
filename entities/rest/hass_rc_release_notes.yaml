@@ -1,9 +1,11 @@
 ---
 resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
 sensor:
-  name: hass_rs_release_notes
+  name: hass_release_notes_beta
+  unique_id: hass_release_notes_beta
   value_template: >
     {{ value_json[0].name }}
   json_attributes:
     - body
+    - html_url
 scan_interval: 21600
