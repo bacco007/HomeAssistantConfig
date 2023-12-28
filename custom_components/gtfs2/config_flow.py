@@ -94,7 +94,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 step_id="source",
                 data_schema=vol.Schema(
                     {
-                        vol.Required("extract_from"): selector.SelectSelector(selector.SelectSelectorConfig(options=["zip", "url"], translation_key="extract_from")),
+                        vol.Required("extract_from"): selector.SelectSelector(selector.SelectSelectorConfig(options=["url", "zip"], translation_key="extract_from")),
                         vol.Required("file"): str,
                         vol.Required("url", default="na"): str,
                     },
@@ -109,7 +109,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         else:
             self._user_inputs.update(user_input)
             _LOGGER.debug(f"UserInputs Data: {self._user_inputs}")
-            return await self.async_step_route()            
+            return await self.async_step_agency()            
 
     async def async_step_remove(self, user_input: dict | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""
@@ -135,12 +135,18 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         
     async def async_step_agency(self, user_input: dict | None = None) -> FlowResult:
         """Handle the agency."""
+        errors: dict[str, str] = {}
         self._pygtfs = get_gtfs(
             self.hass,
             DEFAULT_PATH,
             self._user_inputs,
             False,
         )
+        check_data = await self._check_data(self._user_inputs)
+        _LOGGER.debug("Agency check data: %s", check_data)
+        if check_data :
+            errors["base"] = check_data
+            return self.async_abort(reason=check_data)
         agencies = get_agency_list(self._pygtfs, self._user_inputs)
         if len(agencies) > 1:
             agencies[:0] = ["0: ALL"]
@@ -311,7 +317,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
         # check and/or add indexes
         check_index = await self.hass.async_add_executor_job(
-                    check_datasource_index, self
+                    check_datasource_index, self.hass, self._pygtfs, DEFAULT_PATH, data["file"]
                 )
         try:
             self._data["next_departure"] = await self.hass.async_add_executor_job(

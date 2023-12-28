@@ -72,7 +72,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
             "alert": {}
         }           
 
-        if check_extracting(self):    
+        if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):    
             _LOGGER.warning("Cannot update this sensor as still unpacking: %s", self._data["file"])
             previous_data["extracting"] = True
             return previous_data
@@ -93,7 +93,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
             self._data = previous_data
         else:
             check_index = await self.hass.async_add_executor_job(
-                    check_datasource_index, self
+                    check_datasource_index, self.hass, self._pygtfs, DEFAULT_PATH, data["file"]
                 )
 
             try:
@@ -122,7 +122,6 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                     self._headers = {"x-api-key": options[CONF_X_API_KEY]}
                 else:
                     self._headers = None
-                self._headers = None
                 self.info = {}
                 self._route_id = self._data["next_departure"].get("route_id", None)
                 if self._route_id == None:

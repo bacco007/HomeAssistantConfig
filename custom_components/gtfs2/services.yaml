@@ -4,7 +4,7 @@ update_gtfs:
   description: Unpacks source to gtfs-db
   fields:
     extract_from:
-      name: Indicate source of the data
+      name: Indicate source of the data 
       description: Select if you update from url or zip
       required: true
       example: "url"
@@ -30,3 +30,23 @@ update_gtfs:
       example: "https://path-to-my-zip-file-location/filename.zip"
       selector:
         text:            
+
+update_gtfs_rt_local:
+  name: Update GTFS Realtime Data locally
+  description: Downloads realtime data locally
+  fields:
+    file:
+      name: Name of the transport service with realtime data
+      description: Preferably use the same name as for static data
+      required: true
+      example: "mytransportservice"
+      selector:
+        text:            
+    url:
+      name: URL
+      description: provide the full path to the zip file itself
+      required: true
+      default: "na"
+      example: "https://path-to-my-realttime-data"
+      selector:
+        text:

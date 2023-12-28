@@ -7,11 +7,12 @@ from homeassistant.core import HomeAssistant, ServiceCall
 
 from datetime import timedelta
 
-from .const import DOMAIN, PLATFORMS, DEFAULT_PATH, DEFAULT_REFRESH_INTERVAL
+from .const import DOMAIN, PLATFORMS, DEFAULT_PATH, DEFAULT_PATH_RT, DEFAULT_REFRESH_INTERVAL
 from homeassistant.const import CONF_HOST
 from .coordinator import GTFSUpdateCoordinator
 import voluptuous as vol
 from .gtfs_helper import get_gtfs
+from .gtfs_rt_helper import get_gtfs_rt
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -144,8 +145,16 @@ def setup(hass, config):
         get_gtfs(hass, DEFAULT_PATH, call.data, True)
         return True     
 
+    def update_gtfs_rt_local(call):
+        """My GTFS RT service."""
+        _LOGGER.debug("Updating GTFS RT with: %s", call.data)
+        get_gtfs_rt(hass, DEFAULT_PATH_RT, call.data)
+        return True   
+
     hass.services.register(
         DOMAIN, "update_gtfs", update_gtfs)
+    hass.services.register(
+        DOMAIN, "update_gtfs_rt_local", update_gtfs_rt_local)        
      
     return True
 

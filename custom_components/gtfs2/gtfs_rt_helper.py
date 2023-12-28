@@ -445,5 +445,18 @@ def update_geojson(self):
     with open(file, "w") as outfile:
         json.dump(self.geojson, outfile)
     
-    
+def get_gtfs_rt(hass, path, data):
+    """Get gtfs file."""
+    _LOGGER.debug("Getting gtfs rt locally with data: %s", data)
+    gtfs_dir = hass.config.path(path)
+    os.makedirs(gtfs_dir, exist_ok=True)
+    url = data["url"]
+    file = data["file"] + ".rt"
+    try:
+        r = requests.get(url, allow_redirects=True)
+        open(os.path.join(gtfs_dir, file), "wb").write(r.content)
+    except Exception as ex:  # pylint: disable=broad-except
+        _LOGGER.error("Ìssues with downloading GTFS RT data to: %s", os.path.join(gtfs_dir, file))
+        return "no_rt_data_file"
+    return "ok"       
         

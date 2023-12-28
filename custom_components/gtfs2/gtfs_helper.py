@@ -10,6 +10,7 @@ import pygtfs
 from sqlalchemy.sql import text
 import multiprocessing
 from multiprocessing import Process
+from . import zip_file as zipfile
 
 import homeassistant.util.dt as dt_util
 from homeassistant.core import HomeAssistant
@@ -21,7 +22,7 @@ _LOGGER = logging.getLogger(__name__)
 
 def get_next_departure(self):
     _LOGGER.debug("Get next departure with data: %s", self._data)
-    if check_extracting(self):
+    if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):
         _LOGGER.warning("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
         return {}
 
@@ -74,7 +75,8 @@ def get_next_departure(self):
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today or calendar_date_today.date = :tomorrow)"
         tomorrow_select2 = f"'0' AS tomorrow,"
     sql_query = f"""
-        SELECT trip.trip_id, trip.route_id,trip.trip_headsign,route.route_long_name,
+        SELECT trip.trip_id, trip.route_id,trip.trip_headsign,
+        route.route_long_name,route.route_short_name,
         	   start_station.stop_id as origin_stop_id,
                start_station.stop_name as origin_stop_name,
                time(origin_stop_time.arrival_time) AS origin_arrival_time,
@@ -123,7 +125,8 @@ def get_next_departure(self):
         AND calendar.end_date >= :today
         AND trip.service_id not in (select service_id from calendar_dates where date = :today and exception_type = 2)
 		UNION ALL
-	    SELECT trip.trip_id, trip.route_id,trip.trip_headsign,route.route_long_name,
+	    SELECT trip.trip_id, trip.route_id,trip.trip_headsign,
+               route.route_long_name,route.route_short_name,
                start_station.stop_id as origin_stop_id,
                start_station.stop_name as origin_stop_name,
                time(origin_stop_time.arrival_time) AS origin_arrival_time,
@@ -256,7 +259,7 @@ def get_next_departure(self):
     for key, value in sorted(timetable.items()):
         if datetime.datetime.strptime(key, "%Y-%m-%d %H:%M:%S") > now:
             timetable_remaining_line.append(
-                str(dt_util.as_utc(datetime.datetime.strptime(key, "%Y-%m-%d %H:%M:%S")).isoformat()) + " (" + str(value["route_long_name"]) + ")"
+                str(dt_util.as_utc(datetime.datetime.strptime(key, "%Y-%m-%d %H:%M:%S")).isoformat()) + " (" + str(value["route_short_name"]) +  str( ("/" + value["route_long_name"])  if value["route_long_name"] else "") + ")"
             )
     _LOGGER.debug(
         "Timetable Remaining Departures on this Start/Stop, per line: %s",
@@ -389,22 +392,37 @@ def get_gtfs(hass, path, data, update=False):
     joined_path = os.path.join(gtfs_dir, sqlite_file) 
     gtfs = pygtfs.Schedule(joined_path)
     if not gtfs.feeds:
-        extract = Process(target=extract_from_zip(gtfs,gtfs_dir,file))
+        extract = Process(target=extract_from_zip, args = (hass, gtfs,gtfs_dir,file))
         extract.start()
         extract.join()
         _LOGGER.info("Exiting main after start subprocess for unpacking: %s", file)
-        return "unpacking"
+        return "extracting"
     return gtfs
- 
 
-    
-def extract_from_zip(gtfs,gtfs_dir,file):
+def extract_from_zip(hass, gtfs,gtfs_dir,file):
+    # first remove shapes from zip to avoid possibly very large db 
+    clean = remove_from_zip('shapes.txt',gtfs_dir, file[:-4])
     _LOGGER.debug("Extracting gtfs file: %s", file)
     if os.fork() != 0:
         return
     pygtfs.append_feed(gtfs, os.path.join(gtfs_dir, file))
-    
-        
+    check_datasource_index(hass, gtfs, gtfs_dir, file[:-4])
+
+def remove_from_zip(delmename,gtfs_dir,file):
+    _LOGGER.debug("Removing data: %s , from zipfile: %s", delmename, file)
+    tempfile = file + "_temp.zip"
+    filename = file + ".zip"
+    os.rename (os.path.join(gtfs_dir, filename), os.path.join(gtfs_dir, tempfile))
+    # Load the ZIP archive
+    zin = zipfile.ZipFile (f"{os.path.join(gtfs_dir, tempfile)}", 'r')
+    zout = zipfile.ZipFile (f"{os.path.join(gtfs_dir, filename)}", 'w')
+    for item in zin.infolist():
+        buffer = zin.read(item.filename)
+        if (item.filename != f"{delmename}"):
+            zout.writestr(item, buffer)
+    zout.close()
+    zin.close()
+    os.remove(os.path.join(gtfs_dir, tempfile))     
 
 def get_route_list(schedule, data):
     _LOGGER.debug("Getting routes with data: %s", data)
@@ -437,7 +455,6 @@ def get_route_list(schedule, data):
         routes.append(val)
     _LOGGER.debug(f"routes: {routes}")
     return routes
-
 
 def get_stop_list(schedule, route_id, direction):
     sql_stops = f"""
@@ -506,9 +523,9 @@ def remove_datasource(hass, path, filename):
     os.remove(os.path.join(gtfs_dir, filename + ".sqlite"))
     return "removed"
     
-def check_extracting(self):
-    gtfs_dir = self.hass.config.path(self._data["gtfs_dir"])
-    filename = self._data["file"]
+def check_extracting(hass, gtfs_dir,file):
+    gtfs_dir = hass.config.path(gtfs_dir)
+    filename = file
     journal = os.path.join(gtfs_dir, filename + ".sqlite-journal")
     if os.path.exists(journal) :
         _LOGGER.debug("check extracting: yes")
@@ -516,12 +533,11 @@ def check_extracting(self):
     return False    
 
 
-def check_datasource_index(self):
-    _LOGGER.debug("Check datasource with data: %s", self._data)
-    if check_extracting(self):
-        _LOGGER.warning("Cannot check indexes on this datasource as still unpacking: %s", self._data["file"])
+def check_datasource_index(hass, schedule, gtfs_dir, file):
+    _LOGGER.debug("Check datasource index")
+    if check_extracting(hass, gtfs_dir,file):
+        _LOGGER.warning("Cannot check indexes on this datasource as still unpacking: %s", file)
         return
-    schedule=self._pygtfs
     sql_index_1 = f"""
     SELECT count(*) as checkidx
     FROM sqlite_master

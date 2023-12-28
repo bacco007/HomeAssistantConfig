@@ -9,7 +9,8 @@ DEFAULT_OFFSET = 0
 
 DEFAULT_NAME = "GTFS Sensor2"
 DEFAULT_PATH = "gtfs2"
-DEFAULT_PATH_GEOJSON = "www"
+DEFAULT_PATH_GEOJSON = "www/gtfs2"
+DEFAULT_PATH_RT = "www/gtfs2"
 
 CONF_DATA = "data"
 CONF_DESTINATION = "destination"
