@@ -13,7 +13,14 @@ entities:
     entities:
       include: sensor.untappd_lowest_rated_beers
     css:
-      table+: "border-collapse: collapse; padding: 0px;"
+      table+: "padding: 16px 0px 16px 16px;"
+      tbody tr+: "user-select: text"
+      tbody tr td:nth-child(1)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(4)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(5)+: "min-width: 1fr;width: 1fr;"
+      th+: "border-bottom: 1px solid rgb(127,127,127);"
     columns:
       - name: Beer
         data: data
@@ -36,8 +43,5 @@ entities:
           box-shadow: none;
           overflow: auto;
           padding-top: 5px;
-          font-size: 12px;
-        }
-        tbody tr:hover {
-          background-color: coral !important
+          font-size: 11px;
         }

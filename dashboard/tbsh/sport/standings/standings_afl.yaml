@@ -11,22 +11,22 @@ entities:
   - type: custom:hui-element
     card_type: custom:flex-table-card
     css:
-      table+: "padding-left: 10px; padding-right: 10px"
-      tbody tr td:first-child: "width: 5%;"
-      tbody tr td:nth-child(2): "width: 30%;"
-      tbody tr td:nth-child(n+3): "width: 5%;"
-      tbody tr:nth-child(8): "border-bottom: 1.2px dashed red !important;"
+      table+: "padding-left: 2px; padding-right: 2px"
+      tbody tr+: "user-select: text"
+      tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
       tbody tr:hover: "background-color: green!important; color:white!important;"
+      th+: "border-bottom: 1px solid rgb(127,127,127);"
     card_mod:
       style:
         .: |
           ha-card {
             overflow: auto;
             box-shadow: none !important;
+            font-size: 13px;
             }
     entities:
       include: sensor.scoreboard_afl
-    sort_by: entries
+    sort_by: entriesman
     columns:
       - name: "#"
         data: entries
