@@ -57,6 +57,7 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
     MODEL,
+    PRECIPITATION_TYPE_DESCRIPTION,
     TIMESTAMP_SENSORS,
 )
 
@@ -207,7 +208,7 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
     ),
     WeatherFlowSensorEntityDescription(
         key="precip_rate",
-        name="Precipitation Rate",
+        name="Precipitation rate",
         native_unit_of_measurement=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
         device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
         state_class=SensorStateClass.MEASUREMENT,
@@ -239,7 +240,7 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
     ),
     WeatherFlowSensorEntityDescription(
         key="precip_intensity",
-        name="Precipitation Intensity",
+        name="Precipitation intensity",
         icon="mdi:weather-rainy",
         translation_key="precip_intensity",
     ),
@@ -286,6 +287,12 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         name="Precipitation duration yesterday Checked",
         native_unit_of_measurement=UnitOfTime.MINUTES,
         device_class=SensorDeviceClass.DURATION,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WeatherFlowSensorEntityDescription(
+        key="precip_type",
+        name="Precipitation type",
+        icon="mdi:format-list-bulleted-type",
         state_class=SensorStateClass.MEASUREMENT,
     ),
     WeatherFlowSensorEntityDescription(
@@ -508,6 +515,15 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
                 return {
                     ATTR_DESCRIPTION: BATTERY_MODE_DESCRIPTION[sensor_value],
                 }
+
+        if self.entity_description.key == "precip_type":
+            sensor_value = getattr(self.coordinator.data.sensor_data,
+                                   self.entity_description.key) if self.coordinator.data.sensor_data else None
+            if sensor_value is not None:
+                return {
+                    ATTR_DESCRIPTION: PRECIPITATION_TYPE_DESCRIPTION[sensor_value],
+                }
+
         if self.entity_description.key == "station_name":
             sensor_value = getattr(self.coordinator.data.sensor_data,
                                    self.entity_description.key) if self.coordinator.data.sensor_data else None

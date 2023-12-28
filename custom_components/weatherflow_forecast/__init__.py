@@ -63,7 +63,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
-    # await cleanup_old_device(hass)
+    if not add_sensors:
+        await cleanup_old_device(hass, config_entry.data[CONF_STATION_ID])
 
     return True
 
@@ -83,12 +84,18 @@ async def async_update_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-async def cleanup_old_device(hass: HomeAssistant) -> None:
+async def cleanup_old_device(hass: HomeAssistant, station_id) -> None:
     """Cleanup device without proper device identifier."""
     device_reg = dr.async_get(hass)
-    device = device_reg.async_get_device(identifiers={(DOMAIN,)})  # type: ignore[arg-type]
+    device = device_reg.async_get_device(
+        identifiers={(DOMAIN, station_id)})  # type: ignore[arg-type]
     if device:
-        _LOGGER.debug("Removing improper device %s", device.name)
+        _LOGGER.debug("Removing deselected sensors: %s", device.name)
+        device_reg.async_remove_device(device.id)
+    device = device_reg.async_get_device(
+        identifiers={(DOMAIN, f"{station_id}_binary")})  # type: ignore[arg-type]
+    if device:
+        _LOGGER.debug("Removing deselected sensors: %s", device.name)
         device_reg.async_remove_device(device.id)
 
 class CannotConnect(HomeAssistantError):
