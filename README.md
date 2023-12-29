@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, December 29th 2023_
+_Stats as at 05:00, Saturday, December 30th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0b0 | 581     | 5252         | 3431 | 136 |
+| 2024.1.0b1 | 590     | 5370         | 3529 | 136 |
 
 Type | Qty
 -- | --
@@ -59,17 +59,17 @@ Alert | 35
 Automation | 136
 Binary Sensor | 342
 Camera | 5
-Device Tracker | 89
+Device Tracker | 95
 Group | 43
 Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
 Light | 14
-Media Player | 20
+Media Player | 22
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3431
+Sensor | 3529
 Sun | 1
 Switch | 311
 Weather | 20
@@ -102,6 +102,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alert](https://www.home-assistant.io/components/alert) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
+| [androidtv](https://www.home-assistant.io/components/androidtv) |
+| [androidtv.media_player](https://www.home-assistant.io/components/androidtv.media_player) |
+| [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
+| [androidtv_remote.media_player](https://www.home-assistant.io/components/androidtv_remote.media_player) |
+| [androidtv_remote.remote](https://www.home-assistant.io/components/androidtv_remote.remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [anniversaries.calendar](https://www.home-assistant.io/components/anniversaries.calendar) |
 | [anniversaries.sensor](https://www.home-assistant.io/components/anniversaries.sensor) |
@@ -179,6 +184,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
+| [dlna_dms](https://www.home-assistant.io/components/dlna_dms) |
 | [doomsday_clock.sensor](https://www.home-assistant.io/components/doomsday_clock.sensor) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
 | [dyson_local.binary_sensor](https://www.home-assistant.io/components/dyson_local.binary_sensor) |
@@ -278,6 +284,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ical](https://www.home-assistant.io/components/ical) |
 | [ical.calendar](https://www.home-assistant.io/components/ical.calendar) |
 | [ical.sensor](https://www.home-assistant.io/components/ical.sensor) |
+| [icloud3](https://www.home-assistant.io/components/icloud3) |
+| [icloud3.device_tracker](https://www.home-assistant.io/components/icloud3.device_tracker) |
+| [icloud3.sensor](https://www.home-assistant.io/components/icloud3.sensor) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -291,6 +300,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_text](https://www.home-assistant.io/components/input_text) |
 | [integration](https://www.home-assistant.io/components/integration) |
 | [integration.sensor](https://www.home-assistant.io/components/integration.sensor) |
+| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [ios.notify](https://www.home-assistant.io/components/ios.notify) |
 | [ios.sensor](https://www.home-assistant.io/components/ios.sensor) |
@@ -561,7 +571,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tod.binary_sensor](https://www.home-assistant.io/components/tod.binary_sensor) |
 | [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
-| [tomorrowio.sensor](https://www.home-assistant.io/components/tomorrowio.sensor) |
 | [tomorrowio.weather](https://www.home-assistant.io/components/tomorrowio.weather) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [trakt_tv](https://www.home-assistant.io/components/trakt_tv) |
@@ -706,7 +715,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)

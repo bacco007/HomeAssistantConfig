@@ -23,6 +23,7 @@ cards:
           max_width: 1000
         cards: &cards
           - !include ../devices/appletv.yaml
+          - !include ../devices/shield.yaml
           - !include ../devices/synology.yaml
           - !include ../devices/hdhomerun.yaml
           - !include ../devices/sonos_office.yaml

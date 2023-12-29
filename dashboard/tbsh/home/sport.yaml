@@ -1,81 +1,92 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: entities
-    entities:
-      - type: custom:paper-buttons-row
-        buttons:
-          - icon: mdi:football-australian
-            layout: icon|name
-            name: Upcoming Sport
-            style:
-              name:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                margin-left: 18px
-                font-size: 15px
-                font-weight: 600
-                color: var(--title)
-              icon:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                "--mdc-icon-size": 20px
-                color: var(--title)
-          - icon: mdi:arrow-top-right
-            layout: icon
-            tap_action:
-              action: navigate
-              navigation_path: sport
-            style:
-              icon:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                '--mdc-icon-size': 20px
-                color: var(--title)
-        style: |
-          div.flex-box {
-            margin-top: -6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+  - type: custom:mushroom-template-card
+    primary: Upcoming Sport
+    icon: mdi:football-australian
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
           }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
+    entities:
       - type: custom:hui-element
         card_type: grid
-        columns: 2
+        columns: 1
         square: false
         style: |
           ha-card {
             background-color: var(--card-background-color);
-            padding: 2px;
+            padding: 20px;
             box-shadow: none;
           }
         cards:
-          - type: custom:mushroom-entity-card
-            style: |
-              ha-card {
-                background-color: var(--background-color); }
-            entity: sensor.upcoming_sport_next_24_hours
-            hold_action:
-              action: none
-            double_tap_action:
-              action: none
-            secondary_info: name
-            primary_info: state
-            name: Today
-            icon_color: green
-          - type: custom:mushroom-entity-card
-            style: |
-              ha-card {
-                background-color: var(--background-color); }
-            entity: sensor.upcoming_sport_this_week
-            name: This Week
-            fill_container: false
-            icon_color: yellow
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            double_tap_action:
-              action: none
-            primary_info: state
-            secondary_info: name
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                style: |
+                  ha-card {
+                    background-color: var(--background-color); }
+                entity: sensor.upcoming_sport_next_24_hours
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                secondary_info: name
+                primary_info: state
+                name: Today
+                icon_color: green
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
+              - type: custom:mushroom-entity-card
+                style: |
+                  ha-card {
+                    background-color: var(--background-color); }
+                entity: sensor.upcoming_sport_this_week
+                name: This Week
+                fill_container: false
+                icon_color: yellow
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                primary_info: state
+                secondary_info: name
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
       - type: custom:auto-entities
         sort:
           method: attribute
@@ -115,4 +126,3 @@ cards:
               delay: 2000
             cubeEffect:
               - slideShadows: false
-

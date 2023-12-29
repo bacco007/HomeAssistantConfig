@@ -1,31 +1,36 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: entities
-    entities:
-      - type: custom:paper-buttons-row
-        buttons:
-          - icon: mdi:network-pos
-            layout: icon|name
-            name: NBN FTTN Upgrade Status
-            style:
-              name:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                margin-left: 18px
-                font-size: 15px
-                font-weight: 600
-                color: var(--title)
-              icon:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                "--mdc-icon-size": 20px
-                color: var(--title)
-        style: |
-          div.flex-box {
-            margin-top: -6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+  - type: custom:mushroom-template-card
+    primary: NBN FTTN Upgrade Status
+    icon: mdi:network-pos
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+            --primary-text-color: #6eaadc;
           }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
+    entities:
       - type: custom:hui-element
         card_type: grid
         columns: 1
@@ -33,7 +38,7 @@ cards:
         style: |
           ha-card {
             background-color: var(--card-background-color);
-            padding: 2px;
+            padding: 20px;
             box-shadow: none;
           }
         cards:
@@ -43,20 +48,31 @@ cards:
             cards:
               - type: custom:mushroom-template-card
                 primary: Home
-                secondary: &nbndata |-
+                secondary: >-
                   {% set alt_reason_code = states(entity) %}
+
                   {% if alt_reason_code == 'NULL_NA' %}
+
                   Nup :(
+
                   {% elif alt_reason_code == 'FTTP_NA' %}
-                  Soon, {{state_attr(entity, 'addressDetail')['techChangeStatus']}}, {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
+
+                  Soon, {{state_attr(entity, 'addressDetail')['techChangeStatus']}},
+                  {{state_attr(entity,
+                  'addressDetail')['targetEligibilityQuarter']}}
+
                   {% elif alt_reason_code == 'FTTP_SA' %}
+
                   Yes!
+
                   {% else %}
+
                   {% if alt_reason_code %}
                     {{ alt_reason_code }} was returned
                   {% else %}
                     Error
                   {% endif %}
+
                   {% endif %}
                 icon: mdi:check-network
                 tap_action:
@@ -66,7 +82,7 @@ cards:
                 double_tap_action:
                   action: none
                 entity: sensor.nbn_location_home
-                icon_color: &nbnicon |-
+                icon_color: |-
                   {% set alt_reason_code = states(entity) %}
                   {% if alt_reason_code == 'NULL_NA' %}
                     red
@@ -85,7 +101,32 @@ cards:
                       }
               - type: custom:mushroom-template-card
                 primary: Work
-                secondary: *nbndata
+                secondary: >-
+                  {% set alt_reason_code = states(entity) %}
+
+                  {% if alt_reason_code == 'NULL_NA' %}
+
+                  Nup :(
+
+                  {% elif alt_reason_code == 'FTTP_NA' %}
+
+                  Soon, {{state_attr(entity, 'addressDetail')['techChangeStatus']}},
+                  {{state_attr(entity,
+                  'addressDetail')['targetEligibilityQuarter']}}
+
+                  {% elif alt_reason_code == 'FTTP_SA' %}
+
+                  Yes!
+
+                  {% else %}
+
+                  {% if alt_reason_code %}
+                    {{ alt_reason_code }} was returned
+                  {% else %}
+                    Error
+                  {% endif %}
+
+                  {% endif %}
                 icon: mdi:check-network
                 tap_action:
                   action: none
@@ -94,7 +135,17 @@ cards:
                 double_tap_action:
                   action: none
                 entity: sensor.nbn_location_dadwork
-                icon_color: *nbnicon
+                icon_color: |-
+                  {% set alt_reason_code = states(entity) %}
+                  {% if alt_reason_code == 'NULL_NA' %}
+                    red
+                  {% elif alt_reason_code == 'FTTP_NA' %}
+                    yellow
+                  {% elif alt_reason_code == 'FTTP_SA' %}
+                    green
+                  {% else %}
+                    grey
+                  {% endif %}
                 card_mod:
                   style:
                     .: |
