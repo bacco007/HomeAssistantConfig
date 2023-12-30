@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, December 30th 2023_
+_Stats as at 05:00, Sunday, December 31st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0b1 | 590     | 5370         | 3529 | 136 |
+| 2024.1.0b2 | 591     | 5258         | 3441 | 136 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 35
 Automation | 136
-Binary Sensor | 342
+Binary Sensor | 338
 Camera | 5
 Device Tracker | 95
 Group | 43
@@ -65,11 +65,11 @@ Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
 Light | 14
-Media Player | 22
+Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3529
+Sensor | 3441
 Sun | 1
 Switch | 311
 Weather | 20
@@ -184,11 +184,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
-| [dlna_dms](https://www.home-assistant.io/components/dlna_dms) |
 | [doomsday_clock.sensor](https://www.home-assistant.io/components/doomsday_clock.sensor) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
 | [dyson_local.binary_sensor](https://www.home-assistant.io/components/dyson_local.binary_sensor) |
 | [dyson_local.button](https://www.home-assistant.io/components/dyson_local.button) |
+| [dyson_local.climate](https://www.home-assistant.io/components/dyson_local.climate) |
+| [dyson_local.fan](https://www.home-assistant.io/components/dyson_local.fan) |
 | [dyson_local.select](https://www.home-assistant.io/components/dyson_local.select) |
 | [dyson_local.sensor](https://www.home-assistant.io/components/dyson_local.sensor) |
 | [dyson_local.switch](https://www.home-assistant.io/components/dyson_local.switch) |
@@ -250,6 +251,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [gtfs_rt.sensor](https://www.home-assistant.io/components/gtfs_rt.sensor) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [hacs.sensor](https://www.home-assistant.io/components/hacs.sensor) |
+| [hacs.update](https://www.home-assistant.io/components/hacs.update) |
 | [hardware](https://www.home-assistant.io/components/hardware) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
 | [harmony.remote](https://www.home-assistant.io/components/harmony.remote) |
@@ -260,6 +262,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [hassio.sensor](https://www.home-assistant.io/components/hassio.sensor) |
 | [hassio.update](https://www.home-assistant.io/components/hassio.update) |
 | [hdhomerun](https://www.home-assistant.io/components/hdhomerun) |
+| [hdhomerun.binary_sensor](https://www.home-assistant.io/components/hdhomerun.binary_sensor) |
+| [hdhomerun.button](https://www.home-assistant.io/components/hdhomerun.button) |
+| [hdhomerun.select](https://www.home-assistant.io/components/hdhomerun.select) |
+| [hdhomerun.sensor](https://www.home-assistant.io/components/hdhomerun.sensor) |
+| [hdhomerun.update](https://www.home-assistant.io/components/hdhomerun.update) |
 | [here_travel_time](https://www.home-assistant.io/components/here_travel_time) |
 | [here_travel_time.sensor](https://www.home-assistant.io/components/here_travel_time.sensor) |
 | [history](https://www.home-assistant.io/components/history) |
@@ -300,7 +307,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_text](https://www.home-assistant.io/components/input_text) |
 | [integration](https://www.home-assistant.io/components/integration) |
 | [integration.sensor](https://www.home-assistant.io/components/integration.sensor) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [ios.notify](https://www.home-assistant.io/components/ios.notify) |
 | [ios.sensor](https://www.home-assistant.io/components/ios.sensor) |
@@ -457,12 +463,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [rocketlaunchlive.sensor](https://www.home-assistant.io/components/rocketlaunchlive.sensor) |
 | [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
 | [sabnzbd.sensor](https://www.home-assistant.io/components/sabnzbd.sensor) |
-| [samsungtv](https://www.home-assistant.io/components/samsungtv) |
-| [samsungtv.media_player](https://www.home-assistant.io/components/samsungtv.media_player) |
-| [samsungtv.remote](https://www.home-assistant.io/components/samsungtv.remote) |
-| [samsungtv_smart](https://www.home-assistant.io/components/samsungtv_smart) |
-| [samsungtv_smart.media_player](https://www.home-assistant.io/components/samsungtv_smart.media_player) |
-| [samsungtv_smart.remote](https://www.home-assistant.io/components/samsungtv_smart.remote) |
 | [satellitetracker](https://www.home-assistant.io/components/satellitetracker) |
 | [satellitetracker.binary_sensor](https://www.home-assistant.io/components/satellitetracker.binary_sensor) |
 | [satellitetracker.device_tracker](https://www.home-assistant.io/components/satellitetracker.device_tracker) |
@@ -571,6 +571,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tod.binary_sensor](https://www.home-assistant.io/components/tod.binary_sensor) |
 | [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
+| [tomorrowio.sensor](https://www.home-assistant.io/components/tomorrowio.sensor) |
 | [tomorrowio.weather](https://www.home-assistant.io/components/tomorrowio.weather) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [trakt_tv](https://www.home-assistant.io/components/trakt_tv) |
@@ -715,7 +716,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -741,7 +742,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Pyscript](https://github.com/custom-components/pyscript)
 - [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass)
 - [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
-- [Samsungtv Smart](https://github.com/ollo69/ha-samsungtv-smart)
 - [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker)
 - [Sensor.Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
@@ -872,7 +872,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (17.0.0)
+- Advanced SSH & Web Terminal (17.0.1)
 - Bluetooth Presence Monitor (1.0.0)
 - Cloudflared (4.2.12)
 - ESPHome (2023.12.5)
