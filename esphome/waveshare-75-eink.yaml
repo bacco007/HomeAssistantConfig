@@ -542,7 +542,7 @@ display:
     model: 7.50in-bv2-rb
     id: eink_display
     update_interval: never
-    reset_duration: 2ms
+    reset_duration: 22ms
     rotation: 180
     lambda: |-
       int xres = it.get_width();
