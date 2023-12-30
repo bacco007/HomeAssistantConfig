@@ -46,26 +46,12 @@ _LOGGER = logging.getLogger(__name__)
 
 
 # region #-- sensor descriptions --#
-@dataclasses.dataclass
-class RequiredHDHomerunSensorDescription:
-    """Represent the required attributes of the sensor description."""
-
-
-@dataclasses.dataclass
-class OptionalHDHomerunSensorDescription:
-    """Represent the optional attributes of the sensor description."""
+@dataclasses.dataclass(frozen=True)
+class AdditionalSensorDescription:
+    """Represent additional options for the button entity."""
 
     extra_attributes: Callable | None = None
     state_value: Optional[Callable[[Any], Any]] = None
-
-
-@dataclasses.dataclass
-class HDHomerunSensorEntityDescription(
-    OptionalHDHomerunSensorDescription,
-    SensorEntityDescription,
-    RequiredHDHomerunSensorDescription,
-):
-    """Describes sensor entity."""
 
 
 # endregion
@@ -99,18 +85,20 @@ async def async_setup_entry(
                 HDHomerunSensor(
                     config_entry=config_entry,
                     coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    description=SensorEntityDescription(
                         key="current_firmware",
                         name="Version",
                     ),
                 ),
                 HDHomerunSensor(
+                    additional_description=AdditionalSensorDescription(
+                        state_value=lambda d: d.latest_firmware or d.current_firmware,
+                    ),
                     config_entry=config_entry,
                     coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    description=SensorEntityDescription(
                         key="",
                         name="Newest Version",
-                        state_value=lambda d: d.latest_firmware or d.current_firmware,
                     ),
                 ),
             ]
@@ -121,7 +109,7 @@ async def async_setup_entry(
                 HDHomerunSensor(
                     config_entry=config_entry,
                     coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    description=SensorEntityDescription(
                         key="current_firmware",
                         name="Version",
                     ),
@@ -129,7 +117,7 @@ async def async_setup_entry(
                 HDHomerunSensor(
                     config_entry=config_entry,
                     coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    description=SensorEntityDescription(
                         key="",
                         name="Newest Version",
                     ),
@@ -146,7 +134,7 @@ async def async_setup_entry(
                 HDHomerunTunerSensor(
                     config_entry=config_entry,
                     coordinator=coordinator_tuner,
-                    description=HDHomerunSensorEntityDescription(
+                    description=SensorEntityDescription(
                         key="",
                         name=tuner.get("Resource").title(),
                         translation_key="tuner_status",
@@ -160,9 +148,7 @@ async def async_setup_entry(
         sensors.extend(
             [
                 HDHomerunSensor(
-                    config_entry=config_entry,
-                    coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    additional_description=AdditionalSensorDescription(
                         extra_attributes=lambda d: (
                             {
                                 "channels": [
@@ -172,10 +158,6 @@ async def async_setup_entry(
                                 ]
                             }
                         ),
-                        icon="mdi:playlist-remove",
-                        key="channels",
-                        name="Disabled Channels",
-                        state_class=SensorStateClass.MEASUREMENT,
                         state_value=lambda d: len(
                             [
                                 channel
@@ -183,13 +165,19 @@ async def async_setup_entry(
                                 if channel.get("Enabled", None) == 0
                             ]
                         ),
+                    ),
+                    config_entry=config_entry,
+                    coordinator=coordinator_general,
+                    description=SensorEntityDescription(
+                        icon="mdi:playlist-remove",
+                        key="channels",
+                        name="Disabled Channels",
+                        state_class=SensorStateClass.MEASUREMENT,
                         translation_key="disabled_channels",
                     ),
                 ),
                 HDHomerunSensor(
-                    config_entry=config_entry,
-                    coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    additional_description=AdditionalSensorDescription(
                         extra_attributes=lambda d: (
                             {
                                 "channels": [
@@ -199,10 +187,6 @@ async def async_setup_entry(
                                 ]
                             }
                         ),
-                        icon="mdi:playlist-star",
-                        key="channels",
-                        name="Favourite Channels",
-                        state_class=SensorStateClass.MEASUREMENT,
                         state_value=lambda d: len(
                             [
                                 channel
@@ -210,19 +194,29 @@ async def async_setup_entry(
                                 if channel.get("Favorite", None) == 1
                             ]
                         ),
+                    ),
+                    config_entry=config_entry,
+                    coordinator=coordinator_general,
+                    description=SensorEntityDescription(
+                        icon="mdi:playlist-star",
+                        key="channels",
+                        name="Favourite Channels",
+                        state_class=SensorStateClass.MEASUREMENT,
                         translation_key="fav_channels",
                     ),
                 ),
                 HDHomerunSensor(
+                    additional_description=AdditionalSensorDescription(
+                        # pylint: disable=unnecessary-lambda
+                        state_value=lambda d: len(d),
+                    ),
                     config_entry=config_entry,
                     coordinator=coordinator_general,
-                    description=HDHomerunSensorEntityDescription(
+                    description=SensorEntityDescription(
                         icon="mdi:text-long",
                         key="channels",
                         name="Channel Count",
                         state_class=SensorStateClass.MEASUREMENT,
-                        # pylint: disable=unnecessary-lambda
-                        state_value=lambda d: len(d),
                         translation_key="channel_count",
                     ),
                 ),
@@ -236,7 +230,7 @@ async def async_setup_entry(
             HDHomerunSensor(
                 config_entry=config_entry,
                 coordinator=coordinator_general,
-                description=HDHomerunSensorEntityDescription(
+                description=SensorEntityDescription(
                     icon="mdi:transmission-tower-import",
                     key="tuner_count",
                     name="Tuner Count",
@@ -258,15 +252,17 @@ async def async_setup_entry(
 class HDHomerunSensor(HDHomerunEntity, SensorEntity):
     """Representation of an HDHomeRun sensor."""
 
-    entity_description: HDHomerunSensorEntityDescription
-
     def __init__(
         self,
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
-        description: HDHomerunSensorEntityDescription,
+        description: SensorEntityDescription,
+        additional_description: AdditionalSensorDescription | None = None,
     ) -> None:
         """Initialise."""
+        self._additional_description: AdditionalSensorDescription | None = (
+            additional_description
+        )
         self.entity_domain = ENTITY_DOMAIN
         super().__init__(
             config_entry=config_entry,
@@ -280,14 +276,17 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
     def native_value(self) -> StateType | date | datetime:
         """Get the value of the sensor."""
         if self.coordinator.data:
-            if self.entity_description.state_value:
+            if (
+                self._additional_description is not None
+                and self._additional_description.state_value
+            ):
                 if self.entity_description.key:
-                    return self.entity_description.state_value(
+                    return self._additional_description.state_value(
                         getattr(
                             self.coordinator.data, self.entity_description.key, None
                         )
                     )
-                return self.entity_description.state_value(self.coordinator.data)
+                return self._additional_description.state_value(self.coordinator.data)
             return getattr(self.coordinator.data, self.entity_description.key, None)
 
         return None
@@ -300,7 +299,7 @@ class HDHomerunTunerSensor(HDHomerunEntity, SensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
-        description: HDHomerunSensorEntityDescription,
+        description: SensorEntityDescription,
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN

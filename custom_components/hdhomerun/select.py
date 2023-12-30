@@ -26,29 +26,13 @@ from .const import (
 
 
 # region #-- select entity descriptions --#
-@dataclasses.dataclass
-class OptionalHDHomeRunSelectDescription:
-    """Represent the optional attributes of the select description."""
+@dataclasses.dataclass(frozen=True)
+class AdditionalSelectDescription:
+    """Represent additional options for the select entity."""
 
-    extra_attributes_args: dict | None = dataclasses.field(default_factory=dict)
-    extra_attributes: Callable[[Any], dict] | None = None
     custom_options: Callable[[Any], list[str]] | list[str] = dataclasses.field(
         default_factory=list
     )
-
-
-@dataclasses.dataclass
-class RequiredHDHomeRunSelectDescription:
-    """Represent the required attributes of the select description."""
-
-
-@dataclasses.dataclass
-class HDHomeRunSelectDescription(
-    OptionalHDHomeRunSelectDescription,
-    SelectEntityDescription,
-    RequiredHDHomeRunSelectDescription,
-):
-    """Describes select entity."""
 
 
 # endregion
@@ -71,7 +55,7 @@ async def async_setup_entry(
             HDHomeRunSelect(
                 config_entry=config_entry,
                 coordinator=coordinator,
-                description=HDHomeRunSelectDescription(
+                description=SelectEntityDescription(
                     entity_category=EntityCategory.CONFIG,
                     key="channel_sources",
                     name="Channel Sources",
@@ -90,9 +74,13 @@ class HDHomeRunSelect(HDHomerunEntity, SelectEntity):
         self,
         coordinator: DataUpdateCoordinator,
         config_entry: ConfigEntry,
-        description: HDHomeRunSelectDescription,
+        description: SelectEntityDescription,
+        additional_description: AdditionalSelectDescription | None = None,
     ) -> None:
         """Initialise."""
+        self._additional_description: AdditionalSelectDescription | None = (
+            additional_description
+        )
         self._attr_current_option = None
         self.entity_domain = ENTITY_DOMAIN
 
@@ -118,7 +106,10 @@ class HDHomeRunSelect(HDHomerunEntity, SelectEntity):
         if self.entity_description.key:
             return getattr(self.coordinator.data, self.entity_description.key, None)
 
-        if isinstance(self.entity_description.custom_options, Callable):
-            return self.entity_description.custom_options(self.coordinator.data)
+        if isinstance(self._additional_description.custom_options, Callable):
+            return self._additional_description.custom_options(self.coordinator.data)
 
-        return self.entity_description.custom_options or self.entity_description.options
+        return (
+            self._additional_description.custom_options
+            or self.entity_description.options
+        )

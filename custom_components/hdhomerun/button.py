@@ -38,28 +38,14 @@ _LOGGER = logging.getLogger(__name__)
 
 
 # region #-- button entity descriptions --#
-@dataclasses.dataclass
-class OptionalButtonDescription:
-    """Represent the optional attributes of the button description."""
-
-    press_action_arguments: Optional[dict] = dataclasses.field(default_factory=dict)
-
-
-@dataclasses.dataclass
-class RequiredButtonDescription:
-    """Represent the required attributes of the button description."""
+@dataclasses.dataclass(frozen=True)
+class AdditionalButtonDescription:
+    """Represent additional options for the button entity."""
 
     press_action: str
-
-
-@dataclasses.dataclass
-class HDHomeRunButtonDescription(
-    OptionalButtonDescription, ButtonEntityDescription, RequiredButtonDescription
-):
-    """Describes button entity."""
-
     listen_for_signal: str | None = None
     listen_for_signal_action: str | None = None
+    press_action_arguments: Optional[dict] = dataclasses.field(default_factory=dict)
 
 
 # endregion
@@ -77,13 +63,15 @@ async def async_setup_entry(
 
     buttons: List[HDHomeRunButton] = [
         HDHomeRunButton(
+            additional_description=AdditionalButtonDescription(
+                press_action="async_restart",
+            ),
             config_entry=config_entry,
             coordinator=coordinator,
-            description=HDHomeRunButtonDescription(
+            description=ButtonEntityDescription(
                 device_class=ButtonDeviceClass.RESTART,
                 key="",
                 name="Restart",
-                press_action="async_restart",
                 translation_key="restart",
             ),
         )
@@ -92,19 +80,21 @@ async def async_setup_entry(
     if coordinator.data.channel_sources:
         buttons.append(
             HDHomeRunButton(
-                config_entry=config_entry,
-                coordinator=coordinator,
-                description=HDHomeRunButtonDescription(
-                    icon="mdi:text-search",
-                    key="",
+                additional_description=AdditionalButtonDescription(
                     listen_for_signal=SIGNAL_HDHOMERUN_CHANNEL_SOURCE_CHANGE,
                     listen_for_signal_action="_set_channel_source",
-                    name="Channel Scan",
                     press_action="async_channel_scan_start",
                     press_action_arguments={
                         "signal": SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED,
                         "channel_source": lambda s: getattr(s, "_channel_source", None),
                     },
+                ),
+                config_entry=config_entry,
+                coordinator=coordinator,
+                description=ButtonEntityDescription(
+                    icon="mdi:text-search",
+                    key="",
+                    name="Channel Scan",
                     translation_key="channel_scan",
                 ),
             )
@@ -141,16 +131,18 @@ async def _async_button_pressed(
 class HDHomeRunButton(HDHomerunEntity, ButtonEntity, ABC):
     """Representation for a button in the Mesh."""
 
-    entity_description: HDHomeRunButtonDescription
-
     def __init__(
         self,
         coordinator: DataUpdateCoordinator,
         config_entry: ConfigEntry,
-        description: HDHomeRunButtonDescription,
+        description: ButtonEntityDescription,
+        additional_description: AdditionalButtonDescription | None = None,
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN
+        self._additional_description: AdditionalButtonDescription | None = (
+            additional_description
+        )
         super().__init__(
             config_entry=config_entry,
             coordinator=coordinator,
@@ -163,13 +155,15 @@ class HDHomeRunButton(HDHomerunEntity, ButtonEntity, ABC):
 
     async def async_added_to_hass(self) -> None:
         """Carry out tasks when added to the regstry."""
-        if self.entity_description.listen_for_signal:
+        if self._additional_description.listen_for_signal:
             self.async_on_remove(
                 async_dispatcher_connect(
                     hass=self.hass,
-                    signal=self.entity_description.listen_for_signal,
+                    signal=self._additional_description.listen_for_signal,
                     target=getattr(
-                        self, self.entity_description.listen_for_signal_action, None
+                        self,
+                        self._additional_description.listen_for_signal_action,
+                        None,
                     ),
                 )
             )
@@ -179,8 +173,8 @@ class HDHomeRunButton(HDHomerunEntity, ButtonEntity, ABC):
     async def async_press(self) -> None:
         """Handle the button being pressed."""
         await _async_button_pressed(
-            action=self.entity_description.press_action,
-            action_arguments=self.entity_description.press_action_arguments.copy(),
+            action=self._additional_description.press_action,
+            action_arguments=self._additional_description.press_action_arguments.copy(),
             device=self.coordinator.data,
             hass=self.hass,
             self=self,

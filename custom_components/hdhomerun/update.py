@@ -3,7 +3,6 @@
 # region #-- imports --#
 from __future__ import annotations
 
-import dataclasses
 from abc import ABC
 from typing import List
 
@@ -21,31 +20,6 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from . import HDHomerunEntity
 from .const import CONF_DATA_COORDINATOR_GENERAL, DOMAIN
 from .pyhdhr.const import DiscoverMode
-
-# endregion
-
-
-# region #-- update entity descriptions --#
-@dataclasses.dataclass
-class RequiredHDHomerunUpdateDescription:
-    """Represent the required attributes of the update description."""
-
-
-@dataclasses.dataclass
-class OptionalHDHomerunUpdateDescription:
-    """Represent the optional attributes of the Update description."""
-
-    release_url: str | None = None
-
-
-@dataclasses.dataclass
-class HDHomerunUpdateEntityDescription(
-    OptionalHDHomerunUpdateDescription,
-    UpdateEntityDescription,
-    RequiredHDHomerunUpdateDescription,
-):
-    """Describes update entity."""
-
 
 # endregion
 
@@ -68,11 +42,10 @@ async def async_setup_entry(
             HDHomerunUpdate(
                 config_entry=config_entry,
                 coordinator=coordinator_general,
-                description=HDHomerunUpdateEntityDescription(
+                description=UpdateEntityDescription(
                     device_class=UpdateDeviceClass.FIRMWARE,
                     key="",
                     name="Update",
-                    release_url="https://www.silicondust.com/support/downloads/firmware-changelog/",
                     translation_key="update",
                 ),
             )
@@ -86,13 +59,11 @@ async def async_setup_entry(
 class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
     """Representation of an HDHomeRun update entity."""
 
-    entity_description: HDHomerunUpdateEntityDescription
-
     def __init__(
         self,
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
-        description: HDHomerunUpdateEntityDescription,
+        description: UpdateEntityDescription,
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN
@@ -118,7 +89,7 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
     @property
     def release_url(self) -> str | None:
         """Get the URL to release notes."""
-        return self.entity_description.release_url
+        return "https://www.silicondust.com/support/downloads/firmware-changelog/"
 
 
 # endregion

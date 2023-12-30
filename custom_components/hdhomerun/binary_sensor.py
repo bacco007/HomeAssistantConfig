@@ -40,31 +40,15 @@ _LOGGER = logging.getLogger(__name__)
 
 
 # region #-- binary sensor descriptions --#
-@dataclasses.dataclass
-class OptionalHDHomerunBinarySensorDescription:
-    """Represent the required attributes of the binary_sensor description."""
+@dataclasses.dataclass(frozen=True)
+class AdditionalBinarySensorDescription:
+    """Represent additional options for the binary sensor entity."""
 
     extra_attributes: Callable | None = None
     state_value: Callable[[Any], bool] | None = None
 
 
-@dataclasses.dataclass
-class RequiredHDHomerunBinarySensorDescription:
-    """Represent the required attributes of the sensor description."""
-
-
-@dataclasses.dataclass
-class HDHomerunBinarySensorEntityDescription(
-    OptionalHDHomerunBinarySensorDescription,
-    BinarySensorEntityDescription,
-    RequiredHDHomerunBinarySensorDescription,
-):
-    """Describes binary_sensor entity."""
-
-
 # endregion
-
-BINARY_SENSORS: tuple[HDHomerunBinarySensorEntityDescription, ...] = ()
 
 
 async def async_setup_entry(
@@ -76,27 +60,22 @@ async def async_setup_entry(
     coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
         CONF_DATA_COORDINATOR_GENERAL
     ]
-    sensors = [
-        HDHomerunBinarySensor(
-            config_entry=config_entry,
-            coordinator=coordinator,
-            description=description,
-        )
-        for description in BINARY_SENSORS
-    ]
+    sensors: list[HDHomerunBinarySensor | HDHomeRunRecurringBinarySensor] = []
 
     if coordinator.data.channel_sources:
         sensors.append(
             HDHomeRunRecurringBinarySensor(
+                additional_description=AdditionalBinarySensorDescription(
+                    extra_attributes=lambda r: {
+                        "progress": r,
+                    },
+                ),
                 config_entry=config_entry,
                 coordinator=hass.data[DOMAIN][config_entry.entry_id][
                     CONF_DATA_COORDINATOR_GENERAL
                 ],
-                description=HDHomerunBinarySensorEntityDescription(
+                description=BinarySensorEntityDescription(
                     device_class=BinarySensorDeviceClass.RUNNING,
-                    extra_attributes=lambda r: {
-                        "progress": r,
-                    },
                     key="channel_scanning",
                     name="Channel Scanning",
                     translation_key="channel_scanning",
@@ -112,15 +91,17 @@ async def async_setup_entry(
     if UPDATE_DOMAIN is None:
         sensors.append(
             HDHomerunBinarySensor(
+                additional_description=AdditionalBinarySensorDescription(
+                    state_value=lambda d: bool(d.latest_firmware),
+                ),
                 config_entry=config_entry,
                 coordinator=hass.data[DOMAIN][config_entry.entry_id][
                     CONF_DATA_COORDINATOR_GENERAL
                 ],
-                description=HDHomerunBinarySensorEntityDescription(
+                description=BinarySensorEntityDescription(
                     key="",
                     name="Update available",
                     device_class=BinarySensorDeviceClass.UPDATE,
-                    state_value=lambda d: bool(d.latest_firmware),
                 ),
             )
         )
@@ -138,7 +119,7 @@ async def async_setup_entry(
                 coordinator=hass.data[DOMAIN][config_entry.entry_id][
                     CONF_DATA_COORDINATOR_GENERAL
                 ],
-                description=HDHomerunBinarySensorEntityDescription(
+                description=BinarySensorEntityDescription(
                     key="",
                     name="Update available",
                 ),
@@ -153,15 +134,17 @@ async def async_setup_entry(
 class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
     """Representation of a binary sensor."""
 
-    entity_description: HDHomerunBinarySensorEntityDescription
-
     def __init__(
         self,
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
-        description: HDHomerunBinarySensorEntityDescription,
+        description: BinarySensorEntityDescription,
+        additional_description: AdditionalBinarySensorDescription | None = None,
     ) -> None:
         """Initialise."""
+        self._additional_description: AdditionalBinarySensorDescription | None = (
+            additional_description
+        )
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self.entity_domain = ENTITY_DOMAIN
         super().__init__(
@@ -174,8 +157,8 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
     def is_on(self) -> bool:
         """Return if the service is on."""
         if self.coordinator.data:
-            if self.entity_description.state_value:
-                return self.entity_description.state_value(self.coordinator.data)
+            if self._additional_description.state_value:
+                return self._additional_description.state_value(self.coordinator.data)
 
             return getattr(self.coordinator.data, self.entity_description.key, None)
 
@@ -185,21 +168,23 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
 class HDHomeRunRecurringBinarySensor(HDHomerunEntity, BinarySensorEntity):
     """Representation of a binary sensor that may need out of band updates."""
 
-    entity_description: HDHomerunBinarySensorEntityDescription
-
     def __init__(
         self,
         coordinator: DataUpdateCoordinator,
         config_entry: ConfigEntry,
-        description: HDHomerunBinarySensorEntityDescription,
+        description: BinarySensorEntityDescription,
         recurrence_interval: int,
         recurrence_trigger: str,
         state_method: str,
         state_processor: Callable[..., bool],
         recurrence_post_signal: str | None = None,
+        additional_description: AdditionalBinarySensorDescription | None = None,
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN
+        self._additional_description: AdditionalBinarySensorDescription | None = (
+            additional_description
+        )
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
         self._state: bool | None = None
@@ -254,8 +239,10 @@ class HDHomeRunRecurringBinarySensor(HDHomerunEntity, BinarySensorEntity):
             raise RuntimeError("State processor is not callable") from None
 
         state_method_results: Any = await state_method()
-        if isinstance(self.entity_description.extra_attributes, Callable):
-            self._esa = self.entity_description.extra_attributes(state_method_results)
+        if isinstance(self._additional_description.extra_attributes, Callable):
+            self._esa = self._additional_description.extra_attributes(
+                state_method_results
+            )
         temp_state: bool = self._state_processor(state_method_results)
         if temp_state:
             if self._remove_action_interval is None:
@@ -297,8 +284,10 @@ class HDHomeRunRecurringBinarySensor(HDHomerunEntity, BinarySensorEntity):
         """Get the state of the binary sensor."""
         queried_state: bool
         ret: bool
-        if self.entity_description.state_value:
-            queried_state = self.entity_description.state_value(self.coordinator.data)
+        if self._additional_description.state_value:
+            queried_state = self._additional_description.state_value(
+                self.coordinator.data
+            )
         else:
             queried_state = getattr(
                 self.coordinator.data, self.entity_description.key, None

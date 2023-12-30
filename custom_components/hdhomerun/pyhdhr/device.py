@@ -31,7 +31,8 @@ from .protocol import HDHomeRunProtocol
 
 _LOGGER = logging.getLogger(__name__)
 
-
+# TODO: Python 3.11 includes StrEnum by default.
+# switch to using that at some point in the future.
 class DevicePaths(str, Enum):
     """Available paths on the device."""
 
