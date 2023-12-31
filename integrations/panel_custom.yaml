@@ -47,7 +47,7 @@ panel_custom:
   #   PANEL_INTEGRATIONS
   - name: panel_integrations
     sidebar_title: Integrations
-    sidebar_icon: mdi:devices
+    sidebar_icon: mdi:chip
     js_url: /api/hassio/app/entrypoint.js
     url_path: "config/integrations"
     embed_iframe: true
