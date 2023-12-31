@@ -2,11 +2,28 @@
   "config": {
     "step": {
       "user": {
+		"menu_options": {
+          "start_end": "Create schedule on start/end stops",
+          "local_stops": "Scheduled departure on stops in your vicinity",
+		  "source": "Setup a new data source",
+		  "remove": "Remove an existing data source, e.g. to free up space"
+        },
+        "description": "Select your choice [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+	  "start_end": {
         "data": {
           "file": "Select source"
         },
         "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
+	  "local_stops": {
+        "data": {
+          "file": "Select source",
+		  "device_tracker_id": "Object/Person to use for lat/lon",
+		  "name": "Name of the sensor"
+        },
+        "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },	  
       "source": {
         "data": {
           "file": "New datasource name",
@@ -52,7 +69,13 @@
           "include_tomorrow": "Include tomorrow"
         },
 		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2b.-Setup-route-for-trains)"
-      }
+      },
+	  "remove": {
+        "data": {
+          "file": "Select source to remove"
+        },
+        "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      }	
     },
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
@@ -79,7 +102,10 @@
         "data": {
           "refresh_interval": "Data refresh interval (in minutes)",
 		  "offset": "Offset in minutes",
-		  "real_time": "Setup Realtime integration? \n (needs data from the same source)"
+		  "real_time": "Setup Realtime integration? \n (needs data from the same source)",
+		  "local_stop_refresh_interval": "Data refresh interval (in minutes)",
+          "timerange": "Checking for departures in future from 'now' (in minutes: between 15 and 90)",
+		  "radius": "Radius to search for stops (in meters between 50 and 500)"
         }
       },
 	  "real_time": {

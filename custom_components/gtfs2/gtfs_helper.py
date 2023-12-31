@@ -14,8 +14,16 @@ from . import zip_file as zipfile
 
 import homeassistant.util.dt as dt_util
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr
 
-from .const import DEFAULT_PATH_GEOJSON
+from .const import (
+    DEFAULT_PATH_GEOJSON, 
+    DEFAULT_LOCAL_STOP_TIMERANGE, 
+    DEFAULT_LOCAL_STOP_RADIUS,
+    ICON,
+    ICONS
+    )
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -626,7 +634,7 @@ def check_datasource_index(hass, schedule, gtfs_dir, file):
             )  
             
 def create_trip_geojson(self):
-    _LOGGER.debug("GTFS Helper, create geojson with data: %s", self._data)
+    _LOGGER.debug("Create geojson with data: %s", self._data)
     schedule = self._data["schedule"]
     self._trip_id = self._data["next_departure"]["trip_id"]
     sql_shape = f"""
@@ -655,3 +663,157 @@ def create_trip_geojson(self):
     self.geojson = {"features": [{"geometry": {"coordinates": coordinates, "type": "LineString"}, "properties": {"id": self._trip_id, "title": self._trip_id}, "type": "Feature"}], "type": "FeatureCollection"}    
     _LOGGER.debug("Geojson: %s", json.dumps(self.geojson))
     return None
+
+def get_local_stops_next_departures(self):
+    _LOGGER.debug("Get local stop departure with data: %s", self._data)
+    # complex, get device_id via entity_registry
+    #entity_registry = er.async_get(self.hass)
+    #entry = entity_registry.async_get(self._data['device_tracker_id'])
+    #entry_attr = self.hass.states.get(entry.entity_id)
+
+    # as device_id aailable via entity , shorter path
+    device_tracker = self.hass.states.get(self._data['device_tracker_id'])
+    _LOGGER.debug("Device tracker attributes: %s", device_tracker)
+
+    
+    if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):
+        _LOGGER.warning("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
+        return {}
+    """Get next departures from data."""
+    if self.hass.config.time_zone is None:
+        _LOGGER.error("Timezone is not set in Home Assistant configuration")
+        timezone = "UTC"
+    else:
+        timezone=dt_util.get_time_zone(self.hass.config.time_zone)
+    schedule = self._data["schedule"]
+    now = dt_util.now().replace(tzinfo=None)
+    now_date = now.strftime(dt_util.DATE_STR_FORMAT)
+    tomorrow = now + datetime.timedelta(days=1)
+    tomorrow_date = tomorrow.strftime(dt_util.DATE_STR_FORMAT)    
+
+    # Fetch all departures for yesterday, today and optionally tomorrow,
+    # up to an overkill maximum in case of a departure every minute for those
+    # days.
+    include_tomorrow = self._data["include_tomorrow"]    
+    limit = 24 * 60 * 60 * 2
+    tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
+    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today)"
+    #stop_lat = 52.356709
+    #stop_lon = 4.834525
+    latitude = device_tracker.attributes.get("latitude", None)
+    longitude = device_tracker.attributes.get("longitude", None)
+    time_range = str('+' + str(self._data.get("timerange", DEFAULT_LOCAL_STOP_TIMERANGE)) + ' minute')
+    radius = self._data.get("radius", DEFAULT_LOCAL_STOP_RADIUS) / 130000
+    _LOGGER.debug("Time Range: %s", time_range)
+    if not latitude or not latitude:
+        _LOGGER.error("No latitude and/or longitude for : %s", self._data['device_tracker_id'])
+        return []
+    if include_tomorrow:
+        _LOGGER.debug("Include Tomorrow")
+        limit = int(limit / 2 * 3)
+        tomorrow_name = tomorrow.strftime("%A").lower()
+        tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
+        tomorrow_where = f"OR calendar.{tomorrow_name} = 1"
+        tomorrow_order = f"calendar.{tomorrow_name} DESC,"
+        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today or calendar_date_today.date = :tomorrow)"
+        tomorrow_select2 = f"'0' AS tomorrow,"        
+    
+    sql_query = f"""
+        SELECT * FROM (
+        SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, trip.trip_id, trip.trip_headsign, time(st.departure_time) as departure_time,
+               route.route_long_name,route.route_short_name,route.route_type,
+               calendar.{now.strftime("%A").lower()} AS today,
+               {tomorrow_select}
+               calendar.start_date AS start_date,
+               calendar.end_date AS end_date,
+               "" as calendar_date,
+               0 as today_cd
+        FROM trips trip
+        INNER JOIN calendar calendar
+                   ON trip.service_id = calendar.service_id
+        INNER JOIN stop_times st
+                   ON trip.trip_id = st.trip_id
+        INNER JOIN stops stop
+                   on stop.stop_id = st.stop_id and abs(stop.stop_lat - :latitude) < :radius and abs(stop.stop_lon - :longitude) < :radius
+        INNER JOIN routes route
+                   ON route.route_id = trip.route_id 
+		WHERE 
+        trip.service_id not in (select service_id from calendar_dates where date = :today and exception_type = 2)
+        and time(st.departure_time) between time('now','localtime') and time('now','localtime',:timerange) 
+        AND calendar.start_date <= :today 
+        AND calendar.end_date >= :today 
+        )
+		UNION ALL
+        SELECT * FROM (
+	    SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, trip.trip_id, trip.trip_headsign, time(st.departure_time) as departure_time,
+               route.route_long_name,route.route_short_name,route.route_type,
+               '0' AS today,
+               {tomorrow_select2}
+               :today AS start_date,
+               :today AS end_date,
+               calendar_date_today.date as calendar_date,
+               calendar_date_today.exception_type as today_cd
+        FROM trips trip
+        INNER JOIN stop_times st
+                   ON trip.trip_id = st.trip_id
+        INNER JOIN stops stop
+                   on stop.stop_id = st.stop_id and abs(stop.stop_lat - :latitude) < :radius and abs(stop.stop_lon - :longitude) < :radius
+        INNER JOIN routes route
+                   ON route.route_id = trip.route_id 
+        INNER JOIN calendar_dates calendar_date_today
+				   ON trip.service_id = calendar_date_today.service_id
+		WHERE 
+        today_cd = 1
+        and time(st.departure_time) between time('now','localtime')  and time('now','localtime',:timerange) 
+		{tomorrow_calendar_date_where}
+        )
+        order by stop_id, departure_time
+        """  # noqa: S608
+    result = schedule.engine.connect().execute(
+        text(sql_query),
+        {
+            "latitude": latitude,
+            "longitude": longitude,
+            "today": now_date,
+            "tomorrow": tomorrow_date,
+            "timerange": time_range,
+            "radius": radius,
+        },
+    )        
+    # Create lookup timetable for today and possibly tomorrow, taking into
+    # account any departures from yesterday scheduled after midnight,
+    # as long as all departures are within the calendar date range.
+    #timetable = {}
+    timetable = []
+    local_stops_list = []
+    yesterday_start = today_start = tomorrow_start = None
+    yesterday_last = today_last = ""
+    prev_stop_id = ""
+    for row_cursor in result:
+        row = row_cursor._asdict()
+        if row["stop_id"] == prev_stop_id or prev_stop_id == "":
+            self._icon = ICONS.get(row['route_type'], ICON)
+            if row["today"] == 1 or row["today_cd"] == 1:
+                idx_prefix = tomorrow_date
+                idx = f"{idx_prefix} {row['departure_time']}"
+                #timetable[idx] = {"route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"]}
+                timetable.append({"departure": row["departure_time"], "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "icon": self._icon})
+            if (
+                "tomorrow" in row
+                and row["tomorrow"] == 1
+                and tomorrow_date <= row["end_date"]
+            ):
+                idx = f"{tomorrow_date} {row['departure_time']}"
+                #timetable[idx] = {"route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"]}
+                timetable.append({"departure": row["departure_time"], "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "icon": self._icon})
+        else:
+            #timetable = {}
+            timetable = []
+        if row["stop_id"] != prev_stop_id and prev_stop_id != "": 
+            local_stops_list.append({"stop_id": row['stop_id'], "stop_name": row['stop_name'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable})            
+        prev_stop_id = str(row["stop_id"])
+   
+    data_returned = local_stops_list
+    
+    _LOGGER.debug("Stop data returned: %s", data_returned)
+    return data_returned

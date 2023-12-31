@@ -50,3 +50,17 @@ update_gtfs_rt_local:
       example: "https://path-to-my-realttime-data"
       selector:
         text:
+        
+test: 
+  name: dummy
+  description: dummy
+  fields:       
+    entity_id:
+      name: Entity
+      description: Jellyfin sensor entity.
+      required: true
+      example: "sensor.jellyfin_cloud"
+      selector:
+        entity:
+          integration: person
+          domain: person        

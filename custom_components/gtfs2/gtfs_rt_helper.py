@@ -102,7 +102,7 @@ def get_gtfs_feed_entities(url: str, headers, label: str):
     return feed.entity
 
 def get_next_services(self):
-    self.data = self._get_rt_route_statuses
+    self.data = self._get_rt_trip_statuses
     self._stop = self._stop_id
     self._destination = self._destination_id
     self._route = self._route_id
@@ -113,13 +113,13 @@ def get_next_services(self):
     _LOGGER.debug("RT trip: %s", self._trip)
     _LOGGER.debug("RT stop: %s", self._stop)
     _LOGGER.debug("RT direction: %s", self._direction)
-    next_services = self.data.get(self._route, {}).get(self._direction, {}).get(self._stop, [])  
+    next_services = self.data.get(self._trip, {}).get(self._direction, {}).get(self._stop, [])
     if not next_services:
-        # GTFS RT feed may differ, try via trip
+        # GTFS RT feed may differ, try via route
         self._direction = '0'
-        self.data2 = get_rt_trip_statuses(self)
-        next_services = self.data2.get(self._trip, {}).get(self._direction, {}).get(self._stop, [])
-        _LOGGER.debug("Next Services, using trip_id instead of route_id: %s", next_services)
+        self.data2 = get_rt_route_statuses(self)
+        next_services = self.data2.get(self._route, {}).get(self._direction, {}).get(self._stop, [])  
+        _LOGGER.debug("Next Services, using route_id instead of trip_id: %s", next_services)
     if next_services:
         _LOGGER.debug("Next services: %s", next_services[0])
         delay = next_services[0].delay
@@ -212,15 +212,7 @@ def get_rt_route_statuses(self):
                     route_id = entity.trip_update.trip.route_id
                 else:
                     route_id = route_id_split[0]
-                log_debug(
-                    [
-                        "Feed Route ID",
-                        entity.trip_update.trip.route_id,
-                        "changed to",
-                        route_id,
-                    ],
-                    1,
-                )
+                _LOGGER.debug("Feed route_id: %s, changed to: %s", entity.trip_update.trip.route_id, route_id)
             else:
                 route_id = entity.trip_update.trip.route_id
             if route_id == self._route_id:
@@ -290,8 +282,11 @@ def get_rt_trip_statuses(self):
             self.position = position
 
     departure_times = {}
-
-    feed_entities = self._feed_entities
+    
+    feed_entities = get_gtfs_feed_entities(
+        url=self._trip_update_url, headers=self._headers, label="trip data"
+    )
+    self._feed_entities = feed_entities
     _LOGGER.debug("Departure times searching for trip: %s", self._trip_id)
     for entity in feed_entities:
 

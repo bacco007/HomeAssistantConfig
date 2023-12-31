@@ -2,11 +2,28 @@
   "config": {
     "step": {
       "user": {
+		"menu_options": {
+          "start_end": "Horaires pour stops",
+          "local_stops": "Départs prochaines autour",
+		  "source": "Ajouter une source de données",
+		  "remove": "Enlever source de données"
+        },
+        "description": "Votre choix [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+	  "start_end": {		   
         "data": {
           "file": "Sélectionnez la source"
         },
         "description": "Sélectionnez parmi les sources existantes dans votre dossier gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
       },
+	  "local_stops": {
+        "data": {
+          "file": "Selectionnez le prestataire de services",
+		  "device_tracker_id": "Objet/individu avec lat/lon",
+		  "name": "Nom du sensor"
+        },
+        "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },					   
       "source": {
         "data": {
           "file": "Nom de la nouvelle source de données",
@@ -51,8 +68,14 @@
           "include_tomorrow": "Inclure le lendemain?"
         },
 		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2b.-Setup-route-for-trains)"
-      }	  
-    },
+      },	  
+	  "remove": {
+        "data": {
+          "file": "Selectionné source à enlever"
+        },
+        "description": "Sélectionnez parmi les sources dans le dossier gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      }	
+    },			  
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
@@ -78,7 +101,10 @@
         "data": {
           "refresh_interval": "Intervalle d'actualisation en minutes",
 		  "offset": "Décalage en minutes",
-		  "real_time": "Ajoute intégration temps réel? \n (nécessite données de la même source)"
+		  "real_time": "Ajoute intégration temps réel? \n (nécessite données de la même source)",
+		  "local_stop_refresh_interval": "Intervalle d'actualisation en minutes",
+          "timerange": "Période dans la future pour départs depuis 'maintenant' (en minutes entre 15 et 90)",
+		  "radius": "Radius pour la recherche des stops (en metres entre 50 et 500)"
         }
       },
 	  "real_time": {

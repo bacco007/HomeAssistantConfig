@@ -9,7 +9,7 @@ from datetime import timedelta
 
 from .const import DOMAIN, PLATFORMS, DEFAULT_PATH, DEFAULT_PATH_RT, DEFAULT_REFRESH_INTERVAL
 from homeassistant.const import CONF_HOST
-from .coordinator import GTFSUpdateCoordinator
+from .coordinator import GTFSUpdateCoordinator, GTFSLocalStopUpdateCoordinator
 import voluptuous as vol
 from .gtfs_helper import get_gtfs
 from .gtfs_rt_helper import get_gtfs_rt
@@ -107,20 +107,20 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up GTFS from a config entry."""
-
     hass.data.setdefault(DOMAIN, {})
+   
+    if entry.data.get('device_tracker_id',None):
+        coordinator = GTFSLocalStopUpdateCoordinator(hass, entry)
+    else:
+        coordinator = GTFSUpdateCoordinator(hass, entry)    
 
-    coordinator = GTFSUpdateCoordinator(hass, entry)
-
-    #await coordinator.async_config_entry_first_refresh()
-    
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
-    
+      
     hass.data[DOMAIN][entry.entry_id] = {
-        "coordinator": coordinator,
+        "coordinator": coordinator
     }
-    
+
     entry.async_on_unload(entry.add_update_listener(update_listener))
       
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -161,5 +161,4 @@ def setup(hass, config):
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     hass.data[DOMAIN][entry.entry_id]['coordinator'].update_interval = timedelta(minutes=1)
-
     return True
