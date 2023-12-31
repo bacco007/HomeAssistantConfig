@@ -51,16 +51,15 @@ update_gtfs_rt_local:
       selector:
         text:
         
-test: 
-  name: dummy
-  description: dummy
+update_gtfs_local_stops: 
+  name: Update Local Stops
+  description: Updates local stops based on location entity
   fields:       
     entity_id:
       name: Entity
-      description: Jellyfin sensor entity.
+      description: Select person or zone to update stops for
       required: true
-      example: "sensor.jellyfin_cloud"
+      example: "zone.home"
       selector:
         entity:
-          integration: person
-          domain: person        
+          domain: ["person", "zone"]       

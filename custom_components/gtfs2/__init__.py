@@ -11,7 +11,7 @@ from .const import DOMAIN, PLATFORMS, DEFAULT_PATH, DEFAULT_PATH_RT, DEFAULT_REF
 from homeassistant.const import CONF_HOST
 from .coordinator import GTFSUpdateCoordinator, GTFSLocalStopUpdateCoordinator
 import voluptuous as vol
-from .gtfs_helper import get_gtfs
+from .gtfs_helper import get_gtfs, update_gtfs_local_stops
 from .gtfs_rt_helper import get_gtfs_rt
 
 _LOGGER = logging.getLogger(__name__)
@@ -149,12 +149,20 @@ def setup(hass, config):
         """My GTFS RT service."""
         _LOGGER.debug("Updating GTFS RT with: %s", call.data)
         get_gtfs_rt(hass, DEFAULT_PATH_RT, call.data)
-        return True   
+        return True  
+
+    async def update_local_stops(call):
+        """My GTFS RT service."""
+        _LOGGER.debug("Updating GTFS Local Stops with: %s", call.data)
+        await update_gtfs_local_stops(hass, call.data)
+        return True           
 
     hass.services.register(
         DOMAIN, "update_gtfs", update_gtfs)
     hass.services.register(
-        DOMAIN, "update_gtfs_rt_local", update_gtfs_rt_local)        
+        DOMAIN, "update_gtfs_rt_local", update_gtfs_rt_local)     
+    hass.services.register(
+        DOMAIN, "update_gtfs_local_stops", update_local_stops)        
      
     return True
 

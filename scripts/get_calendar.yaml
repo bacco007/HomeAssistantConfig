@@ -1,30 +1,24 @@
 ---
-alias: N-Quantity Events from calendar
+alias: "[Calendar] Get Events from Entity"
+description: A script to return a given number of calendar events.
 fields:
-  quantity:
-    name: Event Quantity
-    example: 5
-    required: true
-    selector:
-      number:
-        min: 1
-        max: 25
   calendar:
     name: Calendar
-    example: calendar.australia_holidays
+    description: The calendar entity to retrieve event information from.
+    example: calendar.example
     required: true
     selector:
       entity:
         domain: calendar
 sequence:
-  - service: calendar.list_events
+  - service: calendar.get_events
     data:
       end_date_time: "{{now() + timedelta(days=365)}}"
     target:
       entity_id: "{{ calendar }}"
     response_variable: agenda
   - variables:
-      scheduled: "{{ {'events': agenda.events[:quantity]} }}"
+      scheduled: "{{ {'events': agenda[calendar].events} }}"
   - stop: Return the response variable back to the calling script or automation
     response_variable: scheduled
 mode: single

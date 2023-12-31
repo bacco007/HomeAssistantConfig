@@ -17,12 +17,16 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import device_registry as dr
 
+from homeassistant import config_entries
+from homeassistant.const import CONF_NAME
+
 from .const import (
     DEFAULT_PATH_GEOJSON, 
     DEFAULT_LOCAL_STOP_TIMERANGE, 
     DEFAULT_LOCAL_STOP_RADIUS,
     ICON,
-    ICONS
+    ICONS,
+    DOMAIN
     )
 
 _LOGGER = logging.getLogger(__name__)
@@ -466,7 +470,7 @@ def get_route_list(schedule, data):
 
 def get_stop_list(schedule, route_id, direction):
     sql_stops = f"""
-    SELECT distinct(s.stop_id), s.stop_name
+    SELECT distinct(s.stop_id), s.stop_name, st.stop_sequence
     from trips t
     inner join stop_times st on st.trip_id = t.trip_id
     inner join stops s on s.stop_id = st.stop_id
@@ -484,7 +488,7 @@ def get_stop_list(schedule, route_id, direction):
         row = row_cursor._asdict()
         stops_list.append(list(row_cursor))
     for x in stops_list:
-        val = x[0] + ": " + x[1]
+        val = x[0] + ": " + x[1] + ' (' + str(x[2]) + ')'
         stops.append(val)
     _LOGGER.debug(f"stops: {stops}")
     return stops
@@ -817,3 +821,14 @@ def get_local_stops_next_departures(self):
     
     _LOGGER.debug("Stop data returned: %s", data_returned)
     return data_returned
+    
+async def update_gtfs_local_stops(hass, data): 
+    _LOGGER.debug("Update local stops with data: %s", data)
+    entries = []
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        if entry.data.get("device_tracker_id") == data["entity_id"] :
+            entries.append(entry.entry_id)
+    for cf_entry in entries:
+        _LOGGER.debug("Reloading local stops for config_entry_id: %s", cf_entry) 
+        reload = await hass.config_entries.async_reload(cf_entry)    
+    return

@@ -10,10 +10,8 @@ trigger:
   - platform: event
     event_type: event_template_reloaded
 action:
-  - service: calendar.list_events
+  - service: script.get_calendar
     data:
-      end_date_time: "{{now() + timedelta(days=365)}}"
-    target:
       entity_id: calendar.ical_formula_e
     response_variable: agenda
   - variables:

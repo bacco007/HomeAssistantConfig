@@ -156,6 +156,30 @@
 		  "description": "A noter: si déjà existant, l'ancien sera remplacé"
 		}
 	  }
+	},
+	"update_gtfs_rt_local": {
+      "name": "Collecte données GTFS temp réels local",
+      "description": "Utilisable pour Trip, Vehicle Location ou Alerts",
+      "fields": {
+        "name": {
+          "name": "Nom du prestataire de services",
+		  "description": "Il est fortement recommandé d'utiliser le même nom utilise pour les données statiques"
+		},
+		"url": {
+          "name": "URL",
+		  "description": "URL externe vers les données GTFS temp réels"
+		}
+	  }
+	},
+	"update_gtfs_local_stops": {
+      "name": "Mise 1a jour les stops locals",
+      "description": "p.e. pour des 'person' qui bougent",
+      "fields": {
+        "entity_id": {
+          "name": "Entity lié avec les stops locaux",
+		  "description": "L'entité choissi"
+		}
+	  }
 	}
   }
 }

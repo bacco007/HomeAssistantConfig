@@ -50,6 +50,8 @@ sensor:
             |rejectattr('entity_id','in',expand(integration_entities('mobile_app'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('gtfs2'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('google_fit'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('sensibo'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('astroweather'))|map(attribute='entity_id')|list)
             |rejectattr('last_changed','ge',ignore_ts)
             |map(attribute='entity_id')|list }}
         {%- endif %}

@@ -158,6 +158,30 @@
 		  "description": "provide the full path to the zip file itself"
 		}
 	  }
+	},
+	"update_gtfs_rt_local": {
+      "name": "Collects GTFS Realtime data",
+      "description": "Can be used for Trip, Vehicle Location or Alerts",
+      "fields": {
+        "name": {
+          "name": "Name of the provider",
+		  "description": "Strongly recommend to use the same as for static data"
+		},
+		"url": {
+          "name": "URL",
+		  "description": "Provide the full path to the realtime data"
+		}
+	  }
+	},
+	"update_gtfs_local_stops": {
+      "name": "Update GTFS local stops",
+      "description": "e.g. for moving 'person', to be defined for each person / zone",
+      "fields": {
+        "entity_id": {
+          "name": "Entity that is connected to local stops",
+		  "description": "The entity for which you setup local stops"
+		}
+	  }
 	}
   }
 }

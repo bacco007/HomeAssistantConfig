@@ -2,3 +2,4 @@
 ignored_unavailable_entities:
   entities:
     - sensor.time
+    - stt.home_assistant_cloud

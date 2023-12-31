@@ -49,7 +49,7 @@ class NswRfsFireDangerFeedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # 1. If version >= 2023.5: 10 arguments
         # 2. If version == 2023.4: 9 arguments
         # 3. If version <= 2023.3: 8 arguments
-        if MAJOR_VERSION >= 2023 and MINOR_VERSION >= 5:
+        if MAJOR_VERSION >= 2024 or (MAJOR_VERSION >= 2023 and MINOR_VERSION >= 5):
             from homeassistant.components.rest.const import DEFAULT_SSL_CIPHER_LIST
 
             self._rest = RestData(

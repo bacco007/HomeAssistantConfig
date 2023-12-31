@@ -5,43 +5,47 @@ logger:
   default: error
   filters:
     TransportNSW.transportnsw:
-      - No stop events for this query
+      - "No stop events for this query"
     custom_components.ical:
-      - Exception can't compare datetime.datetime to datetime.date in starts/ends
+      - "Exception can't compare datetime.datetime to datetime.date in starts/ends"
     custom_components.monitor_docker.helpers:
-      - Can not determine network usage for container ('networks')
-      - No 'networks' found in raw packet
-      - Too many errors on 'networks' stats, disabling monitoring
+      - "Can not determine network usage for container ('networks')"
+      - "No 'networks' found in raw packet"
+      - 'Too many errors on 'networks' stats, disabling monitoring"
+    custom_components.spook:
+      - "Unexpected exception from"
     custom_components.unifi_status.switch:
-      - Failed to scan aps
+      - 'Failed to scan aps'
     custom_components.unifics.sensor:
-      - Unexpected error fetching sensor data
+      - 'Unexpected error fetching sensor data'
     custom_components.unifigateway.sensor:
-      - Failed to access health info
+      - 'Failed to access health info'
     custom_components.waternsw.sensor:
-      - Cannot retrieve date, check config
+      - 'Cannot retrieve date, check config'
     homeassistant:
-      - "Error doing job: Task exception was never retrieved"
+      - 'Error doing job: Task exception was never retrieved'
     homeassistant.components.media_player:
-      - Updating spotify media_player took longer than the scheduled update interval 0:00:30
+      - 'Updating spotify media_player took longer than the scheduled update interval 0:00:30'
     homeassistant.components.recorder:
-      - Unhandled database error while processing task EventTask
+      - 'Unhandled database error while processing task EventTask'
     homeassistant.components.template.template_entity:
-      - Template loop detected while processing event
+      - 'Template loop detected while processing event'
     homeassistant.components.waze_travel_time.sensor:
-      - "Error on retrieving data: empty response"
+      - 'Error on retrieving data: empty response'''
     homeassistant.helpers.entity:
-      - Expected positive event duration
-      - Update of media_player.spotify_thomas_baxter is taking over 10 seconds
+      - 'Expected positive event duration
+      - 'Update of media_player.spotify_thomas_baxter is taking over 10 seconds'
     homeassistant.helpers.script.trigger_update_coordinator:
-      - "Trigger Update Coordinator: Executing step call service"
-      - "Trigger Update Coordinator: Executing step setting variables"
+      - 'Trigger Update Coordinator: Executing step call service'
+      - 'Trigger Update Coordinator: Executing step setting variables'
+      - "Trigger Update Coordinator: Running script requires passing in a context"
+      - "Trigger Update Coordinator: Running template script"
     homeassistant.loader:
-      - We found a custom integration
+      - We found a custom integration'
     py.warnings:
-      - "InsecureRequestWarning: Unverified HTTPS request is being made to host"
+      - 'InsecureRequestWarning: Unverified HTTPS request is being made to host'
     spotipy.client:
-      - Max Retries reached
+      - 'Max Retries reached'
   logs:
     aioharmony.harmonyclient: fatal
     custom_components.aio_geojson_query: debug
