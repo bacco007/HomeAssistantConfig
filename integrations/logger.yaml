@@ -11,7 +11,7 @@ logger:
     custom_components.monitor_docker.helpers:
       - "Can not determine network usage for container ('networks')"
       - "No 'networks' found in raw packet"
-      - 'Too many errors on 'networks' stats, disabling monitoring"
+      - "Too many errors on 'networks' stats, disabling monitoring"
     custom_components.spook:
       - "Unexpected exception from"
     custom_components.unifi_status.switch:
@@ -31,9 +31,9 @@ logger:
     homeassistant.components.template.template_entity:
       - 'Template loop detected while processing event'
     homeassistant.components.waze_travel_time.sensor:
-      - 'Error on retrieving data: empty response'''
+      - 'Error on retrieving data: empty response'
     homeassistant.helpers.entity:
-      - 'Expected positive event duration
+      - 'Expected positive event duration'
       - 'Update of media_player.spotify_thomas_baxter is taking over 10 seconds'
     homeassistant.helpers.script.trigger_update_coordinator:
       - 'Trigger Update Coordinator: Executing step call service'

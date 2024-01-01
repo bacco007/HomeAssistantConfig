@@ -1,21 +1,11 @@
 ---
 sensor:
-  - name: "Tempest ST 00056115 Precipitation Probability"
-    unique_id: tempest_st_00056115_precipitation_probability
+  - name: "WeatherFlow Precipitation Probability"
+    unique_id: weatherflow_precipitation_probability
     icon: mdi:weather-rainy
     unit_of_measurement: "%"
-    state: "{{ state_attr('weather.tempest_hourly', 'forecast')[0]['precipitation_probability'] | int(-1) }}"
+    state: "{{ state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0]['precipitation_probability'] | int(-1) }}"
     availability: >
-      {{ state_attr('weather.tempest_hourly', 'forecast')[0] is defined
-          and state_attr('weather.tempest_hourly', 'forecast')[0].precipitation_probability is defined
-          and is_number(state_attr('weather.tempest_hourly', 'forecast')[0]['precipitation_probability']) }}
-
-  - name: "WeatherFlow Cloud Precipitation Probability"
-    unique_id: weatherflow_cloud_precipitation_probability
-    icon: mdi:weather-rainy
-    unit_of_measurement: "%"
-    state: "{{ state_attr('weather.weatherflow_cloud_hourly_based_forecast', 'forecast')[0]['precipitation_probability'] | int(-1) }}"
-    availability: >
-      {{ state_attr('weather.weatherflow_cloud_hourly_based_forecast', 'forecast')[0] is defined
-          and state_attr('weather.weatherflow_cloud_hourly_based_forecast', 'forecast')[0].precipitation_probability is defined
-          and is_number(state_attr('weather.weatherflow_cloud_hourly_based_forecast', 'forecast')[0]['precipitation_probability']) }}
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0] is defined
+          and state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0].precipitation_probability is defined
+          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0]['precipitation_probability']) }}

@@ -17,13 +17,14 @@ sensor:
         | list | first | default).datetime | default(none)
       }}
 
-  - name: current_weather_summary_now
+  - name: "[Weather] Summary"
+    unique_id: weather_summary
     state: ""
     attributes:
       content: >
-        Currently {{ states('sensor.tempest_st_00056115_temperature') | round(0) | string + '°' }}
-        feels like  {{ states('sensor.tempest_st_00056115_feels_like_temperature') | round(0) | string + '°' }}
-        {{ states('weather.tempest_hourly') }} and {{states('sensor.tempest_st_00056115_temperature_level') | lower }}.
+        Currently {{ states('sensor.weather_temperature') | round(1) | string + '°' }}
+        feels like {{ states('sensor.weather_apparent_temperature') | round(1) | string + '°' }}
+        {{ states('sensor.weather_current_condition') }} and {{states('sensor.st_00056115_temperature_level') | lower }}.
 
   - name: current_weather_summary_today
     state: ""

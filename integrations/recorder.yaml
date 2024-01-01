@@ -155,6 +155,7 @@ recorder:
       - sensor.upcoming_sport*
       - sensor.weatherman_dash*
       - sensor.flightradar24*
+      - weather.weather_home*
     event_types:
       - automation_triggered
       - call_service

@@ -62,7 +62,7 @@ binary_sensor:
     icon: mdi:weather-lightning-rainy
     picture: https://brands.home-assistant.io/weatherflow/icon.png
     device_class: connectivity
-    state: "{{ has_value('sensor.tempest_st_00056115_status') }}"
+    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
   - name: "[Connected] Weatherflow Cloud"
@@ -71,6 +71,14 @@ binary_sensor:
     picture: https://brands.home-assistant.io/weatherflow/icon.png
     device_class: connectivity
     state: "{{ integration_entities('weatherflow_forecast')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Bureau of Meterology"
+    unique_id: bureau_of_meteorology_connected
+    icon: mdi:weather-lightning-rainy
+    picture: https://brands.home-assistant.io/bureau_of_meteorology/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('bureau_of_meteorology')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
   - name: "[Connected] Sungather"

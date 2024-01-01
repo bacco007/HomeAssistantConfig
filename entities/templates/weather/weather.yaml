@@ -6,24 +6,25 @@ binary_sensor:
     delay_on: 20
     delay_off: 120
     state: >
-      {%- if has_value('sensor.tempest_st_00056115_rain_rate') %}
-        {{ iif(states('sensor.tempest_st_00056115_rain_rate') | int > 0, "True", "False")}}
-      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('binary_sensor.weatherflow_cloud_is_raining') %}
-        {{ states('binary_sensor.weatherflow_cloud_is_raining') }}
+      {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
+        {{ states('binary_sensor.brisbane_st_binary_sensors_is_raining') }}
       {%- endif %}
-    availability: "{{ has_value('sensor.tempest_st_00056115_rain_rate') }}"
+    availability: >
+      {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
+        {{ has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') }}
+      {%- else %} False
+      {%- endif %}
     attributes:
       category: weather
       provider: >
-        {%- if has_value('sensor.tempest_st_00056115_rain_rate') %}
-          Weatherflow (Local)
-        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('binary_sensor.weatherflow_cloud_is_raining') %}
+        {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
           Weatherflow (Cloud)
         {%- endif %}
-      last_rain: >
-        {{ states('sensor.tempest_st_00056115_last_rain_start') }}
+      # last_rain: >
+      #   {{ states('sensor.tempest_st_00056115_last_rain_start') }}
 
   - name: "[Weather] Is Lightning"
     unique_id: weather_is_lightning
@@ -62,43 +63,54 @@ sensor:
     availability: >
       {{ has_value('binary_sensor.temptrend_outdoor_rising')
           and has_value('binary_sensor.temptrend_outdoor_falling') }}
+    attributes:
+      category: weather
 
   - name: "[Weather] Current Condition"
     unique_id: weather_current_condition
     icon: mdi:weather-partly-snowy-rainy
     state: >
-      {% if has_value('weather.weatherflow_forecast_brisbane_st') %}
-        {% set condition = states('weather.weatherflow_forecast_brisbane_st') %}
-      {% elif has_value('weather.east_tamworth') %}
-        {% set condition = states('weather.east_tamworth') %}
-      {% elif has_value('weather.pirateweather') %}
-        {% set condition = states('weather.pirateweather') %}
-      {% endif %}
-
-      {% if condition|lower == 'clear' and is_state('sun.sun','above_horizon') %} sunny
-      {% elif condition|lower == 'clear' and is_state('sun.sun','below_horizon') %} clear-night
-      {% elif condition|lower in ['mainly clear','mainly sunny','clear-day'] %} sunny
-      {% elif condition|lower == 'mist' %} fog
-      {% elif condition|lower in ['haze','partly cloudy','partly-cloudy-day','partly-cloudy-night'] %} partlycloudy
-      {% elif condition|lower == 'mostly cloudy' %} cloudy
-      {% elif condition|lower in ['light rain','rain'] %} rainy
-      {% elif condition|lower in ['light snow','snow'] %} snowy
-      {% elif condition|lower == 'thunderstorm' %} lightning-rainy
-      {% elif condition|lower == 'heavy rain' %} pouring
-      {% elif condition|lower == 'precipitation' %} rainy
-      {% elif condition|lower == 'wind' %} windy
-      {% else %} {{ condition|lower }}
-      {% endif %}
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('weather.weatherflow_forecast_brisbane_st') %}
+        {%- set condition = states('weather.weatherflow_forecast_brisbane_st') %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and has_value('weather.east_tamworth') %}
+        {%- set condition = states('weather.east_tamworth') %}
+      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('weather.pirateweather') %}
+        {%- set condition = states('weather.pirateweather') %}
+      {%- endif %}
+      {%- if condition|lower == 'clear' and is_state('sun.sun','above_horizon') %} sunny
+      {%- elif condition|lower == 'clear' and is_state('sun.sun','below_horizon') %} clear-night
+      {%- elif condition|lower in ['mainly clear','mainly sunny','clear-day'] %} sunny
+      {%- elif condition|lower == 'mist' %} fog
+      {%- elif condition|lower in ['haze','partly cloudy','partly-cloudy-day','partly-cloudy-night'] %} partlycloudy
+      {%- elif condition|lower == 'mostly cloudy' %} cloudy
+      {%- elif condition|lower in ['light rain','rain'] %} rainy
+      {%- elif condition|lower in ['light snow','snow'] %} snowy
+      {%- elif condition|lower == 'thunderstorm' %} lightning-rainy
+      {%- elif condition|lower == 'heavy rain' %} pouring
+      {%- elif condition|lower == 'precipitation' %} rainy
+      {%- elif condition|lower == 'wind' %} windy
+      {%- else %} {{ condition|lower }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if has_value('weather.tempest_daily') %} Weatherflow (Cloud)
-        {% elif has_value('weather.east_tamworth') %} Bureau of Meteorology
-        {% elif has_value('weather.pirateweather') %} Pirate Weather
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('weather.weatherflow_forecast_brisbane_st') %} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and has_value('weather.east_tamworth') %} Bureau of Meteorology
+        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('weather.pirateweather') %} Pirate Weather
+        {%- endif %}
     availability: >
-      {{ has_value('weather.weatherflow_forecast_brisbane_st')
-          or has_value('weather.east_tamworth')
-          or has_value('weather.pirateweather') }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and has_value('weather.weatherflow_forecast_brisbane_st')
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and has_value('weather.east_tamworth')
+          or is_state('binary_sensor.connected_pirateweather', 'on')
+            and has_value('weather.pirateweather') }}
 
   - name: "[Weather] Temperature"
     unique_id: weather_temperature
@@ -106,26 +118,35 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+      {% if is_state('binary_sensor.connected_weatherflow_local','on')
+          and is_number(states('sensor.st_00056115_temperature')) -%}
+        {{ states('sensor.st_00056115_temperature')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_temperature')) %}
         {{ states('sensor.weatherflow_forecast_temperature')|float }}
-      {% elif is_number(states('sensor.st_00056115_temperature')) %}
-        {{ states('sensor.st_00056115_temperature')|float }}
-      {% elif is_number(states('sensor.tamworth_airport_temp')) %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_temp')) %}
         {{ states('sensor.tamworth_airport_temp')|float }}
-      {% else %} 0
-      {% endif %}
+      {%- else %} 0
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_temperature')) %} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
             and is_number(states('sensor.weatherflow_forecast_temperature')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.st_00056115_temperature')) %} Weatherflow (Local)
-        {% elif is_number(states('sensor.tamworth_airport_temp')) %} Bureau of Meteorology
-        {% endif %}
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_temp')) %} Bureau of Meteorology
+        {%- else %} None
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_forecast_temperature'))
-          or is_number(states('sensor.st_00056115_temperature'))
-          or is_number(states('sensor.tamworth_airport_temp')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.weatherflow_forecast_temperature'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.st_00056115_temperature'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_temp')) }}
 
   - name: "[Weather] Apparent Temperature"
     unique_id: weather_apparent_temperature
@@ -134,27 +155,28 @@ sensor:
     unit_of_measurement: °C
     state: >
       {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_feels_like_temperature')) %}
+          and is_number(states('sensor.weatherflow_cloud_feels_like_temperature')) -%}
         {{ states('sensor.weatherflow_cloud_feels_like_temperature')|float }}
-      {% elif is_number(states('sensor.tempest_st_00056115_feels_like_temperature')) %}
-        {{ states('sensor.tempest_st_00056115_feels_like_temperature')|float }}
-      {% elif is_number(states('sensor.tamworth_airport_temp_feels_like')) %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_temp_feels_like')) %}
         {{ states('sensor.tamworth_airport_temp_feels_like')|float }}
-      {% else %}
+      {%- else %}
         {{ states('sensor.weather_temperature')|float }}
-      {% endif %}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_feels_like_temperature')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_feels_like_temperature')) %} Weatherflow (Local)
-        {% elif is_number(states('sensor.tamworth_airport_temp_feels_like')) %} Bureau of Meteorology
-        {% else %} Outdoor Temp
-        {% endif %}
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_temp_feels_like')) %} Bureau of Meteorology
+        {%- else %} Outdoor Temp
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_feels_like_temperature'))
-          or is_number(states('sensor.tempest_st_00056115_feels_like_temperature'))
-          or is_number(states('sensor.tamworth_airport_temp_feels_like'))
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_cloud_feels_like_temperature'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_temp_feels_like'))
           or is_number(states('sensor.weather_temperature')) }}
 
   - name: "[Weather] High Temperature"
@@ -163,21 +185,22 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {% if state_attr('sensor.st_00056115_temperature','max_day') is defined
-          and is_number(state_attr('sensor.st_00056115_temperature','max_day')) %}
-        {{ state_attr('sensor.st_00056115_temperature','max_day')|float }}
+      {% if states('sensor.weather_temperature_daily_high_00_00') is defined
+          and is_number(states('sensor.weather_temperature_daily_high_00_00')) %}
+        {{ states('sensor.weather_temperature_daily_high_00_00')|float }}
       {% elif is_number(states('sensor.tamworth_airport_max_temp')) %}
         {{ states('sensor.tamworth_airport_max_temp')|float }}
       {% endif %}
     attributes:
+      category: weather
       provider: >
-        {% if state_attr('sensor.st_00056115_temperature','max_day') is defined
-            and is_number(state_attr('sensor.st_00056115_temperature','max_day')) %} Weatherflow (Local)
+        {% if states('sensor.weather_temperature_daily_high_00_00') is defined
+            and is_number(states('sensor.weather_temperature_daily_high_00_00')) %} Weatherflow (Local)
         {% elif is_number(states('sensor.tamworth_airport_max_temp')) %} Bureau of Meteorology
         {% endif %}
     availability: >
-      {{ (state_attr('sensor.st_00056115_temperature','max_day') is defined
-            and is_number(state_attr('sensor.st_00056115_temperature','max_day')))
+      {{ (states('sensor.weather_temperature_daily_high_00_00') is defined
+            and is_number(states('weather_temperature_daily_high_00_00')))
           or is_number(states('sensor.tamworth_airport_max_temp')) }}
 
   - name: "[Weather] Low Temperature"
@@ -186,22 +209,40 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {% if state_attr('sensor.st_00056115_temperature','min_day') is defined
-          and is_number(state_attr('sensor.st_00056115_temperature','min_day')) %}
-        {{ state_attr('sensor.st_00056115_temperature','min_day')|float }}
+      {% if states('sensor.weather_temperature_daily_low_00_00') is defined
+          and is_number(states('sensor.weather_temperature_daily_low_00_00')) %}
+        {{ states('sensor.weather_temperature_daily_low_00_00')|float }}
       {% elif is_number(states('sensor.tamworth_airport_min_temp')) %}
         {{ states('sensor.tamworth_airport_min_temp')|float }}
       {% endif %}
     attributes:
+      category:
       provider: >
-        {% if state_attr('sensor.st_00056115_temperature','min_day') is defined
-            and is_number(state_attr('sensor.st_00056115_temperature','min_day')) %} Weatherflow (Local)
+        {% if states('sensor.weather_temperature_daily_low_00_00') is defined
+            and is_number(states('sensor.weather_temperature_daily_low_00_00')) %} Weatherflow (Local)
         {% elif is_number(states('sensor.tamworth_airport_min_temp')) %} Bureau of Meteorology
         {% endif %}
     availability: >
-      {{ (state_attr('sensor.st_00056115_temperature','min_day') is defined
-            and is_number(state_attr('sensor.st_00056115_temperature','min_day')))
+      {{ (states('sensor.weather_temperature_daily_low_00_00') is defined
+            and is_number(states('weather_temperature_daily_low_00_00')))
           or is_number(states('sensor.tamworth_airport_min_temp')) }}
+
+  - name: "[Weather] Temperature Range"
+    unique_id: weather_temperature_range
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    icon: mdi:thermometer-lines
+    state: >
+      {%- set tmax = states('sensor.weather_high_temperature') | float(0) %}
+      {%- set tmin = states('sensor.weather_low_temperature') | float(0) %}
+      {{ (tmax - tmin) | round(2) }}
+    attributes:
+      temperature_updated: "{{ now() | as_local }}"
+      category: weather
+    availability: >
+      {{ has_value('sensor.weather_high_temperature')
+          and has_value('sensor.weather_low_temperature') }}
 
   - name: "[Weather] High Temperature Differential"
     unique_id: weather_high_temperature_differential
@@ -239,42 +280,41 @@ sensor:
       {{ is_number(states('sensor.weather_low_temperature'))
           and is_number(state_attr('sensor.bom_average', 'mintemp_average')) }}
 
-  - name: "[Weather] Temperature Trend"
-    unique_id: weather_temperature_trend
-    icon: >
-      {% if is_state(this.entity_id, 'rising') %} mdi:thermometer-chevron-up
-      {% elif is_state(this.entity_id, 'falling') %} mdi:thermometer-chevron-down
-      {% else %} mdi:thermometer
-      {% endif %}
-    state: >
-      {% set change = states('sensor.weather_temperature_change') | float %}
-      {% if change >= 0.25 %} rising
-      {% elif change < -0.25 %} falling
-      {% else %} steady
-      {% endif %}
-    availability: "{{ is_number(states('sensor.weather_temperature_change')) }}"
-
   - name: "[Weather] Dew Point"
     unique_id: weather_dew_point
     device_class: temperature
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+      {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_dew_point')) -%}
+        {{ states('sensor.st_00056115_dew_point')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_dewpoint')) %}
         {{ states('sensor.weatherflow_cloud_dewpoint')|float }}
-      {% elif is_number(states('sensor.tempest_st_00056115_dew_point')) %}
-        {{ states('sensor.tempest_st_00056115_dew_point')|float }}
-      {% endif %}
+      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_dew_point')) %}
+        {{ states('sensor.pirateweather_dew_point')|float }}
+      {%- else %} 0
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_dew_point')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_dewpoint')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_dew_point')) %} Weatherflow (Local)
-        {% endif %}
+        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_dew_point')) %} Pirate Weather
+        {%- else %} None
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_dewpoint'))
-          or is_number(states('sensor.tempest_st_00056115_dew_point')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.weatherflow_cloud_dewpoint'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.st_00056115_dew_point'))
+          or is_state('binary_sensor.connected_pirateweather', 'on')
+            and is_number(states('sensor.pirateweather_dew_point')) }}
 
   - name: "[Weather] Humidity"
     unique_id: weather_humidity
@@ -282,35 +322,52 @@ sensor:
     state_class: measurement
     unit_of_measurement: "%"
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+      {% if is_state('binary_sensor.connected_weatherflow_local','on')
+          and is_number(states('sensor.st_00056115_humidity')) -%}
+        {{ states('sensor.st_00056115_humidity')|int }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_relative_humidity')) %}
         {{ states('sensor.weatherflow_cloud_relative_humidity')|int }}
-      {% elif is_number(states('sensor.tempest_st_00056115_humidity')) %}
-        {{ states('sensor.tempest_st_00056115_humidity')|int }}
-      {% elif is_number(states('sensor.tamworth_airport_humidity')) %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_humidity')) %}
         {{ states('sensor.tamworth_airport_humidity')|int }}
-      {% endif %}
+      {%- else %} 0
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+          and is_number(states('sensor.st_00056115_humidity')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_relative_humidity')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_humidity')) %} Weatherflow (Local)
-        {% elif is_number(states('sensor.tamworth_airport_humidity')) %} Bureau of Meteorology
-        {% endif %}
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_humidity')) %} Bureau of Meteorology
+        {%- else %} None
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_relative_humidity'))
-          or is_number(states('sensor.tempest_st_00056115_humidity'))
-          or is_number(states('sensor.tamworth_airport_humidity')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+          and is_number(states('sensor.weatherflow_cloud_relative_humidity'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.st_00056115_humidity'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_humidity')) }}
 
   - name: "[Weather] Humidity Today"
     unique_id: weather_humidity_today
     device_class: humidity
     state_class: measurement
     unit_of_measurement: "%"
-    state: "{{ states('sensor.pirateweather_humidity_0d')|int }}"
+    state: >
+      {%- if is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_humidity_0d')) %}
+        {{ states('sensor.pirateweather_humidity_0d')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: Pirate Weather
-    availability: "{{ is_number(states('sensor.pirateweather_humidity_0d')) }}"
+    availability: >
+      {{ is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_humidity_0d')) }}
 
   - name: "[Weather] Precipitation Probability"
     unique_id: weather_precipitation_probability
@@ -318,48 +375,57 @@ sensor:
     state_class: measurement
     unit_of_measurement: "%"
     state: >
-      {% if state_attr('weather.tempest_hourly','forecast')[0] is defined
-          and is_number(state_attr('weather.tempest_hourly','forecast')[0].precipitation_probability) %}
-        {{ state_attr('weather.tempest_hourly','forecast')[0].precipitation_probability|int }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_probability')) %}
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_precipitation_probability')) -%}
         {{ states('sensor.weatherflow_cloud_precipitation_probability')|int }}
-      {% elif is_number(states('sensor.tempest_st_00056115_precipitation_probability')) %}
-        {{ states('sensor.tempest_st_00056115_precipitation_probability')|int }}
-      {% elif is_number(states('sensor.east_tamworth_rain_chance_0')) %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.east_tamworth_rain_chance_0')) %}
         {{ states('sensor.east_tamworth_rain_chance_0')|int }}
-      {% endif %}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if state_attr('weather.tempest_hourly','forecast')[0] is defined
-          and is_number(state_attr('weather.tempest_hourly','forecast')[0].precipitation_probability) %} Hourly Forecast
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_probability')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_precipitation_probability')) %} Weatherflow (Local)
-        {% elif is_number(states('sensor.east_tamworth_rain_chance_0')) %} Bureau of Meteorology
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_precipitation_probability')) -%} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.east_tamworth_rain_chance_0')) %} Bureau of Meteorology
+        {%- endif %}
     availability: >
-      {{ state_attr('weather.tempest_hourly','forecast')[0] is defined
-            and is_number(state_attr('weather.tempest_hourly','forecast')[0].precipitation_probability)
-          or is_number(states('sensor.weatherflow_cloud_precipitation_probability'))
-          or is_number(states('sensor.tempest_st_00056115_precipitation_probability'))
-          or is_number(states('sensor.east_tamworth_rain_chance_0')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_cloud_precipitation_probability'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.east_tamworth_rain_chance_0')) }}
 
-  - name: "[Weather] Precipitation Probability Today"
-    unique_id: weather_precipitation_probability_today
+  - name: "[Weather] Precipitation Probability Tomorrow"
+    unique_id: weather_precipitation_probability_tomorrow
     icon: mdi:weather-rainy
     state_class: measurement
     unit_of_measurement: "%"
     state: >
-      {% if state_attr('weather.tempest_daily','forecast')[0] is defined
-          and is_number(state_attr('weather.tempest_daily','forecast')[0].precipitation_probability) %}
-        {{ state_attr('weather.tempest_daily','forecast')[0].precipitation_probability|int }}
-      {% endif %}
+      {% if state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1] is defined
+          and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].precipitation_probability is defined
+          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1]['precipitation_probability']) -%}
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1]['precipitation_probability'] | int(-1) }}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.east_tamworth_rain_chance_1')) %}
+        {{ states('sensor.east_tamworth_rain_chance_1')|int }}
+      {%- endif %}
     attributes:
-      provider: Daily Forecast
+      category: weather
+      provider: >
+        {% if state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1] is defined
+          and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].precipitation_probability is defined
+          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1]['precipitation_probability']) -%} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.east_tamworth_rain_chance_1')) %} Bureau of Meteorology
+        {%- endif %}
     availability: >
-      {{ state_attr('weather.tempest_daily','forecast')[0] is defined
-          and is_number(state_attr('weather.tempest_daily','forecast')[0].precipitation_probability) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1] is defined
+            and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].precipitation_probability is defined
+            and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1]['precipitation_probability'])
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.east_tamworth_rain_chance_1')) }}
 
   - name: "[Weather] Precipitation Rate"
     unique_id: weather_precipitation_rate
@@ -368,34 +434,26 @@ sensor:
     state_class: measurement
     unit_of_measurement: mm/h
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_local', 'on')
-            and is_number(states('sensor.tempest_st_00056115_rain_rate')) %}
-          {{ states('sensor.tempest_st_00056115_rain_rate') | float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
-            and is_number(states('sensor.weatherflow_cloud_precipitation_rate')) %}
-          {{ states('sensor.weatherflow_cloud_precipitation_rate') | float }}
-      {% elif is_state('binary_sensor.connected_pirateweather', 'on')
+      {% if is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+            and is_number(states('sensor.weatherflow_forecast_precipitation_rate')) -%}
+          {{ states('sensor.weatherflow_forecast_precipitation_rate') | float }}
+      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
             and is_number(states('sensor.pirateweather_precip_intensity')) %}
           {{ states('sensor.pirateweather_precip_intensity') | float }}
-      {% endif %}
+      {%- endif %}
     attributes:
       category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_local', 'on')
-            and is_number(states('sensor.tempest_st_00056115_rain_rate')) %}
-          Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
-            and is_number(states('sensor.weatherflow_cloud_precipitation_rate')) %}
+        {% if is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+            and is_number(states('sensor.weatherflow_forecast_precipitation_rate')) -%}
           Weatherflow (Cloud)
-        {% elif is_state('binary_sensor.connected_pirateweather', 'on')
+        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
             and is_number(states('sensor.pirateweather_precip_intensity')) %}
           Pirate Weather
-        {% endif %}
+        {%- endif %}
     availability: >
-      {{ (is_state('binary_sensor.connected_weatherflow_local', 'on')
-            and is_number(states('sensor.tempest_st_00056115_rain_rate')))
-          or (is_state('binary_sensor.connected_weatherflow_cloud', 'on')
-            and is_number(states('sensor.weatherflow_cloud_precipitation_rate')))
+      {{ (is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+            and is_number(states('sensor.weatherflow_forecast_precipitation_rate')))
           or is_state('binary_sensor.connected_pirateweather', 'on')
             and is_number(states('sensor.pirateweather_precip_intensity')) }}
 
@@ -404,14 +462,14 @@ sensor:
     icon: mdi:weather-pouring
     state: >
       {% set rate = states('sensor.weather_precipitation_rate')|int %}
-      {% if rate == 0 %} none
-      {% elif rate <= 1.0 %} very light
-      {% elif rate <= 4 %} light
-      {% elif rate <= 15 %} moderate
-      {% elif rate <= 30 %} very heavy
-      {% elif rate <= 50 %} heavy
-      {% else %} violent
-      {% endif %}
+      {%- if rate == 0 %} none
+      {%- elif rate <= 1.0 %} very light
+      {%- elif rate <= 4 %} light
+      {%- elif rate <= 15 %} moderate
+      {%- elif rate <= 30 %} very heavy
+      {%- elif rate <= 50 %} heavy
+      {%- else %} violent
+      {%- endif %}
     attributes:
       category: weather
       provider: "{{ state_attr('sensor.weather_precipitation_rate', 'provider') }}"
@@ -424,21 +482,19 @@ sensor:
     state_class: measurement
     unit_of_measurement: min
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_rain_duration_today')) %}
-        {{ states('sensor.tempest_st_00056115_rain_duration_today')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_duration_today')) %}
-        {{ states('sensor.weatherflow_cloud_precipitation_duration_today')|float }}
-      {% endif %}
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_duration_today')) -%}
+        {{ states('sensor.weatherflow_forecast_precipitation_duration_today')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_rain_duration_today')) %} Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_duration_today')) %} Weatherflow (Cloud)
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_duration_today')) -%} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_rain_duration_today'))
-          or is_number(states('sensor.weatherflow_cloud_precipitation_duration_today')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_duration_today')) }}
 
   - name: "[Weather] Precipitation Duration Yesterday"
     unique_id: weather_precipitation_duration_yesterday
@@ -447,21 +503,19 @@ sensor:
     state_class: measurement
     unit_of_measurement: min
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_rain_duration_yesterday')) %}
-        {{ states('sensor.tempest_st_00056115_rain_duration_yesterday')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_duration_yesterday')) %}
-        {{ states('sensor.weatherflow_cloud_precipitation_duration_yesterday')|float }}
-      {% endif %}
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_duration_yesterday')) -%}
+        {{ states('sensor.weatherflow_forecast_precipitation_duration_yesterday')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_rain_duration_yesterday')) %} Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_duration_yesterday')) %} Weatherflow (Cloud)
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_duration_yesterday')) -%} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_rain_duration_yesterday'))
-          or is_number(states('sensor.weatherflow_cloud_precipitation_duration_yesterday')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_duration_yesterday')) }}
 
   - name: "[Weather] Precipitation Today"
     unique_id: weather_precipitation_today
@@ -470,21 +524,19 @@ sensor:
     state_class: measurement
     unit_of_measurement: mm
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_rain_today')) %}
-        {{ states('sensor.tempest_st_00056115_rain_today')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_today')) %}
-        {{ states('sensor.weatherflow_cloud_precipitation_today')|float }}
-      {% endif %}
+      {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_today')) %}
+        {{ states('sensor.weatherflow_forecast_precipitation_today')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_today')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_rain_today')) %} Weatherflow (Local)
-        {% endif %}
+          and is_number(states('sensor.weatherflow_forecast_precipitation_today')) -%} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_precipitation_today'))
-          or is_number(states('sensor.tempest_st_00056115_rain_today')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_precipitation_today')) }}
 
   - name: "[Weather] Precipitation Yesterday"
     unique_id: weather_precipitation_yesterday
@@ -493,51 +545,54 @@ sensor:
     state_class: measurement
     unit_of_measurement: mm
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_rain_yesterday')) %}
-        {{ states('sensor.tempest_st_00056115_rain_yesterday')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_yesterday')) %}
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_cloud_precipitation_yesterday')) -%}
         {{ states('sensor.weatherflow_cloud_precipitation_yesterday')|float }}
-      {% elif is_number(states('sensor.east_tamworth_precipitation_yesterday')) %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.east_tamworth_precipitation_yesterday')) %}
         {{ states('sensor.east_tamworth_precipitation_yesterday')|float }}
-      {% endif %}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_rain_yesterday')) %} Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_precipitation_yesterday')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.east_tamworth_precipitation_yesterday')) %} Bureau of Meteorology
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_cloud_precipitation_yesterday')) -%} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.east_tamworth_precipitation_yesterday')) %} Bureau of Meteorology
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_rain_yesterday'))
-          or is_number(states('sensor.weatherflow_cloud_precipitation_yesterday'))
-          or is_number(states('sensor.east_tamworth_precipitation_yesterday')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_cloud_precipitation_yesterday'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.east_tamworth_precipitation_yesterday')) }}
 
   - name: "[Weather] Precipitation Type"
     unique_id: weather_precipitation_type
     icon: mdi:weather-rainy
-    device_class: enum
     state: >
-      {% set freeze_alt = states('sensor.tempest_st_00056115_freezing_level_altitude')|int(-1) %}
-      {% if has_value('sensor.tempest_st_00056115_precipitation_type') %}
-        {% set type = states('sensor.tempest_st_00056115_precipitation_type')|lower %}
-        {% if type != 'none' %} {{ type }}
-        {% elif freeze_alt != -1 and freeze_alt < 200 %} snow
-        {% else %} rain
+      {% if is_state('binary_sensor.weatherflow_forecast_is_raining', 'on') %}
+        {% set freeze_alt = states('sensor.weatherflow_forecast_freezing_altitude')|int(-1) %}
+        {% if has_value('sensor.st_00056115_precipitation_type') %}
+          {% set type = states('sensor.st_00056115_precipitation_type')|lower %}
+          {% if type != 'none' %} {{ type }}
+          {% elif freeze_alt != -1 and freeze_alt < 200 %} snow
+          {% else %} rain
+          {% endif %}
+        {% else %}
+          {% if is_state('binary_sensor.weatherflow_forecast_is_freezing','on') %} snow
+          {% else %} rain
+          {% endif %}
         {% endif %}
-      {% else %}
-        {% if is_state('binary_sensor.weatherflow_cloud_is_freezing','on') %} snow
-        {% else %} rain
-        {% endif %}
+      {% else %} none
       {% endif %}
     attributes:
       provider: >
-        {% if has_value('sensor.tempest_st_00056115_precipitation_type') %} Weatherflow (Local)
+        {% if has_value('sensor.st_00056115_precipitation_type') %} Weatherflow (Local)
         {% else %} Weatherflow (Cloud)
         {% endif %}
     availability: >
       {{ has_value('sensor.tempest_st_00056115_precipitation_type')
-          or states('binary_sensor.weatherflow_cloud_is_freezing') in ['off','on'] }}
+          or states('binary_sensor.weatherflow_forecast_is_freezing') in ['off','on'] }}
 
   - name: "[Weather] Lightning Count"
     unique_id: weather_lightning_count
@@ -546,20 +601,25 @@ sensor:
     unit_of_measurement: strikes
     state: >
       {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_lightning_strike_count')) %}
-        {{ states('sensor.weatherflow_cloud_lightning_strike_count')|int }}
-      {% elif is_number(states('sensor.tempest_st_00056115_lightning_count')) %}
-        {{ states('sensor.tempest_st_00056115_lightning_count')|int }}
-      {% endif %}
+          and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) -%}
+        {{ states('sensor.weatherflow_forecast_lightnings_strikes')|int }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_lightning_count')) %}
+        {{ states('sensor.st_00056115_lightning_count')|int }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_lightning_strike_count')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_lightning_count')) %} Weatherflow (Local)
-        {% endif %}
+          and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) -%} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_lightning_count')) %} Weatherflow (Local)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_lightning_strike_count'))
-          or is_number(states('sensor.tempest_st_00056115_lightning_count')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_lightnings_strikes'))
+          or is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_lightning_count')) }}
 
   - name: "[Weather] Barometric Pressure"
     unique_id: weather_barometric_pressure
@@ -567,21 +627,25 @@ sensor:
     state_class: measurement
     unit_of_measurement: hPa
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+      {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_air_pressure')) -%}
+        {{ states('sensor.st_00056115_air_pressure')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_barometric_pressure')) %}
         {{ states('sensor.weatherflow_cloud_barometric_pressure')|float }}
-      {% elif is_number(states('sensor.tempest_st_00056115_sea_level_pressure')) %}
-        {{ states('sensor.tempest_st_00056115_sea_level_pressure')|float }}
-      {% endif %}
+      {%- endif %}
     attributes:
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_air_pressure')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_cloud_barometric_pressure')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_sea_level_pressure')) %} Weatherflow (Local)
-        {% endif %}
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_barometric_pressure'))
-          or is_number(states('sensor.tempest_st_00056115_sea_level_pressure')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_cloud_barometric_pressure'))
+          or is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_air_pressure')) }}
 
   - name: "[Weather] Wind Speed"
     unique_id: weather_wind_speed
@@ -590,25 +654,33 @@ sensor:
     state_class: measurement
     unit_of_measurement: km/h
     state: >
-      {% if is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) %}
+      {% if is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) -%}
         {{ states('sensor.tamworth_airport_wind_speed_kilometre')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_speed_km_h')) %}
-        {{ states('sensor.weatherflow_cloud_wind_speed_km_h')|float }}
-      {% elif is_number(states('sensor.tempest_st_00056115_wind_speed')) %}
-        {{ states('sensor.tempest_st_00056115_wind_speed')|float * 3.6 }}
-      {% endif %}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_speed')) %}
+        {{ states('sensor.weatherflow_forecast_wind_speed')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_speed')) %}
+        {{ states('sensor.st_00056115_wind_speed')|float * 3.6 }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) %} Bureau of Meteorology
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_speed_km_h')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_wind_speed')) %} Weatherflow (Local)
-        {% endif %}
+        {% if is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) -%} Bureau of Meteorology
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_speed')) %} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_speed')) %} Weatherflow (Local)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_wind_speed_km_h'))
-          or is_number(states('sensor.tempest_st_00056115_wind_speed'))
-          or is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_speed'))
+          or is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_speed'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) }}
 
   - name: "[Weather] Wind Speed Today"
     unique_id: weather_wind_speed_today
@@ -617,15 +689,23 @@ sensor:
     state_class: measurement
     unit_of_measurement: km/h
     state: >
-      {% if state_attr('weather.tempest_daily','forecast')[0] is defined
-          and is_number(state_attr('weather.tempest_daily','forecast')[0].wind_speed) %}
-        {{ state_attr('weather.tempest_daily','forecast')[0].wind_speed|int }}
-      {% endif %}
+      {% if state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0] is defined
+          and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0].wind_speed is defined
+          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0]['wind_speed']) -%}
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0]['wind_speed'] | int(-1) }}
+      {%- endif %}
     attributes:
-      provider: Daily Forecast
+      category: weather
+      provider: >
+        {% if state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0] is defined
+          and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0].wind_speed is defined
+          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0]['wind_speed']) -%} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ state_attr('weather.tempest_daily','forecast')[0] is defined
-          and is_number(state_attr('weather.tempest_daily','forecast')[0].wind_speed) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0] is defined
+            and state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0].wind_speed is defined
+            and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[0]['wind_speed']) }}
 
   - name: "[Weather] Wind Gust"
     unique_id: weather_wind_gust
@@ -634,26 +714,33 @@ sensor:
     state_class: measurement
     unit_of_measurement: km/h
     state: >
-      {% if is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) %}
+      {% if is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) -%}
         {{ states('sensor.tamworth_airport_gust_speed_kilometre')|float }}
-      {% elif is_number(states('sensor.tempest_st_00056115_wind_gust')) %}
-        {{ states('sensor.tempest_st_00056115_wind_gust')|float * 3.6 }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_gust_km_h')) %}
-        {{ states('sensor.weatherflow_cloud_wind_gust_km_h')|float }}
-      {% endif %}
+      {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_gust')) %}
+        {{ states('sensor.st_00056115_wind_gust')|float * 3.6 }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_gust')) %}
+        {{ states('sensor.weatherflow_forecast_wind_gust')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) %} Bureau of Meteorology
-        {% elif is_number(states('sensor.tempest_st_00056115_wind_gust')) %} Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_gust_km_h')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) %} Bureau of Meteorology
-        {% endif %}
+        {% if is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) -%} Bureau of Meteorology
+        {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_gust')) %} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_gust')) %} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_wind_gust'))
-          or is_number(states('sensor.weatherflow_cloud_wind_gust_km_h'))
-          or is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.tst_00056115_wind_gust'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_wind_gust'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) }}
 
   - name: "[Weather] Wind Gust Today"
     unique_id: weather_wind_gust_today
@@ -661,10 +748,17 @@ sensor:
     device_class: wind_speed
     state_class: measurement
     unit_of_measurement: km/h
-    state: "{{ states('sensor.pirateweather_wind_gust_0d')|int(none) }}"
+    state: >
+      {%- if is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_wind_gust_0d')) %}
+        {{ states('sensor.pirateweather_wind_gust_0d')|int(none) }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: Pirate Weather
-    availability: "{{ is_number(states('sensor.pirateweather_wind_gust_0d')) }}"
+    availability: >
+      {{ is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_wind_gust_0d')) }}
 
   - name: "[Weather] Wind Lull"
     unique_id: weather_wind_lull
@@ -673,62 +767,80 @@ sensor:
     state_class: measurement
     unit_of_measurement: km/h
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_wind_lull')) %}
-        {{ states('sensor.tempest_st_00056115_wind_lull')|float * 3.6 }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_lull_km_h')) %}
-        {{ states('sensor.weatherflow_cloud_wind_lull_km_h')|float }}
-      {% endif %}
+      {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_lull')) -%}
+        {{ states('sensor.st_00056115_wind_lull')|float * 3.6 }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_lull')) %}
+        {{ states('sensor.weatherflow_forecast_wind_lull')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_wind_lull')) %} Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_lull_km_h')) %} Weatherflow (Cloud)
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_lull')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_lull')) %} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_wind_lull'))
-          or is_number(states('sensor.weatherflow_cloud_wind_lull_km_h')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_lull'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_wind_lull')) }}
 
   - name: "[Weather] Wind Bearing"
     unique_id: weather_wind_bearing
     state_class: measurement
     unit_of_measurement: °
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_wind_bearing')) %}
-        {{ states('sensor.tempest_st_00056115_wind_bearing')|float }}
-      {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_direction')) %}
-        {{ states('sensor.weatherflow_cloud_wind_direction')|float }}
-      {% elif is_number(states('sensor.tamworth_airport_wind_direction')) %}
+      {%- if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_bearing')) -%}
+        {{ states('sensor.st_00056115_wind_bearing')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_direction')) %}
+        {{ states('sensor.weatherflow_forecast_wind_direction')|float }}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and is_number(states('sensor.tamworth_airport_wind_direction')) %}
         {{ states('sensor.tamworth_airport_wind_direction') }}
-      {% endif %}
+      {%- endif %}
     attributes:
+      category: weather
       cardinal: >
-        {% set directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'] %}
+        {%- set directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'] %}
         {{ directions[((states('sensor.weather_wind_bearing')|float(-1)/360)|float*16)|round] }}
       full_cardinal: >
-        {% set directions = ['North','North-Northeast','Northeast','East-Northeast','East','East-Southeast',
+        {%- set directions = ['North','North-Northeast','Northeast','East-Northeast','East','East-Southeast',
             'Southeast','South-Southeast','South','South-Southwest','Southwest','West-Southwest','West',
             'West-Northwest','Northwest','North-Northwest','North'] %}
         {{ directions[((states('sensor.weather_wind_bearing')|float(-1)/360)|float*16)|round] }}
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_wind_bearing')) %} Weatherflow (Local)
-        {% elif is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_wind_direction')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tamworth_airport_wind_direction')) %} Bureau of Meteorology
-        {% endif %}
+        {% if is_number(states('sensor.st_00056115_wind_bearing')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_wind_direction')) %} Weatherflow (Cloud)
+        {%- elif is_number(states('sensor.tamworth_airport_wind_direction')) %} Bureau of Meteorology
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_wind_bearing'))
-          or is_number(states('sensor.weatherflow_cloud_wind_direction'))
-          or is_number(states('sensor.tamworth_airport_wind_direction')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_wind_bearing'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_wind_direction'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_wind_direction')) }}
 
   - name: "[Weather] Wind Beaufort Display"
     unique_id: weather_wind_beaufort_display
     icon: mdi:windsock
-    state: "{{ states('sensor.weatherflow_cloud_beaufort_description')|replace('_',' ')|title }}"
+    state: >
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('sensor.weatherflow_forecast_beaufort_description') -%}
+        {{ states('sensor.weatherflow_forecast_beaufort_description')|replace('_',' ')|title }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: Weatherflow (Cloud)
-    availability: "{{ has_value('sensor.weatherflow_cloud_beaufort_description') }}"
+    availability: >
+      {{ is_state('binary_sensor.connected_weatherflow_cloud', 'on')
+          and has_value('sensor.weatherflow_forecast_beaufort_description') }}
 
   - name: "[Weather] Visibility"
     unique_id: weather_visibility
@@ -737,48 +849,70 @@ sensor:
     state_class: measurement
     unit_of_measurement: km
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_visibility')) %}
-        {{ states('sensor.tempest_st_00056115_visibility')|float }}
-      {% elif is_number(states('sensor.weatherflow_cloud_visibility')) %}
-        {{ states('sensor.weatherflow_cloud_visibility')|float }}
-      {% endif %}
+      {%- if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_visibility')) -%}
+        {{ states('sensor.st_00056115_visibility')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_visibility')) %}
+        {{ states('sensor.weatherflow_forecast_visibility')|float }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_visibility')) %} Weatherflow (Local)
-        {% elif is_number(states('sensor.weatherflow_cloud_visibility')) %} Weatherflow (Cloud)
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_visibility')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_visibility')) %} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_visibility'))
-          or is_number(states('sensor.weatherflow_cloud_visibility')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_visibility'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_visibility')) }}
 
   - name: "[Weather] Nearest Storm Bearing"
     unique_id: weather_nearest_storm_bearing
-    state: "{{ states('sensor.pirateweather_nearest_storm_bearing')|float(none) }}"
+    state: >
+      {%- if is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('sensor.pirateweather_nearest_storm_bearing') %}
+        {{ states('sensor.pirateweather_nearest_storm_bearing')|float(none) }}
+      {%- endif %}
     state_class: measurement
     unit_of_measurement: "°"
     attributes:
+      category: weather
       provider: Pirate Weather
-    availability: "{{ is_number(states('sensor.pirateweather_nearest_storm_bearing')) }}"
+    availability: >
+      {{ is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_nearest_storm_bearing')) }}
 
   - name: "[Weather] Nearest Storm Distance"
     unique_id: weather_nearest_storm_distance
     device_class: distance
     state_class: measurement
     unit_of_measurement: km
-    state: "{{ states('sensor.pirateweather_nearest_storm_distance')|int(none) }}"
+    state: >
+      {%- if is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('sensor.pirateweather_nearest_storm_distance') %}
+        {{ states('sensor.pirateweather_nearest_storm_distance')|int(none) }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: Pirate Weather
-    availability: "{{ is_number(states('sensor.pirateweather_nearest_storm_distance')) }}"
+    availability: >
+      {{ is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_nearest_storm_distance')) }}
 
   - name: "[Weather] Storm Full Direction"
     unique_id: weather_storm_full_direction
     state: >
       {% set directions = ['North','North-Northeast','Northeast','East-Northeast','East','East-Southeast',
           'Southeast','South-Southeast','South','South-Southwest','Southwest','West-Southwest','West',
-          'West-Northwest','Northwest','North-Northwest','North'] %}
-      {% set dir = states('sensor.weather_nearest_storm_bearing') %}
+          'West-Northwest','Northwest','North-Northwest','North'] -%}
+      {% set dir = states('sensor.weather_nearest_storm_bearing') -%}
       {{ iif(is_number(dir),directions[((dir|float(-1)/360)|float*16)|round],'unknown') }}
     attributes:
+      category: weather
       provider: "{{ state_attr('sensor.weather_nearest_storm_bearing','provider') }}"
     availability: "{{ is_number(states('sensor.weather_nearest_storm_bearing')) }}"
 
@@ -787,20 +921,34 @@ sensor:
     icon: mdi:cloud
     state_class: measurement
     unit_of_measurement: "%"
-    state: "{{ states('sensor.pirateweather_cloud_coverage')|int(none) }}"
+    state: >
+      {%- if is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('sensor.pirateweather_cloud_coverage') %}
+        {{ states('sensor.pirateweather_cloud_coverage')|int(none) }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: Pirate Weather
-    availability: "{{ is_number(states('sensor.pirateweather_cloud_coverage')) }}"
+    availability: >
+      {{ is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_cloud_coverage')) }}
 
   - name: "[Weather] Cloud Cover Today"
     unique_id: weather_cloud_cover_today
     icon: mdi:cloud
     state_class: measurement
     unit_of_measurement: "%"
-    state: "{{ states('sensor.pirateweather_cloud_coverage_0d')|int(none) }}"
+    state: >
+      {%- if is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('sensor.pirateweather_cloud_coverage_0d') %}
+        {{ states('sensor.pirateweather_cloud_coverage_0d')|int(none) }}
+      {%- endif %}
     attributes:
+      category: weather
       provider: Pirate Weather
-    availability: "{{ is_number(states('sensor.pirateweather_cloud_coverage_0d')) }}"
+    availability:  >
+      {{ is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_cloud_coverage_0d')) }}
 
   - name: "[Weather] Illuminance"
     unique_id: weather_illuminance
@@ -809,22 +957,26 @@ sensor:
     state_class: measurement
     unit_of_measurement: lx
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_brightness')) %}
-        {{ states('sensor.weatherflow_cloud_brightness')|float }}
-      {% elif is_number(states('sensor.tempest_st_00056115_illuminance')) %}
-        {{ states('sensor.tempest_st_00056115_illuminance')|float }}
-      {% endif %}
+      {%- if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_illuminance')) %}
+        {{ states('sensor.st_00056115_illuminance')|float -}}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_brightness')) %}
+        {{ states('sensor.weatherflow_forecast_brightness')|float }}
+      {%- endif %}
     attributes:
       category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_cloud_visibility')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.tempest_st_00056115_illuminance')) %} Weatherflow
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_illuminance')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_visibility')) %} Weatherflow (Cloud)
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.weatherflow_cloud_brightness'))
-          or is_number(states('sensor.tempest_st_00056115_illuminance')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_brightness'))
+          or is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_illuminance')) }}
 
   - name: "[Weather] Future Temperature - Above 25"
     unique_id: weather_future_temperature_above_25
@@ -928,43 +1080,56 @@ sensor:
         {%- endfor %}
         {{ ns.list }}
 
-  - name: "[Weather] Fog Probability Today"
-    unique_id: weather_fog_probability_today
-    icon: mdi:weather-fog
-    state_class: measurement
-    unit_of_measurement: "%"
-    state: >
-      {{ states('sensor.tempest_st_00056115_fog_probability') }}
-    attributes:
-      category: weather
-      provider: Weatherflow (Local)
-    availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_fog_probability')) }}
+  # - name: "[Weather] Fog Probability Today"
+  #   unique_id: weather_fog_probability_today
+  #   icon: mdi:weather-fog
+  #   state_class: measurement
+  #   unit_of_measurement: "%"
+  #   state: >
+  #     {{ states('sensor.tempest_st_00056115_fog_probability') }}
+  #   attributes:
+  #     category: weather
+  #     provider: Weatherflow (Local)
+  #   availability: >
+  #     {{ is_number(states('sensor.tempest_st_00056115_fog_probability')) }}
 
   - name: "[Weather] UV Index"
     unique_id: weather_uv_index
-    icon: mdi:weather-sunny-alert\
+    icon: mdi:weather-sunny-alert
     state_class: measurement
     unit_of_measurement: UV index
     state: >
-      {% if is_number(states('sensor.tempest_st_00056115_uv_index')) %}
-        {{ states('sensor.tempest_st_00056115_uv_index')|float }}
-      {% elif is_number(states('sensor.weatherflow_cloud_uv_index')) %}
-        {{ states('sensor.weatherflow_cloud_uv_index')|float }}
-      {% elif is_number(states('sensor.current_uv_index')) %}
+      {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_uv_index')) -%}
+        {{ states('sensor.st_00056115_uv_index')|float }}
+      {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_uv_index')) %}
+        {{ states('sensor.weatherflow_forecast_uv_index')|float }}
+      {%- elif is_state('binary_sensor.connected_openuv', 'on')
+            and is_number(states('sensor.current_uv_index')) %}
         {{ states('sensor.current_uv_index')|float }}
-      {% elif is_number(states('sensor.pirateweather_uv_index')) %}
+      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and is_number(states('sensor.pirateweather_uv_index')) %}
         {{ states('sensor.pirateweather_uv_index')|float }}
-      {% endif %}
+      {%- endif %}
     attributes:
+      category: weather
       provider: >
-        {% if is_number(states('sensor.tempest_st_00056115_uv_index')) %} Weatherflow (Local)
-        {% elif is_number(states('sensor.weatherflow_cloud_uv_inde')) %} Weatherflow (Cloud)
-        {% elif is_number(states('sensor.current_uv_index')) %} OpenUV
-        {% elif is_number(states('sensor.pirateweather_uv_index')) %} Pirate Weather
-        {% endif %}
+        {% if is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_uv_index')) -%} Weatherflow (Local)
+        {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_uv_index')) %} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_openuv', 'on')
+            and is_number(states('sensor.current_uv_index')) %} OpenUV
+        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+            and is_number(states('sensor.pirateweather_uv_index')) %} Pirate Weather
+        {%- endif %}
     availability: >
-      {{ is_number(states('sensor.tempest_st_00056115_uv_index'))
-          or is_number(states('sensor.weatherflow_cloud_uv_index'))
-          or is_number(states('sensor.pirateweather_uv_index'))
-          or is_number(states('sensor.current_uv_index')) }}
+      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+            and is_number(states('sensor.st_00056115_uv_index'))
+          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and is_number(states('sensor.weatherflow_forecast_uv_index'))
+          or is_state('binary_sensor.connected_pirateweather', 'on')
+            and is_number(states('sensor.pirateweather_uv_index'))
+          or is_state('binary_sensor.connected_openuv', 'on')
+            and is_number(states('sensor.current_uv_index')) }}
