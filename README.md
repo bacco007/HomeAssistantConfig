@@ -46,21 +46,21 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, January 1st 2024_
+_Stats as at 05:00, Tuesday, January 2nd 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0b2 | 591     | 5241         | 3425 | 136 |
+| 2024.1.0b3 | 580     | 5325         | 3501 | 136 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 35
 Automation | 136
-Binary Sensor | 338
+Binary Sensor | 343
 Camera | 5
 Device Tracker | 95
-Group | 43
+Group | 40
 Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
@@ -69,9 +69,9 @@ Media Player | 19
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3425
+Sensor | 3501
 Sun | 1
-Switch | 311
+Switch | 315
 Weather | 20
 Zone | 4
 
@@ -400,6 +400,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nsw_fuel_station.sensor](https://www.home-assistant.io/components/nsw_fuel_station.sensor) |
 | [nsw_rural_fire_service_feed.geo_location](https://www.home-assistant.io/components/nsw_rural_fire_service_feed.geo_location) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
+| [nsw_rural_fire_service_fire_danger.binary_sensor](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger.binary_sensor) |
+| [nsw_rural_fire_service_fire_danger.sensor](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger.sensor) |
 | [number](https://www.home-assistant.io/components/number) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [opennem](https://www.home-assistant.io/components/opennem) |
@@ -565,6 +567,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [template.weather](https://www.home-assistant.io/components/template.weather) |
 | [text](https://www.home-assistant.io/components/text) |
 | [thermal_comfort](https://www.home-assistant.io/components/thermal_comfort) |
+| [thermal_comfort.sensor](https://www.home-assistant.io/components/thermal_comfort.sensor) |
 | [thread](https://www.home-assistant.io/components/thread) |
 | [time](https://www.home-assistant.io/components/time) |
 | [time_date.sensor](https://www.home-assistant.io/components/time_date.sensor) |
@@ -664,20 +667,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
-| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
-| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
-| [zha.button](https://www.home-assistant.io/components/zha.button) |
-| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
-| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
-| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
-| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
-| [zha.light](https://www.home-assistant.io/components/zha.light) |
-| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
-| [zha.number](https://www.home-assistant.io/components/zha.number) |
-| [zha.select](https://www.home-assistant.io/components/zha.select) |
-| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
-| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
-| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -716,7 +705,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -881,7 +870,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Glances (0.20.0)
 - GoSungrow (3.0.7)
 - Home Assistant Google Drive Backup (0.112.1)
-- Home Assistant Stream Deck (2023.11.0)
+- Home Assistant Stream Deck (2023.12.0)
 - JupyterLab (0.12.1)
 - MariaDB (2.6.1)
 - Matter Server (5.0.1)
