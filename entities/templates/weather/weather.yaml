@@ -637,6 +637,27 @@ sensor:
     attributes:
       category: weather
 
+  - name: "[Weather] Rain Start (Next 12 Hours)"
+    unique_id: weather_rain_start
+    icon: mdi:weather-pouring
+    device_class: timestamp
+    state: >
+      {%- set time = namespace(value=none) %}
+      {%- set forecast = state_attr('sensor.weather_forecasts', 'weatherflow_hourly') %}
+      {%- if is_state('binary_sensor.weather_is_raining', 'off') and forecast != none %}
+        {%- for item in forecast %}
+          {%- if loop.index0 < 12
+              and item.precipitation_probability | int(-1) >= 50
+              and (item.condition | contains('rainy')) %}
+            {%- set time.value = item.datetime %}
+          {%- break %}
+          {%- endif %}
+        {%- endfor %}
+      {%- endif %}
+      {{ time.value }}
+    attributes:
+      category: weather
+
   - name: "[Weather] Lightning Count"
     unique_id: weather_lightning_count
     icon: mdi:lightning-bolt

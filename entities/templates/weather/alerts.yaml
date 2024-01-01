@@ -29,7 +29,7 @@ binary_sensor:
     delay_on: 30
     delay_off: 30
     state: >
-      {{is_state('binary_sensor.weatherflow_cloud_is_raining','on')
+      {{is_state('binary_sensor.weather_is_raining','on')
         and states('sensor.weather_precipitation_today') | float > 0.02
         and is_state('input_boolean.alerts_weather','on') }}
     availability: "{{ is_number(states('sensor.weather_precipitation_today')) }}"
@@ -59,12 +59,10 @@ binary_sensor:
     icon: mdi:weather-lightning-rainy
     delay_off: "{{ iif(now() - states('sensor.ha_uptime_hours')|as_datetime < timedelta(minutes=5),0,30) }}"
     state: >
-      {{ states('sensor.weather_precipitation_probability')|int >= 30
-          and states('sensor.weather_nearest_storm_distance')|int < 5
+      {{ states('sensor.weather_nearest_storm_distance')|int < 5
           and is_state('input_boolean.alerts_weather','on') }}
     availability: >
-      {{ is_number(states('sensor.weather_precipitation_probability'))
-          and is_number(states('sensor.weather_nearest_storm_distance')) }}
+      {{ is_number(states('sensor.weather_nearest_storm_distance')) }}
 
   - name: "[Weather] Lightning Alert"
     unique_id: weather_lightning_alert
@@ -72,7 +70,7 @@ binary_sensor:
     delay_off: 30
     state: >
       {{states('sensor.weather_lightning_count') | int > 0
-        and states('sensor.weatherflow_cloud_last_lightning_strike_distance') | int < 10
+        and states('sensor.weatherflow_forecast_distance_last_lightning_strike') | int < 10
         and is_state('input_boolean.alerts_weather','on') }}
     availability: "{{ is_number(states('sensor.weather_lightning_count')) }}"
     attributes:
@@ -82,17 +80,10 @@ binary_sensor:
     unique_id: weather_rain_soon
     icon: mdi:weather-pouring
     state: >
-      {%- set found = namespace(value=0) %}
-      {%- if is_state('sensor.weather_precipitation_type','rain') %}
-        {%- set threshold = 25 %}
-        {%- set forecast = state_attr('weather.tempest_hourly','forecast') %}
-        {%- for item in forecast %}
-          {%- if loop.index0 < 12 and item.precipitation_probability|int(-1) >= threshold %}
-            {%- set found.value = 1 %}
-          {%- endif %}
-        {%- endfor %}
-      {%- endif %}
-      {{ found.value == 1 }}
-    availability: >
-      {{ state_attr('weather.tempest_hourly','forecast') != none
-          and state_attr('weather.tempest_hourly','forecast')[0] is defined }}
+      {% set time = states('sensor.weather_rain_start') | as_datetime
+          if has_value('sensor.weather_rain_start') else none %}
+      {{ time != none and now() - time < timedelta(hours=4)
+          or states('sensor.weather_precipitation_probability') | int(0) > 50
+          or is_state('binary_sensor.weather_is_raining', 'on') }}
+    attributes:
+      category: weather_alert

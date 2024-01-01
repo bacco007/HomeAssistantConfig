@@ -10,16 +10,18 @@ trigger:
   - platform: event
     event_type: event_template_reloaded
 action:
-  - service: script.get_calendar
+  - service: calendar.get_events
     data:
+      end_date_time: "{{now() + timedelta(days=365)}}"
+    target:
       entity_id: calendar.ical_bayern_munich
     response_variable: agenda
   - variables:
-      all_events: "{{ agenda.events | list }}"
-      next_5_events: "{{ agenda.events[:5] | list }}"
-      dump: "{{agenda}}"
-      countnumb: "{{agenda.events | count}}"
-      lastevent: "{{agenda.events[-1]}}"
+      dump: "{{ agenda['calendar.ical_bayern_munich'].events }}"
+      all_events: "{{dump | list }}"
+      next_5_events: "{{dump | list }}"
+      countnumb: "{{dump | length }}"
+      lastevent: "{{dump[-1] }}"
 sensor:
   - name: "[Upcoming Sport] Bayern Munich"
     unique_id: upcoming_sport_bayern_munich

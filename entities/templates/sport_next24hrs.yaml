@@ -88,9 +88,6 @@ trigger:
     entity_id: calendar.ical_nsw_waratahs
   - platform: calendar
     event: end
-    entity_id: calendar.ical_igtc
-  - platform: calendar
-    event: end
     entity_id: calendar.ical_manchester_united
   - platform: calendar
     event: end
@@ -181,9 +178,6 @@ trigger:
     entity_id: calendar.ical_bayern_munich
   - platform: calendar
     event: end
-    entity_id: calendar.ical_afl_all_teams
-  - platform: calendar
-    event: end
     entity_id: calendar.ical_nrl_all_teams
   - platform: calendar
     event: end
@@ -214,13 +208,34 @@ trigger:
     entity_id: calendar.ical_nba_all_teams
   - platform: calendar
     event: end
-    entity_id: calendar.ical_nhl_all_teams
-  - platform: calendar
-    event: end
     entity_id: calendar.ical_nfl_all_teams
   - platform: calendar
     event: end
     entity_id: calendar.ical_motogp
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nhl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_afl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_igtc
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_mls_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_alm_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_alw_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_premier_league_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_bbl_all_teams
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -239,7 +254,6 @@ action:
         - calendar.ical_new_york_yankees
         - calendar.ical_newcastle_knights
         - calendar.ical_nsw_waratahs
-        - calendar.ical_igtc
         - calendar.ical_manchester_united
         - calendar.ical_wec
         - calendar.ical_misc_motorsport
@@ -270,7 +284,6 @@ action:
         - calendar.ical_aflw_all_teams
         - calendar.ical_formula_e
         - calendar.ical_bayern_munich
-        - calendar.ical_afl_all_teams
         - calendar.ical_nrl_all_teams
         - calendar.ical_sydney_swans
         - calendar.ical_dtm
@@ -281,11 +294,19 @@ action:
         - calendar.ical_btcc
         - calendar.ical_formula_1
         - calendar.ical_nba_all_teams
-        - calendar.ical_nhl_all_teams
         - calendar.ical_nfl_all_teams
         - calendar.ical_motogp
+        - calendar.ical_nhl_all_teams
+        - calendar.ical_afl_all_teams
+        - calendar.ical_igtc
+        - calendar.ical_mls_all_teams
+        - calendar.ical_alm_all_teams
+        - calendar.ical_alw_all_teams
+        - calendar.ical_premier_league_all_teams
+        - calendar.ical_bbl_all_teams
   - variables:
       all_events: >
+
         {% set ns = namespace(items=[]) -%}
         {%- for key, value in agenda.items() %}
           {%- for event in value.events %}
@@ -294,6 +315,7 @@ action:
           {%- endfor %}
         {%- endfor %}
         {{ ns.items }}
+
       events: >
         {{ all_events | list }}
 sensor:
