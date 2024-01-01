@@ -48,6 +48,23 @@ binary_sensor:
         {{ states('sensor.weatherflow_cloud_last_lightning_strike') }}
 
 sensor:
+  - name: "[Weather] Summary"
+    unique_id: weather_summary
+    icon: mdi:weather-partly-snowy-rainy
+    state: ""
+    attributes:
+      category: weather
+      content: >
+        {%- from 'temperature_level.jinja' import temperature_level %}
+        Currently {{ states('sensor.weather_temperature') | round(1) | string + '°' }}, feels like {{ states('sensor.weather_apparent_temperature') | round(1) | string + '°' }}
+        Min {{ states('sensor.weather_low_temperature') | round(1) | string + '°' }}, Max {{ states('sensor.weather_high_temperature') | round(1) | string + '°' }}
+        Condition: {{ states('sensor.weather_current_condition') }} and {{ temperature_level(states('sensor.weather_temperature') | round(1)) | lower | trim }}
+        {%- if states('sensor.weather_next_precipitation_start') != 'unknown' %}
+        Rain expected {{ states('sensor.weather_next_precipitation_start') | as_datetime | as_local()| as_timestamp | timestamp_custom('%H:%M', default='') }}
+        {%- else %}
+        No Rain Due
+        {%- endif %}
+
   - name: "[Weather] Temperature Trend"
     unique_id: weather_temperature_trend
     icon: >
@@ -216,7 +233,7 @@ sensor:
         {{ states('sensor.tamworth_airport_min_temp')|float }}
       {% endif %}
     attributes:
-      category:
+      category: weather
       provider: >
         {% if states('sensor.weather_temperature_daily_low_00_00') is defined
             and is_number(states('sensor.weather_temperature_daily_low_00_00')) %} Weatherflow (Local)
@@ -586,6 +603,7 @@ sensor:
       {% else %} none
       {% endif %}
     attributes:
+      category: weather
       provider: >
         {% if has_value('sensor.st_00056115_precipitation_type') %} Weatherflow (Local)
         {% else %} Weatherflow (Cloud)
@@ -593,6 +611,31 @@ sensor:
     availability: >
       {{ has_value('sensor.tempest_st_00056115_precipitation_type')
           or states('binary_sensor.weatherflow_forecast_is_freezing') in ['off','on'] }}
+
+  - name: "[Weather] Next Precipitation, Start"
+    unique_id: weather_next_precipitation_start
+    icon: mdi:weather-rainy
+    device_class: timestamp
+    state: >
+      {{ (state_attr('sensor.weather_forecasts', 'weatherflow_hourly')
+        | selectattr('condition', 'in', ['rainy', 'lightning-rainy'])
+        | list | first | default).datetime | default(none)
+      }}
+    attributes:
+      category: weather
+
+  - name: "[Weather] Next Precipitation, End"
+    unique_id: weather_next_precipitation_end
+    icon: mdi:weather-rainy
+    device_class: timestamp
+    state: >
+      {{ (state_attr('sensor.weather_forecasts', 'weatherflow_hourly')
+        | rejectattr('condition', 'in', ['rainy', 'lightning-rainy'])
+        | selectattr('datetime', '>', states('sensor.current_weather_hourly_next_precipitation_start'))
+        | list | first | default).datetime | default(none)
+      }}
+    attributes:
+      category: weather
 
   - name: "[Weather] Lightning Count"
     unique_id: weather_lightning_count
@@ -946,7 +989,7 @@ sensor:
     attributes:
       category: weather
       provider: Pirate Weather
-    availability:  >
+    availability: >
       {{ is_state('binary_sensor.connected_pirateweather', 'on')
           and is_number(states('sensor.pirateweather_cloud_coverage_0d')) }}
 

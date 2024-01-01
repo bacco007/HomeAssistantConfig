@@ -1,0 +1,25 @@
+{% macro temperature_level(temp) %}
+  {%- set temperature = temp -%}
+  {%- if temperature >= 40 -%}
+      {%- set value = "Inferno" -%}
+  {%- elif temperature >= 35 -%}
+      {%- set value = "Very Hot" -%}
+  {%- elif temperature >= 30 -%}
+      {%- set value = "Hot" -%}
+  {%- elif temperature >= 25 -%}
+      {%- set value = "Warm" -%}
+  {%- elif temperature >= 20 -%}
+      {%- set value = "Nice" -%}
+  {%- elif temperature >= 15 -%}
+      {%- set value = "Cool" -%}
+  {%- elif temperature >= 5 -%}
+      {%- set value = "Chilly" -%}
+  {%- elif temperature >= 0 -%}
+      {%- set value = "Cold" -%}
+  {%- elif temperature >= -6.66 -%}
+      {%- set value = "Freezing" -%}
+  {%- elif temperature <= -6.66 -%}
+      {%- set value = "Fridged" -%}
+  {%- endif -%}
+  {{ value }}
+{% endmacro %}
