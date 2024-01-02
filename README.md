@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, January 2nd 2024_
+_Stats as at 05:00, Wednesday, January 3rd 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0b3 | 580     | 5325         | 3501 | 136 |
+| 2024.1.0b3 | 578     | 5333         | 3502 | 136 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3501
+Sensor | 3502
 Sun | 1
 Switch | 315
 Weather | 20
@@ -381,8 +381,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt.vacuum](https://www.home-assistant.io/components/mqtt.vacuum) |
 | [mqtt.valve](https://www.home-assistant.io/components/mqtt.valve) |
 | [mqtt.water_heater](https://www.home-assistant.io/components/mqtt.water_heater) |
-| [multiscrape](https://www.home-assistant.io/components/multiscrape) |
-| [multiscrape.sensor](https://www.home-assistant.io/components/multiscrape.sensor) |
 | [my](https://www.home-assistant.io/components/my) |
 | [myjdownloader](https://www.home-assistant.io/components/myjdownloader) |
 | [myjdownloader.binary_sensor](https://www.home-assistant.io/components/myjdownloader.binary_sensor) |
@@ -705,7 +703,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -863,7 +861,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (17.0.1)
 - Bluetooth Presence Monitor (1.0.0)
-- Cloudflared (4.2.12)
+- Cloudflared (5.0.0)
 - ESPHome (2023.12.5)
 - eufy-security-ws (1.7.1)
 - File editor (5.7.0)
