@@ -14,9 +14,6 @@ from . import zip_file as zipfile
 
 import homeassistant.util.dt as dt_util
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
-from homeassistant.helpers import device_registry as dr
-
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
 
@@ -54,14 +51,14 @@ def get_next_departure(self):
         end_station_id = str(self._data['destination'])+'%'
         start_station_where = f"AND start_station.stop_id in (select stop_id from stops where stop_name like :origin_station_id)"
         end_station_where = f"AND end_station.stop_id in (select stop_id from stops where stop_name like :end_station_id)"
+        _LOGGER.debug("Setting up TRAIN Route for start/end : %s / %s ", start_station_id, end_station_id)
     else:
         route_type_where = "1=1"
         start_station_id = self._data['origin'].split(': ')[0]
         end_station_id = self._data['destination'].split(': ')[0]
         start_station_where = f"AND start_station.stop_id = :origin_station_id"
         end_station_where = f"AND end_station.stop_id = :end_station_id"
-    _LOGGER.debug("Start / end : %s / %s", start_station_id, end_station_id)
-    _LOGGER.debug("Query : %s", end_station_where)
+        _LOGGER.debug("Setting up Route for start/end : %s / %s ", start_station_id, end_station_id)
     offset = self._data["offset"]
     include_tomorrow = self._data["include_tomorrow"]
     now = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset)
@@ -370,7 +367,6 @@ def get_next_departure(self):
     return data_returned
 
 def get_gtfs(hass, path, data, update=False):
-    """Get gtfs file."""
     _LOGGER.debug("Getting gtfs with data: %s", data)
     gtfs_dir = hass.config.path(path)
     os.makedirs(gtfs_dir, exist_ok=True)
@@ -411,10 +407,10 @@ def get_gtfs(hass, path, data, update=False):
         return "extracting"
     return gtfs
 
-def extract_from_zip(hass, gtfs,gtfs_dir,file):
+def extract_from_zip(hass, gtfs, gtfs_dir, file):
+    _LOGGER.debug("Extracting gtfs file: %s", file)
     # first remove shapes from zip to avoid possibly very large db 
     clean = remove_from_zip('shapes.txt',gtfs_dir, file[:-4])
-    _LOGGER.debug("Extracting gtfs file: %s", file)
     if os.fork() != 0:
         return
     pygtfs.append_feed(gtfs, os.path.join(gtfs_dir, file))
@@ -469,6 +465,7 @@ def get_route_list(schedule, data):
     return routes
 
 def get_stop_list(schedule, route_id, direction):
+    _LOGGER.debug("Getting stops list for route: %s", route_id)
     sql_stops = f"""
     SELECT distinct(s.stop_id), s.stop_name, st.stop_sequence
     from trips t
@@ -516,7 +513,7 @@ def get_agency_list(schedule, data):
     return agencies
 
 def get_datasources(hass, path) -> dict[str]:
-    _LOGGER.debug(f"Datasources path: {path}")
+    _LOGGER.debug(f"Getting datasources for path: {path}")
     gtfs_dir = hass.config.path(path)
     os.makedirs(gtfs_dir, exist_ok=True)
     files = os.listdir(gtfs_dir)
@@ -527,7 +524,6 @@ def get_datasources(hass, path) -> dict[str]:
     _LOGGER.debug(f"Datasources in folder: {datasources}")
     return datasources
 
-
 def remove_datasource(hass, path, filename):
     gtfs_dir = hass.config.path(path)
     _LOGGER.info(f"Removing datasource: {os.path.join(gtfs_dir, filename)}.*")
@@ -536,17 +532,18 @@ def remove_datasource(hass, path, filename):
     return "removed"
     
 def check_extracting(hass, gtfs_dir,file):
+    _LOGGER.debug(f"Checking if extracting: %s", file)
     gtfs_dir = hass.config.path(gtfs_dir)
     filename = file
     journal = os.path.join(gtfs_dir, filename + ".sqlite-journal")
     if os.path.exists(journal) :
-        _LOGGER.debug("check extracting: yes")
+        _LOGGER.debug("Extracting: yes")
         return True
     return False    
 
 
 def check_datasource_index(hass, schedule, gtfs_dir, file):
-    _LOGGER.debug("Check datasource index")
+    _LOGGER.debug("Check datasource index for file: %s", file)
     if check_extracting(hass, gtfs_dir,file):
         _LOGGER.warning("Cannot check indexes on this datasource as still unpacking: %s", file)
         return
@@ -638,6 +635,7 @@ def check_datasource_index(hass, schedule, gtfs_dir, file):
             )  
             
 def create_trip_geojson(self):
+    # not in use, awaiting geojson in HA-core to cover this type of geometry
     _LOGGER.debug("Create geojson with data: %s", self._data)
     schedule = self._data["schedule"]
     self._trip_id = self._data["next_departure"]["trip_id"]
@@ -653,7 +651,6 @@ def create_trip_geojson(self):
         text(sql_shape),
         {"q": "q"},
     )
-    
     shapes_list = []
     coordinates = []
     for row_cursor in result:
@@ -670,42 +667,21 @@ def create_trip_geojson(self):
 
 def get_local_stops_next_departures(self):
     _LOGGER.debug("Get local stop departure with data: %s", self._data)
-    # complex, get device_id via entity_registry
-    #entity_registry = er.async_get(self.hass)
-    #entry = entity_registry.async_get(self._data['device_tracker_id'])
-    #entry_attr = self.hass.states.get(entry.entity_id)
-
-    # as device_id aailable via entity , shorter path
-    device_tracker = self.hass.states.get(self._data['device_tracker_id'])
-    _LOGGER.debug("Device tracker attributes: %s", device_tracker)
-
-    
     if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):
         _LOGGER.warning("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
         return {}
     """Get next departures from data."""
-    if self.hass.config.time_zone is None:
-        _LOGGER.error("Timezone is not set in Home Assistant configuration")
-        timezone = "UTC"
-    else:
-        timezone=dt_util.get_time_zone(self.hass.config.time_zone)
     schedule = self._data["schedule"]
     now = dt_util.now().replace(tzinfo=None)
     now_date = now.strftime(dt_util.DATE_STR_FORMAT)
     tomorrow = now + datetime.timedelta(days=1)
     tomorrow_date = tomorrow.strftime(dt_util.DATE_STR_FORMAT)    
-
-    # Fetch all departures for yesterday, today and optionally tomorrow,
-    # up to an overkill maximum in case of a departure every minute for those
-    # days.
-    include_tomorrow = self._data["include_tomorrow"]    
-    limit = 24 * 60 * 60 * 2
-    tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
-    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today)"
-    #stop_lat = 52.356709
-    #stop_lon = 4.834525
+    device_tracker = self.hass.states.get(self._data['device_tracker_id']) 
     latitude = device_tracker.attributes.get("latitude", None)
     longitude = device_tracker.attributes.get("longitude", None)
+    include_tomorrow = self._data["include_tomorrow"]    
+    tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
+    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today)"
     time_range = str('+' + str(self._data.get("timerange", DEFAULT_LOCAL_STOP_TIMERANGE)) + ' minute')
     radius = self._data.get("radius", DEFAULT_LOCAL_STOP_RADIUS) / 130000
     _LOGGER.debug("Time Range: %s", time_range)
@@ -714,11 +690,8 @@ def get_local_stops_next_departures(self):
         return []
     if include_tomorrow:
         _LOGGER.debug("Include Tomorrow")
-        limit = int(limit / 2 * 3)
         tomorrow_name = tomorrow.strftime("%A").lower()
         tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
-        tomorrow_where = f"OR calendar.{tomorrow_name} = 1"
-        tomorrow_order = f"calendar.{tomorrow_name} DESC,"
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today or calendar_date_today.date = :tomorrow)"
         tomorrow_select2 = f"'0' AS tomorrow,"        
     
@@ -784,14 +757,8 @@ def get_local_stops_next_departures(self):
             "radius": radius,
         },
     )        
-    # Create lookup timetable for today and possibly tomorrow, taking into
-    # account any departures from yesterday scheduled after midnight,
-    # as long as all departures are within the calendar date range.
-    #timetable = {}
     timetable = []
     local_stops_list = []
-    yesterday_start = today_start = tomorrow_start = None
-    yesterday_last = today_last = ""
     prev_stop_id = ""
     for row_cursor in result:
         row = row_cursor._asdict()
@@ -800,7 +767,6 @@ def get_local_stops_next_departures(self):
             if row["today"] == 1 or row["today_cd"] == 1:
                 idx_prefix = tomorrow_date
                 idx = f"{idx_prefix} {row['departure_time']}"
-                #timetable[idx] = {"route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"]}
                 timetable.append({"departure": row["departure_time"], "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "icon": self._icon})
             if (
                 "tomorrow" in row
@@ -808,10 +774,8 @@ def get_local_stops_next_departures(self):
                 and tomorrow_date <= row["end_date"]
             ):
                 idx = f"{tomorrow_date} {row['departure_time']}"
-                #timetable[idx] = {"route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"]}
                 timetable.append({"departure": row["departure_time"], "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "icon": self._icon})
         else:
-            #timetable = {}
             timetable = []
         if row["stop_id"] != prev_stop_id and prev_stop_id != "": 
             local_stops_list.append({"stop_id": row['stop_id'], "stop_name": row['stop_name'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable})            
@@ -823,7 +787,7 @@ def get_local_stops_next_departures(self):
     return data_returned
     
 async def update_gtfs_local_stops(hass, data): 
-    _LOGGER.debug("Update local stops with data: %s", data)
+    _LOGGER.debug("Update service for local stops with data: %s", data)
     entries = []
     for entry in hass.config_entries.async_entries(DOMAIN):
         if entry.data.get("device_tracker_id") == data["entity_id"] :

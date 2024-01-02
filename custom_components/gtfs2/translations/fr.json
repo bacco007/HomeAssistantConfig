@@ -22,7 +22,7 @@
 		  "device_tracker_id": "Objet/individu avec lat/lon",
 		  "name": "Nom du sensor"
         },
-        "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+        "description": "Select from existing sources in your gtfs2 folder [(docu)](https://github.com/vingerha/gtfs2/wiki/2c.-Acquire-local-stops-&-departures)"
       },					   
       "source": {
         "data": {
@@ -103,7 +103,7 @@
 		  "offset": "Décalage en minutes",
 		  "real_time": "Ajoute intégration temps réel? \n (nécessite données de la même source)",
 		  "local_stop_refresh_interval": "Intervalle d'actualisation en minutes",
-          "timerange": "Période dans la future pour départs depuis 'maintenant' (en minutes entre 15 et 90)",
+          "timerange": "Période dans la future pour départs depuis 'maintenant' (en minutes entre 15 et 120)",
 		  "radius": "Radius pour la recherche des stops (en metres entre 50 et 500)"
         }
       },

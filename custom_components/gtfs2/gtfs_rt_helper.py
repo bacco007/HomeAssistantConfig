@@ -35,14 +35,11 @@ from .const import (
     CONF_X_API_KEY,
     CONF_STOP_ID,
     CONF_ROUTE,
-    CONF_DIRECTION_ID,
-    CONF_DEPARTURES,
     CONF_TRIP_UPDATE_URL,
     CONF_VEHICLE_POSITION_URL,
     CONF_ROUTE_DELIMITER,
     CONF_ICON,
     CONF_SERVICE_TYPE,
-    CONF_RELATIVE_TIME,
 
     DEFAULT_SERVICE,
     DEFAULT_ICON,
@@ -58,26 +55,6 @@ def due_in_minutes(timestamp):
     diff = timestamp - dt_util.now().replace(tzinfo=None)
     return int(diff.total_seconds() / 60)
 
-
-def log_info(data: list, indent_level: int) -> None:
-    indents = "   " * indent_level
-    info_str = f"{indents}{': '.join(str(x) for x in data)}"
-    _LOGGER.info(info_str)
-
-
-def log_error(data: list, indent_level: int) -> None:
-    indents = "   " * indent_level
-    info_str = f"{indents}{': '.join(str(x) for x in data)}"
-    _LOGGER.error(info_str)
-
-
-def log_debug(data: list, indent_level: int) -> None:
-    indents = "   " * indent_level
-    info_str = f"{indents}{' '.join(str(x) for x in data)}"
-    _LOGGER.debug(info_str)
-
-
-
 def get_gtfs_feed_entities(url: str, headers, label: str):
     _LOGGER.debug(f"GTFS RT get_feed_entities for url: {url} , headers: {headers}, label: {label}")
     feed = gtfs_realtime_pb2.FeedMessage()  # type: ignore
@@ -85,19 +62,12 @@ def get_gtfs_feed_entities(url: str, headers, label: str):
     # TODO add timeout to requests call
     response = requests.get(url, headers=headers, timeout=20)
     if response.status_code == 200:
-        log_info([f"Successfully updated {label}", response.status_code], 0)
+        _LOGGER.debug("Successfully updated %s", label)
     else:
-        log_error(
-            [
-                f"Updating {label} got",
-                response.status_code,
-                response.content,
-            ],
-            0,
-        )
+        _LOGGER.debug("Updating %s, and got: %s for: %s", label, response.status_code, response.content)
+
     if label == "alerts":
         _LOGGER.debug("Feed : %s", feed)
-        _LOGGER.debug("Feed parse: %s", feed.ParseFromString(response.content))
     feed.ParseFromString(response.content) 
     return feed.entity
 
@@ -109,10 +79,7 @@ def get_next_services(self):
     self._trip = self._trip_id
     self._direction = self._direction
     self.delay = "unknown"
-    _LOGGER.debug("RT route: %s", self._route)
-    _LOGGER.debug("RT trip: %s", self._trip)
-    _LOGGER.debug("RT stop: %s", self._stop)
-    _LOGGER.debug("RT direction: %s", self._direction)
+    _LOGGER.debug("Configuration for RT route: %s, RT trip: %s, RT stop: %s, RT direction:", self._route, self._trip, self._stop, self._direction)
     next_services = self.data.get(self._trip, {}).get(self._direction, {}).get(self._stop, [])
     if not next_services:
         # GTFS RT feed may differ, try via route
@@ -125,7 +92,7 @@ def get_next_services(self):
         delay = next_services[0].delay
 
     if self.hass.config.time_zone is None:
-        _LOGGER.error("Timezone is not set in Home Assistant configuration")
+        _LOGGER.error("Timezone is not set in Home Assistant configuration, using UTC instead")
         timezone = "UTC"
     else:
         timezone=dt_util.get_time_zone(self.hass.config.time_zone)
@@ -178,7 +145,7 @@ def get_next_services(self):
             else ""
         )
 
-    _LOGGER.debug("GTFS RT next services attributes: %s", attrs)
+    _LOGGER.debug("Next services attributes: %s", attrs)
     return attrs
     
 def get_rt_route_statuses(self):
@@ -358,22 +325,8 @@ def get_rt_vehicle_positions(self):
         if not vehicle.trip.trip_id:
             # Vehicle is not in service
             continue
-        if vehicle.trip.trip_id == self._trip_id:    
-            log_debug(
-                [
-                    "Adding position for trip ID",
-                    vehicle.trip.trip_id,
-                    "route ID",
-                    vehicle.trip.route_id,
-                    "direction ID",
-                    vehicle.trip.direction_id,
-                    "position latitude",
-                    vehicle.position.latitude,
-                    "longitude",
-                    vehicle.position.longitude,
-                ],
-                2,
-            )    
+        if vehicle.trip.trip_id == self._trip_id:  
+            _LOGGER.debug("Adding position for TripId: %s, RouteId: %s, DirectionId: %s, Lat: %s, Lon: %s", vehicle.trip.trip_id, vehicle.trip.route_id, vehicle.trip.direction_id, vehicle.position.latitude, vehicle.position.longitude)  
             
         #construct geojson only for configured route/direction
         if str(self._route_id) == str(vehicle.trip.route_id) and str(self._direction) == str(vehicle.trip.direction_id):
@@ -394,7 +347,7 @@ def get_rt_vehicle_positions(self):
     
     self.geojson = {"features": geojson_body, "type": "FeatureCollection"}
         
-    _LOGGER.debug("GTFS RT geojson: %s", json.dumps(self.geojson))
+    _LOGGER.debug("Vehicle geojson: %s", json.dumps(self.geojson))
     self._route_dir = str(self._route_id) + "_" + str(self._direction)
     update_geojson(self)
     return geojson_body
@@ -436,12 +389,12 @@ def update_geojson(self):
     geojson_dir = self.hass.config.path(DEFAULT_PATH_GEOJSON)
     os.makedirs(geojson_dir, exist_ok=True)
     file = os.path.join(geojson_dir, self._route_dir + ".json")
-    _LOGGER.debug("GTFS RT geojson file: %s", file)
+    _LOGGER.debug("Creating geojson file: %s", file)
     with open(file, "w") as outfile:
         json.dump(self.geojson, outfile)
     
 def get_gtfs_rt(hass, path, data):
-    """Get gtfs file."""
+    """Get gtfs rt data."""
     _LOGGER.debug("Getting gtfs rt locally with data: %s", data)
     gtfs_dir = hass.config.path(path)
     os.makedirs(gtfs_dir, exist_ok=True)

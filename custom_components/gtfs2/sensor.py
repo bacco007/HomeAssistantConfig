@@ -497,7 +497,7 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
         super()._handle_coordinator_update()
 
     def _update_attrs(self):  # noqa: C901 PLR0911
-        _LOGGER.debug("SENSOR: %s, update attr data: %s", self._name, self.coordinator.data)
+        _LOGGER.debug("SENSOR: %s, update with attr data: %s", self._name, self.coordinator.data)
         self._departure = self.coordinator.data.get("local_stops_next_departures",None) 
         self._state: str | None = None
         # if no data or extracting, stop

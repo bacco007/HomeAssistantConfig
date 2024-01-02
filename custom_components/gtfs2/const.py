@@ -44,6 +44,23 @@ ATTR_WHEELCHAIR = "trip_wheelchair_access_available"
 ATTR_WHEELCHAIR_DESTINATION = "destination_station_wheelchair_boarding_available"
 ATTR_WHEELCHAIR_ORIGIN = "origin_station_wheelchair_boarding_available"
 
+#gtfs_rt
+ATTR_STOP_ID = "Stop ID"
+ATTR_ROUTE = "Route"
+ATTR_TRIP = "Trip"
+ATTR_DIRECTION_ID = "Direction ID"
+ATTR_DUE_IN = "Due in"
+ATTR_DUE_AT = "Due at"
+ATTR_DELAY = "Delay"
+ATTR_NEXT_UP = "Next Service"
+ATTR_ICON = "Icon"
+ATTR_UNIT_OF_MEASUREMENT = "unit_of_measurement"
+ATTR_DEVICE_CLASS = "device_class"
+ATTR_LATITUDE = "latitude"
+ATTR_LONGITUDE = "longitude"
+ATTR_RT_UPDATED_AT = "gtfs_rt_updated_at"
+
+
 BICYCLE_ALLOWED_DEFAULT = STATE_UNKNOWN
 BICYCLE_ALLOWED_OPTIONS = {1: True, 2: False}
 DROP_OFF_TYPE_DEFAULT = STATE_UNKNOWN
@@ -243,35 +260,36 @@ WHEELCHAIR_ACCESS_OPTIONS = {1: True, 2: False}
 WHEELCHAIR_BOARDING_DEFAULT = STATE_UNKNOWN
 WHEELCHAIR_BOARDING_OPTIONS = {1: True, 2: False}
 
-#gtfs_rt
-ATTR_STOP_ID = "Stop ID"
-ATTR_ROUTE = "Route"
-ATTR_TRIP = "Trip"
-ATTR_DIRECTION_ID = "Direction ID"
-ATTR_DUE_IN = "Due in"
-ATTR_DUE_AT = "Due at"
-ATTR_DELAY = "Delay"
-ATTR_NEXT_UP = "Next Service"
-ATTR_ICON = "Icon"
-ATTR_UNIT_OF_MEASUREMENT = "unit_of_measurement"
-ATTR_DEVICE_CLASS = "device_class"
-ATTR_LATITUDE = "latitude"
-ATTR_LONGITUDE = "longitude"
-ATTR_RT_UPDATED_AT = "gtfs_rt_updated_at"
+CONF_URL = "url"
+CONF_EXTRACT_FROM = "extract_from"
+CONF_FILE = "file"
+CONF_DEVICE_TRACKER_ID = "device_tracker_id"
+CONF_AGENCY = "agency"
+CONF_ROUTE_TYPE = "route_type"
+CONF_ROUTE = "route"
+CONF_DIRECTION = "direction"
+CONF_ORIGIN = "origin"
+CONF_DESTINATION = "destination"
+CONF_NAME = "name"
+CONF_INCLUDE_TOMORROW = "include_tomorrow"
+CONF_LOCAL_STOP_REFRESH_INTERVAL = "local_stop_refresh_interval"
+CONF_RADIUS = "radius"
+CONF_TIMERANGE = "timerange"
+CONF_REFRESH_INTERVAL = "refresh_interval"
+CONF_OFFSET = "offset"
+CONF_REAL_TIME = "real_time"
 
+# gtfs_rt specific
 CONF_API_KEY = "api_key"
 CONF_X_API_KEY = "x_api_key"
 CONF_STOP_ID = "stopid"
-CONF_ROUTE = "route"
-CONF_DIRECTION_ID = "directionid"
-CONF_DEPARTURES = "departures"
 CONF_TRIP_UPDATE_URL = "trip_update_url"
 CONF_VEHICLE_POSITION_URL = "vehicle_position_url"
 CONF_ALERTS_URL = "alerts_url"
 CONF_ROUTE_DELIMITER = "route_delimiter"
 CONF_ICON = "icon"
 CONF_SERVICE_TYPE = "service_type"
-CONF_RELATIVE_TIME = "show_relative_time"
+
 
 DEFAULT_SERVICE = "Service"
 DEFAULT_ICON = "mdi:bus"
