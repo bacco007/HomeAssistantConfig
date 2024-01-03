@@ -7,7 +7,7 @@ import time
 
 from homeassistant.util.dt import as_local, as_timestamp
 from homeassistant.components.sensor import ENTITY_ID_FORMAT
-from homeassistant.const import LENGTH_KILOMETERS, SPEED_KILOMETERS_PER_HOUR, ATTR_NAME
+from homeassistant.const import ATTR_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
