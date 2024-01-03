@@ -129,7 +129,9 @@ class TraktApi:
         except KeyError:
             return False
 
-    async def fetch_watched(self, excluded_shows: list):
+    async def fetch_watched(
+        self, excluded_shows: list, excluded_finished: bool = False
+    ):
         """First, let's retrieve hidden items from user as a workaround for a potential bug in show progress_watch API"""
         cache_key = f"user_hidden_shows"
 
@@ -176,7 +178,8 @@ class TraktApi:
                 raw_show_progress = await self.fetch_show_progress(ids["trakt"])
                 is_finished = self.is_show_finished(raw_show_progress)
 
-                if is_finished:
+                """aired date and completed date will always be the same for next to watch tvshows if you're up-to-date"""
+                if excluded_finished and is_finished:
                     continue
 
                 raw_next_episode = await self.fetch_show_informations(
@@ -262,7 +265,7 @@ class TraktApi:
 
         if next_to_watch:
             excluded_shows = configuration.get_exclude_shows(identifier)
-            raw_medias = await self.fetch_watched(excluded_shows)
+            raw_medias = await self.fetch_watched(excluded_shows, not only_upcoming)
         else:
             days_to_fetch = configuration.get_upcoming_days_to_fetch(
                 identifier, all_medias
@@ -357,22 +360,37 @@ class TraktApi:
 
     async def retrieve_data(self):
         async with timeout(1800):
-            titles = [
+            titles = []
+            data_function = []
+            configuration = Configuration(data=self.hass.data)
+            source_function = {
+                "upcoming": self.fetch_upcomings(all_medias=False),
+                "all_upcoming": self.fetch_upcomings(all_medias=True),
+                "recommendation": self.fetch_recommendations(),
+                "all": self.fetch_next_to_watch(),
+                "only_aired": self.fetch_next_to_watch(only_aired=True),
+                "only_upcoming": self.fetch_next_to_watch(only_upcoming=True),
+            }
+
+            """First, let's configure which sensors we need depending on configuration"""
+            for source in [
                 "upcoming",
                 "all_upcoming",
                 "recommendation",
+            ]:
+                if configuration.source_exists(source):
+                    titles.append(source)
+                    data_function.append(source_function.get(source))
+
+            """Then, let's add the next to watch sensors if needed"""
+            for identifier in [
                 "all",
                 "only_aired",
                 "only_upcoming",
-            ]
-            data = await gather(
-                *[
-                    self.fetch_upcomings(all_medias=False),
-                    self.fetch_upcomings(all_medias=True),
-                    self.fetch_recommendations(),
-                    self.fetch_next_to_watch(),
-                    self.fetch_next_to_watch(only_aired=True),
-                    self.fetch_next_to_watch(only_upcoming=True),
-                ]
-            )
+            ]:
+                if configuration.next_to_watch_identifier_exists(identifier):
+                    titles.append(identifier)
+                    data_function.append(source_function.get(identifier))
+
+            data = await gather(*data_function)
             return {title: medias for title, medias in zip(titles, data)}
