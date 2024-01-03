@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, January 3rd 2024_
+_Stats as at 05:00, Thursday, January 4th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0b3 | 578     | 5333         | 3502 | 136 |
+| 2024.1.0b5 | 580     | 5336         | 3504 | 136 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3502
+Sensor | 3504
 Sun | 1
 Switch | 315
 Weather | 20
@@ -381,6 +381,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt.vacuum](https://www.home-assistant.io/components/mqtt.vacuum) |
 | [mqtt.valve](https://www.home-assistant.io/components/mqtt.valve) |
 | [mqtt.water_heater](https://www.home-assistant.io/components/mqtt.water_heater) |
+| [multiscrape](https://www.home-assistant.io/components/multiscrape) |
+| [multiscrape.sensor](https://www.home-assistant.io/components/multiscrape.sensor) |
 | [my](https://www.home-assistant.io/components/my) |
 | [myjdownloader](https://www.home-assistant.io/components/myjdownloader) |
 | [myjdownloader.binary_sensor](https://www.home-assistant.io/components/myjdownloader.binary_sensor) |
