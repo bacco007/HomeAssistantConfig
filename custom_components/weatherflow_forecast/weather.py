@@ -223,6 +223,7 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
                 native_precipitation = item.precipitation
                 wind_bearing = int(item.wind_bearing)
                 native_wind_speed = item.wind_speed
+                native_wind_gust_speed = item.wind_gust
 
                 ha_item = {
                     "condition": condition,
@@ -233,6 +234,7 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
                     "native_templow": native_templow,
                     "wind_bearing": wind_bearing,
                     "native_wind_speed": native_wind_speed,
+                    "native_wind_gust_speed": native_wind_gust_speed,
                 }
                 ha_forecast.append(ha_item)
 
