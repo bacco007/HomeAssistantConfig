@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, January 4th 2024_
+_Stats as at 05:00, Friday, January 5th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0b5 | 580     | 5336         | 3504 | 136 |
+| 2024.1.0 | 580     | 5334         | 3505 | 136 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3504
+Sensor | 3505
 Sun | 1
 Switch | 315
 Weather | 20
@@ -705,7 +705,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -873,7 +873,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Home Assistant Stream Deck (2023.12.0)
 - JupyterLab (0.12.1)
 - MariaDB (2.6.1)
-- Matter Server (5.0.1)
+- Matter Server (5.0.2)
 - Mosquitto broker (6.4.0)
 - Node-RED (16.0.2)
 - OpenThread Border Router (2.4.1)
