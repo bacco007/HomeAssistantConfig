@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, January 5th 2024_
+_Stats as at 05:00, Saturday, January 6th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0 | 580     | 5334         | 3505 | 136 |
+| 2024.1.0 | 580     | 5289         | 3485 | 136 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 19
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3505
+Sensor | 3485
 Sun | 1
-Switch | 315
+Switch | 304
 Weather | 20
 Zone | 4
 
@@ -876,10 +876,10 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Matter Server (5.0.2)
 - Mosquitto broker (6.4.0)
 - Node-RED (16.0.2)
-- OpenThread Border Router (2.4.1)
+- OpenThread Border Router (2.4.2)
 - phpMyAdmin (0.9.0)
 - Samba share (12.2.0)
-- Silicon Labs Multiprotocol (2.3.2)
+- Silicon Labs Multiprotocol (2.4.0)
 - SunGather (0.1.3)
 - Zigbee2MQTT Edge (edge)
 - ZigStar Silicon Labs FW Flasher (0.1.1)
