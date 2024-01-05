@@ -169,6 +169,13 @@ SENSOR_TYPES: tuple[QBittorrentSensorEntityDescription, ...] = (
         value_fn=lambda coordinator: coordinator.data["seeding"],
     ),
     QBittorrentSensorEntityDescription(
+        key="uploading",
+        name="Uploading",
+        icon="mdi:upload",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda coordinator: coordinator.data["uploading"],
+    ),
+    QBittorrentSensorEntityDescription(
         key="paused",
         name="Paused",
         icon="mdi:pause",
