@@ -124,6 +124,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         except (ResultError, RequestError) as err:
             raise UpdateFailed(f"Error while retreiving data: {err}") from err
 
+
     unit_descriptions = await weatherbitapi.load_unit_system()
 
     coordinator = DataUpdateCoordinator(
@@ -195,3 +196,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry, WEATHERBIT_PLATFORMS
     )
     return unload_ok
+

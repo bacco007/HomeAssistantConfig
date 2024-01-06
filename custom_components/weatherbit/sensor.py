@@ -5,10 +5,10 @@ import logging
 from dataclasses import dataclass
 
 from homeassistant.components.sensor import (
-    STATE_CLASS_MEASUREMENT,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
+    SensorStateClass
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -68,7 +68,7 @@ from .models import WeatherBitEntryData
 _KEY_AQI = "aqi"
 
 
-@dataclass
+@dataclass(frozen=True,kw_only=True)
 class WeatherBitRequiredKeysMixin:
     """Mixin for required keys."""
 
@@ -81,7 +81,7 @@ class WeatherBitRequiredKeysMixin:
 #    translation_key: str | None = None
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class WeatherBitSensorEntityDescription(
     WeatherBitRequiredKeysMixin, SensorEntityDescription
 ):
@@ -94,7 +94,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Air Temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -103,7 +103,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Apparent Temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -111,7 +111,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="slp",
         name="Sea Level Pressure",
         device_class=SensorDeviceClass.PRESSURE,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="pressure",
         extra_attributes=False,
     ),
@@ -120,7 +120,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Relative Humidity",
         native_unit_of_measurement="%",
         device_class=SensorDeviceClass.HUMIDITY,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -128,7 +128,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="pres",
         name="Station Pressure",
         device_class=SensorDeviceClass.PRESSURE,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="pressure",
         extra_attributes=False,
     ),
@@ -137,7 +137,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Cloud Coverage",
         native_unit_of_measurement="%",
         icon="mdi:cloud",
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -146,7 +146,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Solar Radiation",
         icon="mdi:solar-power",
         native_unit_of_measurement="W/m^2",
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -155,7 +155,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Wind Speed",
         device_class=SensorDeviceClass.SPEED,
         icon="mdi:weather-windy-variant",
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="length",
         extra_attributes=False,
     ),
@@ -165,7 +165,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         icon="mdi:weather-windy-variant",
         device_class=SensorDeviceClass.SPEED,
         native_unit_of_measurement=UnitOfSpeed.KILOMETERS_PER_HOUR,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -175,7 +175,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         icon="mdi:tailwind",
         device_class=SensorDeviceClass.SPEED,
         native_unit_of_measurement=UnitOfSpeed.KNOTS,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -184,7 +184,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Wind Direction",
         icon="mdi:compass",
         native_unit_of_measurement=DEGREE,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -201,7 +201,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Dew Point",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -217,7 +217,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Visibility",
         icon="mdi:eye",
         device_class=SensorDeviceClass.DISTANCE,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="distance",
         extra_attributes=False,
     ),
@@ -226,7 +226,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Precipitation",
         icon="mdi:weather-rainy",
         device_class=SensorDeviceClass.DISTANCE,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="precipitation",
         extra_attributes=False,
     ),
@@ -235,7 +235,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Snow",
         icon="mdi:snowflake",
         device_class=SensorDeviceClass.DISTANCE,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="precipitation",
         extra_attributes=False,
     ),
@@ -244,7 +244,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="UV Index",
         icon="mdi:weather-sunny-alert",
         native_unit_of_measurement="UVI",
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -260,7 +260,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="aqi",
         name="Air Quality Index",
         device_class=SensorDeviceClass.AQI,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -269,7 +269,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Beaufort",
         icon="mdi:windsock",
         native_unit_of_measurement="Bft",
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
     ),
