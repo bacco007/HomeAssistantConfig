@@ -23,29 +23,26 @@ binary_sensor:
             and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
           Weatherflow (Cloud)
         {%- endif %}
-      # last_rain: >
-      #   {{ states('sensor.tempest_st_00056115_last_rain_start') }}
 
   - name: "[Weather] Is Lightning"
     unique_id: weather_is_lightning
     icon: mdi:weather-lightning
     delay_on: 20
-    delay_off: "{{ iif(now() - states('sensor.uptime_sensor')|as_datetime < timedelta(minutes=5),0,14400) }}"
+    delay_off: 120
     state: >
       {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('binary_sensor.weatherflow_cloud_is_lightning') %}
-        {{ states('binary_sensor.weatherflow_cloud_is_lightning') }}
+          and has_value('binary_sensor.brisbane_st_binary_sensors_is_lightning') %}
+        {{ states('binary_sensor.brisbane_st_binary_sensors_is_lightning') }}
       {%- endif %}
-    availability: "{{ has_value('binary_sensor.weatherflow_cloud_is_lightning') }}"
+    availability: >
+      {{ has_value('binary_sensor.brisbane_st_binary_sensors_is_lightning') }}
     attributes:
       category: weather
       provider: >
         {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('binary_sensor.weatherflow_cloud_is_lightning') %}
+          and has_value('binary_sensor.brisbane_st_binary_sensors_is_lightning') %}
           Weatherflow (Cloud)
         {%- endif %}
-      last_lightning_strike: >
-        {{ states('sensor.weatherflow_cloud_last_lightning_strike') }}
 
 sensor:
   - name: "[Weather] Summary"
@@ -502,12 +499,14 @@ sensor:
       {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_duration_today')) -%}
         {{ states('sensor.weatherflow_forecast_precipitation_duration_today')|float }}
+      {% else %} 0
       {%- endif %}
     attributes:
       category: weather
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_duration_today')) -%} Weatherflow (Cloud)
+        {% else %} None
         {%- endif %}
     availability: >
       {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
@@ -523,12 +522,14 @@ sensor:
       {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_duration_yesterday')) -%}
         {{ states('sensor.weatherflow_forecast_precipitation_duration_yesterday')|float }}
+        {% else %} 0
       {%- endif %}
     attributes:
       category: weather
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_duration_yesterday')) -%} Weatherflow (Cloud)
+        {% else %} None
         {%- endif %}
     availability: >
       {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
@@ -544,12 +545,14 @@ sensor:
       {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_today')) %}
         {{ states('sensor.weatherflow_forecast_precipitation_today')|float }}
+        {% else %} 0
       {%- endif %}
     attributes:
       category: weather
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_today')) -%} Weatherflow (Cloud)
+          {% else %} None
         {%- endif %}
     availability: >
       {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
@@ -568,6 +571,7 @@ sensor:
       {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
           and is_number(states('sensor.east_tamworth_precipitation_yesterday')) %}
         {{ states('sensor.east_tamworth_precipitation_yesterday')|float }}
+      {% else %} 0
       {%- endif %}
     attributes:
       category: weather
@@ -576,6 +580,7 @@ sensor:
           and is_number(states('sensor.weatherflow_cloud_precipitation_yesterday')) -%} Weatherflow (Cloud)
         {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
           and is_number(states('sensor.east_tamworth_precipitation_yesterday')) %} Bureau of Meteorology
+        {% else %} None
         {%- endif %}
     availability: >
       {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
@@ -1048,7 +1053,7 @@ sensor:
     state: >
       {%- set ns = namespace(high_temp = 25, cnt = 0) %}
       {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
-      {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+      {%- for forecast in state_attr('sensor.weather_forecasts','weatherflow_hourly') %}
           {%- if forecast.temperature > ns.high_temp %}
             {%- set ns.cnt = ns.cnt + 1 %}
           {%- endif %}
@@ -1058,14 +1063,14 @@ sensor:
     attributes:
       category: weather
       availability: >
-        {{ state_attr('weather.weather_home_hourly','forecast')[0] is defined }}
+        {{ state_attr('sensor.weather_forecasts','weatherflow_hourly')[0] is defined }}
       provider: >
-        {{ state_attr('weather.weather_home_hourly', 'attribution') }}
+        "Weatherflow"
       intervals: >
         {%- set ns = namespace(high_temp = 25, list = []) %}
         {%- set current = [] %}
         {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
-        {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+        {%- for forecast in state_attr('sensor.weather_forecasts','weatherflow_hourly') %}
         {%- if forecast.temperature > ns.high_temp %}
           {%- set new = [{
           "date": as_timestamp(forecast.datetime) | timestamp_custom('%A %b %-d'),
@@ -1082,7 +1087,7 @@ sensor:
     state: >
       {%- set ns = namespace(high_temp = 30, cnt = 0) %}
       {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
-      {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+      {%- for forecast in state_attr('sensor.weather_forecasts','weatherflow_hourly') %}
           {%- if forecast.temperature > ns.high_temp %}
             {%- set ns.cnt = ns.cnt + 1 %}
           {%- endif %}
@@ -1092,14 +1097,14 @@ sensor:
     attributes:
       category: weather
       availability: >
-        {{ state_attr('weather.weather_home_hourly','forecast')[0] is defined }}
+        {{ state_attr('sensor.weather_forecasts','weatherflow_hourly')[0] is defined }}
       provider: >
-        {{ state_attr('weather.weather_home_hourly', 'attribution') }}
+        WeatherFlow
       intervals: >
         {%- set ns = namespace(high_temp = 30, list = []) %}
         {%- set current = [] %}
         {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
-        {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+        {%- for forecast in state_attr('sensor.weather_forecasts','weatherflow_hourly') %}
         {%- if forecast.temperature > ns.high_temp %}
           {%- set new = [{
           "date": as_timestamp(forecast.datetime) | timestamp_custom('%A %b %-d'),
@@ -1116,7 +1121,7 @@ sensor:
     state: >
       {%- set ns = namespace(high_temp = 10, cnt = 0) %}
       {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
-      {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+      {%- for forecast in state_attr('sensor.weather_forecasts','weatherflow_hourly') %}
           {%- if forecast.temperature < ns.high_temp %}
             {%- set ns.cnt = ns.cnt + 1 %}
           {%- endif %}
@@ -1126,14 +1131,14 @@ sensor:
     attributes:
       category: weather
       availability: >
-        {{ state_attr('weather.weather_home_hourly','forecast')[0] is defined }}
+        {{ state_attr('sensor.weather_forecasts','weatherflow_hourly')[0] is defined }}
       provider: >
-        {{ state_attr('weather.weather_home_hourly', 'attribution') }}
+        WeatherFlow
       intervals: >
         {%- set ns = namespace(high_temp = 10, list = []) %}
         {%- set current = [] %}
         {%- set current_date = (now() | as_timestamp) | timestamp_custom("%d.%m.%Y") %}
-        {%- for forecast in state_attr('weather.weather_home_hourly','forecast') %}
+        {%- for forecast in state_attr('sensor.weather_forecasts','weatherflow_hourly') %}
         {%- if forecast.temperature < ns.high_temp %}
           {%- set new = [{
           "date": as_timestamp(forecast.datetime) | timestamp_custom('%A %b %-d'),

@@ -9,10 +9,6 @@ pages:
         text: |
           Bedroom
           lights
-      - icon: netflix.png
-        service: script.start_spotify
-      - icon: xbox.png
-        service: script.start_xbox
       - icon_mdi: restart
         service: homeassistant.restart
         text: |

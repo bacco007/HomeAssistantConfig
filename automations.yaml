@@ -25,28 +25,6 @@
   - service: multiscrape.trigger_bom_average
     data: {}
   mode: single
-- id: '1698469814256'
-  alias: '[pixelclock] Weather + Forecast'
-  description: ''
-  use_blueprint:
-    path: jeeftor/awtrix_weatherflow.yaml
-    input:
-      awtrix:
-      - da38247c02359f48562a1b102b5d4ac4
-      forecast_var: weather.tempest_hourly
-      forecast_temp_field: temperature
-      temp_digits: 1
-      temp_suffix: °C
-      current_temp_var: sensor.weather_temperature
-      color_matrix_json: '{"-12": "#D977DF","-6": "#9545BC","-1": "#4B379C","0": "#FEC4FF","4":
-        "#31B8DB","10": "#31DB8B","15": "#6ED228","21": "#FFFF28","27": "#F87E27","32":
-        "#CF3927","38": "#A12527"}'
-      moon: sensor.moon
-      when_show_moon: never
-      sun_time_format: '%H:%M'
-      moon_rise_set: sensor.moonriseset
-      sun_time_type: Relative
-      message_duration_forecast: 45
 - id: '1698470577800'
   alias: '[pixelclock] Currently Playing'
   description: ''
@@ -153,3 +131,23 @@
       title: pixelclock Update
       message: pixelclock updated with latest firmware
   mode: single
+- id: '1704526276912'
+  alias: '[pixelclock] Weather + Forecast'
+  description: Show Weather + Forecast on Pixelclock
+  use_blueprint:
+    path: jeeftor/awtrix_weatherflow.yaml
+    input:
+      awtrix:
+      - da38247c02359f48562a1b102b5d4ac4
+      forecast_var: weather.weatherflow_forecast_brisbane_st
+      temp_digits: 1
+      current_temp_var: sensor.weather_temperature
+      color_matrix_json: '{"-12": "#D977DF","-6": "#9545BC","-1": "#4B379C","0": "#FEC4FF","4":
+        "#31B8DB","10": "#31DB8B","15": "#6ED228","21": "#FFFF28","27": "#F87E27","32":
+        "#CF3927","38": "#A12527"}'
+      moon: sensor.moon
+      moon_rise_set: sensor.moonriseset
+      when_show_moon: never
+      sun_time_type: Relative
+      sun_time_format: '%H:%M'
+      message_duration_forecast: 40

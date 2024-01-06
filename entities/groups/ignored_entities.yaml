@@ -5,7 +5,6 @@ ignored_unavailable_entities:
     - sensor.weather_next_precipitation_end
     - sensor.weather_precipitation_intensity
     - sensor.weather_precipitation_probability
-    - sensor.weather_precipitation_probability_today
     - sensor.weather_precipitation_type
     - sensor.weather_rain_start_next_12_hours
     - stt.home_assistant_cloud

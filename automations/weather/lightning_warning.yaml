@@ -5,11 +5,11 @@ mode: single
 
 trigger:
   - platform: state
-    entity_id: sensor.weatherflow_cloud_lightning_strike_count
+    entity_id: sensor.weatherflow_forecast_lightnings_strikes
 
 condition:
   - condition: numeric_state
-    entity_id: sensor.weatherflow_cloud_last_lightning_strike_distance
+    entity_id: sensor.weatherflow_forecast_distance_last_lightning_strike
     below: 10
 
 action:

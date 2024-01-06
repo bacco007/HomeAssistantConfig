@@ -25,7 +25,8 @@ sensor:
             |rejectattr('entity_id','search','_color')
             |rejectattr('entity_id','search','wunder')
             |rejectattr('entity_id','search','gosungrow')
-            |rejectattr('entity_id','search','z2m_plug')
+            |rejectattr('entity_id','search','z2m')
+            |rejectattr('entity_id','search','zigbee2mqtt')
             |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('gdacs'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('github'))|map(attribute='entity_id')|list)
@@ -52,6 +53,9 @@ sensor:
             |rejectattr('entity_id','in',expand(integration_entities('google_fit'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('sensibo'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('astroweather'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('satellitetracker'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('gtfs2'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('openweathermap'))|map(attribute='entity_id')|list)
             |rejectattr('last_changed','ge',ignore_ts)
             |map(attribute='entity_id')|list }}
         {%- endif %}

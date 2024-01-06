@@ -19,31 +19,31 @@ pressure_unit: hPa
 wind_speed_unit: km/h
 visibility_unit: km
 precipitation_unit: mm
-forecast_template: >
-  {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-      and state_attr('weather.weatherflow_cloud_day_based_forecast','forecast') != none %}
-    {{ state_attr('weather.weatherflow_cloud_day_based_forecast','forecast') }}
-  {% elif is_state('binary_sensor.connected_weatherflow_local','on')
-      and state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') != none %}
-    {{ state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') }}
-  {% elif is_state('binary_sensor.connected_bureau_of_meteorology','on')
-      and state_attr('weather.east_tamworth','forecast') != none %}
-    {{ state_attr('weather.east_tamworth','forecast') }}
-  {% elif is_state('binary_sensor.connected_pirateweather','on')
-      and state_attr('weather.pirateweather','forecast') != none %}
-    {{ state_attr('weather.pirateweather','forecast') }}
-  {% endif %}
-attribution_template: >
-  {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-      and state_attr('weather.weatherflow_cloud_day_based_forecast','forecast') != none %}
-    WeatherFlow Cloud
-  {% elif is_state('binary_sensor.connected_weatherflow_local','on')
-      and state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') != none %}
-    WeatherFlow Local
-  {% elif is_state('binary_sensor.connected_bureau_of_meteorology','on')
-      and state_attr('weather.east_tamworth','forecast') != none %}
-    Bureau of Meteorology
-  {% elif is_state('binary_sensor.connected_pirateweather','on')
-      and state_attr('weather.pirateweather','forecast') != none %}
-    Pirate Weather
-  {% endif %}
+# forecast_template: >
+#   {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+#       and state_attr('weather.weatherflow_cloud_day_based_forecast','forecast') != none %}
+#     {{ state_attr('weather.weatherflow_cloud_day_based_forecast','forecast') }}
+#   {% elif is_state('binary_sensor.connected_weatherflow_local','on')
+#       and state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') != none %}
+#     {{ state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') }}
+#   {% elif is_state('binary_sensor.connected_bureau_of_meteorology','on')
+#       and state_attr('weather.east_tamworth','forecast') != none %}
+#     {{ state_attr('weather.east_tamworth','forecast') }}
+#   {% elif is_state('binary_sensor.connected_pirateweather','on')
+#       and state_attr('weather.pirateweather','forecast') != none %}
+#     {{ state_attr('weather.pirateweather','forecast') }}
+#   {% endif %}
+# attribution_template: >
+#   {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+#       and state_attr('weather.weatherflow_cloud_day_based_forecast','forecast') != none %}
+#     WeatherFlow Cloud
+#   {% elif is_state('binary_sensor.connected_weatherflow_local','on')
+#       and state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') != none %}
+#     WeatherFlow Local
+#   {% elif is_state('binary_sensor.connected_bureau_of_meteorology','on')
+#       and state_attr('weather.east_tamworth','forecast') != none %}
+#     Bureau of Meteorology
+#   {% elif is_state('binary_sensor.connected_pirateweather','on')
+#       and state_attr('weather.pirateweather','forecast') != none %}
+#     Pirate Weather
+#   {% endif %}

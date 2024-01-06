@@ -22,11 +22,7 @@ cards:
           margin: 0 !important;
         }
     entities:
-      - entity: weather.tempest_hourly
-        name: Weatherflow (Hourly)
-        secondary_info: last-updated
-      - entity: weather.tempest_daily
-        name: Weatherflow (Daily)
+      - entity: weather.weatherflow_forecast_brisbane_st
         secondary_info: last-updated
       - entity: sensor.weather_current_condition
         secondary_info: none
@@ -46,7 +42,7 @@ cards:
           name: Current Temperature
         entities:
           - entity: sensor.weather_temperature_trend
-          - entity: sensor.tempest_st_00056115_temperature_level
+          - entity: sensor.st_00056115_temperature_level
             name: Temperature Level
           - entity: binary_sensor.weatherflow_cloud_is_freezing
             name: Freezing
@@ -54,7 +50,7 @@ cards:
           - entity: sensor.weather_high_temperature
           - entity: sensor.weather_low_temperature
           - entity: sensor.weather_dew_point
-          - entity: sensor.tempest_st_00056115_dewpoint_comfort_level
+          - entity: sensor.st_00056115_dewpoint_comfort_level
             name: Dewpoint Comfort
       - type: custom:fold-entity-row
         card_mod:
@@ -105,19 +101,19 @@ cards:
           style: *style
         padding: 5
         head:
-          entity: binary_sensor.weatherflow_cloud_is_lightning
+          entity: binary_sensor.brisbane_st_binary_sensors_is_lightning
           name: Lightning
         entities:
           - entity: sensor.weather_lightning_count
-          - entity: sensor.weatherflow_cloud_lightning_strike_count
+          - entity: sensor.weatherflow_forecast_lightnings_strikes
             name: Lightning Strike Count (WF)
-          - entity: sensor.weatherflow_cloud_lightning_strike_count_last_hour
+          - entity: sensor.weatherflow_forecast_lightning_strikes_last_hour
             name: Lightning Strikes Last Hour
-          - entity: sensor.weatherflow_cloud_lightning_strike_count_last_3_hours
+          - entity: sensor.weatherflow_forecast_lightning_strikes_last_3_hours
             name: Lightning Strikes Last 3 Hours
-          - entity: sensor.weatherflow_cloud_last_lightning_strike
+          - entity: sensor.weatherflow_forecast_time_of_last_lightning_strike
             name: Last Lightning Strike
-          - entity: sensor.weatherflow_cloud_last_lightning_strike_distance
+          - entity: sensor.weatherflow_forecast_distance_last_lightning_strike
             name: Last Lightning Strike Distance
       - type: custom:fold-entity-row
         card_mod:

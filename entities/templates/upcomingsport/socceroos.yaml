@@ -25,7 +25,7 @@ action:
 sensor:
   - name: "[Upcoming Sport] Socceroos"
     unique_id: upcoming_sport_socceroos
-    icon: "mdi:football"
+    icon: "mdi:soccer"
     picture: /local/sportlogos/socceroos.png
     state: >
       {%- if countnumb == 0 %}

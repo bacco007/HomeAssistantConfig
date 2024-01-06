@@ -1,0 +1,20 @@
+---
+sensor:
+  - name: indoor_outdoor_temperature_difference
+    unique_id: indoor_outdoor_temperature_difference
+    unit_of_measurement: °C
+    device_class: temperature
+    state: >
+      {{ (states('sensor.indoor_average_temperature')|float(default=0) - states('sensor.st_00056115_temperature')|float(default=0))|abs| round(2) }}
+    attributes:
+      description: >
+        {{ iif( states('sensor.st_00056115_temperature') | float >= states('sensor.indoor_average_temperature') | float, 'cooler', 'warmer') }}
+  - name: indoor_outdoor_humidity_difference
+    unique_id: indoor_outdoor_humidity_difference
+    unit_of_measurement: "%"
+    # device_class: temperature
+    state: >
+      {{ (states('sensor.indoor_average_humidity')|float(default=0) - states('sensor.st_00056115_humidity')|float(default=0)) | abs | round(2) }}
+    attributes:
+      description: >
+        {{ iif( states('sensor.st_00056115_humidity') | float >= states('sensor.st_00056115_humidity') | float, 'drier', 'wetter') }}

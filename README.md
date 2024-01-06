@@ -46,33 +46,33 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, January 6th 2024_
+_Stats as at 05:00, Sunday, January 7th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.0 | 580     | 5289         | 3485 | 136 |
+| 2024.1.1 | 580     | 5225         | 3456 | 136 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 35
 Automation | 136
-Binary Sensor | 343
+Binary Sensor | 339
 Camera | 5
 Device Tracker | 95
-Group | 40
+Group | 43
 Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
 Light | 14
-Media Player | 19
+Media Player | 17
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3485
+Sensor | 3456
 Sun | 1
-Switch | 304
-Weather | 20
+Switch | 295
+Weather | 17
 Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -705,7 +705,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -862,11 +862,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (17.0.1)
-- Bluetooth Presence Monitor (1.0.0)
 - Cloudflared (5.0.0)
 - ESPHome (2023.12.5)
 - eufy-security-ws (1.7.1)
-- File editor (5.7.0)
 - Glances (0.20.0)
 - GoSungrow (3.0.7)
 - Home Assistant Google Drive Backup (0.112.1)
@@ -874,14 +872,13 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.12.1)
 - MariaDB (2.6.1)
 - Matter Server (5.0.2)
-- Mosquitto broker (6.4.0)
 - Node-RED (16.0.2)
 - OpenThread Border Router (2.4.2)
 - phpMyAdmin (0.9.0)
 - Samba share (12.2.0)
-- Silicon Labs Multiprotocol (2.4.0)
+- Silicon Labs Multiprotocol (2.4.2)
 - SunGather (0.1.3)
-- Zigbee2MQTT Edge (edge)
+- Zigbee2MQTT (1.35.0-1)
 - ZigStar Silicon Labs FW Flasher (0.1.1)
 - ZigStar TI CC2652P/P7 FW Flasher (0.4.0)
 

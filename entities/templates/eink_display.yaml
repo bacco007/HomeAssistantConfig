@@ -22,9 +22,9 @@ sensor:
       home_temperature: >
         {{ states('sensor.weather_temperature') }}
       home_temperature_max: >
-        {{ states('sensor.weather_temperature_maximum_day') }}
+        {{ states('sensor.weather_temperature_daily_high_00_00') }}
       home_temperature_min: >
-        {{ states('sensor.weather_temperature_minimum_day') }}
+        {{ states('sensor.weather_temperature_daily_low_00_00') }}
       home_rainfall_today: >
         {{ states('sensor.weather_precipitation_today') }}
       home_rainfall_week: >
@@ -47,16 +47,16 @@ sensor:
         {{ cond_now }}
         {%- endif %}
       forecast_day1: >
-        {{ state_attr('weather.weather_home_daily', 'forecast')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[1].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[1].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].temperature  | int}}°C
       forecast_day2: >
-        {{ state_attr('weather.weather_home_daily', 'forecast')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[2].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[2].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[2].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[2].temperature  | int}}°C
       forecast_day3: >
-        {{ state_attr('weather.weather_home_daily', 'forecast')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[3].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[3].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[3].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[3].temperature  | int}}°C
       forecast_day4: >
-        {{ state_attr('weather.weather_home_daily', 'forecast')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[4].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[4].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[4].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[4].temperature  | int}}°C
       forecast_day5: >
-        {{ state_attr('weather.weather_home_daily', 'forecast')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[5].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[5].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[5].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[5].temperature  | int}}°C
       forecast_day6: >
-        {{ state_attr('weather.weather_home_daily', 'forecast')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('weather.weather_home_daily', 'forecast')[6].templow | int }}°C - {{ state_attr('weather.weather_home_daily', 'forecast')[6].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[6].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[6].temperature  | int}}°C
       solar_yield_today: >
-        {{ states('solar.sungrowsolar_daily_power_yields')}}
+        {{ states('sensor.sungrowsolar_daily_power_yields')}}

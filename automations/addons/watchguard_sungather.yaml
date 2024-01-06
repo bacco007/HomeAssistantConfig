@@ -1,5 +1,5 @@
 ---
-alias: "[Addon Watchguard] Zigbee2MQTT"
+alias: "[Addon Watchguard] Sungather"
 description: ""
 trigger:
   - platform: time_pattern

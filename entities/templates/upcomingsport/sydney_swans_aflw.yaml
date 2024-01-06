@@ -25,7 +25,7 @@ action:
 sensor:
   - name: "[Upcoming Sport] Sydney Swans (AFLW)"
     unique_id: upcoming_sport_sydney_swans_aflw
-    icon: "mdi:basketball"
+    icon: "mdi:football-australian"
     picture: /local/sportlogos/sydney_swans_aflw.png
     state: >
       {%- if countnumb == 0 %}
