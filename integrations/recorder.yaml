@@ -156,6 +156,12 @@ recorder:
       - sensor.weatherman_dash*
       - sensor.flightradar24*
       - weather.weather_home*
+      - sensor.st_00056115*
+      - sensor.client_signal*
+      - sensor.nobito*
+      - sensor.pixelclock*
+      - sensor.qbittorrent*
+      - sensor.pirateweather*
     event_types:
       - automation_triggered
       - call_service

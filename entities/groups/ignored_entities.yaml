@@ -2,7 +2,6 @@
 ignored_unavailable_entities:
   entities:
     - sensor.time
-    - sensor.weather_next_precipitation_end
     - sensor.weather_precipitation_intensity
     - sensor.weather_precipitation_probability
     - sensor.weather_precipitation_type

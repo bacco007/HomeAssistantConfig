@@ -69,7 +69,7 @@ cards:
             name: QBitTorrent
             icon: mdi:download-box-outline
             state: ""
-            secondary: "{{states('sensor.qbit_status')}}"
+            secondary: "{{states('sensor.qbittorrent_status')}}"
       - type: custom:auto-entities
         filter:
           include:

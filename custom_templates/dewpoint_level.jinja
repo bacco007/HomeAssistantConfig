@@ -1,0 +1,25 @@
+{% macro dewpoint_level(temp) %}
+  {%- set temperature = temp -%}
+  {%- if temperature >= 26.66 -%}
+      {%- set value = "Severely High" -%}
+  {%- elif temperature >= 23.88 -%}
+      {%- set value = "Miserable" -%}
+  {%- elif temperature >= 21.11 -%}
+      {%- set value = "Oppressive" -%}
+  {%- elif temperature >= 18.33 -%}
+      {%- set value = "Uncomfortable" -%}
+  {%- elif temperature >= 15.55 -%}
+      {%- set value = "Ok for Most" -%}
+  {%- elif temperature >= 12.77 -%}
+      {%- set value = "Comfortable" -%}
+  {%- elif temperature >= 10 -%}
+      {%- set value = "Very Comfortable" -%}
+  {%- elif temperature >= -1.11 -%}
+      {%- set value = "Somewhat Dry" -%}
+  {%- elif temperature >= -17.5 -%}
+      {%- set value = "Dry" -%}
+  {%- elif temperature >= -17.77 -%}
+      {%- set value = "Very Dry" -%}
+  {%- endif -%}
+  {{ value }}
+{% endmacro %}

@@ -107,8 +107,8 @@ cards:
           - force_numeric
           - fn: >-
               ({hass}) => { return {xs:[new
-              Date(hass.states['sensor.sunrise'].state).getTime(),new
-              Date(hass.states['sensor.sunrise'].state).getTime()], ys:[0,1]} }
+              Date(hass.states['sensor.tbsmarthome_sun_rising'].state).getTime(),new
+              Date(hass.states['sensor.tbsmarthome_sun_rising'].state).getTime()], ys:[0,1]} }
       - entity: ""
         name: Solar Noon
         yaxis: y9
@@ -124,8 +124,8 @@ cards:
           - force_numeric
           - fn: >-
               ({hass}) => { return {xs:[new
-              Date(hass.states['sensor.solar_noon'].state).getTime(),new
-              Date(hass.states['sensor.solar_noon'].state).getTime()], ys:[0,1]}
+              Date(hass.states['sensor.tbsmarthome_sun_solar_noon'].state).getTime(),new
+              Date(hass.states['sensor.tbsmarthome_sun_solar_noon'].state).getTime()], ys:[0,1]}
               }
       - entity: ""
         name: Sunset
@@ -142,8 +142,8 @@ cards:
           - force_numeric
           - fn: >-
               ({hass}) => { return {xs:[new
-              Date(hass.states['sensor.sunset'].state).getTime(),new
-              Date(hass.states['sensor.sunset'].state).getTime()], ys:[0,1]} }
+              Date(hass.states['sensor.tbsmarthome_sun_setting'].state).getTime(),new
+              Date(hass.states['sensor.tbsmarthome_sun_setting'].state).getTime()], ys:[0,1]} }
       - entity: ""
         name: now
         yaxis: y9

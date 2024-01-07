@@ -1,7 +1,7 @@
 ---
 platform: statistics
 name: "Barometric Pressure 24h Spread"
-entity_id: sensor.weatherflow_cloud_sea_level_pressure
+entity_id: sensor.weatherflow_forecast_barometric_pressure
 state_characteristic: distance_absolute
 max_age:
   hours: 24

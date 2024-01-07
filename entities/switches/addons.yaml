@@ -52,37 +52,20 @@ switches:
       service: hassio.addon_stop
       data:
         addon: 7b536ee6_sungather
-  addon_w2m:
-    friendly_name: "[Addon] Weatherflow to MQTT"
-    unique_id: addon_weatherflowtomqtt
-    entity_picture_template: >
-      {{state_attr('update.weatherflow_to_mqtt_update', 'entity_picture')}}
-    value_template: >
-      {{is_state('binary_sensor.weatherflow_to_mqtt_running', 'on')}}
-    availability_template: >
-      {{is_state('binary_sensor.weatherflow_to_mqtt_running', 'on')}}
-    turn_on:
-      service: hassio.addon_start
-      data:
-        addon: 67f4b1af_weatherflow2mqtt
-    turn_off:
-      service: hassio.addon_stop
-      data:
-        addon: 67f4b1af_weatherflow2mqtt
   addon_z2m:
     friendly_name: "[Addon] Zigbee2MQTT"
     unique_id: addon_zigbee2mqtt
     entity_picture_template: >
-      {{state_attr('update.zigbee2mqtt_edge_update', 'entity_picture')}}
+      {{state_attr('update.zigbee2mqtt_update', 'entity_picture')}}
     value_template: >
-      {{is_state('binary_sensor.zigbee2mqtt_edge_running', 'on')}}
+      {{is_state('binary_sensor.zigbee2mqtt_running', 'on')}}
     availability_template: >
-      {{is_state('binary_sensor.zigbee2mqtt_edge_running', 'on')}}
+      {{is_state('binary_sensor.zigbee2mqtt_running', 'on')}}
     turn_on:
       service: hassio.addon_start
       data:
-        addon: 45df7312_zigbee2mqtt_edge
+        addon: 45df7312_zigbee2mqtt
     turn_off:
       service: hassio.addon_stop
       data:
-        addon: 45df7312_zigbee2mqtt_edge
+        addon: 45df7312_zigbee2mqtt

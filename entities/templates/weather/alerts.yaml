@@ -80,8 +80,8 @@ binary_sensor:
     unique_id: weather_rain_soon
     icon: mdi:weather-pouring
     state: >
-      {% set time = states('sensor.weather_rain_start') | as_datetime
-          if has_value('sensor.weather_rain_start') else none %}
+      {% set time = states('sensor.weather_rain_start_next_12_hours') | as_datetime
+          if has_value('sensor.weather_rain_start_next_12_hours') else none %}
       {{ time != none and now() - time < timedelta(hours=4)
           or states('sensor.weather_precipitation_probability') | int(0) > 50
           or is_state('binary_sensor.weather_is_raining', 'on') }}

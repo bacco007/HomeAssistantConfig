@@ -14,7 +14,7 @@ sensors:
       {%- set factors = namespace(condition='',sun='') %}
 
       {#- Retrieve the current condition and normalize the value #}
-      {%- set current_condition = states("weather.east_tamworth") %}
+      {%- set current_condition = states("weather.east_tamworth_hourly") %}
       {%- set current_condition = current_condition|lower|replace("-day","")|replace("_day","")|replace("-night","")|replace("_night","")|replace("and","")|replace("-", " ")|replace("_", " ")|replace("(","")|replace(")","")|replace(" ", "")|replace(".", "") %}
 
       {#- Assign a seemingly arbitrary number to the condition factor #}
@@ -31,12 +31,12 @@ sensors:
 
       {#- Compute Sun Factor #}
       {%- set right_now = now() | as_timestamp %}
-      {%- set sunrise = states("sensor.sunrise") | as_timestamp %}
-      {%- set sunrise_begin = states("sensor.dawn") | as_timestamp %}
+      {%- set sunrise = states("sensor.tbsmarthome_sun_rising") | as_timestamp %}
+      {%- set sunrise_begin = states("sensor.tbsmarthome_sun_dawn") | as_timestamp %}
       {%- set sunrise_end = sunrise + (40 * 60) %}
-      {%- set sunset = states("sensor.sunset") | as_timestamp %}
+      {%- set sunset = states("sensor.tbsmarthome_sun_setting") | as_timestamp %}
       {%- set sunset_begin = sunset - (40 * 60) %}
-      {%- set sunset_end = states("sensor.dusk") | as_timestamp %}
+      {%- set sunset_end = states("sensor.tbsmarthome_sun_dusk") | as_timestamp %}
       {%- if sunrise_end < right_now and right_now < sunset_begin %}
         {%- set factors.sun = 1 %}
       {%- elif sunset_end < right_now or right_now < sunrise_begin %}

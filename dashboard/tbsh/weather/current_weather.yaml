@@ -42,15 +42,15 @@ cards:
           name: Current Temperature
         entities:
           - entity: sensor.weather_temperature_trend
-          - entity: sensor.st_00056115_temperature_level
+          - entity: sensor.weather_temperature_level
             name: Temperature Level
-          - entity: binary_sensor.weatherflow_cloud_is_freezing
+          - entity: binary_sensor.brisbane_st_binary_sensors_is_freezing
             name: Freezing
           - entity: sensor.weather_apparent_temperature
           - entity: sensor.weather_high_temperature
           - entity: sensor.weather_low_temperature
           - entity: sensor.weather_dew_point
-          - entity: sensor.st_00056115_dewpoint_comfort_level
+          - entity: sensor.weather_dewpoint_level
             name: Dewpoint Comfort
       - type: custom:fold-entity-row
         card_mod:
@@ -68,7 +68,7 @@ cards:
         padding: 5
         head: sensor.weather_barometric_pressure
         entities:
-          - entity: sensor.weatherflow_pressure_trend
+          - entity: sensor.weatherflow_forecast_pressure_trend
             name: Pressure Trend
       - type: custom:fold-entity-row
         card_mod:
@@ -78,7 +78,7 @@ cards:
           entity: sensor.weather_precipitation_probability
           name: Precipitation Probability
         entities:
-          - entity: sensor.weather_precipitation_probability_today
+          - entity: sensor.weather_precipitation_probability_tomorrow
       - type: custom:fold-entity-row
         card_mod:
           style: *style

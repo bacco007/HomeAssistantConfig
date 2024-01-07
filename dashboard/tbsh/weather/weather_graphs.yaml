@@ -595,7 +595,7 @@ cards:
                   width: 1.5
                   color: hotpink
                   shape: spline
-              - entity: sensor.z2m_office_climate_temperature
+              - entity: sensor.z2m_office_airquality_temperature
                 name: Office
                 connectgaps: true
                 show_value: true

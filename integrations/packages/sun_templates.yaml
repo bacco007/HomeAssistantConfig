@@ -195,39 +195,39 @@ sensor:
       sunrisetoday:
         friendly_name: "Sunrise"
         value_template: >
-          {{ as_timestamp(states('sensor.sunrise')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+          {{ as_timestamp(states('sensor.tbsmarthome_sun_rising')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
         icon_template: mdi:weather-sunset-up
       sunsettoday:
         friendly_name: "Sunset"
         value_template: >
-          {{ as_timestamp(states('sensor.sunset')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+          {{ as_timestamp(states('sensor.tbsmarthome_sun_setting')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
         icon_template: mdi:weather-sunset-down
       daylightyesterday:
         friendly_name: "Day Length Yesterday"
         value_template: >
-          {{ state_attr('sensor.daylight', 'yesterday_hms') }}
+          {{ state_attr('sensor.tbsmarthome_sun_daylight', 'yesterday_hms') }}
         icon_template: mdi:weather-sunny
       daylighttoday:
         friendly_name: "Day Length Today"
         value_template: >
-          {{ state_attr('sensor.daylight', 'today_hms') }}
+          {{ state_attr('sensor.tbsmarthome_sun_daylight', 'today_hms') }}
         icon_template: mdi:weather-sunny
       daylighttomorrow:
         friendly_name: "Day Length Tomorrow"
         value_template: >
-          {{ state_attr('sensor.daylight', 'tomorrow_hms') }}
+          {{ state_attr('sensor.tbsmarthome_sun_daylight', 'tomorrow_hms') }}
         icon_template: mdi:weather-sunny
       daylengthchange:
         friendly_name: "Change in Day Length"
         unit_of_measurement: "seconds"
         value_template: >
-          {{ ((state_attr('sensor.daylight', 'today') - state_attr('sensor.daylight', 'yesterday')) * 3600) | round(0) }}
+          {{ ((state_attr('sensor.tbsmarthome_sun_daylight', 'today') - state_attr('sensor.tbsmarthome_sun_daylight', 'yesterday')) * 3600) | round(0) }}
         icon_template: mdi:weather-sunny
       sun_daylightpct_remain:
         friendly_name: Daylight Percent Remaining
         value_template: >
-          {%- set total = state_attr('sensor.daylight', 'today') %}
-          {%- set used = (now() -  state_attr('sensor.sunrise', 'today')).total_seconds() / 3600 %}
+          {%- set total = state_attr('sensor.tbsmarthome_sun_daylight', 'today') %}
+          {%- set used = (now() -  state_attr('sensor.tbsmarthome_sun_rising', 'today')).total_seconds() / 3600 %}
           {{  100 * ((total - used)/total ) | round(2, 0) }}
         icon_template: >-
           {% if is_state('sun.sun', 'above_horizon') %}
@@ -236,8 +236,3 @@ sensor:
             mdi:weather-night
           {% endif %}
         unit_of_measurement: "%"
-        # state_class: measurement
-        # availability: >
-        #   {{ ['sensor.daylight', 'sensor.sunrise']
-        #   | select('is_state', ['unavailable', 'unknown'])
-        #   | list | count > 0 }}

@@ -96,7 +96,7 @@ browser_mod:
                 border-radius: var(--control-border-radius);
 
                 {% set active_child = state_attr(config.entity, 'active_child') %}
-                {% if active_child == 'media_player.spotify' %}
+                {% if active_child == 'media_player.spotify_thomas_baxter' %}
                   aspect-ratio: 1 / 1;
                 {% else %}
                   aspect-ratio: 1 / 1;

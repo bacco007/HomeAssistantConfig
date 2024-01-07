@@ -104,17 +104,6 @@ binary_sensor:
     attributes:
       category: homeassistant
 
-  - name: "alerts_weatherflow2mqtt"
-    unique_id: alerts_weatherflow2mqtt
-    icon: mdi:weather-cloudy-alert
-    device_class: problem
-    delay_on: 300
-    state: >
-      {{ is_state('binary_sensor.weatherflow_to_mqtt_running','off')
-          and is_state('input_boolean.alerts_ha','on') }}
-    attributes:
-      category: homeassistant
-
   - name: "alerts_connect_adguard"
     unique_id: alerts_connect_adguard
     icon: mdi:shield_account

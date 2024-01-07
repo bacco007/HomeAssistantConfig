@@ -15,7 +15,7 @@ cards:
         return ms_to_show - now_utc % ms_to_show + 'ms'
       }
     entities:
-      - entity: sensor.zha_lounge_weather_temperature
+      - entity: sensor.z2m_lounge_climate_temperature
         yaxis: y1
         legendgroup: 1
         name: Today
@@ -28,7 +28,7 @@ cards:
           width: 3
           color: rgba(255,155,255, 0.8)
           shape: spline
-      - entity: sensor.zha_lounge_weather_temperature
+      - entity: sensor.z2m_lounge_climate_temperature
         yaxis: y1
         legendgroup: 2
         name: Yesterday
@@ -41,7 +41,7 @@ cards:
           width: 2
           color: rgba(128,128,128,0.9)
           shape: spline
-      - entity: sensor.zha_lounge_weather_humidity
+      - entity: sensor.z2m_lounge_climate_humidity
         yaxis: y2
         legendgroup: 1
         showlegend: false
@@ -55,7 +55,7 @@ cards:
           width: 3
           color: rgba(255,155,255, 0.8)
           shape: spline
-      - entity: sensor.zha_lounge_weather_humidity
+      - entity: sensor.z2m_lounge_climate_humidity
         yaxis: y2
         legendgroup: 2
         showlegend: false
@@ -69,7 +69,7 @@ cards:
           width: 2
           color: rgba(128,128,128,0.9)
           shape: spline
-      - entity: sensor.zha_lounge_weather_pressure
+      - entity: sensor.z2m_lounge_climate_pressure
         yaxis: y3
         legendgroup: 1
         showlegend: false
@@ -83,7 +83,7 @@ cards:
           width: 3
           color: rgba(255,155,255, 0.8)
           shape: spline
-      - entity: sensor.zha_lounge_weather_pressure
+      - entity: sensor.z2m_lounge_climate_pressure
         yaxis: y3
         legendgroup: 2
         showlegend: false

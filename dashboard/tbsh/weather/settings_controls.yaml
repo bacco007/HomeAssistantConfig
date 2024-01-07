@@ -96,7 +96,6 @@ cards:
           state: ""
         entities:
           - entity: binary_sensor.connected_bureau_of_meteorology
-          - entity: binary_sensor.connected_docker_weatherflow2mqtt
           - entity: binary_sensor.connected_pirateweather
           - entity: binary_sensor.connected_openuv
           - entity: binary_sensor.connected_waqi

@@ -186,3 +186,9 @@ influxdb:
       - sensor.upcoming_sport*
       - sensor.weatherman_dash*
       - sensor.flightradar24*
+      - sensor.st_00056115*
+      - sensor.client_signal*
+      - sensor.nobito*
+      - sensor.pixelclock*
+      - sensor.qbittorrent*
+      - sensor.pirateweather*

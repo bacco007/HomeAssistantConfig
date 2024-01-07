@@ -404,7 +404,7 @@ action:
       icon: mdi:download-box
       entities: >
         {{ states
-          |selectattr('entity_id','search','qbit_')
+          |selectattr('entity_id','search','qbittorrent_')
           |map(attribute='entity_id')
           |list|sort }}
 

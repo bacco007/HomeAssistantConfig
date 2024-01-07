@@ -74,9 +74,6 @@ alert.weather_low_temperature:
 alert.weather_storm_approaching:
   category: weather
   icon: mdi:weather-partly-lightning
-alert.weatherflow2mqtt:
-  category: homeassistant
-  icon: mdi:docker
 alert.weatherflow_cloud:
   category: weather
   icon: mdi:weather-partly-rainy
