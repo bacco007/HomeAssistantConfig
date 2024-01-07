@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 18:20, Sunday, January 7th 2024_
+_Stats as at 05:00, Monday, January 8th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.2 | 574     | 5195         | 3443 | 136 |
+| 2024.1.2 | 574     | 5196         | 3442 | 136 |
 
 Type | Qty
 -- | --
@@ -65,13 +65,13 @@ Input Boolean | 23
 Input Datetime | 0
 Input Text | 3
 Light | 14
-Media Player | 17
+Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3443
+Sensor | 3442
 Sun | 1
-Switch | 296
+Switch | 299
 Weather | 16
 Zone | 4
 
@@ -950,7 +950,7 @@ BLE monitor for passive BLE sensors
 
 Authors: [@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).
 
-### [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) [v.1.3.6b1]
+### [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) [v1.3.5]
 
 Replacement for the default Dark Sky Home Assistant integration using Pirate Weather
 
@@ -962,7 +962,7 @@ Portainer integration for Home Assistant
 
 Authors: [@tomaae](https://github.com/tomaae).
 
-### [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) [v1.9.14]
+### [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) [v1.9.15]
 
 Custom component to calculate estimated power consumption of lights and other appliances
 
