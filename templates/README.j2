@@ -94,24 +94,75 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Custom Components Used
 
-<details>
-<summary>Expand Custom Components List</summary>
+{%- if custom_components -%}
+  {%- set custom_integrations = hacs_components | selectattr('category', '==', 'integration') | sort(attribute='name') %}
+  {%- set plugins = hacs_components | selectattr('category', '==', 'plugin') | rejectattr('installed', '==', false) | sort(attribute='name') %}
+  {%- set themes = hacs_components | selectattr('category', '==', 'theme') | sort(attribute='name') %}
 
-### Integrations
-{%- for component in hacs_components | selectattr('category', 'equalto', 'integration') | sort(attribute='name') %}
-- [{{component.name}}]({{component.documentation}})
+<details><summary>{{ custom_integrations | count }} Custom Integrations</summary>
+{%- for integration in custom_integrations -%}
+  {%- set url = integration.documentation if integration.documentation != none -%}
+  {%- set name = integration.name | replace('HACS', 'Home Assistant Community Store (HACS)') -%}
+  {%- set description = integration.description -%}
+  {%- set authors = integration.authors -%}
+  {%- set codeowners = integration | selectattr('name', '==', integration.name) | map(attribute='codeowners') | join -%}
+  {%- set version = '' -%}
+  {%- if integration.last_version not in ['', none] -%}
+    {%- set version = ' [v' ~ integration.last_version | replace('v', '') ~ ']' -%}
+  {%- endif %}
+
+### [{{ name | trim }}]({{ url | trim }}){{ version }}
+
+{{ description | trim if description not in ['', none] }}
+{%- if authors | count > 0 %}
+
+Authors: {% for author in authors -%}[{{ author }}](https://github.com/{{ author | replace('@', '') }}){{ ', ' if not loop.last }}{%- endfor %}.{%- endif -%}
 {%- endfor %}
 
-### Lovelace
-{%- for component in hacs_components | selectattr('category', 'equalto', 'plugin') | sort(attribute='name') %}
-- [{{component.name}}]({{component.documentation}})
-{%- endfor %}
+---
 
-### Themes
-{%- for component in hacs_components | selectattr('category', 'equalto', 'theme') | sort(attribute='name') %}
-- [{{component.name}}]({{component.documentation}})
-{%- endfor %}
 </details>
+
+<details><summary>{{ plugins | count }} Lovelace Plugins</summary>
+{%- if plugins | count > 0 -%}
+{%- for plugin in plugins -%}
+  {%- set name = plugin.name | trim %}
+  {%- set version = '' -%}
+  {%- if plugin.installed_version not in ['', none] -%}
+    {%- set version = ' [v' ~ plugin.installed_version | replace('v', '') ~ ']' -%}
+  {%- endif %}
+
+### [{{ name }}]({{ plugin.documentation | trim }}){{ version }}
+
+{{ plugin.description | trim if plugin.description not in ['', none] }}
+{%- endfor %}
+
+---
+
+</details>
+
+{%- endif -%}
+
+<details><summary>{{ themes | count }} Themes</summary>
+{%- if themes | count > 0 -%}
+{%- for theme in themes -%}
+  {%- set name = theme.name | trim %}
+  {%- set version = '' -%}
+  {%- if theme.installed_version not in ['', none] -%}
+    {%- set version = ' [v' ~ theme.installed_version | replace('v', '') ~ ']' -%}
+  {%- endif %}
+
+### [{{ name }}]({{ theme.documentation | trim }}){{ version }}
+
+{{ theme.description | trim if theme.description not in ['', none] }}
+{%- endfor %}
+
+---
+
+</details>
+
+{%- endif -%}
+{%- endif %}
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
