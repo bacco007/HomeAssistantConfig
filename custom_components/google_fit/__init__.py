@@ -20,9 +20,12 @@ from .const import DOMAIN
 
 PLATFORM = Platform.SENSOR
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Google Fit from a config entry."""
-    LOGGER.debug("Setting up Google Fit integration from configuration %s", entry.entry_id)
+    LOGGER.debug(
+        "Setting up Google Fit integration from configuration %s", entry.entry_id
+    )
     implementation = await async_get_config_entry_implementation(hass, entry)
 
     LOGGER.debug("Attempting to create OAuth2 session")

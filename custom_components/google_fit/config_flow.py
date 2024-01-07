@@ -68,14 +68,19 @@ class OAuth2FlowHandler(
     async def async_oauth_create_entry(self, data: dict[str, Any]) -> FlowResult:
         """Create an entry for the flow, or update existing entry."""
         if self.reauth_entry:
-            self.logger.debug("Existing authentication flow entry found. "
-                              "Reloading auth config entry: %s ", self.reauth_entry.entry_id)
+            self.logger.debug(
+                "Existing authentication flow entry found. "
+                "Reloading auth config entry: %s ",
+                self.reauth_entry.entry_id,
+            )
             self.hass.config_entries.async_update_entry(self.reauth_entry, data=data)
             await self.hass.config_entries.async_reload(self.reauth_entry.entry_id)
             return self.async_abort(reason="reauth_successful")
 
-        self.logger.debug("No existing authentication config flow found. "
-                          "Creating new authentication.")
+        self.logger.debug(
+            "No existing authentication config flow found. "
+            "Creating new authentication."
+        )
         credentials = Credentials(data[CONF_TOKEN][CONF_ACCESS_TOKEN])
 
         def _get_profile() -> dict[str, Any]:
@@ -91,8 +96,9 @@ class OAuth2FlowHandler(
                 credentials=credentials,
                 static_discovery=False,
             )
-            self.logger.debug("Checking Google Fit access with client id: %s",
-                              credentials.client_id)
+            self.logger.debug(
+                "Checking Google Fit access with client id: %s", credentials.client_id
+            )
             sources = (
                 lib.users()  # pylint: disable=no-member
                 .dataSources()

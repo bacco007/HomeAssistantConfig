@@ -58,7 +58,9 @@ class AsyncConfigEntryAuth(OAuthClientAuthHandler):
             credentials = Credentials(await self.check_and_refresh_token())
             LOGGER.debug("Successfully retrieved existing access credentials.")
         except RefreshError as ex:
-            LOGGER.warning("Failed to refresh account access token. Starting re-authentication.")
+            LOGGER.warning(
+                "Failed to refresh account access token. Starting re-authentication."
+            )
             self.oauth_session.config_entry.async_start_reauth(self.oauth_session.hass)
             raise ex
 
@@ -125,7 +127,7 @@ class GoogleFitParse:
             hydration=None,
             oxygenSaturation=None,
         )
-        self.unknown_sleep_warn =  False
+        self.unknown_sleep_warn = False
 
     def _sum_points_int(self, response: FitnessObject) -> int:
         """Get the most recent integer point value.
@@ -141,7 +143,9 @@ class GoogleFitParse:
                 counter += value
 
         if not found_value:
-            LOGGER.debug("No int data points found for %s", response.get("dataSourceId"))
+            LOGGER.debug(
+                "No int data points found for %s", response.get("dataSourceId")
+            )
 
         return counter
 
@@ -159,7 +163,9 @@ class GoogleFitParse:
                 counter += value
 
         if not found_value:
-            LOGGER.debug("No float data points found for %s", response.get("dataSourceId"))
+            LOGGER.debug(
+                "No float data points found for %s", response.get("dataSourceId")
+            )
 
         return round(counter, 2)
 
@@ -226,9 +232,13 @@ class GoogleFitParse:
             ):
                 sleep_stage = SLEEP_STAGE.get(sleep_type)
                 start_time = int(start_time_ns) / NANOSECONDS_SECONDS_CONVERSION
-                start_time_str = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+                start_time_str = datetime.fromtimestamp(start_time).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
                 end_time = int(end_time_ns) / NANOSECONDS_SECONDS_CONVERSION
-                end_time_str = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
+                end_time_str = datetime.fromtimestamp(end_time).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
 
                 if sleep_stage == "Out-of-bed":
                     LOGGER.debug("Out of bed sleep sensor not supported. Ignoring.")
@@ -237,7 +247,9 @@ class GoogleFitParse:
                         "Google Fit reported an unspecified or unknown value "
                         "for sleep stage between %s and %s. Please report this as a bug to the "
                         "original data provider. This will not be reported in "
-                        "Home Assistant.", start_time_str, end_time_str
+                        "Home Assistant.",
+                        start_time_str,
+                        end_time_str,
                     )
                 elif sleep_stage is not None:
                     if end_time >= start_time:

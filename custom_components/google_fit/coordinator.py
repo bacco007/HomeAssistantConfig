@@ -91,7 +91,7 @@ class Coordinator(DataUpdateCoordinator):
                 * NANOSECONDS_SECONDS_CONVERSION
             )
         else:
-            start = (int(datetime.today().timestamp()) - interval_period)
+            start = int(datetime.today().timestamp()) - interval_period
             start = start * NANOSECONDS_SECONDS_CONVERSION
         now = int(datetime.today().timestamp() * NANOSECONDS_SECONDS_CONVERSION)
         return f"{start}-{now}"
