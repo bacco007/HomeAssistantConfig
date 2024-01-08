@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, January 8th 2024_
+_Stats as at 05:00, Tuesday, January 9th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.2 | 574     | 5196         | 3442 | 136 |
+| 2024.1.2 | 574     | 5186         | 3442 | 136 |
 
 Type | Qty
 -- | --
@@ -944,13 +944,13 @@ OpenNEM Sensor for Home Assistant
 
 Authors: [@bacco007](https://github.com/bacco007).
 
-### [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) [v12.7.2]
+### [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) [v12.8.1]
 
 BLE monitor for passive BLE sensors
 
 Authors: [@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).
 
-### [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) [v1.3.5]
+### [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) [v1.3.6]
 
 Replacement for the default Dark Sky Home Assistant integration using Pirate Weather
 
@@ -1026,7 +1026,7 @@ Authors: [@jchasey](https://github.com/jchasey).
 
 Use Simple Icons in Home Assistant
 
-### [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) [v0.36.1]
+### [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) [v0.36.2]
 
 HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface.
 
@@ -1186,7 +1186,7 @@ An advanced calendar card for Home Assistant Lovelace.
 
 Customizable Animated Bar card for Home Assistant Lovelace
 
-### [Battery State Card / Entity Row](https://github.com/maxwroc/battery-state-card) [v3.1.1]
+### [Battery State Card / Entity Row](https://github.com/maxwroc/battery-state-card) [v3.1.2]
 
 Battery state card for Home Assistant
 
@@ -1194,7 +1194,7 @@ Battery state card for Home Assistant
 
 A rain radar card using the new tiled images from the Australian BOM
 
-### [Bubble Card](https://github.com/Clooos/Bubble-Card) [v1.6.2]
+### [Bubble Card](https://github.com/Clooos/Bubble-Card) [v1.6.3]
 
 Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch.
 
@@ -1485,24 +1485,24 @@ Nordic theme for home assistant.
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (17.0.1)
+- Advanced SSH & Web Terminal (17.0.2)
 - Cloudflared (5.0.0)
 - ESPHome (2023.12.5)
 - eufy-security-ws (1.7.1)
-- Glances (0.20.0)
+- Glances (0.21.0)
 - GoSungrow (3.0.7)
 - Home Assistant Google Drive Backup (0.112.1)
 - Home Assistant Stream Deck (2023.12.0)
-- JupyterLab (0.12.1)
+- JupyterLab (0.13.0)
 - MariaDB (2.6.1)
 - Matter Server (5.0.2)
-- Node-RED (16.0.2)
+- Node-RED (17.0.0)
 - OpenThread Border Router (2.4.2)
-- phpMyAdmin (0.9.0)
+- phpMyAdmin (0.9.1)
 - Samba share (12.2.0)
 - Silicon Labs Multiprotocol (2.4.2)
 - SunGather (0.1.3)
-- Zigbee2MQTT (1.35.0-1)
+- Zigbee2MQTT (1.35.1-1)
 - ZigStar Silicon Labs FW Flasher (0.1.1)
 - ZigStar TI CC2652P/P7 FW Flasher (0.4.0)
 
