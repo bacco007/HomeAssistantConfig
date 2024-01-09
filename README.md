@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, January 9th 2024_
+_Stats as at 05:00, Wednesday, January 10th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.2 | 574     | 5186         | 3442 | 136 |
+| 2024.1.2 | 574     | 5208         | 3442 | 136 |
 
 Type | Qty
 -- | --
@@ -802,7 +802,7 @@ Real-time transit information for Home Assistant
 
 Authors: [@mark1foley](https://github.com/mark1foley).
 
-### [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) [v0.3.2]
+### [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) [v0.3.2.1]
 
 Support GTFS in Home Assistant GUI-only
 
@@ -838,7 +838,7 @@ an iCal Sensor for Home Assistant
 
 Authors: [@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).
 
-### [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) [v3.0.rc9c]
+### [Icloud3](https://github.com/gcobb321/icloud3) [v3.0.rc9c]
 
 iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations.
 
@@ -1202,7 +1202,7 @@ Bubble Card is a minimalist card collection for Home Assistant with a nice pop-u
 
 ❇️ Lovelace button-card for home assistant
 
-### [Card Mod](https://github.com/thomasloven/lovelace-card-mod) [v3.4.1]
+### [Card Mod](https://github.com/thomasloven/lovelace-card-mod) [v3.4.2]
 
 🔹 Add CSS styles to (almost) any lovelace card
 
@@ -1226,7 +1226,7 @@ A Lovelace card that shows a directional indicator on a compass for Home Assista
 
 📝 Templatable Lovelace Configurations
 
-### [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) [v2023.12.1]
+### [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) [v2024.0.0]
 
 Custom brand icons for Home Assistant
 
