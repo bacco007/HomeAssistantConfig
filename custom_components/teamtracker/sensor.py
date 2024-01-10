@@ -24,12 +24,12 @@ from .const import (
     CONF_LEAGUE_PATH,
     CONF_SPORT_PATH,
     CONF_TEAM_ID,
-    CONF_TIMEOUT,
     COORDINATOR,
     DEFAULT_CONFERENCE_ID,
     DEFAULT_ICON,
     DEFAULT_LEAGUE,
     DEFAULT_NAME,
+    DEFAULT_SPORT_PATH,
     DOMAIN,
     ISSUE_URL,
     LEAGUE_MAP,
@@ -46,7 +46,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         ),
         vol.Required(CONF_TEAM_ID): cv.string,
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_TIMEOUT): int,
         vol.Optional(CONF_CONFERENCE_ID, default=DEFAULT_CONFERENCE_ID): cv.string,
         vol.Optional(CONF_API_LANGUAGE): cv.string,
         vol.Optional(CONF_SPORT_PATH): cv.string,
@@ -70,9 +69,6 @@ async def async_setup_platform(
         VERSION,
         ISSUE_URL,
     )
-
-    if CONF_TIMEOUT in config:
-        _LOGGER.warning("%s: Support for `timeout` in YAML config was deprecated in v0.11.0.  Remove prior to next upgrade.", sensor_name)
 
     league_ids = [*LEAGUE_MAP.keys(), "XXX"]
     try:
@@ -166,11 +162,17 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         """Initialize the sensor."""
         super().__init__(hass.data[DOMAIN][entry.entry_id][COORDINATOR])
 
-        sport_path = entry.data[CONF_SPORT_PATH]
+        sport_path = entry.data.get(CONF_SPORT_PATH, DEFAULT_SPORT_PATH)
+        if sport_path == DEFAULT_SPORT_PATH:
+            _LOGGER.debug(
+                "%s:  Initializing sensor values.  SPORT_PATH not set.",
+                entry.data[CONF_NAME],
+            )
+
         icon = SPORT_ICON_MAP.get(sport_path, DEFAULT_ICON)
         if icon == DEFAULT_ICON:
             _LOGGER.debug(
-                "%s:  Setting up sensor from YAML.  Sport '%s' not found.",
+                "%s:  Initializing sensor values.  Sport icon not found for sport '%s'",
                 entry.data[CONF_NAME],
                 sport_path,
             )

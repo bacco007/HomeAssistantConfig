@@ -17,7 +17,6 @@ CONF_CONFERENCE_ID = "conference_id"
 CONF_LEAGUE_ID = "league_id"
 CONF_LEAGUE_PATH = "league_path"
 CONF_SPORT_PATH = "sport_path"
-CONF_TIMEOUT = "timeout"
 CONF_TEAM_ID = "team_id"
 
 # Sports
@@ -180,6 +179,7 @@ DEFAULT_LOGO = (
 )
 DEFAULT_NAME = "team_tracker"
 DEFAULT_PROB = 0.0
+DEFAULT_SPORT_PATH = "UNDEFINED_SPORT"
 DEFAULT_TIMEOUT = 120
 DEFAULT_LAST_UPDATE = "2022-02-02 02:02:02-05:00"
 DEFAULT_KICKOFF_IN = "{test} days"
