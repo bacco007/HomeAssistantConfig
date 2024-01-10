@@ -85,7 +85,7 @@ sensor:
         {%- if countnumb == 0 or countnumb == 1 %}
           No Event Scheduled
         {%- else %}
-          {{next_5_events[1]['summary'].split(' - ')[1]}}
+          {{next_5_events[1]['summary']|replace('[BTCC] ','')}}
         {%- endif %}
       afterevent_locn: >
         {%- if countnumb == 0 or countnumb == 1 %}

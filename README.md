@@ -46,20 +46,20 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, January 10th 2024_
+_Stats as at 05:00, Thursday, January 11th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.2 | 574     | 5208         | 3442 | 136 |
+| 2024.1.2 | 573     | 5181         | 3454 | 136 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 35
 Automation | 136
-Binary Sensor | 339
+Binary Sensor | 340
 Camera | 5
-Device Tracker | 95
+Device Tracker | 96
 Group | 43
 Input Boolean | 23
 Input Datetime | 0
@@ -69,9 +69,9 @@ Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3442
+Sensor | 3454
 Sun | 1
-Switch | 299
+Switch | 283
 Weather | 16
 Zone | 4
 
@@ -605,7 +605,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi.sensor](https://www.home-assistant.io/components/unifi.sensor) |
 | [unifi.switch](https://www.home-assistant.io/components/unifi.switch) |
 | [unifi.update](https://www.home-assistant.io/components/unifi.update) |
-| [unifi_status.switch](https://www.home-assistant.io/components/unifi_status.switch) |
 | [unifics](https://www.home-assistant.io/components/unifics) |
 | [unifics.sensor](https://www.home-assistant.io/components/unifics.sensor) |
 | [unifigateway.sensor](https://www.home-assistant.io/components/unifigateway.sensor) |
@@ -666,7 +665,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Custom Components Used
 
-<details><summary>84 Custom Integrations</summary>
+<details><summary>85 Custom Integrations</summary>
 
 ### [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting) [v1.20.0]
 
@@ -754,7 +753,7 @@ Sensor for Home Assistant that gets reset at midnight
 
 Authors: [@jeroenterheerdt](https://github.com/jeroenterheerdt).
 
-### [Dyson](https://github.com/libdyson-wg/ha-dyson) [v1.3.6]
+### [Dyson](https://github.com/libdyson-wg/ha-dyson) [v1.3.9]
 
 Home Assistant custom integration for Wi-Fi connected Dyson devices
 
@@ -838,7 +837,7 @@ an iCal Sensor for Home Assistant
 
 Authors: [@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).
 
-### [Icloud3](https://github.com/gcobb321/icloud3) [v3.0.rc9c]
+### [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) [v3.0.rc9c]
 
 iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations.
 
@@ -862,7 +861,7 @@ Indoor Air Quality Sensor Component for Home Assistant
 
 Authors: [@Limych](https://github.com/Limych).
 
-### [Iphone Device Tracker](https://github.com/mudape/iphonedetect) [v2.0.5]
+### [Iphone Device Tracker](https://github.com/mudape/iphonedetect) [v1.4.0]
 
 A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep.
 
@@ -962,7 +961,7 @@ Portainer integration for Home Assistant
 
 Authors: [@tomaae](https://github.com/tomaae).
 
-### [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) [v1.9.15]
+### [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) [v1.9.16]
 
 Custom component to calculate estimated power consumption of lights and other appliances
 
@@ -1062,7 +1061,7 @@ Home Assistant Sun2 Sensor
 
 Authors: [@pnbruckner](https://github.com/pnbruckner).
 
-### [Team Tracker](https://github.com/vasqued2/ha-teamtracker) [v0.11.0]
+### [Team Tracker](https://github.com/vasqued2/ha-teamtracker) [v0.11.1]
 
 Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs.
 
@@ -1099,6 +1098,12 @@ Unifi Counter Sensor
 Authors: [@clyra](https://github.com/clyra).
 
 ### [Unifi Status](https://github.com/zvldz/unifi_status)
+
+High level health status of UniFi Security Gateway devices via UniFi Controller
+
+Authors: [@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).
+
+### [Unifi Status](https://github.com/disforw/unifi_status)
 
 High level health status of UniFi Security Gateway devices via UniFi Controller
 
@@ -1186,7 +1191,7 @@ An advanced calendar card for Home Assistant Lovelace.
 
 Customizable Animated Bar card for Home Assistant Lovelace
 
-### [Battery State Card / Entity Row](https://github.com/maxwroc/battery-state-card) [v3.1.2]
+### [Battery State Card / Entity Row](https://github.com/maxwroc/battery-state-card) [v3.1.3]
 
 Battery state card for Home Assistant
 
@@ -1194,7 +1199,7 @@ Battery state card for Home Assistant
 
 A rain radar card using the new tiled images from the Australian BOM
 
-### [Bubble Card](https://github.com/Clooos/Bubble-Card) [v1.6.3]
+### [Bubble Card](https://github.com/Clooos/Bubble-Card) [v1.6.4]
 
 Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch.
 
@@ -1210,7 +1215,7 @@ Bubble Card is a minimalist card collection for Home Assistant with a nice pop-u
 
 🔹A collection of tools for other lovelace plugins to use
 
-### [Clock Weather Card](https://github.com/pkissling/clock-weather-card) [v2.2.1]
+### [Clock Weather Card](https://github.com/pkissling/clock-weather-card) [v2.2.2]
 
 A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons
 
@@ -1496,8 +1501,8 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.13.0)
 - MariaDB (2.6.1)
 - Matter Server (5.0.2)
-- Node-RED (17.0.0)
-- OpenThread Border Router (2.4.2)
+- Node-RED (17.0.1)
+- OpenThread Border Router (2.4.3)
 - phpMyAdmin (0.9.1)
 - Samba share (12.2.0)
 - Silicon Labs Multiprotocol (2.4.2)
