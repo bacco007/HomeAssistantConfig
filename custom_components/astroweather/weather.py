@@ -21,7 +21,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.util.unit_system import METRIC_SYSTEM
 from homeassistant.const import (
     CONF_ID,
-    TEMP_CELSIUS,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 
@@ -305,7 +305,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
     @property
     def native_temperature_unit(self) -> str:
         """Return the unit of measurement for temperature."""
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def humidity(self) -> int:

@@ -11,7 +11,8 @@
                     "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
                     "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
                     "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
-                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu"
+                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu",
+		    "uptonight_path": "Cesta k conf/www"
                 }
             }
         }
@@ -27,7 +28,8 @@
                     "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
                     "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
                     "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
-                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu"
+                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu",
+		    "uptonight_path": "Cesta k conf/www"
                 }
             }
         }
