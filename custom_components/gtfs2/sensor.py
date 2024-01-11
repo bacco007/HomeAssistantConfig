@@ -473,7 +473,7 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
         self._name = stop["stop_id"]
         self._attributes: dict[str, Any] = {}
 
-        self._attr_unique_id = f"gtfs-{self._name}"
+        self._attr_unique_id = f"gtfs-{self._name}_{self.coordinator.data['device_tracker_id']}"
         self._attr_device_info = DeviceInfo(
             name=f"GTFS - {self._name}",
             entry_type=DeviceEntryType.SERVICE,
@@ -488,7 +488,8 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self) -> str:
         """Return the name of the sensor."""
-        return self._name + "_local_stop"
+        return self._name + "_local_stop_" + self.coordinator.data[
+            'device_tracker_id']
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -510,6 +511,8 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
         self._attr_native_value = self._state        
         self._attributes["gtfs_updated_at"] = self.coordinator.data[
             "gtfs_updated_at"]  
+        self._attributes["device_tracker_id"] = self.coordinator.data[
+            "device_tracker_id"]
         
         # Add next departures with their lines
         self._attributes["next_departures_lines"] = {}

@@ -246,7 +246,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 step_id="route",
                 data_schema=vol.Schema(
                     {
-                        vol.Required(CONF_ROUTE): vol.In(get_route_list(self._pygtfs, self._user_inputs)),
+                        vol.Required(CONF_ROUTE, default = ""): selector.SelectSelector(selector.SelectSelectorConfig(options = get_route_list(self._pygtfs, self._user_inputs), translation_key="route_type",custom_value=True)),
                         vol.Required(CONF_DIRECTION): selector.SelectSelector(selector.SelectSelectorConfig(options=["0", "1"], translation_key="direction")),
                     },
                 ),
