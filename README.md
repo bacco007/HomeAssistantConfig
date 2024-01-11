@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, January 11th 2024_
+_Stats as at 05:00, Friday, January 12th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.2 | 573     | 5181         | 3454 | 136 |
+| 2024.1.2 | 573     | 5166         | 3440 | 136 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 18
 Person | 4
 Scene | 2
 Script | 13
-Sensor | 3454
+Sensor | 3440
 Sun | 1
 Switch | 283
 Weather | 16
@@ -679,7 +679,7 @@ Anniversary Countdown Sensor for Home Assistant
 
 Authors: [@pinkywafer](https://github.com/pinkywafer).
 
-### [Astroweather](https://github.com/mawinkler/astroweather) [v0.42.1]
+### [Astroweather](https://github.com/mawinkler/astroweather) [v0.42.2]
 
 Asynchronous Astro Weather Forecast for Home Assistant
 
@@ -801,7 +801,7 @@ Real-time transit information for Home Assistant
 
 Authors: [@mark1foley](https://github.com/mark1foley).
 
-### [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) [v0.3.2.1]
+### [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) [v0.3.3]
 
 Support GTFS in Home Assistant GUI-only
 
@@ -949,7 +949,7 @@ BLE monitor for passive BLE sensors
 
 Authors: [@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).
 
-### [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) [v1.3.6]
+### [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) [v1.3.7]
 
 Replacement for the default Dark Sky Home Assistant integration using Pirate Weather
 
@@ -1490,7 +1490,7 @@ Nordic theme for home assistant.
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (17.0.2)
+- Advanced SSH & Web Terminal (17.0.3)
 - Cloudflared (5.0.0)
 - ESPHome (2023.12.5)
 - eufy-security-ws (1.7.1)
