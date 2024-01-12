@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, January 12th 2024_
+_Stats as at 05:00, Saturday, January 13th 2024_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2024.1.2 | 573     | 5166         | 3440 | 136 |
+| 2024.1.2 | 573     | 5192         | 3440 | 136 |
 
 Type | Qty
 -- | --
@@ -961,7 +961,7 @@ Portainer integration for Home Assistant
 
 Authors: [@tomaae](https://github.com/tomaae).
 
-### [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) [v1.9.16]
+### [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) [v1.9.17]
 
 Custom component to calculate estimated power consumption of lights and other appliances
 
@@ -1037,7 +1037,7 @@ Solcast Integration for Home Assistant
 
 Authors: [@oziee](https://github.com/oziee).
 
-### [Spook 👻 Not Your Homie](https://github.com/frenck/spook) [v1.4.0]
+### [Spook 👻 Not Your Homie](https://github.com/frenck/spook) [v2.0.0]
 
 Spook 👻 Not your homie
 
@@ -1097,13 +1097,13 @@ Unifi Counter Sensor
 
 Authors: [@clyra](https://github.com/clyra).
 
-### [Unifi Status](https://github.com/zvldz/unifi_status)
+### [Unifi Status](https://github.com/disforw/unifi_status)
 
 High level health status of UniFi Security Gateway devices via UniFi Controller
 
 Authors: [@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).
 
-### [Unifi Status](https://github.com/disforw/unifi_status)
+### [Unifi Status](https://github.com/zvldz/unifi_status)
 
 High level health status of UniFi Security Gateway devices via UniFi Controller
 
@@ -1501,11 +1501,11 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.13.0)
 - MariaDB (2.6.1)
 - Matter Server (5.0.2)
-- Node-RED (17.0.1)
+- Node-RED (17.0.2)
 - OpenThread Border Router (2.4.3)
 - phpMyAdmin (0.9.1)
 - Samba share (12.2.0)
-- Silicon Labs Multiprotocol (2.4.2)
+- Silicon Labs Multiprotocol (2.4.3)
 - SunGather (0.1.3)
 - Zigbee2MQTT (1.35.1-1)
 - ZigStar Silicon Labs FW Flasher (0.1.1)
