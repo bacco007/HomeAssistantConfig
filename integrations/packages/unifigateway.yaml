@@ -88,11 +88,11 @@ sensor:
         value_template: "{{ states.sensor.unifi_gateway_wan.attributes.gw_version }}"
         icon_template: mdi:counter
 
-switch:
-  - platform: unifi_status
-    host: !secret unifi_ipaddress
-    port: 443
-    verify_ssl: false
-    username: !secret unifi_user2
-    password: !secret unifi_pass2
-    version: "UDMP-unifiOS"
+# switch:
+#   - platform: unifi_status
+#     host: !secret unifi_ipaddress
+#     port: 443
+#     verify_ssl: false
+#     username: !secret unifi_user2
+#     password: !secret unifi_pass2
+#     version: "UDMP-unifiOS"

@@ -151,3 +151,40 @@
       sun_time_type: Relative
       sun_time_format: '%H:%M'
       message_duration_forecast: 40
+- id: '1705097473383'
+  alias: '[GTFS] Get New Data and Run Update'
+  description: ''
+  trigger:
+  - platform: time
+    at: 02:30:00
+    enabled: true
+  condition:
+  - condition: time
+    weekday:
+    - wed
+    enabled: true
+  action:
+  - service: shell_command.gtfs_get_nenw_buses
+    metadata: {}
+    data: {}
+  - service: shell_command.gtfs_get_trains
+    metadata: {}
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: gtfs2.update_gtfs
+    metadata: {}
+    data:
+      extract_from: zip
+      url: na
+      file: nenw_buses
+  - service: gtfs2.update_gtfs
+    metadata: {}
+    data:
+      extract_from: zip
+      url: na
+      file: nswtrains
+  mode: single
