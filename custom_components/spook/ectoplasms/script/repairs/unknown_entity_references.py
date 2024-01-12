@@ -1,10 +1,7 @@
 """Spook - Not your homie."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from homeassistant.components import script
-from homeassistant.config_entries import SIGNAL_CONFIG_ENTRY_CHANGED, ConfigEntry
 from homeassistant.const import (
     ENTITY_MATCH_ALL,
     ENTITY_MATCH_NONE,
@@ -12,14 +9,10 @@ from homeassistant.const import (
 )
 from homeassistant.core import valid_entity_id
 from homeassistant.helpers import entity_registry as er
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_component import DATA_INSTANCES, EntityComponent
 
 from ....const import LOGGER
 from ....repairs import AbstractSpookRepair
-
-if TYPE_CHECKING:
-    from homeassistant.core import HomeAssistant
 
 
 class SpookRepair(AbstractSpookRepair):
@@ -30,49 +23,17 @@ class SpookRepair(AbstractSpookRepair):
     inspect_events = {
         EVENT_COMPONENT_LOADED,
         er.EVENT_ENTITY_REGISTRY_UPDATED,
-        "event_counter_reloaded",
-        "event_derivative_reloaded",
-        "event_group_reloaded",
-        "event_input_boolean_reloaded",
-        "event_input_button_reloaded",
-        "event_input_datetime_reloaded",
-        "event_input_number_reloaded",
-        "event_input_select_reloaded",
-        "event_input_text_reloaded",
-        "event_integration_reloaded",
-        "event_min_max_reloaded",
-        "event_mqtt_reloaded",
-        "event_scene_reloaded",
-        "event_schedule_reloaded",
-        "event_template_reloaded",
-        "event_threshold_reloaded",
-        "event_tod_reloaded",
-        "event_utility_meter_reloaded",
     }
+    inspect_config_entry_changed = True
+    inspect_on_reload = True
 
     _entity_component: EntityComponent[script.ScriptEntity]
+    _issues: set[str] = set()
 
     async def async_activate(self) -> None:
         """Handle the activating a repair."""
         self._entity_component = self.hass.data[DATA_INSTANCES][self.domain]
         await super().async_activate()
-
-        # Listen for config entry changes, this might have an impact
-        # on the available entities (those not in the entity registry)
-        async def _async_update_listener(
-            _hass: HomeAssistant,
-            _entry: ConfigEntry,
-        ) -> None:
-            """Handle options update."""
-            await self.inspect_debouncer.async_call()
-
-        async_dispatcher_connect(
-            self.hass,
-            SIGNAL_CONFIG_ENTRY_CHANGED,
-            _async_update_listener,
-        )
-
-        # Give all integration some time to startup
 
     async def async_inspect(self) -> None:
         """Trigger a inspection."""
@@ -90,27 +51,31 @@ class SpookRepair(AbstractSpookRepair):
             {ENTITY_MATCH_ALL, ENTITY_MATCH_NONE}
         )
 
+        possible_issue_ids: set[str] = set()
         for entity in self._entity_component.entities:
+            possible_issue_ids.add(entity.entity_id)
             # Filter out scenes, groups & device_tracker entities.
             # Those can be created on the fly with services, which we
             # currently cannot detect yet. Let's prevent some false positives.
-            if unknown_entities := {
-                entity_id
-                for entity_id in entity.script.referenced_entities
-                if (
-                    isinstance(entity_id, str)
-                    and not entity_id.startswith(
-                        (
-                            "device_tracker.",
-                            "group.",
-                            "persistent_notification.",
-                            "scene.",
-                        ),
+            if not isinstance(entity, script.UnavailableScriptEntity) and (
+                unknown_entities := {
+                    entity_id
+                    for entity_id in entity.script.referenced_entities
+                    if (
+                        isinstance(entity_id, str)
+                        and not entity_id.startswith(
+                            (
+                                "device_tracker.",
+                                "group.",
+                                "persistent_notification.",
+                                "scene.",
+                            ),
+                        )
+                        and entity_id not in entity_ids
+                        and valid_entity_id(entity_id)
                     )
-                    and entity_id not in entity_ids
-                    and valid_entity_id(entity_id)
-                )
-            }:
+                }
+            ):
                 self.async_create_issue(
                     issue_id=entity.entity_id,
                     translation_placeholders={
@@ -122,6 +87,7 @@ class SpookRepair(AbstractSpookRepair):
                         "entity_id": entity.entity_id,
                     },
                 )
+                self._issues.add(entity.entity_id)
                 LOGGER.debug(
                     (
                         "Spook found unknown entities in %s and created an issue "
@@ -132,3 +98,9 @@ class SpookRepair(AbstractSpookRepair):
                 )
             else:
                 self.async_delete_issue(entity.entity_id)
+                self._issues.discard(entity.entity_id)
+
+        # Remove issues that are no longer valid
+        for issue_id in self._issues - possible_issue_ids:
+            self.async_delete_issue(issue_id)
+            self._issues.discard(issue_id)

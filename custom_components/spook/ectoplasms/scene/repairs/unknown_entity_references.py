@@ -1,13 +1,17 @@
 """Spook - Not your homie."""
 from __future__ import annotations
 
-from homeassistant.components.homeassistant import scene
+from typing import TYPE_CHECKING
+
 from homeassistant.const import EVENT_COMPONENT_LOADED
 from homeassistant.core import valid_entity_id
 from homeassistant.helpers import entity_registry as er
 
 from ....const import LOGGER
 from ....repairs import AbstractSpookRepair
+
+if TYPE_CHECKING:
+    from homeassistant.components.homeassistant import scene
 
 
 class SpookRepair(AbstractSpookRepair):
@@ -18,15 +22,18 @@ class SpookRepair(AbstractSpookRepair):
     inspect_events = {
         EVENT_COMPONENT_LOADED,
         er.EVENT_ENTITY_REGISTRY_UPDATED,
-        scene.EVENT_SCENE_RELOADED,
-        "event_group_reloaded",
-        "event_integration_reloaded",
-        "event_mqtt_reloaded",
     }
+    inspect_on_reload = True
+
+    _issues: set[str] = set()
 
     async def async_inspect(self) -> None:
         """Trigger a inspection."""
         LOGGER.debug("Spook is inspecting: %s", self.repair)
+
+        # Check if Home Assistant scenes are loaded
+        if "homeassistant_scene" not in self.hass.data:
+            return
 
         entity_ids = {
             entity.entity_id for entity in self.entity_registry.entities.values()
@@ -36,7 +43,9 @@ class SpookRepair(AbstractSpookRepair):
             "homeassistant_scene"
         ].entities.values()
 
+        possible_issue_ids: set[str] = set()
         for entity in scenes:
+            possible_issue_ids.add(entity.entity_id)
             if unknown_entities := {
                 entity_id
                 for entity_id in entity.scene_config.states
@@ -53,6 +62,7 @@ class SpookRepair(AbstractSpookRepair):
                         "edit": f"/config/scene/edit/{entity.unique_id}",
                     },
                 )
+                self._issues.add(entity.entity_id)
                 LOGGER.debug(
                     "Spook found unknown entities references in %s "
                     "and created an issue for it; Entities: %s",
@@ -61,3 +71,9 @@ class SpookRepair(AbstractSpookRepair):
                 )
             else:
                 self.async_delete_issue(entity.entity_id)
+                self._issues.discard(entity.entity_id)
+
+        # Remove issues that are no longer valid
+        for issue_id in self._issues - possible_issue_ids:
+            self.async_delete_issue(issue_id)
+            self._issues.discard(issue_id)

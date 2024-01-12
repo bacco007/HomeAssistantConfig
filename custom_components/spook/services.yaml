@@ -224,6 +224,24 @@ homeassistant_enable_device:
       selector:
         device:
 
+homeassistant_update_entity_id:
+  name: Update an entity's ID 👻
+  description: >-
+    Updates an entity's ID on the fly.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to update.
+      required: true
+      selector:
+        entity:
+    new_entity_id:
+      name: New Entity ID
+      description: The new ID for the entity
+      required: true
+      selector:
+        text:
+
 homeassistant_disable_entity:
   name: Disable an entity 👻
   description: >-
@@ -690,6 +708,22 @@ repairs_unignore_all:
   name: Unignore all issues 👻
   description: >-
     Unignore all issues currently raised in Home Assistant Repairs.
+
+timer_set_duration:
+  name: Set duration 👻
+  description: >-
+    Set duration for an existing timer.
+  target:
+    entity:
+      domain: timer
+  fields:
+    duration:
+      name: Duration
+      description: New duration for the timer, as a timedelta string.
+      required: true
+      example: "00:01:00, 60"
+      selector:
+        text:
 
 zone_create:
   name: Create a zone 👻
