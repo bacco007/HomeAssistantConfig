@@ -5,6 +5,7 @@ from typing import Any, Dict
 from dateutil.tz import tzlocal
 
 from custom_components.trakt_tv.const import DOMAIN
+from custom_components.trakt_tv.models.kind import TraktKind
 
 
 @dataclass
@@ -83,3 +84,9 @@ class Configuration:
             return True
         except KeyError:
             return False
+
+    def get_kinds(self, source: str) -> list[TraktKind]:
+        return [
+            TraktKind.from_string(identifier)
+            for identifier in self.conf["sensors"][source].keys()
+        ]

@@ -24,8 +24,27 @@ class TraktKind(Enum):
         "only_upcoming", "Only Upcoming", "shows", Show
     )
 
+    @classmethod
+    def from_string(cls, string):
+        try:
+            return cls[string.upper()]
+        except KeyError:
+            raise ValueError(f"No enum member found for '{string}'")
 
-BASIC_KINDS = [TraktKind.SHOW, TraktKind.MOVIE]
+
+UPCOMING_KINDS = [
+    TraktKind.SHOW,
+    TraktKind.NEW_SHOW,
+    TraktKind.PREMIERE,
+    TraktKind.MOVIE,
+    TraktKind.DVD,
+]
+
+BASIC_KINDS = [
+    TraktKind.SHOW,
+    TraktKind.MOVIE,
+]
+
 NEXT_TO_WATCH_KINDS = [
     TraktKind.NEXT_TO_WATCH_ALL,
     TraktKind.NEXT_TO_WATCH_AIRED,
