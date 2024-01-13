@@ -10,29 +10,20 @@ It's very much a work-in-progress, but feel free to steal ideas or code to use f
 
 _Please :star: this repo if you find it useful_
 
-![GitHub last commit](https://img.shields.io/github/last-commit/bacco007/HomeAssistantConfig?style=flat-square)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bacco007/HomeAssistantConfig?style=flat-square)
-![Licence](https://img.shields.io/badge/license-Unlicense-blue.svg?style=flat-square)
-
-![Twitter Follow](https://img.shields.io/twitter/follow/bacco007?style=social)
-![Mastodon Follow](https://img.shields.io/mastodon/follow/000451950?domain=https%3A%2F%2Fmastodon.social&style=social)
+| My Config | Contact Me |
+| :---: | :---: |
+| [![Home Assistant Version][ha-version-shield]][ha-version] | [![Home Assistant Community Forum][ha-community-shield]][ha-community] |
+| [![Github Action Status][github-build-status-shield]][github-build-status] | [![Twitter][social-twitter-shield]][social-twitter] |
+| [![Last Commit][github-last-commit]][github-master] | | ![Mastodon Follow](https://img.shields.io/mastodon/follow/000451950?domain=https%3A%2F%2Fmastodon.social) |
+| [![GitHub Activity][commits-shield]][commits] |  |
+| [![Github Stars][github-stars-shield]][github-stars] | |
 
 [![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
 
 ---
 
-## Table of Contents
-
-- [🏠TBSmartHome - Home Assistant Configuration](#tbsmarthome---home-assistant-configuration)
-  - [Table of Contents](#table-of-contents)
-  - [TL;DR](#tldr)
-  - [Stats](#stats)
-  - [Integrations Used](#integrations-used)
-    - [Custom Components Used](#custom-components-used)
-  - [Screenshots](#screenshots)
-  - [HA Supervisor](#ha-supervisor)
-    - [Addons](#addons)
-  - [Licence](#licence)
+## Menu
+| [TL;DR](#tldr) | [Stats](#stats) | [Integrations Used](#integrations-used) | [Screenshots](#screenshots) | [HA Supervisor](#ha-supervisor) | [Licence](#licence) |
 
 ---
 
@@ -40,7 +31,7 @@ _Please :star: this repo if you find it useful_
 
 This is my Home Assistant config - documentation isn't my strongest skill, so if you've got any questions, hit me up
 
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
+| [Menu](#menu) |
 
 ---
 
@@ -48,34 +39,67 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 _Stats as at {{ states('sensor.time') }}, {{ states('sensor.date_long_format') }}_
 
-| HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
-| ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| {{ states('sensor.ha_version_installed_2')}} | {{ states.sensor.hass_main_config.attributes.components | count }}     | {{states    | count}}         | {{states.sensor | count}} | {{states.automation | count}} |
+| Stat | Qty |
+| ---|--- |
+| HA Version | {{ states('sensor.ha_version_installed_2')}} |
+| No. Integrations | {{states('sensor.integrations')}} |
+| No. Custom Integrations | {{states('sensor.custom_integrations')}} |
+| No. Entities | {{states('sensor.entities') }} |
+| No. Sensors | {{states('sensor.sensors') }} |
+| No. Automations | {{states('sensor.automations') }} |
 
+<details>
+<summary>Expand Entity Breakdown</summary>
 Type | Qty
 -- | --
-Alarm Control Panel | {{states.alarm_control_panel | count}}
-Alert | {{states.alert | count}}
-Automation | {{states.automation | count}}
-Binary Sensor | {{states.binary_sensor | count}}
-Camera | {{ states.camera | count }}
-Device Tracker | {{ states.device_tracker | count }}
-Group | {{ states.group | count }}
-Input Boolean | {{ states.input_boolean | count }}
-Input Datetime | {{ states.input_datetime | count }}
-Input Text | {{ states.input_text | count }}
-Light | {{ states.light | count }}
-Media Player | {{ states.media_player | count }}
-Person | {{ states.person | count }}
-Scene | {{ states.scene | count }}
-Script | {{ states.script | count }}
-Sensor | {{states.sensor | count}}
-Sun | {{ states.sun | count }}
-Switch | {{ states.switch | count }}
-Weather | {{ states.weather | count }}
-Zone | {{ states.zone | count }}
+{{states.sensor.air_quality.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.air_quality')}}
+{{states.sensor.alarm_control_panels.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.alarm_control_panels')}}
+{{states.sensor.areas.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.areas')}}
+{{states.sensor.binary_sensors.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.binary_sensors')}}
+{{states.sensor.buttons.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.buttons')}}
+{{states.sensor.calendars.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.calendars')}}
+{{states.sensor.cameras.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.cameras')}}
+{{states.sensor.climate.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.climate')}}
+{{states.sensor.covers.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.covers')}}
+{{states.sensor.dates.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.dates')}}
+{{states.sensor.datetimes.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.datetimes')}}
+{{states.sensor.device_trackers.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.device_trackers')}}
+{{states.sensor.devices.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.devices')}}
+{{states.sensor.fans.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.fans')}}
+{{states.sensor.humidifiers.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.humidifiers')}}
+{{states.sensor.images.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.images')}}
+{{states.sensor.input_booleans.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.input_booleans')}}
+{{states.sensor.input_buttons.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.input_buttons')}}
+{{states.sensor.input_datetimes.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.input_datetimes')}}
+{{states.sensor.input_numbers.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.input_numbers')}}
+{{states.sensor.input_selects.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.input_selects')}}
+{{states.sensor.input_texts.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.input_texts')}}
+{{states.sensor.lights.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.lights')}}
+{{states.sensor.locks.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.locks')}}
+{{states.sensor.media_players.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.media_players')}}
+{{states.sensor.numbers.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.numbers')}}
+{{states.sensor.persistent_notifications.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.persistent_notifications')}}
+{{states.sensor.persons.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.persons')}}
+{{states.sensor.remotes.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.remotes')}}
+{{states.sensor.scenes.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.scenes')}}
+{{states.sensor.scripts.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.scripts')}}
+{{states.sensor.selects.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.selects')}}
+{{states.sensor.sensors.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.sensors')}}
+{{states.sensor.sirens.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.sirens')}}
+{{states.sensor.stt.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.stt')}}
+{{states.sensor.suns.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.suns')}}
+{{states.sensor.switches.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.switches')}}
+{{states.sensor.texts.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.texts')}}
+{{states.sensor.times.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.times')}}
+{{states.sensor.tts.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.tts')}}
+{{states.sensor.update.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.update')}}
+{{states.sensor.vacuums.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.vacuums')}}
+{{states.sensor.water_heaters.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.water_heaters')}}
+{{states.sensor.weather.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.weather')}}
+{{states.sensor.zones.attributes.friendly_name|replace('Home Assistant ','')}} | {{states('sensor.zones')}}
+</details>
 
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
+| [Menu](#menu) |
 
 ---
 
@@ -91,15 +115,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 {%- for integration in a|sort %}
 | [{{integration}}](https://www.home-assistant.io/components/{{integration}}) | {%- endfor %}
 </details>
-
-### Custom Components Used
-
 {%- if custom_components -%}
   {%- set custom_integrations = hacs_components | selectattr('category', '==', 'integration') | sort(attribute='name') %}
   {%- set plugins = hacs_components | selectattr('category', '==', 'plugin') | rejectattr('installed', '==', false) | sort(attribute='name') %}
   {%- set themes = hacs_components | selectattr('category', '==', 'theme') | sort(attribute='name') %}
 
 <details><summary>{{ custom_integrations | count }} Custom Integrations</summary>
+
+| Name | Version | Description | Authors |
+| --- | --- | --- | --- |
 {%- for integration in custom_integrations -%}
   {%- set url = integration.documentation if integration.documentation != none -%}
   {%- set name = integration.name | replace('HACS', 'Home Assistant Community Store (HACS)') -%}
@@ -110,20 +134,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
   {%- if integration.last_version not in ['', none] -%}
     {%- set version = ' [v' ~ integration.last_version | replace('v', '') ~ ']' -%}
   {%- endif %}
-
-### [{{ name | trim }}]({{ url | trim }}){{ version }}
-
-{{ description | trim if description not in ['', none] }}
-{%- if authors | count > 0 %}
-
-Authors: {% for author in authors -%}[{{ author }}](https://github.com/{{ author | replace('@', '') }}){{ ', ' if not loop.last }}{%- endfor %}.{%- endif -%}
+| [{{ name | trim }}]({{ url | trim }}) | {{ version }} | {{ description | trim if description not in ['', none] }} | {%- if authors | count > 0 %}{% for author in authors -%}[{{ author }}](https://github.com/{{ author | replace('@', '') }}){{ ', ' if not loop.last }}{%- endfor %}.{%- endif -%} |
 {%- endfor %}
-
----
-
 </details>
 
 <details><summary>{{ plugins | count }} Lovelace Plugins</summary>
+
+| Name | Version | Description |
+| --- | --- | --- |
 {%- if plugins | count > 0 -%}
 {%- for plugin in plugins -%}
   {%- set name = plugin.name | trim %}
@@ -131,19 +149,16 @@ Authors: {% for author in authors -%}[{{ author }}](https://github.com/{{ author
   {%- if plugin.installed_version not in ['', none] -%}
     {%- set version = ' [v' ~ plugin.installed_version | replace('v', '') ~ ']' -%}
   {%- endif %}
-
-### [{{ name }}]({{ plugin.documentation | trim }}){{ version }}
-
-{{ plugin.description | trim if plugin.description not in ['', none] }}
+| [{{ name }}]({{ plugin.documentation | trim }}) | {{ version }} | {{ plugin.description | trim if plugin.description not in ['', none] }} |
 {%- endfor %}
-
----
-
 </details>
 
 {%- endif -%}
 
 <details><summary>{{ themes | count }} Themes</summary>
+
+| Name | Version | Description |
+| --- | --- | --- |
 {%- if themes | count > 0 -%}
 {%- for theme in themes -%}
   {%- set name = theme.name | trim %}
@@ -151,20 +166,14 @@ Authors: {% for author in authors -%}[{{ author }}](https://github.com/{{ author
   {%- if theme.installed_version not in ['', none] -%}
     {%- set version = ' [v' ~ theme.installed_version | replace('v', '') ~ ']' -%}
   {%- endif %}
-
-### [{{ name }}]({{ theme.documentation | trim }}){{ version }}
-
-{{ theme.description | trim if theme.description not in ['', none] }}
+| [{{ name }}]({{ theme.documentation | trim }}) | {{ version }} | {{ theme.description | trim if theme.description not in ['', none] }} |
 {%- endfor %}
-
----
-
 </details>
 
 {%- endif -%}
 {%- endif %}
 
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
+| [Menu](#menu) |
 
 ---
 
@@ -178,7 +187,7 @@ Authors: {% for author in authors -%}[{{ author }}](https://github.com/{{ author
 ![Screenshot - Untappd](./.assets/untappd.png?raw=True)
 ![Screenshot - Weather](./.assets/weather.png?raw=True)
 
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
+| [Menu](#menu) |
 
 ---
 
@@ -188,11 +197,13 @@ Authors: {% for author in authors -%}[{{ author }}](https://github.com/{{ author
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 
+| Name | Version | Description | Repository |
+| --- | --- | --- | --- |
 {%- for addon in addons | sort(attribute='name') %}
-- {{addon.name}} ({{addon.version}})
+| {{addon.name}} | {{addon.version}} | {{addon.description}} | {{addon.repository }} |
 {%- endfor %}
 
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
+| [Menu](#menu) |
 
 ---
 
@@ -208,7 +219,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 For more information, please refer to [https://unlicense.org](https://unlicense.org)
 
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
+| [Menu](#menu) |
 
 ---
 
@@ -216,3 +227,38 @@ Generated by the [custom readme integration](https://github.com/custom-component
 
 [buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
 [buymeacoffee]: https://www.buymeacoffee.com/bacco007
+
+[home-assistant]: https://home-assistant.io
+
+[ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
+[ha-version-shield]: https://img.shields.io/badge/{{ states.update.home_assistant_core_update.attributes.installed_version }}-555555?style=flat-square&logo=home-assistant
+
+[github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
+[github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
+
+[github-last-commit]: https://img.shields.io/github/last-commit/bacco007/HomeAssistantConfig/master?style=flat-square&logo=github&logoColor=838B95
+[github-master]: https://github.com/bacco007/HomeAssistantConfig/commits/master
+
+[commits-shield]: https://img.shields.io/github/commit-activity/m/bacco007/HomeAssistantConfig/master?style=flat-square&logo=github&logoColor=838B95
+[commits]: https://github.com/bacco007/HomeAssistantConfig/commits/master
+
+[forum-shield]: https://img.shields.io/discourse/topics?style=flat-square&label=community&logo=discourse&color=46B4ED&logoColor=46B4ED&server=https%3A%2F%2Fcommunity.home-assistant.io
+[forum]: https://community.home-assistant.io
+
+[discord-shield]: https://img.shields.io/discord/330944238910963714?style=flat-square&color=7289da&label=discord&logo=discord
+[discord]: https://discord.gg/c5DvZ4e
+
+[automations]: https://github.com/bacco007/HomeAssistantConfig/blob/master/automations.yaml
+[integrations]: https://github.com/bacco007/HomeAssistantConfig/tree/master/integrations
+
+[github-stars-shield]: https://img.shields.io/github/stars/bacco007/HomeAssistantConfig.svg?style=plasticr
+[github-stars]: https://github.com/bacco007/HomeAssistantConfig/stargazers
+
+[licence-shield]: https://img.shields.io/badge/license-Unlicense-blue.svg?style=flat-square
+
+[social-twitter-shield]: https://img.shields.io/twitter/follow/bacco007?style=social
+[social-twitter]: https://www.x.com/bacco007
+[social-mastodon-shield]: https://img.shields.io/mastodon/follow/000451950?domain=https%3A%2F%2Fmastodon.social
+[social-mastodon]: https://mastodon.social/bacco007
+[ha-community-shield]: https://img.shields.io/badge/HA%20community-forum-orange
+[ha-community]: https://community.home-assistant.io/u/bacco007/summary
