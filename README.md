@@ -1,12 +1,6 @@
-# 🏠TBSmartHome - Home Assistant Configuration
+# 🏠 TBSmartHome - Home Assistant Configuration 🏠
 
-<img align="right" src="./.assets/logo.png?raw=true">
-
-This is my [Home Assistant](https://www.home-assistant.io/) configuration - based on many of the other great configurations are out there (and listed below)
-
-I live in ![Australia](http://flags.ox3.in/mini/au.png) so some of what you find here may not be relevent, or you may have access to better (and probably cheaper) ways.
-
-It's very much a work-in-progress, but feel free to steal ideas or code to use for your own setup
+This is my [Home Assistant](https://www.home-assistant.io/) configuration - based on many of the other great configurations are out there (and listed below).  I live in ![Australia](http://flags.ox3.in/mini/au.png) so some of what you find here may not be relevent, or you may have access to better (and probably cheaper) ways.  It's very much a work-in-progress, but feel free to steal ideas or code to use for your own setup
 
 _Please :star: this repo if you find it useful_
 
@@ -23,13 +17,13 @@ _Please :star: this repo if you find it useful_
 ---
 
 ## Menu
-| [TL;DR](#tldr) | [Stats](#stats) | [Integrations Used](#integrations-used) | [Screenshots](#screenshots) | [HA Supervisor](#ha-supervisor) | [Licence](#licence) |
+| [TL;DR](#tldr) | [Stats](#stats) | [Integrations Used](#integrations-used) | [Screenshots](#screenshots) | [Licence](#licence) |
 
 ---
 
 ## TL;DR
 
-This is my Home Assistant config - documentation isn't my strongest skill, so if you've got any questions, hit me up
+This is my Home Assistant config - documentation isn't my strongest skill, so if you've got any questions, feel free to reach out via GitHub issues, the HA Forums or on Twitter (X) or Mastodon (my usernames there are the same as my github username)
 
 | [Menu](#menu) |
 
@@ -37,7 +31,7 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 18:52, Saturday, January 13th 2024_
+_Stats as at 19:03, Saturday, January 13th 2024_
 
 | Stat | Qty |
 | ---|--- |
@@ -50,6 +44,7 @@ _Stats as at 18:52, Saturday, January 13th 2024_
 
 <details>
 <summary>Expand Entity Breakdown</summary>
+
 Type | Qty
 -- | --
 Air quality | 0
@@ -107,8 +102,8 @@ Zones | 4
 
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
-<details>
-<summary>Expand Integrations List</summary>
+
+<details><summary>575 Integrations</summary>
 
 | Name |
 | --- |
@@ -861,29 +856,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nordic Theme](https://github.com/coltondick/nordic-theme-main) |  [v1.1] | Nordic theme for home assistant. |
 </details>
 
-| [Menu](#menu) |
-
----
-
-## Screenshots
-
-![Screenshot - Home](./.assets/home.png?raw=True)
-![Screenshot - Devices](./.assets/devices.png?raw=True)
-![Screenshot - Home Assistant](./.assets/homeassistant.png?raw=True)
-![Screenshot - Sports](./.assets/sports.png?raw=True)
-![Screenshot - Solar](./.assets/solar.png?raw=True)
-![Screenshot - Untappd](./.assets/untappd.png?raw=True)
-![Screenshot - Weather](./.assets/weather.png?raw=True)
-
-| [Menu](#menu) |
-
----
-
-## HA Supervisor
-
-### Addons
-
-Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
+<details><summary>20 Addons via HA Operating System</summary>
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
@@ -907,6 +880,22 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 | Zigbee2MQTT | 1.35.1-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
+</details>
+
+
+| [Menu](#menu) |
+
+---
+
+## Screenshots
+
+![Screenshot - Home](./.assets/home.png?raw=True){: width="30%"}
+![Screenshot - Devices](./.assets/devices.png?raw=True){: width="30%"}
+![Screenshot - Home Assistant](./.assets/homeassistant.png?raw=True){: width="30%"}
+![Screenshot - Sports](./.assets/sports.png?raw=True){: width="30%"}
+![Screenshot - Solar](./.assets/solar.png?raw=True){: width="30%"}
+![Screenshot - Untappd](./.assets/untappd.png?raw=True){: width="30%"}
+![Screenshot - Weather](./.assets/weather.png?raw=True){: width="30%"}
 
 | [Menu](#menu) |
 
