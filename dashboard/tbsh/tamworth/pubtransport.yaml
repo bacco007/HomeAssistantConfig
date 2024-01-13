@@ -20,79 +20,199 @@ cards:
           margin: 0 !important;
         }
     entities:
-      - entity: sensor.bus_stop_home
+      - entity: sensor.bus_430
         type: custom:multiple-entity-row
-        name: Home - Next Bus
+        name: Bus 430
         show_state: false
         entities:
-          - attribute: route
-            name: Route
-          - attribute: delay
-            name: Delay
-            unit: min
-          - attribute: due
-            name: Due in
-            unit: min
-      - entity: sensor.bus_home_430
+          - attribute: arrival
+            format: relative
+      - entity: sensor.bus_431
         type: custom:multiple-entity-row
-        name: Bus Route 430 - Home
+        name: Bus 431
         show_state: false
         entities:
-          - attribute: Due at
-            name: Time
-            unit: ""
-          - attribute: Due in
-            name: Due In
-            unit: min
-      - entity: sensor.bus_home_431
-        type: custom:multiple-entity-row
-        name: Bus Route 431 - Home
-        show_state: false
-        entities:
-          - attribute: Due at
-            name: Time
-            unit: ""
-          - attribute: Due in
-            name: Due In
-            unit: min
+          - attribute: arrival
+            format: relative
       - type: section
-      - entity: sensor.bus_stop_work
+      - entity: sensor.xplorer_tamworth_to_central
         type: custom:multiple-entity-row
-        name: Work - Next Bus
+        name: Train Tamworth to Central
         show_state: false
         entities:
-          - attribute: route
-            name: Route
-          - attribute: delay
-            name: Delay
-            unit: min
-          - attribute: due
-            name: Due in
-            unit: min
-      - entity: sensor.bus_work_430
-        type: custom:multiple-entity-row
-        name: Bus Route 430 - Work
-        show_state: false
-        entities:
-          - attribute: Due at
-            name: Time
-            unit: ""
-          - attribute: Due in
-            name: Due In
-            unit: min
-      - entity: sensor.bus_work_431
-        type: custom:multiple-entity-row
-        name: Bus Route 431 - Work
-        show_state: false
-        entities:
-          - attribute: Due at
-            name: Time
-            unit: ""
-          - attribute: Due in
-            name: Due In
-            unit: min
+          - attribute: arrival
+            format: relative
       - type: section
-      - entity: sensor.tfnsw_train_tosydney
-        name: Train, Xplorer to Sydney
-      - entity: sensor.tfnsw_train_totamworth
-        name: Train, Xplorer to Tamworth
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Buses Near Home
+          icon: mdi:bus
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:auto-entities
+            filter:
+              template: |
+                {{ states
+                |selectattr('entity_id','search','sensor.*_local_stop_zone_home')
+                |rejectattr('attributes.next_departures_lines','search',"{}")
+                |map(attribute='entity_id')|list|sort }}
+            card:
+              type: custom:flex-table-card
+              clickable: true
+              sort_by:
+                - next_departures_lines
+              columns:
+                - hidden: true
+                  data: next_departures_lines
+                  modify: x.departure
+                - name: Route
+                  data: next_departures_lines
+                  align: center
+                  modify: "'<ha-icon icon=' + x.icon + '></ha-icon><br/>' + x.route"
+                - name: Time
+                  data: next_departures_lines
+                  modify: x.departure
+                - name: Stop
+                  data: next_departures_lines
+                  modify: x.stop_name
+                - name: Headsign
+                  data: next_departures_lines
+                  modify: x.route_long
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                    overflow: auto;
+                    padding-top: 5px;
+                    font-size: 12px;
+                  }
+                  tbody tr:hover {
+                    background-color: coral !important
+                  }
+              css:
+                table+: "padding: 5px;"
+                tbody tr+: "user-select: text"
+                tbody tr td:nth-child(0)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                th+: "border-bottom: 1px solid rgb(127,127,127);"
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Buses Near Work
+          icon: mdi:bus
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:auto-entities
+            filter:
+              template: |
+                {{ states
+                |selectattr('entity_id','search','sensor.*_local_stop_zone_trc')
+                |rejectattr('entity_id','search','sensor.2340108_local_stop_zone_trc')
+                |rejectattr('attributes.next_departures_lines','search',"{}")
+                |map(attribute='entity_id')|list|sort }}
+            card:
+              type: custom:flex-table-card
+              clickable: true
+              sort_by:
+                - next_departures_lines
+              strict: false
+              columns:
+                - hidden: true
+                  data: next_departures_lines
+                  modify: x.departure
+                - name: Route
+                  data: next_departures_lines
+                  align: center
+                  modify: "'<ha-icon icon=' + x.icon + '></ha-icon><br/>' + x.route"
+                - name: Time
+                  data: next_departures_lines
+                  modify: x.departure
+                - name: Stop
+                  data: next_departures_lines
+                  modify: x.stop_name
+                - name: Headsign
+                  data: next_departures_lines
+                  modify: x.route_long
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                    overflow: auto;
+                    padding-top: 5px;
+                    font-size: 12px;
+                  }
+                  tbody tr:hover {
+                    background-color: coral !important
+                  }
+              css:
+                table+: "padding: 5px;"
+                tbody tr+: "user-select: text"
+                tbody tr td:nth-child(0)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                th+: "border-bottom: 1px solid rgb(127,127,127);"
+            show_empty: false
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Trains Near Work
+          icon: mdi:train-bus
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:auto-entities
+            filter:
+              template: |
+                {{ states
+                |selectattr('entity_id','search','sensor.2340108_local_stop_zone_trc')
+                |rejectattr('attributes.next_departures_lines','search',"{}")
+                |map(attribute='entity_id')|list|sort }}
+            card:
+              type: custom:flex-table-card
+              clickable: true
+              sort_by:
+                - next_departures_lines
+              strict: false
+              columns:
+                - hidden: true
+                  data: next_departures_lines
+                  modify: x.departure
+                - name: Route
+                  data: next_departures_lines
+                  align: center
+                  modify: "'<ha-icon icon=' + x.icon + '></ha-icon><br/>' + x.route"
+                - name: Time
+                  data: next_departures_lines
+                  modify: x.departure
+                - name: Stop
+                  data: next_departures_lines
+                  modify: x.stop_name
+                - name: Headsign
+                  data: next_departures_lines
+                  modify: x.route_long
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                    overflow: auto;
+                    padding-top: 5px;
+                    font-size: 12px;
+                  }
+                  tbody tr:hover {
+                    background-color: coral !important
+                  }
+              css:
+                table+: "padding: 5px;"
+                tbody tr+: "user-select: text"
+                tbody tr td:nth-child(0)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                th+: "border-bottom: 1px solid rgb(127,127,127);"
+            show_empty: false

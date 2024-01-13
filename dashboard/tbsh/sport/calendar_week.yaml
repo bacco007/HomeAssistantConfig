@@ -129,7 +129,6 @@ cards:
                       - entity: calendar.ical_sydney_swans_aflw
                       - entity: calendar.ical_sydney_swans_vfl
                       - entity: calendar.ical_tcr_australia
-                      - entity: calendar.ical_test
                       - entity: calendar.ical_toronto_maple_leafs
                       - entity: calendar.ical_wallabies
                       - entity: calendar.ical_wec
