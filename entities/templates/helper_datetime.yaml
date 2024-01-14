@@ -1,0 +1,127 @@
+---
+sensor:
+  - unique_id: helper_date
+    name: "[Helper] Date"
+    icon: mdi:calendar-today
+    state: >
+      {%- set date = states('sensor.date') %}
+      {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true)  %}
+      {%- set weekday = datetime.strftime('%A') | default('', true) %}
+      {%- set month = datetime.strftime('%B') | default('', true) %}
+      {%- set day = datetime.strftime('%d') | int %}
+      {%-
+        set suffix = 'st' if (day % 10 == 1 and day != 11)
+        else 'nd' if (day % 10 == 2 and day != 12)
+        else 'rd' if (day % 10 == 3 and day != 13)
+        else 'th'
+      %}
+      {{ weekday }}, {{ month }} {{ day }}{{ suffix }}
+    attributes:
+      date_friendly: >
+        {%- set date = states('sensor.date') %}
+        {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
+        {%- set month = datetime.strftime('%B') | default('', true) %}
+        {%- set day = datetime.strftime('%d') | int %}
+        {{ month }} {{ day }}
+      date_long: >
+        {%- set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
+        {%- set month = months[now().strftime('%m') | int -1] %}
+        {%- set days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]  %}
+        {%- set day = days[now().strftime('%w') | int] %}
+        {%- set daynum = now().strftime('%d') | int %}
+        {%-
+          set suffix = 'st' if (daynum % 10 == 1 and daynum != 11)
+          else 'nd' if (daynum % 10 == 2 and daynum != 12)
+          else 'rd' if (daynum % 10 == 3 and daynum != 13)
+          else 'th'
+        %}
+        {{day}}, {{month}} {{daynum}}{{suffix}} {{now().strftime('%Y')}}
+      day: >
+        {%- set date = states('sensor.date') %}
+        {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
+        {{ datetime.strftime('%A') }}
+      day_phase: >
+        {%- if now() > now().replace(hour=5).replace(minute=0).replace(second=0) and
+            now() < now().replace(hour=9).replace(minute=0).replace(second=0) %}
+            Morning
+        {%- elif states.sun.sun.state == "above_horizon" %}
+            Day
+        {%- elif now() < now().replace(hour=22).replace(minute=0).replace(second=0) and
+            now() > now().replace(hour=9).replace(minute=0).replace(second=0) %}
+            Evening
+        {%- else %}
+            Night
+        {%- endif %}
+      day_after_tomorrow: >
+        {%- set date = states('sensor.date') %}
+        {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
+        {%- set timestamp = as_timestamp(datetime) + 2*24*60*60 %}
+        {{ timestamp | timestamp_custom('%A') }}
+  - unique_id: helper_time
+    name: "[Helper] Time"
+    icon: mdi:clock-check
+    state: >
+      {%- set hour = states('sensor.time').split(':')[0] | int %}
+      {%- set minutes = states('sensor.time').split(':')[1] %}
+      {{ hour }}:{{ minutes }}
+    attributes:
+      time_long: >
+        {%- set hour = states('sensor.time').split(':')[0] | int %}
+        {%- set minute = states('sensor.time').split(':')[1] | int %}
+        {%- set minute_str = '' %}
+        {%- if minute == 15 or minute == 45 %}
+          {%- set minute_str = 'a quarter' %}
+        {%- elif minute == 30 %}
+          {%- set minute_str = 'half' %}
+        {%- else %}
+          {%- if minute > 30 %}
+            {%- set minute_str = (60 - minute) | string %}
+          {%- elif minute != 0 %}
+            {%- set minute_str = minute | string %}
+          {%- endif %}
+          {%- if minute_str %}
+            {%- if minute > 1 %}
+              {%- set minute_str = minute_str + ' minutes' %}
+            {%- else %}
+              {%- set minute_str = minute_str + ' minute' %}
+            {%- endif %}
+          {%- endif %}
+        {%- endif %}
+        {%- if minute > 30 %}
+          {%- set minute_str = minute_str + ' to' %}
+          {%- set hour = hour + 1 %}
+          {%- if hour >= 24 %}
+            {%- set hour = hour - 24 %}
+          {%- endif %}
+        {%- elif minute > 0 %}
+          {%- set minute_str = minute_str + ' past' %}
+        {%- endif %}
+        {%- if hour == 0 %}
+          {%- set hour_str = 'midnight' %}
+        {%- elif hour == 12 %}
+          {%- set hour_str = 'noon' %}
+        {%- elif hour > 12 %}
+          {%- set hour_str = hour - 12 %}
+        {%- else %}
+          {%- set hour_str = hour %}
+        {%- endif %}
+        {%- if minute_str %}
+          {{ minute_str }} {{ hour_str }}
+        {%- elif hour != 0 and hour != 12 %}
+          {{ hour_str }} O'Clock
+        {%- else %}
+          {{ hour_str }}
+        {%- endif %}
+      time_quarterly: >
+        {%- set hour = states('sensor.time').split(':')[0] | int %}
+        {%- set minutes = states('sensor.time').split(':')[1] | int %}
+        {%- if minutes >= 45 %}
+          {%- set minute = '45' %}
+        {%- elif minutes >= 30 %}
+          {%- set minute = '30' %}
+        {%- elif minutes >= 15 %}
+          {%- set minute = '15' %}
+        {%- else %}
+          {%- set minute = '00' %}
+        {%- endif %}
+        {{ hour }}:{{ minute }}

@@ -1,0 +1,4 @@
+---
+platform: worldclock
+time_zone: Europe/London
+name: Time - London
