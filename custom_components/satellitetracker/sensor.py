@@ -6,7 +6,7 @@ import datetime
 
 from homeassistant.util.dt import as_local, utc_from_timestamp
 from homeassistant.components.sensor import ENTITY_ID_FORMAT
-from homeassistant.const import TIME_SECONDS, ATTR_NAME
+from homeassistant.const import UnitOfTime, ATTR_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -97,7 +97,7 @@ class SatelliteSensor(CoordinatorEntity):
     @property
     def unit_of_measurement(self):
         """Return the UoM for this entity."""
-        return TIME_SECONDS
+        return UnitOfTime.SECONDS
     
     @property
     def state(self):

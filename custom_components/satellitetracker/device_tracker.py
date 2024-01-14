@@ -2,7 +2,7 @@
 
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.components.device_tracker.const import DOMAIN as DEVICE_TRACKER
-from homeassistant.components.device_tracker.const import SOURCE_TYPE_GPS
+from homeassistant.components.device_tracker.const import SourceType
 from homeassistant.const import ATTR_NAME
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -63,7 +63,7 @@ class SatelliteTracker(CoordinatorEntity, TrackerEntity):
     @property
     def source_type(self):
         """Return the source type of the client."""
-        return SOURCE_TYPE_GPS
+        return SourceType.GPS
 
     @property
     def device_info(self):
