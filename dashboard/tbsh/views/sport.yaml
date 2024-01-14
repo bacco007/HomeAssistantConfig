@@ -13,19 +13,6 @@ cards:
     view_layout:
       grid-area: content
     cards:
-      # - type: custom:state-switch
-      #   entity: mediaquery
-      #   states:
-      #     "(max-width: 500px)":
-      #       type: vertical-stack
-      #       cards: &cards
-      #         - !include ../sport/snippets/calendar.yaml
-      #     "(max-width: 1370px)":
-      #       type: horizontal-stack
-      #       cards: *cards
-      #     "all":
-      #       type: horizontal-stack
-      #       cards: *cards
       - type: custom:state-switch
         entity: mediaquery
         states:
@@ -67,19 +54,19 @@ cards:
               max_width: 1000
               min_height: 10
             cards: *cards
-      # - type: custom:state-switch
-      #   entity: mediaquery
-      #   states:
-      #     "(max-width: 500px)":
-      #       type: vertical-stack
-      #       cards: &cards
-      #         - !include ../sport/teamtracker.yaml
-      #     "(max-width: 1370px)":
-      #       type: horizontal-stack
-      #       cards: *cards
-      #     "all":
-      #       type: horizontal-stack
-      #       cards: *cards
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(max-width: 500px)":
+            type: vertical-stack
+            cards: &cards
+              - !include ../sport/teamtracker.yaml
+          "(max-width: 1370px)":
+            type: horizontal-stack
+            cards: *cards
+          "all":
+            type: horizontal-stack
+            cards: *cards
 
   - !include ../includes/actions.yaml
 

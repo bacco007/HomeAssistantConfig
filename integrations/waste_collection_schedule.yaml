@@ -35,9 +35,7 @@ waste_collection_schedule:
         - alias: Recycling
           icon: mdi:recycle
           type: recycling
-      name: static # - name: ics
-    #   args:
-    #     file: /config/bin_schedule.ics
+      name: static
 
 sensor:
   - add_days_to: true

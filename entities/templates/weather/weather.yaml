@@ -644,7 +644,7 @@ sensor:
     icon: mdi:weather-rainy
     device_class: timestamp
     state: >
-      {{ (state_attr('sensor.weather_forecasts', 'weatherflow_hourly')
+      {{ (state_attr('sensor.weather_forecasts', 'bom_hourly')
         | selectattr('condition', 'in', ['rainy', 'lightning-rainy'])
         | list | first | default).datetime | default(none)
       }}
@@ -656,7 +656,7 @@ sensor:
     icon: mdi:weather-rainy
     device_class: timestamp
     state: >
-      {{ (state_attr('sensor.weather_forecasts', 'weatherflow_hourly')
+      {{ (state_attr('sensor.weather_forecasts', 'bom_hourly')
         | rejectattr('condition', 'in', ['rainy', 'lightning-rainy'])
         | selectattr('datetime', '>', states('sensor.current_weather_hourly_next_precipitation_start'))
         | list | first | default).datetime | default(none)
@@ -670,12 +670,14 @@ sensor:
     device_class: timestamp
     state: >
       {%- set time = namespace(value=none) %}
-      {%- set forecast = state_attr('sensor.weather_forecasts', 'weatherflow_hourly') %}
+      {%- set forecast = state_attr('sensor.weather_forecasts', 'bom_hourly') %}
       {%- if is_state('binary_sensor.weather_is_raining', 'off') and forecast != none %}
         {%- for item in forecast %}
           {%- if loop.index0 < 12
               and item.precipitation_probability | int(-1) >= 50
-              and (item.condition | contains('rainy')) %}
+              and (item.condition | contains('rainy')
+                or item.condition | contains('rain')
+                or item.condition | contains('storm')) %}
             {%- set time.value = item.datetime %}
           {%- break %}
           {%- endif %}
