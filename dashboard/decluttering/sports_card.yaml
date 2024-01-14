@@ -1,0 +1,85 @@
+---
+# Sports Card
+
+sports_card:
+  default:
+    - entity: sensor.upcoming_sport_afl_all_teams
+    - colour: "#FFFFFF"
+    - hours_to_show: 24
+    - points_per_hour: 6
+    - line_width: 3
+  card:
+    type: custom:mushroom-template-card
+    entity: "[[entity]]"
+    primary: '{{ state_attr(entity, ''friendly_name'') | replace(''[Upcoming Sport] '', '''') }}'
+    secondary: >-
+      {{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No Event
+      Scheduled', state_attr(entity, 'nextevent_desc') + ' ' + state_attr(entity,
+      'nextevent_time')) }}
+
+      {{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No
+      Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' +
+      state_attr(entity, 'afterevent_time')) }}
+    fill_container: true
+    multiline_secondary: true
+    badge_icon: '{%- if is_state_attr(entity, ''nextevent_timeto'', 0) %} mdi:clock {%- endif %}'
+    badge_color: green
+    icon: '{{ state_attr(entity, ''icon'') }}'
+    card_mod:
+      style:
+        .: |
+          ha-card:before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            right: 5px;
+            background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+            background-repeat: no-repeat;
+            background-size: auto 100%, cover;
+            background-position: right;
+            background-blend-mode: saturation;
+            filter: opacity(0.25);
+            }
+          ha-card {
+            background-color: var(--background-color);
+            box-shadow: none;
+          }
+    # tap_action:
+    #   action: fire-dom-event
+    #   browser_mod:
+    #     service: browser_mod.popup
+    #     hide_header: false
+    #     data:
+    #       title: Calendar
+    #       content:
+    #         type: custom:layout-card
+    #         layout_type: custom:grid-layout
+    #         layout:
+    #           margin: 0px
+    #         cards:
+    #           - type: custom:atomic-calendar-revive
+    #             entities:
+    #               - entity: "[[entity]]"
+    #             maxDaysToShow: 365
+    #             enableModeChange: true
+    #             showWeekDay: true
+    #             firstDayOfWeek: 1
+    #             refreshInterval: 600
+    #             showMonth: true
+    #             showCurrentEventLine: false
+    #             showDate: false
+    #             sortByStartTime: true
+    #             showDeclined: true
+    #             showRelativeTime: true
+    #             showMultiDay: true
+    #             showMultiDayEventParts: false
+    #             hideDuplicates: true
+    #             showLastCalendarWeek: false
+    #             calShowDescription: true
+    #             disableCalLink: false
+    #             disableCalLocationLink: false
+    #             disableCalEventLink: false
+    #             dimFinishedEvents: true
+    #             showProgressBar: false
+    #             showDescription: false

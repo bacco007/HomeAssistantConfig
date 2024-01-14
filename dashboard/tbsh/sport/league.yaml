@@ -1,0 +1,122 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Rugby League
+    icon: mdi:football
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
+    entities:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_nrl_all_teams
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: NRL Standings
+          icon: mdi:football
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 2px; padding-right: 2px"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_nrl
+            sort_by: entries
+            columns:
+              - name: "#"
+                data: entries
+                modify: x.stats.find(y=>y.name == 'rank').displayValue
+                align: center
+              - name: Team
+                data: entries
+                modify: |-
+                  if (typeof x.team.logos !== 'undefined')
+                    '<div><img src="' + x.team.logos[0].href + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+                  else
+                    '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.team.displayName + '</div>'
+              - name: Pl
+                data: entries
+                modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
+                align: center
+              - name: W
+                data: entries
+                modify: x.stats.find(y=>y.name == 'gamesWon').displayValue
+                align: center
+              - name: D
+                data: entries
+                modify: x.stats.find(y=>y.name == 'gamesDrawn').displayValue
+                align: center
+              - name: L
+                data: entries
+                modify: x.stats.find(y=>y.name == 'gamesLost').displayValue
+                align: center
+              - name: B
+                data: entries
+                modify: x.stats.find(y=>y.name == 'gamesBye').displayValue
+                align: center
+              - name: GD
+                data: entries
+                modify: |-
+                  {
+                    x.stats.find(y=>y.name == 'pointsFor').displayValue +
+                    ":" +
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                  }
+                align: center
+              - name: Pts
+                data: entries
+                modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_newcastle_knights
+      - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_nrlw_all_teams
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_newcastle_knights_nrlw

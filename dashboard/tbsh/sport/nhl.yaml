@@ -2,31 +2,44 @@
 type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Major League Baseball
-    icon: si:mlb
-    icon_color: blue
+    primary: NHL
+    icon: mdi:hockey-puck
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
     card_mod:
       style: |
         ha-card {
-          box-shadow: none !important;
-        }
-  - type: entities
-    show_header_toggle: false
-    state_color: true
-    card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
+          margin-top: -10px;
         }
     entities:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_nhl_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
-          name: American League, Central
-          icon: si:mlb
+          name: Overall
+          icon: mdi:hockey-puck
           state: ""
         padding: 0
         entities:
@@ -47,13 +60,15 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_american_central
+              include: sensor.scoreboard_nhl_*
             sort_by: entries-
-            columns: &mlbcols
+            columns: &nhlcols
               - hidden: true
+                name: sort
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value
-              - name: C
+                modify: x.stats.find(y=>y.abbreviation == 'PTS').displayValue
+              - name: >-
+                  <div>C</div>
                 data: entries
                 modify: >-
                   if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
@@ -62,106 +77,64 @@ cards:
               - name: Team
                 data: entries
                 modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: GP
+                  '<div><a href="' + x.team.links[0].href + '" target="_blank"><img
+                  src="' + x.team.logos[0].href + '" style="height:
+                  20px;vertical-align:middle;"></a>&nbsp;' + x.team.displayName +
+                  '</div>'
+              - name: <div>GP</div>
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'GP').displayValue
-              - name: W
+              - name: <div>W</div>
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
-              - name: L
+              - name: <div>L</div>
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-              - name: PCT
+              - name: <div>OTL</div>
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
-              - name: GB
+                modify: x.stats.find(y=>y.abbreviation == 'OTL').displayValue
+              - name: <div>PTS</div>
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'GB').displayValue
-              - name: HOME
+                modify: x.stats.find(y=>y.abbreviation == 'PTS').displayValue
+              - name: <div>RW</div>
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'Home').displayValue
-              - name: AWAY
+                modify: x.stats.find(y=>y.abbreviation == 'RW').displayValue
+              - name: <div>ROW</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'ROW').displayValue
+              - name: <div>SOW</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'SOW').displayValue
+              - name: <div>SOL</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'SOL').displayValue
+              - name: <div>HOME</div>
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'HOME').displayValue
+              - name: <div>AWAY</div>
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'AWAY').displayValue
-              - name: RS
+              - name: <div>GF</div>
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'RS').displayValue
-              - name: RA
+                modify: x.stats.find(y=>y.abbreviation == 'GF').displayValue
+              - name: <div>GA</div>
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'RA').displayValue
-              - name: DIFF
+                modify: x.stats.find(y=>y.abbreviation == 'GA').displayValue
+              - name: <div>DIFF</div>
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'DIFF').displayValue
-              - name: L10
+              - name: <div>L10</div>
                 data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'L10').displayValue
-              - name: STRK
+                modify: x.stats.find(y=>y.abbreviation == 'L10').summary
+              - name: <div>STRK</div>
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American League, East
-          icon: si:mlb
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_american_east
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American League, West
-          icon: si:mlb
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_american_west
-            sort_by: entries-
-            columns: *mlbcols
       - type: section
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
-          name: National League, Central
-          icon: si:mlb
+          name: Eastern Conference
+          icon: mdi:hockey-puck
           state: ""
         padding: 0
         entities:
@@ -182,14 +155,14 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_national_central
+              include: sensor.scoreboard_nhl_east_*
             sort_by: entries-
-            columns: *mlbcols
+            columns: *nhlcols
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
-          name: National League, East
-          icon: si:mlb
+          name: Eastern Conference, Atlantic Division
+          icon: mdi:hockey-puck
           state: ""
         padding: 0
         entities:
@@ -210,14 +183,14 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_national_east
+              include: sensor.scoreboard_nhl_east_atlantic
             sort_by: entries-
-            columns: *mlbcols
+            columns: *nhlcols
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
-          name: National League, West
-          icon: si:mlb
+          name: Eastern Conference, Metropolitan Division
+          icon: mdi:hockey-puck
           state: ""
         padding: 0
         entities:
@@ -238,6 +211,101 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_national_west
+              include: sensor.scoreboard_nhl_east_metropolitan
             sort_by: entries-
-            columns: *mlbcols
+            columns: *nhlcols
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Western Conference
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 2px; padding-right: 2px"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_west_*
+            sort_by: entries-
+            columns: *nhlcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Western Conference, Central Division
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 2px; padding-right: 2px"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_west_central
+            sort_by: entries-
+            columns: *nhlcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Western Conference, Pacific Division
+          icon: mdi:hockey-puck
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: "padding-left: 2px; padding-right: 2px"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr:hover: "background-color: green!important; color:white!important;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_nhl_west_pacific
+            sort_by: entries-
+            columns: *nhlcols
+      - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_anaheim_ducks
+      - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_toronto_maple_leafs

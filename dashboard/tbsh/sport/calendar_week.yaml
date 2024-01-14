@@ -1,30 +1,28 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: entities
-    entities:
-      - type: custom:paper-buttons-row
-        buttons:
-          - icon: mdi:calendar
-            layout: icon|name
-            name: Sports Calendar
-            style:
-              name:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                margin-left: 18px
-                font-size: 15px
-                font-weight: 600
-                color: var(--title)
-              icon:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                '--mdc-icon-size': 20px
-                color: var(--title)
-        style: |
-          div.flex-box {
-            margin-top: -6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+  - type: custom:mushroom-template-card
+    primary: Sport This Week
+    icon: mdi:calendar
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
           }
   - type: custom:button-card
     show_state: false
@@ -83,10 +81,13 @@ cards:
                     entities:
                       - entity: calendar.ical_afl_all_teams
                       - entity: calendar.ical_aflw_all_teams
+                      - entity: calendar.ical_alm_all_teams
+                      - entity: calendar.ical_alw_all_teams
                       - entity: calendar.ical_anaheim_ducks
                       - entity: calendar.ical_australia_cricket
                       - entity: calendar.ical_australia_cricket_women
                       - entity: calendar.ical_bayern_munich
+                      - entity: calendar.ical_bbl_all_teams
                       - entity: calendar.ical_btcc
                       - entity: calendar.ical_dtm
                       - entity: calendar.ical_extreme_e
@@ -104,6 +105,7 @@ cards:
                       - entity: calendar.ical_manchester_united
                       - entity: calendar.ical_manchester_united_women
                       - entity: calendar.ical_misc_motorsport
+                      - entity: calendar.ical_mls_all_teams
                       - entity: calendar.ical_motogp
                       - entity: calendar.ical_nascar_cup_series
                       - entity: calendar.ical_nascar_xfinity_series
@@ -117,6 +119,7 @@ cards:
                       - entity: calendar.ical_nrl_all_teams
                       - entity: calendar.ical_nrlw_all_teams
                       - entity: calendar.ical_nsw_waratahs
+                      - entity: calendar.ical_premier_league_all_teams
                       - entity: calendar.ical_socceroos
                       - entity: calendar.ical_supercars
                       - entity: calendar.ical_swifts

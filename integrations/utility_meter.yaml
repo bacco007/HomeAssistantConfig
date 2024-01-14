@@ -62,22 +62,22 @@ utility_meter:
     name: Grid Import (Yearly)
     cycle: yearly
   meter_solar_house_consumption_daily:
-    source: ssensor.daily_direct_energy_consumption
+    source: sensor.daily_direct_energy_consumption
     unique_id: eff4cb16-1b89-4605-89c5-9fb7c96f93fa
     name: House Consumption (Daily)
     cycle: daily
   meter_solar_house_consumption_weekly:
-    source: ssensor.daily_direct_energy_consumption
+    source: sensor.daily_direct_energy_consumption
     unique_id: 3d20c727-7105-4665-8d72-9a443d4db7bf
     name: House Consumption (Weekly)
     cycle: monthly
   meter_solar_house_consumption_monthly:
-    source: ssensor.daily_direct_energy_consumption
+    source: sensor.daily_direct_energy_consumption
     unique_id: e395e10a-b2d0-42ec-89ed-7f428569b56c
     name: House Consumption (Monthly)
     cycle: monthly
   meter_solar_house_consumption_yearly:
-    source: ssensor.daily_direct_energy_consumption
+    source: sensor.daily_direct_energy_consumption
     unique_id: 330a1f37-4fee-437c-a07a-6c3bca620522
     name: House Consumption (Yearly)
     cycle: yearly

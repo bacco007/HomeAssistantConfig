@@ -26,7 +26,7 @@ sensor:
   - name: "[Upcoming Sport] NRLW (All Teams)"
     unique_id: upcoming_sport_nrlw_all_teams
     icon: "mdi:football"
-    picture: /local/sportlogos/nrlw_all_teams.png
+    picture: /local/sportlogos/nrlw_all_teams.svg
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

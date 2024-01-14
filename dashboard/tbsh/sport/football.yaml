@@ -4,24 +4,37 @@ cards:
   - type: custom:mushroom-template-card
     primary: Football
     icon: mdi:soccer
-    icon_color: blue
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
     card_mod:
       style: |
         ha-card {
-          box-shadow: none !important;
-        }
-  - type: entities
-    show_header_toggle: false
-    state_color: true
-    card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
+          margin-top: -10px;
         }
     entities:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_alm_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -90,6 +103,15 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_sydney_fc
+      - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_alw_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -158,7 +180,15 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_sydney_fc_women
       - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_premier_league_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -227,6 +257,11 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_manchester_united
+      - type: section
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -295,6 +330,10 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_manchester_united_women
       - type: section
       - type: custom:fold-entity-row
         head:
@@ -364,6 +403,11 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_bayern_munich
+      - type: section
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -569,6 +613,10 @@ cards:
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
       - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_mls_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -705,3 +753,8 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+      - type: section
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_socceroos
