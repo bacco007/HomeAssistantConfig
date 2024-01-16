@@ -14,7 +14,7 @@ from homeassistant.const import (
     CONF_METHOD,
     CONF_ID,
     CONF_TEMPERATURE_UNIT,
-    TEMP_CELSIUS
+    UnitOfTemperature
 )
 
 from .const import (
@@ -69,7 +69,7 @@ async def async_migrate_entry(hass, config_entry):
         config_entries.async_update_entry(config_entry, data=new_data)
     
     if version == 2:
-        tempUnit = TEMP_CELSIUS
+        tempUnit = UnitOfTemperature.CELSIUS
         new_data = {**data, CONF_TEMPERATURE_UNIT: tempUnit}
         
         version = 3

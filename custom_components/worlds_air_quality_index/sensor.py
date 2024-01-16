@@ -30,8 +30,7 @@ from homeassistant.const import (
     CONF_TEMPERATURE_UNIT,
     CONF_TOKEN,
     STATE_UNAVAILABLE,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
+    UnitOfTemperature,
 )
 
 from .const import (
@@ -159,7 +158,7 @@ class WorldsAirQualityIndexSensor(SensorEntity):
     def unit_of_measurement(self) -> str:
         #Return the unit of measurement.
         
-        if SENSORS[self._resType][1] == TEMP_CELSIUS:
+        if SENSORS[self._resType][1] == UnitOfTemperature.CELSIUS:
             return self._tempUnit
         else:
             return SENSORS[self._resType][1]
@@ -197,7 +196,7 @@ class WorldsAirQualityIndexSensor(SensorEntity):
 
         elif self._resType in self._data["data"]["iaqi"]:
             if self._resType == 't':
-                if self._tempUnit == TEMP_FAHRENHEIT:
+                if self._tempUnit == UnitOfTemperature.FAHRENHEIT:
                     self._state = 9.0 * float(self._data["data"]["iaqi"]['t']["v"]) / 5.0 + 32.0
                 else:
                     self._state = float(self._data["data"]["iaqi"]['t']["v"])

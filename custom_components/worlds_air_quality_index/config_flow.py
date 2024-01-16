@@ -20,8 +20,7 @@ from homeassistant.const import (
     CONF_METHOD,
     CONF_ID,
     CONF_TEMPERATURE_UNIT,
-    TEMP_FAHRENHEIT,
-    TEMP_CELSIUS
+    UnitOfTemperature
 )
 from .const import (
     DOMAIN,
@@ -76,10 +75,10 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data_schema = vol.Schema(
             {
                 vol.Required(CONF_TOKEN): cv.string,
-                vol.Required(CONF_TEMPERATURE_UNIT, default=TEMP_CELSIUS): vol.In(
+                vol.Required(CONF_TEMPERATURE_UNIT, default=UnitOfTemperature.CELSIUS): vol.In(
                     (
-                        TEMP_CELSIUS,
-                        TEMP_FAHRENHEIT
+                        UnitOfTemperature.CELSIUS,
+                        UnitOfTemperature.FAHRENHEIT
                     )
                 ),
                 vol.Required(CONF_LATITUDE, default=self.hass.config.latitude): cv.latitude,
@@ -147,10 +146,10 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data_schema = vol.Schema(
             {
                 vol.Required(CONF_TOKEN): cv.string,
-                vol.Required(CONF_TEMPERATURE_UNIT, default=TEMP_CELSIUS): vol.In(
+                vol.Required(CONF_TEMPERATURE_UNIT, default=UnitOfTemperature.CELSIUS): vol.In(
                     (
-                        TEMP_CELSIUS,
-                        TEMP_FAHRENHEIT
+                        UnitOfTemperature.CELSIUS,
+                        UnitOfTemperature.FAHRENHEIT
                     )
                 ),
                 vol.Required(CONF_ID): cv.string,

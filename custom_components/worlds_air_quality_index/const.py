@@ -5,11 +5,11 @@ from datetime import timedelta
 from typing import Final
 
 from homeassistant.const import (
-    TEMP_CELSIUS,
-    PRESSURE_HPA,
+    UnitOfPressure,
+    UnitOfSpeed,
+    UnitOfTemperature,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-    SPEED_METERS_PER_SECOND,
-    LENGTH_MILLIMETERS,
+    UnitOfLength,
     PERCENTAGE,
     Platform
 )
@@ -17,7 +17,7 @@ from homeassistant.components.sensor import SensorDeviceClass
 
 DOMAIN = "worlds_air_quality_index"
 PLATFORMS = [Platform.SENSOR]
-SW_VERSION = "1.0.4"
+SW_VERSION = "1.1.0"
 
 DEFAULT_NAME = 'waqi1'
 DISCOVERY_TYPE = "discovery_type"
@@ -33,10 +33,10 @@ SENSORS = {
     'h': ['Humidity', PERCENTAGE, 'mdi:water-percent', SensorDeviceClass.HUMIDITY],
     'no2': ['Nitrogen dioxide (NO2)', CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, 'mdi:smog', SensorDeviceClass.NITROGEN_DIOXIDE],
     'o3': ['Ozone (O3)', CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, 'mdi:skull-outline', SensorDeviceClass.OZONE],
-    'p': ['Atmospheric pressure', PRESSURE_HPA, 'mdi:gauge', SensorDeviceClass.PRESSURE],
+    'p': ['Atmospheric pressure', UnitOfPressure.HPA, 'mdi:gauge', SensorDeviceClass.PRESSURE],
     'so2': ['Sulphur dioxide (SO2)', CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, 'mdi:smog', SensorDeviceClass.SULPHUR_DIOXIDE],
-    't': ['Temperature', TEMP_CELSIUS, 'mdi:thermometer', SensorDeviceClass.TEMPERATURE],
-    'r': ['Rain', LENGTH_MILLIMETERS, 'mdi:weather-rainy', None],
-    'w': ['Wind speed', SPEED_METERS_PER_SECOND, 'mdi:weather-windy', None],
-    'wg': ['Wind gust', SPEED_METERS_PER_SECOND, 'mdi:weather-windy', None],
+    't': ['Temperature', UnitOfTemperature.CELSIUS, 'mdi:thermometer', SensorDeviceClass.TEMPERATURE],
+    'r': ['Rain', UnitOfLength.MILLIMETERS, 'mdi:weather-rainy', None],
+    'w': ['Wind speed', UnitOfSpeed.METERS_PER_SECOND, 'mdi:weather-windy', None],
+    'wg': ['Wind gust', UnitOfSpeed.METERS_PER_SECOND, 'mdi:weather-windy', None],
 }
