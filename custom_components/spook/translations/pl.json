@@ -23,6 +23,9 @@
             },
             "homeassistant_restart": {
                 "name": "Restart"
+            },
+            "repairs_unignore_all": {
+                "name": "Nie ignoruj"
             }
         },
         "event": {
@@ -34,7 +37,8 @@
                     "event_type": {
                         "state": {
                             "remove": "Problem usunięty",
-                            "update": "Problem zaktualizowany"
+                            "update": "Problem zaktualizowany",
+                            "create": "Utworzono problem"
                         }
                     }
                 }
@@ -130,14 +134,26 @@
             },
             "repairs_active_issues": {
                 "name": "Aktywne"
+            },
+            "homeassistant_alarm_control_panel": {
+                "name": "Centrale alarmowe"
+            },
+            "homeassistant_date": {
+                "name": "Daty"
+            },
+            "homeassistant_persistent_notification": {
+                "name": "Stałe powiadomienia"
+            },
+            "homeassistant_zone": {
+                "name": "Strefy"
             }
         },
         "switch": {
             "cloud_google_report_state": {
-                "name": "Raportowanie stanu Asystenta Google"
+                "name": "Raportowanie Google"
             },
             "cloud_alexa_report_state": {
-                "name": "Raportowanie stanu Alexa"
+                "name": "Raportowanie Alexa"
             }
         }
     },
@@ -154,12 +170,12 @@
             "description": "Spook znalazł ducha w Twoich scenach 👻\n\nLecąc dookoła, Spook napotkał następującą scenę:\n\n[{scene}]({edit})\n\nTa scena odnosi się do następujących encji, które nie są znane Home Assistant:\n\n{entities}\n\n\n\nTo fix this error, [edit the scene]({edit}) and remove the use of these non-existing entities.\n\nSpook 👻 To nie twój ziomek."
         },
         "user_issue": {
-            "title": "{tytuł}",
+            "title": "{title}",
             "fix_flow": {
                 "step": {
                     "confirm": {
-                        "title": "{tytuł}",
-                        "description": "{opis}"
+                        "title": "{title}",
+                        "description": "{description}"
                     }
                 }
             }

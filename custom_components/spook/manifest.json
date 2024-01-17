@@ -3,7 +3,8 @@
   "name": "Spook",
   "after_dependencies": [
     "blueprint",
-    "cloud"
+    "cloud",
+    "timer"
   ],
   "codeowners": [
     "@frenck"
@@ -27,5 +28,5 @@
   "issue_tracker": "https://github.com/frenck/spook/issues",
   "quality_scale": "platinum",
   "requirements": [],
-  "version": "2.1.0"
+  "version": "2.1.1"
 }
