@@ -112,10 +112,10 @@
       "host_auth": {
         "description": "[%key:component::proxmoxve::config::step::host::description%]",
         "data": {
-          "username": "[%key:component::proxmoxve::config::step::host::data::username%]",
-          "password": "[%key:component::proxmoxve::config::step::host::data::password%]",
+          "username": "[%key:common::config_flow::data::username%]",
+          "password": "[%key:common::config_flow::data::password%]",
           "realm": "[%key:component::proxmoxve::config::step::host::data::realm%]",
-          "verify_ssl": "[%key:component::proxmoxve::config::step::host::data::verify_ssl%]"
+          "verify_ssl": "[%key:common::config_flow::data::verify_ssl%]"
         }
       },
       "change_expose": {
@@ -133,10 +133,10 @@
       }
     },
     "error": {
-      "auth_error": "[%key:component::proxmoxve::config::error::auth_error%]",
+      "auth_error": "[%key:common::config_flow::error::invalid_auth%]",
       "ssl_rejection": "[%key:component::proxmoxve::config::error::ssl_rejection%]",
-      "cant_connect": "[%key:component::proxmoxve::config::error::cant_connect%]",
-      "general_error": "[%key:component::proxmoxve::config::error::general_error%]",
+      "cant_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "general_error": "[%key:common::config_flow::error::unknown%]",
       "invalid_port": "[%key:component::proxmoxve::config::error::invalid_port%]"
     },
     "abort": {
@@ -144,7 +144,12 @@
       "no_vms": "There are no virtual machines or containers for this node, the configuration entry will be created for the node.",
       "changes_successful": "Changes saved successfully.",
       "no_nodes_to_add": "No nodes to add.",
-      "node_already_exists": "The selected node already exists."
+      "node_already_exists": "The selected node already exists.",
+      "auth_error": "[%key:common::config_flow::error::invalid_auth%]",
+      "ssl_rejection": "[%key:component::proxmoxve::config::error::ssl_rejection%]",
+      "cant_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "general_error": "[%key:common::config_flow::error::unknown%]",
+      "invalid_port": "[%key:component::proxmoxve::config::error::invalid_port%]"
     }
   },
   "entity": {
@@ -213,6 +218,17 @@
       "disk_used_perc": {
         "name": "Disk used percentage"
       },
+      "life_left": {
+        "name": "Life left"
+      },
+      "lxc_on": {
+        "name": "Containers running",
+        "state_attributes": {
+          "lxc_on_list": {
+            "name": "Containers list"
+          }
+        }
+      },
       "memory_free": {
         "name": "Memory free"
       },
@@ -237,12 +253,28 @@
       "power_cycles": {
         "name": "Power cycles"
       },
+      "power_loss": {
+        "name": "Unexpected power loss"
+      },
+      "power_hours": {
+        "name": "Power-on hours"
+      },
+      "qemu_on": {
+        "name": "Virtual machines running",
+        "state_attributes": {
+          "qemu_on_list": {
+            "name": "Virtual machines list"
+          }
+        }
+      },
       "node": {
         "name": "Node"
       },
       "status_raw": {
         "name": "Status",
         "state": {
+          "internal-error": "Internal error",
+          "prelaunch": "Pre launch",
           "paused": "Paused",
           "stopped": "Stopped",
           "suspended": "Suspended",
@@ -267,6 +299,9 @@
       "temperature": {
         "name": "Temperature"
       },
+      "temperature_air": {
+        "name": "Airflow Temperature"
+      },
       "updates_total": {
         "name": "Total updates",
         "state_attributes": {
@@ -276,7 +311,7 @@
         }
       },
       "uptime": {
-        "name": "Uptime"
+        "name": "Last boot"
       }
     }
   }

@@ -1,8 +1,7 @@
 """Constants for ProxmoxVE."""
 
+from enum import StrEnum
 import logging
-
-from homeassistant.backports.enum import StrEnum
 
 DOMAIN = "proxmoxve"
 PROXMOX_CLIENTS = "proxmox_clients"
@@ -29,12 +28,12 @@ CONF_NODES = "nodes"
 CONF_QEMU = "qemu"
 CONF_REALM = "realm"
 CONF_VMS = "vms"
-CONF_STORAGE="storage"
+CONF_STORAGE = "storage"
 
 PROXMOX_CLIENT = "proxmox_client"
 
 INTEGRATION_TITLE = "Proxmox VE"
-VERSION_REMOVE_YAML = "2023.8"
+VERSION_REMOVE_YAML = "2025.1"
 
 
 class ProxmoxType(StrEnum):
@@ -47,6 +46,7 @@ class ProxmoxType(StrEnum):
     Storage = "storage"
     Update = "update"
     Disk = "disk"
+    Resources = "resources"
 
 
 class ProxmoxCommand(StrEnum):

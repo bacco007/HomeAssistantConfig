@@ -27,9 +27,10 @@ from homeassistant.helpers.issue_registry import (
     async_delete_issue,
 )
 
-from . import ProxmoxClient, ProxmoxType
+from .api import ProxmoxClient, get_api
 from .const import (
     CONF_CONTAINERS,
+    CONF_DISKS_ENABLE,
     CONF_LXC,
     CONF_NODE,
     CONF_NODES,
@@ -41,10 +42,11 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_REALM,
     DEFAULT_VERIFY_SSL,
-    CONF_DISKS_ENABLE,
     DOMAIN,
+    INTEGRATION_TITLE,
     LOGGER,
     VERSION_REMOVE_YAML,
+    ProxmoxType,
 )
 
 SCHEMA_HOST_BASE: vol.Schema = vol.Schema(
@@ -209,24 +211,26 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                 await self.hass.async_add_executor_job(
                     self._proxmox_client.build_client
                 )
-
-            except (
-                proxmoxer.AuthenticationError,
-                SSLError,
-                ConnectTimeout,
-            ) as err:
-                raise (err)
+            except proxmoxer.backends.https.AuthenticationError:
+                return self.async_abort(reason="auth_error")
+            except SSLError:
+                return self.async_abort(reason="ssl_rejection")
+            except ConnectTimeout:
+                return self.async_abort(reason="cant_connect")
+            except Exception:  # pylint: disable=broad-except
+                return self.async_abort(reason="general_error")
 
             proxmox = self._proxmox_client.get_api_client()
 
             resources = await self.hass.async_add_executor_job(
-                proxmox.cluster.resources.get
+                get_api, proxmox, "cluster/resources"
             )
-            LOGGER.debug("Response API - Resources: %s", resources)
+
             resource_qemu = {}
             resource_lxc = {}
             resource_storage = {}
-            for resource in resources:
+            resource: dict[str, Any]
+            for resource in resources if resources is not None else []:
                 if ("type" in resource) and (resource["type"] == ProxmoxType.Node):
                     if resource["node"] not in resource_nodes:
                         resource_nodes.append(resource["node"])
@@ -250,9 +254,9 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                             str(resource["storage"])
                         ] = f"{resource['storage']} {resource['id']}"
                     else:
-                        resource_storage[str(resource["storage"])] = f"{resource['storage']}"
-
-            LOGGER.debug("Response API - Resources: %s", resources)
+                        resource_storage[
+                            str(resource["storage"])
+                        ] = f"{resource['storage']}"
 
             return self.async_show_form(
                 step_id="change_expose",
@@ -273,7 +277,9 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                                 **resource_lxc,
                             }
                         ),
-                        vol.Optional(CONF_STORAGE, default=old_storage): cv.multi_select(
+                        vol.Optional(
+                            CONF_STORAGE, default=old_storage
+                        ): cv.multi_select(
                             {
                                 **dict.fromkeys(old_storage),
                                 **resource_storage,
@@ -281,7 +287,9 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                         ),
                         vol.Optional(
                             CONF_DISKS_ENABLE,
-                            default=self.config_entry.options.get(CONF_DISKS_ENABLE, True)
+                            default=self.config_entry.options.get(
+                                CONF_DISKS_ENABLE, True
+                            ),
                         ): selector.BooleanSelector(),
                     }
                 ),
@@ -290,6 +298,53 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
         config_data: dict[str, Any] = (
             self.config_entry.data.copy() if self.config_entry.data is not None else {}
         )
+
+        new_selection = await self.async_process_selection_changes(user_input)
+
+        config_data.update(
+            {
+                CONF_NODES: new_selection[CONF_NODES],
+                CONF_QEMU: new_selection[CONF_QEMU],
+                CONF_LXC: new_selection[CONF_LXC],
+                CONF_STORAGE: new_selection[CONF_STORAGE],
+            }
+        )
+
+        options_data = {CONF_DISKS_ENABLE: user_input.get(CONF_DISKS_ENABLE)}
+
+        self.hass.config_entries.async_update_entry(
+            self.config_entry, data=config_data, options=options_data
+        )
+
+        await self.hass.config_entries.async_reload(self.config_entry.entry_id)
+
+        return self.async_abort(reason="changes_successful")
+
+    async def async_remove_device(
+        self,
+        entry_id: str,
+        device_identifier: str,
+    ) -> bool:
+        """Remove device."""
+        device_identifiers = {(DOMAIN, device_identifier)}
+        dev_reg = dr.async_get(self.hass)
+        device = dev_reg.async_get_or_create(
+            config_entry_id=entry_id,
+            identifiers=device_identifiers,
+        )
+
+        dev_reg.async_update_device(
+            device_id=device.id,
+            remove_config_entry_id=entry_id,
+        )
+        LOGGER.debug("Device %s (%s) removed", device.name, device.id)
+        return True
+
+    async def async_process_selection_changes(
+        self,
+        user_input: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Process resource selection changes."""
 
         node_selecition = []
         if (
@@ -301,22 +356,10 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
 
         for node in self.config_entry.data[CONF_NODES]:
             if node not in node_selecition:
-
                 # Remove device disks
-                dev_reg = dr.async_get(self.hass)
-                coordinators = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATORS]
-                if f"{node}_{ProxmoxType.Disk}" in coordinators:
-                    for coordinator_disk in coordinators[f"{node}_{ProxmoxType.Disk}"]:
-                        if (coordinator_data := coordinator_disk.data) is None:
-                            continue
-
-                        identifier = (
-                            f"{self.config_entry.entry_id}_{ProxmoxType.Disk.upper()}_{node}_{coordinator_data.path}"
-                        )
-                        await self.async_remove_device(
-                            entry_id=self.config_entry.entry_id,
-                            device_identifier=identifier,
-                        )
+                coordinators = self.hass.data[DOMAIN][self.config_entry.entry_id][
+                    COORDINATORS
+                ]
 
                 # Remove device node
                 identifier = (
@@ -331,6 +374,23 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                     DOMAIN,
                     f"{self.config_entry.entry_id}_{node}_resource_nonexistent",
                 )
+
+            if node not in (
+                node_selecition if node_selecition is not None else []
+            ) or not user_input.get(CONF_DISKS_ENABLE):
+                coordinators = self.hass.data[DOMAIN][self.config_entry.entry_id][
+                    COORDINATORS
+                ]
+                if f"{ProxmoxType.Disk}_{node}" in coordinators:
+                    for coordinator_disk in coordinators[f"{ProxmoxType.Disk}_{node}"]:
+                        if (coordinator_data := coordinator_disk.data) is None:
+                            continue
+
+                        identifier = f"{self.config_entry.entry_id}_{ProxmoxType.Disk.upper()}_{node}_{coordinator_data.path}"
+                        await self.async_remove_device(
+                            entry_id=self.config_entry.entry_id,
+                            device_identifier=identifier,
+                        )
 
         qemu_selecition = []
         if (
@@ -391,9 +451,7 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
         for storage_id in self.config_entry.data[CONF_STORAGE]:
             if storage_id not in storage_selecition:
                 # Remove device
-                identifier = (
-                    f"{self.config_entry.entry_id}_{ProxmoxType.Storage.upper()}_{storage_id}"
-                )
+                identifier = f"{self.config_entry.entry_id}_{ProxmoxType.Storage.upper()}_{storage_id}"
                 await self.async_remove_device(
                     entry_id=self.config_entry.entry_id,
                     device_identifier=identifier,
@@ -404,44 +462,12 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                     f"{self.config_entry.entry_id}_{storage_id}_resource_nonexistent",
                 )
 
-        config_data.update(
-            {
-                CONF_NODES: node_selecition,
-                CONF_QEMU: qemu_selecition,
-                CONF_LXC: lxc_selecition,
-                CONF_STORAGE: storage_selecition,
-            }
-        )
-
-        options_data = {
-            CONF_DISKS_ENABLE: user_input.get(CONF_DISKS_ENABLE)
+        return {
+            CONF_NODES: node_selecition,
+            CONF_QEMU: qemu_selecition,
+            CONF_LXC: lxc_selecition,
+            CONF_STORAGE: storage_selecition,
         }
-
-        self.hass.config_entries.async_update_entry(self.config_entry, data=config_data, options=options_data)
-
-        await self.hass.config_entries.async_reload(self.config_entry.entry_id)
-
-        return self.async_abort(reason="changes_successful")
-
-    async def async_remove_device(
-        self,
-        entry_id: str,
-        device_identifier: str,
-    ) -> bool:
-        """Remove device."""
-        device_identifiers = {(DOMAIN, device_identifier)}
-        dev_reg = dr.async_get(self.hass)
-        device = dev_reg.async_get_or_create(
-            config_entry_id=entry_id,
-            identifiers=device_identifiers,
-        )
-
-        dev_reg.async_update_device(
-            device_id=device.id,
-            remove_config_entry_id=entry_id,
-        )
-        LOGGER.debug("Device %s (%s) removed", device.name, device.id)
-        return True
 
 
 class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -477,7 +503,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 severity=IssueSeverity.WARNING,
                 translation_key="import_already_configured",
                 translation_placeholders={
-                    "integration": "Proxmox VE",
+                    "integration": INTEGRATION_TITLE,
                     "platform": DOMAIN,
                     "host": str(import_config.get(CONF_HOST)),
                     "port": str(import_config.get(CONF_PORT)),
@@ -514,7 +540,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 severity=IssueSeverity.ERROR,
                 translation_key="import_auth_error",
                 translation_placeholders={
-                    "integration": "Proxmox VE",
+                    "integration": INTEGRATION_TITLE,
                     "platform": DOMAIN,
                     "host": str(import_config.get(CONF_HOST)),
                     "port": str(import_config.get(CONF_PORT)),
@@ -531,7 +557,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 severity=IssueSeverity.ERROR,
                 translation_key="import_ssl_rejection",
                 translation_placeholders={
-                    "integration": "Proxmox VE",
+                    "integration": INTEGRATION_TITLE,
                     "platform": DOMAIN,
                     "host": str(import_config.get(CONF_HOST)),
                     "port": str(import_config.get(CONF_PORT)),
@@ -548,7 +574,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 severity=IssueSeverity.ERROR,
                 translation_key="import_cant_connect",
                 translation_placeholders={
-                    "integration": "Proxmox VE",
+                    "integration": INTEGRATION_TITLE,
                     "platform": DOMAIN,
                     "host": str(import_config.get(CONF_HOST)),
                     "port": str(import_config.get(CONF_PORT)),
@@ -565,7 +591,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 severity=IssueSeverity.ERROR,
                 translation_key="import_general_error",
                 translation_placeholders={
-                    "integration": "Proxmox VE",
+                    "integration": INTEGRATION_TITLE,
                     "platform": DOMAIN,
                     "host": str(import_config.get(CONF_HOST)),
                     "port": str(import_config.get(CONF_PORT)),
@@ -577,13 +603,16 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         proxmox_nodes_host = []
         if proxmox := (proxmox_client.get_api_client()):
-            proxmox_nodes = await self.hass.async_add_executor_job(proxmox.nodes.get)
+            proxmox_nodes = await self.hass.async_add_executor_job(
+                get_api, proxmox, "nodes"
+            )
 
-            for node in proxmox_nodes:
+            for node in proxmox_nodes if proxmox_nodes is not None else []:
                 proxmox_nodes_host.append(node[CONF_NODE])
 
         if (
-            CONF_NODES in import_config
+            import_config is not None
+            and CONF_NODES in import_config
             and (import_nodes := import_config.get(CONF_NODES)) is not None
         ):
             import_config[CONF_NODES] = []
@@ -603,7 +632,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         severity=IssueSeverity.WARNING,
                         translation_key="import_node_not_exist",
                         translation_placeholders={
-                            "integration": "Proxmox VE",
+                            "integration": INTEGRATION_TITLE,
                             "platform": DOMAIN,
                             "host": str(import_config.get(CONF_HOST)),
                             "port": str(import_config.get(CONF_PORT)),
@@ -620,7 +649,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             severity=IssueSeverity.WARNING,
             translation_key="import_success",
             translation_placeholders={
-                "integration": "Proxmox VE",
+                "integration": INTEGRATION_TITLE,
                 "platform": DOMAIN,
                 "host": str(import_config.get(CONF_HOST)),
                 "port": str(import_config.get(CONF_PORT)),
@@ -791,9 +820,9 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 proxmox = proxmox_cliente.get_api_client()
 
             resources = await self.hass.async_add_executor_job(
-                proxmox.cluster.resources.get
+                get_api, proxmox, "cluster/resources"
             )
-            LOGGER.debug("Response API - Resources: %s", resources)
+
             resource_nodes = []
             resource_qemu = {}
             resource_lxc = {}
@@ -824,7 +853,9 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             str(resource["storage"])
                         ] = f"{resource['storage']} {resource['id']}"
                     else:
-                        resource_lxc[str(resource["storage"])] = f"{resource['storage']}"
+                        resource_lxc[
+                            str(resource["storage"])
+                        ] = f"{resource['storage']}"
 
             return self.async_show_form(
                 step_id="expose",
@@ -881,9 +912,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_create_entry(
             title=(f"{self._config[CONF_HOST]}:{self._config[CONF_PORT]}"),
             data=self._config,
-            options={
-                CONF_DISKS_ENABLE: user_input.get(CONF_DISKS_ENABLE)
-            }
+            options={CONF_DISKS_ENABLE: user_input.get(CONF_DISKS_ENABLE)},
         )
 
     @staticmethod

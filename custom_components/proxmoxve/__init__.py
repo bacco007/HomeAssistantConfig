@@ -1,10 +1,9 @@
 """Support for Proxmox VE."""
 from __future__ import annotations
 
-from typing import Any
 import warnings
 
-from proxmoxer import AuthenticationError, ProxmoxAPI
+from proxmoxer import AuthenticationError
 from proxmoxer.core import ResourceException
 from requests.exceptions import (
     ConnectionError as connError,
@@ -26,9 +25,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.issue_registry import (
     IssueSeverity,
     async_create_issue,
@@ -36,6 +35,7 @@ from homeassistant.helpers.issue_registry import (
 )
 from homeassistant.helpers.typing import ConfigType
 
+from .api import ProxmoxClient, get_api
 from .const import (
     CONF_CONTAINERS,
     CONF_DISKS_ENABLE,
@@ -55,7 +55,6 @@ from .const import (
     LOGGER,
     PROXMOX_CLIENT,
     VERSION_REMOVE_YAML,
-    ProxmoxCommand,
     ProxmoxType,
 )
 from .coordinator import (
@@ -66,6 +65,7 @@ from .coordinator import (
     ProxmoxStorageCoordinator,
     ProxmoxUpdateCoordinator,
 )
+from .models import ProxmoxDiskData
 
 PLATFORMS = [
     Platform.BINARY_SENSOR,
@@ -158,6 +158,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     },
                 )
             else:
+                conf[CONF_STORAGE] = []
                 hass.async_create_task(
                     hass.config_entries.flow.async_init(
                         DOMAIN,
@@ -168,7 +169,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Migrate old entry."""
     LOGGER.debug("Migrating from version %s", config_entry.version)
 
@@ -208,7 +209,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
         LOGGER.debug("Migration - remove devices: %s", device_identifiers)
         for device_identifier in device_identifiers:
-            device_identifiers = {
+            device_identifier_migrate = {
                 (
                     DOMAIN,
                     device_identifier,
@@ -217,7 +218,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
             dev_reg = dr.async_get(hass)
             device = dev_reg.async_get_or_create(
                 config_entry_id=config_entry.entry_id,
-                identifiers=device_identifiers,
+                identifiers=device_identifier_migrate,
             )
 
             dev_reg.async_update_device(
@@ -227,11 +228,11 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     if config_entry.version == 2:
         device_identifiers = []
-        for resource in config_entry.data.get(CONF_NODES):
+        for resource in config_entry.data[CONF_NODES]:
             device_identifiers.append(f"{ProxmoxType.Node.upper()}_{resource}")
-        for resource in config_entry.data.get(CONF_QEMU):
+        for resource in config_entry.data[CONF_QEMU]:
             device_identifiers.append(f"{ProxmoxType.QEMU.upper()}_{resource}")
-        for resource in config_entry.data.get(CONF_LXC):
+        for resource in config_entry.data[CONF_LXC]:
             device_identifiers.append(f"{ProxmoxType.LXC.upper()}_{resource}")
 
         config_entry.version = 3
@@ -241,7 +242,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
         LOGGER.debug("Migration - remove devices: %s", device_identifiers)
         for device_identifier in device_identifiers:
-            device_identifiers = {
+            device_identifier_migrate = {
                 (
                     DOMAIN,
                     device_identifier,
@@ -250,14 +251,13 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
             dev_reg = dr.async_get(hass)
             device = dev_reg.async_get_or_create(
                 config_entry_id=config_entry.entry_id,
-                identifiers=device_identifiers,
+                identifiers=device_identifier_migrate,
             )
 
             dev_reg.async_update_device(
                 device_id=device.id,
                 remove_config_entry_id=config_entry.entry_id,
             )
-
 
     if config_entry.version == 3:
         config_entry.version = 4
@@ -273,9 +273,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
             CONF_LXC: config_entry.data.get(CONF_LXC),
             CONF_STORAGE: [],
         }
-        hass.config_entries.async_update_entry(
-            config_entry, data=data_new, options={}
-        )
+        hass.config_entries.async_update_entry(config_entry, data=data_new, options={})
 
     LOGGER.info("Migration to version %s successful", config_entry.version)
 
@@ -331,18 +329,23 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     proxmox = await hass.async_add_executor_job(proxmox_client.get_api_client)
 
     coordinators: dict[
-        str | int,
-        ProxmoxNodeCoordinator | ProxmoxQEMUCoordinator | ProxmoxLXCCoordinator | ProxmoxStorageCoordinator | ProxmoxUpdateCoordinator | ProxmoxDiskCoordinator,
+        str,
+        ProxmoxNodeCoordinator
+        | ProxmoxQEMUCoordinator
+        | ProxmoxLXCCoordinator
+        | ProxmoxStorageCoordinator
+        | ProxmoxUpdateCoordinator
+        | list[ProxmoxDiskCoordinator],
     ] = {}
     nodes_add_device = []
 
-    resources = await hass.async_add_executor_job(proxmox.cluster.resources.get)
-    LOGGER.debug("API Response - Resources: %s", resources)
+    resources = await hass.async_add_executor_job(get_api, proxmox, "cluster/resources")
 
+    nodes_api = await hass.async_add_executor_job(get_api, proxmox, "nodes")
     for node in config_entry.data[CONF_NODES]:
         if node in [
             node_proxmox["node"]
-            for node_proxmox in await hass.async_add_executor_job(proxmox.nodes().get)
+            for node_proxmox in (nodes_api if nodes_api is not None else [])
         ]:
             async_delete_issue(
                 hass,
@@ -356,10 +359,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 node_name=node,
             )
             await coordinator_node.async_refresh()
-            coordinators[node] = coordinator_node
+            coordinators[f"{ProxmoxType.Node}_{node}"] = coordinator_node
             if coordinator_node.data is not None:
                 nodes_add_device.append(node)
-
 
             coordinator_updates = ProxmoxUpdateCoordinator(
                 hass=hass,
@@ -372,12 +374,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
             if config_entry.options.get(CONF_DISKS_ENABLE, True):
                 try:
-                    disks = await hass.async_add_executor_job(proxmox.nodes(node).disks.list.get)
-                except ResourceException as error:
+                    disks = await hass.async_add_executor_job(
+                        get_api, proxmox, f"nodes/{node}/disks/list"
+                    )
+                except ResourceException:
                     continue
 
-                coordinators[f"{node}_{ProxmoxType.Disk}"]=[]
-                for disk in disks:
+                coordinators_disk = []
+                for disk in disks if disks is not None else []:
                     coordinator_disk = ProxmoxDiskCoordinator(
                         hass=hass,
                         proxmox=proxmox,
@@ -386,7 +390,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                         disk_id=disk["devpath"],
                     )
                     await coordinator_disk.async_refresh()
-                    coordinators[f"{node}_{ProxmoxType.Disk}"].append(coordinator_disk)
+                    coordinators_disk.append(coordinator_disk)
+                coordinators[f"{ProxmoxType.Disk}_{node}"] = coordinators_disk
 
         else:
             async_create_issue(
@@ -410,7 +415,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     for vm_id in config_entry.data[CONF_QEMU]:
         if int(vm_id) in [
             (int(resource["vmid"]) if "vmid" in resource else None)
-            for resource in resources
+            for resource in (resources if resources is not None else [])
         ]:
             async_delete_issue(
                 hass,
@@ -424,7 +429,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 qemu_id=vm_id,
             )
             await coordinator_qemu.async_refresh()
-            coordinators[vm_id] = coordinator_qemu
+            coordinators[f"{ProxmoxType.QEMU}_{vm_id}"] = coordinator_qemu
         else:
             async_create_issue(
                 hass,
@@ -440,14 +445,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                     "port": config_entry.data[CONF_PORT],
                     "resource_type": ProxmoxType.QEMU.upper(),
                     "resource": vm_id,
-                    "permission":  f"['perm','/vms/{vm_id}',['VM.Audit']]",
+                    "permission": f"['perm','/vms/{vm_id}',['VM.Audit']]",
                 },
             )
 
     for container_id in config_entry.data[CONF_LXC]:
         if int(container_id) in [
             (int(resource["vmid"]) if "vmid" in resource else None)
-            for resource in resources
+            for resource in (resources if resources is not None else [])
         ]:
             async_delete_issue(
                 hass,
@@ -461,7 +466,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 container_id=container_id,
             )
             await coordinator_lxc.async_refresh()
-            coordinators[container_id] = coordinator_lxc
+            coordinators[f"{ProxmoxType.LXC}_{container_id}"] = coordinator_lxc
         else:
             async_create_issue(
                 hass,
@@ -477,14 +482,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                     "port": config_entry.data[CONF_PORT],
                     "resource_type": ProxmoxType.LXC.upper(),
                     "resource": container_id,
-                    "permission":  f"['perm','/vms/{container_id}',['VM.Audit']]",
+                    "permission": f"['perm','/vms/{container_id}',['VM.Audit']]",
                 },
             )
 
     for storage_id in config_entry.data[CONF_STORAGE]:
         if storage_id in [
             (resource["storage"] if "storage" in resource else None)
-            for resource in resources
+            for resource in (resources if resources is not None else [])
         ]:
             async_delete_issue(
                 hass,
@@ -498,7 +503,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 storage_id=storage_id,
             )
             await coordinator_storage.async_refresh()
-            coordinators[storage_id] = coordinator_storage
+            coordinators[f"{ProxmoxType.Storage}_{storage_id}"] = coordinator_storage
         else:
             async_create_issue(
                 hass,
@@ -514,7 +519,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                     "port": config_entry.data[CONF_PORT],
                     "resource_type": ProxmoxType.Storage.capitalize(),
                     "resource": storage_id,
-                    "permission":  f"['perm','/storage/{storage_id}',['Datastore.Audit'],'any',1]"
+                    "permission": f"['perm','/storage/{storage_id}',['Datastore.Audit'],'any',1]",
                 },
             )
 
@@ -572,7 +577,7 @@ def device_info(
     node: str | None = None,
     resource_id: int | None = None,
     create: bool | None = False,
-    cordinator_resource: dict[str,Any] | None = None,
+    cordinator_resource: ProxmoxDiskData | None = None,
 ):
     """Return the Device Info."""
 
@@ -585,7 +590,7 @@ def device_info(
     manufacturer = None
     serial_number = None
     if api_category in (ProxmoxType.QEMU, ProxmoxType.LXC):
-        coordinator = coordinators[resource_id]
+        coordinator = coordinators[f"{api_category}_{resource_id}"]
         if (coordinator_data := coordinator.data) is not None:
             vm_name = coordinator_data.name
             node = coordinator_data.node
@@ -600,7 +605,7 @@ def device_info(
         model = api_category.upper()
 
     elif api_category is ProxmoxType.Storage:
-        coordinator = coordinators[resource_id]
+        coordinator = coordinators[f"{api_category}_{resource_id}"]
         if (coordinator_data := coordinator.data) is not None:
             node = coordinator_data.node
 
@@ -614,7 +619,7 @@ def device_info(
         model = api_category.capitalize()
 
     elif api_category in (ProxmoxType.Node, ProxmoxType.Update):
-        coordinator = coordinators[node]
+        coordinator = coordinators[f"{ProxmoxType.Node}_{node}"]
         if (coordinator_data := coordinator.data) is not None:
             model_processor = coordinator_data.model
             proxmox_version = f"Proxmox {coordinator_data.version}"
@@ -627,15 +632,25 @@ def device_info(
 
     elif api_category is ProxmoxType.Disk:
         name = f"{api_category.capitalize()} {node}:{resource_id}"
-        identifier = f"{config_entry.entry_id}_{api_category.upper()}_{node}_{resource_id}"
+        identifier = (
+            f"{config_entry.entry_id}_{api_category.upper()}_{node}_{resource_id}"
+        )
         url = f"https://{host}:{port}/#v1:0:=node/{node}::2::::::"
         via_device = (
             DOMAIN,
             f"{config_entry.entry_id}_{ProxmoxType.Node.upper()}_{node}",
         )
-        model = f"{cordinator_resource.disk_type.upper()} {cordinator_resource.model}"
-        manufacturer = cordinator_resource.vendor
-        serial_number = cordinator_resource.serial
+        if cordinator_resource is None:
+            model = api_category.capitalize()
+        else:
+            disk_type = cordinator_resource.disk_type
+            model = (
+                f"{disk_type.upper()} {cordinator_resource.model} "
+                if disk_type is not None
+                else f"{disk_type}{cordinator_resource.model}"
+            )
+            manufacturer = cordinator_resource.vendor
+            serial_number = cordinator_resource.serial
 
     if create:
         device_registry = dr.async_get(hass)
@@ -644,143 +659,44 @@ def device_info(
             entry_type=dr.DeviceEntryType.SERVICE,
             configuration_url=url,
             identifiers={(DOMAIN, identifier)},
-            manufacturer = manufacturer or INTEGRATION_TITLE,
+            manufacturer=manufacturer or INTEGRATION_TITLE,
             name=name,
             model=model,
             sw_version=proxmox_version,
             hw_version=None,
             via_device=via_device,
-            serial_number = serial_number or None,
+            serial_number=serial_number or None,
         )
     return DeviceInfo(
         entry_type=dr.DeviceEntryType.SERVICE,
         configuration_url=url,
         identifiers={(DOMAIN, identifier)},
-        manufacturer = manufacturer or INTEGRATION_TITLE,
+        manufacturer=manufacturer or INTEGRATION_TITLE,
         name=name,
         model=model,
         sw_version=proxmox_version,
         hw_version=None,
         via_device=via_device,
-        serial_number = serial_number or None,
+        serial_number=serial_number or None,
     )
 
 
-class ProxmoxClient:
-    """A wrapper for the proxmoxer ProxmoxAPI client."""
-
-    _proxmox: ProxmoxAPI
-
-    def __init__(
-        self,
-        host: str,
-        user: str,
-        password: str,
-        port: int | None = DEFAULT_PORT,
-        realm: str | None = DEFAULT_REALM,
-        verify_ssl: bool | None = DEFAULT_VERIFY_SSL,
-    ) -> None:
-        """Initialize the ProxmoxClient."""
-
-        self._host = host
-        self._port = port
-        self._user = user
-        self._realm = realm
-        self._password = password
-        self._verify_ssl = verify_ssl
-
-    def build_client(self) -> None:
-        """Construct the ProxmoxAPI client.
-
-        Allows inserting the realm within the `user` value.
-        """
-
-        if "@" in self._user:
-            user_id = self._user
-        else:
-            user_id = f"{self._user}@{self._realm}"
-
-        self._proxmox = ProxmoxAPI(
-            self._host,
-            port=self._port,
-            user=user_id,
-            password=self._password,
-            verify_ssl=self._verify_ssl,
+async def async_migrate_old_unique_ids(
+    hass: HomeAssistant, platform: Platform, entities
+):
+    """Migration of the unique id of disk entities."""
+    registry = er.async_get(hass)
+    for entity in entities:
+        entity_id = registry.async_get_entity_id(
+            platform, DOMAIN, entity["old_unique_id"]
         )
-
-    def get_api_client(self) -> ProxmoxAPI:
-        """Return the ProxmoxAPI client."""
-        return self._proxmox
-
-
-def call_api_post_status(
-    self,
-    proxmox: ProxmoxAPI,
-    api_category: ProxmoxType,
-    command: str,
-    node: str,
-    vm_id: int | None = None,
-) -> Any:
-    """Make proper api post status calls to set state."""
-    result = None
-    if command not in ProxmoxCommand:
-        raise ValueError("Invalid Command")
-
-    try:
-        # Only the START_ALL and STOP_ALL are not part of status API
-        if api_category is ProxmoxType.Node and command in [
-            ProxmoxCommand.START_ALL,
-            ProxmoxCommand.STOP_ALL,
-        ]:
-            result = proxmox.nodes(node).post(command)
-        elif api_category is ProxmoxType.Node:
-            result = proxmox(["nodes", node, "status"]).post(command=command)
-        else:
-            if command == ProxmoxCommand.HIBERNATE:
-                result = proxmox(
-                    ["nodes", node, api_category, vm_id, "status", ProxmoxCommand.SUSPEND]
-                ).post(todisk=1)
-
-            else:
-                result = proxmox(
-                    ["nodes", node, api_category, vm_id, "status", command]
-                ).post()
-
-    except ResourceException as error:
-        if error.status_code == 403:
-            if api_category is ProxmoxType.Node:
-                issue_id=f"{self.config_entry.entry_id}_{node}_command_forbiden"
-                resource=f"{api_category.capitalize()} {node}"
-                permission_check = f"['perm','/nodes/{node}',['Sys.PowerMgmt']]"
-            elif api_category in (ProxmoxType.QEMU, ProxmoxType.LXC):
-                issue_id=f"{self.config_entry.entry_id}_{vm_id}_command_forbiden"
-                resource=f"{api_category.upper()} {vm_id}"
-                permission_check = f"['perm','/vms/{vm_id}',['VM.PowerMgmt']]"
-            else:
-                raise ValueError(
-                    f"Resource not categorized correctly: Proxmox {api_category.upper()} {command} error - {error}",
-                ) from error
-
-            async_create_issue(
-                self.hass,
-                DOMAIN,
-                issue_id,
-                is_fixable=False,
-                severity=IssueSeverity.ERROR,
-                translation_key="resource_command_forbiden",
-                translation_placeholders={
-                    "resource": resource,
-                    "user": self.config_entry.data[CONF_USERNAME],
-                    "permission": permission_check,
-                    "command": command,
-                },
+        if entity_id is not None:
+            LOGGER.debug(
+                "Migrating unique_id %s: from [%s] to [%s]",
+                entity_id,
+                entity["old_unique_id"],
+                entity["new_unique_id"],
             )
-            raise ValueError(
-                f"Proxmox {api_category.upper()} {command} error - {error}",
-            ) from error
-    except ConnectTimeout as error:
-        raise ValueError(
-            f"Proxmox {api_category.upper()} {command} error - {error}",
-        ) from error
-
-    return result
+            registry.async_update_entity(
+                entity_id, new_unique_id=entity["new_unique_id"]
+            )

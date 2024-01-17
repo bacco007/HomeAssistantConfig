@@ -1,47 +1,16 @@
 """Models for Proxmox VE integration."""
 from __future__ import annotations
 
-from collections.abc import Callable
 import dataclasses
 from dataclasses import dataclass
 
-from homeassistant.components.binary_sensor import BinarySensorEntityDescription
-from homeassistant.components.sensor import SensorEntityDescription
-from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.helpers.entity import EntityDescription
+from homeassistant.helpers.typing import UndefinedType
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ProxmoxEntityDescription(EntityDescription):
     """Describe a Proxmox entity."""
-
-
-@dataclass
-class ProxmoxBinarySensorDescription(BinarySensorEntityDescription):
-    """Class describing Proxmox binarysensor entities."""
-
-    unit_metric: str | None = None
-    unit_imperial: str | None = None
-
-
-@dataclass
-class ProxmoxSensorDescription(SensorEntityDescription):
-    """Class describing Proxmox sensor entities."""
-
-    unit_metric: str | None = None
-    unit_imperial: str | None = None
-    conversion: Callable | None = None  # conversion factor to be applied to units
-    calculation: Callable | None = None  # calculation
-
-
-@dataclass
-class ProxmoxSwitchDescription(SwitchEntityDescription):
-    """Class describing Proxmox switch entities."""
-
-    unit_metric: str | None = None
-    unit_imperial: str | None = None
-    start_command: str | None = None
-    stop_command: str | None = None
 
 
 @dataclasses.dataclass
@@ -53,15 +22,19 @@ class ProxmoxNodeData:
     disk_total: float
     disk_used: float
     model: str
-    memory_total: float
-    memory_used: float
-    memory_free: float
-    status: str
-    swap_total: float
-    swap_free: float
-    swap_used: float
-    uptime: int
+    memory_total: float | UndefinedType
+    memory_used: float | UndefinedType
+    memory_free: float | UndefinedType
+    status: str | UndefinedType
+    swap_total: float | UndefinedType
+    swap_free: float | UndefinedType
+    swap_used: float | UndefinedType
+    uptime: int | UndefinedType
     version: str
+    qemu_on: int
+    qemu_on_list: list
+    lxc_on: int
+    lxc_on_list: list
 
 
 @dataclasses.dataclass
@@ -71,17 +44,17 @@ class ProxmoxVMData:
     type: str
     name: str
     node: str
-    cpu: float
-    disk_total: float
-    disk_used: float
-    health: str
-    memory_total: float
-    memory_used: float
-    memory_free: float
-    network_in: float
-    network_out: float
-    status: str
-    uptime: int
+    cpu: float | UndefinedType
+    disk_total: float | UndefinedType
+    disk_used: float | UndefinedType
+    health: str | UndefinedType
+    memory_total: float | UndefinedType
+    memory_used: float | UndefinedType
+    memory_free: float | UndefinedType
+    network_in: float | UndefinedType
+    network_out: float | UndefinedType
+    status: str | UndefinedType
+    uptime: int | UndefinedType
 
 
 @dataclasses.dataclass
@@ -91,20 +64,19 @@ class ProxmoxLXCData:
     type: str
     name: str
     node: str
-    cpu: float
-    disk_total: float
-    disk_used: float
-    memory_total: float
-    memory_used: float
-    memory_free: float
-    network_in: float
-    network_out: float
-    status: str
-    swap_total: float
-    swap_free: float
-    swap_used: float
-    uptime: int
-
+    cpu: float | UndefinedType
+    disk_total: float | UndefinedType
+    disk_used: float | UndefinedType
+    memory_total: float | UndefinedType
+    memory_used: float | UndefinedType
+    memory_free: float | UndefinedType
+    network_in: float | UndefinedType
+    network_out: float | UndefinedType
+    status: str | UndefinedType
+    swap_total: float | UndefinedType
+    swap_free: float | UndefinedType
+    swap_used: float | UndefinedType
+    uptime: int | UndefinedType
 
 
 @dataclasses.dataclass
@@ -113,10 +85,10 @@ class ProxmoxStorageData:
 
     type: str
     node: str
-    content: str
-    disk_free: float
-    disk_used: float
-    disk_total: float
+    content: str | UndefinedType
+    disk_free: float | UndefinedType
+    disk_used: float | UndefinedType
+    disk_total: float | UndefinedType
 
 
 @dataclasses.dataclass
@@ -125,9 +97,9 @@ class ProxmoxUpdateData:
 
     type: str
     node: str
-    updates_list: list
-    total: float
-    update: bool
+    updates_list: list | UndefinedType
+    total: float | UndefinedType
+    update: bool | UndefinedType
 
 
 @dataclasses.dataclass
@@ -136,13 +108,17 @@ class ProxmoxDiskData:
 
     type: str
     node: str
-    size: float
-    health: str
-    serial: str
-    model: str
-    vendor: str
     path: str
-    disk_rpm: float
-    disk_type: str
-    temperature: float
-    power_cycles: int
+    serial: str | None
+    model: str | None
+    vendor: str | None
+    disk_type: str | None
+    size: float | UndefinedType
+    health: str | UndefinedType
+    disk_rpm: float | UndefinedType
+    temperature: float | UndefinedType
+    temperature_air: float | UndefinedType
+    power_cycles: int | UndefinedType
+    power_hours: int | UndefinedType
+    life_left: int | UndefinedType
+    power_loss: int | UndefinedType

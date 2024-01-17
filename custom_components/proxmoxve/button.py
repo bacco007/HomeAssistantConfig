@@ -7,15 +7,12 @@ from typing import Final
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from . import (
-    ProxmoxClient,
-    call_api_post_status,
-    device_info,
-)
+from . import device_info
+from .api import ProxmoxClient, post_api_command
 from .const import (
     CONF_LXC,
     CONF_NODES,
@@ -31,7 +28,7 @@ from .entity import ProxmoxEntity
 from .models import ProxmoxEntityDescription
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ProxmoxButtonEntityDescription(ProxmoxEntityDescription, ButtonEntityDescription):
     """Class describing Proxmox buttons entities."""
 
@@ -74,7 +71,6 @@ PROXMOX_BUTTON_VM: Final[tuple[ProxmoxButtonEntityDescription, ...]] = (
         key=ProxmoxCommand.REBOOT,
         icon="mdi:restart",
         name="Reboot",
-        api_category=[ProxmoxType.QEMU, ProxmoxType.LXC],
         entity_registry_enabled_default=False,
         translation_key="reboot",
     ),
@@ -82,7 +78,6 @@ PROXMOX_BUTTON_VM: Final[tuple[ProxmoxButtonEntityDescription, ...]] = (
         key=ProxmoxCommand.START,
         icon="mdi:server",
         name="Start",
-        api_category=[ProxmoxType.QEMU, ProxmoxType.LXC],
         entity_registry_enabled_default=False,
         translation_key="start",
     ),
@@ -90,7 +85,6 @@ PROXMOX_BUTTON_VM: Final[tuple[ProxmoxButtonEntityDescription, ...]] = (
         key=ProxmoxCommand.SHUTDOWN,
         icon="mdi:server-off",
         name="Shutdown",
-        api_category=[ProxmoxType.QEMU, ProxmoxType.LXC],
         entity_registry_enabled_default=False,
         translation_key="shutdown",
     ),
@@ -98,7 +92,6 @@ PROXMOX_BUTTON_VM: Final[tuple[ProxmoxButtonEntityDescription, ...]] = (
         key=ProxmoxCommand.STOP,
         icon="mdi:stop",
         name="Stop",
-        api_category=[ProxmoxType.QEMU, ProxmoxType.LXC],
         entity_registry_enabled_default=False,
         translation_key="stop",
     ),
@@ -150,8 +143,8 @@ async def async_setup_entry(
     proxmox_client = hass.data[DOMAIN][config_entry.entry_id][PROXMOX_CLIENT]
 
     for node in config_entry.data[CONF_NODES]:
-        if node in coordinators:
-            coordinator = coordinators[node]
+        if f"{ProxmoxType.Node}_{node}" in coordinators:
+            coordinator = coordinators[f"{ProxmoxType.Node}_{node}"]
         else:
             continue
 
@@ -176,8 +169,8 @@ async def async_setup_entry(
                 )
 
     for vm_id in config_entry.data[CONF_QEMU]:
-        if vm_id in coordinators:
-            coordinator = coordinators[vm_id]
+        if f"{ProxmoxType.QEMU}_{vm_id}" in coordinators:
+            coordinator = coordinators[f"{ProxmoxType.QEMU}_{vm_id}"]
         else:
             continue
 
@@ -185,7 +178,11 @@ async def async_setup_entry(
         if coordinator.data is None:
             continue
         for description in PROXMOX_BUTTON_VM:
-            if ProxmoxType.QEMU in description.api_category:
+            if (
+                (api_category := description.api_category)
+                and ProxmoxType.QEMU in api_category
+                or api_category is None
+            ):
                 buttons.append(
                     create_button(
                         coordinator=coordinator,
@@ -204,15 +201,19 @@ async def async_setup_entry(
                 )
 
     for ct_id in config_entry.data[CONF_LXC]:
-        if ct_id in coordinators:
-            coordinator = coordinators[ct_id]
+        if f"{ProxmoxType.LXC}_{ct_id}" in coordinators:
+            coordinator = coordinators[f"{ProxmoxType.LXC}_{ct_id}"]
         else:
             continue
         # unfound container case
         if coordinator.data is None:
             continue
         for description in PROXMOX_BUTTON_VM:
-            if ProxmoxType.LXC in description.api_category:
+            if (
+                (api_category := description.api_category)
+                and ProxmoxType.LXC in api_category
+                or api_category is None
+            ):
                 buttons.append(
                     create_button(
                         coordinator=coordinator,
@@ -289,9 +290,9 @@ class ProxmoxButtonEntity(ProxmoxEntity, ButtonEntity):
                 node = data.node
                 vm_id = resource_id
 
-            call_api_post_status(
+            result = post_api_command(
                 self,
-                proxmox=proxmox_client.get_api_client(),
+                proxmox_client=proxmox_client,
                 node=node,
                 vm_id=vm_id,
                 api_category=api_category,
@@ -299,11 +300,12 @@ class ProxmoxButtonEntity(ProxmoxEntity, ButtonEntity):
             )
 
             LOGGER.debug(
-                "Button press: %s - %s - %s - %s",
+                "Button press: %s - %s - %s - %s: %s",
                 node,
                 vm_id,
                 api_category,
                 description.key,
+                result,
             )
 
         self._button_press_funct = _button_press
