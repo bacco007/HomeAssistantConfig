@@ -37,7 +37,7 @@ _Stats as at 05:00, unknown_
 | ---|--- |
 | HA Version | 2024.1.3 |
 | No. Integrations | 197 |
-| No. Custom Integrations | 84 |
+| No. Custom Integrations | 85 |
 | No. Entities | 5159 |
 | No. Sensors | 3418 |
 | No. Automations | 137 |
@@ -695,7 +695,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) |  [v2.0.3] | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |[@r-renato](https://github.com/r-renato).|
-| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v1.0.0-b] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
+| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.0.0] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v2.8.4] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.2.3] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
@@ -730,9 +730,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.8.2] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.3.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.9.17] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
-| [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.2.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
+| [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.0] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.2] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
 | [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive) |  [v12a] | Home Assistant custom HACS integration to integrate the next 5 global rocket launches from https://rocketlaunch.live |[@djtimca](https://github.com/djtimca).|
@@ -743,8 +743,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sensor.Unifigateway](https://github.com/custom-components/sensor.unifigateway) |  [v0.3.3] | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.36.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
-| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.13] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
-| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.1.0] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
+| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
+| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.1.1] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.1] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.6] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.1.0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -752,7 +752,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) |  [v0.3.8] | Sensor of Temperature Feels Like for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
-| [Tuya Local](https://github.com/make-all/tuya-local) |  [v2023.12.2] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
+| [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.1.0] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
 | [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
@@ -815,7 +815,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.19.1] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.0] | Home Assistant Tile Card Service Call Feature |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.3] | Home Assistant Tile Card Service Call Feature |
 | [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat) |  [v2.5.0] | A different take on the thermostat card for Home Assistant ♨️ |
 | [Sonos Card](https://github.com/johanfrick/custom-sonos-card) |  [v6.15.3] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
@@ -844,7 +844,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
-| Advanced SSH & Web Terminal | 17.0.3 |  | a0d7b954 |
+| Advanced SSH & Web Terminal | 17.0.4 |  | a0d7b954 |
 | Cloudflared | 5.0.1 |  | 9074a9fa |
 | ESPHome | 2023.12.5 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
