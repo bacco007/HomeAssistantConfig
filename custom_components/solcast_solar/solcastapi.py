@@ -125,6 +125,9 @@ class SolcastApi:
                     _LOGGER.debug(f"SOLCAST - sites_data returned data: {d}")
                     for i in d['sites']:
                         i['apikey'] = spl.strip()
+                        #v4.0.14 to stop HA adding a pin to the map
+                        i.pop('longitude', None)
+                        i.pop('latitude', None)
 
                     self._sites = self._sites + d['sites']
                 else:
