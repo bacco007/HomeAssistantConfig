@@ -9,18 +9,28 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+# Constants
+URL = "https://api.cloudflare.com/client/v4/accounts/{}/cfd_tunnel?is_deleted=false"
+TIMEOUT = 10
+
+def create_headers(api_key):
+    """Create headers for API requests."""
+    return {
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'application/json',
+    }
+
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Cloudflare tunnel sensor."""
-    email = config_entry.data["email"]
     api_key = config_entry.data["api_key"]
     account_id = config_entry.data["account_id"]
 
-    _LOGGER.debug("Config data: %s", config_entry.data)
+    _LOGGER.debug(f"Config data: {config_entry.data}")
 
     async def async_update_data():
         """Fetch data from API endpoint."""
         try:
-            return await fetch_tunnels(email, api_key, account_id, hass)
+            return await fetch_tunnels(api_key, account_id, hass)
         except Exception as err:
             raise UpdateFailed(f"Update failed: {err}")
 
@@ -36,36 +46,31 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     tunnels = coordinator.data
 
-    _LOGGER.debug("Tunnels data: %s", tunnels)
+    _LOGGER.debug(f"Tunnels data: {tunnels}")
 
     if not tunnels:
         raise PlatformNotReady
 
     async_add_entities([CloudflareTunnelSensor(tunnel, coordinator) for tunnel in tunnels])
 
-async def fetch_tunnels(email, api_key, account_id, hass):
+async def fetch_tunnels(api_key, account_id, hass):
     """Retrieve Cloudflare tunnel status using aiohttp."""
-    headers = {
-        'X-Auth-Email': email,
-        'X-Auth-Key': api_key,
-        'Content-Type': 'application/json',
-    }
-    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/tunnels"
-    
+    headers = create_headers(api_key)
+    url = URL.format(account_id)
+
     async with aiohttp.ClientSession() as session:
         try:
-            with async_timeout.timeout(10):
+            with async_timeout.timeout(TIMEOUT):
                 async with session.get(url, headers=headers) as response:
-                    _LOGGER.debug("Response status: %s", response.status)
+                    _LOGGER.debug(f"Response status: {response.status}")
                     if response.status == 200:
                         json_response = await response.json()
                         return json_response['result']
                     else:
-                        _LOGGER.error("Error fetching Cloudflare tunnels: %s", response.status)
+                        _LOGGER.error(f"Error fetching Cloudflare tunnels: {response.status}")
                         return None
         except aiohttp.ClientError as err:
-            _LOGGER.error("Error fetching data: %s", err)
-            return None
+            _LOGGER.error(f"Error fetching data: {err}")
 
 class CloudflareTunnelSensor(Entity):
     """Representation of a Cloudflare tunnel sensor."""
@@ -93,7 +98,7 @@ class CloudflareTunnelSensor(Entity):
     @property
     def icon(self):
         """Return the icon of the sensor."""
-        return 'mdi:cloud-check' if self._tunnel['status'] == 'active' else 'mdi:cloud-off-outline'
+        return 'mdi:cloud-check' if self._tunnel['status'] == 'healthy' else 'mdi:cloud-off-outline'
 
     @property
     def device_info(self):

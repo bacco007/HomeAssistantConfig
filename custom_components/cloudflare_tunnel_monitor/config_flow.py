@@ -2,34 +2,37 @@ import aiohttp
 import async_timeout
 import voluptuous as vol
 from homeassistant import config_entries, exceptions
-from .const import DOMAIN, CONF_EMAIL, CONF_API_KEY, CONF_ACCOUNT_ID, LABEL_EMAIL, LABEL_API_KEY, LABEL_ACCOUNT_ID, PLACEHOLDER_EMAIL, PLACEHOLDER_API_KEY, PLACEHOLDER_ACCOUNT_ID
+from .const import DOMAIN, CONF_API_KEY, CONF_ACCOUNT_ID, LABEL_API_KEY, LABEL_ACCOUNT_ID, PLACEHOLDER_API_KEY, PLACEHOLDER_ACCOUNT_ID
+
+# Constants
+URL = "https://api.cloudflare.com/client/v4/user/tokens/verify"
+TIMEOUT = 10
+
+# Custom exceptions
+class CannotConnect(exceptions.HomeAssistantError):
+    """Error to indicate we cannot connect."""
+
+class InvalidAuth(exceptions.HomeAssistantError):
+    """Error to indicate there is invalid auth."""
 
 DATA_SCHEMA = vol.Schema({
-    vol.Required(CONF_EMAIL, description={LABEL_EMAIL}): str,
     vol.Required(CONF_API_KEY, description={LABEL_API_KEY}): str,
     vol.Required(CONF_ACCOUNT_ID, description={LABEL_ACCOUNT_ID}): str,
 })
 
-
-
 async def validate_credentials(hass, data):
     """Validate the provided credentials are correct."""
-    email = data["email"]
     api_key = data["api_key"]
-    account_id = data["account_id"]
-    
-    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}"
-    
+
     headers = {
-        'X-Auth-Email': email,
-        'X-Auth-Key': api_key,
+        'Authorization': f'Bearer {api_key}',
         'Content-Type': 'application/json',
     }
 
     try:
         async with aiohttp.ClientSession() as session:
-            with async_timeout.timeout(10):
-                async with session.get(url, headers=headers) as response:
+            with async_timeout.timeout(TIMEOUT):
+                async with session.get(URL, headers=headers) as response:
                     if response.status != 200:
                         raise InvalidAuth
                     return True
@@ -54,7 +57,7 @@ class CloudflareConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
                 errors["base"] = "invalid_auth"
-            except Exception:  
+            except Exception:
                 errors["base"] = "unknown"
             else:
                 return self.async_create_entry(title="Cloudflare Tunnel Monitor", data=user_input)
@@ -64,15 +67,7 @@ class CloudflareConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=DATA_SCHEMA,
             errors=errors,
             description_placeholders={
-                CONF_EMAIL: PLACEHOLDER_EMAIL,
                 CONF_API_KEY: PLACEHOLDER_API_KEY,
                 CONF_ACCOUNT_ID: PLACEHOLDER_ACCOUNT_ID,
             }
         )
-
-
-class CannotConnect(exceptions.HomeAssistantError):
-    """Error to indicate we cannot connect."""
-
-class InvalidAuth(exceptions.HomeAssistantError):
-    """Error to indicate there is invalid auth."""

@@ -3,8 +3,7 @@
       "step": {
         "user": {
           "data": {
-            "email": "Email Address",
-            "api_key": "Global API Key",
+            "api_key": "API Key",
             "account_id": "Account ID"
           }
         }
