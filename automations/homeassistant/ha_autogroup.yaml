@@ -484,3 +484,13 @@ action:
         {{ states
             |selectattr('entity_id','search','automation.sonos_playlist_*')
             |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: hibp_breaches
+      name: "[Group] Have I Been Pwned (HIBP) Breach Data"
+      icon: mdi:virus-outline
+      entities: >
+        {{ states
+            |selectattr('entity_id','search','sensor.breaches_*')
+            |map(attribute='entity_id')|list|sort }}

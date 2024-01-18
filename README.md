@@ -36,10 +36,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.1.3 |
-| No. Integrations | 197 |
+| No. Integrations | 198 |
 | No. Custom Integrations | 85 |
-| No. Entities | 5159 |
-| No. Sensors | 3418 |
+| No. Entities | 5144 |
+| No. Sensors | 3431 |
 | No. Automations | 137 |
 
 <details>
@@ -79,7 +79,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3418
+Sensors | 3431
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -181,7 +181,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
-| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [color_extractor](https://www.home-assistant.io/components/color_extractor) |
@@ -281,6 +280,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [hassio.binary_sensor](https://www.home-assistant.io/components/hassio.binary_sensor) |
 | [hassio.sensor](https://www.home-assistant.io/components/hassio.sensor) |
 | [hassio.update](https://www.home-assistant.io/components/hassio.update) |
+| [haveibeenpwned.sensor](https://www.home-assistant.io/components/haveibeenpwned.sensor) |
 | [hdhomerun](https://www.home-assistant.io/components/hdhomerun) |
 | [hdhomerun.binary_sensor](https://www.home-assistant.io/components/hdhomerun.binary_sensor) |
 | [hdhomerun.button](https://www.home-assistant.io/components/hdhomerun.button) |
@@ -815,7 +815,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.19.1] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.3] | Home Assistant Tile Card Service Call Feature |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.4] | Home Assistant Tile Card Service Call Feature |
 | [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat) |  [v2.5.0] | A different take on the thermostat card for Home Assistant ♨️ |
 | [Sonos Card](https://github.com/johanfrick/custom-sonos-card) |  [v6.15.3] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
@@ -846,7 +846,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.0.4 |  | a0d7b954 |
 | Cloudflared | 5.0.1 |  | 9074a9fa |
-| ESPHome | 2023.12.5 |  | 15ef4d2f |
+| ESPHome | 2023.12.7 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
 | Glances | 0.21.0 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
@@ -855,7 +855,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.13.0 |  | a0d7b954 |
 | MariaDB | 2.6.1 |  | core |
 | Matter Server | 5.0.2 |  | core |
-| Node-RED | 17.0.2 |  | a0d7b954 |
+| Node-RED | 17.0.3 |  | a0d7b954 |
 | OpenThread Border Router | 2.4.3 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.2.0 |  | core |

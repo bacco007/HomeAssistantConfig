@@ -42,14 +42,61 @@ cards:
             box-shadow: none;
           }
         cards:
-          - type: custom:decluttering-card
-            template: mushroom_entity_graph
-            variables:
-              - entity: sensor.flighttracker_aircraft_total
-              - colour: green
-              - title: Bird Watch - Flights Overhead
-              - line_width: 2.5
-              - icon: mdi:airplane-alert
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Bird Watch - Flights Overhead
+                secondary: ✈️ {{ states('sensor.flighttracker_aircraft_total') }}
+                icon: mdi:airplane-alert
+                icon_color: green
+                fill_container: true
+                multiline_secondary: true
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      z-index: 1;
+                      --ha-card-border-width: 0;
+                      background-color: var(--background-color) !important;
+                    }
+              - type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.flighttracker_aircraft_total
+                    name: Temperature
+                    color: green
+                height: 50
+                hours_to_show: 24
+                points_per_hour: 3
+                line_width: 3
+                font_size: 50
+                animate: true
+                show:
+                  name: false
+                  icon: false
+                  state: false
+                  legend: false
+                  fill: fade
+                card_mod:
+                  style: |
+                    ha-card {
+                      position: absolute !important;
+                      height: 100%;
+                      width: 100%;
+                      top: 0px;
+                      --ha-card-border-width: 0;
+                    }
+                    ha-card:after {
+                      content: "";
+                      position: absolute;
+                      width: 100%;
+                      height: 100%;
+                      background: linear-gradient(to right, var(--background-color) 20%, transparent);
+                    }
           - type: custom:mushroom-template-card
             style: |
               ha-card {
