@@ -250,13 +250,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + " (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue                
       - type: custom:decluttering-card
         template: sports_card
         variables:

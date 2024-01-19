@@ -38,8 +38,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.1.3 |
 | No. Integrations | 198 |
 | No. Custom Integrations | 85 |
-| No. Entities | 5144 |
-| No. Sensors | 3431 |
+| No. Entities | 5172 |
+| No. Sensors | 3429 |
 | No. Automations | 137 |
 
 <details>
@@ -59,7 +59,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 547
+Devices | 544
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -79,7 +79,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3431
+Sensors | 3429
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -845,7 +845,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.0.4 |  | a0d7b954 |
-| Cloudflared | 5.0.1 |  | 9074a9fa |
+| Cloudflared | 5.0.2 |  | 9074a9fa |
 | ESPHome | 2023.12.7 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
 | Glances | 0.21.0 |  | a0d7b954 |
