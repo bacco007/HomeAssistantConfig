@@ -46,12 +46,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(6): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -64,7 +64,7 @@ cards:
               include: sensor.scoreboard_alm
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -128,12 +128,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -146,7 +146,7 @@ cards:
               include: sensor.scoreboard_alw
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -210,15 +210,15 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(1): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(17): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(1): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(5): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(17): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -231,7 +231,7 @@ cards:
               include: sensor.scoreboard_epl
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -291,14 +291,14 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(2): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(3): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(11): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(2): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(3): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(11): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -311,7 +311,7 @@ cards:
               include: sensor.scoreboard_wsl
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -371,16 +371,16 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(15): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:nth-child(16): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(5): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(6): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(15): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:nth-child(16): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -393,7 +393,7 @@ cards:
               include: sensor.scoreboard_bund
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -453,15 +453,15 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(17): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(5): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(6): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(17): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -474,7 +474,7 @@ cards:
               include: sensor.scoreboard_lal
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -529,17 +529,17 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(3): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(15): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:nth-child(16): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(3): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(5): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(6): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(15): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:nth-child(16): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -552,7 +552,7 @@ cards:
               include: sensor.scoreboard_lig1
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -607,15 +607,15 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(17): 'border-bottom: 2px solid rgb(255,0,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(5): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(6): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(17): "border-bottom: 2px solid rgb(255,0,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -628,7 +628,7 @@ cards:
               include: sensor.scoreboard_sea
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -688,11 +688,11 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -747,7 +747,7 @@ cards:
               - name: Overall
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
-                align: center            
+                align: center
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -759,14 +759,14 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(1): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(7): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(9): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(1): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(7): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(9): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -779,7 +779,7 @@ cards:
               include: sensor.scoreboard_mls_eastern
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -835,14 +835,14 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(1): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(7): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:nth-child(9): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(1): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(7): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:nth-child(9): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |
@@ -855,7 +855,7 @@ cards:
               include: sensor.scoreboard_mls_western
             sort_by: entries
             columns:
-              - name: '#'
+              - name: "#"
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center

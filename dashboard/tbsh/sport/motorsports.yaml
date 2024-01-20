@@ -99,7 +99,7 @@ cards:
       - type: custom:decluttering-card
         template: sports_card
         variables:
-          - entity: sensor.upcoming_sport_nascar_truck_series          
+          - entity: sensor.upcoming_sport_nascar_truck_series
 
       - type: custom:decluttering-card
         template: sports_card
