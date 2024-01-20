@@ -33,7 +33,7 @@ cards:
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
-          name: American League, Central
+          name: Overall
           icon: si:mlb
           state: ""
         padding: 0
@@ -41,10 +41,10 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css: &mlbcss
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
               tbody tr+: "user-select: text"
               tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
@@ -55,7 +55,7 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_american_central
+              include: sensor.scoreboard_mlb_*
             sort_by: entries-
             columns: &mlbcols
               - hidden: true
@@ -108,6 +108,53 @@ cards:
               - name: STRK
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: American League
+          icon: si:mlb
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css: *mlbcss
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_mlb_american_*
+            sort_by: entries-
+            columns: *mlbcols
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: American League, Central
+          icon: si:mlb
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css: *mlbcss
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_mlb_american_central
+            sort_by: entries-
+            columns: *mlbcols
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -155,6 +202,29 @@ cards:
             sort_by: entries-
             columns: *mlbcols
       - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: National League
+          icon: si:mlb
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css: *mlbcss
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_mlb_national_*
+            sort_by: entries-
+            columns: *mlbcols
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
