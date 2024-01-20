@@ -14,8 +14,8 @@ mushroom_entity_graph:
     cards:
       - type: custom:mushroom-entity-card
         entity: "[[entity]]"
-        primary_info: state
-        secondary_info: name
+        primary_info: name
+        secondary_info: state
         name: "[[title]]"
         icon: "[[icon]]"
         icon_color: "[[colour]]"

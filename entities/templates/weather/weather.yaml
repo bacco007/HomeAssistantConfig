@@ -173,9 +173,9 @@ sensor:
         {%- else %} None
         {%- endif %}
     availability: >
-      {{ is_state('binary_sensor.connected_weatherflow_local','on')
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
             and is_number(states('sensor.weatherflow_forecast_temperature'))
-          or is_state('binary_sensor.connected_weatherflow_cloud','on')
+          or is_state('binary_sensor.connected_weatherflow_local','on')
             and is_number(states('sensor.st_00056115_temperature'))
           or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
             and is_number(states('sensor.tamworth_airport_temp')) }}
@@ -204,6 +204,27 @@ sensor:
           and is_number(states('sensor.tamworth_airport_temp_feels_like')) %} Bureau of Meteorology
         {%- else %} Outdoor Temp
         {%- endif %}
+    availability: >
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and is_number(states('sensor.weatherflow_forecast_apparent_temperature'))
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and is_number(states('sensor.tamworth_airport_temp_feels_like'))
+          or is_number(states('sensor.weather_temperature')) }}
+
+  - name: '[Weather] Feels Like Temperature'
+    unique_id: 'feels_like_temperature'
+    unit_of_measurement: "°C"
+    state: >-
+      {%- set temperature = states('sensor.weather_temperature')|float %}
+      {%- set humidity = states('sensor.weather_humidity')|float %}
+      {%- set wvp = (humidity/100) * 6.105 * e**((17.27*temperature) / (237.7 + temperature))%}
+      {{ (temperature + 0.33 * wvp  - 4.00)|round(2) }}
+    state_class: measurement
+    icon: mdi:thermometer
+    attributes:
+      category: weather
+      provider: >
+        {{ state_attr('sensor.weather_temperature', 'provider') }}
     availability: >
       {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_apparent_temperature'))

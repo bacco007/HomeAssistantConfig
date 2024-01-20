@@ -95,14 +95,3 @@ cards:
                       delay: 2000
                     cubeEffect:
                       - slideShadows: false
-
-  - type: custom:decluttering-card
-    template: mushroom_entity_graph
-    variables:
-      - entity: sensor.lastfm_user_playcount
-      - colour: lime
-      - title: Last.FM Listen Count
-      - line_width: 2
-      - hours_to_show: 168
-      - points_per_hour: 4
-      - icon: fab:lastfm

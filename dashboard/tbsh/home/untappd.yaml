@@ -1,0 +1,144 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Untappd
+    icon: mdi:beer
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
+    entities:
+      - type: custom:hui-element
+        card_type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            padding: 20px;
+            box-shadow: none;
+          }
+        cards:
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: custom:mushroom-template-card
+                entity: sensor.active_import_from_grid
+                primary: Beers Tried
+                secondary: >
+                  {{ state_attr('sensor.untappd_last_check_in_bacco007', 'total_beers') }} Beers
+                layout: horizontal
+                fill_container: false
+                icon: mdi:beer-outline
+                icon_color: "orange"
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.active_import_from_grid
+                primary: Checkins
+                secondary: >
+                  {{ states('sensor.untappd_checked') }} Beers
+                layout: horizontal
+                fill_container: false
+                icon: mdi:beer-outline
+                icon_color: "orange"
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.active_import_from_grid
+                primary: Project 52
+                secondary: >
+                  {{ state_attr('sensor.untappd_project_52', 'count') }} Beers, {{ state_attr('sensor.untappd_project_52', 'target') }} To Go
+                layout: horizontal
+                fill_container: false
+                icon: mdi:beer-outline
+                icon_color: "orange"
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }

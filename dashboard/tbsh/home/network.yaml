@@ -2,8 +2,8 @@
 type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Cake Day
-    icon: mdi:cake-variant
+    primary: Internet & Network
+    icon: mdi:network
     icon_color: "#6eaadc"
     card_mod:
       style:
