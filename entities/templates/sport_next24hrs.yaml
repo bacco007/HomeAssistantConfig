@@ -236,6 +236,9 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_bbl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_nascar_truck_series
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -304,6 +307,7 @@ action:
         - calendar.ical_alw_all_teams
         - calendar.ical_premier_league_all_teams
         - calendar.ical_bbl_all_teams
+        - calendar.ical_nascar_truck_series
   - variables:
       all_events: >
 

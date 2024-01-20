@@ -51,10 +51,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(8): 'border-bottom: 2px solid rgb(255,215,0) !important;'
               tbody tr+: "user-select: text"
               tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
+              tbody tr td:nth-child(9): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:

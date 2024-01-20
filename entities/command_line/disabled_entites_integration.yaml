@@ -1,0 +1,12 @@
+---
+sensor:
+  name: "Disabled Entities (Integration)"
+  unique_id: disabled_entities_integration
+  icon: "{{ iif(states(this.entity_id)|int(-1) > 0,'mdi:alert-circle','mdi:check-circle') }}"
+  state_class: measurement
+  unit_of_measurement: entities
+  json_attributes:
+    - entities
+  value_template: >
+    {{ value_json.entities | length }}
+  command: 'jq ''.data.entities |= map(select(.disabled_by? == "integration") | {name: .entity_id, platform: .platform, disabled_by: .disabled_by}) | del(.data.deleted_entities) | flatten | .[3]'' < .storage/core.entity_registry'

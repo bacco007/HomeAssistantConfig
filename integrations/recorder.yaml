@@ -162,6 +162,7 @@ recorder:
       - sensor.pixelclock*
       - sensor.qbittorrent*
       - sensor.pirateweather*
+      - sensor.disabled_entities*
     event_types:
       - automation_triggered
       - call_service

@@ -192,3 +192,4 @@ influxdb:
       - sensor.pixelclock*
       - sensor.qbittorrent*
       - sensor.pirateweather*
+      - sensor.disabled_entities*

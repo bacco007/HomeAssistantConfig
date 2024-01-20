@@ -46,11 +46,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -63,7 +64,7 @@ cards:
               include: sensor.scoreboard_alm
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -96,12 +97,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: custom:decluttering-card
         template: sports_card
@@ -123,11 +128,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -140,7 +146,7 @@ cards:
               include: sensor.scoreboard_alw
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -173,12 +179,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: custom:decluttering-card
         template: sports_card
@@ -200,11 +210,15 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(1): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(17): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -217,7 +231,7 @@ cards:
               include: sensor.scoreboard_epl
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -250,7 +264,7 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + " (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")"
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
@@ -259,7 +273,8 @@ cards:
                 align: center
               - name: Overall
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue                
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
+                align: center
       - type: custom:decluttering-card
         template: sports_card
         variables:
@@ -276,11 +291,14 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(2): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(3): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(11): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -293,7 +311,7 @@ cards:
               include: sensor.scoreboard_wsl
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -326,12 +344,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: custom:decluttering-card
         template: sports_card
@@ -349,11 +371,16 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(15): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:nth-child(16): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -366,7 +393,7 @@ cards:
               include: sensor.scoreboard_bund
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -399,12 +426,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: custom:decluttering-card
         template: sports_card
@@ -422,11 +453,15 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(17): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -439,7 +474,7 @@ cards:
               include: sensor.scoreboard_lal
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -472,12 +507,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: custom:fold-entity-row
         head:
@@ -490,11 +529,17 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(3): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(15): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:nth-child(16): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -507,7 +552,7 @@ cards:
               include: sensor.scoreboard_lig1
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -540,12 +585,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: custom:fold-entity-row
         head:
@@ -558,11 +607,15 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(5): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(6): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(17): 'border-bottom: 2px solid rgb(255,0,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -575,7 +628,7 @@ cards:
               include: sensor.scoreboard_sea
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -608,18 +661,93 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
+                align: center
       - type: section
       - type: custom:decluttering-card
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_mls_all_teams
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Major League Soccer
+          icon: mdi:soccer
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            css:
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    overflow: auto;
+                    box-shadow: none !important;
+                    font-size: 13px;
+                    }
+            entities:
+              include: sensor.scoreboard_mls_*
+            sort_by: entries
+            columns:
+              - hidden: true
+                data: entries
+                modify: x.stats.find(y=>y.name == 'points').value.toFixed(2)
+              - name: Team
+                data: entries
+                modify: |-
+                  if (typeof x.team.logos !== 'undefined')
+                    '<div><img src="' + x.team.logos[0].href + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+                  else
+                    '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.team.displayName + '</div>'
+              - name: Pl
+                data: entries
+                modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
+                align: center
+              - name: W
+                data: entries
+                modify: x.stats.find(y=>y.name == 'wins').displayValue
+                align: center
+              - name: D
+                data: entries
+                modify: x.stats.find(y=>y.name == 'ties').displayValue
+                align: center
+              - name: L
+                data: entries
+                modify: x.stats.find(y=>y.name == 'losses').displayValue
+                align: center
+              - name: GD
+                data: entries
+                modify: |-
+                  {
+                    x.stats.find(y=>y.name == 'pointsFor').displayValue +
+                    ":" +
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
+                  }
+                align: center
+              - name: Pts
+                data: entries
+                modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
+                align: center            
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -631,11 +759,14 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(1): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(7): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(9): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -648,7 +779,7 @@ cards:
               include: sensor.scoreboard_mls_eastern
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -681,13 +812,18 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
+                align: center
+
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -699,11 +835,14 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(1): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(7): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:nth-child(9): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr; width: 1fr; white-space: nowrap;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -716,7 +855,7 @@ cards:
               include: sensor.scoreboard_mls_western
             sort_by: entries
             columns:
-              - name: "#"
+              - name: '#'
                 data: entries
                 modify: x.stats.find(y=>y.name == 'rank').displayValue
                 align: center
@@ -749,12 +888,16 @@ cards:
                   {
                     x.stats.find(y=>y.name == 'pointsFor').displayValue +
                     ":" +
-                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue
+                    x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
                   }
                 align: center
               - name: Pts
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
+                align: center
+              - name: Overall
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
                 align: center
       - type: section
       - type: custom:decluttering-card

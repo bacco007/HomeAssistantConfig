@@ -45,11 +45,11 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
+            css: &nbacss
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
               tbody tr+: "user-select: text"
               tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
@@ -124,12 +124,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -152,12 +147,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -180,12 +170,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -208,12 +193,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -237,12 +217,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -265,12 +240,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -293,12 +263,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |
@@ -321,12 +286,7 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
-            css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+            css: *nbacss
             card_mod:
               style:
                 .: |

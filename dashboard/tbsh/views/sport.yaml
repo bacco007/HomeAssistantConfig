@@ -24,7 +24,7 @@ cards:
               width: 300
               max_width: 1000
             cards: &cards
-              - !include ../sport/calendar_week.yaml
+              # - !include ../sport/calendar_week.yaml
               - !include ../sport/afl.yaml
               - !include ../sport/cricket.yaml
               - !include ../sport/football.yaml

@@ -396,3 +396,144 @@ cards:
             state: >
               {{ state_attr('sensor.unknown_unavailable_none_entities',
               'none_count')}} entities
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.disabled_entities_config_entry
+          name: Disabled Entities (by Config Entry)
+          icon: mdi:selection-ellipse-remove
+          state: >
+            {{states('sensor.disabled_entities_config_entry')}}
+            Entities
+        padding: 0
+        open: false
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.disabled_entities_config_entry
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+            columns:
+              - name: Entity
+                data: entities
+                modify: x.name
+              - name: Platform
+                data: entities
+                modify: x.platform
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.disabled_entities_device
+          name: Disabled Entities (by Device)
+          icon: mdi:selection-ellipse-remove
+          state: >
+            {{states('sensor.disabled_entities_device')}}
+            Entities
+        padding: 0
+        open: false
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.disabled_entities_device
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+            columns:
+              - name: Entity
+                data: entities
+                modify: x.name
+              - name: Platform
+                data: entities
+                modify: x.platform
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.disabled_entities_integration
+          name: Disabled Entities (by Integration)
+          icon: mdi:selection-ellipse-remove
+          state: >
+            {{states('sensor.disabled_entities_integration')}}
+            Entities
+        padding: 0
+        open: false
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.disabled_entities_integration
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+            columns:
+              - name: Entity
+                data: entities
+                modify: x.name
+              - name: Platform
+                data: entities
+                modify: x.platform
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          entity: sensor.disabled_entities_user
+          name: Disabled Entities (by User)
+          icon: mdi:selection-ellipse-remove
+          state: >
+            {{states('sensor.disabled_entities_user')}}
+            Entities
+        padding: 0
+        open: false
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.disabled_entities_user
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+            columns:
+              - name: Entity
+                data: entities
+                modify: x.name
+              - name: Platform
+                data: entities
+                modify: x.platform
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }

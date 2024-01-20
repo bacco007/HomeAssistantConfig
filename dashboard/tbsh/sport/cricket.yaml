@@ -59,10 +59,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
               tbody tr+: "user-select: text"
-              tbody tr td:nth-child(1)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
@@ -87,21 +89,27 @@ cards:
               - name: M
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
+                align: center
               - name: W
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+                align: center
               - name: L
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+                align: center
               - name: T
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
+                align: center
               - name: NR
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
-              # - name: NRR
-              #   data: entries
-              #   modify: x.stats.find(y=>y.abbreviation == 'NRR').displayValue
+                align: center
+              - name: NRR
+                data: entries
+                modify: x.stats.find(y=>y.abbreviation == 'NRR').displayValue
+                align: center
               # - name: FOR
               #   data: entries
               #   modify: x.stats.find(y=>y.abbreviation == 'FOR').displayValue
@@ -111,6 +119,7 @@ cards:
               - name: PT
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
+                align: center
       - type: custom:decluttering-card
         template: sports_card
         variables:
@@ -127,10 +136,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
               tbody tr+: "user-select: text"
-              tbody tr td:nth-child(1)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
@@ -155,30 +166,37 @@ cards:
               - name: M
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
+                align: center
               - name: W
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+                align: center
               - name: L
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+                align: center
               - name: T
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
+                align: center
               - name: NR
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
+                align: center
               - name: NRR
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'NRR').displayValue
-              - name: FOR
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'FOR').displayValue
-              - name: AGAINST
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'Against').displayValue
+                align: center
+              # - name: FOR
+              #   data: entries
+              #   modify: x.stats.find(y=>y.abbreviation == 'FOR').displayValue
+              # - name: AGAINST
+              #   data: entries
+              #   modify: x.stats.find(y=>y.abbreviation == 'Against').displayValue
               - name: PT
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
+                align: center
       - type: custom:decluttering-card
         template: sports_card
         variables:
@@ -195,11 +213,13 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(1)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
+              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
+              tbody tr:nth-child(2): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              tbody tr+: 'user-select: text'
+              tbody tr td:nth-child(2)+: 'min-width: 1fr;width: 1fr; white-space: nowrap;'
+              tbody tr td:nth-child(7): 'background-color: rgba(39, 179, 118,0.2); color: white;'
+              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              th+: 'border-bottom: 1px solid rgb(127,127,127);'
             card_mod:
               style:
                 .: |
@@ -223,18 +243,24 @@ cards:
               - name: M
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
+                align: center
               - name: W
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+                align: center
               - name: L
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-              - name: D
+                align: center
+              - name: T
                 data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'D').displayValue
-              - name: N/R
+                modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
+                align: center
+              - name: NR
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
+                align: center
               - name: PT
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
+                align: center

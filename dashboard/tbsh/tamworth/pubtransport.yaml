@@ -42,6 +42,13 @@ cards:
         entities:
           - attribute: arrival
             format: relative
+      - entity: sensor.xplorer_central_to_tamworth
+        type: custom:multiple-entity-row
+        name: Train Central to Tamworth
+        show_state: false
+        entities:
+          - attribute: arrival
+            format: relative
       - type: section
       - type: custom:fold-entity-row
         head:
@@ -58,6 +65,7 @@ cards:
                 {{ states
                 |selectattr('entity_id','search','sensor.*_local_stop_zone_home')
                 |rejectattr('attributes.next_departures_lines','search',"{}")
+                |rejectattr('state','eq','unavailable')
                 |map(attribute='entity_id')|list|sort }}
             card:
               type: custom:flex-table-card
@@ -115,6 +123,7 @@ cards:
                 |selectattr('entity_id','search','sensor.*_local_stop_zone_trc')
                 |rejectattr('entity_id','search','sensor.2340108_local_stop_zone_trc')
                 |rejectattr('attributes.next_departures_lines','search',"{}")
+                |rejectattr('state','eq','unavailable')
                 |map(attribute='entity_id')|list|sort }}
             card:
               type: custom:flex-table-card
@@ -173,6 +182,7 @@ cards:
                 {{ states
                 |selectattr('entity_id','search','sensor.2340108_local_stop_zone_trc')
                 |rejectattr('attributes.next_departures_lines','search',"{}")
+                |rejectattr('state','eq','unavailable')
                 |map(attribute='entity_id')|list|sort }}
             card:
               type: custom:flex-table-card
