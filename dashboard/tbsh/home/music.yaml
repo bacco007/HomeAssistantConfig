@@ -6,8 +6,8 @@ cards:
   - type: custom:stack-in-card
     cards:
       - type: custom:mushroom-template-card
-        primary: Latest News
-        icon: mdi:newspaper
+        primary: Music
+        icon: mdi:music-box-outline
         icon_color: "#6eaadc"
         card_mod:
           style:
@@ -46,6 +46,39 @@ cards:
                 box-shadow: none;
               }
             cards:
+              - square: false
+                type: grid
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: Top Track (This Week)
+                    secondary: |-
+                      {{ state_attr('sensor.lastfm_user_weeklytrackchart',
+                      'track')[0].artist.name }} - {{
+                      state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name
+                      }}
+                    icon: fab:lastfm
+                    icon_color: red
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            background-color: var(--background-color);
+                          }
+                  - type: custom:mushroom-template-card
+                    primary: Top Track (This Month)
+                    secondary: >-
+                      {{ state_attr('sensor.lastfm_user_monthlytrackchart',
+                      'track')[0].artist.name }} - {{
+                      state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }}
+                    icon: fab:lastfm
+                    icon_color: red
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            background-color: var(--background-color);
+                          }
+                columns: 2
               - type: custom:decluttering-card
                 template: mushroom_entity_graph
                 variables:

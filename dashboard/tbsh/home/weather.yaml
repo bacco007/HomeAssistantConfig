@@ -35,13 +35,102 @@ cards:
         card_type: grid
         columns: 1
         square: false
-        style: |
-          ha-card {
-            background-color: var(--card-background-color);
-            padding: 20px;
-            box-shadow: none;
-          }
+        card_mod:
+          style: |
+            ha-card {
+              background-color: var(--card-background-color);
+              padding: 20px;
+              box-shadow: none;
+            }
         cards:
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.weather_temperature
+                name: Temperature
+                fill_container: true
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: &style
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-entity-card
+                entity: sensor.weather_humidity
+                name: Humidity
+                fill_container: true
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weather_precipitation_today
+                name: Rainfall
+                fill_container: true
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weather_feels_like_temperature
+                name: Feels Like
+                fill_container: true
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weather_temperature_daily_high
+                name: High Temp
+                fill_container: true
+                icon: mdi:thermometer-chevron-up
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weather_temperature_daily_low
+                name: Low Temp
+                fill_container: true
+                icon: mdi:thermometer-chevron-down
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
           - type: custom:hourly-weather
             entity: weather.weatherflow_forecast_brisbane_st
             forecast_type: hourly

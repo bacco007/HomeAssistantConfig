@@ -5,7 +5,7 @@ sensors:
     entity_id: sun.sun
     attribute: elevation
   trend_outdoor_temperature:
-    entity_id: sensor.tempest_st_00056115_temperature
+    entity_id: sensor.st_00056115_temperature
     sample_duration: 7200
     max_samples: 120
   trend_indoor_average_temperature:
@@ -30,13 +30,13 @@ sensors:
 
   # 0.25 deg change over 30min (0.25/(30*60))
   temptrend_outdoor_rising:
-    entity_id: sensor.tempest_st_00056115_temperature
+    entity_id: sensor.st_00056115_temperature
     min_gradient: 0.00014
     sample_duration: 1800
     max_samples: 120
     device_class: heat
   temptrend_outdoor_falling:
-    entity_id: sensor.tempest_st_00056115_temperature
+    entity_id: sensor.st_00056115_temperature
     min_gradient: -0.00014
     sample_duration: 1800
     max_samples: 120
