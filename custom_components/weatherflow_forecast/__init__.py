@@ -37,6 +37,7 @@ from .const import (
 )
 
 PLATFORMS = [Platform.WEATHER, Platform.SENSOR, Platform.BINARY_SENSOR]
+ignore_sensors = False
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -176,7 +177,7 @@ class WeatherFlowForecastWeatherData:
 
         if self._add_sensors:
             try:
-                resp: WeatherFlowForecastData = await self._weather_data.async_fetch_sensor_data()
+                resp: WeatherFlowSensorData = await self._weather_data.async_fetch_sensor_data()
                 station_info: WeatherFlowStationData = await self._weather_data.async_get_station()
             except WeatherFlowForecastWongStationId as unauthorized:
                 _LOGGER.debug(unauthorized)
@@ -195,6 +196,8 @@ class WeatherFlowForecastWeatherData:
                 raise CannotConnect()
             self.sensor_data = resp
             self.station_data = station_info
-            # _LOGGER.debug(vars(self.sensor_data))
+            if not self.sensor_data.data_available:
+                _LOGGER.warning(
+                    "Weather Station either is offline or no recent observations from station. Remove Sensors to avoid this warning.")
 
         return self

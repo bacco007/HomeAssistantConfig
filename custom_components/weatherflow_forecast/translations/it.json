@@ -7,6 +7,7 @@
             "wrong_station_id": "L'ID della stazione non è corretto.",
             "server_error": "WeatherFlow servers encountered an unexpected error",
             "wrong_token": "Il Token API inserito non è corretto.",
+            "offline_error": "La stazione è offline oppure non ci sono osservazioni recenti. Verifica lo stato della stazione o rimuovi i sensori e riprova.",
             "bad_request": "Errore sconosciuto in fase di accesso ai dati."
         },
         "step": {

@@ -12,6 +12,7 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from pyweatherflow_forecast import (
     WeatherFlow,
     WeatherFlowStationData,
+    WeatherFlowSensorData,
     WeatherFlowForecastBadRequest,
     WeatherFlowForecastInternalServerError,
     WeatherFlowForecastUnauthorized,
@@ -55,7 +56,11 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
                                           user_input[CONF_API_TOKEN], session=session)
 
             station_data: WeatherFlowStationData = await weatherflow_api.async_get_station()
-
+            if user_input[CONF_ADD_SENSORS]:
+                sensor_data: WeatherFlowSensorData = await weatherflow_api.async_fetch_sensor_data()
+                if not sensor_data.data_available:
+                    errors["base"] = "offline_error"
+                    return await self._show_setup_form(errors)
         except WeatherFlowForecastWongStationId as err:
             _LOGGER.debug(err)
             errors["base"] = "wrong_station_id"

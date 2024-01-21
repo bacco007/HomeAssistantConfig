@@ -7,6 +7,7 @@
             "wrong_station_id": "De Station Id is niet juist.",
             "server_error": "WeatherFlow servers encountered an unexpected error",
             "wrong_token": "Het Api Token is niet juist.",
+            "offline_error": "Het station is ofwel offline of er zijn geen recente observaties. Controleer de status van het station of verwijder sensoren en probeer het opnieuw.",
             "bad_request": "Een onbekende fout in opgetreden tijdens het ophalen van de gegevens."
         },
         "step": {

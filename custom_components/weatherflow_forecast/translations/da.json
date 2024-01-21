@@ -7,6 +7,7 @@
             "wrong_station_id": "ID på stationen er ikke korrekt.",
             "server_error": "WeatherFlow serverne har en intern fejl.",
             "wrong_token": "Api Token er ikke korrekt eller matcher ikke Station ID.",
+            "offline_error": "Stationen er enten offline eller har ingen nylige observationer. Tjek stationens status eller fjern sensorer og prøv igen.",
             "bad_request": "Der opstod en uventet fejl under hentning af data."
         },
         "step": {

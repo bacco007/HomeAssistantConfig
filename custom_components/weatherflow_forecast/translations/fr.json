@@ -7,6 +7,7 @@
             "wrong_station_id": "La Station ID est incorrecte.",
             "server_error": "Une erreur inattendue a été détectée avec le service infonuagique de WeatherFlow",
             "wrong_token": "Le Jeton-API est incorrect ou ne correspond pas à la Weather Station.",
+            "offline_error": "La station est soit hors ligne, soit aucune observation récente n'est disponible. Vérifiez le statut de la station ou retirez les capteurs et réessayez.",
             "bad_request": "Une erreur inconnue s'est produite lors de la récupération des données."
         },
         "step": {
