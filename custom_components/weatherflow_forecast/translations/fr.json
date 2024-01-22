@@ -4,7 +4,7 @@
             "unique_id": "La localisation du WeatherFlow est deja paramétrisée."
         },
         "error": {
-            "wrong_station_id": "La Station ID est incorrecte.",
+            "wrong_station_id": "La Station ID est incorrecte. Vérifiez que vous n'utilisez pas l'ID de l'appareil.",
             "server_error": "Une erreur inattendue a été détectée avec le service infonuagique de WeatherFlow",
             "wrong_token": "Le Jeton-API est incorrect ou ne correspond pas à la Weather Station.",
             "offline_error": "La station est soit hors ligne, soit aucune observation récente n'est disponible. Vérifiez le statut de la station ou retirez les capteurs et réessayez.",

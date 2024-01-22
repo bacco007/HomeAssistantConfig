@@ -4,7 +4,7 @@
             "unique_id": "WeatherFlow station is reeds geconfigured."
         },
         "error": {
-            "wrong_station_id": "De Station Id is niet juist.",
+            "wrong_station_id": "De Station Id is niet juist. Controleer of je geen gebruik maakt van het apparaat-ID.",
             "server_error": "WeatherFlow servers encountered an unexpected error",
             "wrong_token": "Het Api Token is niet juist.",
             "offline_error": "Het station is ofwel offline of er zijn geen recente observaties. Controleer de status van het station of verwijder sensoren en probeer het opnieuw.",

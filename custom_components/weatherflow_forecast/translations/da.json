@@ -4,7 +4,7 @@
             "unique_id": "WeatherFlow Station er allerede konfigureret."
         },
         "error": {
-            "wrong_station_id": "ID på stationen er ikke korrekt.",
+            "wrong_station_id": "ID på stationen er ikke korrekt. Tjek at der ikke bruges Device ID.",
             "server_error": "WeatherFlow serverne har en intern fejl.",
             "wrong_token": "Api Token er ikke korrekt eller matcher ikke Station ID.",
             "offline_error": "Stationen er enten offline eller har ingen nylige observationer. Tjek stationens status eller fjern sensorer og prøv igen.",

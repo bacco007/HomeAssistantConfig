@@ -41,6 +41,11 @@ class WeatherFlowBinarySensorEntityDescription(BinarySensorEntityDescription):
 
 BINARY_SENSOR_TYPES: tuple[WeatherFlowBinarySensorEntityDescription, ...] = (
     WeatherFlowBinarySensorEntityDescription(
+        key="data_available",
+        name="Data Available",
+        icon="mdi:database-check",
+    ),
+    WeatherFlowBinarySensorEntityDescription(
         key="is_freezing",
         name="Is Freezing",
         icon="mdi:snowflake-alert",

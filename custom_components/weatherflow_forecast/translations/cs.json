@@ -4,7 +4,7 @@
             "unique_id": "Stanice WeatherFlow už je nakonfigurovaná."
         },
         "error": {
-            "wrong_station_id": "Zadané Station Id je chybné.",
+            "wrong_station_id": "Zadané Station Id je chybné. Zkontrolujte, že nepoužíváte Device ID.",
             "server_error": "WeatherFlow servers encountered an unexpected error",
             "wrong_token": "Zadaný Api Token je chybný.",
             "offline_error": "Stanice je buď offline nebo nemá žádné nedávné pozorování. Zkontrolujte stav stanice nebo odeberte senzory a zkuste to znovu.",
