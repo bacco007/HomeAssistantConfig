@@ -36,10 +36,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.1.5 |
-| No. Integrations | 198 |
+| No. Integrations | 197 |
 | No. Custom Integrations | 85 |
 | No. Entities | 5146 |
-| No. Sensors | 3392 |
+| No. Sensors | 3391 |
 | No. Automations | 137 |
 
 <details>
@@ -50,8 +50,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 16
-Binary sensors | 342
-Buttons | 206
+Binary sensors | 343
+Buttons | 205
 Calendars | 70
 Cameras | 5
 Climate | 2
@@ -73,21 +73,21 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3392
+Sensors | 3391
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 287
+Switches | 286
 Texts | 0
 Times | 0
 Text-to-speech | 0
-Update | 280
+Update | 279
 Vacuums | 0
 Water heaters | 0
 Weather | 16
@@ -103,7 +103,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>574 Integrations</summary>
+<details><summary>573 Integrations</summary>
 
 | Name |
 | --- |
@@ -414,7 +414,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [network_scanner](https://www.home-assistant.io/components/network_scanner) |
 | [network_scanner.sensor](https://www.home-assistant.io/components/network_scanner.sensor) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
-| [nodered.sensor](https://www.home-assistant.io/components/nodered.sensor) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [nsw_air_quality.sensor](https://www.home-assistant.io/components/nsw_air_quality.sensor) |
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
@@ -696,7 +695,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) |  [v2.0.3] | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |[@r-renato](https://github.com/r-renato).|
-| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.0] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
+| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.3] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v2.8.4] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.2.3] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
@@ -847,7 +846,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.0.4 |  | a0d7b954 |
 | Cloudflared | 5.0.2 |  | 9074a9fa |
-| ESPHome | 2023.12.8 |  | 15ef4d2f |
+| ESPHome | 2023.12.9 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
 | Glances | 0.21.0 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
