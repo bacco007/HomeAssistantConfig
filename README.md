@@ -36,10 +36,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.1.5 |
-| No. Integrations | 198 |
+| No. Integrations | 196 |
 | No. Custom Integrations | 85 |
-| No. Entities | 5039 |
-| No. Sensors | 3356 |
+| No. Entities | 5210 |
+| No. Sensors | 3450 |
 | No. Automations | 137 |
 
 <details>
@@ -51,7 +51,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 16
 Binary sensors | 343
-Buttons | 170
+Buttons | 206
 Calendars | 70
 Cameras | 5
 Climate | 2
@@ -59,7 +59,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 548
+Devices | 550
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -79,15 +79,15 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3356
+Sensors | 3450
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 251
+Switches | 287
 Texts | 0
 Times | 0
 Text-to-speech | 0
-Update | 278
+Update | 281
 Vacuums | 0
 Water heaters | 0
 Weather | 16
@@ -103,7 +103,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>574 Integrations</summary>
+<details><summary>571 Integrations</summary>
 
 | Name |
 | --- |
@@ -122,10 +122,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alert](https://www.home-assistant.io/components/alert) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
-| [androidtv.media_player](https://www.home-assistant.io/components/androidtv.media_player) |
 | [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
-| [androidtv_remote.media_player](https://www.home-assistant.io/components/androidtv_remote.media_player) |
-| [androidtv_remote.remote](https://www.home-assistant.io/components/androidtv_remote.remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [anniversaries.calendar](https://www.home-assistant.io/components/anniversaries.calendar) |
 | [anniversaries.sensor](https://www.home-assistant.io/components/anniversaries.sensor) |
@@ -696,7 +693,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) |  [v2.0.3] | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |[@r-renato](https://github.com/r-renato).|
-| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.3] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
+| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.4] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v2.8.4] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.2.3] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
@@ -860,7 +857,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | OpenThread Border Router | 2.4.4 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.2.0 |  | core |
-| Silicon Labs Multiprotocol | 2.4.3 |  | core |
+| Silicon Labs Multiprotocol | 2.4.4 |  | core |
 | SunGather | 0.1.3 |  | 7b536ee6 |
 | Zigbee2MQTT | 1.35.1-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
