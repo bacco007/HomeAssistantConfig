@@ -144,9 +144,9 @@ class CloudflareTunnelManager:
         self._device = device
         self._sensors = {}
 
-    async def update_sensors(self, new_tunnels, removed_tunnels):
+    async def update_sensors(self, new_tunnels):
         """Update sensor entities based on the tunnel changes."""
-        _LOGGER.debug(f"Updating sensors. New: {new_tunnels}, Removed: {removed_tunnels}")
+        _LOGGER.debug(f"Updating sensors. New: {new_tunnels}")
 
         for tunnel in new_tunnels:
             sensor_id = f"{self._device._domain}_{tunnel['id']}"
@@ -155,13 +155,6 @@ class CloudflareTunnelManager:
                 sensor = CloudflareTunnelSensor(tunnel, self._coordinator, self._device)
                 self._sensors[sensor_id] = sensor
                 self._async_add_entities([sensor], True)
-
-        for tunnel in removed_tunnels:
-            sensor_id = f"{self._device._domain}_{tunnel['id']}"
-            if sensor_id in self._sensors:
-                _LOGGER.info(f"Removing sensor for tunnel: {sensor_id}")
-                sensor = self._sensors.pop(sensor_id)
-                await self._hass.async_create_task(sensor.async_remove())
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Cloudflare tunnel sensor."""
@@ -184,12 +177,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         added_tunnels = [tunnel for tunnel in new_data if tunnel['id'] not in current_ids]
 
-        removed_tunnels = [tunnel for tunnel in coordinator.data if tunnel['id'] not in new_ids]
         
-        _LOGGER.debug(f"Added tunnels: {added_tunnels}, Removed tunnels: {removed_tunnels}")
+        _LOGGER.debug(f"Added tunnels: {added_tunnels}")
 
-        if added_tunnels or removed_tunnels:
-            await tunnel_manager.update_sensors(added_tunnels, removed_tunnels)
+        if added_tunnels:
+            await tunnel_manager.update_sensors(added_tunnels)
 
         return new_data
 
