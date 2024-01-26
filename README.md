@@ -38,8 +38,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.1.5 |
 | No. Integrations | 196 |
 | No. Custom Integrations | 85 |
-| No. Entities | 5210 |
-| No. Sensors | 3450 |
+| No. Entities | 5222 |
+| No. Sensors | 3449 |
 | No. Automations | 137 |
 
 <details>
@@ -51,7 +51,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 16
 Binary sensors | 343
-Buttons | 206
+Buttons | 205
 Calendars | 70
 Cameras | 5
 Climate | 2
@@ -79,15 +79,15 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3450
+Sensors | 3449
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 287
+Switches | 286
 Texts | 0
 Times | 0
 Text-to-speech | 0
-Update | 281
+Update | 280
 Vacuums | 0
 Water heaters | 0
 Weather | 16
@@ -693,7 +693,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) |  [v2.0.3] | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |[@r-renato](https://github.com/r-renato).|
-| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.4] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
+| [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.5] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v2.8.4] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.2.3] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
@@ -711,7 +711,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.rc9c] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc9c] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -728,7 +728,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.9.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.0] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.0] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -752,12 +752,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
 | [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.1.0] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
-| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
+| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
-| [Waste Collection Schedule](https://github.com/mampfes/hacs_waste_collection_schedule) |  [v1.45.0] | Home Assistant integration framework for (garbage collection) schedules |[@mampfes](https://github.com/mampfes).|
+| [Waste Collection Schedule](https://github.com/mampfes/hacs_waste_collection_schedule) |  [v1.45.1] | Home Assistant integration framework for (garbage collection) schedules |[@mampfes](https://github.com/mampfes).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.1] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.7] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
@@ -787,7 +787,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/Alia5/lovelace-expander-card) |  [v0.0.4] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.0] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.1] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.5] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.8.9] | Present the data of Formula One in a pretty way |
@@ -849,7 +849,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Glances | 0.21.0 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
-| Home Assistant Stream Deck | 2023.12.0 |  | dc473884 |
+| Home Assistant Stream Deck | 2024.1.1 |  | dc473884 |
 | JupyterLab | 0.13.0 |  | a0d7b954 |
 | MariaDB | 2.6.1 |  | core |
 | Matter Server | 5.0.4 |  | core |
