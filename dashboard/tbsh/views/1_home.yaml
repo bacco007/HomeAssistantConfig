@@ -22,8 +22,6 @@ cards:
         cards: &cards
           - !include ../home/weather.yaml
           - !include ../me/cakeday.yaml
-          - !include ../home/countdown.yaml
-          - !include ../tamworth/nbn_fttnupgrade.yaml
           - !include ../home/home.yaml
           - !include ../home/solar.yaml
           - !include ../home/untappd.yaml
@@ -48,6 +46,7 @@ cards:
           max_cols: 4
           width: 300
           max_width: 1000
+          min_height: 4
         cards: *cards
 
   - !include ../includes/actions.yaml

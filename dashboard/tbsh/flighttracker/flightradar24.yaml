@@ -410,7 +410,7 @@ cards:
           align: center
           modify: |
             if(x.airline != null)
-              {x.airline + ' (' + x.airline_icao + ')'}
+              {x.airline + ' (' + x.airline_iata + ' / ' + x.airline_icao + ')'}
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }
@@ -438,6 +438,28 @@ cards:
           modify: |
             if(x.aircraft_model != null)
               {x.aircraft_model + ' (' + x.aircraft_code + ')'}
+            else {
+                '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+            }
+        - name: ALT
+          data: flights
+          align: center
+          modify: |
+            if(x.altitude != null)
+              {var data = x.altitude * 0.3048;
+              data.toFixed(0) + "m"
+              }
+            else {
+                '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+            }
+        - name: SPD
+          data: flights
+          align: center
+          modify: |
+            if(x.ground_speed != null)
+              {var data = x.ground_speed * 1.852;
+              data.toFixed(0) + "km/h"
+              }
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }

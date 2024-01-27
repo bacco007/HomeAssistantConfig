@@ -24,6 +24,7 @@ cards:
         cards: &cards
           - !include ../weather/snippets/forecast_hour_day.yaml
           - !include ../weather/current_weather.yaml
+          - !include ../weather/thermal_comfort.yaml
           - !include ../weather/weather_other.yaml
           - !include ../weather/weather_graphs.yaml
           - !include ../weather/settings_controls.yaml

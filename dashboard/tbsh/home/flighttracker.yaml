@@ -53,22 +53,22 @@ cards:
                 box-shadow: none;
               }
             cards:
-            - type: custom:decluttering-card
-              template: mushroom_entity_graph
-              variables:
-                - entity: sensor.flighttracker_aircraft_total
-                - colour: "rgb(39, 179, 118)"
-                - title: ADS-B Flights Overhead
-                - icon: mdi:airplane-alert
-                - line_width: 2.5
-            - type: custom:decluttering-card
-              template: mushroom_entity_graph
-              variables:
-                - entity: sensor.flighttracker_fr24_current_tracked
-                - colour: "rgb(39, 179, 118)"
-                - title: Flights in FR24 Tracked Area
-                - icon: mdi:airplane-alert
-                - line_width: 2.5
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.flighttracker_aircraft_total
+                  - colour: "rgb(39, 179, 118)"
+                  - title: ADS-B Flights Overhead
+                  - icon: mdi:airplane-alert
+                  - line_width: 2.5
+              - type: custom:decluttering-card
+                template: mushroom_entity_graph
+                variables:
+                  - entity: sensor.flighttracker_fr24_current_tracked
+                  - colour: "rgb(39, 179, 118)"
+                  - title: Flights in FR24 Tracked Area
+                  - icon: mdi:airplane-alert
+                  - line_width: 2.5
           - type: custom:mushroom-template-card
             style: |
               ha-card {
