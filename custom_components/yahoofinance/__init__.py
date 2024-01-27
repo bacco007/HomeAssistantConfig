@@ -27,6 +27,7 @@ from .const import (
     CONF_INCLUDE_POST_VALUES,
     CONF_INCLUDE_PRE_VALUES,
     CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+    CONF_NO_UNIT,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
@@ -36,6 +37,7 @@ from .const import (
     DEFAULT_CONF_INCLUDE_POST_VALUES,
     DEFAULT_CONF_INCLUDE_PRE_VALUES,
     DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+    DEFAULT_CONF_NO_UNIT,
     DEFAULT_CONF_SHOW_TRENDING_ICON,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -59,6 +61,7 @@ COMPLEX_SYMBOL_SCHEMA = vol.All(
             vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.Any(
                 "none", "None", cv.positive_time_period
             ),
+            vol.Optional(CONF_NO_UNIT, default=DEFAULT_CONF_NO_UNIT): cv.boolean,
         }
     ),
 )
@@ -113,6 +116,7 @@ class SymbolDefinition:
     symbol: str
     target_currency: str | None = None
     scan_interval: timedelta | None = None
+    no_unit: bool = False
 
     def __init__(self, symbol: str, **kwargs: any) -> None:
         """Create a new symbol definition.
@@ -127,10 +131,12 @@ class SymbolDefinition:
             self.target_currency = kwargs["target_currency"]
         if "scan_interval" in kwargs:
             self.scan_interval = kwargs["scan_interval"]
+        if "no_unit" in kwargs:
+            self.no_unit = kwargs["no_unit"]
 
     def __repr__(self) -> str:
         """Return the representation."""
-        return f"{self.symbol},{self.target_currency},{self.scan_interval}"
+        return f"{self.symbol},{self.target_currency},{self.scan_interval},{self.no_unit}"
 
     def __eq__(self, other: any) -> bool:
         """Return the comparison."""
@@ -139,11 +145,12 @@ class SymbolDefinition:
             and self.symbol == other.symbol
             and self.target_currency == other.target_currency
             and self.scan_interval == other.scan_interval
+            and self.no_unit == other.no_unit
         )
 
     def __hash__(self) -> int:
         """Make hashable."""
-        return hash((self.symbol, self.target_currency, self.scan_interval))
+        return hash((self.symbol, self.target_currency, self.scan_interval, self.no_unit))
 
 
 def parse_scan_interval(scan_interval: timedelta | str) -> timedelta:
@@ -185,6 +192,7 @@ def normalize_input_symbols(
                         scan_interval=parse_scan_interval(
                             value.get(CONF_SCAN_INTERVAL)
                         ),
+                        no_unit=value.get(CONF_NO_UNIT),
                     )
                 )
 

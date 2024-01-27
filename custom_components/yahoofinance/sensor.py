@@ -46,7 +46,6 @@ from .const import (
     DATA_REGULAR_MARKET_PRICE,
     DATA_SHORT_NAME,
     DEFAULT_CURRENCY,
-    DEFAULT_ICON,
     DEFAULT_NUMERIC_DATA_GROUP,
     DOMAIN,
     HASS_DATA_CONFIG,
@@ -92,7 +91,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
 
     # pylint: disable=too-many-instance-attributes
     _currency = DEFAULT_CURRENCY
-    _icon = DEFAULT_ICON
+    _icon = None
     _market_price = None
     _short_name = None
     _target_currency = None
@@ -122,6 +121,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
         self._decimal_places = domain_config[CONF_DECIMAL_PLACES]
         self._previous_close = None
         self._target_currency = symbol_definition.target_currency
+        self._no_unit = symbol_definition.no_unit
 
         self._unique_id = symbol
         self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, symbol, hass=hass)
@@ -200,6 +200,9 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str | None:
         """Return the unit of measurement of the sensor, if any."""
+        if self._no_unit:
+            return None
+
         if self._target_currency:
             return self._target_currency
         return self._currency

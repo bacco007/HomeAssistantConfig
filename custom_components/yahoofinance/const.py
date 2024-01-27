@@ -38,6 +38,7 @@ CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES: Final = "include_two_hundred_day_values"
 CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES: Final = "include_fifty_two_week_values"
 CONF_SHOW_TRENDING_ICON: Final = "show_trending_icon"
 CONF_TARGET_CURRENCY: Final = "target_currency"
+CONF_NO_UNIT: Final = "no_unit"
 
 DEFAULT_CONF_DECIMAL_PLACES: Final = 2
 DEFAULT_CONF_INCLUDE_FIFTY_DAY_VALUES: Final = True
@@ -46,6 +47,7 @@ DEFAULT_CONF_INCLUDE_PRE_VALUES: Final = True
 DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES: Final = True
 DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES: Final = True
 DEFAULT_CONF_SHOW_TRENDING_ICON: Final = False
+DEFAULT_CONF_NO_UNIT: Final = False
 
 DEFAULT_NUMERIC_DATA_GROUP: Final = "default"
 
@@ -143,7 +145,6 @@ REQUEST_HEADERS: Final = {
 CONF_SYMBOLS: Final = "symbols"
 DEFAULT_CURRENCY: Final = "USD"
 DEFAULT_CURRENCY_SYMBOL: Final = "$"
-DEFAULT_ICON: Final = "mdi:currency-usd"
 DOMAIN: Final = "yahoofinance"
 SERVICE_REFRESH: Final = "refresh_symbols"
 
@@ -154,6 +155,7 @@ CURRENCY_CODES: Final = {
     "bdt": "৳",
     "brl": "R$",
     "btc": "₿",
+    "chf": "₣",
     "cny": "¥",
     "eth": "Ξ",
     "eur": "€",
