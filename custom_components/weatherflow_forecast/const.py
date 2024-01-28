@@ -20,10 +20,12 @@ CONF_ADD_SENSORS = "add_sensors"
 CONF_API_TOKEN = "api_token"
 CONF_DEVICE_ID = "device_id"
 CONF_FIRMWARE_REVISION = "firmware_revision"
+CONF_FORECAST_HOURS = "forecast_hours"
 CONF_SERIAL_NUMBER = "serial_number"
 CONF_STATION_ID = "station_id"
 
 DEFAULT_ADD_SENSOR = False
+DEFAULT_FORECAST_HOURS = 48
 DEFAULT_NAME = "WeatherFlow Forecast"
 DOMAIN = "weatherflow_forecast"
 

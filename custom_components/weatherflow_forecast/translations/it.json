@@ -17,6 +17,7 @@
                 "data": {
                     "station_id": "ID stazione",
                     "api_token": "Token API personale",
+                    "forecast_hours": "Hours to show in Hourly Forecast",
                     "add_sensors": "Add sensors from the Weather Station"
                 }
             }
@@ -27,6 +28,7 @@
             "init": {
                 "data": {
                     "api_token": "Token API personale",
+                    "forecast_hours": "Hours to show in Hourly Forecast",
                     "add_sensors": "Add sensors from the Weather Station"
                 }
             }

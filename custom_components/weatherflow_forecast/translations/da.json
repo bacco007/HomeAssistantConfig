@@ -17,6 +17,7 @@
                 "data": {
                     "station_id": "Station Id",
                     "api_token": "Personlig Api Token",
+                    "forecast_hours": "Timer der vises i den timebaserede vejrudsigt",
                     "add_sensors": "Tilføj sensorer fra vejrstationen"
                 }
             }
@@ -27,6 +28,7 @@
             "init": {
                 "data": {
                     "api_token": "Personlig Api Token",
+                    "forecast_hours": "Timer der vises i den timebaserede vejrudsigt",
                     "add_sensors": "Tilføj sensorer fra vejrstationen"
                 }
             }

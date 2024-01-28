@@ -30,14 +30,15 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     DEFAULT_ADD_SENSOR,
+    DEFAULT_FORECAST_HOURS,
     DOMAIN,
     CONF_ADD_SENSORS,
     CONF_API_TOKEN,
+    CONF_FORECAST_HOURS,
     CONF_STATION_ID,
 )
 
 PLATFORMS = [Platform.WEATHER, Platform.SENSOR, Platform.BINARY_SENSOR]
-ignore_sensors = False
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,13 +49,22 @@ def _get_platforms(config_entry: ConfigEntry):
 
     return add_sensors
 
+def _get_forecast_hours(config_entry: ConfigEntry):
+
+    forecast_hours = DEFAULT_FORECAST_HOURS if config_entry.options.get(
+        CONF_FORECAST_HOURS) is None else config_entry.options.get(CONF_FORECAST_HOURS)
+
+    return forecast_hours
+
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up WeatherFlow Forecast as config entry."""
 
     add_sensors = _get_platforms(config_entry)
+    forecast_hours = _get_forecast_hours(config_entry)
 
-    coordinator = WeatherFlowForecastDataUpdateCoordinator(hass, config_entry, add_sensors)
+    coordinator = WeatherFlowForecastDataUpdateCoordinator(
+        hass, config_entry, add_sensors, forecast_hours)
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})
@@ -105,13 +115,15 @@ class CannotConnect(HomeAssistantError):
 class WeatherFlowForecastDataUpdateCoordinator(DataUpdateCoordinator["WeatherFlowForecastWeatherData"]):
     """Class to manage fetching WeatherFlow data."""
 
-    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, add_sensors: bool) -> None:
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, add_sensors: bool, forecast_hours: int) -> None:
         """Initialize global WeatherFlow forecast data updater."""
-        self.weather = WeatherFlowForecastWeatherData(hass, config_entry.data, add_sensors)
+        self.weather = WeatherFlowForecastWeatherData(
+            hass, config_entry.data, add_sensors, forecast_hours)
         self.weather.initialize_data()
         self.hass = hass
         self.config_entry = config_entry
         self.add_sensors = add_sensors
+        self.forecast_hours = forecast_hours
 
         if add_sensors:
             update_interval = timedelta(minutes=randrange(1, 5))
@@ -131,11 +143,12 @@ class WeatherFlowForecastDataUpdateCoordinator(DataUpdateCoordinator["WeatherFlo
 class WeatherFlowForecastWeatherData:
     """Keep data for WeatherFlow Forecast entity data."""
 
-    def __init__(self, hass: HomeAssistant, config: MappingProxyType[str, Any], add_sensors: bool) -> None:
+    def __init__(self, hass: HomeAssistant, config: MappingProxyType[str, Any], add_sensors: bool, forecast_hours: int) -> None:
         """Initialise the weather entity data."""
         self.hass = hass
         self._config = config
         self._add_sensors = add_sensors
+        self._forecast_hours = forecast_hours
         self._weather_data: WeatherFlow
         self.current_weather_data: WeatherFlowForecastData = {}
         self.daily_forecast: WeatherFlowForecastDaily = []
@@ -147,7 +160,7 @@ class WeatherFlowForecastWeatherData:
         """Establish connection to API."""
 
         self._weather_data = WeatherFlow(
-            self._config[CONF_STATION_ID], self._config[CONF_API_TOKEN], elevation=self.hass.config.elevation, session=async_get_clientsession(self.hass))
+            self._config[CONF_STATION_ID], self._config[CONF_API_TOKEN], elevation=self.hass.config.elevation, session=async_get_clientsession(self.hass), forecast_hours=self._forecast_hours)
 
         return True
 

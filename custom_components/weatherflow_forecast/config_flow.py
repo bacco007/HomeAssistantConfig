@@ -20,11 +20,13 @@ from pyweatherflow_forecast import (
 )
 from .const import (
     DEFAULT_ADD_SENSOR,
+    DEFAULT_FORECAST_HOURS,
     DOMAIN,
     CONF_ADD_SENSORS,
     CONF_API_TOKEN,
     CONF_DEVICE_ID,
     CONF_FIRMWARE_REVISION,
+    CONF_FORECAST_HOURS,
     CONF_SERIAL_NUMBER,
     CONF_STATION_ID,
 )
@@ -92,6 +94,7 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_SERIAL_NUMBER: station_data.serial_number,
             },
             options={
+                CONF_FORECAST_HOURS: user_input[CONF_FORECAST_HOURS],
                 CONF_ADD_SENSORS: user_input[CONF_ADD_SENSORS],
             }
         )
@@ -104,6 +107,7 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_STATION_ID): int,
                     vol.Required(CONF_API_TOKEN): str,
+                    vol.Optional(CONF_FORECAST_HOURS, default=DEFAULT_FORECAST_HOURS): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
                     vol.Optional(CONF_ADD_SENSORS, default=DEFAULT_ADD_SENSOR): bool,
                 }
             ),
@@ -128,6 +132,7 @@ class WeatherFlowForecastOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_API_TOKEN, default=self._config_entry.data.get(CONF_API_TOKEN, "")): str,
+                    vol.Optional(CONF_FORECAST_HOURS, default=self._config_entry.options.get(CONF_FORECAST_HOURS, DEFAULT_FORECAST_HOURS)): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
                     vol.Optional(CONF_ADD_SENSORS, default=self._config_entry.options.get(CONF_ADD_SENSORS, DEFAULT_ADD_SENSOR)): bool,
                 }
             )

@@ -17,6 +17,7 @@
                 "data": {
                     "station_id": "Station Id",
                     "api_token": "Jeton-API personnel",
+                    "forecast_hours": "Hours to show in Hourly Forecast",
                     "add_sensors": "Ajouter les senseurs de la Weather Station"
                 }
             }
@@ -27,6 +28,7 @@
             "init": {
                 "data": {
                     "api_token": "Jeton-API personnel",
+                    "forecast_hours": "Hours to show in Hourly Forecast",
                     "add_sensors": "Ajouter les senseurs de la Weather Station"
                 }
             }
