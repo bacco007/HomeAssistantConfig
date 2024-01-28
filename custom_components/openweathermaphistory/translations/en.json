@@ -1,0 +1,153 @@
+{
+    "title": "OWM History",
+    "services":{
+		"api_call":{
+			"name": "API call",
+			"description": "Test the api call, check the log for results.",
+			"fields": {
+				"entity_id": {
+					"name": "Entity ID",
+					"description": "the OWM history instance"
+				}
+			}
+		},
+		"list_vars":{
+			"name": "List Variable",
+			"description": "List available variables, check the log for results.",
+			"fields": {
+				"entity_id": {
+					"name": "Entity ID",
+					"description": "the OWM history instance"
+				}
+			}
+		}
+    },
+    "config": {
+        "abort": {
+            "already_configured": "Location is already configured"
+        },
+        "error": {
+            "invalid_api_key": "Cannot connect, possible invalid api_key or you have not subscribed to One Call API 3.0, check the log for details",
+            "formula": "Invalid formula, check the log for details",
+            "formula_variable": "A variable used is undefined, check the log for details",
+            "duplicate_name": "This name has already been used",
+            "close_proximity": "A location is already configured with 1km",
+            "cannot_connect": "Could not connect to OpenWeatherMap"
+        },
+        "step": {
+            "user": {
+                "title": "New Location",
+                "description": "To generate API key go to https://openweathermap.org/api and subscribe to 'One Call API 3.0'. You need to enter billing info to get 1,000 free calls per day. Configure your account to never go over the free limit here: https://home.openweathermap.org/subscriptions",
+                "data": {
+                    "name": "Location Name",
+                    "api_key": "API key",
+                    "location": "Location",
+                    "max_days": "Days to keep data",
+                    "initial_days": "Days to backload",
+                    "max_calls": "Max API calls per day"
+                    }
+            },
+            "menu": {
+                "title": "",
+                "menu_options": {
+                    "user":"Location",
+                    "add":"Add Sensor",
+                    "list_modify":"Modify Sensor",
+                    "delete":"Delete Sensor",
+                    "finalise":"Save changes"
+                }
+            },
+            "add": {
+                "title": "Add Sensor",
+                "data": {
+                    "name": "Sensor name",
+                    "formula":"Jinja2 Template to expose the sensor",
+                    "attributes": "Attributes to expose on the sensor",
+                    "sensor_class": "The type of sensor"
+                }
+            },
+            "modify": {
+                "title": "Modify Sensor",
+                "description": "select a sensor",
+                "data": {
+                    "name": "Sensor name",
+                    "formula":"Jinja2 Template to expose the sensor",
+                    "attributes": "Attributes to expose on the sensor",
+                    "sensor_class": "The type of sensor"
+                }
+            },
+            "delete": {
+                "title": "Select Sensor to Delete"
+            },
+            "list_modify": {
+                "title": "Select Sensor to Modify"
+            }
+        }
+    },
+    "options": {
+       "error": {
+            "invalid_api_key": "Cannot connect, possible invalid api_key or you have not subscribed to One Call API 3.0, check the log for details",
+            "formula": "Cannot connect, possible invalid api_key, check the log for details",
+            "formula_variable": "A variable used is undefined, check the log for details",
+            "duplicate_name": "This name has already been used",
+            "close_proximity": "A location is already configured with 1km",
+            "cannot_connect": "Could not connect to OpenWeatherMap"
+        },
+        "step": {
+            "user": {
+            "menu_options": {
+                "update":"Update API",
+                "add":"Add Sensor",
+                "list_modify":"Modify Sensor",
+                "delete":"Delete Sensor",
+                "finalise":"Save changes"
+            }
+            },
+            "update": {
+                "title": "Modify API",
+                "data": {
+                    "api_key": "API key",
+                    "max_days": "Days to keep data",
+                    "initial_days": "Days to backload",
+                    "max_calls": "Max API calls per day"
+                }
+                },
+            "add": {
+                "title": "Add Sensor",
+                "data": {
+                    "name": "Sensor name",
+                    "formula": "Jinja2 Template to expose the sensor",
+                    "attributes": "Attributes to expose on the sensor",
+                    "sensor_class": "The type of sensor"
+                }
+            },
+            "modify": {
+                "title": "Modify Sensor",
+                "description": "select a sensor",
+                "data": {
+                    "formula": "Jinja2 Template to expose the sensor",
+                    "attributes": "Attributes to expose on the sensor",
+                    "sensor_class": "The type of sensor"
+                }
+            },
+            "delete": {
+                "title": "Select Sensor to Delete"
+            },
+            "list_modify": {
+                "title": "Select Sensor to Modify"
+            }
+        }
+    },
+    "selector": {
+        "sensor_class": {
+            "options": {
+                "humidity": "Humidity",
+                "precipitation": "Precipitation",
+                "precipitation_intensity": "Precipitation Intensity",
+                "temperature": "Temperature",
+                "pressure": "Pressure",
+                "none": "None"
+            }
+        }
+    }
+}
