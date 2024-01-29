@@ -38,7 +38,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.1.5 |
 | No. Integrations | 196 |
 | No. Custom Integrations | 87 |
-| No. Entities | 5176 |
+| No. Entities | 5201 |
 | No. Sensors | 3447 |
 | No. Automations | 137 |
 
@@ -73,7 +73,7 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -87,7 +87,7 @@ Switches | 286
 Texts | 0
 Times | 0
 Text-to-speech | 0
-Update | 282
+Update | 290
 Vacuums | 0
 Water heaters | 0
 Weather | 16
@@ -752,10 +752,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) |  [v0.3.8] | Sensor of Temperature Feels Like for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
-| [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.1.0] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
+| [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.1.1] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
-| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
+| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
@@ -773,7 +773,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description |
 | --- | --- | --- |
 | [Apexcharts Card](https://github.com/RomRider/apexcharts-card) |  [v2.0.4] | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
-| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.4.0] | An advanced calendar card for Home Assistant Lovelace. |
+| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.6.0] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.12.1] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Battery State Card / Entity Row](https://github.com/maxwroc/battery-state-card) |  [v3.1.5] | Battery state card for Home Assistant |
@@ -812,7 +812,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card) |  [v1.0.5] | This is a fully customisable weather card for Home Assistant with a graphical configuration. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.1.8.1] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.19.1] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.20.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.5] | Home Assistant Tile Card Service Call Feature |
@@ -848,7 +848,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Cloudflared | 5.1.1 |  | 9074a9fa |
 | ESPHome | 2023.12.9 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
-| Fusion | 2024.1.10 |  | 65f67727 |
+| Fusion | 2024.1.11 |  | 65f67727 |
 | Glances | 0.21.0 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
