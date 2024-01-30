@@ -23,7 +23,7 @@ STATE_WM_ERROR_NO_ERROR = [
 ]
 
 WM_ROOT_DATA = "washerDryer"
-WM_SUB_DEV = {"mini": "miniState"}
+WM_SUB_KEYS = {"mini": "miniState"}
 
 POWER_STATUS_KEY = ["State", "state"]
 
@@ -42,7 +42,7 @@ BIT_FEATURES = {
     WashDeviceFeatures.DAMPDRYBEEP: ["DampDryBeep", "dampDryBeep"],
     WashDeviceFeatures.DETERGENT: ["DetergentStatus", "ezDetergentState"],
     WashDeviceFeatures.DETERGENTLOW: ["DetergentRemaining", "detergentRemaining"],
-    WashDeviceFeatures.DOORCLOSE: ["DoorClose", "doorClose"],
+    WashDeviceFeatures.DOOROPEN: ["DoorClose", "doorClose"],
     WashDeviceFeatures.DOORLOCK: ["DoorLock", "doorLock"],
     WashDeviceFeatures.HANDIRON: ["HandIron", "handIron"],
     WashDeviceFeatures.MEDICRINSE: ["MedicRinse", "medicRinse"],
@@ -57,25 +57,32 @@ BIT_FEATURES = {
     WashDeviceFeatures.TURBOWASH: ["TurboWash", "turboWash"],
 }
 
+INVERTED_BITS = [WashDeviceFeatures.DOOROPEN]
+
 _LOGGER = logging.getLogger(__name__)
 
 
-def get_sub_devices(device_info: DeviceInfo) -> list[str]:
+def get_sub_keys(device_info: DeviceInfo, sub_device: str | None = None) -> list[str]:
     """Search for valid sub devices and return related sub keys."""
     if not (snapshot := device_info.snapshot):
         return []
-    if not (payload := snapshot.get(WM_ROOT_DATA)):
+    if not (payload := snapshot.get(sub_device or WM_ROOT_DATA)):
         return []
-    return [k for k, s in WM_SUB_DEV.items() if s in payload]
+    return [k for k, s in WM_SUB_KEYS.items() if s in payload]
 
 
 class WMDevice(Device):
     """A higher-level interface for washer and dryer."""
 
     def __init__(
-        self, client: ClientAsync, device_info: DeviceInfo, sub_key: str | None = None
+        self,
+        client: ClientAsync,
+        device_info: DeviceInfo,
+        *,
+        sub_device: str | None = None,
+        sub_key: str | None = None,
     ):
-        super().__init__(client, device_info, WMStatus(self))
+        super().__init__(client, device_info, WMStatus(self), sub_device=sub_device)
         self._sub_key = sub_key
         if sub_key:
             self._attr_unique_id += f"-{sub_key}"
@@ -309,7 +316,7 @@ class WMDevice(Device):
     async def poll(self) -> WMStatus | None:
         """Poll the device's current state."""
 
-        res = await self._device_poll(WM_ROOT_DATA)
+        res = await self._device_poll(self._sub_device or WM_ROOT_DATA)
         if not res:
             self._stand_by = False
             return None
@@ -390,7 +397,8 @@ class WMStatus(DeviceStatus):
         """Get current error."""
         if not self._error:
             keys = self._getkeys(["Error", "error"])
-            error = self.lookup_reference(keys, ref_key="title")
+            if (error := self.lookup_enum(keys)) is None:
+                error = self.lookup_reference(keys, ref_key="title")
             if not error:
                 self._error = STATE_WM_ERROR_OFF
             else:
@@ -651,7 +659,8 @@ class WMStatus(DeviceStatus):
         """Update features related to bit status."""
         index = 1 if self.is_info_v2 else 0
         for feature, keys in BIT_FEATURES.items():
-            status = self.lookup_bit(self._getkeys(keys[index]))
+            invert = feature in INVERTED_BITS
+            status = self.lookup_bit(self._getkeys(keys[index]), invert)
             self._update_feature(feature, status, False)
 
     def _update_features(self):
