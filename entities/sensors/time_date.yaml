@@ -5,4 +5,3 @@ display_options:
   - "date"
   - "date_time"
   - "time_utc"
-  - "beat"

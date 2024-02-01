@@ -35,11 +35,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.1.5 |
-| No. Integrations | 196 |
+| HA Version | 2024.2.0b0 |
+| No. Integrations | 199 |
 | No. Custom Integrations | 87 |
-| No. Entities | 5203 |
-| No. Sensors | 3447 |
+| No. Entities | 5191 |
+| No. Sensors | 3434 |
 | No. Automations | 137 |
 
 <details>
@@ -59,7 +59,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 553
+Devices | 556
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -79,14 +79,14 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3447
+Sensors | 3434
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
 Switches | 286
 Texts | 0
 Times | 0
-Text-to-speech | 0
+Text-to-speech | 1
 Update | 290
 Vacuums | 0
 Water heaters | 0
@@ -103,7 +103,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>571 Integrations</summary>
+<details><summary>588 Integrations</summary>
 
 | Name |
 | --- |
@@ -121,6 +121,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alert](https://www.home-assistant.io/components/alert) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
+| [analytics_insights](https://www.home-assistant.io/components/analytics_insights) |
+| [analytics_insights.sensor](https://www.home-assistant.io/components/analytics_insights.sensor) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
 | [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
@@ -190,7 +192,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [counter](https://www.home-assistant.io/components/counter) |
 | [cover](https://www.home-assistant.io/components/cover) |
 | [cupertino](https://www.home-assistant.io/components/cupertino) |
-| [custom_templates](https://www.home-assistant.io/components/custom_templates) |
 | [daily](https://www.home-assistant.io/components/daily) |
 | [daily.sensor](https://www.home-assistant.io/components/daily.sensor) |
 | [default_config](https://www.home-assistant.io/components/default_config) |
@@ -454,6 +455,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [profiler](https://www.home-assistant.io/components/profiler) |
 | [prometheus_query.sensor](https://www.home-assistant.io/components/prometheus_query.sensor) |
 | [proximity](https://www.home-assistant.io/components/proximity) |
+| [proximity.sensor](https://www.home-assistant.io/components/proximity.sensor) |
 | [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [proxmoxve.binary_sensor](https://www.home-assistant.io/components/proxmoxve.binary_sensor) |
 | [proxmoxve.button](https://www.home-assistant.io/components/proxmoxve.button) |
@@ -677,6 +679,21 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
+| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
+| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
+| [zha.button](https://www.home-assistant.io/components/zha.button) |
+| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
+| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
+| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
+| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
+| [zha.light](https://www.home-assistant.io/components/zha.light) |
+| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
+| [zha.number](https://www.home-assistant.io/components/zha.number) |
+| [zha.select](https://www.home-assistant.io/components/zha.select) |
+| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
+| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
+| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
+| [zha.update](https://www.home-assistant.io/components/zha.update) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -754,8 +771,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
 | [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.1.1] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
-| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
+| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
@@ -806,7 +823,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.0] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.0] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v3.3.0] | Mushroom Cards - Build a beautiful dashboard easily 🍄 |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v3.4.0] | Mushroom Cards - Build a beautiful dashboard easily 🍄 |
 | [Number Box](https://github.com/htmltiger/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.1.3] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card) |  [v1.0.5] | This is a fully customisable weather card for Home Assistant with a graphical configuration. |
@@ -910,7 +927,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.1.5-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.2.0b0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
