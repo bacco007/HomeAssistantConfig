@@ -38,8 +38,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.2.0b0 |
 | No. Integrations | 199 |
 | No. Custom Integrations | 87 |
-| No. Entities | 5191 |
-| No. Sensors | 3434 |
+| No. Entities | 5197 |
+| No. Sensors | 3437 |
 | No. Automations | 137 |
 
 <details>
@@ -73,21 +73,21 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 47
-Sensors | 3434
+Sensors | 3437
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 286
+Switches | 287
 Texts | 0
 Times | 0
 Text-to-speech | 1
-Update | 290
+Update | 289
 Vacuums | 0
 Water heaters | 0
 Weather | 16
