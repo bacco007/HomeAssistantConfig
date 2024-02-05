@@ -35,10 +35,10 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.2.0b4 |
+| HA Version | 2024.2.0b6 |
 | No. Integrations | 198 |
 | No. Custom Integrations | 87 |
-| No. Entities | 5223 |
+| No. Entities | 5203 |
 | No. Sensors | 3464 |
 | No. Automations | 137 |
 
@@ -51,7 +51,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 16
 Binary sensors | 342
-Buttons | 205
+Buttons | 206
 Calendars | 70
 Cameras | 5
 Climate | 2
@@ -73,7 +73,7 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -728,11 +728,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.rc9c] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.1] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.0.5] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Local Tuya](https://github.com/rospogrigio/localtuya) |  [v5.2.1] | local handling for Tuya devices |[@rospogrigio](https://github.com/rospogrigio), [@postlund](https://github.com/postlund).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.9] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
@@ -747,7 +747,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [vV2.0.11] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge), [@tsbernar](https://github.com/tsbernar).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.9.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.1] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.2] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.0] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.2] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
@@ -758,9 +758,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.2.7] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Sensor.Unifigateway](https://github.com/custom-components/sensor.unifigateway) |  [v0.3.3] | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
-| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.37.0] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
+| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.37.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
-| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.1.1] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
+| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.1.2] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.1] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.6] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.1.0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -770,8 +770,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
 | [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.1.1] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
-| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
+| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
@@ -860,7 +860,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
-| Advanced SSH & Web Terminal | 17.0.5 |  | a0d7b954 |
+| Advanced SSH & Web Terminal | 17.1.0 |  | a0d7b954 |
 | Cloudflared | 5.1.1 |  | 9074a9fa |
 | ESPHome | 2023.12.9 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
@@ -926,7 +926,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.2.0b4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.2.0b6-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
