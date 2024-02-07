@@ -13,8 +13,16 @@ CUSTOM_TEMPLATES_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA
 )
 
+DEFAULT_UNAVAILABLE_STATES = [
+    'unknown',
+    'unavailable',
+    '',
+    None,
+]
+
 CONST_EVAL_FUNCTION_NAME = "ct_eval"
 CONST_STATE_TRANSLATED_FUNCTION_NAME = "ct_state_translated"
 CONST_STATE_ATTR_TRANSLATED_FUNCTION_NAME = "ct_state_attr_translated"
 CONST_TRANSLATED_FUNCTION_NAME = "ct_translated"
 CONST_ALL_TRANSLATIONS_FUNCTION_NAME = "ct_all_translations"
+CONST_IS_AVAILABLE_FUNCTION_NAME = "ct_is_available"

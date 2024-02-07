@@ -8,12 +8,13 @@ from homeassistant.const import EVENT_COMPONENT_LOADED, STATE_UNKNOWN
 from homeassistant.core import Event, HomeAssistant, valid_entity_id
 from homeassistant.helpers.entity_registry import async_get
 from homeassistant.helpers.template import _get_state_if_valid, _RESERVED_NAMES, Template, TemplateEnvironment
-from homeassistant.helpers.translation import _TranslationCache, TRANSLATION_FLATTEN_CACHE, TRANSLATION_LOAD_LOCK
+from homeassistant.helpers.translation import _TranslationCache, TRANSLATION_FLATTEN_CACHE
 from homeassistant.loader import bind_hass
 
 from .const import (DOMAIN, CUSTOM_TEMPLATES_SCHEMA, CONF_PRELOAD_TRANSLATIONS, CONST_EVAL_FUNCTION_NAME,
                     CONST_STATE_TRANSLATED_FUNCTION_NAME, CONST_STATE_ATTR_TRANSLATED_FUNCTION_NAME,
-                    CONST_TRANSLATED_FUNCTION_NAME, CONST_ALL_TRANSLATIONS_FUNCTION_NAME)
+                    CONST_TRANSLATED_FUNCTION_NAME, CONST_ALL_TRANSLATIONS_FUNCTION_NAME,
+                    DEFAULT_UNAVAILABLE_STATES, CONST_IS_AVAILABLE_FUNCTION_NAME)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,6 +31,33 @@ class TranslatableTemplate:
     def validate_language(self, language):
         if language not in self._available_languages:
             raise TemplateError(f"Language {language} is not loaded")  # type: ignore[arg-type]
+
+
+class IsAvailable:
+
+    def __init__(self, hass: HomeAssistant):
+        self._hass = hass
+
+    def __call__(self, entity_id: str, unavailable_states=DEFAULT_UNAVAILABLE_STATES):
+        unavailable_states = [s.lower() if type(s) is str else s for s in unavailable_states]
+        state = None
+        if "." in entity_id:
+            state = _get_state_if_valid(self._hass, entity_id)
+        else:
+            if entity_id in _RESERVED_NAMES:
+                return None
+            if not valid_entity_id(f"{entity_id}.entity"):
+                raise TemplateError(f"Invalid domain name '{entity_id}'")
+
+        if state is not None:
+            state = state.state
+        if state is str:
+            state = state.lower()
+        result = state not in unavailable_states
+        return result
+
+    def __repr__(self):
+        return f"<template CT_IsAvailable>"
 
 
 class StateTranslated(TranslatableTemplate):
@@ -79,7 +107,7 @@ class StateTranslated(TranslatableTemplate):
         return state.state
 
     def __repr__(self):
-        return "<template StateTranslated>"
+        return "<template CT_StateTranslated>"
 
 
 class StateAttrTranslated(TranslatableTemplate):
@@ -127,7 +155,7 @@ class StateAttrTranslated(TranslatableTemplate):
         return attribute_value
 
     def __repr__(self):
-        return "<template StateAttrTranslated>"
+        return "<template CT_StateAttrTranslated>"
 
 
 class Translated(TranslatableTemplate):
@@ -150,7 +178,7 @@ class Translated(TranslatableTemplate):
         return key
 
     def __repr__(self):
-        return "<template Translated>"
+        return "<template CT_Translated>"
 
 
 class AllTranslations(TranslatableTemplate):
@@ -167,7 +195,7 @@ class AllTranslations(TranslatableTemplate):
         return translations
 
     def __repr__(self):
-        return "<template AllTranslations>"
+        return "<template CT_AllTranslations>"
 
 
 class EvalTemplate:
@@ -180,7 +208,7 @@ class EvalTemplate:
         return tpl.async_render()
 
     def __repr__(self):
-        return "<template EvalTemplate>"
+        return "<template CT_EvalTemplate>"
 
 
 def get_cached(
@@ -189,8 +217,13 @@ def get_cached(
         category: str,
         components: set[str],
 ):
-    cached = self.cache.get(language, {})
-    return [cached.get(component, {}).get(category, {}) for component in components]
+    category_cache = self.cache.get(language, {}).get(category, {})
+    if len(components) == 1 and (component := next(iter(components))):
+        return category_cache.get(component, {})
+    result: dict[str, str] = {}
+    for component in components.intersection(category_cache):
+        result.update(category_cache[component])
+    return result
 
 
 @bind_hass
@@ -198,18 +231,14 @@ async def load_translations_to_cache(
         hass: HomeAssistant,
         language: str,
 ):
-    lock = hass.data.setdefault(TRANSLATION_LOAD_LOCK, asyncio.Lock())
-
     components_entities = {
         component for component in hass.config.components if "." not in component
     }
     components_state = set(hass.config.components)
-
-    async with lock:
-        cache = hass.data.setdefault(TRANSLATION_FLATTEN_CACHE, _TranslationCache(hass))
-        await cache.async_fetch(language, "entity", components_entities)
-        await cache.async_fetch(language, "states", components_state)
-        await cache.async_fetch(language, "entity_component", components_state)
+    cache = hass.data.setdefault(TRANSLATION_FLATTEN_CACHE, _TranslationCache(hass))
+    await cache.async_fetch(language, "entity", components_entities)
+    await cache.async_fetch(language, "states", components_state)
+    await cache.async_fetch(language, "entity_component", components_state)
 
 
 @bind_hass
@@ -230,9 +259,7 @@ def get_cached_translations(
 
     cache = hass.data.setdefault(TRANSLATION_FLATTEN_CACHE, _TranslationCache(hass))
     # noinspection PyUnresolvedReferences
-    cached = cache.ct_patched_get_cached(language, category, components)
-
-    return dict(ChainMap(*cached))
+    return cache.ct_patched_get_cached(language, category, components)
 
 
 # noinspection PyProtectedMember
@@ -254,12 +281,14 @@ def setup(hass: HomeAssistant, config: ConfigType):
     translated_template = Translated(hass, languages)
     all_translations_template = AllTranslations(hass, languages)
     eval_template = EvalTemplate(hass)
+    is_available_template = IsAvailable(hass)
 
     _TranslationCache.ct_patched_get_cached = get_cached
 
     def is_safe_callable(self: TemplateEnvironment, obj):
         # noinspection PyUnresolvedReferences
-        return (isinstance(obj, (StateTranslated, StateAttrTranslated, EvalTemplate, Translated, AllTranslations))
+        return (isinstance(obj, (
+            StateTranslated, StateAttrTranslated, EvalTemplate, Translated, AllTranslations, IsAvailable))
                 or self.ct_original_is_safe_callable(obj))
 
     def patch_environment(env: TemplateEnvironment):
@@ -268,17 +297,19 @@ def setup(hass: HomeAssistant, config: ConfigType):
         env.globals[CONST_TRANSLATED_FUNCTION_NAME] = translated_template
         env.globals[CONST_ALL_TRANSLATIONS_FUNCTION_NAME] = all_translations_template
         env.globals[CONST_EVAL_FUNCTION_NAME] = eval_template
+        env.globals[CONST_IS_AVAILABLE_FUNCTION_NAME] = is_available_template
         env.filters[CONST_STATE_TRANSLATED_FUNCTION_NAME] = state_translated_template
         env.filters[CONST_STATE_ATTR_TRANSLATED_FUNCTION_NAME] = state_attr_translated_template
         env.filters[CONST_TRANSLATED_FUNCTION_NAME] = translated_template
         env.filters[CONST_EVAL_FUNCTION_NAME] = eval_template
+        env.filters[CONST_IS_AVAILABLE_FUNCTION_NAME] = is_available_template
 
     def patched_init(
-        self: TemplateEnvironment,
-        hass_param: HomeAssistant | None,
-        limited: bool | None = False,
-        strict: bool | None = False,
-        log_fn: Callable[[int, str], None] | None = None,
+            self: TemplateEnvironment,
+            hass_param: HomeAssistant | None,
+            limited: bool | None = False,
+            strict: bool | None = False,
+            log_fn: Callable[[int, str], None] | None = None,
     ):
         # noinspection PyUnresolvedReferences
         self.ct_original__init__(hass_param, limited, strict, log_fn)
