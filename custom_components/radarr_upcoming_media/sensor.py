@@ -110,11 +110,11 @@ class RadarrUpcomingMediaSensor(Entity):
                 card_item['runtime'] = movie.get('runtime', '')
                 card_item['studio'] = movie.get('studio', '')
                 card_item['genres'] = movie.get('genres', '')
-                # if 'ratings' in movie and movie['ratings']['value'] > 0:
-                #     card_item['rating'] = ('\N{BLACK STAR} ' +
-                #                            str(movie['ratings']['value']))
-                # else:
-                card_item['rating'] = ''
+                if 'ratings' in movie and movie['ratings']['tmdb']['value'] > 0:
+                    card_item['rating'] = ('\N{BLACK STAR} ' +
+                                           str(movie['ratings']['tmdb']['value']))
+                else:
+                    card_item['rating'] = ''
                 if 'images' in movie:
                     if len(movie['images']):
                         card_item['poster'] = movie['images'][0]
@@ -124,6 +124,7 @@ class RadarrUpcomingMediaSensor(Entity):
                         card_item['fanart'] = ''
                 else:
                     continue
+                card_item['deep_link'] = f'http://{self.host}:{self.port}/movie/{movie.get("tmdbId")}'
                 self.card_json.append(card_item)
                 self.change_detected = False
         attributes['data'] = self.card_json
@@ -196,6 +197,7 @@ class RadarrUpcomingMediaSensor(Entity):
                                                                   ]][:3])
                     except:
                         movie['genres'] = ''
+                    movie['deep_link'] = f'http://{self.host}:{self.port}/movie/{movie.get("id", "unknown")}'
         else:
             self._state = '%s cannot be reached' % self.host
 
