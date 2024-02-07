@@ -131,6 +131,9 @@ class SonarrUpcomingMediaSensor(Entity):
                         card_item['fanart'] = re.sub('.jpg', '_t.jpg', img['remoteUrl'])
             except:
                 pass
+            series_title = show['series']['title']
+            series_slug = series_title.lower().replace(' ', '-')
+            card_item['deep_link'] = f'http://{self.host}:{self.port}/series/{series_slug}'
             card_json.append(card_item)
         attributes['data'] = card_json
         return attributes
