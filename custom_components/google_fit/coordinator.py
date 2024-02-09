@@ -20,11 +20,14 @@ from .api_types import (
     FitnessObject,
     FitnessDataPoint,
     FitnessSessionResponse,
+    GoogleFitSensorDescription,
     SumPointsSensorDescription,
     LastPointSensorDescription,
     SumSessionSensorDescription,
 )
 from .const import (
+    CONF_INFREQUENT_INTERVAL_MULTIPLIER,
+    DEFAULT_INFREQUENT_INTERVAL,
     DOMAIN,
     LOGGER,
     ENTITY_DESCRIPTIONS,
@@ -40,6 +43,8 @@ class Coordinator(DataUpdateCoordinator):
     _auth: AsyncConfigEntryAuth
     _config: ConfigEntry
     fitness_data: FitnessData | None = None
+    sensor_update_counter: int
+    _infrequent_interval_multiplier: int
 
     def __init__(
         self,
@@ -50,10 +55,16 @@ class Coordinator(DataUpdateCoordinator):
         """Initialise."""
         self._auth = auth
         self._config = config
+        self.sensor_update_counter = 0
+        self._infrequent_interval_multiplier = config.options.get(
+            CONF_INFREQUENT_INTERVAL_MULTIPLIER, DEFAULT_INFREQUENT_INTERVAL
+        )
         update_time = config.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
         LOGGER.debug(
-            "Setting up Google Fit Coordinator. Updating every %u minutes",
+            "Setting up Google Fit Coordinator. Querying every %u minutes"
+            + " (every %u minutes for less frequently used sensors).",
             update_time,
+            (self._infrequent_interval_multiplier * update_time),
         )
         super().__init__(
             hass=hass,
@@ -73,6 +84,11 @@ class Coordinator(DataUpdateCoordinator):
     def current_data(self) -> FitnessData | None:
         """Return the current data, or None is data is not available."""
         return self.fitness_data
+
+    @property
+    def infrequent_interval_multiplier(self) -> int:
+        """Return the config option on what factor the interval should be for infrequent sensors."""
+        return self._infrequent_interval_multiplier
 
     def _get_interval(self, interval_period: int = 0) -> str:
         """Return the necessary interval for API queries, with start and end time in nanoseconds.
@@ -109,6 +125,34 @@ class Coordinator(DataUpdateCoordinator):
             async with async_timeout.timeout(30):
                 service = await self._auth.get_resource(self.hass)
                 parser = GoogleFitParse()
+                # Tracks whether we have retrieved sleep data for this update call
+                fetched_sleep = False
+
+                def _do_update(entity: GoogleFitSensorDescription) -> bool:
+                    # Default is to update
+                    do_update = True
+
+                    if entity.infrequent_update:
+                        if self.sensor_update_counter == 0:
+                            LOGGER.debug(
+                                "Querying infrequently updated sensor '%s'", entity.name
+                            )
+                        else:
+                            LOGGER.debug(
+                                "Skipping API query for infrequently updated sensor '%s'",
+                                entity.name,
+                            )
+                            do_update = False
+
+                    if (
+                        isinstance(entity, SumPointsSensorDescription)
+                        and entity.is_sleep
+                    ):
+                        if fetched_sleep:
+                            # Only need to call API once to get all different sleep segments
+                            do_update = False
+
+                    return do_update
 
                 def _get_data(source: str, dataset: str) -> FitnessObject:
                     return (
@@ -146,39 +190,54 @@ class Coordinator(DataUpdateCoordinator):
                         .execute()
                     )
 
-                fetched_sleep = False
                 for entity in ENTITY_DESCRIPTIONS:
-                    if isinstance(entity, SumPointsSensorDescription):
-                        # Only need to call once to get all different sleep segments
-                        if entity.is_sleep and fetched_sleep:
-                            continue
+                    if _do_update(entity):
+                        if isinstance(entity, SumPointsSensorDescription):
+                            dataset = self._get_interval(entity.period_seconds)
+                            response = await self.hass.async_add_executor_job(
+                                _get_data, entity.source, dataset
+                            )
 
-                        dataset = self._get_interval(entity.period_seconds)
-                        response = await self.hass.async_add_executor_job(
-                            _get_data, entity.source, dataset
-                        )
+                            if entity.is_sleep:
+                                fetched_sleep = True
 
-                        if entity.is_sleep:
-                            fetched_sleep = True
-
-                        parser.parse(entity, fit_object=response)
-                    elif isinstance(entity, LastPointSensorDescription):
-                        response = await self.hass.async_add_executor_job(
-                            _get_data_changes, entity.source
-                        )
-                        parser.parse(entity, fit_point=response)
-                    elif isinstance(entity, SumSessionSensorDescription):
-                        response = await self.hass.async_add_executor_job(
-                            _get_session, entity.activity_id
-                        )
-                        parser.parse(entity, fit_session=response)
-                    else:
-                        raise UpdateFailed(
-                            f"Unknown sensor type for {entity.data_key}. Got: {type(entity)}"
-                        )
+                            parser.parse(entity, fit_object=response)
+                        elif isinstance(entity, LastPointSensorDescription):
+                            response = await self.hass.async_add_executor_job(
+                                _get_data_changes, entity.source
+                            )
+                            parser.parse(entity, fit_point=response)
+                        elif isinstance(entity, SumSessionSensorDescription):
+                            response = await self.hass.async_add_executor_job(
+                                _get_session, entity.activity_id
+                            )
+                            parser.parse(entity, fit_session=response)
+                        # Single data point fetches
+                        else:
+                            raise UpdateFailed(
+                                f"Unknown sensor type for {entity.data_key}. Got: {type(entity)}"
+                            )
 
                 # Update globally stored data with fetched and parsed data
                 self.fitness_data = parser.fit_data
+
+                # Google Fit provides us with a total sleep time that also includes
+                # time awake as well. To more accurately reflect actual sleep time
+                # we should readjust this before submitting the data
+                if self.fitness_data is not None:
+                    if (
+                        self.fitness_data["sleepSeconds"] is not None
+                        and self.fitness_data["awakeSeconds"] is not None
+                    ):
+                        self.fitness_data["sleepSeconds"] -= self.fitness_data[
+                            "awakeSeconds"
+                        ]
+
+                # Increment and modulo the counter
+                self.sensor_update_counter = (
+                    self.sensor_update_counter + 1
+                ) % self.infrequent_interval_multiplier
+
         except HttpError as err:
             if 400 <= err.status_code < 500:
                 raise ConfigEntryAuthFailed(

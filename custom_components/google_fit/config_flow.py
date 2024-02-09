@@ -20,7 +20,9 @@ from .api_types import FitService
 from .const import (
     DEFAULT_ACCESS,
     DOMAIN,
+    CONF_INFREQUENT_INTERVAL_MULTIPLIER,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_INFREQUENT_INTERVAL,
 )
 
 
@@ -153,6 +155,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         CONF_SCAN_INTERVAL,
                         default=self.config_entry.options.get(
                             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                        ),
+                    ): config_validation.positive_int,
+                    vol.Required(
+                        CONF_INFREQUENT_INTERVAL_MULTIPLIER,
+                        default=self.config_entry.options.get(
+                            CONF_INFREQUENT_INTERVAL_MULTIPLIER,
+                            DEFAULT_INFREQUENT_INTERVAL,
                         ),
                     ): config_validation.positive_int,
                 }

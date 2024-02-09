@@ -29,8 +29,12 @@ NAME: Final = "Google Fit"
 DOMAIN: Final = "google_fit"
 MANUFACTURER: Final = "Google, Inc."
 
+# Configuration schema
+CONF_INFREQUENT_INTERVAL_MULTIPLIER: Final = "infrequent_interval"
+
 # Default Configuration Values
-DEFAULT_SCAN_INTERVAL = 5
+DEFAULT_SCAN_INTERVAL: Final = 5
+DEFAULT_INFREQUENT_INTERVAL: Final = 12
 
 # Useful constants
 NANOSECONDS_SECONDS_CONVERSION: Final = 1000000000
@@ -124,6 +128,7 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.DISTANCE,
         source="derived:com.google.height:com.google.android.gms:merge_height",
         data_key="height",
+        infrequent_update=True,
     ),
     LastPointSensorDescription(
         key="google_fit",
@@ -134,6 +139,7 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.WEIGHT,
         source="derived:com.google.weight:com.google.android.gms:merge_weight",
         data_key="weight",
+        infrequent_update=True,
     ),
     LastPointSensorDescription(
         key="google_fit",
@@ -144,6 +150,7 @@ ENTITY_DESCRIPTIONS = (
         device_class=None,
         source="derived:com.google.body.fat.percentage:com.google.android.gms:merged",
         data_key="bodyFat",
+        infrequent_update=True,
     ),
     LastPointSensorDescription(
         key="google_fit",
@@ -154,6 +161,7 @@ ENTITY_DESCRIPTIONS = (
         device_class=SensorDeviceClass.TEMPERATURE,
         source="derived:com.google.body.temperature:com.google.android.gms:merged",
         data_key="bodyTemperature",
+        infrequent_update=True,
     ),
     SumPointsSensorDescription(
         key="google_fit",

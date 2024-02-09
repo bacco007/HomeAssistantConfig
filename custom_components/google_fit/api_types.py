@@ -156,6 +156,7 @@ class GoogleFitSensorDescription(SensorEntityDescription):
     data_key: str = "undefined"
     source: str = "undefined"
     is_int: bool = False  # If true, data is an integer. Otherwise, data is a float
+    infrequent_update: bool = False
 
 
 @dataclass

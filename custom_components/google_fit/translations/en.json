@@ -37,7 +37,8 @@
         "title": "Google Fit Settings",
         "description": "For help with settings, see [Configuration Options](https://github.com/YorkshireIoT/ha-google-fit#configuration)",
         "data": {
-          "scan_interval": "Minutes between REST API queries."
+          "scan_interval": "Minutes between REST API queries.",
+          "infrequent_interval": "Infrequent Sensor Multiplier. Reduces API queries."
         }
       }
     }
