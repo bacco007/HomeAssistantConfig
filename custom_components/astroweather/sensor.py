@@ -482,7 +482,7 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
                     "constellation": dso.constellation,
                     "foto": dso.foto,
                 }
-                # dso_list.append(obj)
-                dso_list.insert(0, obj)
+                dso_list.append(obj)
+                # dso_list.insert(0, obj)
             return {"objects": dso_list}
         return None

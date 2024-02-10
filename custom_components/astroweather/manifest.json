@@ -10,7 +10,7 @@
     "iot_class": "cloud_polling",
     "issue_tracker": "https://github.com/mawinkler/astroweather/issues",
     "requirements": [
-        "pyastroweatherio==0.42.5"
+        "pyastroweatherio==0.42.10"
     ],
-    "version": "0.42.2"
+    "version": "0.42.3"
 }
