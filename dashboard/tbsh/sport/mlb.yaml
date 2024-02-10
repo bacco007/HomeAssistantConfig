@@ -30,6 +30,10 @@ cards:
           margin-top: -10px;
         }
     entities:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_mlb_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
