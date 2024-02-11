@@ -22,10 +22,11 @@ _Please :star: this repo if you find it useful_
 <details>
 <summary>Details</summary>
 
-- [Configuration principles](#configuration-principles)
-  - [Automations, Scripts & Scenes](#automations-scripts--scenes)
-- [HASS.io](#hassio)
-  - [Host hardware](#host-hardware)
+- [TL;DR](#tldr)
+- [Stats](#stats)
+- [Integrations Used](#integrations-used)
+- [Screenshots](#screenshots)
+- [Licence](#licence)
 
 </details>
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
