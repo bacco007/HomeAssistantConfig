@@ -33,20 +33,20 @@ jobs:
         with:
           args: "remark --no-stdout --color --frail --use preset-lint-recommended ."
 
-    version_env:
-      name: Get Installed Version for Testing
-      runs-on: ubuntu-latest
-      outputs:
-        current_version: ${{ steps.currentver.outputs.current_version }}
-      steps:
-        - name: Get config from GitHub
-          uses: actions/checkout@v3
-        - name: Get Installed Version from .HA_VERSION
-          id: currentver
-          run: |
-            HA_VERSION=$(<.HA_VERSION)
-            echo $HA_VERSION
-            echo "{current_version}={$HA_VERSION}" >> $GITHUB_OUTPUT
+  version_env:
+    name: Get Installed Version for Testing
+    runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.currentver.outputs.current_version }}
+    steps:
+      - name: Get config from GitHub
+        uses: actions/checkout@v3
+      - name: Get Installed Version from .HA_VERSION
+        id: currentver
+        run: |
+          HA_VERSION=$(<.HA_VERSION)
+          echo $HA_VERSION
+          echo "{current_version}={$HA_VERSION}" >> $GITHUB_OUTPUT
 
   home_assistant:
     name: "🏠 Home Assistant Core ${{ matrix.version }} Configuration Check"
@@ -79,10 +79,10 @@ jobs:
     steps:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v4
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.7
+          python-version: 3.9
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
