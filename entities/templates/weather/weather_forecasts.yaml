@@ -30,7 +30,7 @@ action:
         - weather.tomorrow_io_tbsmarthome_nowcast
         - weather.weather_home
         - weather.weatherflow_forecast_brisbane_st
-        - weather.east_tamworth
+        - weather.east_tamworth_hourly
     response_variable: hourly
   - service: weather.get_forecasts
     data:
@@ -41,7 +41,7 @@ action:
         - weather.pirateweather
         - weather.tomorrow_io_tbsmarthome_daily
         - weather.weatherflow_forecast_brisbane_st
-        - weather.east_tamworth_hourly
+        - weather.east_tamworth
     response_variable: daily
 
 sensor:

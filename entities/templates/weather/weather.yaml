@@ -587,7 +587,7 @@ sensor:
     state: >
       {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_precipitation_today')) %}
-        {{ states('sensor.weatherflow_forecast_precipitation_today')|float }}
+        {{ states('sensor.weatherflow_forecast_precipitation_today')|float|round(2) }}
         {% else %} 0
       {%- endif %}
     attributes:
@@ -613,7 +613,7 @@ sensor:
         {{ states('sensor.weatherflow_forecast_precipitation_yesterday')|float }}
       {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
           and is_number(states('sensor.east_tamworth_precipitation_yesterday')) %}
-        {{ states('sensor.east_tamworth_precipitation_yesterday')|float }}
+        {{ states('sensor.east_tamworth_precipitation_yesterday')|float|round(2) }}
       {% else %} 0
       {%- endif %}
     attributes:

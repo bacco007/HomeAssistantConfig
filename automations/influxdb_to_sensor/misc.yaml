@@ -9,23 +9,23 @@ trigger:
     hours: "/1"
 condition: []
 action:
-  - service: pyscript.influxdb2_query_to_entity
-    data:
-      query: >-
-        import "timezone" option location = timezone.location(name:
-        "Australia/Sydney") from(bucket: "homeassistant")
-          |> range(start: -1y)
-          |> filter(fn: (r) => r["_measurement"] == "followers")
-          |> filter(fn: (r) => r["entity_id"] == "twitter_followers_bacco007")
-          |> filter(fn: (r) => r["_field"] == "value")
-          |> drop(columns: ["friendly_name"])
-          |> aggregateWindow(every: 1d, fn: last, createEmpty: true)
-          |> fill(usePrevious: true)
-          |> yield(name: "last")
-      entity_id: sensor.archive_twitter_followers_365day
-      unit_of_measurement: Followers
-      friendly_name: Twitter - Followers - 365 Day
-      icon: "mdi:twitter"
+  # - service: pyscript.influxdb2_query_to_entity
+  #   data:
+  #     query: >-
+  #       import "timezone" option location = timezone.location(name:
+  #       "Australia/Sydney") from(bucket: "homeassistant")
+  #         |> range(start: -1y)
+  #         |> filter(fn: (r) => r["_measurement"] == "followers")
+  #         |> filter(fn: (r) => r["entity_id"] == "twitter_followers_bacco007")
+  #         |> filter(fn: (r) => r["_field"] == "value")
+  #         |> drop(columns: ["friendly_name"])
+  #         |> aggregateWindow(every: 1d, fn: last, createEmpty: true)
+  #         |> fill(usePrevious: true)
+  #         |> yield(name: "last")
+  #     entity_id: sensor.archive_twitter_followers_365day
+  #     unit_of_measurement: Followers
+  #     friendly_name: Twitter - Followers - 365 Day
+  #     icon: "mdi:twitter"
 
   - service: pyscript.influxdb2_query_to_entity
     data:

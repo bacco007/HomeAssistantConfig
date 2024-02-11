@@ -29,14 +29,13 @@ action:
   - service: pyscript.influxdb2_query_to_entity
     data:
       query: >-
-        import "timezone" option location = timezone.location(name:
-        "Australia/Sydney") from(bucket: "homeassistant")
+        import "timezone" option location = timezone.location(name: "Australia/Sydney")
+        from(bucket: "homeassistant")
           |> range(start: -1y)
-          |> filter(fn: (r) => r["_measurement"] == "km")
-          |> filter(fn: (r) => r["entity_id"] == "flighttracker_maxdistance_km")
+          |> filter(fn: (r) => r["_measurement"] == "m")
+          |> filter(fn: (r) => r["entity_id"] == "flighttracker_distance_max")
           |> filter(fn: (r) => r["_field"] == "value")
-          |> drop(columns: ["friendly_name"])
-          |> filter(fn: (r) => r._value < 500 )
+          |> map(fn: (r) => ({r with _value: r._value / 1000.0}))
           |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
           |> fill(value: 0.0)
           |> yield(name: "max")
@@ -50,11 +49,10 @@ action:
         import "timezone" option location = timezone.location(name:
         "Australia/Sydney") from(bucket: "homeassistant")
           |> range(start: -1y)
-          |> filter(fn: (r) => r["_measurement"] == "km")
-          |> filter(fn: (r) => r["entity_id"] == "flighttracker_maxdistance_km")
+          |> filter(fn: (r) => r["_measurement"] == "m")
+          |> filter(fn: (r) => r["entity_id"] == "flighttracker_distance_max")
           |> filter(fn: (r) => r["_field"] == "value")
-          |> drop(columns: ["friendly_name"])
-          |> filter(fn: (r) => r._value < 500 )
+          |> map(fn: (r) => ({r with _value: r._value / 1000.0}))
           |> aggregateWindow(every: 1d, fn: mean, createEmpty: true)
           |> fill(value: 0.0)
           |> yield(name: "mean")

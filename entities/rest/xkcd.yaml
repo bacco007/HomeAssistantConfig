@@ -1,0 +1,10 @@
+---
+scan_interval: 43200 #12h
+resource: "https://xkcd.com/info.0.json"
+sensor:
+  name: "xkcd"
+  value_template: "{{ value_json.safe_title }}"
+  json_attributes:
+    - "img"
+    - "alt"
+    - "num"

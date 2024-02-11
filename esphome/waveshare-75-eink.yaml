@@ -116,6 +116,18 @@ script:
       - lambda: "id(recorded_display_refresh) += 1;"
       - lambda: "id(display_last_update).publish_state(id(ntp).now().timestamp);"
 
+select:
+  - platform: template
+    name: "${esp_name} Appearance"
+    id: appearance
+    options:
+      - "Dark Mode"
+      - "Light Mode"
+    initial_option: "Light Mode"
+    restore_value: true
+    optimistic: true
+    entity_category: config
+
 time:
   - platform: homeassistant
     id: ntp
@@ -542,11 +554,29 @@ display:
     model: 7.50in-bv2-rb
     id: eink_display
     update_interval: never
-    reset_duration: 22ms
+    reset_duration: 2ms
     rotation: 180
     lambda: |-
       int xres = it.get_width();
       int yres = it.get_height();
+
+      auto color_text = Color::WHITE;
+      auto color_bg = Color::BLACK;
+
+      auto index = id(appearance).active_index();
+
+      if (index.has_value()) {
+        if (index.value() == 1) {
+          ESP_LOGD("custom", "Light Mode is selected - using black text on a white background.");
+          color_text = Color::BLACK;
+          color_bg = Color::WHITE;
+        } else {
+          ESP_LOGD("custom", "Dark Mode is selected - using white text on a black background.");
+        }
+      }
+
+      // Fill background.
+      it.fill(color_bg);
 
       if (id(initial_data_received) == false) {
         it.printf(xres/2, yres/2, id(din_big), COLOR_RED, TextAlign::TOP_CENTER, "Waiting for data...");
@@ -568,7 +598,8 @@ display:
         int wifi_x_a = xres-x_pad;
         int wifi_y_a = yres-y_pad+2;
 
-        it.fill(COLOR_OFF);
+        // it.fill(COLOR_OFF);
+
         it.printf(20, 5, id(din_big), COLOR_RED, id(greeting).state.c_str());
         it.rectangle(2, 2, xres-4, yres-4);
 
