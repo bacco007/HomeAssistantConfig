@@ -1,190 +1,183 @@
-- id: '1670914225475'
-  alias: PiLocator Alerts
-  description: ''
-  use_blueprint:
-    path: giqcass/rpilocator-notification-blueprint.yaml
-    input:
-      zero_2_w: --NO--
-      notify_device: e93f101330f503133307ec86a813b514
-      cm4_mmc: MMC
-      cm4_wifi: With Wifi
-- id: '1696920090820'
+- id: "1696920090820"
   alias: Update BOM Average when Unavailable
-  description: ''
+  description: ""
   trigger:
-  - platform: state
-    entity_id:
-    - sensor.bom_average
-    to: unavailable
-    for:
-      hours: 0
-      minutes: 2
-      seconds: 0
+    - platform: state
+      entity_id:
+        - sensor.bom_average
+      to: unavailable
+      for:
+        hours: 0
+        minutes: 2
+        seconds: 0
   condition: []
   action:
-  - service: multiscrape.trigger_bom_average
-    data: {}
+    - service: multiscrape.trigger_bom_average
+      data: {}
   mode: single
-- id: '1698470577800'
-  alias: '[pixelclock] Currently Playing'
-  description: ''
+- id: "1698470577800"
+  alias: "[pixelclock] Currently Playing"
+  description: ""
   use_blueprint:
     path: GKXydoDmOpjL.yaml
     input:
       awtrix_light: da38247c02359f48562a1b102b5d4ac4
       media_player: media_player.currently_playing
-      text_case: '2'
+      text_case: "2"
       show_rainbow: false
-      icon_in: '29944'
-      push_icon: '0'
-- id: '1698473315369'
-  alias: '[pixelclock] Flight Tracker Stats'
-  description: ''
+      icon_in: "29944"
+      push_icon: "0"
+- id: "1698473315369"
+  alias: "[pixelclock] Flight Tracker Stats"
+  description: ""
   trigger:
-  - platform: state
-    entity_id:
-    - sensor.flighttracker_aircraft_total
+    - platform: state
+      entity_id:
+        - sensor.flighttracker_aircraft_total
   condition: []
   action:
-  - service: mqtt.publish
-    data:
-      payload: '{%- set value = states(''sensor.flighttracker_aircraft_total'') -%}
-        {%- set nearest_rego = state_attr(''sensor.plane_overhead_detail'', ''aircraft_rego'')
-        -%} {%- set nearest_type = state_attr(''sensor.plane_overhead_detail'', ''aircraft'')
-        -%} {%- set nearest_trip = state_attr(''sensor.plane_overhead_detail'', ''origin_airport_code'')
-        + " > " + state_attr(''sensor.plane_overhead_detail'', ''destination_airport_code'')
-        -%} { "icon": 2933, "pushIcon": 0, "repeat": 1, "textCase": 2, "text": "{{
-        value }}, {{ nearest_type }}, {{ nearest_rego }}, {{nearest_trip}}" }'
-      topic: pixelclock/custom/flighttracker
-      qos: 0
-      retain: false
+    - service: mqtt.publish
+      data:
+        payload:
+          '{%- set value = states(''sensor.flighttracker_aircraft_total'') -%}
+          {%- set nearest_rego = state_attr(''sensor.plane_overhead_detail'', ''aircraft_rego'')
+          -%} {%- set nearest_type = state_attr(''sensor.plane_overhead_detail'', ''aircraft'')
+          -%} {%- set nearest_trip = state_attr(''sensor.plane_overhead_detail'', ''origin_airport_code'')
+          + " > " + state_attr(''sensor.plane_overhead_detail'', ''destination_airport_code'')
+          -%} { "icon": 2933, "pushIcon": 0, "repeat": 1, "textCase": 2, "text": "{{
+          value }}, {{ nearest_type }}, {{ nearest_rego }}, {{nearest_trip}}" }'
+        topic: pixelclock/custom/flighttracker
+        qos: 0
+        retain: false
   mode: single
-- id: '1699662929982'
-  alias: '[pixelclock] Solar Energy'
-  description: ''
+- id: "1699662929982"
+  alias: "[pixelclock] Solar Energy"
+  description: ""
   use_blueprint:
     path: awtrix_solar.yaml
     input:
       awtrix:
-      - da38247c02359f48562a1b102b5d4ac4
+        - da38247c02359f48562a1b102b5d4ac4
       skip_during_night_hours: true
-      night_starts_after_time: '19:00:00'
+      night_starts_after_time: "19:00:00"
       night_ends_after_time: 06:30:00
       skip_if_zero_watts: true
       power_source: sensor.active_generation
       threshold_high: 3500
-- id: '1701573647510'
-  alias: '[Logging] Persistent Notifications'
-  description: ''
+- id: "1701573647510"
+  alias: "[Logging] Persistent Notifications"
+  description: ""
   trigger:
-  - platform: event
-    event_type: call_service
-    event_data:
-      domain: persistent_notification
-      service: create
+    - platform: event
+      event_type: call_service
+      event_data:
+        domain: persistent_notification
+        service: create
   action:
-  - service: notify.persist_notify
-    data_template:
-      message: '{{ now().strftime(''%Y%m%d %H%M%S'') }}:  {{ trigger.event.data.service_data.title
-        }} /  {{ trigger.event.data.service_data.message }}
+    - service: notify.persist_notify
+      data_template:
+        message:
+          "{{ now().strftime('%Y%m%d %H%M%S') }}:  {{ trigger.event.data.service_data.title
+          }} /  {{ trigger.event.data.service_data.message }}
 
-        '
-- id: '1702689288792'
-  alias: '[pixelclock] Update Firmware'
-  description: ''
+          "
+- id: "1702689288792"
+  alias: "[pixelclock] Update Firmware"
+  description: ""
   trigger:
-  - platform: state
-    entity_id:
-    - sensor.blueforcer_awtrix_light_latest_release
-    attribute: tag
+    - platform: state
+      entity_id:
+        - sensor.blueforcer_awtrix_light_latest_release
+      attribute: tag
   condition: []
   action:
-  - delay:
-      hours: 0
-      minutes: 2
-      seconds: 0
-      milliseconds: 0
-  - service: mqtt.publish
-    data:
-      topic: pixelclock/doupdate
-  - service: notify.alert
-    data:
-      title: pixelclock Updated
-      message: pixelclock updated with latest firmware
+    - delay:
+        hours: 0
+        minutes: 2
+        seconds: 0
+        milliseconds: 0
+    - service: mqtt.publish
       data:
-        tag: pixelclock_updated
+        topic: pixelclock/doupdate
+    - service: notify.alert
+      data:
+        title: pixelclock Updated
+        message: pixelclock updated with latest firmware
+        data:
+          tag: pixelclock_updated
+          notification_id: pixelclock_updated
+          push:
+            badge: 1
+            sound: none
+            interruption-level: time-sensitive
+          presentation_options:
+            - alert
+            - badge
+          group: alerts
+          actions:
+            - title: Pause Alert
+              action: pause_alert_pixelclock_updated
+    - service: persistent_notification.create
+      data:
         notification_id: pixelclock_updated
-        push:
-          badge: 1
-          sound: none
-          interruption-level: time-sensitive
-        presentation_options:
-        - alert
-        - badge
-        group: alerts
-        actions:
-        - title: Pause Alert
-          action: pause_alert_pixelclock_updated
-  - service: persistent_notification.create
-    data:
-      notification_id: pixelclock_updated
-      title: pixelclock Update
-      message: pixelclock updated with latest firmware
+        title: pixelclock Update
+        message: pixelclock updated with latest firmware
   mode: single
-- id: '1704526276912'
-  alias: '[pixelclock] Weather + Forecast'
+- id: "1704526276912"
+  alias: "[pixelclock] Weather + Forecast"
   description: Show Weather + Forecast on Pixelclock
   use_blueprint:
     path: jeeftor/awtrix_weatherflow.yaml
     input:
       awtrix:
-      - da38247c02359f48562a1b102b5d4ac4
+        - da38247c02359f48562a1b102b5d4ac4
       forecast_var: weather.weatherflow_forecast_brisbane_st
       temp_digits: 1
       current_temp_var: sensor.weather_temperature
-      color_matrix_json: '{"-12": "#D977DF","-6": "#9545BC","-1": "#4B379C","0": "#FEC4FF","4":
+      color_matrix_json:
+        '{"-12": "#D977DF","-6": "#9545BC","-1": "#4B379C","0": "#FEC4FF","4":
         "#31B8DB","10": "#31DB8B","15": "#6ED228","21": "#FFFF28","27": "#F87E27","32":
         "#CF3927","38": "#A12527"}'
       moon: sensor.moon
       moon_rise_set: sensor.moonriseset
       when_show_moon: never
       sun_time_type: Relative
-      sun_time_format: '%H:%M'
+      sun_time_format: "%H:%M"
       message_duration_forecast: 40
-- id: '1705097473383'
-  alias: '[GTFS] Get New Data and Run Update'
-  description: ''
+- id: "1705097473383"
+  alias: "[GTFS] Get New Data and Run Update"
+  description: ""
   trigger:
-  - platform: time
-    at: 02:30:00
-    enabled: true
+    - platform: time
+      at: 02:30:00
+      enabled: true
   condition:
-  - condition: time
-    weekday:
-    - wed
-    enabled: true
+    - condition: time
+      weekday:
+        - wed
+      enabled: true
   action:
-  - service: shell_command.gtfs_get_nenw_buses
-    metadata: {}
-    data: {}
-  - service: shell_command.gtfs_get_trains
-    metadata: {}
-    data: {}
-  - delay:
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
-  - service: gtfs2.update_gtfs
-    metadata: {}
-    data:
-      extract_from: zip
-      url: na
-      file: nenw_buses
-  - service: gtfs2.update_gtfs
-    metadata: {}
-    data:
-      extract_from: zip
-      url: na
-      file: nswtrains
+    - service: shell_command.gtfs_get_nenw_buses
+      metadata: {}
+      data: {}
+    - service: shell_command.gtfs_get_trains
+      metadata: {}
+      data: {}
+    - delay:
+        hours: 0
+        minutes: 5
+        seconds: 0
+        milliseconds: 0
+    - service: gtfs2.update_gtfs
+      metadata: {}
+      data:
+        extract_from: zip
+        url: na
+        file: nenw_buses
+    - service: gtfs2.update_gtfs
+      metadata: {}
+      data:
+        extract_from: zip
+        url: na
+        file: nswtrains
   mode: single
