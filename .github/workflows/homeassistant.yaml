@@ -18,6 +18,9 @@ jobs:
         uses: actions/checkout@v4
       - name: 🚀 Run yamllint
         uses: frenck/action-yamllint@v1.4.2
+        with:
+          config: ./.yamllint
+
   remarklint:
     name: 🧹 Remark Lint
     runs-on: ubuntu-latest
@@ -30,13 +33,34 @@ jobs:
         with:
           args: "remark --no-stdout --color --frail --use preset-lint-recommended ."
 
+    version_env:
+      name: Get Installed Version for Testing
+      runs-on: ubuntu-latest
+      outputs:
+        current_version: ${{ steps.currentver.outputs.current_version }}
+      steps:
+        - name: Get config from GitHub
+          uses: actions/checkout@v3
+        - name: Get Installed Version from .HA_VERSION
+          id: currentver
+          run: |
+            HA_VERSION=$(<.HA_VERSION)
+            echo $HA_VERSION
+            echo "{current_version}={$HA_VERSION}" >> $GITHUB_OUTPUT
+
   home_assistant:
     name: "🏠 Home Assistant Core ${{ matrix.version }} Configuration Check"
     runs-on: ubuntu-latest
-    needs: [yamllint]
+    needs: [yamllint, remarklint, version_env]
     strategy:
       matrix:
-        version: ["stable", "beta", "dev"]
+        version:
+          [
+            "${{needs.version_env.outputs.current_version}}",
+            "stable",
+            "beta",
+            "dev",
+          ]
     steps:
       - name: ⤵️  Check out configuration from GitHub
         uses: actions/checkout@v4
