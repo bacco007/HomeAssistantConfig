@@ -27,7 +27,7 @@ from homeassistant.core import State, callback
 from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import async_track_state_change
-from .temperature import convert as convert_temperature
+from homeassistant.util.unit_conversion import TemperatureConverter
 
 from .const import (
     ATTR_SOURCE_INDEX_TPL,
@@ -354,7 +354,7 @@ class Iaquk:
             )
 
         if entity_unit != TEMP_CELSIUS:
-            value = convert_temperature(value, entity_unit, TEMP_CELSIUS)
+            value = TemperatureConverter.convert(value, entity_unit, TEMP_CELSIUS)
 
         index = 1
         if 18 <= value <= 21:  # °C
