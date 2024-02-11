@@ -1,5 +1,5 @@
 ---
-scan_interval: 43200 #12h
+scan_interval: 43200
 resource: "https://xkcd.com/info.0.json"
 sensor:
   name: "xkcd"
