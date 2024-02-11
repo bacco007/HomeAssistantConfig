@@ -40,7 +40,7 @@ jobs:
       current_version: ${{ steps.currentver.outputs.current_version }}
     steps:
       - name: Get config from GitHub
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get Installed Version from .HA_VERSION
         id: currentver
         run: |
