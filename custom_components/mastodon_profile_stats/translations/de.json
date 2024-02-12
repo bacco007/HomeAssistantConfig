@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Hilfe zur Konfiguration findest du unter: https://github.com/andrew-codechimp/ha-mastodon-profile-stats",
+                "data": {
+                    "url": "Profil (entweder @username@instance oder vollständige Url)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Benutzername/Passwort ist falsch.",
+            "connection": "Kann keine Verbindung zum Server herstellen.",
+            "unknown": "Ein unbekannter Fehler ist aufgetreten."
+        }
+    },
+    "entity": {
+        "sensor": {
+            "followers": {
+                "name": "Anhänger"
+            },
+            "following": {
+                "name": "Nachfolgend"
+            },
+            "statuses": {
+                "name": "Beiträge"
+            }
+        }
+    }
+}
