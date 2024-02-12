@@ -23,7 +23,6 @@ _Please :star: this repo if you find it useful_
 <details>
 <summary>Details</summary>
 
-- [TL;DR](#tldr)
 - [Stats](#stats)
 - [Integrations Used](#integrations-used)
 - [Screenshots](#screenshots)
