@@ -58,18 +58,16 @@ def snake_case(s):
 
 
 rules_url = f'{controller_url}/proxy/network/api/s/default/stat/device'
-
 response = session.get(rules_url, verify=False)
 response.raise_for_status()
 rules = response.json()
-sysinfo_url = f'{controller_url}/proxy/network/api/s/default/stat/sysinfo'
 
+sysinfo_url = f'{controller_url}/proxy/network/api/s/default/stat/sysinfo'
 response = session.get(sysinfo_url, verify=False)
 response.raise_for_status()
 version = response.json()
 
 health_url = f'{controller_url}/proxy/network/api/s/default/stat/health'
-
 response = session.get(health_url, verify=False)
 response.raise_for_status()
 health_data = response.json()
@@ -102,6 +100,11 @@ for h in health_data['data']:
     case 'vpn':
       resp['data'].update({
         "health_" + h['subsystem'] + ".status": h['status'],
+        "health_" + h['subsystem'] + ".enabled": h['remote_user_enabled'],
+        "health_" + h['subsystem'] + ".users_active": h['remote_user_num_active'],
+        "health_" + h['subsystem'] + ".users_inactive": h['remote_user_num_inactive'],
+        "health_" + h['subsystem'] + ".tx_bytes": h['remote_user_tx_bytes'],
+        "health_" + h['subsystem'] + ".rx_bytes": h['remote_user_rx_bytes'],
       })
       # test
     case 'wlan':
@@ -130,6 +133,7 @@ for h in health_data['data']:
       # print(json.dumps(h, indent = 1))
       resp['data'].update({
         "health_" + h['subsystem'] + ".status": h['status'],
+        "health_" + h['subsystem'] + ".wan_ip": h['wan_ip'],
         "health_" + h['subsystem'] + ".isp_organization": h['isp_organization'],
         "health_" + h['subsystem'] + ".isp_name": h['isp_name'],
         "health_" + h['subsystem'] + ".gw_version": h['gw_version'],
@@ -190,7 +194,7 @@ for client_data in rules['data']:
   internet = None
   speedtest_status = None
   # print("client_data['model'] %s",client_data['model'] )
-  if client_data['model'] == "UDM":
+  if client_data['model'] == "udm":
     speedtest_status = client_data['uplink']['speedtest_status'] == "Success"
     internet = client_data['uplink']['up']
     if 'uplink' in client_data.keys():
