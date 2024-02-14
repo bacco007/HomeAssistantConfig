@@ -79,4 +79,4 @@ sensor:
       weatherflow_hourly: >
         {{ hourly['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
       bom_hourly: >
-        {{ daily['weather.east_tamworth_hourly']['forecast'] }}
+        {{ hourly['weather.east_tamworth_hourly']['forecast'] }}
