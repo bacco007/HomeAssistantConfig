@@ -1,0 +1,17 @@
+{
+  "domain": "sungrow",
+  "name": "Sungrow",
+  "codeowners": [
+    "@AlexanderLanin"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/AlexanderLanin/homeassistant-sungrow/blob/main/INFO.md",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/AlexanderLanin/homeassistant-sungrow/issues",
+  "requirements": [
+    "pymodbus~=3.6.2",
+    "beartype"
+  ],
+  "version": "0.0.1"
+}

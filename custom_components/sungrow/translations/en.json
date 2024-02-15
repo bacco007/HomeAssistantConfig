@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Inverter is already configured"
+        },
+        "error": {
+            "cannot_connect": "Cannot connect to inverter",
+            "unknown": "Unknown error. Sorry about that."
+        },
+        "step": {
+            "user": {
+                "title": "Connection settings",
+                "data": {
+                    "host": "Hostname or IP address of inverter",
+                    "port": "Port of inverter connection",
+                    "slave": "MODBUS slave number",
+                    "use_local_time": "Use local time?"
+                },
+                "data_description": {
+                    "host": "Note: In case of IP make sure it's static\n",
+                    "slave": "Note: MODBUS slave number is usually 1 for standalone/master inverters and 2 for slave inverters\n"
+                }
+            }
+        }
+    },
+    "selector": {
+        "connection": {
+            "options": {
+                "modbus": "MODBUS: Use this when connecting to internal LAN port (preferred)",
+                "sungrow": "MODBUS_Sungrow: Some inverters require this instead of modbus",
+                "http": "HTTP: Use this when connecting to WiNet-S (bad idea)"
+            }
+        }
+    }
+}
