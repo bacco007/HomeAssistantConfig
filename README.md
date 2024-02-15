@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.2.1 |
-| No. Integrations | 199 |
-| No. Custom Integrations | 88 |
-| No. Entities | 5267 |
-| No. Sensors | 3469 |
+| No. Integrations | 200 |
+| No. Custom Integrations | 89 |
+| No. Entities | 5176 |
+| No. Sensors | 3472 |
 | No. Automations | 137 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 568
+Devices | 570
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -91,7 +91,7 @@ Remotes | 6
 Scenes | 2
 Scripts | 13
 Selects | 49
-Sensors | 3469
+Sensors | 3472
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 272
 Texts | 0
 Times | 0
 Text-to-speech | 1
-Update | 282
+Update | 284
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>592 Integrations</summary>
+<details><summary>594 Integrations</summary>
 
 | Name |
 | --- |
@@ -384,6 +384,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mobile_app.device_tracker](https://www.home-assistant.io/components/mobile_app.device_tracker) |
 | [mobile_app.notify](https://www.home-assistant.io/components/mobile_app.notify) |
 | [mobile_app.sensor](https://www.home-assistant.io/components/mobile_app.sensor) |
+| [modbus](https://www.home-assistant.io/components/modbus) |
+| [modbus.sensor](https://www.home-assistant.io/components/modbus.sensor) |
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
 | [monitor_docker.button](https://www.home-assistant.io/components/monitor_docker.button) |
 | [monitor_docker.sensor](https://www.home-assistant.io/components/monitor_docker.sensor) |
@@ -713,7 +715,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>83 Custom Integrations</summary>
+<details><summary>85 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -737,7 +739,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.10] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
-| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.3.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
+| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.4.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.1] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
@@ -746,11 +748,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.rc10.3] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.3] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.0.5] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Local Tuya](https://github.com/rospogrigio/localtuya) |  [v5.2.1] | local handling for Tuya devices |[@rospogrigio](https://github.com/rospogrigio), [@postlund](https://github.com/postlund).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.10] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
@@ -766,6 +768,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.9.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: ~1 more week before usable |[@AlexanderLanin](https://github.com/AlexanderLanin).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.0] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.2] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
@@ -782,14 +785,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.1] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.6] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.1.0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Sungrow](https://github.com/alangibson/homeassistant-sungrow) |  | Sungrow Inverter integration for Home Assistant |[alangibson](https://github.com/alangibson).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.11.1] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) |  [v0.3.8] | Sensor of Temperature Feels Like for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
 | [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.2.0] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
-| [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
+| [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
@@ -819,7 +823,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.2.0] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.2.1] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/Alia5/lovelace-expander-card) |  [v0.0.4] | Expander card for HomeAssistant |
@@ -849,7 +853,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.20.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.7] | Home Assistant Tile Card Service Call Feature |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.7] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
 | [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat) |  [v2.5.0] | A different take on the thermostat card for Home Assistant ♨️ |
 | [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.0.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |

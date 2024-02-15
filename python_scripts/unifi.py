@@ -142,7 +142,13 @@ for h in health_data['data']:
         "health_" + h['subsystem'] + ".mem": h['gw_system-stats']['mem'],
         "health_" + h['subsystem'] + ".uptime": h['gw_system-stats']['uptime'],
         "health_" + h['subsystem'] + ".tx_bytes": h['tx_bytes-r'],
-        "health_" + h['subsystem'] + ".rx_bytes": h['rx_bytes-r']
+        "health_" + h['subsystem'] + ".rx_bytes": h['rx_bytes-r'],
+        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['alerting_monitors'][0]['target'] : h['uptime_stats']['WAN']['alerting_monitors'][0]['latency_average'],
+        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['monitors'][0]['target'] : h['uptime_stats']['WAN']['monitors'][0]['latency_average'],
+        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['monitors'][1]['target'] : h['uptime_stats']['WAN']['monitors'][1]['latency_average'],
+        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['monitors'][2]['target'] : h['uptime_stats']['WAN']['monitors'][2]['latency_average'],
+        "health_" + h['subsystem'] + ".wan.latency_avg": h['uptime_stats']['WAN']['latency_average']
+  })
       })
 
     case _:
