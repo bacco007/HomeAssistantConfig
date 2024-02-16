@@ -1,0 +1,10 @@
+---
+sensor:
+  command: '/config/python_scripts/unifi.py'
+  command_timeout: 180
+  name: unifi_stats
+  unique_id: unifi_stats
+  value_template: '{{value_json.version}}'
+  scan_interval: 900
+  json_attributes:
+    - data

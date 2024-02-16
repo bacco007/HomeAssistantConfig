@@ -80,75 +80,75 @@ for h in health_data['data']:
 
   match h['subsystem']:
     case 'www':
-      # print(json.dumps(h, indent = 1))
-      resp['data'].update({
-        "health_" + h['subsystem'] + ".status": h['status'],
-        "health_" + h['subsystem'] + ".tx_bytes-r": h['tx_bytes-r'],
-        "health_" + h['subsystem'] + ".rx_bytes-r": h['rx_bytes-r'],
-        "health_" + h['subsystem'] + ".latency": h['latency'],
-        "health_" + h['subsystem'] + ".uptime": h['uptime'],
-        "health_" + h['subsystem'] + ".drops": h['drops'],
-        "health_" + h['subsystem'] + ".xput_up": h['xput_up'],
-        "health_" + h['subsystem'] + ".xput_down": h['xput_down'],
-        "health_" + h['subsystem'] + ".speedtest_status": h['speedtest_status'],
-        "health_" + h['subsystem'] + ".speedtest_lastrun": h['speedtest_lastrun'],
-        "health_" + h['subsystem'] + ".speedtest_ping": h['speedtest_ping'],
-        "health_" + h['subsystem'] + ".uptime": h['uptime']
-
+      resp['data']['www']={}
+      resp['data']['www'].update({
+        "status": h['status'],
+        "tx_bytes-r": h['tx_bytes-r'],
+        "rx_bytes-r": h['rx_bytes-r'],
+        "latency": h['latency'],
+        "uptime": h['uptime'],
+        "drops": h['drops'],
+        "xput_up": h['xput_up'],
+        "xput_down": h['xput_down'],
+        "speedtest_status": h['speedtest_status'],
+        "speedtest_lastrun": h['speedtest_lastrun'],
+        "speedtest_ping": h['speedtest_ping'],
+        "uptime": h['uptime']
       })
 
     case 'vpn':
-      resp['data'].update({
-        "health_" + h['subsystem'] + ".status": h['status'],
-        "health_" + h['subsystem'] + ".enabled": h['remote_user_enabled'],
-        "health_" + h['subsystem'] + ".users_active": h['remote_user_num_active'],
-        "health_" + h['subsystem'] + ".users_inactive": h['remote_user_num_inactive'],
-        "health_" + h['subsystem'] + ".tx_bytes": h['remote_user_tx_bytes'],
-        "health_" + h['subsystem'] + ".rx_bytes": h['remote_user_rx_bytes'],
+      resp['data']['vpn']={}
+      resp['data']['vpn'].update({
+        "status": h['status'],
+        "enabled": h['remote_user_enabled'],
+        "users_active": h['remote_user_num_active'],
+        "users_inactive": h['remote_user_num_inactive'],
+        "tx_bytes": h['remote_user_tx_bytes'],
+        "rx_bytes": h['remote_user_rx_bytes'],
       })
       # test
     case 'wlan':
-      resp['data'].update({
-        "health_" + h['subsystem'] + ".num_user": h['num_user'],
-        "health_" + h['subsystem'] + ".num_guest": h['num_guest'],
-        "health_" + h['subsystem'] + ".num_iot": h['num_iot'],
-        "health_" + h['subsystem'] + ".tx_bytes": h['tx_bytes-r'],
-        "health_" + h['subsystem'] + ".rx_bytes": h['rx_bytes-r'],
-        "health_" + h['subsystem'] + ".status": h['status'],
-        "health_" + h['subsystem'] + ".num_ap": h['num_ap']
+      resp['data']['wlan']={}
+      resp['data']['wlan'].update({
+        "num_user": h['num_user'],
+        "num_guest": h['num_guest'],
+        "num_iot": h['num_iot'],
+        "tx_bytes": h['tx_bytes-r'],
+        "rx_bytes": h['rx_bytes-r'],
+        "status": h['status'],
+        "num_ap": h['num_ap']
       })
 
     case 'lan':
-      resp['data'].update({
-        "health_" + h['subsystem'] + ".status": h['status'],
-        "health_" + h['subsystem'] + ".num_user": h['num_user'],
-        "health_" + h['subsystem'] + ".num_iot": h['num_iot'],
-        "health_" + h['subsystem'] + ".num_sw": h['num_sw'],
-        "health_" + h['subsystem'] + ".num_adopted": h['num_adopted']
+      resp['data']['lan']={}
+      resp['data']['lan'].update({
+        "status": h['status'],
+        "num_user": h['num_user'],
+        "num_iot": h['num_iot'],
+        "num_sw": h['num_sw'],
+        "num_adopted": h['num_adopted']
       })
 
       # test
     case 'wan':
-      # print(h['subsystem'])
-      # print(json.dumps(h, indent = 1))
-      resp['data'].update({
-        "health_" + h['subsystem'] + ".status": h['status'],
-        "health_" + h['subsystem'] + ".wan_ip": h['wan_ip'],
-        "health_" + h['subsystem'] + ".isp_organization": h['isp_organization'],
-        "health_" + h['subsystem'] + ".isp_name": h['isp_name'],
-        "health_" + h['subsystem'] + ".gw_version": h['gw_version'],
-        "health_" + h['subsystem'] + ".num_sta": h['num_sta'],
-        "health_" + h['subsystem'] + ".cpu": h['gw_system-stats']['cpu'],
-        "health_" + h['subsystem'] + ".mem": h['gw_system-stats']['mem'],
-        "health_" + h['subsystem'] + ".uptime": h['gw_system-stats']['uptime'],
-        "health_" + h['subsystem'] + ".tx_bytes": h['tx_bytes-r'],
-        "health_" + h['subsystem'] + ".rx_bytes": h['rx_bytes-r'],
-        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['alerting_monitors'][0]['target'] : h['uptime_stats']['WAN']['alerting_monitors'][0]['latency_average'],
-        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['monitors'][0]['target'] : h['uptime_stats']['WAN']['monitors'][0]['latency_average'],
-        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['monitors'][1]['target'] : h['uptime_stats']['WAN']['monitors'][1]['latency_average'],
-        "health_" + h['subsystem'] + ".latency_" + h['uptime_stats']['WAN']['monitors'][2]['target'] : h['uptime_stats']['WAN']['monitors'][2]['latency_average'],
-        "health_" + h['subsystem'] + ".wan.latency_avg": h['uptime_stats']['WAN']['latency_average']
-  })
+      resp['data']['wan']={}
+      resp['data']['wan'].update({
+        "status": h['status'],
+        "wan_ip": h['wan_ip'],
+        "isp_organization": h['isp_organization'],
+        "isp_name": h['isp_name'],
+        "gw_version": h['gw_version'],
+        "num_sta": h['num_sta'],
+        "cpu": h['gw_system-stats']['cpu'],
+        "mem": h['gw_system-stats']['mem'],
+        "uptime": h['gw_system-stats']['uptime'],
+        "tx_bytes": h['tx_bytes-r'],
+        "rx_bytes": h['rx_bytes-r'],
+        "latency_" + h['uptime_stats']['WAN']['alerting_monitors'][0]['target'] : h['uptime_stats']['WAN']['alerting_monitors'][0]['latency_average'],
+        "latency_" + h['uptime_stats']['WAN']['monitors'][0]['target'] : h['uptime_stats']['WAN']['monitors'][0]['latency_average'],
+        "latency_" + h['uptime_stats']['WAN']['monitors'][1]['target'] : h['uptime_stats']['WAN']['monitors'][1]['latency_average'],
+        "latency_" + h['uptime_stats']['WAN']['monitors'][2]['target'] : h['uptime_stats']['WAN']['monitors'][2]['latency_average'],
+        "wan.latency_avg": h['uptime_stats']['WAN']['latency_average']
       })
 
     case _:
@@ -252,19 +252,20 @@ for client_data in rules['data']:
       score = client_data['satisfaction']
 
       # raise ValueError('Some error')
-      resp['data'].update ({
-          name+".Clients":numclients,
-          name+".Guests":numguests,
-          name+".Clients_wifi0":wifi0clients ,
-          name+".Clients_wifi1":wifi1clients ,
-          name+".Score":score,
-          name+".CPU": cpu,
-          name+".RAM":ram,
-          name+".Uptime":uptime,
-          name+".Score_wifi0":wifi0score ,
-          name+".Score_wifi1":wifi1score ,
-          name+".Activity":str(activity)+' Mbps',
-          name+".Update":update,
+      resp['data'][name]={}
+      resp['data'][name].update ({
+          "Clients":numclients,
+          "Guests":numguests,
+          "Clients_wifi0":wifi0clients ,
+          "Clients_wifi1":wifi1clients ,
+          "Score":score,
+          "CPU": cpu,
+          "RAM":ram,
+          "Uptime":uptime,
+          "Score_wifi0":wifi0score ,
+          "Score_wifi1":wifi1score ,
+          "Activity":str(activity)+' Mbps',
+          "Update":update,
       })
 
   else:
@@ -330,61 +331,61 @@ for client_data in rules['data']:
     userports = client_data['user-num_sta']
     guestports = client_data['guest-num_sta']
 
-
-    resp['data'].update({
-      name+".Activity":str(activity)+' Mbps',
-      name+".CPU":cpu,
-      name+".RAM":ram,
-      name+".Uptime":uptime,
-      name+".Ports_used":usedports,
-      name+".Ports_user":userports,
-      name+".Ports_guest":guestports,
-      name+".Update":update,
-      name+".Model": model_type
+    resp['data'][name]={}
+    resp['data'][name].update ({
+      "Activity":str(activity)+' Mbps',
+      "CPU":cpu,
+      "RAM":ram,
+      "Uptime":uptime,
+      "Ports_used":usedports,
+      "Ports_user":userports,
+      "Ports_guest":guestports,
+      "Update":update,
+      "Model": model_type
     })
 
     if 'speedtest_ping' in client_data['uplink'].keys() and client_data['uplink']['speedtest_ping'] is not None:
 
       resp['data'].update({
-        name+".Speedtest_ping": client_data['uplink']['speedtest_ping'],
-        name+".Speedtest_up":   client_data['uplink']['xput_up'],
-        name+".Speedtest_down": client_data['uplink']['xput_down']
+        "Speedtest_ping": client_data['uplink']['speedtest_ping'],
+        "Speedtest_up":   client_data['uplink']['xput_up'],
+        "Speedtest_down": client_data['uplink']['xput_down']
       })
     if storage_used is not None:
       resp['data'].update({
-        name+".StorageUsed": storage_used,
-        name+".StorageSize": storage_size
+        "StorageUsed": storage_used,
+        "StorageSize": storage_size
       })
     if internet is not None:
       resp['data'].update({
-        name+".Internet": internet
+        "Internet": internet
       })
     if speedtest_status is not None:
       resp['data'].update({
-        name+".SpeedTestPass": speedtest_status
+        "SpeedTestPass": speedtest_status
       })
     if cpu_temp is not None:
       resp['data'].update({
-        name+".CPUTemp":cpu_temp,
-        name+".BoardTemp":board_temp
+        "CPUTemp":cpu_temp,
+        "BoardTemp":board_temp
       })
 
     if wan_drops is not None:
       resp['data'].update({
-        name+".WanDrops":wan_drops,
-        name+".WanLatency":wan_latency
+        "WanDrops":wan_drops,
+        "WanLatency":wan_latency
       })
 
 
     if latency_average is not None:
       resp['data'].update({
-        name+".LatencyAvg":latency_average,
-        name+".WanAvailability":availability
+        "LatencyAvg":latency_average,
+        "WanAvailability":availability
       })
 
     if uplink_ip is not None:
       resp['data'].update({
-        name+".UplinkIP":uplink_ip
+        "UplinkIP":uplink_ip
       })
 
 
