@@ -1,0 +1,181 @@
+blueprint:
+  name: Zigbee2MQTT - ERS-10TZBVK-AA
+  description: Zigbee Smart knob
+  domain: automation
+  input:
+    mqtt_entity:
+      description: The "friendly" ERS-10TZBVK-AA device name as is registered in zigbee2mqtt
+      name: Name
+    base_topic:
+      description: The base topic as defined in the zigbee2mqtt config
+      default: zigbee2mqtt
+      name: Base Topic
+    state_entity:
+      name: State
+      selector:
+        entity:
+          domain: select
+          integration: mqtt
+          multiple: false
+
+    event_single:
+      name: Event | Single Press
+      description: Action to run on single press in event mode
+      default: []
+      selector:
+        action: {}
+    event_double:
+      name: Event | Double Press
+      description: Action to run on double press in event mode
+      default: []
+      selector:
+        action: {}
+    event_hold:
+      name: Event | Hold Press
+      description: Action to run on hold press in event mode
+      default: []
+      selector:
+        action: {}
+    event_rotate_left:
+      name: Event | Rotate Left
+      description: Action to run on rotate left in event mode
+      default: []
+      selector:
+        action: {}
+    event_rotate_right:
+      name: Event | Rotate Right
+      description: Action to run on rotate right in event mode
+      default: []
+      selector:
+        action: {}
+    command_toggle:
+      name: Command | Single Press
+      description: Action to run on single press in command mode
+      default: []
+      selector:
+        action: {}
+    command_hue_move:
+      name: Command | Hold Press
+      description: Action to run on hold press in command mode
+      default: []
+      selector:
+        action: {}
+    command_hue_stop:
+      name: Command | Hold Release
+      description: Action to run on hold release in command mode
+      default: []
+      selector:
+        action: {}
+    command_brightness_step_down:
+      name: Command | Brightness Down
+      description: Action to run on left rotate in command mode
+      default: []
+      selector:
+        action: {}
+    command_brightness_step_up:
+      name: Command | Brightness Up
+      description: Action to run on right rotate in command mode
+      default: [ ]
+      selector:
+        action: { }
+    command_color_temperature_step_down:
+      name: Command | Color Temperature Up
+      description: Action to run on left rotate + press in command mode
+      default: []
+      selector:
+        action: {}
+    command_color_temperature_step_up:
+      name: Command | Color Temperature Down
+      description: Action to run on right rotate + press in command mode
+      default: []
+      selector:
+        action: {}
+    switch_operation_mode_command:
+      name: Change operation mode to command
+      description: Action to run when changing to operation mode command (3 presses)
+      default: []
+      selector:
+        action: { }
+    switch_operation_mode_event:
+      name: Change operation mode to event
+      description: Action to run when changing to operation mode event (3 presses)
+      default: []
+      selector:
+        action: {}
+
+mode: single
+max_exceeded: silent
+
+trigger_variables:
+  mqtt_entity: !input mqtt_entity
+  base_topic:  !input base_topic
+
+trigger:
+  - platform: mqtt
+    topic: "{{ base_topic  ~ '/' ~ mqtt_entity ~ '/action' }}"
+  - platform: state
+    entity_id: !input "state_entity"
+
+###### https://manuals.plus/earda-technologies/ers-10tzbvk-aa-smart-knob-manual
+### Event
+# single
+# double
+# hold                        // > 10 sec hold
+# rotate_left
+# rotate_right
+########################
+### Command
+# toggle                      // single press
+# hue_stop                    // long press
+# brightness_step_down        // left rotate
+# brightness_step_up          // right rotate
+# color_temperature_step_down // left rotate + press
+# color_temperature_step_up   // right rotate + press
+
+action:
+  - variables:
+      platform: "{{ trigger.platform }}"
+      payload:  "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ trigger.payload }}{% endif %}"
+  - choose:
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'single' }}"
+        sequence: !input "event_single"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'double' }}"
+        sequence: !input "event_double"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'hold' }}"
+        sequence: !input "event_hold"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'rotate_left' }}"
+        sequence: !input "event_rotate_left"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'rotate_right' }}"
+        sequence: !input "event_rotate_right"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'toggle' }}"
+        sequence: !input "command_toggle"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'hue_move' }}"
+        sequence: !input "command_hue_move"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'hue_stop' }}"
+        sequence: !input "command_hue_stop"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'brightness_step_down' }}"
+        sequence: !input "command_brightness_step_down"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'brightness_step_up' }}"
+        sequence: !input "command_brightness_step_up"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'color_temperature_step_down' }}"
+        sequence: !input "command_color_temperature_step_down"
+      - conditions:
+          - "{{ platform == 'mqtt' and payload == 'color_temperature_step_up' }}"
+        sequence: !input "command_color_temperature_step_up"
+      - conditions:
+          - "{{ platform == 'state' and payload == 'command' }}"
+        sequence: !input "switch_operation_mode_command"
+      - conditions:
+          - "{{ platform == 'state' and payload == 'event' }}"
+        sequence: !input "switch_operation_mode_event"

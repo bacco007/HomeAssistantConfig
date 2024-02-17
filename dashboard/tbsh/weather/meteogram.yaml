@@ -1,0 +1,334 @@
+---
+type: custom:stack-in-card
+keep:
+  margin: true
+cards:
+  - type: custom:mushroom-template-card
+    primary: 7 Day Meteogram
+    icon: mdi:weather-partly-snowy-rainy
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: vertical-stack
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Today
+                secondary: ''
+                icon: ''
+                card_mod: &datestyle
+                  style:
+                    mushroom-state-info$: |
+                      .container {
+                          --card-primary-font-size: 12px;
+                          align-items: center;
+                        }
+                    .: |
+                      ha-card {
+                        background-color: transparent;
+                        opacity: 0.9;
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                        margin-top: -0px !important;
+                        margin-bottom: -10px !important;
+                        }
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[0].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: &chipstyle
+                  style: |
+                    ha-card {
+                      opacity: 0.8;
+                      --chip-background: transparent !important;
+                      --chip-height: 50px;
+                      padding-top: 0px !important;
+                      padding-bottom: 0px !important;
+                      margin-top: -10px !important;
+                      margin-bottom: -10px !important;
+                    }
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[0].temperature | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: &tempstyle
+                  style:
+                    mushroom-state-info$: |
+                      .container {
+                          --card-primary-font-size: 14px;
+                          align-items: center;
+                        }
+                    .: |
+                      ha-card {
+                        opacity: 0.8;
+                        background: transparent !important;
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                        margin-top: -15px !important;
+                        margin-bottom: -10px !important;
+                        }
+                picture: ''
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[1].datetime) | timestamp_custom('%a %-d') }}
+                secondary: ''
+                icon: ''
+                card_mod: *datestyle
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[1].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: *chipstyle
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[1].temperature | round(0) }}° -‎ ‎‎{{ state_attr('sensor.weather_forecasts','bom_daily')[1].templow | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: *tempstyle
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[2].datetime) | timestamp_custom('%a %-d') }}
+                secondary: ''
+                icon: ''
+                card_mod: *datestyle
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[2].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: *chipstyle
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[2].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[2].templow | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: *tempstyle
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[3].datetime) | timestamp_custom('%a %-d') }}
+                secondary: ''
+                icon: ''
+                card_mod: *datestyle
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[3].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: *chipstyle
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[3].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[3].templow | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: *tempstyle
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[4].datetime) | timestamp_custom('%a %-d') }}
+                secondary: ''
+                icon: ''
+                card_mod: *datestyle
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[4].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: *chipstyle
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[4].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[4].templow | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: *tempstyle
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[5].datetime) | timestamp_custom('%a %-d') }}
+                secondary: ''
+                icon: ''
+                card_mod: *datestyle
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[5].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: *chipstyle
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[5].temperature | round(0) }}° - {{ state_attr('sensor.weather_forecasts','bom_daily')[5].templow | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: *tempstyle
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[6].datetime) | timestamp_custom('%a %-d') }}
+                secondary: ''
+                icon: ''
+                card_mod: *datestyle
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: ''
+                    picture: >-
+                      {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[6].condition) %}
+                      {%- from 'weathercond2img.jinja' import weathercond2img -%}
+                      {{ weathercond2img(cond) }}
+                alignment: center
+                card_mod: *chipstyle
+              - type: custom:mushroom-template-card
+                primary: >-
+                  {{ state_attr('sensor.weather_forecasts','bom_daily')[6].temperature | round(0)  }}° - {{ state_attr('sensor.weather_forecasts','bom_daily')[6].templow | round(0) }}°
+                secondary: ''
+                icon: ''
+                card_mod: *tempstyle
+      - type: custom:apexcharts-card
+        graph_span: 7d
+        span:
+          start: day
+        experimental:
+          color_threshold: true
+        now:
+          show: true
+          color: grey
+        apex_config:
+          legend:
+            show: false
+          chart:
+            height: 120
+            zoom:
+              enabled: true
+          xaxis:
+            labels:
+              show: false
+          yaxis:
+            max: 100
+            labels:
+              show: false
+          grid:
+            strokeDashArray: 0
+            borderColor: grey
+            xaxis:
+              lines:
+                show: true
+            yaxis:
+              lines:
+                show: false
+        series:
+          - entity: sensor.weather_forecasts
+            type: line
+            name: Pirate Forecast Temp
+            stroke_width: 2
+            fill_raw: last
+            color_threshold: &tempthres
+              - value: 0
+                color: '#0066ff'
+              - value: 5
+                color: '#00ffff'
+              - value: 10
+                color: '#00ffa6'
+              - value: 15
+                color: '#00ff08'
+              - value: 20
+                color: '#91ff00'
+              - value: 25
+                color: '#fff700'
+              - value: 30
+                color: '#ffc400'
+              - value: 35
+                color: '#ff0800'
+              - value: 40
+                color: '#ae00ff'
+            data_generator: |
+              return entity.attributes.pirateweather_hourly.map((entry) => {
+                return [new Date(entry.datetime), entry.temperature];
+              });
+          - entity: sensor.weather_forecasts
+            type: area
+            stroke_width: 0
+            color: rgb(56, 158, 209)
+            name: Rain
+            data_generator: |
+              return entity.attributes.pirateweather_hourly.map((entry) => {
+                return [new Date(entry.datetime), entry.precipitation_probability];
+              });
+          - entity: sensor.weather_forecasts
+            type: area
+            stroke_width: 0
+            name: Rain
+            color: rgba(100, 200, 255, 1)
+            opacity: 0.3
+            data_generator: |
+              return entity.attributes.pirateweather_hourly.map((entry) => {
+                return [new Date(entry.datetime), entry.precipitation_probability];
+              });
+          - entity: sensor.weather_forecasts
+            type: area
+            name: Pirate Forecast Cloud Cover
+            color: grey
+            opacity: 0.3
+            stroke_width: 0
+            data_generator: |
+              return entity.attributes.pirateweather_hourly.map((entry) => {
+                return [new Date(entry.datetime), entry.cloud_coverage];
+              });
+          - entity: sensor.weather_temperature
+            type: line
+            name: Current Temp
+            fill_raw: last
+            color_threshold: *tempthres
+            extend_to: now
+            stroke_width: 2
+            opacity: 0.7
+        view_layout:
+          position: sidebar
+        card_mod:
+          style: |
+            ha-card {
+              background-color: transparent;
+              margin-top: -25px;
+              margin-left: -10px;
+              margin-bottom: -15px;
+            }
