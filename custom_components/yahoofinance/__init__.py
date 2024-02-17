@@ -10,14 +10,11 @@ import logging
 
 import voluptuous as vol
 
-from custom_components.yahoofinance.coordinator import (
-    CrumbCoordinator,
-    YahooSymbolUpdateCoordinator,
-)
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
@@ -31,6 +28,7 @@ from .const import (
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
+    CRUMB_RETRY_DELAY,
     DEFAULT_CONF_DECIMAL_PLACES,
     DEFAULT_CONF_INCLUDE_FIFTY_DAY_VALUES,
     DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
@@ -43,14 +41,24 @@ from .const import (
     DOMAIN,
     HASS_DATA_CONFIG,
     HASS_DATA_COORDINATORS,
+    MANUAL_SCAN_INTERVAL,
     MINIMUM_SCAN_INTERVAL,
     SERVICE_REFRESH,
 )
+from .coordinator import CrumbCoordinator, YahooSymbolUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-
-
 BASIC_SYMBOL_SCHEMA = vol.All(cv.string, vol.Upper)
+
+def minimum_scan_interval(value: timedelta) -> timedelta:
+    """Validate scan_interval is the minimum value."""
+    if value < MINIMUM_SCAN_INTERVAL:
+        raise vol.Invalid("Scan interval should be at least 30 seconds")
+    return value
+
+MANUAL_SCAN_INTERVAL_SCHEMA = vol.All(vol.Lower, MANUAL_SCAN_INTERVAL)
+CUSTOM_SCAN_INTERVAL_SCHEMA = vol.All(cv.time_period, minimum_scan_interval)
+SCAN_INTERVAL_SCHEMA = vol.Any(MANUAL_SCAN_INTERVAL_SCHEMA, CUSTOM_SCAN_INTERVAL_SCHEMA)
 
 COMPLEX_SYMBOL_SCHEMA = vol.All(
     dict,
@@ -58,9 +66,7 @@ COMPLEX_SYMBOL_SCHEMA = vol.All(
         {
             vol.Required("symbol"): BASIC_SYMBOL_SCHEMA,
             vol.Optional(CONF_TARGET_CURRENCY): BASIC_SYMBOL_SCHEMA,
-            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.Any(
-                "none", "None", cv.positive_time_period
-            ),
+            vol.Optional(CONF_SCAN_INTERVAL): SCAN_INTERVAL_SCHEMA,
             vol.Optional(CONF_NO_UNIT, default=DEFAULT_CONF_NO_UNIT): cv.boolean,
         }
     ),
@@ -76,7 +82,7 @@ CONFIG_SCHEMA = vol.Schema(
                 ),
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): vol.Any("none", "None", cv.positive_time_period),
+                ): SCAN_INTERVAL_SCHEMA,
                 vol.Optional(CONF_TARGET_CURRENCY): vol.All(cv.string, vol.Upper),
                 vol.Optional(
                     CONF_SHOW_TRENDING_ICON, default=DEFAULT_CONF_SHOW_TRENDING_ICON
@@ -115,7 +121,7 @@ class SymbolDefinition:
 
     symbol: str
     target_currency: str | None = None
-    scan_interval: timedelta | None = None
+    scan_interval: str | timedelta | None = None
     no_unit: bool = False
 
     def __init__(self, symbol: str, **kwargs: any) -> None:
@@ -153,22 +159,6 @@ class SymbolDefinition:
         return hash((self.symbol, self.target_currency, self.scan_interval, self.no_unit))
 
 
-def parse_scan_interval(scan_interval: timedelta | str) -> timedelta:
-    """Parse and validate scan_interval."""
-    if isinstance(scan_interval, str):
-        if isinstance(scan_interval, str):
-            if scan_interval.lower() == "none":
-                scan_interval = None
-            else:
-                raise vol.Invalid(
-                    f"Invalid {CONF_SCAN_INTERVAL} specified: {scan_interval}"
-                )
-    elif scan_interval < MINIMUM_SCAN_INTERVAL:
-        raise vol.Invalid("Scan interval should be at least 30 seconds.")
-
-    return scan_interval
-
-
 def normalize_input_symbols(
     defined_symbols: list,
 ) -> tuple[list[str], list[SymbolDefinition]]:
@@ -189,9 +179,7 @@ def normalize_input_symbols(
                     SymbolDefinition(
                         symbol,
                         target_currency=value.get(CONF_TARGET_CURRENCY),
-                        scan_interval=parse_scan_interval(
-                            value.get(CONF_SCAN_INTERVAL)
-                        ),
+                        scan_interval=value.get(CONF_SCAN_INTERVAL),
                         no_unit=value.get(CONF_NO_UNIT),
                     )
                 )
@@ -208,17 +196,17 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     symbols, symbol_definitions = normalize_input_symbols(defined_symbols)
     domain_config[CONF_SYMBOLS] = symbol_definitions
 
-    scan_interval = parse_scan_interval(domain_config.get(CONF_SCAN_INTERVAL))
+    global_scan_interval = domain_config.get(CONF_SCAN_INTERVAL)
 
     # Populate parsed value into domain_config
-    domain_config[CONF_SCAN_INTERVAL] = scan_interval
+    domain_config[CONF_SCAN_INTERVAL] = global_scan_interval
 
     # Group symbols by scan_interval
     symbols_by_scan_interval: dict[timedelta, list[str]] = {}
     for symbol in symbol_definitions:
         # Use integration level scan_interval if none defined
         if symbol.scan_interval is None:
-            symbol.scan_interval = scan_interval
+            symbol.scan_interval = global_scan_interval
 
         if symbol.scan_interval in symbols_by_scan_interval:
             symbols_by_scan_interval[symbol.scan_interval].append(symbol.symbol)
@@ -227,54 +215,63 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     _LOGGER.info("Total %d unique scan intervals", len(symbols_by_scan_interval))
 
-    coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = {}
-    crumb_coordinator = CrumbCoordinator(hass)
-    await crumb_coordinator.try_get_crumb_cookies()  # Get crumb first
-
-    for key_scan_interval, symbols in symbols_by_scan_interval.items():
-        _LOGGER.info(
-            "Creating coordinator with scan_interval %s for symbols %s",
-            key_scan_interval,
-            symbols,
-        )
-        coordinator = YahooSymbolUpdateCoordinator(
-            symbols, hass, key_scan_interval, crumb_coordinator
-        )
-        coordinators[key_scan_interval] = coordinator
-
-        _LOGGER.info(
-            "Requesting initial data from coordinator with update interval of %s.",
-            key_scan_interval,
-        )
-        await coordinator.async_refresh()
-
-    # Pass down the coordinator and config to platforms.
+     # Pass down the config to platforms.
     hass.data[DOMAIN] = {
-        HASS_DATA_COORDINATORS: coordinators,
         HASS_DATA_CONFIG: domain_config,
     }
 
-    async def handle_refresh_symbols(_call) -> None:
-        """Refresh symbol data."""
-        _LOGGER.info("Processing refresh_symbols")
+    async def _setup_coordinator(now = None) -> None:
+        crumb_coordinator = CrumbCoordinator(hass)
+        crumb = await crumb_coordinator.try_get_crumb_cookies()  # Get crumb first
+        if crumb is None:
+            _LOGGER.warning("Unable to get crumb, re-trying in %d seconds", CRUMB_RETRY_DELAY)
+            async_call_later(hass, CRUMB_RETRY_DELAY, _setup_coordinator)
+            return
 
-        for coordinator in coordinators.values():
+        coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = {}
+        for key_scan_interval, symbols in symbols_by_scan_interval.items():
+            _LOGGER.info(
+                "Creating coordinator with scan_interval %s for symbols %s",
+                key_scan_interval,
+                symbols,
+            )
+            coordinator = YahooSymbolUpdateCoordinator(
+                symbols, hass, key_scan_interval, crumb_coordinator
+            )
+            coordinators[key_scan_interval] = coordinator
+
+            _LOGGER.info(
+                "Requesting initial data from coordinator with update interval of %s",
+                key_scan_interval,
+            )
             await coordinator.async_refresh()
 
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_REFRESH,
-        handle_refresh_symbols,
-    )
+        # Pass down the coordinator to platforms.
+        hass.data[DOMAIN][HASS_DATA_COORDINATORS] = coordinators
 
-    if not coordinator.last_update_success:
-        _LOGGER.debug("Coordinator did not report any data, requesting async_refresh")
-        hass.async_create_task(coordinator.async_request_refresh())
+        async def handle_refresh_symbols(_call) -> None:
+            """Refresh symbol data."""
+            _LOGGER.info("Processing refresh_symbols")
 
-    hass.async_create_task(
-        discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config)
-    )
+            for coordinator in coordinators.values():
+                await coordinator.async_refresh()
 
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_REFRESH,
+            handle_refresh_symbols,
+        )
+
+        for coordinator in coordinators.values():
+            if not coordinator.last_update_success:
+                _LOGGER.debug("Coordinator did not report any data, requesting async_refresh")
+                hass.async_create_task(coordinator.async_request_refresh())
+
+        hass.async_create_task(
+            discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config)
+        )
+
+    await _setup_coordinator()
     return True
 
 

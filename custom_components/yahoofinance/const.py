@@ -149,7 +149,9 @@ DOMAIN: Final = "yahoofinance"
 SERVICE_REFRESH: Final = "refresh_symbols"
 
 DEFAULT_SCAN_INTERVAL: Final = timedelta(hours=6)
+MANUAL_SCAN_INTERVAL: Final = "manual"
 MINIMUM_SCAN_INTERVAL: Final = timedelta(seconds=30)
+CRUMB_RETRY_DELAY: Final = 15
 
 CURRENCY_CODES: Final = {
     "bdt": "৳",

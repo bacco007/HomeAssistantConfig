@@ -8,8 +8,6 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 import logging
 
-from custom_components.yahoofinance import SymbolDefinition, convert_to_float
-from custom_components.yahoofinance.coordinator import YahooSymbolUpdateCoordinator
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
     SensorEntity,
@@ -23,6 +21,7 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateTyp
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
+from . import SymbolDefinition, convert_to_float
 from .const import (
     ATTR_CURRENCY_SYMBOL,
     ATTR_DIVIDEND_DATE,
@@ -53,6 +52,7 @@ from .const import (
     NUMERIC_DATA_GROUPS,
     PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION,
 )
+from .coordinator import YahooSymbolUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 ENTITY_ID_FORMAT = SENSOR_DOMAIN + "." + DOMAIN + "_{}"
