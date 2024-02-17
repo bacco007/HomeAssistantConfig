@@ -39,7 +39,6 @@ password = get_secret("unifi_pass2")
 controller_url = f"https://{ip_address}"
 site = 'default'  # The site ID, 'default' for most installations
 
-
 login_url = f'{controller_url}/api/auth/login'
 login_data = {
     'username': username,
@@ -56,7 +55,6 @@ def snake_case(s):
     sub('([A-Z]+)', r' \1',
     s.replace('-', ' '))).split()).lower()
 
-
 rules_url = f'{controller_url}/proxy/network/api/s/default/stat/device'
 response = session.get(rules_url, verify=False)
 response.raise_for_status()
@@ -67,21 +65,28 @@ response = session.get(sysinfo_url, verify=False)
 response.raise_for_status()
 version = response.json()
 
+for h in version['data']:
+  resp['data']['sysinfo']={}
+  resp['data']['sysinfo'].update({
+    "name": h['name'],
+    "version": h['version'],
+    "uptime": h['uptime'],
+    "device_type": h['ubnt_device_type'],
+    "udm_version": h['udm_version']
+  })
+
 health_url = f'{controller_url}/proxy/network/api/s/default/stat/health'
 response = session.get(health_url, verify=False)
 response.raise_for_status()
 health_data = response.json()
 
-# keys = health_data['data'][0].keys()
-# a = {k: set(d[k] for d in health_data['data']) for k in keys}
-# print(json.dumps(health_data, indent = 1))
-#
+resp['data']['subsystem']={}
 for h in health_data['data']:
 
   match h['subsystem']:
     case 'www':
-      resp['data']['www']={}
-      resp['data']['www'].update({
+      resp['data']['subsystem']['www']={}
+      resp['data']['subsystem']['www'].update({
         "status": h['status'],
         "tx_bytes-r": h['tx_bytes-r'],
         "rx_bytes-r": h['rx_bytes-r'],
@@ -97,8 +102,8 @@ for h in health_data['data']:
       })
 
     case 'vpn':
-      resp['data']['vpn']={}
-      resp['data']['vpn'].update({
+      resp['data']['subsystem']['vpn']={}
+      resp['data']['subsystem']['vpn'].update({
         "status": h['status'],
         "enabled": h['remote_user_enabled'],
         "users_active": h['remote_user_num_active'],
@@ -108,33 +113,44 @@ for h in health_data['data']:
       })
       # test
     case 'wlan':
-      resp['data']['wlan']={}
-      resp['data']['wlan'].update({
+      resp['data']['subsystem']['wlan']={}
+      resp['data']['subsystem']['wlan'].update({
         "num_user": h['num_user'],
         "num_guest": h['num_guest'],
         "num_iot": h['num_iot'],
         "tx_bytes": h['tx_bytes-r'],
         "rx_bytes": h['rx_bytes-r'],
         "status": h['status'],
-        "num_ap": h['num_ap']
+        "num_ap": h['num_ap'],
+        "num_ap_adopted": h["num_adopted"],
+        "num_ap_disabled": h["num_disabled"],
+        "num_ap_disconnected": h["num_disconnected"],
+        "num_ap_pending": h["num_pending"],
       })
 
     case 'lan':
-      resp['data']['lan']={}
-      resp['data']['lan'].update({
+      resp['data']['subsystem']['lan']={}
+      resp['data']['subsystem']['lan'].update({
         "status": h['status'],
         "num_user": h['num_user'],
         "num_iot": h['num_iot'],
         "num_sw": h['num_sw'],
-        "num_adopted": h['num_adopted']
+        "num_sw_adopted": h['num_adopted'],
+        "num_sw_disconnected": h["num_disconnected"],
+        "num_sw_pending": h["num_pending"],
       })
 
       # test
     case 'wan':
-      resp['data']['wan']={}
-      resp['data']['wan'].update({
+      resp['data']['subsystem']['wan']={}
+      resp['data']['subsystem']['wan'].update({
         "status": h['status'],
+        "num_gw": h['num_gw'],
+        "num_gw_adopted": h["num_adopted"],
+        "num_gw_disconnected": h["num_disconnected"],
+        "num_gw_pending": h["num_pending"],
         "wan_ip": h['wan_ip'],
+        "nameservers": h['nameservers'][0],
         "isp_organization": h['isp_organization'],
         "isp_name": h['isp_name'],
         "gw_version": h['gw_version'],
@@ -148,41 +164,14 @@ for h in health_data['data']:
         "latency_" + h['uptime_stats']['WAN']['monitors'][0]['target'] : h['uptime_stats']['WAN']['monitors'][0]['latency_average'],
         "latency_" + h['uptime_stats']['WAN']['monitors'][1]['target'] : h['uptime_stats']['WAN']['monitors'][1]['latency_average'],
         "latency_" + h['uptime_stats']['WAN']['monitors'][2]['target'] : h['uptime_stats']['WAN']['monitors'][2]['latency_average'],
-        "wan.latency_avg": h['uptime_stats']['WAN']['latency_average']
+        "latency_avg": h['uptime_stats']['WAN']['latency_average']
       })
 
     case _:
       print("else")
 
-
-# uptime_stats = f'{controller_url}/proxy/network/api/s/default/stat/stats'
-
-
-# response_stats = session.get(uptime_stats, verify=False)
-# response_stats.raise_for_status()
-# data = response_stats.json()["data"][0]
-# # # print(version)
-# json.dumps(print(resp['data']))
-# print(json.dumps(resp['data'], indent = 1))
-# print(json.dumps({
-#     "cpu": data["system-stats"]["cpu"],
-#     "cpu_temp": round(data["temperatures"][1]["value"], 1),
-#     "system_temp": round(data["temperatures"][0]["value"], 1),
-#     "memory": data["system-stats"]["mem"],
-#     "disk": round(data["storage"][1]["used"] / data["storage"][1]["size"] * 100, 1),
-#     "internet": data["wan1"]["up"],
-#     "uptime": datetime.fromtimestamp(data["startup_timestamp"]).isoformat(),
-#     "availability": data["uptime_stats"]["WAN"]["availability"],
-#     "average_latency": data["uptime_stats"]["WAN"]["latency_average"],
-#     "down": data["uplink"]["rx_rate"] / 1000000,
-#     "up": data["uplink"]["tx_rate"] / 1000000,
-#     "version": data["displayable_version"],
-#     "last_wan_ip": data["last_wan_ip"]
-# }))
-# sys.exit(2)
-
-
 resp["version"]=version['data'][0]['version']
+resp['data']['device']={}
 # # Find the rule to update
 for client_data in rules['data']:
 
@@ -191,15 +180,8 @@ for client_data in rules['data']:
     continue
 
   name=snake_case(client_data['name'])
-  # print(client_data)
-  # resp[name]={}
-
-# # print(version)
-  # json.dumps(print(client_data))
-
   internet = None
   speedtest_status = None
-  # print("client_data['model'] %s",client_data['model'] )
   if client_data['model'] == "udm":
     speedtest_status = client_data['uplink']['speedtest_status'] == "Success"
     internet = client_data['uplink']['up']
@@ -229,18 +211,10 @@ for client_data in rules['data']:
     print(json.dumps(client_data, indent = 1))
     print("------")
 
-
-
   activity = round(client_data['uplink']['rx_bytes-r']/125000 + client_data['uplink']['tx_bytes-r']/125000,1)
   uptime = parse_uptime(client_data['uptime'])
   update = int(client_data['upgradable'])
   model_type = client_data['model']
-
-
-
-
-  # print(type)
-
 
   if client_data['is_access_point']:
       wifi0clients = client_data['radio_table_stats'][0]['user-num_sta']
@@ -251,9 +225,8 @@ for client_data in rules['data']:
       numguests = client_data['guest-wlan-num_sta']
       score = client_data['satisfaction']
 
-      # raise ValueError('Some error')
-      resp['data'][name]={}
-      resp['data'][name].update ({
+      resp['data']['device'][name]={}
+      resp['data']['device'][name].update ({
           "Clients":numclients,
           "Guests":numguests,
           "Clients_wifi0":wifi0clients ,
@@ -277,12 +250,6 @@ for client_data in rules['data']:
       for t in client_data['temperatures']:
         if t['type'] == "cpu" : cpu_temp = t['value']
         if t['type'] == "board" : board_temp = t['value']
-
-
-
-    # json.dumps(print(client_data))
-    # print(json.dumps(client_data, indent = 1))
-
 
     storage_used = None
     storage_size = None
@@ -331,8 +298,8 @@ for client_data in rules['data']:
     userports = client_data['user-num_sta']
     guestports = client_data['guest-num_sta']
 
-    resp['data'][name]={}
-    resp['data'][name].update ({
+    resp['data']['device'][name]={}
+    resp['data']['device'][name].update ({
       "Activity":str(activity)+' Mbps',
       "CPU":cpu,
       "RAM":ram,
@@ -388,14 +355,6 @@ for client_data in rules['data']:
         "UplinkIP":uplink_ip
       })
 
-
-
-
-
-# print(resp)
-# formatted_json = json.dumps(resp, sort_keys=True, indent=4)
-# colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
-# print(colorful_json)
 json_formatted_str = json.dumps(resp, indent=2)
 print(json_formatted_str)
 # Log out of the UniFi Controller

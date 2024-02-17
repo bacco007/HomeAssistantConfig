@@ -23,6 +23,29 @@ cards:
         }
     entities:
       - entity: counter.automation_trigger_counter
+      = type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Potentially Stale Automations
+            icon: mdi:sync-alert
+            state: null
+        filter:
+          include:
+            - domain: automation
+              attributes:
+                last_triggered: '> 7d ago'
+              state: 'on'
+              options:
+                secondary_info: last-triggered
+          exclude:
+            - entity_id: automation.sonos*
+        sort:
+          method: last_triggered
+          ignore_case: true
+        show_empty: true
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
