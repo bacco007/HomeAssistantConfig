@@ -26,6 +26,7 @@ cards:
           - !include ../tamworth/snippets/essential_energy.yaml
           - !include ../tamworth/snippets/fuel.yaml
           - !include ../tamworth/pubtransport.yaml
+          - !include ../tamworth/satellites.yaml
           - !include ../tamworth/snippets/hospital.yaml
           - !include ../tamworth/dams.yaml
           - !include ../tamworth/bushfire.yaml

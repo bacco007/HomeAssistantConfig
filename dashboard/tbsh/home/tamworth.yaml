@@ -1,0 +1,219 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Tamworth
+    icon: mdi:city
+    icon_color: "#6eaadc"
+    card_mod:
+      style:
+        mushroom-state-info$: |
+          .container {
+           --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
+    entities:
+      - type: custom:hui-element
+        card_type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            padding: 20px;
+            box-shadow: none;
+          }
+        cards:
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: custom:mushroom-template-card
+                entity: sensor.essential_energy_outages_current
+                primary: Electrical Outages
+                secondary: >
+                  {{states('sensor.essential_energy_outages_current')}} Incidents
+                layout: horizontal
+                fill_container: false
+                icon: mdi:grid
+                icon_color: >
+                  {% if states('sensor.essential_energy_outages_current') != "0" %} red {% else %} green {% endif %}
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: binary_sensor.livetrafficnsw_nearby_active_incident
+                primary: Live Traffic
+                secondary: >
+                  {{ state_attr('binary_sensor.livetrafficnsw_nearby_active_incident', 'count') }} Incidents
+                layout: horizontal
+                fill_container: false
+                icon: mdi:traffic-cone
+                icon_color: >
+                  {% if state_attr('binary_sensor.livetrafficnsw_nearby_active_incident', 'count') != "0" %} red {% else %} green {% endif %}
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.nsw_rfs_alerts_near_me
+                primary: Bushfires Near Me
+                secondary: >
+                  {{ states('sensor.nsw_rfs_alerts_near_me') }} Incidents
+                layout: horizontal
+                fill_container: false
+                icon: mdi:fire-alert
+                icon_color: >
+                  {% if states('sensor.nsw_rfs_alerts_near_me') != "0" %} red {% else %} green {% endif %}
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.waqi_air_quality_index
+                primary: Air Quality Index
+                secondary: >
+                  {{ states('sensor.waqi_air_quality_index') }} AQI
+                layout: horizontal
+                fill_container: false
+                icon: mdi:virus
+                icon_color: >
+                  {% set level = states('sensor.waqi_air_quality_index')|float(0) %}
+                  {% if level < 50 %} green
+                  {% elif level < 100 %} yellow
+                  {% elif level < 150 %} orange
+                  {% elif level < 300 %} orangered
+                  {% elif level >= 300 %} red
+                  {% else %} grey
+                  {% endif %}
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+              - type: custom:mushroom-template-card
+                entity: sensor.waqi_air_quality_index
+                primary: UV Index
+                secondary: >
+                  {{ states('sensor.current_uv_index') }} UVI
+                layout: horizontal
+                fill_container: false
+                icon: mdi:virus
+                icon_color: blue
+                secondary_info: state
+                multiline_secondary: false
+                badge_icon: ""
+                badge_color: ""
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+
+                      }
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }

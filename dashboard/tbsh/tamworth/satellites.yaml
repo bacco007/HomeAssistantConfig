@@ -1,0 +1,45 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Satellites Overhead
+    icon: mdi:satellite-variant
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: sensor.tbsmarthome_beidou_overhead_satellites
+        secondary_info: last-updated
+        name: GNSS - Beidou
+      - entity: sensor.tbsmarthome_galileo_overhead_satellites
+        name: GNSS - Galileo
+        secondary_info: last-updated
+      - entity: sensor.tbsmarthome_glonass_overhead_satellites
+        name: GNSS - GLONASS
+        secondary_info: last-updated
+      - entity: sensor.tbsmarthome_gps_overhead_satellites
+        name: GNSS - GPS
+        secondary_info: last-updated
+      - entity: sensor.tbsmarthome_qzss_overhead_satellites
+        name: GNSS - QZSS
+        secondary_info: last-updated
+      - type: section
+      - entity: sensor.tbsmarthome_tv_overhead_satellites
+        name: Television Satellites
+        secondary_info: last-updated
+      - entity: sensor.tbsmarthome_starlink_overhead_satellites
+        name: Starlink Satellites
+        secondary_info: last-updated
+        icon: mdi:satellite-variant

@@ -1,32 +1,184 @@
 ---
+binary_sensor:
+  - name: unifi_udm_internet_connectivity
+    unique_id: unifi_udm_internet_connectivity
+    icon: mdi:wan
+    state: >
+      {{ state_attr('sensor.unifi_stats', 'data')['Internet'] | default }}
+    attributes:
+      friendly_name: "[UDM] Internet Connectivity"
+      device_class: connectivity
+      category: unifi
+
 sensor:
   - name: unifi_networkstats_connected_devices
     unique_id: unifi_networkstats_connected_devices
     unit_of_measurement: Devices
     icon: mdi:network-pos
     state: >
-      {{ state_attr('sensor.unifi_gateway_lan','num_user')|int(default=0) +
-         state_attr('sensor.unifi_gateway_lan','num_iot')|int(default=0) +
-         state_attr('sensor.unifi_gateway_wlan','num_user')|int(default=0) +
-         state_attr('sensor.unifi_gateway_wlan','num_iot')|int(default=0)}}
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['num_user']|int(default=0) +
+         state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['num_iot']|int(default=0) +
+         state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_user']|int(default=0) +
+         state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_guest']|int(default=0) +
+         state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_iot']|int(default=0) }}
     attributes:
+      category: unifi
       lan_devices: >
-        {{ state_attr('sensor.unifi_gateway_lan','num_user')|int(default=0)}}
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['num_user']|int(default=0) }}
       lan_iot_devices: >
-        {{ state_attr('sensor.unifi_gateway_lan','num_iot')|int(default=0)}}
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['num_iot']|int(default=0) }}
       wlan_devices: >
-        {{ state_attr('sensor.unifi_gateway_wlan','num_user')|int(default=0)}}
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_user']|int(default=0) }}
+      wlan_guest_devices: >
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_guest']|int(default=0) }}
       wlan_iot_devices: >
-        {{ state_attr('sensor.unifi_gateway_wlan','num_iot')|int(default=0)}}
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_iot']|int(default=0) }}
+
   - name: unifi_networkstats_switchap
     unique_id: unifi_networkstats_switchap
     unit_of_measurement: Devices
     icon: mdi:network-pos
     state: >
-      {{ state_attr('sensor.unifi_gateway_lan','num_adopted')|int(default=0) +
-         state_attr('sensor.unifi_gateway_wlan','num_adopted')|int(default=0)}}
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['num_sw_adopted']|int(default=0) +
+         state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_ap_adopted']|int(default=0) }}
     attributes:
+      category: unifi
       switch: >
-        {{ state_attr('sensor.unifi_gateway_lan','num_adopted')|int(default=0)}}
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['num_sw_adopted']|int(default=0) }}
       ap: >
-        {{ state_attr('sensor.unifi_gateway_wlan','num_adopted')|int(default=0)}}
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['num_ap_adopted']|int(default=0 )}}
+
+  - name: unifi_device_fastfurious6
+    unique_id: unifi_device_fastfurious6
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['device']['fast_&_furious_6']['Model']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['device']['fast_&_furious_6'] }}
+      uptime_formatted: >-
+        {%- set time = state_attr('sensor.unifi_stats', 'data')['device']['fast_&_furious_6']['Uptime'] | int %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      category: unifi
+
+  - name: unifi_device_hateful8
+    unique_id: unifi_device_hateful8
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['device']['hateful_8']['Model']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['device']['hateful_8'] }}
+      uptime_formatted: >-
+        {%- set time = state_attr('sensor.unifi_stats', 'data')['device']['hateful_8']['Uptime'] | int %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      category: unifi
+
+  - name: unifi_device_switchyswitch
+    unique_id: unifi_device_switchyswitch
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['device']['switchy_switch']['Model']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['device']['switchy_switch'] }}
+      uptime_formatted: >-
+        {%- set time = state_attr('sensor.unifi_stats', 'data')['device']['switchy_switch']['Uptime'] | int %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      category: unifi
+
+  - name: unifi_device_thedreampolice
+    unique_id: unifi_device_thedreampolice
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['device']['the_dream_police']['Model']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['device']['the_dream_police'] }}
+      uptime_formatted: >-
+        {%- set time = state_attr('sensor.unifi_stats', 'data')['device']['the_dream_police']['Uptime'] | int %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      category: unifi
+
+  - name: unifi_system_lan
+    unique_id: unifi_system_lan
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan']['status']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['lan'] }}
+      category: unifi
+
+  - name: unifi_system_vpn
+    unique_id: unifi_system_vpn
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['vpn']['status']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['vpn'] }}
+      category: unifi
+
+  - name: unifi_system_wan
+    unique_id: unifi_system_wan
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wan']['status']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wan'] }}
+      uptime_formatted: >-
+        {%- set time = state_attr('sensor.unifi_stats', 'data')['subsystem']['wan']['uptime'] | int %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      category: unifi
+
+  - name: unifi_system_wlan
+    unique_id: unifi_system_wlan
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan']['status']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['wlan'] }}
+      category: unifi
+
+  - name: unifi_system_www
+    unique_id: unifi_system_www
+    state: >-
+      {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['www']['status']}}
+    attributes:
+      data: >-
+        {{ state_attr('sensor.unifi_stats', 'data')['subsystem']['www'] }}
+      uptime_formatted: >-
+        {%- set time = state_attr('sensor.unifi_stats', 'data')['subsystem']['www']['uptime'] | int %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      category: unifi

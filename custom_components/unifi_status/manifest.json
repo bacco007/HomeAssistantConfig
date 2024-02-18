@@ -1,9 +1,0 @@
-{
-        "domain": "unifi_status",
-        "name": "UniFi Status",
-        "documentation": "https://github.com/zvldz/unifi_status",
-        "requirements": ["pyunifi==2.21"],
-        "version": "0.3.8",
-        "dependencies": [],
-        "codeowners": ["@jchasey", "@zvldz"]
-}

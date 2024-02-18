@@ -23,7 +23,7 @@ cards:
         }
     entities:
       - entity: counter.automation_trigger_counter
-      = type: custom:auto-entities
+      - type: custom:auto-entities
         card:
           type: custom:fold-entity-row
           padding: 5
@@ -36,8 +36,8 @@ cards:
           include:
             - domain: automation
               attributes:
-                last_triggered: '> 7d ago'
-              state: 'on'
+                last_triggered: "> 7d ago"
+              state: "on"
               options:
                 secondary_info: last-triggered
           exclude:

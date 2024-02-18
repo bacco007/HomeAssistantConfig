@@ -25,6 +25,7 @@ cards:
           - !include ../home/home.yaml
           - !include ../home/solar.yaml
           - !include ../home/untappd.yaml
+          - !include ../home/tamworth.yaml
           - !include ../home/music.yaml
           - !include ../home/sport.yaml
           - !include ../home/media.yaml
