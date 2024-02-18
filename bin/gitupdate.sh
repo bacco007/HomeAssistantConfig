@@ -8,6 +8,7 @@ ROOT=$(dirname ${WDIR})
 echo "Updating fake_secrets.yaml"
 ${WDIR}/make_fake_secrets.sh
 
+git pull
 git add .
 echo "-----> git add done"
 git status
