@@ -23,6 +23,7 @@ _Please :star: this repo if you find it useful_
 <details>
 <summary>Details</summary>
 
+- [TL;DR](#tldr)
 - [Stats](#stats)
 - [Integrations Used](#integrations-used)
 - [Screenshots](#screenshots)
@@ -48,9 +49,9 @@ _Stats as at 05:00, unknown_
 | ---|--- |
 | HA Version | 2024.2.2 |
 | No. Integrations | 200 |
-| No. Custom Integrations | 89 |
-| No. Entities | 5200 |
-| No. Sensors | 3472 |
+| No. Custom Integrations | 86 |
+| No. Entities | 5173 |
+| No. Sensors | 3462 |
 | No. Automations | 137 |
 
 <details>
@@ -61,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 16
-Binary sensors | 338
-Buttons | 202
+Binary sensors | 339
+Buttons | 203
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -70,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 570
+Devices | 572
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -82,23 +83,23 @@ Input selects | 3
 Input texts | 3
 Lights | 14
 Locks | 4
-Media players | 15
+Media players | 19
 Numbers | 29
 Persistent notifications | 3
 Persons | 4
-Remotes | 6
+Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 49
-Sensors | 3472
+Sensors | 3462
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 271
+Switches | 272
 Texts | 0
 Times | 0
 Text-to-speech | 1
-Update | 284
+Update | 280
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -135,7 +136,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [analytics_insights](https://www.home-assistant.io/components/analytics_insights) |
 | [analytics_insights.sensor](https://www.home-assistant.io/components/analytics_insights.sensor) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
+| [androidtv.media_player](https://www.home-assistant.io/components/androidtv.media_player) |
 | [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
+| [androidtv_remote.media_player](https://www.home-assistant.io/components/androidtv_remote.media_player) |
+| [androidtv_remote.remote](https://www.home-assistant.io/components/androidtv_remote.remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [anniversaries.calendar](https://www.home-assistant.io/components/anniversaries.calendar) |
 | [anniversaries.sensor](https://www.home-assistant.io/components/anniversaries.sensor) |
@@ -641,9 +645,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi.sensor](https://www.home-assistant.io/components/unifi.sensor) |
 | [unifi.switch](https://www.home-assistant.io/components/unifi.switch) |
 | [unifi.update](https://www.home-assistant.io/components/unifi.update) |
-| [unifics](https://www.home-assistant.io/components/unifics) |
-| [unifics.sensor](https://www.home-assistant.io/components/unifics.sensor) |
-| [unifigateway.sensor](https://www.home-assistant.io/components/unifigateway.sensor) |
 | [universal.media_player](https://www.home-assistant.io/components/universal.media_player) |
 | [untappd.sensor](https://www.home-assistant.io/components/untappd.sensor) |
 | [update](https://www.home-assistant.io/components/update) |
@@ -714,7 +715,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>85 Custom Integrations</summary>
+<details><summary>81 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -747,7 +748,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.rc10.3] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.3] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -766,7 +767,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [vV2.0.11] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge), [@tsbernar](https://github.com/tsbernar).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.9.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.4] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: ~1 more week before usable |[@AlexanderLanin](https://github.com/AlexanderLanin).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.0] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -776,7 +777,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sensor.Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.3.9] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.3.7] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.2.8] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Sensor.Unifigateway](https://github.com/custom-components/sensor.unifigateway) |  [v0.3.3] | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.1] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
@@ -789,10 +789,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) |  [v0.3.8] | Sensor of Temperature Feels Like for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.8.7] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
-| [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.2.0] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
-| [Unifi Counter Sensor](https://github.com/clyra/unifics) |  | Unifi Counter Sensor |[@clyra](https://github.com/clyra).|
-| [Unifi Status](https://github.com/zvldz/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
-| [Unifi Status](https://github.com/disforw/unifi_status) |  | High level health status of UniFi Security Gateway devices via UniFi Controller |[@jchasey](https://github.com/jchasey), [@zvldz](https://github.com/zvldz).|
+| [Tuya Local](https://github.com/make-all/tuya-local) |  [v2024.2.1] | Local support for Tuya devices in Home Assistant |[@make-all](https://github.com/make-all).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
@@ -826,7 +823,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/Alia5/lovelace-expander-card) |  [v0.0.4] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.3] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.4] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.5] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.8.9] | Present the data of Formula One in a pretty way |
@@ -894,7 +891,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | MariaDB | 2.6.1 |  | core |
 | Matter Server | 5.1.2 |  | core |
 | Node-RED | 17.0.7 |  | a0d7b954 |
-| OpenThread Border Router | 2.4.6 |  | core |
+| OpenThread Border Router | 2.4.7 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.0 |  | core |
 | Silicon Labs Multiprotocol | 2.4.4 |  | core |
