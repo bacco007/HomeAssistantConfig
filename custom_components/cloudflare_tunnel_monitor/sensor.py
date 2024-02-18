@@ -2,6 +2,7 @@ import logging
 import aiohttp
 import asyncio
 import async_timeout
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.helpers.entity import Entity
 from homeassistant.exceptions import PlatformNotReady
@@ -83,7 +84,7 @@ class CloudflareTunnelsDevice(Entity):
             "manufacturer": "Cloudflare",
         }
 
-class CloudflareTunnelSensor(Entity):
+class CloudflareTunnelSensor(SensorEntity):
     """Representation of a Cloudflare tunnel sensor."""
 
     def __init__(self, tunnel, coordinator, device):
@@ -111,6 +112,16 @@ class CloudflareTunnelSensor(Entity):
     def icon(self):
         """Return the icon of the sensor."""
         return 'mdi:cloud-check' if self._tunnel['status'] == 'healthy' else 'mdi:cloud-off-outline'
+
+    @property
+    def options(self):
+        """Return the possible values of the sensor."""
+        return ["inactive", "degraded", "healthy", "down"]
+
+    @property
+    def device_class(self):
+        """Return the device class of the sensor."""
+        return SensorDeviceClass.ENUM
 
     @property
     def device_info(self):
