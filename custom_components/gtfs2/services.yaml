@@ -1,6 +1,6 @@
 # Describes the format for available ADS services
 update_gtfs:
-  name: Update GTFS Data
+  name: Update/create GTFS Data
   description: Unpacks source to gtfs-db
   fields:
     extract_from:
@@ -30,6 +30,14 @@ update_gtfs:
       example: "https://path-to-my-zip-file-location/filename.zip"
       selector:
         text:            
+    clean_feed_info:
+      name: Remove feed-info
+      description: Removes feed_info.txt from zip (use in case file content incorrect)
+      required: true
+      default: false
+      selector:
+        boolean: 
+
 
 update_gtfs_rt_local:
   name: Update GTFS Realtime Data locally

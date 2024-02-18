@@ -141,11 +141,11 @@
   "services": {
     "update_gtfs": {
       "name": "MAJ d'un GTFS2 datasource",
-      "description": "Utiliser un lien ou placer votre fichier ZIP dans le dossier gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/4.-Service-call)",
+      "description": "Utiliser un lien ou placer votre fichier ZIP dans le dossier gtfs2",
       "fields": {
         "extract_from": {
           "name": "Collecte données de:",
-		  "description": ""
+		  "description": "zip (locale) ou url"
 		},
 		"file": {
           "name": "Nom du Service, sans ajouter .zip",
@@ -154,6 +154,10 @@
 		"url": {
           "name": "URL externe vers le fichier (zip) des données GTFS, laissez le 'na' si zip",
 		  "description": "A noter: si déjà existant, l'ancien sera remplacé"
+		},
+		"clean_feed_info": {
+          "name": "Ignore feed_info",
+		  "description": "Enlève feed_info.txt du zip (si son contenu est incorrecte)"
 		}
 	  }
 	},
@@ -173,7 +177,7 @@
 	},
 	"update_gtfs_local_stops": {
       "name": "Mise 1a jour les stops locals",
-      "description": "p.e. pour des 'person' qui bougent",
+      "description": "p.e. pour des 'person' qui bougent, à définier pour chaque person/zone",
       "fields": {
         "entity_id": {
           "name": "Entity lié avec les stops locaux",
@@ -182,4 +186,4 @@
 	  }
 	}
   }
-}
+  }

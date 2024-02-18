@@ -79,7 +79,7 @@ def get_next_services(self):
     self._trip = self._trip_id
     self._direction = self._direction
     self.delay = "unknown"
-    _LOGGER.debug("Configuration for RT route: %s, RT trip: %s, RT stop: %s, RT direction:", self._route, self._trip, self._stop, self._direction)
+    _LOGGER.debug("Configuration for RT route: %s, RT trip: %s, RT stop: %s, RT direction: %s", self._route, self._trip, self._stop, self._direction)
     next_services = self.data.get(self._trip, {}).get(self._direction, {}).get(self._stop, [])
     if not next_services:
         # GTFS RT feed may differ, try via route
@@ -259,7 +259,8 @@ def get_rt_trip_statuses(self):
 
         if entity.HasField("trip_update"):
             
-            trip_id = entity.trip_update.trip.trip_id        
+            trip_id = entity.trip_update.trip.trip_id   
+            
             if trip_id == self._trip_id:
                 _LOGGER.debug("Trip Statuses Entity: %s", entity)
 

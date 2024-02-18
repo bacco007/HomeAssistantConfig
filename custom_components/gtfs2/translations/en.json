@@ -142,12 +142,12 @@
   },
   "services": {
     "update_gtfs": {
-      "name": "Updates a GTFS2 datasource",
-      "description": "Either via Link or placing a Zip yourselves in gtfs2",
+      "name": "Update/create a GTFS2 datasource",
+      "description": "Either via Link or by placing a Zip in gtfs2 folder",
       "fields": {
         "extract_from": {
           "name": "Indicate source to use zip or url",
-		  "description": ""
+		  "description": "zip (local) or url"
 		},
 		"file": {
           "name": "Name of the transport service, without .zip",
@@ -156,6 +156,10 @@
 		"url": {
           "name": "URL",
 		  "description": "provide the full path to the zip file itself"
+		},
+		"clean_feed_info": {
+          "name": "Remove feed-info",
+		  "description": "Removes feed_info.txt from zip (use in case file content incorrect)"
 		}
 	  }
 	},
@@ -184,4 +188,4 @@
 	  }
 	}
   }
-}
+  }
