@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import base64
+from copy import deepcopy
+from enum import IntEnum
 import json
 import logging
 
@@ -73,6 +75,25 @@ INVERTED_BITS = [WashDeviceFeatures.DOOROPEN]
 _LOGGER = logging.getLogger(__name__)
 
 
+class CourseType(IntEnum):
+    """Washer device supported course type."""
+
+    COURSE = 0
+    SMARTCOURSE = 1
+    OPCOURSE = 2
+
+
+_COURSE_KEYS = {
+    CourseType.COURSE: [["Course", "APCourse"], ["courseType"]],
+    CourseType.OPCOURSE: [["OPCourse"], ["opCourseType"]],
+    CourseType.SMARTCOURSE: [
+        ["SmartCourse"],
+        ["smartCourseType", "downloadedCourseType"],
+    ],
+}
+_COURSE_TYPE = "courseType"
+
+
 class WMDevice(Device):
     """A higher-level interface for washer and dryer."""
 
@@ -92,8 +113,10 @@ class WMDevice(Device):
         self._subkey_device = None
         self._internal_state = None
         self._run_states: list | None = None
+        self._course_keys: dict[CourseType, str | None] | None = None
+        self._is_cycle_finishing = False
         self._stand_by = False
-        self._remote_start_status = None
+        self._remote_start_status: dict | None = None
         self._remote_start_pressed = False
         self._power_on_available: bool = None
         self._initial_bit_start = False
@@ -173,6 +196,24 @@ class WMDevice(Device):
         if len(self._run_states) > 2:
             self._run_states = self._run_states[:2]
 
+    def is_cycle_finishing(self) -> bool:
+        """Calculate if the cycle is finishing because remain 1 minute."""
+        if not self._status:
+            return self._is_cycle_finishing
+
+        if (remaining_min := self._status.remaintime_min) is None:
+            return self._is_cycle_finishing
+
+        # some devices just return minutes, so we set hour to 0 if is None
+        remaining_hours = self._status.remaintime_hour or 0
+
+        if int(remaining_hours) == 0:
+            if int(remaining_min) == 1:
+                self._is_cycle_finishing = True
+            elif int(remaining_min) > 1:
+                self._is_cycle_finishing = False
+        return self._is_cycle_finishing
+
     def getkey(self, key: str | None) -> str | None:
         """Add subkey prefix to a key if required."""
         if not (key and self._sub_key):
@@ -204,39 +245,123 @@ class WMDevice(Device):
 
         return None
 
+    def _get_course_key(self, course_type: CourseType) -> str | None:
+        """Return the course key for specific device."""
+        if self.model_info.is_info_v2:
+            course_type_keys = _COURSE_KEYS[course_type][1]
+            for key in course_type_keys:
+                if course_key := self.model_info.config_value(self.getkey(key)):
+                    if self.model_info.value_exist(course_key):
+                        return course_key
+        else:
+            course_keys = _COURSE_KEYS[course_type][0]
+            for key in course_keys:
+                course_key = self.getkey(key)
+                if self.model_info.value_exist(course_key):
+                    return course_key
+
+        return None
+
+    def get_course_key(self, course_type: CourseType) -> str | None:
+        """Return the course key for specific device."""
+        if self._course_keys is None:
+            if not self.model_info:
+                return None
+            self._course_keys = {key: self._get_course_key(key) for key in _COURSE_KEYS}
+        return self._course_keys[course_type]
+
     def _get_course_info(self, course_key, course_id):
         """Get definition for a specific course ID."""
         if course_key is None:
             return None
         return self.model_info.value(course_key).reference.get(course_id)
 
-    def _update_course_info(self, data, course_id=None):
-        """
-        Save information in the data payload for a specific course
-        or default course if not already available.
-        """
-        if not data:
-            return {}
+    def _prepare_course_info(
+        self,
+        data: dict,
+        course_id: str,
+        course_info: dict,
+        course_type: CourseType,
+        course_set: bool,
+        n_course_key: str,
+        s_course_key: str | None,
+    ) -> dict:
+        """Prepare the course info used to run the command."""
 
-        if self.model_info.is_info_v2:
-            n_course_key = self.model_info.config_value(self.getkey("courseType"))
-            s_course_key = self.model_info.config_value(self.getkey("smartCourseType"))
-            def_course_id = self.model_info.config_value(
-                f"default{self._getcmdkey('Course')}"
-            )
-        else:
-            n_course_key = (
-                "APCourse" if self.model_info.value_exist("APCourse") else "Course"
-            )
-            s_course_key = "SmartCourse"
-            def_course_id = str(self.model_info.config_value("defaultCourseId"))
+        ret_data = deepcopy(data)
 
         # Prepare the course data initializing option for infoV1 device
-        ret_data = data.copy()
         option_keys = self.model_info.option_keys(self._sub_key)
         if not self.model_info.is_info_v2:
             for opt_name in option_keys:
                 ret_data[opt_name] = data.get(opt_name, "0")
+
+        if _COURSE_TYPE in course_info:
+            ret_data[_COURSE_TYPE] = course_info[_COURSE_TYPE]
+
+        if course_type == CourseType.COURSE:
+            ret_data[n_course_key] = course_id
+            if s_course_key:
+                ret_data[s_course_key] = 0
+        elif course_type == CourseType.SMARTCOURSE:
+            ret_data[n_course_key] = 0
+            ret_data[s_course_key] = course_id
+            for key in ["Course", "APCourse"]:
+                if key in course_info:
+                    ret_data[n_course_key] = course_info[key]
+                    break
+
+        if op_course_key := self.get_course_key(CourseType.OPCOURSE):
+            if "OpCourse" in course_info:
+                ret_data[op_course_key] = course_info["OpCourse"]
+            else:
+                ret_data.pop(op_course_key, None)
+
+        for func_key in course_info["function"]:
+            ckey = func_key.get("value")
+            cdata = func_key.get("default")
+            opt_set = False
+            for opt_name in option_keys:
+                if opt_name not in ret_data:
+                    continue
+                opt_val = ret_data[opt_name]
+                new_val = self._update_opt_bit(opt_name, opt_val, ckey, int(cdata))
+                if new_val is not None:
+                    opt_set = True
+                    if not course_set:
+                        ret_data[opt_name] = new_val
+                    break
+            if opt_set or (course_set and ckey in ret_data):
+                continue
+            if ckey and cdata:
+                ret_data[ckey] = cdata
+
+        _LOGGER.debug("Prepared course data: %s", ret_data)
+        return ret_data
+
+    def _update_course_info(self, course_id=None) -> dict:
+        """
+        Save information in the data payload for a specific course
+        or default course if not already available.
+        """
+        data = None
+        if self._initial_bit_start:
+            data = self._remote_start_status
+        elif self._status:
+            data = self._status.as_dict
+
+        if not data:
+            return {}
+
+        course_type = CourseType.COURSE
+        n_course_key = self.get_course_key(CourseType.COURSE)
+        s_course_key = self.get_course_key(CourseType.SMARTCOURSE)
+        if self.model_info.is_info_v2:
+            def_course_id = self.model_info.config_value(
+                f"default{self._getcmdkey('Course')}"
+            )
+        else:
+            def_course_id = str(self.model_info.config_value("defaultCourseId"))
 
         # Search valid course Info
         course_info = None
@@ -244,8 +369,12 @@ class WMDevice(Device):
         if course_id is None:
             # check if this course is defined in data payload
             for course_key in [n_course_key, s_course_key]:
-                course_id = str(ret_data.get(course_key))
+                if not course_key:
+                    continue
+                course_id = str(data.get(course_key))
                 if course_info := self._get_course_info(course_key, course_id):
+                    if course_key == s_course_key:
+                        course_type = CourseType.SMARTCOURSE
                     course_set = True
                     break
         else:
@@ -257,28 +386,17 @@ class WMDevice(Device):
 
         # Save information for specific or default course
         if course_info:
-            if not course_set:
-                ret_data[n_course_key] = course_id
-            for func_key in course_info["function"]:
-                key = func_key.get("value")
-                data = func_key.get("default")
-                opt_set = False
-                for opt_name in option_keys:
-                    if opt_name not in ret_data:
-                        continue
-                    opt_val = ret_data[opt_name]
-                    new_val = self._update_opt_bit(opt_name, opt_val, key, int(data))
-                    if new_val is not None:
-                        opt_set = True
-                        if not course_set:
-                            ret_data[opt_name] = new_val
-                        break
-                if opt_set or (course_set and key in ret_data):
-                    continue
-                if key and data:
-                    ret_data[key] = data
+            return self._prepare_course_info(
+                data,
+                course_id,
+                course_info,
+                course_type,
+                course_set,
+                n_course_key,
+                s_course_key,
+            )
 
-        return ret_data
+        return {}
 
     def _prepare_command_v1(self, cmd, key):
         """Prepare command for specific ThinQ1 device."""
@@ -288,7 +406,7 @@ class WMDevice(Device):
         if "data" in cmd:
             str_data = cmd["data"]
             option_keys = self.model_info.option_keys(self._sub_key)
-            status_data = self._update_course_info(self._remote_start_status)
+            status_data = self._update_course_info()
 
             for dt_key, dt_value in status_data.items():
                 repl_key = f"{{{{{dt_key}}}}}"
@@ -302,7 +420,7 @@ class WMDevice(Device):
                     )
                     if new_value is not None:
                         dt_value = new_value
-                str_data = str_data.replace(repl_key, dt_value)
+                str_data = str_data.replace(repl_key, str(dt_value))
             _LOGGER.debug("Command data content: %s", str_data)
             if encode:
                 cmd["format"] = "B64"
@@ -318,38 +436,43 @@ class WMDevice(Device):
             return cmd
 
         res_data_set = None
-        if key and key.find("WMStart") >= 0 and WM_ROOT_DATA in data_set:
-            status_data = self._update_course_info(self._remote_start_status)
-            n_course_key = self.model_info.config_value(self.getkey("courseType"))
-            s_course_key = self.model_info.config_value(self.getkey("smartCourseType"))
+        if key and "WMStart" in key and WM_ROOT_DATA in data_set:
+            status_data = self._update_course_info()
+            n_course_key = self.get_course_key(CourseType.COURSE)
+            s_course_key = self.get_course_key(CourseType.SMARTCOURSE)
+            op_course_key = self.get_course_key(CourseType.OPCOURSE)
             cmd_data_set = {}
 
+            if _COURSE_TYPE in status_data:
+                cmd_data_set[_COURSE_TYPE] = status_data[_COURSE_TYPE]
+
             for cmd_key, cmd_value in data_set[WM_ROOT_DATA].items():
-                if cmd_key in ["course", "Course", "ApCourse", n_course_key]:
-                    course_data = status_data.get(n_course_key, "NOT_SELECTED")
-                    course_type = self.model_info.reference_name(
-                        n_course_key, course_data, ref_key="courseType"
-                    )
-                    if course_type:
-                        cmd_data_set[n_course_key] = course_data
-                        cmd_data_set["courseType"] = course_type
+                if cmd_key == _COURSE_TYPE:
+                    continue
+                if cmd_key in ["course", "Course", "ApCourse"]:
+                    course_data = status_data.get(n_course_key, 0)
+                    cmd_data_set[n_course_key] = course_data or "NOT_SELECTED"
+                elif cmd_key in ["smartCourse", "SmartCourse"]:
+                    if s_course_key:
+                        course_data = status_data.get(s_course_key, 0)
+                        cmd_data_set[s_course_key] = course_data or "NOT_SELECTED"
                     else:
-                        cmd_data_set[n_course_key] = "NOT_SELECTED"
-                elif cmd_key in ["smartCourse", "SmartCourse", s_course_key]:
-                    course_data = status_data.get(s_course_key, "NOT_SELECTED")
-                    course_type = self.model_info.reference_name(
-                        s_course_key, course_data, ref_key="courseType"
-                    )
-                    if course_type:
-                        cmd_data_set[s_course_key] = course_data
-                        cmd_data_set["courseType"] = course_type
+                        cmd_data_set[cmd_key] = "NOT_SELECTED"
+                elif cmd_key in ["OpCourse"]:
+                    if op_course_key:
+                        if course_data := status_data.get(op_course_key):
+                            cmd_data_set[op_course_key] = course_data
                     else:
-                        cmd_data_set[s_course_key] = "NOT_SELECTED"
+                        cmd_data_set[cmd_key] = "NOT_SELECTED"
                 elif cmd_key == self.getkey("initialBit"):
-                    if self._initial_bit_start:
-                        cmd_data_set[cmd_key] = "INITIAL_BIT_ON"
+                    if self._sub_key:
+                        prefix = f"{self._sub_key.upper()}_"
                     else:
-                        cmd_data_set[cmd_key] = "INITIAL_BIT_OFF"
+                        prefix = ""
+                    if self._initial_bit_start:
+                        cmd_data_set[cmd_key] = f"{prefix}INITIAL_BIT_ON"
+                    else:
+                        cmd_data_set[cmd_key] = f"{prefix}INITIAL_BIT_OFF"
                 else:
                     cmd_data_set[cmd_key] = status_data.get(cmd_key, cmd_value)
             res_data_set = {WM_ROOT_DATA: cmd_data_set}
@@ -493,6 +616,9 @@ class WMDevice(Device):
 
         keys = self._get_cmd_keys(CMD_PAUSE)
         await self.set(keys[0], keys[1])
+        # this is to keep remote start disabled until next refresh
+        self._remote_start_pressed = True
+        # this is to keep remote start disabled until next refresh
         self._update_status(POWER_STATUS_KEY, self._state_pause)
 
     async def set(
@@ -515,7 +641,7 @@ class WMDevice(Device):
         self._status = WMStatus(self, tcl_count=tcl_count)
         return self._status
 
-    def _set_remote_start_opt(self, res):
+    def _set_remote_start_opt(self):
         """Save the status to use for remote start."""
         if self._power_on_available is None:
             if self.model_info.config_value("powerOnButtonAvailable"):
@@ -539,7 +665,7 @@ class WMDevice(Device):
         remote_start = self._status.device_features.get(WashDeviceFeatures.REMOTESTART)
         if remote_start == StateOptions.ON:
             if self._remote_start_status is None:
-                self._remote_start_status = res
+                self._remote_start_status = self._status.as_dict
         else:
             self._remote_start_status = None
 
@@ -558,7 +684,7 @@ class WMDevice(Device):
             return None
 
         self._status = WMStatus(self, res)
-        self._set_remote_start_opt(res)
+        self._set_remote_start_opt()
         return self._status
 
 
@@ -586,6 +712,7 @@ class WMStatus(DeviceStatus):
         self._pre_state = None
         self._process_state = None
         self._error = None
+        self._is_cycle_finishing = False
         self._tcl_count = tcl_count
 
     def _getkeys(self, keys: str | list[str]) -> str | list[str]:
@@ -606,6 +733,7 @@ class WMStatus(DeviceStatus):
                 self._internal_run_state = self._data[curr_key]
                 self._run_state = state
             self._device.calculate_pre_state(self._run_state)
+            self._is_cycle_finishing = self._device.is_cycle_finishing()
         return self._run_state
 
     def _get_pre_state(self):
@@ -682,11 +810,22 @@ class WMStatus(DeviceStatus):
         pre_state = self._get_pre_state()
         if pre_state is None:
             pre_state = self._get_process_state() or StateOptions.NONE
+
         if any(state in run_state for state in STATE_WM_END) or (
             STATE_WM_POWER_OFF in run_state
             and any(state in pre_state for state in STATE_WM_END)
         ):
             return True
+
+        if (
+            any(state in run_state for state in [STATE_WM_POWER_OFF, STATE_WM_INITIAL])
+            and not any(
+                state in pre_state for state in [STATE_WM_POWER_OFF, STATE_WM_INITIAL]
+            )
+            and self._is_cycle_finishing
+        ):
+            return True
+
         return False
 
     @property
@@ -702,24 +841,16 @@ class WMStatus(DeviceStatus):
     @property
     def current_course(self):
         """Return current course."""
-        if self.is_info_v2:
-            course_key = self._device.model_info.config_value(
-                self._getkeys("courseType")
-            )
-        else:
-            course_key = ["APCourse", "Course"]
+        if not (course_key := self._device.get_course_key(CourseType.COURSE)):
+            return StateOptions.NONE
         course = self.lookup_reference(course_key, ref_key="name")
         return self._device.get_enum_text(course)
 
     @property
     def current_smartcourse(self):
         """Return current smartcourse."""
-        if self.is_info_v2:
-            course_key = self._device.model_info.config_value(
-                self._getkeys("smartCourseType")
-            )
-        else:
-            course_key = "SmartCourse"
+        if not (course_key := self._device.get_course_key(CourseType.SMARTCOURSE)):
+            return StateOptions.NONE
         smart_course = self.lookup_reference(course_key, ref_key="name")
         return self._device.get_enum_text(smart_course)
 
@@ -729,7 +860,7 @@ class WMStatus(DeviceStatus):
             if not self.is_on:
                 return 0
             return self.int_or_none(self._data.get(self._getkeys(keys[1])))
-        return self._data.get(keys[0])
+        return self.lookup_range(self._getkeys((keys[0])))
 
     @property
     def initialtime_hour(self):
@@ -739,7 +870,9 @@ class WMStatus(DeviceStatus):
     @property
     def initialtime_min(self):
         """Return minute initial time."""
-        return self._get_time_info(["Initial_Time_M", "initialTimeMinute"])
+        return self._get_time_info(
+            [["Initial_Time_M", "Initial_Time"], "initialTimeMinute"]
+        )
 
     @property
     def remaintime_hour(self):
@@ -749,7 +882,9 @@ class WMStatus(DeviceStatus):
     @property
     def remaintime_min(self):
         """Return minute remaining time."""
-        return self._get_time_info(["Remain_Time_M", "remainTimeMinute"])
+        return self._get_time_info(
+            [["Remain_Time_M", "Remain_Time"], "remainTimeMinute"]
+        )
 
     @property
     def reservetime_hour(self):
@@ -759,7 +894,9 @@ class WMStatus(DeviceStatus):
     @property
     def reservetime_min(self):
         """Return minute reserved time."""
-        return self._get_time_info(["Reserve_Time_M", "reserveTimeMinute"])
+        return self._get_time_info(
+            [["Reserve_Time_M", "Reserve_Time"], "reserveTimeMinute"]
+        )
 
     @property
     def run_state(self):
