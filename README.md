@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.2.2 |
 | No. Integrations | 200 |
 | No. Custom Integrations | 86 |
-| No. Entities | 5173 |
-| No. Sensors | 3462 |
+| No. Entities | 5184 |
+| No. Sensors | 3469 |
 | No. Automations | 137 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 16
-Binary sensors | 339
-Buttons | 203
+Binary sensors | 340
+Buttons | 206
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 572
+Devices | 573
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -84,18 +84,18 @@ Input texts | 3
 Lights | 14
 Locks | 4
 Media players | 19
-Numbers | 29
+Numbers | 31
 Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 49
-Sensors | 3462
+Sensors | 3469
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 272
+Switches | 275
 Texts | 0
 Times | 0
 Text-to-speech | 1
@@ -748,7 +748,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.rc10.3] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.3] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -778,7 +778,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.3.7] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.2.8] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
-| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.1] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
+| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.2] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.1] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
@@ -851,7 +851,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.7] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
 | [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat) |  [v2.5.0] | A different take on the thermostat card for Home Assistant ♨️ |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.0.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.0.1] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -887,7 +887,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
-| JupyterLab | 0.14.0 |  | a0d7b954 |
+| JupyterLab | 0.14.1 |  | a0d7b954 |
 | MariaDB | 2.6.1 |  | core |
 | Matter Server | 5.1.2 |  | core |
 | Node-RED | 17.0.7 |  | a0d7b954 |
