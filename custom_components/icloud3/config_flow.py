@@ -1,7 +1,5 @@
 import os
 import time
-# import asyncio
-from collections                    import OrderedDict
 
 from homeassistant                  import config_entries, data_entry_flow
 from homeassistant.config_entries   import ConfigEntry as config_entry
@@ -67,7 +65,7 @@ from .const             import (DOMAIN, ICLOUD3, DATETIME_FORMAT,
                                 )
 from .const_sensor      import (SENSOR_GROUPS )
 from .helpers.common    import (instr, isnumber, obscure_field, list_to_str, str_to_list,
-                                is_statzone, zone_dname, )
+                                is_statzone, zone_dname, isbetween, )
 from .helpers.messaging import (log_exception, log_debug_msg, _traceha, _trace,
                                 post_event, post_monitor_msg,
                                 open_ic3_log_file, close_reopen_ic3_log_file, )
@@ -317,6 +315,13 @@ UNIT_OF_MEASUREMENT_ITEMS_KEY_TEXT = {
 TIME_FORMAT_ITEMS_KEY_TEXT = {
         '12-hour':  '12-hour Time Format (9:05:30a, 4:40:15p)',
         '24-hour':  '24-hour Time Format (9:05:30, 16:40:15)'
+        }
+TRAVEL_TIME_INTERVAL_MULTIPLIER_KEY_TEXT = {
+        .25:  'Shortest Interval Time - 1/4 TravelTime (¼ × 8 mins = Next Locate in 2m)',
+        .33:  'Shorter Interval Time - 1/3 TravelTime (⅓ × 8 mins = Next Locate in 2m40s)',
+        .50:  'Half Way (Default) - 1/2 TravelTime (½ × 8 mins = Next Locate in 4m)',
+        .66:  'Longer Interval Time - 2/3 TravelTime (⅔ × 8 mins = Next Locate in 5m20s',
+        .75:  'Longest Interval Time - 3/4 TravelTime (¾ × 8 mins = Next Locate in 6m)'
         }
 DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT = {}
 DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT_BASE = {
@@ -1945,6 +1950,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         '''
         Update the profile parameters
         '''
+        user_input = self._option_text_to_parm(user_input, CONF_TRAVEL_TIME_FACTOR, TRAVEL_TIME_INTERVAL_MULTIPLIER_KEY_TEXT)
         user_input[CONF_EVLOG_BTNCONFIG_URL] = user_input[CONF_EVLOG_BTNCONFIG_URL].strip()
 
         return user_input
@@ -2994,7 +3000,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             self.errors['base'] = 'required_field_device'
             self.errors[CONF_FAMSHR_DEVICENAME] = 'no_device_selected'
             self.errors[CONF_FMF_EMAIL]         = 'no_device_selected'
-            self.errors[CONF_MOBILE_APP_DEVICE]     = 'no_device_selected'
+            self.errors[CONF_MOBILE_APP_DEVICE] = 'no_device_selected'
 
         if (user_input[CONF_FAMSHR_DEVICENAME] in self.devicename_by_famshr_fmf
                 and self.devicename_by_famshr_fmf[user_input[CONF_FAMSHR_DEVICENAME]] not in ui_old_devicename):
@@ -3038,6 +3044,10 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                                             self.conf_device_selected[CONF_TRACK_FROM_BASE_ZONE]])]
         track_from_zones.append(self.conf_device_selected[CONF_TRACK_FROM_BASE_ZONE])
         user_input[CONF_TRACK_FROM_ZONES] = track_from_zones
+
+        if isbetween(user_input[CONF_FIXED_INTERVAL], 0, 5):
+            user_input[CONF_FIXED_INTERVAL] = 5
+            self.errors[CONF_FIXED_INTERVAL] = 'fixed_interval_invalid_range'
 
         return user_input
 
@@ -3937,11 +3947,14 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             else:
                 pvalue_key = Gb.conf_general[pname]
 
-            if type(pvalue_key) is str:
+            if type(pvalue_key) in [float, int, str]:
                 return option_list_key_text[pvalue_key]
 
             elif type(pvalue_key) is list:
                 return [option_list_key_text[pvalue_key_item] for pvalue_key_item in pvalue_key]
+
+            return option_list_key_text.values()[0]
+
 
         except Exception as err:
             # If the parameter value is already the key to the items dict, it is ok.
@@ -4699,16 +4712,13 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                             default=Gb.conf_general[CONF_TFZ_TRACKING_MAX_DISTANCE]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
                                 min=1, max=100, unit_of_measurement='Km')),
-                vol.Required(CONF_TRAVEL_TIME_FACTOR,
-                            default=self._parm_or_error_msg(CONF_TRAVEL_TIME_FACTOR)):
-                            selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=.1, max = 1, step=.1)),
                 vol.Optional(CONF_DISCARD_POOR_GPS_INZONE,
                             default=Gb.conf_general[CONF_DISCARD_POOR_GPS_INZONE]):
                             selector.BooleanSelector(),
-                # vol.Optional(CONF_CENTER_IN_ZONE,
-                #             default=Gb.conf_general[CONF_CENTER_IN_ZONE]):
-                #             selector.BooleanSelector(),
+                vol.Required(CONF_TRAVEL_TIME_FACTOR,
+                            default=self._option_parm_to_text(CONF_TRAVEL_TIME_FACTOR, TRAVEL_TIME_INTERVAL_MULTIPLIER_KEY_TEXT)):
+                            selector.SelectSelector(selector.SelectSelectorConfig(
+                                options=dict_value_to_list(TRAVEL_TIME_INTERVAL_MULTIPLIER_KEY_TEXT), mode='dropdown')),
                 vol.Required(CONF_EVLOG_CARD_DIRECTORY,
                             default=self._parm_or_error_msg(CONF_EVLOG_CARD_DIRECTORY, conf_group=CF_PROFILE)):
                             selector.SelectSelector(selector.SelectSelectorConfig(
