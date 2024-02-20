@@ -23,6 +23,7 @@ _Please :star: this repo if you find it useful_
 <details>
 <summary>Details</summary>
 
+- [TL;DR](#tldr)
 - [Stats](#stats)
 - [Integrations Used](#integrations-used)
 - [Screenshots](#screenshots)
@@ -49,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.2.2 |
 | No. Integrations | 200 |
 | No. Custom Integrations | 86 |
-| No. Entities | 5184 |
+| No. Entities | 5183 |
 | No. Sensors | 3469 |
 | No. Automations | 137 |
 
@@ -84,7 +85,7 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -730,7 +731,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) |  [v2.0.3] | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |[@r-renato](https://github.com/r-renato).|
 | [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.6] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
-| [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v2.8.4] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
+| [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v3.0.0] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.3.0] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
 | [Daily Schedule](https://github.com/amitfin/daily_schedule) |  [v1.6.1] | Home Assistant Daily Schedule Custom Component |[@amitfin](https://github.com/amitfin).|
@@ -747,8 +748,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.3] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.4] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
@@ -777,12 +778,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.3.7] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.2.8] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
-| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
+| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.3] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.2] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.1] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.6] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
-| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.1.0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.1.1] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Sungrow](https://github.com/alangibson/homeassistant-sungrow) |  | Sungrow Inverter integration for Home Assistant |[alangibson](https://github.com/alangibson).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.11.1] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) |  [v0.3.8] | Sensor of Temperature Feels Like for Home Assistant. |[@Limych](https://github.com/Limych).|
@@ -822,7 +823,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/Alia5/lovelace-expander-card) |  [v0.0.4] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.4] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.5] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.5] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.8.9] | Present the data of Formula One in a pretty way |
@@ -845,7 +846,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card) |  [v1.0.5] | This is a fully customisable weather card for Home Assistant with a graphical configuration. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.1.8.1] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.20.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.20.1] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.7] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
