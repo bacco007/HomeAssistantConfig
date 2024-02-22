@@ -34,13 +34,13 @@ esp32:
 #       ref: waveshare-color-2022.6
 #     components: [waveshare_epaper]
 
-external_components:
-  # twisterss fork of esphome-dev
-  - source:
-      type: git
-      url: https://github.com/twisterss/esphome-dev.git
-      ref: waveshare-red-black
-    components: [waveshare_epaper]
+# external_components:
+#   # twisterss fork of esphome-dev
+#   - source:
+#       type: git
+#       url: https://github.com/twisterss/esphome-dev.git
+#       ref: waveshare-red-black
+#     components: [waveshare_epaper]
 
 # external_components:
 #   - source: my_components_waveshare75
@@ -551,7 +551,8 @@ display:
       inverted: True
     reset_pin: 26
     #model: 7.50inbv2
-    model: 7.50in-bv2-rb
+    #model: 7.50in-bv2-rb
+    model: 7.50in-bV3
     id: eink_display
     update_interval: never
     reset_duration: 2ms

@@ -2,7 +2,7 @@
 
 ssh-keygen -F github.com -t dsa || ssh-keyscan github.com >> ~/.ssh/known_hosts > file.log 2>&1
 
-git pull > file.log 2>&1
+git fetch origin master > file.log 2>&1
 
 git config user.name "Thomas Baxter" > file.log 2>&1
 
