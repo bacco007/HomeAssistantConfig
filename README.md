@@ -23,6 +23,7 @@ _Please :star: this repo if you find it useful_
 <details>
 <summary>Details</summary>
 
+- [TL;DR](#tldr)
 - [Stats](#stats)
 - [Integrations Used](#integrations-used)
 - [Screenshots](#screenshots)
@@ -49,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.2.2 |
 | No. Integrations | 201 |
 | No. Custom Integrations | 87 |
-| No. Entities | 5208 |
-| No. Sensors | 3470 |
+| No. Entities | 5189 |
+| No. Sensors | 3473 |
 | No. Automations | 137 |
 
 <details>
@@ -69,8 +70,8 @@ Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 96
-Devices | 575
+Device trackers | 97
+Devices | 576
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -84,17 +85,17 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 49
-Sensors | 3470
+Sensors | 3473
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 275
+Switches | 276
 Texts | 0
 Times | 0
 Text-to-speech | 1
@@ -744,12 +745,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.1] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.3.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.3.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.rc10.4] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.rc10.4] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.4] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -765,7 +766,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v3.1.3] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
-| [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [vV2.0.12] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge), [@tsbernar](https://github.com/tsbernar).|
+| [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [v2.0.13] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.9.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.4] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
@@ -881,8 +882,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.1.0 |  | a0d7b954 |
-| Cloudflared | 5.1.3 |  | 9074a9fa |
-| ESPHome | 2023.12.9 |  | 15ef4d2f |
+| Cloudflared | 5.1.4 |  | 9074a9fa |
+| ESPHome | 2024.2.0 |  | 15ef4d2f |
 | eufy-security-ws | 1.7.1 |  | 402f1039 |
 | Fusion | 2024.2.1 |  | 65f67727 |
 | Glances | 0.21.0 |  | a0d7b954 |
