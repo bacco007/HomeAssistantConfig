@@ -60,7 +60,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Initialize config entry. form config flow"""
+    """Initialize config entry. form config flow."""
     if config_entry.options != {}:
         config = config_entry.options
     else:
@@ -88,8 +88,7 @@ async def async_setup_entry(
     )
 
 class WeatherCoordinator(DataUpdateCoordinator):
-    """Weather API data coordinator
-       refresh the data independantly of the sensor"""
+    """Weather API data coordinator. Refresh the data independantly of the sensor."""
 
     def __init__(self, hass: HomeAssistant, weather) -> None:
         """Initialize my coordinator."""
@@ -117,7 +116,7 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
     _attr_should_poll = False
     _attr_attribution = ATTRIBUTION
 
-    def __init__(
+    def __init__(  # noqa: D107
         self,
         hass: HomeAssistant,
         config,
@@ -149,14 +148,16 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
         self.async_write_ha_state()
 
     async def async_added_to_hass(self):
+        """Add to Hass."""
         self._hass.async_create_task(self.async_update())
         await super().async_added_to_hass()
 
     async def api_call(self):
+        """Call API."""
         await self._weather.show_call_data()
 
     async def async_update(self):
-        ''' update the sensor'''
+        '''Update the sensor.'''
         self.determine_state()
         self.async_write_ha_state()
 
@@ -172,13 +173,14 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
 
     @property
     def state_class(self) -> SensorStateClass:
-        """handle string instances"""
+        """Handle string instances."""
         match self._state_class:
             case 'measurement':
                 return SensorStateClass.MEASUREMENT
 
     @property
     def native_unit_of_measurement(self):
+        """Set Unit."""
         match self._sensor_class:
             case 'humidity':
                 return '%'
@@ -193,7 +195,7 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
 
     @property
     def device_class(self) -> SensorDeviceClass:
-        """handle string instances"""
+        """Handle string instances."""
         match self._sensor_class:
             case 'humidity':
                 return SensorDeviceClass.HUMIDITY
@@ -217,7 +219,7 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
         return self._extra_attributes
 
     def determine_state(self):
-        """Determine the sensor state"""
+        """Determine the sensor state."""
         try:
             self._state = float(self._evaluate_custom_formula(self._formula ,  self._update_vars(self._weather)))
         except ValueError:
@@ -227,7 +229,7 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
             self._extra_attributes = self._evaluate_custom_attr(self._attributes, self._update_vars(self._weather))
 
     def _evaluate_custom_formula(self, formula: str, wvars: dict):
-        """evaluate the formula/template"""
+        """Evaluate the formula/template."""
         environment = jinja2.Environment()
         template = environment.from_string(formula)
         #process the template and handle errors
@@ -241,7 +243,7 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
             return 0
 
     def _evaluate_custom_attr(self, attributes: list, wvars: dict):
-        """take the list of vars and build the attrs dictionaty"""
+        """Take the list of vars and build the attrs dictionaty."""
         attrs = {}
         attrs_list = attributes.replace(" ","").replace("'","").strip("[]'").split(",")
         for item in attrs_list:
@@ -281,7 +283,7 @@ class WeatherHistory(CoordinatorEntity,SensorEntity):
         return wvars
 
     def list_vars(self):
-        """list all available variables"""
+        """List all available variables."""
         wvars = self._update_vars(self._weather)
         _LOGGER.warning('Configured max days : %s',self._maxdays)
         _LOGGER.warning('Configured initial days: %s', self._initdays)

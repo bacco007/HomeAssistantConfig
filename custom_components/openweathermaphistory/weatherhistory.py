@@ -1,6 +1,6 @@
-"""define the weather class"""
+"""Define the weather class."""
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 import json
 
 #from pyowm import OWM
@@ -8,8 +8,7 @@ import logging
 from os.path import exists, join
 import pickle
 import re
-
-import pytz
+from zoneinfo import ZoneInfo
 
 from homeassistant.const import (
     CONF_API_KEY,
@@ -35,10 +34,10 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "OpenWeatherMap History"
 
-class Weather():
+class Weather:
     """weather class."""
-    
-    def __init__(
+
+    def __init__(  # noqa: D107
         self,
         hass: HomeAssistant,
         config,
@@ -85,7 +84,7 @@ class Weather():
         myfile.close()
 
     def validate_data(self, data) -> bool:
-        """check if the call was successful"""
+        """Check if the call was successful."""
         jdata = json.loads(data)
         try:
             code    = jdata["cod"]
@@ -96,11 +95,11 @@ class Weather():
             return data
 
     def remaining_backlog(self):
-        "return remaining days to collect"
+        "Return remaining days to collect."
         return self._backlog
 
     async def get_forecastdata(self):
-        """get forecast data"""
+        """Get forecast data."""
         url = CONST_API_FORECAST % (self._lat,self._lon, self._key)
         rest = RestData()
         await rest.set_resource(self._hass, url)
@@ -138,7 +137,7 @@ class Weather():
         return currentdata, forecastdaily
 
     async def processcurrent(self,current):
-        """process the currrent data"""
+        """Process the currrent data."""
         current_data ={ 'current': {'rain': current.get('rain')
                                    , 'snow': current.get('snow')
                                    , 'humidity': current.get('humidity')
@@ -148,7 +147,7 @@ class Weather():
         return current_data
 
     async def processdailyforecast(self,dailydata):
-        "process daily forecast data"
+        "Process daily forecast data."
         processed_data = {}
         i = 0
         for data in dailydata.values():
@@ -167,13 +166,15 @@ class Weather():
         return processed_data
 
     async def processhistory(self,historydata):
-        """process history data"""
+        """Process history data."""
         removehours = []
-        localtimezone = pytz.timezone(self._timezone)
+#        localtimezone = pytz.timezone(self._timezone)
+#        localtimezone = ZoneInfo(self._timezone)
         processed_data = {}
         for hour, data in historydata.items():
-            localday = datetime.utcfromtimestamp(hour).replace(tzinfo=timezone.utc).astimezone(tz=localtimezone)
-            localnow = datetime.now(localtimezone)
+#            localday = datetime.utcfromtimestamp(hour).replace(tzinfo=timezone.utc).astimezone(tz=localtimezone)
+            localday = datetime.fromtimestamp(hour,tz=ZoneInfo(self._timezone))
+            localnow = datetime.now(ZoneInfo(self._timezone))
             localdaynum = (localnow - localday).days
             self._num_days = max(self._num_days,localdaynum)
             if localdaynum > self._maxdays-1:
@@ -199,33 +200,33 @@ class Weather():
         return historydata,processed_data
 
     def set_processing_type(self,option):
-        """allow setting of the processing type"""
+        """Allow setting of the processing type."""
         self._processing_type = option
 
     def num_days(self) -> int:
-        """ return how many days of data has been collected"""
+        """Return how many days of data has been collected."""
         return self._num_days
 
     def daily_count(self) -> int:
-        """ return how many days of data has been collected"""
+        """Return daily of data has been collected."""
         return self._daily_count
 
 
     def cumulative_rain(self) -> float:
-        """ return how many days of data has been collected"""
+        """Return data has been collected."""
         return self._cumulative_rain
 
     def cumulative_snow(self) -> float:
-        """ return how many days of data has been collected"""
+        """Return data has been collected."""
         return self._cumulative_snow
 
     def processed_value(self, period, value) -> float:
-        """return the days current rainfall"""
+        """Return data has been collected."""
         data = self._processed.get(period,{})
         return data.get(value,0)
 
     async def show_call_data(self):
-        """call the api and show the result"""
+        """Call the api and show the result."""
         hour = datetime(date.today().year, date.today().month, date.today().day,datetime.now().hour)
         thishour = int(datetime.timestamp(hour))
         url = CONST_API_CALL % (self._lat,self._lon, thishour, self._key) #self._key
@@ -236,7 +237,7 @@ class Weather():
         _LOGGER.warning(self.validate_data(rest.data))
 
     async def async_update(self):
-        '''update the weather stats'''
+        '''Update the weather stats.'''
         hour = datetime(date.today().year, date.today().month, date.today().day,datetime.now().hour)
         thishour = int(datetime.timestamp(hour))
         day = datetime(date.today().year, date.today().month, date.today().day)
@@ -328,7 +329,7 @@ class Weather():
                          'cumulativesnow':self._cumulative_snow},self._name)
 
     async def get_historydata(self,historydata):
-        """get history data from the newest data forward"""
+        """Get history data from the newest data forward."""
         hour = datetime(date.today().year, date.today().month, date.today().day,datetime.now().hour)
         thishour = int(datetime.timestamp(hour))
         data = historydata
@@ -356,7 +357,7 @@ class Weather():
         return data
 
     async def async_backload(self,historydata):
-        """backload data from the oldest data backward"""
+        """Backload data from the oldest data backward."""
         data = historydata
 
         hour = datetime(date.today().year, date.today().month, date.today().day,datetime.now().hour)
@@ -398,7 +399,7 @@ class Weather():
         return data
 
     async def gethourdata(self,timestamp):
-        """get one hours data"""
+        """Get one hours data."""
         url = CONST_API_CALL % (self._lat,self._lon, timestamp, self._key)
         rest = RestData()
         await rest.set_resource(self._hass, url)

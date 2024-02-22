@@ -1,17 +1,16 @@
-""" Init """
+"""Init."""
 from __future__ import annotations
+
 import logging
-from . import utils
 from pathlib import Path
-from homeassistant.helpers import config_validation as cv
+
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    Platform,
-)
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from .const import (
-    DOMAIN,
-    )
+from homeassistant.helpers import config_validation as cv
+
+from . import utils
+from .const import DOMAIN
 
 CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
 
@@ -33,7 +32,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 async def async_setup(hass:HomeAssistant, config):
-    '''setup the card'''
+    '''Card setup.'''
 
     # 1. Serve lovelace card
     path = Path(__file__).parent / "www"

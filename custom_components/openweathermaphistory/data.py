@@ -3,8 +3,8 @@ import logging
 
 import httpx
 
-from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.httpx_client import get_async_client
 
 DEFAULT_TIMEOUT = 5
 

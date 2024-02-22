@@ -1,4 +1,4 @@
-'''weather history class defn constants'''
+'''Weather history class defn constants.'''
 
 DOMAIN                  = 'openweathermaphistory'
 CONST_API_CALL          = 'https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=%s&lon=%s&dt=%s&appid=%s&units=metric'
