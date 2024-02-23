@@ -1,5 +1,5 @@
 ---
-type: custom:stack-in-card
+type: custom:vertical-stack-in-card
 cards:
   - type: custom:mushroom-template-card
     primary: Satellites Overhead
@@ -12,13 +12,110 @@ cards:
         }
   - type: entities
     card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
-        }
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
+    entities:
+      - entity: sensor.gnss_satellite_overhead
+        name: GNSS Satellites Overhead
+        show_state: false
+        secondary_info: last-changed
+  - type: custom:plotly-graph
+    entities:
+      - entity: sensor.gnss_satellite_overhead
+        attribute: beidou
+        name: Beidou
+        legendgroup: 1
+      - entity: sensor.gnss_satellite_overhead
+        attribute: galileo
+        name: Galileo
+        legendgroup: 2
+      - entity: sensor.gnss_satellite_overhead
+        attribute: glonass
+        name: GLONASS
+        legendgroup: 3
+      - entity: sensor.gnss_satellite_overhead
+        attribute: gps
+        name: GPS
+        legendgroup: 4
+      - entity: sensor.gnss_satellite_overhead
+        attribute: qzss
+        name: QZSS
+        legendgroup: 5
+    hours_to_show: 24h
+    refresh_interval: auto
+    defaults:
+      entity:
+        connectgaps: true
+        legendgroup: 1
+        filters:
+          - force_numeric
+          - resample: 1h
+        texttemplate: <b>%{y:,.0f}</b>
+        show_value: true
+        line:
+          width: 3
+    layout:
+      showlegend: true
+      height: 300
+      margin:
+        autoexpand: true
+        l: 30
+        r: 30
+      xaxis:
+        showline: true
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false
+  - type: entities
+    card_mod:
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states {
+            padding-top: 0 !important;
+          }
+          #states > * {
+            margin: 0 !important;
+          }
     entities:
       - entity: sensor.tbsmarthome_beidou_overhead_satellites
         secondary_info: last-updated

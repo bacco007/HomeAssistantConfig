@@ -1,0 +1,26 @@
+---
+sensor:
+  - unique_id: gnss_satellite_overhead
+    name: "GNSS Satellite Overhead"
+    icon: mdi:satellite-variant
+    state: >
+      {{ states('sensor.tbsmarthome_beidou_overhead_satellites') | int +
+         states('sensor.tbsmarthome_galileo_overhead_satellites') | int +
+         states('sensor.tbsmarthome_glonass_overhead_satellites') | int +
+         states('sensor.tbsmarthome_gps_overhead_satellites') | int +
+         states('sensor.tbsmarthome_qzss_overhead_satellites') | int
+      }}
+    unit_of_measurement: satellites
+    state_class: measurement
+    attributes:
+      category: satellites
+      beidou: >
+        {{ states('sensor.tbsmarthome_beidou_overhead_satellites') }}
+      galileo: >
+        {{ states('sensor.tbsmarthome_galileo_overhead_satellites') }}
+      glonass: >
+        {{ states('sensor.tbsmarthome_glonass_overhead_satellites') }}
+      gps: >
+        {{ states('sensor.tbsmarthome_gps_overhead_satellites') }}
+      qzss: >
+        {{ states('sensor.tbsmarthome_qzss_overhead_satellites') }}
