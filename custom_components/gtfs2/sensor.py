@@ -199,7 +199,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
             try:
                 self._agency = self._pygtfs.agencies_by_id(self._route.agency_id)[0]
             except IndexError:
-                _LOGGER.warning(
+                _LOGGER.debug(
                     (
                         "Agency ID '%s' was not found in agency table, "
                         "you may want to update the routes database table "

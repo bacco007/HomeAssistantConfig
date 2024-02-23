@@ -329,22 +329,22 @@ def get_rt_vehicle_positions(self):
         if vehicle.trip.trip_id == self._trip_id:  
             _LOGGER.debug("Adding position for TripId: %s, RouteId: %s, DirectionId: %s, Lat: %s, Lon: %s", vehicle.trip.trip_id, vehicle.trip.route_id, vehicle.trip.direction_id, vehicle.position.latitude, vehicle.position.longitude)  
             
-        #construct geojson only for configured route/direction
-        if str(self._route_id) == str(vehicle.trip.route_id) and str(self._direction) == str(vehicle.trip.direction_id):
-            _LOGGER.debug("Found vehicle on route with attributes: %s", vehicle)
-            geojson_element = {"geometry": {"coordinates":[],"type": "Point"}, "properties": {"id": "", "title": "", "trip_id": "", "route_id": "", "direction_id": "", "vehicle_id": "", "vehicle_label": ""}, "type": "Feature"}
-            geojson_element["geometry"]["coordinates"] = []
-            geojson_element["geometry"]["coordinates"].append(vehicle.position.longitude)
-            geojson_element["geometry"]["coordinates"].append(vehicle.position.latitude)
-            geojson_element["properties"]["id"] = str(vehicle.trip.route_id) + "(" + str(vehicle.trip.direction_id) + ")" + str(vehicle.trip.trip_id)[-3:]
-            geojson_element["properties"]["title"] = str(vehicle.trip.route_id) + "(" + str(vehicle.trip.direction_id) + ")" + str(vehicle.trip.trip_id)[-3:]
-            geojson_element["properties"]["trip_id"] = vehicle.trip.trip_id
-            geojson_element["properties"]["route_id"] = vehicle.trip.route_id
-            geojson_element["properties"]["direction_id"] = vehicle.trip.direction_id
-            geojson_element["properties"]["vehicle_id"] = vehicle.vehicle.id
-            geojson_element["properties"]["vehicle_label"] = vehicle.vehicle.label
-            geojson_element["properties"][vehicle.trip.trip_id] = geojson_element["geometry"]["coordinates"]
-            geojson_body.append(geojson_element)
+            # add data if in the selected direction
+            if str(self._direction) == str(vehicle.trip.direction_id):
+                _LOGGER.debug("Found vehicle on route with attributes: %s", vehicle)
+                geojson_element = {"geometry": {"coordinates":[],"type": "Point"}, "properties": {"id": "", "title": "", "trip_id": "", "route_id": "", "direction_id": "", "vehicle_id": "", "vehicle_label": ""}, "type": "Feature"}
+                geojson_element["geometry"]["coordinates"] = []
+                geojson_element["geometry"]["coordinates"].append(vehicle.position.longitude)
+                geojson_element["geometry"]["coordinates"].append(vehicle.position.latitude)
+                geojson_element["properties"]["id"] = str(self._route_id) + "(" + str(vehicle.trip.direction_id) + ")" + str(vehicle.trip.trip_id)[-3:]
+                geojson_element["properties"]["title"] = str(self._route_id) + "(" + str(vehicle.trip.direction_id) + ")" + str(vehicle.trip.trip_id)[-3:]
+                geojson_element["properties"]["trip_id"] = vehicle.trip.trip_id
+                geojson_element["properties"]["route_id"] = str(self._route_id)
+                geojson_element["properties"]["direction_id"] = vehicle.trip.direction_id
+                geojson_element["properties"]["vehicle_id"] = vehicle.vehicle.id
+                geojson_element["properties"]["vehicle_label"] = vehicle.vehicle.label
+                geojson_element["properties"][vehicle.trip.trip_id] = geojson_element["geometry"]["coordinates"]
+                geojson_body.append(geojson_element)
     
     self.geojson = {"features": geojson_body, "type": "FeatureCollection"}
         
