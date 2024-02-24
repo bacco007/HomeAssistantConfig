@@ -1,6 +1,6 @@
 ---
 type: custom:heatmap-card
-entity: sensor.daily_generation
+entity: sensor.sungrow_sg5kd_daily_generation
 title: ""
 data:
   max: 5

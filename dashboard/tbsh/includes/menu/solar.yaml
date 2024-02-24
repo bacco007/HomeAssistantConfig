@@ -3,7 +3,7 @@
 type: custom:mushroom-template-card
 primary: Solar
 secondary: >
-  {{ states('sensor.daily_generation') }} kWh
+  {{ states('sensor.sungrow_sg5kd_daily_generation') }} kWh
 icon: mdi:solar-power-variant
 layout: horizontal
 tap_action:

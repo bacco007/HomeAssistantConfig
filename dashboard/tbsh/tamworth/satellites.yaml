@@ -60,7 +60,7 @@ cards:
         legendgroup: 1
         filters:
           - force_numeric
-          - resample: 1h
+          - resample: 15m
         texttemplate: <b>%{y:,.0f}</b>
         show_value: true
         line:

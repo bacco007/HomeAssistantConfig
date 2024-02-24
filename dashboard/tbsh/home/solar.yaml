@@ -47,9 +47,9 @@ cards:
             type: grid
             cards:
               - type: custom:mushroom-template-card
-                entity: sensor.active_import_from_grid
+                entity: sensor.sungrow_sg5kd_active_import_from_grid
                 primary: Active Grid Import
-                secondary: "{{(states('sensor.active_import_from_grid'))}} W"
+                secondary: "{{(states('sensor.sungrow_sg5kd_active_import_from_grid'))}} W"
                 layout: horizontal
                 fill_container: false
                 icon: mdi:transmission-tower-export
@@ -78,9 +78,9 @@ cards:
                         padding-bottom: 5px !important;
                       }
               - type: custom:mushroom-template-card
-                entity: sensor.active_export_to_grid
+                entity: sensor.sungrow_sg5kd_active_export_to_grid
                 primary: Active Grid Export
-                secondary: "{{(states('sensor.active_export_to_grid'))}} W"
+                secondary: "{{(states('sensor.sungrow_sg5kd_active_export_to_grid'))}} W"
                 layout: horizontal
                 fill_container: false
                 icon: mdi:transmission-tower-import
@@ -106,21 +106,21 @@ cards:
                         padding-bottom: 5px !important;
                       }
               - type: custom:mushroom-template-card
-                entity: sensor.active_generation
+                entity: sensor.sungrow_sg5kd_active_generation
                 primary: PV Power
                 secondary: |-
-                  {% set state=states('sensor.active_generation') %}
+                  {% set state=states('sensor.sungrow_sg5kd_active_generation') %}
                         {% if state | is_number and state | float > 0 %}
-                          {{(states('sensor.active_generation'))}} W
+                          {{(states('sensor.sungrow_sg5kd_active_generation'))}} W
                         {% elif state | is_number and state | float < 0 %}
-                          {{(states('sensor.active_generation'))}} W
+                          {{(states('sensor.sungrow_sg5kd_active_generation'))}} W
                         {% else %}
-                          {{(states('sensor.active_generation'))}} W
+                          {{(states('sensor.sungrow_sg5kd_active_generation'))}} W
                         {% endif %}
                 layout: horizontal
                 fill_container: false
                 icon: |-
-                  {% set state=states('sensor.active_generation') %}
+                  {% set state=states('sensor.sungrow_sg5kd_active_generation') %}
                         {% if state | is_number and state | float > 5 %}
                           mdi:solar-panel-large
                         {% elif state | is_number and state | float < 0 %}
@@ -129,7 +129,7 @@ cards:
                           mdi:grid-off
                         {% endif %}
                 icon_color: |-
-                  {% set state=states('sensor.active_generation') %}
+                  {% set state=states('sensor.sungrow_sg5kd_active_generation') %}
                         {% if state | is_number and state | float > 0 %}
                           #FFA500
                         {% elif state | is_number and state | float < 0 %}
@@ -158,7 +158,7 @@ cards:
                         }
                       }
               - type: custom:mushroom-entity-card
-                entity: sensor.load_power
+                entity: sensor.sungrow_sg5kd_load_power
                 icon_color: blue
                 icon: mdi:solar-power-variant
                 hold_action:
@@ -188,7 +188,7 @@ cards:
                         }
                       }
               - type: custom:mushroom-entity-card
-                entity: sensor.daily_direct_energy_consumption
+                entity: sensor.sungrow_sg5kd_daily_direct_energy_consumption
                 icon: mdi:solar-power-variant
                 icon_color: "#FFA500"
                 hold_action:
@@ -251,8 +251,8 @@ cards:
                 layout: horizontal
                 primary: Grid Consumption
                 icon_color: "#f77c7c"
-                secondary: "{{(states('sensor.daily_import_from_grid'))}} kWh"
-                entity: sensor.daily_import_from_grid
+                secondary: "{{(states('sensor.sungrow_sg5kd_daily_import_from_grid'))}} kWh"
+                entity: sensor.sungrow_sg5kd_daily_import_from_grid
                 tap_action:
                   action: more-info
                 badge_icon: ""
@@ -281,8 +281,8 @@ cards:
                 icon_color: "#9ACD32"
                 tap_action:
                   action: more-info
-                secondary: "{{(states('sensor.daily_export_to_grid'))}} kWh"
-                entity: sensor.daily_export_to_grid
+                secondary: "{{(states('sensor.sungrow_sg5kd_daily_export_to_grid'))}} kWh"
+                entity: sensor.sungrow_sg5kd_daily_export_to_grid
                 card_mod:
                   style:
                     mushroom-shape-icon$: |
@@ -306,8 +306,8 @@ cards:
                 icon_color: "#FFA500"
                 tap_action:
                   action: more-info
-                secondary: "{{(states('sensor.daily_generation'))}} kWh"
-                entity: sensor.daily_generation
+                secondary: "{{(states('sensor.sungrow_sg5kd_daily_generation'))}} kWh"
+                entity: sensor.sungrow_sg5kd_daily_generation
                 card_mod:
                   style:
                     mushroom-shape-icon$: |

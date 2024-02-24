@@ -2,82 +2,82 @@
 # https://www.home-assistant.io/integrations/utility_meter/
 utility_meter:
   meter_solar_generation_daily:
-    source: sensor.daily_generation
+    source: sensor.sungrow_sg5kd_daily_generation
     unique_id: a38ed6fa-870f-4f00-8785-8a19407155b9
     name: Solar Generation (Daily)
     cycle: daily
   meter_solar_generation_weekly:
-    source: sensor.daily_generation
+    source: sensor.sungrow_sg5kd_daily_generation
     unique_id: 05b55422-534a-4eb2-bd6b-236e1807ac50
     name: Solar Generation (Weekly)
     cycle: monthly
   meter_solar_generation_monthly:
-    source: sensor.daily_generation
+    source: sensor.sungrow_sg5kd_daily_generation
     unique_id: dc0ab150-a12a-4650-89ef-94c46136dea4
     name: Solar Generation (Monthly)
     cycle: monthly
   meter_solar_generation_yearly:
-    source: sensor.daily_generation
+    source: sensor.sungrow_sg5kd_daily_generation
     unique_id: 85a0f422-b50f-475c-b7e7-88c5b80a3dc5
     name: Solar Generation (Yearly)
     cycle: yearly
   meter_solar_grid_export_daily:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: 5cfcd22e-90e5-4b23-b446-3f57085c9270
     name: Grid Export (Daily)
     cycle: daily
   meter_solar_grid_export_weekly:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: c003edc7-463a-4794-b696-ba48bde74f02
     name: Grid Export (Weekly)
     cycle: monthly
   meter_solar_grid_export_monthly:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: b8b7dc96-3590-488e-afa9-14eff807489d
     name: Grid Export (Monthly)
     cycle: monthly
   meter_solar_grid_export_yearly:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: d15cca1a-a26d-4156-b494-2b16e34c7d31
     name: Grid Export (Yearly)
     cycle: yearly
   meter_solar_grid_import_daily:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: 2b08f132-e6b2-4070-a483-05b0efd57c37
     name: Grid Import (Daily)
     cycle: daily
   meter_solar_grid_import_weekly:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: 1a3d070a-576f-4496-b0e0-a984424101b3
     name: Grid Import (Weekly)
     cycle: monthly
   meter_solar_grid_import_monthly:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: 0d0b08b1-6c65-4cb4-b248-503c6621243b
     name: Grid Import (Monthly)
     cycle: monthly
   meter_solar_grid_import_yearly:
-    source: sensor.daily_export_to_grid
+    source: sensor.sungrow_sg5kd_daily_export_to_grid
     unique_id: 402a2b27-d822-4a70-914b-93ff22d8ab9e
     name: Grid Import (Yearly)
     cycle: yearly
   meter_solar_house_consumption_daily:
-    source: sensor.daily_direct_energy_consumption
+    source: sensor.sungrow_sg5kd_daily_direct_energy_consumption
     unique_id: eff4cb16-1b89-4605-89c5-9fb7c96f93fa
     name: House Consumption (Daily)
     cycle: daily
   meter_solar_house_consumption_weekly:
-    source: sensor.daily_direct_energy_consumption
+    source: sensor.sungrow_sg5kd_daily_direct_energy_consumption
     unique_id: 3d20c727-7105-4665-8d72-9a443d4db7bf
     name: House Consumption (Weekly)
     cycle: monthly
   meter_solar_house_consumption_monthly:
-    source: sensor.daily_direct_energy_consumption
+    source: sensor.sungrow_sg5kd_daily_direct_energy_consumption
     unique_id: e395e10a-b2d0-42ec-89ed-7f428569b56c
     name: House Consumption (Monthly)
     cycle: monthly
   meter_solar_house_consumption_yearly:
-    source: sensor.daily_direct_energy_consumption
+    source: sensor.sungrow_sg5kd_daily_direct_energy_consumption
     unique_id: 330a1f37-4fee-437c-a07a-6c3bca620522
     name: House Consumption (Yearly)
     cycle: yearly

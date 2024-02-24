@@ -163,6 +163,7 @@ recorder:
       - sensor.qbittorrent*
       - sensor.pirateweather*
       - sensor.disabled_entities*
+      - sensor.radio_state*
     event_types:
       - automation_triggered
       - call_service

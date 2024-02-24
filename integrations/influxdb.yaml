@@ -193,3 +193,4 @@ influxdb:
       - sensor.qbittorrent*
       - sensor.pirateweather*
       - sensor.disabled_entities*
+      - sensor.radio_state*

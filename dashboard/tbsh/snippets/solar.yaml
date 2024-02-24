@@ -6,7 +6,7 @@ cards:
     dashboard_link: /energy
     entities:
       home:
-        entity: sensor.load_power
+        entity: sensor.sungrow_sg5kd_load_power
         color_icon: true
         display_zero: true
         color_circle: true
@@ -20,13 +20,13 @@ cards:
         color_circle: true
       grid:
         entity:
-          consumption: sensor.active_import_from_grid
-          production: sensor.active_export_to_grid
+          consumption: sensor.sungrow_sg5kd_active_import_from_grid
+          production: sensor.sungrow_sg5kd_active_export_to_grid
         color_icon: true
         display_zero: true
         color_circle: true
       solar:
-        entity: sensor.active_generation
+        entity: sensor.sungrow_sg5kd_active_generation
         color_icon: true
         display_zero: true
         color_circle: true
@@ -59,13 +59,13 @@ cards:
         color_circle: true
       grid:
         entity:
-          consumption: sensor.daily_import_from_grid
-          production: sensor.daily_export_to_grid
+          consumption: sensor.sungrow_sg5kd_daily_import_from_grid
+          production: sensor.sungrow_sg5kd_daily_export_to_grid
         color_icon: true
         display_zero: true
         color_circle: true
       solar:
-        entity: sensor.daily_generation
+        entity: sensor.sungrow_sg5kd_daily_generation
         color_icon: true
         display_zero: true
         color_circle: true
