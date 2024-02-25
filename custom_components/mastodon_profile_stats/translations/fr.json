@@ -2,28 +2,28 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/andrew-codechimp/ha-mastodon-profile-stats",
+                "description": "Si vous avez besoin d'aide pour la configuration, regardez ici : https://github.com/andrew-codechimp/ha-mastodon-profile-stats",
                 "data": {
-                    "url": "Profile (either @username@instance or full url)"
+                    "url": "Profil (soit @username@instance ou url complète)"
                 }
             }
         },
         "error": {
-            "auth": "Username/Password is wrong.",
-            "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "auth": "Nom d'utilisateur/mot de passe incorrect.",
+            "connection": "Échec de la connexion au serveur.",
+            "unknown": "Erreur inconnue."
         }
     },
     "entity": {
         "sensor": {
             "followers": {
-                "name": "Followers"
+                "name": "Abonnés"
             },
             "following": {
-                "name": "Following"
+                "name": "Abonné.e à"
             },
             "statuses": {
-                "name": "Statuses"
+                "name": "Statuts"
             }
         }
     }
