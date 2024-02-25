@@ -46,6 +46,8 @@ logger:
       - "InsecureRequestWarning: Unverified HTTPS request is being made to host"
     spotipy.client:
       - "Max Retries reached"
+    icloud3:
+      - "unsupported operand type(s) for *: 'NoneType' and 'int'"
   logs:
     aioharmony.harmonyclient: fatal
     custom_components.aio_geojson_query: debug

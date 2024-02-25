@@ -1,0 +1,58 @@
+blueprint:
+  name: AWTRIX now playing
+  description: Show the current playing track
+  domain: automation
+  input:
+    media_player:
+      name: Media player
+      description: Media player what you want to control.
+      selector:
+        entity:
+          filter:
+          - domain:
+            - media_player
+          multiple: false
+    awtrix_device:
+      name: AWTRIX device
+      description: The AWTRIX device for show playing status.
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Blueforcer
+          model: AWTRIX Light
+          multiple: false
+  source_url: https://github.com/blueforcer/flows_blueprints/blob/main/flows/flow_N024OvMJomr7.yaml
+trigger:
+- platform: state
+  entity_id: !input media_player
+variables:
+  awtrix: !input awtrix_device
+  awtrix_device_name: '{{ iif( device_attr(awtrix, ''name_by_user'') != none, device_attr(awtrix,
+    ''name_by_user''), device_attr(awtrix, ''name'') ) }}'
+action:
+- variables:
+    playing_state: '{{ states(trigger.entity_id) }}'
+    title_template: '{{ state_attr(trigger.entity_id, ''media_title'') }}'
+    album_template: '{{ state_attr(trigger.entity_id, ''media_album_name'') }}'
+    artist_template: '{{ state_attr(trigger.entity_id, ''media_artist'') }}'
+- if:
+  - condition: template
+    value_template: '{{ playing_state != "playing"  }}'
+  then:
+  - service: awtrix.push_app_data
+    data:
+      device: '{{awtrix_device_name}}'
+      name: sonos
+      data: {}
+  else:
+  - service: awtrix.push_app_data
+    data:
+      device: '{{awtrix_device_name}}'
+      name: sonos
+      data:
+        text: '{{ playing_state }}: {{ artist_template }} - {{ title_template }}'
+        rainbow: true
+        duration: 10
+        icon: /9j/4AAQSkZJRgABAgEASABIAAD/4QDKRXhpZgAATU0AKgAAAAgABgESAAMAAAABAAEAAAEaAAUAAAABAAAAVgEbAAUAAAABAAAAXgEoAAMAAAABAAIAAAITAAMAAAABAAEAAIdpAAQAAAABAAAAZgAAAAAAAABIAAAAAQAAAEgAAAABAAeQAAAHAAAABDAyMjGRAQAHAAAABAECAwCgAAAHAAAABDAxMDCgAQADAAAAAQABAACgAgAEAAAAAQAAAAigAwAEAAAAAQAAAAikBgADAAAAAQAAAAAAAAAAAAD/wAARCAAIAAgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9sAQwABAQEBAQECAQECAwICAgMEAwMDAwQGBAQEBAQGBwYGBgYGBgcHBwcHBwcHCAgICAgICQkJCQkLCwsLCwsLCwsL/9sAQwECAgIDAwMFAwMFCwgGCAsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsL/90ABAAB/9oADAMBAAIRAxEAPwD8R/2bvjdd/sOeKvhP+zJqHjTwH8P9Obw7b+NfHviPT7aPVtQ1VPtF/fQ6O93AsscjyafLAISAHAbNrNKHhjn/AF+/4fO/8E1f+ikf+UfVf/kOv42v2vf+Sr6T/wBiT4H/APUc02vl6v5qxnA+Azmnh82xLcataCnO0KTvKUpNu86c5dbJc1lFJLY/Z8NxPi8tnWwFFXp05csbyqKyikkrRnFeb01bbe5//9k=
+        repeat: 1
+        lifetime: 900
