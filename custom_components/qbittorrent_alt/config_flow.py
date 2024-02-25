@@ -1,4 +1,3 @@
-import logging
 from os import path
 from typing import Any, Optional
 
@@ -17,8 +16,6 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import DEFAULT_NAME, DEFAULT_URL, DOMAIN
 from .helpers import setup_client
-
-_LOGGER = logging.getLogger(__name__)
 
 USER_DATA_SCHEMA = vol.Schema(
     {

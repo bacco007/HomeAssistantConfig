@@ -1,4 +1,3 @@
-import logging
 from os import path
 
 from aiohttp.client_exceptions import ClientConnectorError
@@ -17,14 +16,12 @@ from homeassistant.core import (
     ServiceResponse,
     SupportsResponse,
 )
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.entity import DeviceInfo
 
 from .const import DOMAIN, PLATFORMS
 from .coordinator import QBittorrentDataCoordinator
 from .helpers import get_torrent_info, setup_client
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -58,7 +55,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         print(client.closed)
     except LoginError as err:
-        raise ConfigEntryNotReady("Invalid credentials") from err
+        raise ConfigEntryAuthFailed("Invalid credentials") from err
     except ClientConnectorError as err:
         raise ConfigEntryNotReady("Failed to connect") from err
 

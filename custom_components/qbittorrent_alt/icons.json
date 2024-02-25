@@ -1,0 +1,86 @@
+{
+    "entity": {
+        "button": {
+            "resume_torrents": {
+                "default": "mdi:play"
+            },
+            "pause_torrents": {
+                "default": "mdi:pause"
+            }
+        },
+        "number": {
+            "current_download_limit": {
+                "default": "mdi:cloud-download"
+            },
+            "current_upload_limit": {
+                "default": "mdi:cloud-upload"
+            },
+            "norm_download_limit": {
+                "default": "mdi:cloud-download"
+            },
+            "norm_upload_limit": {
+                "default": "mdi:cloud-upload"
+            },
+            "alt_download_limit": {
+                "default": "mdi:cloud-download"
+            },
+            "alt_upload_limit": {
+                "default": "mdi:cloud-upload"
+            },
+            "port": {
+                "default": "mdi:network-outline"
+            }
+        },
+        "sensor": {
+            "download_speed": {
+                "default": "mdi:cloud-download"
+            },
+            "upload_speed": {
+                "default": "mdi:cloud-upload"
+            },
+            "downloaded": {
+                "default": "mdi:download"
+            },
+            "uploaded": {
+                "default": "mdi:upload"
+            },
+            "downloaded_alltime": {
+                "default": "mdi:download"
+            },
+            "uploaded_alltime": {
+                "default": "mdi:upload"
+            },
+            "ration": {
+                "default": "mdi:percent"
+            },
+            "connection_state": {
+                "default": "mdi:wan"
+            },
+            "downloading": {
+                "default": "mdi:download"
+            },
+            "seeding": {
+                "default": "mdi:upload"
+            },
+            "uploading": {
+                "default": "mdi:upload"
+            },
+            "paused": {
+                "default": "mdi:pause"
+            },
+            "stalled": {
+                "default": "mdi:download-off"
+            },
+            "total": {
+                "default": "mdi:file-multiple"
+            },
+            "eta": {
+                "default": "mdi:cloud-clock"
+            }
+        }
+    },
+    "services": {
+        "pause_torrents": "mdi:pause",
+        "resume_torrents": "mdi:play"
+    }
+}

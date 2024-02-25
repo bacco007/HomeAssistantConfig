@@ -2,11 +2,10 @@ import logging
 from datetime import timedelta
 from typing import Any
 
-import aiohttp
 from aioqbt.client import APIClient
 from aioqbt.exc import LoginError
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryError
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -32,8 +31,6 @@ class QBittorrentDataCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
 
     async def _async_update_data(self) -> dict[str, Any]:
-        if self.client.is_closed():
-            self.client._http = aiohttp.ClientSession()
         try:
             main_data = await self.client.sync.maindata()
             downloading = 0
@@ -71,4 +68,4 @@ class QBittorrentDataCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "longest_eta": longest_eta,
             }
         except LoginError as exc:
-            raise ConfigEntryError("Invalid authentication") from exc
+            raise ConfigEntryAuthFailed("Invalid authentication") from exc

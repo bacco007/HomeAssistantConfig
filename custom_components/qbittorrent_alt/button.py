@@ -1,4 +1,3 @@
-import logging
 from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
 
@@ -10,8 +9,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import QBittorrentDataCoordinator
-
-_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass

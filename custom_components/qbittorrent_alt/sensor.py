@@ -1,5 +1,5 @@
 """Support for monitoring the qBittorrent API."""
-import logging
+
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -25,8 +25,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from .coordinator import QBittorrentDataCoordinator
 from .helpers import get_qbittorrent_state
-
-_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
