@@ -171,23 +171,31 @@ class WMDevice(Device):
         """Return device run completed state."""
         result = self._status.is_run_completed if self._status else False
         if result:
-            self._is_run_completed = True
+            if not self._is_run_completed:
+                self._is_cycle_finishing = False
+                self._is_run_completed = True
             return True
 
         run_state = self.run_state
         pre_state = self.pre_state
         if self._is_run_completed and STATE_WM_POWER_OFF in run_state:
+            self._is_cycle_finishing = False
             return True
 
-        self._is_run_completed = False
         if (
-            any(state in run_state for state in [STATE_WM_POWER_OFF, STATE_WM_INITIAL])
+            (self._is_cycle_finishing or self._is_run_completed)
+            and any(
+                state in run_state for state in [STATE_WM_POWER_OFF, STATE_WM_INITIAL]
+            )
             and not any(
                 state in pre_state for state in [STATE_WM_POWER_OFF, STATE_WM_INITIAL]
             )
-            and self._is_cycle_finishing
         ):
-            self._is_run_completed = True
+            if not self._is_run_completed:
+                self._is_cycle_finishing = False
+                self._is_run_completed = True
+        else:
+            self._is_run_completed = False
 
         return self._is_run_completed
 
