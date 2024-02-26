@@ -24,7 +24,8 @@ from .const import (
     DEFAULT_LOCAL_STOP_RADIUS,
     ICON,
     ICONS,
-    DOMAIN
+    DOMAIN,
+    TIME_STR_FORMAT
     )
 
 _LOGGER = logging.getLogger(__name__)
@@ -64,6 +65,7 @@ def get_next_departure(self):
     include_tomorrow = self._data["include_tomorrow"]
     now = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset)
     now_date = now.strftime(dt_util.DATE_STR_FORMAT)
+    now_time = now.strftime(TIME_STR_FORMAT)
     yesterday = now - datetime.timedelta(days=1)
     yesterday_date = yesterday.strftime(dt_util.DATE_STR_FORMAT)
     tomorrow = now + datetime.timedelta(days=1)
@@ -293,7 +295,7 @@ def get_next_departure(self):
     origin_arrival = now
     dest_arrival = now
     origin_depart_time = f"{now_date} {item['origin_depart_time']}"
-    if _tomorrow == 1:
+    if _tomorrow == 1 and now_time > item['origin_depart_time']:
         origin_arrival = tomorrow
         dest_arrival = tomorrow
         origin_depart_time = f"{tomorrow_date} {item['origin_depart_time']}"
