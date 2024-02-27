@@ -1,4 +1,5 @@
 """Config flow for Trakt."""
+
 import logging
 
 import voluptuous as vol

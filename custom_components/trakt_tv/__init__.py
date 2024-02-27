@@ -1,4 +1,5 @@
 """The Trakt integration."""
+
 import asyncio
 import logging
 

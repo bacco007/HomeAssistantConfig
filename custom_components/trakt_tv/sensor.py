@@ -1,4 +1,5 @@
 """Platform for sensor integration."""
+
 import logging
 from datetime import timedelta
 

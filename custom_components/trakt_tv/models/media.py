@@ -225,6 +225,8 @@ class Show(Media):
     def update_common_information(self, data: Dict[str, Any]):
         if title := data.get("title"):
             self.name = title
+        if poster := data.get("poster_path"):
+            self.poster = f"https://image.tmdb.org/t/p/w500{poster}"
         if fanart := data.get("backdrop_path"):
             self.fanart = f"https://image.tmdb.org/t/p/w500{fanart}"
         if genres := data.get("genres"):

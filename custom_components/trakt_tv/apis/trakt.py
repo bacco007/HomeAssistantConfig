@@ -1,4 +1,5 @@
 """API for TraktTV bound to Home Assistant OAuth."""
+
 import logging
 from asyncio import gather, sleep
 from datetime import datetime
