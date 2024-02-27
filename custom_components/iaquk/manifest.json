@@ -9,9 +9,6 @@
     "documentation": "https://github.com/Limych/ha-iaquk",
     "iot_class": "calculated",
     "issue_tracker": "https://github.com/Limych/ha-iaquk/issues",
-    "requirements": [
-        "colorlog==6.7.0",
-        "ruff==0.0.291"
-    ],
-    "version": "1.6.4"
+    "requirements": [],
+    "version": "1.6.6"
 }
