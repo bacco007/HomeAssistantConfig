@@ -13,9 +13,9 @@ from homeassistant.components.climate import (
 )
 from homeassistant.components.group import expand_entity_ids
 from homeassistant.components.sensor import (
+    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
-    SensorDeviceClass,
 )
 from homeassistant.components.weather import (
     ATTR_WEATHER_HUMIDITY,
@@ -162,9 +162,7 @@ class TemperatureFeelingSensor(SensorEntity):
                 state: State = self.hass.states.get(entity_id)
                 domain = split_entity_id(state.entity_id)[0]
                 device_class = state.attributes.get(ATTR_DEVICE_CLASS)
-                unit_of_measurement = state.attributes.get(
-                    ATTR_UNIT_OF_MEASUREMENT
-                )
+                unit_of_measurement = state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
 
                 if (
                     device_class == SensorDeviceClass.TEMPERATURE
@@ -199,15 +197,11 @@ class TemperatureFeelingSensor(SensorEntity):
                     self._name += " Temperature"
                 self._name += " Feels Like"
 
-            async_track_state_change(
-                self.hass, list(entities), sensor_state_listener
-            )
+            async_track_state_change(self.hass, list(entities), sensor_state_listener)
 
             self.async_schedule_update_ha_state(True)
 
-        self.hass.bus.async_listen_once(
-            EVENT_HOMEASSISTANT_START, sensor_startup
-        )
+        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, sensor_startup)
 
     @staticmethod
     def _has_state(state) -> bool:
@@ -246,9 +240,7 @@ class TemperatureFeelingSensor(SensorEntity):
                 float(temperature), entity_unit, UnitOfTemperature.CELSIUS
             )
         except ValueError as exc:
-            _LOGGER.error(
-                'Could not convert value "%s" to float: %s', state, exc
-            )
+            _LOGGER.error('Could not convert value "%s" to float: %s', state, exc)
             return None
 
         return float(temperature)
@@ -308,9 +300,7 @@ class TemperatureFeelingSensor(SensorEntity):
         self._humd_val = humd = self._get_humidity(self._humd)  # %
         self._wind_val = wind = self._get_wind_speed(self._wind)  # m/s
 
-        _LOGGER.debug(
-            "Temp: %s °C  Hum: %s %%  Wind: %s m/s", temp, humd, wind
-        )
+        _LOGGER.debug("Temp: %s °C  Hum: %s %%  Wind: %s m/s", temp, humd, wind)
 
         if temp is None or humd is None:
             _LOGGER.warning(
@@ -326,9 +316,7 @@ class TemperatureFeelingSensor(SensorEntity):
             wind = 0
 
         e_value = humd * 0.06105 * math.exp((17.27 * temp) / (237.7 + temp))
-        self._attr_native_value = round(
-            temp + 0.348 * e_value - 0.7 * wind - 4.25, 1
-        )
+        self._attr_native_value = round(temp + 0.348 * e_value - 0.7 * wind - 4.25, 1)
         _LOGGER.debug(
             "New sensor state is %s %s",
             self._attr_native_value,
