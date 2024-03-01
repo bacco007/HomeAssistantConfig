@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.2.4 |
-| No. Integrations | 201 |
+| HA Version | 2024.3.0b3 |
+| No. Integrations | 200 |
 | No. Custom Integrations | 87 |
 | No. Entities | 5127 |
-| No. Sensors | 3401 |
+| No. Sensors | 3400 |
 | No. Automations | 138 |
 
 <details>
@@ -91,11 +91,11 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3401
+Sensors | 3400
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 280
+Switches | 281
 Texts | 0
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>596 Integrations</summary>
+<details><summary>597 Integrations</summary>
 
 | Name |
 | --- |
@@ -161,6 +161,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [average.sensor](https://www.home-assistant.io/components/average.sensor) |
 | [awtrix](https://www.home-assistant.io/components/awtrix) |
 | [awtrix.notify](https://www.home-assistant.io/components/awtrix.notify) |
+| [backup](https://www.home-assistant.io/components/backup) |
 | [bayesian.binary_sensor](https://www.home-assistant.io/components/bayesian.binary_sensor) |
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
 | [ble_monitor](https://www.home-assistant.io/components/ble_monitor) |
@@ -572,8 +573,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sql](https://www.home-assistant.io/components/sql) |
 | [sql.sensor](https://www.home-assistant.io/components/sql.sensor) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
-| [start_time](https://www.home-assistant.io/components/start_time) |
-| [start_time.sensor](https://www.home-assistant.io/components/start_time.sensor) |
 | [statistics.sensor](https://www.home-assistant.io/components/statistics.sensor) |
 | [stream](https://www.home-assistant.io/components/stream) |
 | [stt](https://www.home-assistant.io/components/stt) |
@@ -596,6 +595,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [system_health](https://www.home-assistant.io/components/system_health) |
 | [system_log](https://www.home-assistant.io/components/system_log) |
 | [systemmonitor](https://www.home-assistant.io/components/systemmonitor) |
+| [systemmonitor.binary_sensor](https://www.home-assistant.io/components/systemmonitor.binary_sensor) |
 | [systemmonitor.sensor](https://www.home-assistant.io/components/systemmonitor.sensor) |
 | [tag](https://www.home-assistant.io/components/tag) |
 | [tautulli](https://www.home-assistant.io/components/tautulli) |
@@ -679,6 +679,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weatherflow](https://www.home-assistant.io/components/weatherflow) |
 | [weatherflow.sensor](https://www.home-assistant.io/components/weatherflow.sensor) |
+| [weatherflow_cloud](https://www.home-assistant.io/components/weatherflow_cloud) |
 | [weatherflow_forecast](https://www.home-assistant.io/components/weatherflow_forecast) |
 | [weatherflow_forecast.binary_sensor](https://www.home-assistant.io/components/weatherflow_forecast.binary_sensor) |
 | [weatherflow_forecast.sensor](https://www.home-assistant.io/components/weatherflow_forecast.sensor) |
@@ -767,7 +768,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [v2.0.13] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge).|
-| [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.9.3] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
+| [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.4] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.10.8] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: ~1 more week before usable |[@AlexanderLanin](https://github.com/AlexanderLanin).|
@@ -838,7 +839,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v5.3.0] | 🙈 Hides the Home Assistant header and/or sidebar |
-| [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.4] | 🔹 Get more control over the placement of lovelace cards. |
+| [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v0.2.2] | Material Symbols for Home Assistant is collection of 18620 Google Material Symbols files for use within Home Assistant. |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.0] | Minimalistic graph card for Home Assistant Lovelace UI |
@@ -894,9 +895,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
 | JupyterLab | 0.14.1 |  | a0d7b954 |
 | MariaDB | 2.6.1 |  | core |
-| Matter Server | 5.2.0 |  | core |
+| Matter Server | 5.3.0 |  | core |
 | Node-RED | 17.0.7 |  | a0d7b954 |
-| OpenThread Border Router | 2.4.7 |  | core |
+| OpenThread Border Router | 2.5.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.0 |  | core |
 | Silicon Labs Multiprotocol | 2.4.4 |  | core |
@@ -949,7 +950,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.2.4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.3.0b3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
