@@ -58,7 +58,7 @@ logger:
     homeassistant.core: info
     homeassistant.helpers.entity: error
     homeassistant.helpers.script: debug
-    homeassistant.loader: error
+    homeassistant.loader: debug
     pychromecast.socket_client: fatal
     slixmpp.basexmpp: error
     slixmpp.stringprep: fatal
