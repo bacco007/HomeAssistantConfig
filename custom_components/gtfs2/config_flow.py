@@ -14,12 +14,14 @@ from homeassistant.helpers import selector
 from .const import (
     DEFAULT_PATH, 
     DOMAIN, 
+    DEFAULT_API_KEY_LOCATION,
     DEFAULT_REFRESH_INTERVAL, 
     DEFAULT_LOCAL_STOP_REFRESH_INTERVAL,
     DEFAULT_LOCAL_STOP_TIMERANGE,
     DEFAULT_LOCAL_STOP_RADIUS,
     DEFAULT_OFFSET,
-    CONF_API_KEY, 
+    CONF_API_KEY,
+    CONF_API_KEY_LOCATION, 
     CONF_X_API_KEY, 
     CONF_VEHICLE_POSITION_URL, 
     CONF_TRIP_UPDATE_URL,
@@ -41,7 +43,8 @@ from .const import (
     CONF_TIMERANGE,
     CONF_REFRESH_INTERVAL,
     CONF_OFFSET,
-    CONF_REAL_TIME
+    CONF_REAL_TIME,
+    ATTR_API_KEY_LOCATIONS
 )    
 
 from .gtfs_helper import (
@@ -61,7 +64,7 @@ _LOGGER = logging.getLogger(__name__)
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for GTFS."""
 
-    VERSION = 7
+    VERSION = 8
 
     def __init__(self) -> None:
         """Init ConfigFlow."""
@@ -437,8 +440,9 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Required(CONF_TRIP_UPDATE_URL, default=self.config_entry.options.get(CONF_TRIP_UPDATE_URL)): str,
                     vol.Optional(CONF_VEHICLE_POSITION_URL, default=self.config_entry.options.get(CONF_VEHICLE_POSITION_URL,"")): str,
                     vol.Optional(CONF_ALERTS_URL, default=self.config_entry.options.get(CONF_ALERTS_URL,"")): str,
-                    vol.Optional(CONF_API_KEY, default=self.config_entry.options.get(CONF_API_KEY, "na")): str,
-                    vol.Optional(CONF_X_API_KEY,default=self.config_entry.options.get(CONF_X_API_KEY, "na")): str
+                    vol.Optional(CONF_API_KEY, default=self.config_entry.options.get(CONF_API_KEY,"")): str,
+                    vol.Optional(CONF_X_API_KEY,default=self.config_entry.options.get(CONF_X_API_KEY,"")): str,
+                    vol.Required(CONF_API_KEY_LOCATION, default=self.config_entry.options.get(CONF_API_KEY_LOCATION,DEFAULT_API_KEY_LOCATION)) : selector.SelectSelector(selector.SelectSelectorConfig(options=ATTR_API_KEY_LOCATIONS, translation_key="api_key_location")),
                 },
             ),
             errors=errors,

@@ -14,6 +14,7 @@ DEFAULT_NAME = "GTFS Sensor2"
 DEFAULT_PATH = "gtfs2"
 DEFAULT_PATH_GEOJSON = "www/gtfs2"
 DEFAULT_PATH_RT = "www/gtfs2"
+DEFAULT_API_KEY_LOCATION = "n/a"
 
 CONF_DATA = "data"
 CONF_DESTINATION = "destination"
@@ -22,7 +23,8 @@ CONF_TOMORROW = "include_tomorrow"
 
 PLATFORMS = [Platform.SENSOR]
 
-# constants used in helper
+# constants used in helpers
+ATTR_API_KEY_LOCATIONS = ["n/a","header","query_string"]
 ATTR_ARRIVAL = "arrival"
 ATTR_BICYCLE = "trip_bikes_allowed_state"
 ATTR_DAY = "day"
@@ -260,6 +262,7 @@ WHEELCHAIR_ACCESS_OPTIONS = {1: True, 2: False}
 WHEELCHAIR_BOARDING_DEFAULT = STATE_UNKNOWN
 WHEELCHAIR_BOARDING_OPTIONS = {1: True, 2: False}
 
+CONF_API_KEY_LOCATION = "api_key_location"
 CONF_URL = "url"
 CONF_EXTRACT_FROM = "extract_from"
 CONF_FILE = "file"

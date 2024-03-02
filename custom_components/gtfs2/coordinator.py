@@ -19,6 +19,7 @@ from .const import (
     DEFAULT_LOCAL_STOP_RADIUS,
     CONF_API_KEY, 
     CONF_X_API_KEY,
+    CONF_API_KEY_LOCATION,
     ATTR_DUE_IN,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
@@ -115,16 +116,25 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
             if options["real_time"]:
                 self._get_next_service = {}
                 """Initialize the info object."""
-                self._trip_update_url = options["trip_update_url"]
-                self._vehicle_position_url = options["vehicle_position_url"]
-                self._alerts_url = options.get("alerts_url", None)
                 self._route_delimiter = None
-                if CONF_API_KEY in options:
+                self._headers = None
+                self._trip_update_url = options.get("trip_update_url", None)
+                self._vehicle_position_url = options.get("vehicle_position_url", None)
+                self._alerts_url = options.get("alerts_url", None)
+                if options.get(CONF_API_KEY_LOCATION, None) == "query_string":
+                  if options[CONF_API_KEY] != "":
+                    self._trip_update_url = self._trip_update_url + "?api_key=" + options[CONF_API_KEY]
+                    self._vehicle_position_url = self._vehicle_position_url + "?api_key=" + options[CONF_API_KEY]
+                    self._alerts_url = self._alerts_url + "?api_key=" + options[CONF_API_KEY]
+                  elif options[CONF_X_API_KEY] != "":
+                    self._trip_update_url = self._trip_update_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                    self._vehicle_position_url = self._vehicle_position_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                    self._alerts_url = self._alerts_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                if options.get(CONF_API_KEY_LOCATION, None) == "header":
+                  if options[CONF_API_KEY] != "":
                     self._headers = {"Authorization": options[CONF_API_KEY]}
-                elif CONF_X_API_KEY in options:
+                  elif options[CONF_X_API_KEY] != "":
                     self._headers = {"x-api-key": options[CONF_X_API_KEY]}
-                else:
-                    self._headers = None
                 self.info = {}
                 self._route_id = self._data["next_departure"].get("route_id", None)
                 if self._route_id == None:

@@ -33,6 +33,7 @@ from .const import (
 
     CONF_API_KEY,
     CONF_X_API_KEY,
+    CONF_API_KEY_LOCATION,
     CONF_STOP_ID,
     CONF_ROUTE,
     CONF_TRIP_UPDATE_URL,
@@ -151,7 +152,7 @@ def get_next_services(self):
 def get_rt_route_statuses(self):
     vehicle_positions = {}
     
-    if self._vehicle_position_url != "" :   
+    if (self._vehicle_position_url)[:4] == "http" :   
         vehicle_positions = get_rt_vehicle_positions(self)
               
     class StopDetails:
@@ -239,7 +240,7 @@ def get_rt_trip_statuses(self):
 
     vehicle_positions = {}
     
-    if self._vehicle_position_url != "" :   
+    if (self._vehicle_position_url)[:4] == "http" :   
         vehicle_positions = get_rt_vehicle_positions(self)
               
     class StopDetails:
@@ -355,7 +356,7 @@ def get_rt_vehicle_positions(self):
     
 def get_rt_alerts(self):
     rt_alerts = {}
-    if self._alerts_url:
+    if (self._alerts_url)[:4] == "http":
         feed_entities = get_gtfs_feed_entities(
             url=self._alerts_url,
             headers=self._headers,
