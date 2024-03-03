@@ -1,0 +1,7 @@
+---
+icon: mdi:menu
+subview: true
+path: mobile-menu
+title: Mobile Menu
+cards:
+  - !include ../includes/sidebar.yaml

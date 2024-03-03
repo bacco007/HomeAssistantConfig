@@ -42,12 +42,57 @@ cards:
             box-shadow: none;
           }
         cards:
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                style: |
+                  ha-card {
+                    background-color: var(--background-color); }
+                entity: sensor.frontpage_sonarr_upcoming_count
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                secondary_info: name
+                primary_info: state
+                name: Upcoming TV Shows
+                icon_color: blue
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
+              - type: custom:mushroom-entity-card
+                style: |
+                  ha-card {
+                    background-color: var(--background-color); }
+                entity: sensor.frontpage_radarr_upcoming_count
+                name: Upcoming Movies
+                fill_container: false
+                icon_color: blue
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                primary_info: state
+                secondary_info: name
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background-color: var(--background-color);
+                      }
           - type: custom:auto-entities
             card_param: cards
             filter:
               template: >-
                 {% from 'easy_time.jinja' import custom_relative_time -%} {% for
-                s in state_attr('sensor.frontpage_plex_unwatched_tv','data') -%}
+                s in state_attr('sensor.frontpage_plex_unwatched_tv','data')[:5] -%}
                   {{
                     {
                     "type": "custom:mushroom-template-card",
@@ -91,9 +136,8 @@ cards:
             card_param: cards
             filter:
               template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%} {% for
-                s in state_attr('sensor.frontpage_plex_unwatched_movies','data')
-                -%}
+                {% from 'easy_time.jinja' import custom_relative_time -%}
+                {% for s in state_attr('sensor.frontpage_plex_unwatched_movies','data')[:5] -%}
                   {{
                     {
                     "type": "custom:mushroom-template-card",
@@ -133,7 +177,7 @@ cards:
             filter:
               template: >-
                 {% from 'easy_time.jinja' import custom_relative_time -%}
-                {% for s in state_attr('sensor.frontpage_sonarr_upcoming','data') -%}
+                {% for s in state_attr('sensor.frontpage_sonarr_upcoming','data')[:5] -%}
                   {% if s.poster is defined -%}
                     {% set image = s.poster -%}
                   {% elif s.fanart is defined -%}
@@ -180,7 +224,7 @@ cards:
             filter:
               template: >-
                 {% from 'easy_time.jinja' import custom_relative_time -%} {% for
-                s in state_attr('sensor.frontpage_radarr_upcoming','data') -%}
+                s in state_attr('sensor.frontpage_radarr_upcoming','data')[:5] -%}
                   {{
                     {
                     "type": "custom:mushroom-template-card",

@@ -131,6 +131,42 @@ cards:
                 double_tap_action:
                   action: none
                 card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weatherflow_rainfall_weekly
+                name: Rainfall (Week)
+                fill_container: true
+                icon: mdi:weather-lightning-rainy
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weatherflow_rainfall_monthly
+                name: Rainfall (Month)
+                fill_container: true
+                icon: mdi:weather-lightning-rainy
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
+              - type: custom:mushroom-entity-card
+                entity: sensor.weatherflow_rainfall_yearly
+                name: Rainfall (Year)
+                fill_container: true
+                icon: mdi:weather-lightning-rainy
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod: *style
           - type: custom:hourly-weather
             entity: weather.weatherflow_forecast_brisbane_st
             forecast_type: hourly

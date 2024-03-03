@@ -66,7 +66,6 @@ cards:
                     mushroom-shape-icon$: |
                       .shape {
                         --shape-color: none !important;
-
                       }
                     .: |
                       ha-card {
@@ -142,3 +141,35 @@ cards:
                         padding-top: 5px !important;
                         padding-bottom: 5px !important;
                       }
+          - type: custom:mushroom-template-card
+            style: |
+              ha-card {
+                background-color: var(--background-color);
+            primary: Last Beer
+            secondary: >-
+              {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}}
+              ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
+
+              {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
+              {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} %
+
+              My Rating: {{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}},
+              Untappd: {{state_attr('sensor.untappd_recent_beers',
+              'data')[0]['beer_rating']|round(2)}}
+            icon: mdi:beer-outline
+            icon_color: orange
+            entity: sensor.untappd_recent_beers
+            fill_container: true
+            multiline_secondary: true
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                  }

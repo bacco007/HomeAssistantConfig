@@ -11,3 +11,11 @@ cards:
       entity_picture: sensor.active_media_players
     template:
       - conditional_media
+card_mod:
+  style: >
+    :host {
+      z-index: 4;
+      position: sticky !important;
+      position: -webkit-sticky;
+      bottom: 0;
+    }
