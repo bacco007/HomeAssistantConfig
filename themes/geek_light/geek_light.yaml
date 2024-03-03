@@ -112,7 +112,7 @@ geek_light:
 
   # Background
   background-color: "#242e42"
-  primary-background-color: ≈
+  primary-background-color: "var(--background-color)"
   background-color-2: "#20293c"
   secondary-background-color: "none"
   markdown-code-background-color: "var(--background-color)"
