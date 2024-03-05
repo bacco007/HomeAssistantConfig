@@ -167,6 +167,36 @@ cards:
                 double_tap_action:
                   action: none
                 card_mod: *style
+          - show_current: false
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.east_tamworth_hourly
+            forecast_type: hourly
+            card_mod:
+              style: |
+                ha-card {
+                  padding: 0 !important;
+                  background-color: transparent !important;
+                  box-shadow: none !important;
+                }
+                .forecast-image-icon {
+                  padding: 0 !important;
+                }
+          - show_current: false
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.east_tamworth
+            forecast_type: daily
+            card_mod:
+              style: |
+                ha-card {
+                  padding: 0 !important;
+                  background-color: transparent !important;
+                  box-shadow: none !important;
+                }
+                .forecast-image-icon {
+                  padding: 0 !important;
+                }
           # - type: custom:hourly-weather
           #   entity: weather.weatherflow_forecast_brisbane_st
           #   forecast_type: hourly

@@ -109,7 +109,7 @@ cards:
                     "layout": "horizontal",
                     "card_mod": {
                         "style": {
-                          ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
                         }
                     }
                     }
@@ -148,13 +148,20 @@ cards:
                     "badge_icon": "none",
                     "badge_color": "none",
                     "icon": "mdi:plex",
-                    "tap_action": "none",
-                    "hold_action": "none",
+                    "tap_action": {
+                        "action": "none"
+                    },
+                    "hold_action": {
+                        "action": "none"
+                    },
+                    "double_tap_action": {
+                        "action": "none"
+                    },
                     "fill_container": true,
                     "layout": "horizontal",
                     "card_mod": {
                         "style": {
-                          ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
                         }
                     }
                     }
@@ -195,13 +202,20 @@ cards:
                     "badge_icon": "none",
                     "badge_color": "none",
                     "icon": "mdi:television",
-                    "tap_action": "none",
-                    "hold_action": "none",
+                    "tap_action": {
+                        "action": "none"
+                    },
+                    "hold_action": {
+                        "action": "none"
+                    },
+                    "double_tap_action": {
+                        "action": "none"
+                    },
                     "fill_container": true,
                     "layout": "horizontal",
                     "card_mod": {
                         "style": {
-                          ".": "ha-card {\n  background: url( '" + image + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
                         }
                     }
                     }
@@ -235,13 +249,20 @@ cards:
                     "badge_icon": "none",
                     "badge_color": "none",
                     "icon": "mdi:filmstrip",
-                    "tap_action": "none",
-                    "hold_action": "none",
+                    "tap_action": {
+                        "action": "none"
+                    },
+                    "hold_action": {
+                        "action": "none"
+                    },
+                    "double_tap_action": {
+                        "action": "none"
+                    },
                     "fill_container": true,
                     "layout": "horizontal",
                     "card_mod": {
                         "style": {
-                          ".": "ha-card {\n  background: url( '" + s.poster + "' ), linear-gradient(to left, transparent, var(--background-color) 50%);\n    background-size: 50%, cover;\n    background-position: right;\n    background-repeat: no-repeat;\n    background-blend-mode: saturation;\n}\n"
+                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
                         }
                     }
                     }

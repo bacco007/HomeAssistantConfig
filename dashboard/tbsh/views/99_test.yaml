@@ -233,7 +233,7 @@ cards:
           - !include ../home/tamworth.yaml
           - !include ../home/music.yaml
           - !include ../home/sport.yaml
-          #- !include ../home/media.yaml
+          - !include ../home/media.yaml
           - !include ../home/flighttracker.yaml
           - !include ../home/network.yaml
           #- !include ../home/news.yaml
