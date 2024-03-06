@@ -11,6 +11,12 @@ mushroom_entity_graph:
     - line_width: 3
   card:
     type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          background-color: var(--background-color);
+          box-shadow: none !important;
+        }
     cards:
       - type: custom:mushroom-entity-card
         entity: "[[entity]]"
@@ -19,24 +25,23 @@ mushroom_entity_graph:
         name: "[[title]]"
         icon: "[[icon]]"
         icon_color: "[[colour]]"
+        tap_action:
+          action: more-info
         card_mod:
           style: |
             ha-card {
               background-color: var(--background-color);
-              z-index: 1;
-              --ha-card-border-width: 0;
             }
       - type: custom:mini-graph-card
         entities:
           - entity: "[[entity]]"
             name: "[[title]]"
             color: "[[colour]]"
-        height: 65
+        height: 50
         hours_to_show: "[[hours_to_show]]"
         line_width: "[[line_width]]"
         points_per_hour: "[[points_per_hour]]"
         animate: true
-        font_size: 65
         show:
           name: false
           icon: false
@@ -46,17 +51,11 @@ mushroom_entity_graph:
         card_mod:
           style: |
             ha-card {
-              position: absolute !important;
               background-color: var(--background-color) !important;
-              height: 100%;
-              width: 100%;
-              top: 0px;
-              --ha-card-border-width: 0;
+              border-radius: 5px;
+              box-shadow: none;
+              padding-top: 0 !important;
             }
             ha-card:after {
-              content: "";
-              position: absolute;
-              width: calc(100% + 5px);
-              height: calc(100% + 5px);
-              background: linear-gradient(90deg, var(--background-color) 30%, transparent);
+              background-color: var(--background-color) !important;
             }
