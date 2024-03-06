@@ -1,12 +1,14 @@
 {
   "domain": "start_time",
   "name": "Start Time",
+  "codeowners": [
+    "@AlexxIT"
+  ],
   "config_flow": true,
-  "documentation": "https://github.com/AlexxIT/StartTime",
-  "issue_tracker": "https://github.com/AlexxIT/StartTime/issues",
-  "codeowners": ["@AlexxIT"],
   "dependencies": [],
+  "documentation": "https://github.com/AlexxIT/StartTime",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/AlexxIT/StartTime/issues",
   "requirements": [],
-  "version": "1.1.6",
-  "iot_class": "calculated"
+  "version": "1.1.7"
 }

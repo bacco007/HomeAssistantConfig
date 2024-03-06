@@ -1,75 +1,57 @@
 import logging
+from datetime import timedelta
 
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.typing import HomeAssistantType
 
-DOMAIN = 'start_time'
+_LOGGER = logging.getLogger(__name__)
+
+DOMAIN = "start_time"
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry,
-                            async_add_entities):
+async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     sensor = hass.data[DOMAIN]
     async_add_entities([sensor])
 
 
 class StartTime(Entity):
-    _state = None
-    _attrs = None
-
     def __init__(self):
-        self.add_logger('homeassistant.bootstrap')
+        self._attr_icon = "mdi:home-assistant"
+        self._attr_name = "Start Time"
+        self._attr_should_poll = False
+        self._attr_unit_of_measurement = "seconds"
+        self._attr_unique_id = DOMAIN
+
+        self.add_logger("homeassistant.bootstrap")
 
     def add_logger(self, name: str):
         logger = logging.getLogger(name)
         real_info = logger.info
 
         def monkey_info(msg: str, *args):
-            if msg.startswith("Home Assistant initialized"):
-                self.internal_update(args[0])
+            # https://github.com/home-assistant/core/issues/112464
+            try:
+                if msg.startswith("Home Assistant initialized"):
+                    self.internal_update(args[0])
+            except Exception as e:
+                _LOGGER.warning("update error", exc_info=e)
 
             real_info(msg, *args)
 
         logger.info = monkey_info
 
-    @property
-    def should_poll(self):
-        return False
-
-    @property
-    def unique_id(self):
-        return DOMAIN
-
-    @property
-    def name(self):
-        return "Start Time"
-
-    @property
-    def state(self):
-        return self._state
-
-    @property
-    def extra_state_attributes(self):
-        return self._attrs
-
-    @property
-    def unit_of_measurement(self):
-        return 'seconds'
-
-    @property
-    def icon(self):
-        return 'mdi:home-assistant'
-
-    def internal_update(self, state):
-        setup_time: dict = self.hass.data.get('setup_time')
+    def internal_update(self, state: float):
+        # timedelta in old Hass versions and float from Hass 2024.3
+        setup_time: dict[str, float | timedelta] = self.hass.data.get("setup_time")
         if setup_time:
-            self._attrs = {
-                integration: round(timedelta.total_seconds(), 1)
-                for integration, timedelta in sorted(
-                    setup_time.items(),
-                    key=lambda kv: kv[1].total_seconds(),
-                    reverse=True
-                )
-            }
+            for k, v in setup_time.items():
+                if isinstance(v, timedelta):
+                    setup_time[k] = round(v.total_seconds(), 2)
 
-        self._state = round(state, 1)
+            self._attr_extra_state_attributes = dict(
+                sorted(setup_time.items(), key=lambda kv: kv[1], reverse=True)
+            )
+
+        self._attr_state = round(state, 2)
+
         self.schedule_update_ha_state()
