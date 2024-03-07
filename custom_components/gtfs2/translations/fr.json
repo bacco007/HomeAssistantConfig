@@ -90,6 +90,7 @@
       "files_deleted": "Source de données supprimée, cela peut affecter les itinéraires existants",
       "stop_incorrect": "Arrêt de départ et/ou de fin incorrecte, éventuellement pas de transport « aujourd'hui » ou pas dans la même direction, vérifiez logs d'érreur",
 	  "no_data_file": "Problème de collecte de données : URL incorrecte ou nom de fichier ne se trouve pas dans le bon dossier",
+	  "no_stops": "Problème de collecte de données : probablement pas des stops pour la route sélectionné",
 	  "no_zip_file": "Problème de collecte de données : fichier ZIP ne se trouve pas dans le bon dossier, note: sensible à la casse",
 	  "extracting": "Extraction des données en cours, cela prend du temps [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
     }
@@ -134,8 +135,8 @@
     },
 	"route_type": {
       "options": {
-		"2": "Voyages ferroviaires, interurbains ou longue distance",
-		"99": "Tout, à part des ferroviaires"
+		"2": "Voyages ferroviaires, entre villes manuellement définiés (prochain écran)",
+		"99": "Tout à part des ferroviaires, entre stops sélectionnés (prochain écran)"
       }
     }
   },

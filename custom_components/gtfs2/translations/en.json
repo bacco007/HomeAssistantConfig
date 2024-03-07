@@ -91,6 +91,7 @@
       "files_deleted": "Datasource deleted, this may affect existing routes",
       "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
 	  "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
+	  "no_stops": "Data collection issue: probably no stops for the selected route",
 	  "no_zip_file": "Data collection issue: ZIP file not existing in the correct folder, note that it is capital-sensitive",
 	  "extracting": "(Still) extracting data, this will take time [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
     }
@@ -136,8 +137,8 @@
     },
 	"route_type": {
       "options": {
-		"99": "All, excluding trains (selecting from stops in next screen)",
-		"2": "Trains, intercity or long-distance travel (manually entered in next screen)"
+		"99": "All but trains, between selected stops (next screen)",
+		"2": "Trains only, between manually entered cities (next screen)"
       }
     }
   },
