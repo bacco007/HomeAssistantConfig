@@ -268,6 +268,6 @@ export function setVolleyball(t, stateObj, c, team, oppo) {
     c.barLabel[team] = t.translate("volleyball.teamBarLabel", "%s", String(stateObj.attributes.team_score));
     c.barLabel[oppo] = t.translate("volleyball.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score));
     c.timeouts[team] = stateObj.attributes.team_sets_won;
-    c.timeouts[team] = stateObj.attributes.opponent_sets_won;
+    c.timeouts[oppo] = stateObj.attributes.opponent_sets_won;
     c.timeoutsDisplay = 'inline';
 }
