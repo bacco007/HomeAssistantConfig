@@ -577,14 +577,14 @@ cards:
         grid-template-rows: 1
         grid-gap: 0px
         mediaquery:
-          "(max-width: 1370px)":
-            grid-template-columns: repeat(5, 1fr)
-            grid-template-rows: auto
-            grid-gap: 0px
           "(max-width: 500px)":
             grid-template-columns: 1fr
             grid-template-rows: auto
             grid-gap: 0em
+          "(max-width: 1370px)":
+            grid-template-columns: repeat(5, 1fr)
+            grid-template-rows: auto
+            grid-gap: 0px
       cards:
         - type: custom:mushroom-template-card
           primary: Alarm Clock
