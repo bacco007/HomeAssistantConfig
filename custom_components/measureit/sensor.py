@@ -1,46 +1,34 @@
 """Sensor platform for MeasureIt."""
+
 from __future__ import annotations
 
 import logging
-from datetime import datetime
-from typing import Any
 from dataclasses import dataclass
+from datetime import datetime
+from decimal import Decimal
+from typing import Any
 
-from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor import SensorStateClass
+from croniter import croniter
+from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
+                                             SensorStateClass)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
-from homeassistant.const import CONF_VALUE_TEMPLATE, CONF_UNIQUE_ID
-from homeassistant.core import callback
-from homeassistant.core import HomeAssistant
+from homeassistant.const import (ATTR_ENTITY_ID, CONF_DEVICE_CLASS,
+                                 CONF_UNIQUE_ID, CONF_UNIT_OF_MEASUREMENT,
+                                 CONF_VALUE_TEMPLATE)
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.restore_state import RestoreEntity, ExtraStoredData
+from homeassistant.helpers.event import async_track_point_in_time
+from homeassistant.helpers.restore_state import ExtraStoredData, RestoreEntity
 from homeassistant.util import dt as dt_util
 
-
-from .period import Period
-from .reading import ReadingData
-
-from .const import (
-    ATTR_NEXT_RESET,
-    CONF_CONFIG_NAME,
-    CONF_CRON,
-    CONF_SENSOR,
-    CONF_SENSOR_NAME,
-    SOURCE_ENTITY_ID,
-)
-from .const import ATTR_PREV
-from .const import ATTR_STATUS
-from .const import CONF_METER_TYPE
-from .const import COORDINATOR
-from .const import DOMAIN_DATA
-from .const import ICON
-from .const import METER_TYPE_TIME
-from .coordinator import MeasureItCoordinator
-from .meter import Meter
+from .const import (ATTR_LAST_RESET, ATTR_NEXT_RESET, ATTR_PREV, ATTR_STATUS,
+                    CONF_CONFIG_NAME, CONF_CRON, CONF_METER_TYPE, CONF_SENSOR,
+                    CONF_SENSOR_NAME, CONF_STATE_CLASS, COORDINATOR,
+                    DOMAIN_DATA, EVENT_TYPE_RESET, ICON, MeterType,
+                    SensorState)
+from .coordinator import MeasureItCoordinator, MeasureItCoordinatorEntity
+from .meter import CounterMeter, MeasureItMeter, SourceMeter, TimeMeter
 from .util import create_renderer
-
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
 
@@ -52,52 +40,79 @@ async def async_setup_entry(
 ) -> None:
     """Set up sensor platform."""
     entry_id: str = config_entry.entry_id
-    meter_type: str = config_entry.options[CONF_METER_TYPE]
-    _LOGGER.debug("Options: %s", config_entry.options)
+    meter_type: MeterType = config_entry.options[CONF_METER_TYPE]
     config_name: str = config_entry.options[CONF_CONFIG_NAME]
 
     coordinator = hass.data[DOMAIN_DATA][entry_id][COORDINATOR]
-    source_entity_id = hass.data[DOMAIN_DATA][entry_id].get(SOURCE_ENTITY_ID)
 
     sensors: list[MeasureItSensor] = []
-
     for sensor in config_entry.options[CONF_SENSOR]:
-        value_template_renderer = None
         unique_id = sensor.get(CONF_UNIQUE_ID)
-
-        period = Period(sensor[CONF_CRON], dt_util.now())
-        meter = Meter(f"{config_name}_{sensor[CONF_SENSOR_NAME]}", period)
-
-        value_template_renderer = create_renderer(hass, sensor.get(CONF_VALUE_TEMPLATE))
-
-        sensors.append(
-            MeasureItSensor(
-                coordinator,
-                meter,
-                unique_id,
-                config_name,
-                meter_type,
-                sensor[CONF_SENSOR_NAME],
-                value_template_renderer,
-                sensor.get(CONF_UNIT_OF_MEASUREMENT),
-                source_entity_id,
-            )
+        sensor_name = f"{config_name}_{sensor[CONF_SENSOR_NAME]}"
+        reset_pattern = (
+            sensor.get(CONF_CRON) if sensor.get(CONF_CRON) not in ["noreset", "forever", "none"] else None
         )
+        state_class = sensor.get(CONF_STATE_CLASS)
+        device_class = sensor.get(CONF_DEVICE_CLASS)
+        uom = sensor.get(CONF_UNIT_OF_MEASUREMENT)
+
+        if meter_type == MeterType.SOURCE:
+            meter = SourceMeter()
+            value_template_renderer = create_renderer(hass, sensor.get(CONF_VALUE_TEMPLATE), 3)
+        elif meter_type == MeterType.COUNTER:
+            meter = CounterMeter()
+            value_template_renderer = create_renderer(hass, sensor.get(CONF_VALUE_TEMPLATE))
+        elif meter_type == MeterType.TIME:
+            meter = TimeMeter()
+            value_template_renderer = create_renderer(hass, sensor.get(CONF_VALUE_TEMPLATE), 0)
+        else:
+            _LOGGER.error("%s # Invalid meter type: %s", config_name, meter_type)
+            raise ValueError(f"Invalid meter type: {meter_type}")
+
+
+
+        sensor_entity = MeasureItSensor(
+            hass,
+            coordinator,
+            meter,
+            unique_id,
+            sensor_name,
+            reset_pattern,
+            value_template_renderer,
+            state_class,
+            device_class,
+            uom,
+        )
+        sensors.append(sensor_entity)
 
     async_add_entities(sensors)
 
 
+def temp_parse_timestamp_or_string(timestamp_or_string: str) -> datetime | None:
+    """Parse a timestamp or string into a datetime object."""
+
+    try:
+        return datetime.fromisoformat(timestamp_or_string).replace(
+            tzinfo=dt_util.DEFAULT_TIME_ZONE
+        )
+    except (TypeError, ValueError):
+        try:
+            return datetime.fromtimestamp(
+                float(timestamp_or_string), dt_util.DEFAULT_TIME_ZONE
+            )
+        except OverflowError:
+            return None
+
+
 @dataclass
-class MeasureItMeterStoredData(ExtraStoredData):
+class MeasureItSensorStoredData(ExtraStoredData):
     """Object to hold meter data to be stored."""
 
-    state: str | None = None
-    measured_value: float = 0
-    prev_measured_value: float = 0
-    session_start_reading: float | None = None
-    start_measured_value: float | None = None
-    period_last_reset: datetime | None = None
-    period_end: datetime | None = None
+    meter_data: dict
+    time_window_active: bool
+    condition_active: bool
+    last_reset: datetime | None
+    next_reset: datetime | None = None
 
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the meter data."""
@@ -105,141 +120,304 @@ class MeasureItMeterStoredData(ExtraStoredData):
         _LOGGER.debug("Persisting meter data")
 
         data = {
-            "measured_value": self.measured_value,
-            "start_measured_value": self.start_measured_value,
-            "prev_measured_value": self.prev_measured_value,
-            "session_start_reading": self.session_start_reading,
-            "period_last_reset": dt_util.as_timestamp(self.period_last_reset),
-            "period_end": dt_util.as_timestamp(self.period_end),
-            "state": self.state,
+            "meter_data": self.meter_data,
+            "time_window_active": self.time_window_active,
+            "condition_active": self.condition_active,
+            "last_reset": self.last_reset.isoformat() if self.last_reset else None,
+            "next_reset": self.next_reset.isoformat() if self.next_reset else None,
         }
         return data
 
     @classmethod
-    def from_dict(cls, restored: dict[str, Any]) -> MeasureItMeterStoredData | None:
+    def from_old_format_dict(
+        cls, restored: dict[str, Any]
+    ) -> MeasureItSensorStoredData:
+        """Initialize a stored sensor state from an old format dict."""
+        time_window_active = False
+        condition_active = False
+        if restored.get("state") == SensorState.MEASURING:
+            time_window_active = True
+            condition_active = True
+        elif restored.get("state") == SensorState.WAITING_FOR_TIME_WINDOW:
+            time_window_active = False
+            condition_active = True
+        elif restored.get("state") == SensorState.WAITING_FOR_CONDITION:
+            time_window_active = True
+            condition_active = False
+        meter_data = {
+            "measured_value": restored["measured_value"],
+            "session_start_value": restored["session_start_reading"],
+            "session_start_measured_value": restored["start_measured_value"],
+            "prev_measured_value": restored["prev_measured_value"],
+            "measuring": True if restored["state"] == SensorState.MEASURING else False,
+        }
+        if meter_data["session_start_value"] is None:
+            meter_data["session_start_value"] = 0
+        if meter_data["session_start_measured_value"] is None:
+            meter_data["session_start_measured_value"] = 0
+
+        last_reset = temp_parse_timestamp_or_string(restored["period_last_reset"])
+        next_reset = temp_parse_timestamp_or_string(restored["period_end"])
+
+        return cls(
+            meter_data, time_window_active, condition_active, last_reset, next_reset
+        )
+
+    @classmethod
+    def from_dict(cls, restored: dict[str, Any]) -> MeasureItSensorStoredData:
         """Initialize a stored sensor state from a dict."""
 
         try:
-            measured_value = restored["measured_value"]
-            start_measured_value = restored["start_measured_value"]
-            prev_measured_value = restored["prev_measured_value"]
-            session_start_reading = restored["session_start_reading"]
-            period_last_reset = dt_util.utc_from_timestamp(
-                restored["period_last_reset"]
+            if not restored.get("meter_data"):
+                return MeasureItSensorStoredData.from_old_format_dict(restored)
+
+            meter_data = restored["meter_data"]
+            time_window_active = bool(restored["time_window_active"])
+            condition_active = bool(restored["condition_active"])
+            last_reset = (
+                datetime.fromisoformat(restored["last_reset"]).astimezone(
+                    tz=dt_util.DEFAULT_TIME_ZONE
+                )
+                if restored.get("last_reset")
+                else None
             )
-            period_end = dt_util.utc_from_timestamp(restored["period_end"])
-            state = restored["state"]
+            next_reset = (
+                datetime.fromisoformat(restored["next_reset"]).astimezone(
+                    tz=dt_util.DEFAULT_TIME_ZONE
+                )
+                if restored.get("next_reset")
+                else None
+            )
         except KeyError:
             # restored is a dict, but does not have all values
             return None
 
         return cls(
-            state,
-            measured_value,
-            prev_measured_value,
-            session_start_reading,
-            start_measured_value,
-            period_last_reset,
-            period_end,
+            meter_data, time_window_active, condition_active, last_reset, next_reset
         )
 
 
-class MeasureItSensor(RestoreEntity, SensorEntity):
+class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
     """MeasureIt Sensor Entity."""
+
+    _attr_has_entity_name = True
 
     def __init__(
         self,
-        coordinator,
-        meter,
-        unique_id,
-        config_name,
-        meter_type,
-        pattern_name,
+        hass: HomeAssistant,
+        coordinator: MeasureItCoordinator,
+        meter: MeasureItMeter,
+        unique_id: str,
+        sensor_name: str,
+        reset_pattern: str | None,
         value_template_renderer,
-        unit_of_measurement,
-        source_entity_id=None,
+        state_class: SensorStateClass,
+        device_class: SensorDeviceClass | None = None,
+        unit_of_measurement: str | None = None,
     ):
         """Initialize a sensor entity."""
-        self._meter_type = meter_type
-        self.meter: Meter = meter
-        self._coordinator: MeasureItCoordinator = coordinator
-        self._pattern_name = pattern_name
-        self._attr_name = f"{config_name}_{pattern_name}"
+        self.hass = hass
+        self._coordinator = coordinator
+        self.meter = meter
         self._attr_unique_id = unique_id
-        self._attr_icon = ICON
-        self._attr_extra_state_attributes = {}
+        self._attr_name = sensor_name
+        self._reset_pattern = reset_pattern
         self._value_template_renderer = value_template_renderer
-        self._attr_state_class = SensorStateClass.TOTAL
         self._attr_native_unit_of_measurement = unit_of_measurement
-        self._attr_should_poll = False
-        self._source_entity_id = source_entity_id
 
-        if self._meter_type == METER_TYPE_TIME:
-            self._attr_device_class = SensorDeviceClass.DURATION
+        if state_class and state_class not in [
+            SensorStateClass.TOTAL,
+            SensorStateClass.TOTAL_INCREASING,
+            None,
+        ]:
+            raise TypeError("Only SensorStateClass TOTAL or none is supported.")
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
+
+        self._attr_icon = ICON
+        self._attr_should_poll = False
+
+        self._time_window_active: bool = False
+        self._condition_active: bool = False
+        self._reset_listener = None
+        self._last_reset: datetime = dt_util.now()
+        self._next_reset: datetime | None = None
 
     async def async_added_to_hass(self):
         """Add sensors as a listener for coordinator updates."""
 
-        if (last_meter_data := await self.async_get_last_sensor_data()) is not None:
+        if (last_sensor_data := await self.async_get_last_sensor_data()) is not None:
             _LOGGER.debug(
                 "%s # Restoring data from last session: %s",
                 self._attr_name,
-                last_meter_data,
+                last_sensor_data,
             )
-            self.meter.state = last_meter_data.state
-            self.meter.measured_value = last_meter_data.measured_value
-            self.meter._start_measured_value = last_meter_data.start_measured_value
-            self.meter.prev_measured_value = last_meter_data.prev_measured_value
-            self.meter._session_start_reading = last_meter_data.session_start_reading
-            self.meter._period.last_reset = last_meter_data.period_last_reset
-            self.meter._period.end = last_meter_data.period_end
+            self.meter.from_dict(last_sensor_data.meter_data)
+            self._condition_active = last_sensor_data.condition_active
+            self._time_window_active = last_sensor_data.time_window_active
+            self._last_reset = last_sensor_data.last_reset
+            self.schedule_next_reset(last_sensor_data.next_reset)
         else:
             _LOGGER.warning("%s # Could not restore data", self._attr_name)
+            self.schedule_next_reset()
+
+        self.async_on_remove(self._coordinator.async_register_sensor(self))
+        self.async_on_remove(self.unsub_reset_listener)
+
+        @callback
+        def event_filter(event):
+            """Filter events."""
+            return self.entity_id in event.data.get(ATTR_ENTITY_ID)
+
+        @callback
+        def on_reset_event(event):
+            self.schedule_next_reset(event.data.get("reset_datetime"))
 
         self.async_on_remove(
-            self._coordinator.async_add_listener(self._handle_coordinator_update)
+            self.hass.bus.async_listen(EVENT_TYPE_RESET, on_reset_event, event_filter)
         )
+
+    @callback
+    def unsub_reset_listener(self):
+        """Unsubscribe and remove the reset listener."""
+        if self._reset_listener:
+            self._reset_listener()
+            self._reset_listener = None
+
+    @property
+    def sensor_state(self) -> SensorState:
+        """Return the sensor state."""
+        if self.meter.meter_type == MeterType.SOURCE and not self.meter.has_source_value:
+            return SensorState.INITIALIZING_SOURCE
+        if self._condition_active is True and self._time_window_active is True:
+            return SensorState.MEASURING
+        elif self._time_window_active is False:
+            return SensorState.WAITING_FOR_TIME_WINDOW
+        elif self._condition_active is False:
+            return SensorState.WAITING_FOR_CONDITION
+        else:
+            raise ValueError("Invalid sensor state determined.")
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the state of the sensor."""
+        return self._value_template_renderer(self.meter.measured_value)
+
+    @property
+    def prev_native_value(self) -> Decimal | None:
+        """Return the state of the sensor."""
+        return self._value_template_renderer(self.meter.prev_measured_value)
+
+    @property
+    def last_reset(self) -> datetime | None:
+        """Return the time when the sensor was last reset, if any."""
+        if self.state_class == SensorStateClass.TOTAL:
+            return self._last_reset
+        return None
 
     @property
     def extra_state_attributes(self) -> dict[str, str]:
         """Return the state attributes."""
         attributes = {
-            ATTR_STATUS: self.meter.state,
-            ATTR_PREV: self._value_template_renderer(self.meter.prev_measured_value),
-            ATTR_NEXT_RESET: self.meter.next_reset,
+            ATTR_STATUS: self.sensor_state,
+            ATTR_PREV: str(  # strange things happen when we parse this one as a Decimal...
+                self._value_template_renderer(self.meter.prev_measured_value)
+            ),
+            ATTR_LAST_RESET: self._last_reset.isoformat(timespec="seconds") if self._last_reset else None,
+            ATTR_NEXT_RESET: self._next_reset.isoformat(timespec="seconds") if self._next_reset else None,
         }
-        if self._source_entity_id:
-            attributes.update({SOURCE_ENTITY_ID: self._source_entity_id})
         return attributes
 
     @callback
-    def _handle_coordinator_update(self, reading: ReadingData) -> None:
-        """Handle updated data from the coordinator."""
+    def reset(self, event=None):
+        """Reset the sensor."""
+        reset_datetime = dt_util.now()
+        _LOGGER.info("Resetting sensor %s at %s", self._attr_name, reset_datetime)
+        self.meter.reset()
+        self._last_reset = reset_datetime
 
-        _LOGGER.debug("Coordinator update received!")
+        self.schedule_next_reset()
+        self._async_write_ha_state()
 
-        self.meter.on_update(reading)
-        self._attr_native_value = self._value_template_renderer(
-            self.meter.measured_value
+    @callback
+    def schedule_next_reset(self, next_reset: datetime | None = None):
+        """Set the next reset moment."""
+        tznow = dt_util.now()
+        if next_reset and next_reset <= tznow:
+            self.reset()
+            return
+        elif not next_reset:
+            if self._reset_pattern:
+                next_reset = croniter(self._reset_pattern, tznow).get_next(datetime)
+            else:
+                self._next_reset = None
+                return
+
+        self._next_reset = next_reset
+        if self._reset_listener:
+            self._reset_listener()
+        self._reset_listener = async_track_point_in_time(
+            self.hass,
+            self.reset,
+            self._next_reset,  # type: ignore
         )
-        self.async_write_ha_state()
+
+    @callback
+    def on_condition_template_change(self, condition_active: bool) -> None:
+        """Handle a change in the condition template."""
+        old_state = self.sensor_state
+        self._condition_active = condition_active
+        new_state = self.sensor_state
+        self._on_sensor_state_update(old_state, new_state)
+        self._async_write_ha_state()
+
+    @callback
+    def on_time_window_change(self, time_window_active: bool) -> None:
+        """Handle a change in the time window."""
+        old_state = self.sensor_state
+        self._time_window_active = time_window_active
+        new_state = self.sensor_state
+        self._on_sensor_state_update(old_state, new_state)
+        self._async_write_ha_state()
+
+    @callback
+    def on_value_change(self, new_value: Decimal | None = None) -> None:
+        """Handle a change in the value."""
+        old_state = self.sensor_state
+        if new_value is not None:
+            self.meter.update(new_value)
+        else:
+            self.meter.update()
+        if old_state == SensorState.INITIALIZING_SOURCE:
+            new_state = self.sensor_state
+            self._on_sensor_state_update(old_state, new_state)
+        self._async_write_ha_state()
+
+    def _on_sensor_state_update(
+        self, old_state: SensorState, new_state: SensorState
+    ) -> None:
+        """Start/stop meter when needed."""
+        if new_state == old_state:
+            return
+        if new_state == SensorState.MEASURING:
+            self.meter.start()
+        if old_state == SensorState.MEASURING:
+            self.meter.stop()
 
     @property
-    def extra_restore_state_data(self) -> MeasureItMeterStoredData:
-        """Return sensor specific state data to be restored."""
+    def extra_restore_state_data(self) -> MeasureItSensorStoredData:
+        """Return sensor specific state data to be stored."""
 
-        return MeasureItMeterStoredData(
-            self.meter.state,
-            self.meter.measured_value,
-            self.meter.prev_measured_value,
-            self.meter._session_start_reading,
-            self.meter._start_measured_value,
-            self.meter._period.last_reset,
-            self.meter._period.end,
+        return MeasureItSensorStoredData(
+            self.meter.to_dict(),
+            self._time_window_active,
+            self._condition_active,
+            self._last_reset,
+            self._next_reset,
         )
 
-    async def async_get_last_sensor_data(self) -> MeasureItMeterStoredData | None:
-        """Restore native_value and native_unit_of_measurement."""
+    async def async_get_last_sensor_data(self) -> MeasureItSensorStoredData | None:
+        """Retrieve sensor data to be restored."""
         if (restored_last_extra_data := await self.async_get_last_extra_data()) is None:
             return None
-        return MeasureItMeterStoredData.from_dict(restored_last_extra_data.as_dict())
+        return MeasureItSensorStoredData.from_dict(restored_last_extra_data.as_dict())
