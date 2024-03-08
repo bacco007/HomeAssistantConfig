@@ -70,14 +70,17 @@ cards:
                   - icon: mdi:airplane-alert
                   - line_width: 2.5
           - type: custom:mushroom-template-card
-            style: |
-              ha-card {
-                background-color: var(--background-color);
             primary: Closest Plane
-            secondary: |-
-              {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}} ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
-              {{state_attr(entity, 'aircraft_owner')}} - {{state_attr(entity, 'aircraft')}}
-              {{state_attr(entity, 'origin_airport')}} > {{state_attr(entity, 'destination_airport')}}
+            secondary: >-
+              {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}}
+              ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
+
+              {{state_attr(entity, 'aircraft_operator')}} ({{state_attr(entity,
+              'aircraft_operator_callsign')}}) - {{state_attr(entity, 'aircraft')}}
+
+              {{state_attr(entity, 'origin_airport')}} ({{state_attr(entity,
+              'origin_airport_code')}}) > {{state_attr(entity, 'destination_airport')}}
+              ({{state_attr(entity, 'destination_airport_code')}})
             icon: mdi:airplane
             entity: sensor.plane_overhead_detail
             icon_color: green
@@ -92,9 +95,24 @@ cards:
             card_mod:
               style:
                 .: |
+                  ha-card:before {
+                    content: '';
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    right: 5px;
+                    background: url( https://content.airhex.com/content/logos/airlines_{{state_attr(config.entity, 'aircraft_operator_icao')}}_90_90_f.png?proportions=keep ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+                    background-repeat: no-repeat;
+                    background-size: auto 100%, cover;
+                    background-position: right;
+                    background-blend-mode: saturation;
+                    filter: opacity(0.25);
+                    }
                   ha-card {
                     background-color: var(--background-color);
+                    box-shadow: none;
                   }
+
 
           - type: custom:mushroom-template-card
             style: |

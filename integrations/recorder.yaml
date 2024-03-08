@@ -69,6 +69,9 @@ recorder:
       - sensor.z2m_office_airquality_z2m_office_airquality_last_seen
       - sun.sun
       - weather.east_tamworth_hourly
+      - sensor.z2m_office_airquality_last_seen
+      - sensor.hb_00045437_signal_strength
+      - sensor.swatch_time
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -164,6 +167,9 @@ recorder:
       - sensor.pirateweather*
       - sensor.disabled_entities*
       - sensor.radio_state*
+      - sensor.device_tracker*
+      - sensor.xplorer_*
+      - sensor.bus_*
     event_types:
       - automation_triggered
       - call_service
@@ -192,6 +198,8 @@ recorder:
       - transmission_downloaded_torrent
       - transmission_removed_torrent
       - transmission_started_torrent
+      - flightradar24_entry
+      - flightradar24_exit
   include:
     entities:
       - sensor.load_power
@@ -201,4 +209,3 @@ recorder:
       - sensor.unifi_gateway_www_uptime
       - sensor.unifi_networkstats_connected_devices
       - sensor.unifi_networkstats_switchap
-
