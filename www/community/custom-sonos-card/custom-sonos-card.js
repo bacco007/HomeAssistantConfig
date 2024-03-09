@@ -1012,8 +1012,9 @@ const Et=(e,t,A)=>{for(const A of t)if(A[0]===e)return(0,A[1])();return A?.()};c
       .row {
         display: flex;
         flex-direction: column;
-        padding-top: 0.5rem;
+        padding-top: 0.3rem;
         padding-right: 1rem;
+        padding-bottom: 0.2rem;
       }
 
       .row:not(:first-child) {
