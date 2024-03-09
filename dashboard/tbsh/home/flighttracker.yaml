@@ -113,7 +113,6 @@ cards:
                     box-shadow: none;
                   }
 
-
           - type: custom:mushroom-template-card
             style: |
               ha-card {

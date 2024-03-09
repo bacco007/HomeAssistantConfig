@@ -72,6 +72,9 @@ recorder:
       - sensor.z2m_office_airquality_last_seen
       - sensor.hb_00045437_signal_strength
       - sensor.swatch_time
+      - sensor.weatherman_data
+      - sensor.flighttracker_adsb_aircraft_list
+      - sensor.adsb_planefinder_stats
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -167,7 +170,7 @@ recorder:
       - sensor.pirateweather*
       - sensor.disabled_entities*
       - sensor.radio_state*
-      - sensor.device_tracker*
+      - sensor.device_tracker_*
       - sensor.xplorer_*
       - sensor.bus_*
     event_types:
