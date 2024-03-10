@@ -1,0 +1,20 @@
+---
+grid-template-columns: 0px 74px auto
+grid-template-rows: grid-title-row-height auto auto
+grid-gap: 0.5em
+grid-template-areas: |
+  ". header header"
+  ". sidebar content"
+  ". sidebar otherActions"
+  ". footer footer"
+mediaquery:
+  "(max-width: 500px)":
+    grid-template-columns: 3% 94% 3%
+    grid-template-rows: auto
+    grid-gap: 0em
+    grid-template-areas: |
+      ". header ."
+      ". content ."
+      ". otherActions ."
+      ". footer ."
+      ". mobile-menu ."

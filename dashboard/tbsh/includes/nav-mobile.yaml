@@ -1,0 +1,200 @@
+---
+type: custom:stack-in-card
+mode: horizontal
+cards:
+  - type: custom:mushroom-template-card
+    primary: ""
+    secondary: ""
+    icon: mdi:home-outline
+    icon_color: grey
+    layout: vertical
+    tap_action:
+      action: navigate
+      navigation_path: home
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            width: 60px !important;
+            height: 36px !important;
+            {% if '[[active-view]]' != 'home' %}
+            --shape-color: none;
+            {% endif %}
+          }
+        .: |
+          ha-card {
+            background: none;
+          }
+          :host {
+            --mush-icon-border-radius: 16px;
+          }
+  - type: custom:mushroom-template-card
+    primary: ""
+    secondary: ""
+    icon: mdi:devices
+    icon_color: grey
+    layout: vertical
+    tap_action:
+      action: navigate
+      navigation_path: apparaten
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            width: 60px !important;
+            height: 36px !important;
+            {% if '[[active-view]]' != 'apparaten' %}
+            --shape-color: none;
+            {% endif %}
+          }
+        .: |
+          ha-card {
+            background: none;
+          }
+          :host {
+            --mush-icon-border-radius: 16px;
+          }
+  - type: custom:mushroom-template-card
+    primary: ""
+    secondary: ""
+    icon: |
+      {% if '[[active-view]]' == 'nieuws' %}
+        mdi:bell
+      {% else %}
+        mdi:bell-outline
+      {% endif %}
+    icon_color: grey
+    layout: vertical
+    tap_action:
+      action: navigate
+      navigation_path: nieuws
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            width: 60px !important;
+            height: 36px !important;
+            {% if '[[active-view]]' != 'nieuws' %}
+            --shape-color: none;
+            {% endif %}
+          }
+        .: |
+          ha-card {
+            background: none;
+          }
+          :host {
+            --mush-icon-border-radius: 16px;
+          }
+  - type: custom:mushroom-template-card
+    primary: ""
+    secondary: ""
+    icon: |
+      {% if '[[active-view]]' == 'automatiseringenv' %}
+        mdi:creation
+      {% else %}
+        mdi:creation-outline
+      {% endif %}
+    icon_color: grey
+    layout: vertical
+    tap_action:
+      action: navigate
+      navigation_path: automatiseringen
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            width: 60px !important;
+            height: 36px !important;
+            {% if '[[active-view]]' != 'automatiseringen' %}
+            --shape-color: none;
+            {% endif %}
+          }
+        .: |
+          ha-card {
+            background: none;
+          }
+          :host {
+            --mush-icon-border-radius: 16px;
+          }
+  - type: custom:mushroom-template-card
+    primary: ""
+    secondary: ""
+    icon: mdi:menu
+    icon_color: grey
+    layout: vertical
+    tap_action:
+      action: navigate
+      navigation_path: mobile-menu
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            width: 60px !important;
+            height: 36px !important;
+            {% if '[[active-view]]' != 'automatiseringen' %}
+            --shape-color: none;
+            {% endif %}
+          }
+        .: |
+          ha-card {
+            background: none;
+          }
+          :host {
+            --mush-icon-border-radius: 16px;
+          }
+  - type: custom:mushroom-template-card
+    primary: ""
+    secondary: ""
+    icon: |
+      {% if '[[active-view]]' == 'instellingen' %}
+        mdi:cog
+      {% else %}
+        mdi:cog-outline
+      {% endif %}
+    icon_color: grey
+    layout: vertical
+    tap_action:
+      action: navigate
+      navigation_path: instellingen
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            width: 60px !important;
+            height: 36px !important;
+            {% if '[[active-view]]' != 'instellingen' %}
+            --shape-color: none;
+            {% endif %}
+          }
+        .: |
+          ha-card {
+            background: none;
+          }
+          :host {
+            --mush-icon-border-radius: 16px;
+          }
+card_mod:
+  style: >
+    :host {
+      z-index: 4;
+      position: sticky !important;
+      position: -webkit-sticky;
+      bottom: 0;
+    }
+
+    ha-card {
+      background: var(--background-color);
+      box-shadow: none;
+      padding-bottom: 15px;
+      margin: 0px -4px -8px;
+      border-radius: 0px;
+    }
+
+    # The sticky position doesn't work with Decluttering card, so I have
+    to add the CSS here
+
+    # If you don't use the UI you can use YAML anchors instead
+view_layout:
+  grid-area: mobile-menu
+  show:
+    mediaquery: "(max-width: 500px)"

@@ -170,7 +170,7 @@ cards:
           - show_current: false
             show_forecast: true
             type: weather-forecast
-            entity: weather.east_tamworth_hourly
+            entity: weather.pirateweather
             forecast_type: hourly
             card_mod:
               style: |
@@ -185,7 +185,7 @@ cards:
           - show_current: false
             show_forecast: true
             type: weather-forecast
-            entity: weather.east_tamworth
+            entity: weather.pirateweather
             forecast_type: daily
             card_mod:
               style: |

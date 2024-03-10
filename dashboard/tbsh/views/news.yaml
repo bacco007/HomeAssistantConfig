@@ -5,10 +5,41 @@ subview: true
 path: news
 title: News
 type: custom:grid-layout
-layout: !include ../includes/layout-grid.yaml
+layout: !include ../includes/layout-grid-2024.yaml
 cards:
-  - !include ../includes/sidebar.yaml
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card:
+      type: custom:mushroom-title-card
+      # title: Home
+      subtitle: |
+        {{ state_attr('sensor.helper_date', "date_long") }}
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            background: none !important;
+            box-shadow: none !important;
+          }
+        mushroom-title-card$: |
+          h1 {
+            --title-font-size: 26px;
+            --title-font-weight: bold;
+            --title-line-height: 1;
+          }
+          h2 {
+            --title-font-size: 16px;
+          }
+          .header {
+            --title-padding: 12px 12px 0px;
+          }
 
+  # Nav Sidebar (Non-Mobile)
+  - !include ../includes/nav-sidebar.yaml
+
+  # Content
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
@@ -44,6 +75,11 @@ cards:
           max_width: 1000
         cards: *cards
 
+  # Footer (Media Player)
+  - !include ../includes/footer.yaml
+
+  # Actions
   - !include ../includes/actions.yaml
 
-  - !include ../includes/mediaplayer.yaml
+  # Nav (Mobile)
+  - !include ../includes/nav-mobile.yaml

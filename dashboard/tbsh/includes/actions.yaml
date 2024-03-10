@@ -1,132 +1,271 @@
 ---
-type: "custom:mod-card"
+type: custom:mod-card
 style: |
   ha-card {
     border-radius: 0px;
-    padding: 12px 8px;
     margin: 0px;
     height: auto;
   }
 view_layout:
   grid-area: otherActions
 card:
-  type: "horizontal-stack"
+  type: custom:layout-card
+  layout_type: custom:grid-layout
+  layout:
+    grid-template-columns: repeat(10, 1fr)
+    grid-template-rows: 1
+    grid-gap: 0px
+    mediaquery:
+      "(max-width: 500px)":
+        grid-template-columns: 1fr
+        grid-template-rows: auto
+        grid-gap: 0em
+      "(max-width: 1370px)":
+        grid-template-columns: repeat(5, 1fr)
+        grid-template-rows: auto
+        grid-gap: 0px
   cards:
-    - type: "custom:button-card"
+    - type: custom:mushroom-template-card
+      primary: Alarm Clock
+      secondary: >
+        {% if states('binary_sensor.alarm_tomorrow') == 'on' %} Alarm for Tomorrow
+        {% else %} No Alarm for Tomorrow {% endif %}
       icon: mdi:bed-clock
-      name: Alarm Clock
-      template:
-        - popup_button
+      entity: binary_sensor.alarm_today
       tap_action: !include ../popup/alarm_clock.yaml
-      variables:
-        notifications: >
-          [[[
-            if (states['binary_sensor.alarm_today'].state == 'on')
-              return parseInt(1);
-          ]]]
-    - type: "custom:button-card"
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('binary_sensor.alarm_today') == 'on' %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: custom:mushroom-template-card
+      primary: Home Assistant
+      secondary: ""
       icon: mdi:home-assistant
-      name: "Home Assistant"
-      template:
-        - popup_button
       tap_action:
         action: navigate
         navigation_path: homeassistant
-    - type: "custom:button-card"
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+    - type: custom:mushroom-template-card
+      primary: Notifications
+      secondary: ""
       icon: mdi:message-badge
-      name: "Notifications"
-      template:
-        - popup_button
       tap_action: !include ../popup/notifications.yaml
-    # - type: "custom:button-card"
-    #   entity: sensor.stats_docker
-    #   icon: mdi:docker
-    #   name: Docker
-    #   variables:
-    #     notification: >
-    #       [[[
-    #         return parseInt(entity?.attributes.containers_stopped);
-    #       ]]]
-    #   template:
-    #     - popup_button
-    - type: "custom:button-card"
-      entity: sensor.summary_lights
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+    - type: custom:mushroom-template-card
+      primary: Lights
+      secondary: ""
       icon: mdi:lightbulb
-      name: Lights
+      entity: sensor.summary_lights
       tap_action: !include ../popup/lights.yaml
-      variables:
-        notification: >
-          [[[
-            return parseInt(entity?.state);
-          ]]]
-      template:
-        - popup_button
-    # - type: "custom:button-card"
-    #   icon: mdi:tablet
-    #   name: "Home Hub"
-    #   variables:
-    #     notification: >
-    #       [[[
-    #         let id = states['binary_sensor.home_hub_plugged_in'];
-    #         if (id) return id.state === 'off';
-    #       ]]]
-    #   template:
-    #     - popup_button
-    # - type: "custom:button-card"
-    #   icon: mdi:history
-    #   name: "History"
-    #   template:
-    #     - popup_button
-    - type: "custom:button-card"
-      entity: sensor.summary_media_players
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('sensor.summary_lights') | float > 0 %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: custom:mushroom-template-card
+      primary: Media Players
+      secondary: ""
       icon: mdi:play-network
-      name: "Media Players"
-      template:
-        - popup_button
+      entity: sensor.summary_media_players
       tap_action: !include ../popup/media_players.yaml
-      variables:
-        notification: >
-          [[[
-            return parseInt(entity?.state);
-          ]]]
-    - type: "custom:button-card"
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('sensor.summary_media_players') | float > 0 %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: custom:mushroom-template-card
+      primary: Updates
+      secondary: |
+        {{ states('sensor.summary_updates') }} Updates Available
       icon: mdi:update
-      name: "Updates"
       entity: sensor.summary_updates
-      variables:
-        notification: >
-          [[[
-            return parseInt(entity?.state);
-          ]]]
-      template:
-        - popup_button
       tap_action: !include ../popup/updates.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('sensor.summary_updates') | float > 0 %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
     - type: conditional
       conditions:
         - entity: media_player.currently_playing
           state: playing
       card:
-        type: "custom:button-card"
+        type: custom:mushroom-template-card
+        primary: Currently Playing
+        secondary: ""
         icon: mdi:play
-        name: "Currently Playing"
-        template:
-          - popup_button
+        icon_color: red
         tap_action: !include ../popup/currently_playing.yaml
-    - type: "custom:button-card"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                border-radius: 8px;
+                --icon-size: 40px;
+                --icon-symbol-size: 20px;
+                --card-secondary-font-size: 12px;
+                --card-primary-font-size: 14px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+                box-shadow: none !important;
+              }
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-animation: ping 2s infinite;
+              }
+              @keyframes ping {
+                  0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                  70% {box-shadow: 0 0 0 10px transparent;}
+                  100% {box-shadow: 0 0 0 0 transparent;}
+              }
+    - type: custom:mushroom-template-card
+      primary: Sonos
+      secondary: ""
       icon: si:sonos
-      name: "Sonos"
-      template:
-        - popup_button
       tap_action: !include ../popup/sonos.yaml
-    - type: "custom:button-card"
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+    - type: custom:mushroom-template-card
+      primary: Upcoming Sport
+      secondary: |
+        {{ states('sensor.upcoming_sport_next_24_hours') }} Events Today
       icon: mdi:football-australian
-      name: Upcoming Sport
       entity: sensor.upcoming_sport_next_24_hours
-      variables:
-        notification: >
-          [[[
-            return parseInt(entity?.state);
-          ]]]
-      template:
-        - popup_button
+      badge_icon: |-
+        {% if states('sensor.upcoming_sport_next_24_hours') | float > 0 %}
+          mdi:exclamation-thick
+        {% else %}
+          none
+        {% endif %}
+      badge_color: |-
+        {% if states('sensor.upcoming_sport_next_24_hours') | float > 0 %}
+          red
+        {% else %}
+          none
+        {% endif %}
       tap_action: !include ../popup/sport_24hrs.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }

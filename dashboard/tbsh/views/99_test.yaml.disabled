@@ -1,10 +1,7 @@
 ---
-# lovelace_gen
-# theme: noctis
-icon: mdi:lan
-subview: true
-path: network
-title: Network
+title: Testing
+path: testing
+icon: mdi:directions
 type: custom:grid-layout
 layout: !include ../includes/layout-grid-2024.yaml
 cards:
@@ -14,7 +11,7 @@ cards:
       grid-area: header
     card:
       type: custom:mushroom-title-card
-      # title: Home
+      #title: Home
       subtitle: |
         {{ state_attr('sensor.helper_date', "date_long") }}
     card_mod:
@@ -54,27 +51,18 @@ cards:
           width: 300
           max_width: 1000
         cards: &cards
-          - !include ../network/settings_controls.yaml
-          - !include ../network/cloudflare_tunnels.yaml
-          - type: vertical-stack
-            cards:
-              - !include ../network/unifi.yaml
-              - !include ../network/unifi/netconn_wifi.yaml
-              - !include ../network/unifi/netconn_wired.yaml
-
-          - type: vertical-stack
-            cards:
-              - !include ../network/adguard/card.yaml
-              - !include ../network/adguard/graph_adsblocked.yaml
-              - !include ../network/adguard/graph_adsblockedpct.yaml
-              - !include ../network/adguard/graph_procspeed.yaml
-
-          - type: vertical-stack
-            cards:
-              - !include ../network/snippets/internetuptime.yaml
-              - !include ../network/snippets/speedtest.yaml
-              - !include ../network/snippets/graph_week.yaml
-              - !include ../network/snippets/graph_year.yaml
+          - !include ../home/weather.yaml
+          - !include ../me/cakeday.yaml
+          - !include ../home/home.yaml
+          - !include ../home/solar.yaml
+          - !include ../home/untappd.yaml
+          - !include ../home/tamworth.yaml
+          - !include ../home/music.yaml
+          - !include ../home/sport.yaml
+          - !include ../home/media.yaml
+          - !include ../home/flighttracker.yaml
+          - !include ../home/network.yaml
+          # - !include ../home/news.yaml
       "(max-width: 1370px)":
         type: "custom:layout-card"
         layout_type: custom:masonry-layout
