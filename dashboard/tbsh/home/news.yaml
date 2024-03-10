@@ -77,7 +77,8 @@ cards:
                           "tap_action": "none",
                           "card_mod": {
                             "style": {
-                              ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: var(--background-color);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background-color: var(--background-color);\n}\n"
+                              ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: var(--background-color);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background-color: var(--background-color);\n}\n",
+                              "mushroom-state-info$": ".container {\n  overflow: hidden !important;\n}\n.primary {\n  animation: marquee 5s linear infinite;\n  overflow: visible !important;\n } \n@keyframes marquee {\n  from {\n    transform: translateX(0%);\n  }\n  to {\n    transform: translateX(-100%);\n  }\n}      \n"
                             }
                           }
                         }

@@ -123,30 +123,66 @@ cards:
           padding: 8px;
           width: auto;
         }
-  - type: custom:mushroom-entity-card
+  - type: custom:mushroom-template-card
     entity: sensor.time
+    primary: '{{states(entity)}}'
+    secondary: TMW
     fill_container: true
     layout: vertical
-    name: TMW
-    secondary_info: name
-    primary_info: state
-    icon_type: none
-  - type: custom:mushroom-entity-card
+    icon: ''
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            --card-primary-font-size: 14px;
+            --card-primary-font-weight: 800;
+          }
+  - type: custom:mushroom-template-card
     entity: sensor.time_london
+    primary: '{{states(entity)}}'
+    secondary: LDN
     fill_container: true
     layout: vertical
-    name: LDN
-    secondary_info: name
-    primary_info: state
-    icon_type: none
-  - type: custom:mushroom-entity-card
+    icon: ''
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            --card-primary-font-size: 14px;
+            --card-primary-font-weight: 800;
+          }
+  - type: custom:mushroom-template-card
     entity: sensor.time_new_york
+    primary: '{{states(entity)}}'
+    secondary: NYC
     fill_container: true
     layout: vertical
-    name: NYC
-    secondary_info: name
-    primary_info: state
-    icon_type: none
+    icon: ''
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            --card-primary-font-size: 14px;
+            --card-primary-font-weight: 800;
+          }
 view_layout:
   grid-area: sidebar
   show:

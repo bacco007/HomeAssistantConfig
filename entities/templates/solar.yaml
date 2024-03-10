@@ -1,0 +1,20 @@
+---
+sensor:
+  - name: sungrow_sg5kd_solar_consumed
+    unique_id: sungrow_sg5kd_solar_consumed
+    state_class: "total"
+    device_class: energy
+    unit_of_measurement: "kWh"
+    icon: mdi:solar-power
+    state: >-
+      {%- set solar_prod = (states('sensor.sungrow_sg5kd_daily_generation')|float(0)) %}
+      {%- set energy_sold = states('sensor.sungrow_sg5kd_daily_export_to_grid')|float(0) %}
+      {%- set solar_consumed = (solar_prod - energy_sold) | float(0) %}
+
+      {%- if solar_consumed <= 0 %}
+        {{ 0 }}
+      {%- else %}
+        {{ solar_consumed | round(2) }}
+      {%- endif %}
+    attributes:
+      category: solar

@@ -87,196 +87,162 @@ cards:
                       ha-card {
                         background-color: var(--background-color);
                       }
-          - type: custom:auto-entities
-            card_param: cards
-            filter:
-              template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%} {% for
-                s in state_attr('sensor.frontpage_plex_unwatched_tv','data')[:5] -%}
-                  {{
-                    {
-                    "type": "custom:mushroom-template-card",
-                    "entity": "sensor.frontpage_plex_unwatched_tv",
-                    "primary": "Plex (New, Unwatched TV)",
-                    "secondary": s.title + " - " + s.episode + " (" + s.number + ")\nAdded " + custom_relative_time(s.airdate, values='day'),
-                    "multiline_secondary": true,
-                    "badge_icon": "none",
-                    "badge_color": "none",
-                    "icon": "mdi:plex",
-                    "tap_action": "none",
-                    "hold_action": "none",
-                    "fill_container": true,
-                    "layout": "horizontal",
-                    "card_mod": {
-                        "style": {
-                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
-                        }
-                    }
-                    }
-                  }},
-                {%- endfor %}
-            show_empty: false
-            card:
-              type: custom:swipe-card
-              card_mod:
-                style: |
-                  ha-card {
-                    margin-bottom: 10px;
+          - type: custom:mushroom-template-card
+            entity: sensor.frontpage_plex_unwatched_tv
+            primary: Plex (New, Unwatched TV)
+            secondary: >
+              {% from 'easy_time.jinja' import custom_relative_time -%}
+
+              {{ state_attr(entity,'data')[1].title }} - {{
+              state_attr(entity,'data')[1].episode }} ({{
+              state_attr(entity,'data')[1].number }})
+
+              Added {{ custom_relative_time(state_attr(entity,'data')[1].airdate,
+              values='day') }}
+            multiline_secondary: true
+            badge_icon: none
+            badge_color: none
+            icon: mdi:plex
+            tap_action: none
+            hold_action: none
+            fill_container: true
+            layout: horizontal
+            card_mod:
+              style:
+                .: |
+                  ha-card:before {
+                    content: '';
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    right: 5px;
+                    background: url( {{ state_attr('sensor.frontpage_plex_unwatched_tv','data')[1].poster }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+                    background-repeat: no-repeat;
+                    background-size: 40%, cover;
+                    background-position: right;
+                    background-blend-mode: overlay;
+                    filter: opacity(0.6);
                   }
-              parameters:
-                direction: vertical
-                autoHeight: true
-                height: 80
-                effect: cube
-                autoplay:
-                  delay: 2000
-                cubeEffect:
-                  - slideShadows: false
-          - type: custom:auto-entities
-            card_param: cards
-            filter:
-              template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%}
-                {% for s in state_attr('sensor.frontpage_plex_unwatched_movies','data')[:5] -%}
-                  {{
-                    {
-                    "type": "custom:mushroom-template-card",
-                    "entity": "sensor.frontpage_plex_unwatched_movies",
-                    "primary": "Plex (New, Unwatched Movies)",
-                    "secondary": s.title + "\nAdded " + custom_relative_time(s.airdate, values='day'),
-                    "multiline_secondary": true,
-                    "badge_icon": "none",
-                    "badge_color": "none",
-                    "icon": "mdi:plex",
-                    "tap_action": {
-                        "action": "none"
-                    },
-                    "hold_action": {
-                        "action": "none"
-                    },
-                    "double_tap_action": {
-                        "action": "none"
-                    },
-                    "fill_container": true,
-                    "layout": "horizontal",
-                    "card_mod": {
-                        "style": {
-                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
-                        }
-                    }
-                    }
-                  }},
-                {%- endfor %}
-            show_empty: false
-            card:
-              type: custom:swipe-card
-              parameters:
-                direction: vertical
-                autoHeight: true
-                height: 80
-                effect: cube
-                autoplay:
-                  delay: 2000
-                cubeEffect:
-                  - slideShadows: false
-          - type: custom:auto-entities
-            card_param: cards
-            filter:
-              template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%}
-                {% for s in state_attr('sensor.frontpage_sonarr_upcoming','data')[:5] -%}
-                  {% if s.poster is defined -%}
-                    {% set image = s.poster -%}
-                  {% elif s.fanart is defined -%}
-                    {% set image = s.fanart -%}
-                  {% else -%}
-                    {% set image = 'null' -%}
-                  {% endif -%}
-                  {{
-                    {
-                    "type": "custom:mushroom-template-card",
-                    "entity": "sensor.frontpage_sonarr_upcoming",
-                    "primary": "Sonarr (Upcoming TV)",
-                    "secondary": s.title + " - " + s.episode + " (" + s.number + ")\nAiring " + custom_relative_time(s.airdate, values='day, hour'),
-                    "multiline_secondary": true,
-                    "badge_icon": "none",
-                    "badge_color": "none",
-                    "icon": "mdi:television",
-                    "tap_action": {
-                        "action": "none"
-                    },
-                    "hold_action": {
-                        "action": "none"
-                    },
-                    "double_tap_action": {
-                        "action": "none"
-                    },
-                    "fill_container": true,
-                    "layout": "horizontal",
-                    "card_mod": {
-                        "style": {
-                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
-                        }
-                    }
-                    }
-                  }},
-                {%- endfor %}
-            show_empty: false
-            card:
-              type: custom:swipe-card
-              parameters:
-                direction: vertical
-                autoHeight: true
-                height: 80
-                effect: cube
-                autoplay:
-                  delay: 2000
-                cubeEffect:
-                  - slideShadows: false
-          - type: custom:auto-entities
-            card_param: cards
-            filter:
-              template: >-
-                {% from 'easy_time.jinja' import custom_relative_time -%} {% for
-                s in state_attr('sensor.frontpage_radarr_upcoming','data')[:5] -%}
-                  {{
-                    {
-                    "type": "custom:mushroom-template-card",
-                    "entity": "sensor.frontpage_radarr_upcoming",
-                    "primary": "Radarr (Upcoming Movies)",
-                    "secondary": s.title + "\nReleased " + custom_relative_time(s.airdate, values='day'),
-                    "multiline_secondary": true,
-                    "badge_icon": "none",
-                    "badge_color": "none",
-                    "icon": "mdi:filmstrip",
-                    "tap_action": {
-                        "action": "none"
-                    },
-                    "hold_action": {
-                        "action": "none"
-                    },
-                    "double_tap_action": {
-                        "action": "none"
-                    },
-                    "fill_container": true,
-                    "layout": "horizontal",
-                    "card_mod": {
-                        "style": {
-                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url(  '" + s.poster + "' ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: 40%, cover;\n  background-position: right;\n  background-blend-mode: overlay;\n  filter: opacity(0.6);\n}\n\nha-card {\n  background-color: var(--background-color);\n}\n"
-                        }
-                    }
-                    }
-                  }},
-                {%- endfor %}
-            show_empty: false
-            card:
-              type: custom:swipe-card
-              parameters:
-                direction: vertical
-                autoHeight: true
-                height: 80
-                effect: cube
-                autoplay:
-                  delay: 2000
-                cubeEffect:
-                  - slideShadows: false
+
+                  ha-card {
+                    background-color: var(--background-color);
+                  }
+
+          - type: custom:mushroom-template-card
+            entity: sensor.frontpage_plex_unwatched_movies
+            primary: Plex (New, Unwatched Movies)
+            secondary: >
+              {% from 'easy_time.jinja' import custom_relative_time -%}
+
+              {{ state_attr(entity,'data')[1].title }}
+
+              Added {{ custom_relative_time(state_attr(entity,'data')[1].airdate,
+              values='day') }}
+            multiline_secondary: true
+            badge_icon: none
+            badge_color: none
+            icon: mdi:plex
+            tap_action: none
+            hold_action: none
+            fill_container: true
+            layout: horizontal
+            card_mod:
+              style:
+                .: |
+                  ha-card:before {
+                    content: '';
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    right: 5px;
+                    background: url( {{ state_attr('sensor.frontpage_plex_unwatched_movies','data')[1].poster }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+                    background-repeat: no-repeat;
+                    background-size: 40%, cover;
+                    background-position: right;
+                    background-blend-mode: overlay;
+                    filter: opacity(0.6);
+                  }
+
+                  ha-card {
+                    background-color: var(--background-color);
+                  }
+
+          - type: custom:mushroom-template-card
+            entity: sensor.frontpage_sonarr_upcoming
+            primary: Sonarr (Upcoming TV)
+            secondary: >
+              {% from 'easy_time.jinja' import custom_relative_time -%}
+
+              {{ state_attr(entity,'data')[1].title }} - {{
+              state_attr(entity,'data')[1].episode }} ({{
+              state_attr(entity,'data')[1].number }})
+
+              Airing {{ custom_relative_time(state_attr(entity,'data')[1].airdate,
+              values='day, hour') }}
+            multiline_secondary: true
+            badge_icon: none
+            badge_color: none
+            icon: mdi:television
+            tap_action: none
+            hold_action: none
+            fill_container: true
+            layout: horizontal
+            card_mod:
+              style:
+                .: |
+                  ha-card:before {
+                    content: '';
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    right: 5px;
+                    background: url( {{ state_attr('sensor.frontpage_sonarr_upcoming','data')[1].poster }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+                    background-repeat: no-repeat;
+                    background-size: 40%, cover;
+                    background-position: right;
+                    background-blend-mode: overlay;
+                    filter: opacity(0.6);
+                  }
+
+                  ha-card {
+                    background-color: var(--background-color);
+                  }
+
+          - type: custom:mushroom-template-card
+            entity: sensor.frontpage_radarr_upcoming
+            primary: Radarr (Upcoming Movies)
+            secondary: >
+              {% from 'easy_time.jinja' import custom_relative_time -%}
+
+              {{ state_attr(entity,'data')[1].title }}
+
+              Released {{ custom_relative_time(state_attr(entity,'data')[1].airdate,
+              values='day') }}
+            multiline_secondary: true
+            badge_icon: none
+            badge_color: none
+            icon: mdi:filmstrip
+            tap_action: none
+            hold_action: none
+            fill_container: true
+            layout: horizontal
+            card_mod:
+              style:
+                .: |
+                  ha-card:before {
+                    content: '';
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    right: 5px;
+                    background: url( {{ state_attr('sensor.frontpage_radarr_upcoming','data')[1].poster }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+                    background-repeat: no-repeat;
+                    background-size: 40%, cover;
+                    background-position: right;
+                    background-blend-mode: overlay;
+                    filter: opacity(0.6);
+                  }
+
+                  ha-card {
+                    background-color: var(--background-color);
+                  }

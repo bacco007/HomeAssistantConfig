@@ -87,5 +87,5 @@ cards:
                   - title: Last.FM Listen Count
                   - line_width: 2
                   - hours_to_show: 168
-                  - points_per_hour: 4
+                  - points_per_hour: 1
                   - icon: fab:lastfm
