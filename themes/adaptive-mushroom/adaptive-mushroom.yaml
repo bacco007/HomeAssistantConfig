@@ -1,0 +1,209 @@
+# Originally a theme from Mushroom, modified by me to change dashboard and cards appearance and font.
+# Also some custom variables are defined here to help with colors in light/dark mode.
+
+Adaptive Mushroom:
+  ## HA variables
+  #ha-card-box-shadow: inset 0px 0px 0px 1px var(--border-color) # borders, no shadow
+  ha-card-box-shadow: "0px 2px 4px 0px rgba(0,0,0,0.16)" # shadow, no borders
+  ha-card-border-radius: 14px
+  ha-card-border-width: 0px
+  ha-dialog-border-radius: 14px
+
+  # app header
+  app-header-text-color: var(--primary-text-color)
+  app-header-background-color: var(--primary-background-color) # see light/dark mode below
+
+  # font
+  primary-font-family: "Roboto"
+  secondary-font-family: SF Pro, Roboto, system-ui
+  #paper-font-common-base_-_font-family: "var(--primary-font-family)"
+  #paper-font-common-code_-_font-family: "var(--primary-font-family)"
+  paper-font-body1_-_font-family: "var(--secondary-font-family)"
+  #paper-font-subhead_-_font-family: "var(--primary-font-family)"
+  #paper-font-headline_-_font-family: "var(--primary-font-family)"
+  #paper-font-caption_-_font-family: "var(--secondary-font-family)"
+  #paper-font-title_-_font-family: "var(--secondary-font-family)"
+  #ha-card-header-font-family: "var(--secondary-font-family)"
+
+  ## Browser Mod variables
+  popup-border-radius: 24px
+  popup-background-color: var(--primary-background-color)
+  popup-padding-x: 8px
+  popup-padding-y: 8px
+
+  ## Mushroom variables
+  # layout
+  mush-spacing: 12px
+
+  # titles & subtitles
+  mush-title-padding: 20px 12px 8px
+  mush-title-spacing: 6px
+  mush-title-font-size: 22px
+  mush-title-font-weight: bolder
+  mush-title-line-height: 1.1
+  mush-title-letter-spacing: 0.288px
+  mush-subtitle-font-size: 16px
+  mush-subtitle-font-weight: normal
+  mush-subtitle-line-height: 1
+  mush-subtitle-letter-spacing: 0.15px
+
+  # cards
+  mush-card-primary-font-size: 14px
+  mush-card-secondary-font-size: 12px
+  mush-card-primary-font-weight: bold
+  mush-card-secondary-font-weight: bold
+  mush-card-primary-line-height: 1.5
+  mush-card-secondary-line-height: 1.5
+  mush-card-primary-color: var(--primary-text-color)
+  mush-card-secondary-color: var(--secondary-text-color)
+  mush-card-primary-letter-spacing: 0.1px
+  mush-card-secondary-letter-spacing: 0.1px
+
+  # chips
+  mush-chip-spacing: 8px
+  mush-chip-padding: 0 0.25em
+  mush-chip-height: 38px
+  mush-chip-border-radius: var(--mush-control-border-radius)
+  mush-chip-font-size: 0.3em
+  mush-chip-font-weight: bold
+  mush-chip-icon-size: 0.5em
+  mush-chip-avatar-padding: 0.1em
+  mush-chip-avatar-border-radius: 50%
+  mush-chip-box-shadow: var(--ha-card-box-shadow)
+  mush-chip-background: var(--ha-card-background)
+
+  # buttons & slider
+  mush-control-border-radius: 14px
+  mush-control-height: 42px
+  mush-control-button-ratio: 1.2
+  mush-control-icon-size: 0.5em
+  mush-slider-threshold: 5
+
+  # icons & badges
+  mush-icon-border-radius: 30%
+  mush-icon-size: 42px
+  mush-icon-symbol-size: 0.5em
+  mush-badge-size: 16px
+  mush-badge-icon-size: 0.75em
+  mush-badge-border-radius: 50%
+
+  # colors
+  mush-rgb-red: 244, 67, 54
+  mush-rgb-pink: 233, 30, 99
+  mush-rgb-purple: 156, 39, 176
+  mush-rgb-deep-purple: 103, 58, 183
+  mush-rgb-indigo: 63, 81, 181
+  mush-rgb-blue: 33, 150, 243
+  mush-rgb-light-blue: 3, 169, 244
+  mush-rgb-cyan: 0, 188, 212
+  mush-rgb-teal: 0, 150, 136
+  mush-rgb-green: 76, 175, 80
+  mush-rgb-light-green: 139, 195, 74
+  mush-rgb-lime: 205, 220, 57
+  mush-rgb-yellow: 255, 235, 59
+  mush-rgb-amber: 255, 193, 7
+  mush-rgb-orange: 255, 152, 0
+  mush-rgb-deep-orange: 255, 87, 34
+  mush-rgb-brown: 121, 85, 72
+  mush-rgb-grey: 158, 158, 158
+  mush-rgb-dark-grey: 96, 96, 96
+  mush-rgb-blue-grey: 96, 125, 139
+  mush-rgb-black: 0, 0, 0
+  mush-rgb-white: 255, 255, 255
+
+  mush-rgb-info: var(--mush-rgb-blue)
+  mush-rgb-success: var(--mush-rgb-green)
+  mush-rgb-warning: var(--mush-rgb-orange)
+  mush-rgb-danger: var(--mush-rgb-red)
+
+  mush-rgb-state-fan: var(--mush-rgb-green)
+  mush-rgb-state-light: var(--mush-rgb-orange)
+  mush-rgb-state-entity: var(--mush-rgb-teal)
+  mush-rgb-state-switch: var(--mush-rgb-blue)
+  mush-rgb-state-media-player: var(--mush-rgb-red)
+
+  mush-rgb-state-alarm-disarmed: var(--mush-rgb-info)
+  mush-rgb-state-alarm-armed: var(--mush-rgb-success)
+  mush-rgb-state-alarm-triggered: var(--mush-rgb-danger)
+
+  mush-rgb-state-person-home: var(--mush-rgb-success)
+  mush-rgb-state-person-not-home: var(--mush-rgb-danger)
+  mush-rgb-state-person-zone: var(--mush-rgb-info)
+  mush-rgb-state-person-unknown: var(--mush-rgb-grey)
+
+  mush-rgb-state-cover-open: var(--mush-rgb-indigo)
+  mush-rgb-state-cover-closed: var(--mush-rgb-disabled)
+
+  mush-rgb-state-climate-auto: var(--mush-rgb-green);
+  mush-rgb-state-climate-cool: var(--mush-rgb-blue);
+  mush-rgb-state-climate-dry: var(--mush-rgb-orange);
+  mush-rgb-state-climate-fan-only: var(--mush-rgb-blue-grey);
+  mush-rgb-state-climate-heat: var(--mush-rgb-deep-orange);
+  mush-rgb-state-climate-heat-cool: var(--mush-rgb-green);
+  mush-rgb-state-climate-idle: var(--mush-rgb-grey);
+  mush-rgb-state-climate-off: var(--mush-rgb-disabled);
+
+  ## Custom variables
+  # title row height in desktop layout
+  grid-title-row-height: 5em
+
+  # google weather frog background colors
+  frog-rgb-sunny: 24, 159, 215
+  frog-rgb-mostly-sunny: 68, 176, 214
+  frog-rgb-partly-cloudy-day: 100, 165, 208
+  frog-rgb-mostly-cloudy-day: 114, 164, 209
+  frog-rgb-clear: 124, 76, 242
+  frog-rgb-mostly-clear: 133, 109, 229
+  frog-rgb-partly-cloudy-night: 137, 135, 218
+  frog-rgb-mostly-cloudy-night: 144, 152, 213
+  frog-rgb-cloudy: 145, 169, 206
+  frog-rgb-drizzle: 126, 172, 216
+  frog-rgb-rainy: 40, 130, 221
+  frog-rgb-snowy: 109, 144, 152
+  frog-rgb-lightning: 162, 84, 130
+  frog-rgb-fog: 184, 168, 168
+  frog-rgb-hail: 103, 143, 164
+
+  ## You must keep this to support light/dark theme
+  modes:
+    light:
+      # HA variables: background and sidebar
+      card-background-color: "#FAFAFA"
+      primary-background-color: "#EFEFEF"
+      border-color: "#E8E8E8"
+
+      # Mushroom variables
+      mush-rgb-disabled: 189, 189, 189
+      mush-rgb-snow: rgba(var(--mush-rgb-grey), 0.1)
+
+      # Custom variables
+      cstm-rgb-on-primary-text: 255, 255, 255
+      cstm-rgb-on-secondary-text: 220, 220, 220
+      cstm-rgb-on: 30, 30, 30
+      cstm-rgb-on-secondary: 51, 51, 51
+      cstm-rgb-plug-on-icon: 255, 255, 255
+      cstm-rgb-plug-on-background: rgba(var(--mush-rgb-blue), 0.7)
+      cstm-rgb-automation-on-icon: var(--mush-rgb-white)
+      cstm-rgb-automation-on-background: rgba(var(--mush-rgb-black), 0.7)
+      cstm-rgb-bottom-nav: 255, 255, 255
+
+    dark:
+      # HA variables: background and sidebar
+      primary-background-color: "#121212"
+      card-background-color: "#1D1D1D"
+      border-color: "#2C2633"
+
+      # Mushroom variables
+      mush-rgb-disabled: 111, 111, 111
+      mush-rgb-snow: rgba(var(--mush-rgb-white), 0.7)
+
+      # Custom variables
+      cstm-rgb-on-primary-text: 0, 0, 0
+      cstm-rgb-on-secondary-text: 51, 51, 51
+      cstm-rgb-on: 255, 255, 255
+      cstm-rgb-on-secondary: 221, 221, 221
+      cstm-rgb-plug-on-icon: 255, 255, 255
+      cstm-rgb-plug-on-background: rgba(var(--mush-rgb-blue), 0.8)
+      cstm-rgb-automation-on-icon: var(--mush-rgb-black)
+      cstm-rgb-automation-on-background: rgba(var(--mush-rgb-white), 0.8)
+      cstm-rgb-bottom-nav: 30, 30, 30
