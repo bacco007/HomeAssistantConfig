@@ -55,7 +55,7 @@ SERVICE_WEATHER_APP_SCHEMA = vol.All(
             vol.Optional("sensor"): cv.entity_id,
             vol.Optional("sun"): cv.entity_id,
             vol.Optional("moon"): cv.entity_id,
-            vol.Optional("data", default={}): dict
+            vol.Optional("icons", default={}): dict
         }
     ),
     extra=vol.ALLOW_EXTRA,
