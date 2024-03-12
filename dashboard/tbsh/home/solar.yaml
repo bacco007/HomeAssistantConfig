@@ -326,7 +326,7 @@ cards:
                       }
   - type: custom:plotly-graph
     entities:
-      - entity: sensor.sungrow_sg5kd_daily_import_from_grid
+      - entity: sensor.sungrow_sg5kd_daily_import
         texttemplate: "%{y:.2f}"
         textfont:
           family: Roboto
@@ -343,9 +343,9 @@ cards:
           - fn: |
               ({ys,xs,hass}) => ({
                 xs: [...xs, new Date().setHours(0,0,0)],
-                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_import_from_grid'].state],
+                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_import'].state],
               })
-      - entity: sensor.sungrow_sg5kd_daily_export_to_grid
+      - entity: sensor.sungrow_sg5kd_daily_export
         texttemplate: "%{y:.2f}"
         textfont:
           family: Roboto
@@ -363,11 +363,11 @@ cards:
           - fn: |
               ({ys,xs,hass}) => ({
                 xs: [...xs, new Date().setHours(0,0,0)],
-                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_export_to_grid'].state * (-1)],
+                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_export'].state * (-1)],
               })
       - entity: sensor.sungrow_sg5kd_daily_direct_energy_consumption
         texttemplate: "%{y:.2f}"
-        #textposition: outside
+        # textposition: outside
         textfont:
           family: Roboto
           size: 11
