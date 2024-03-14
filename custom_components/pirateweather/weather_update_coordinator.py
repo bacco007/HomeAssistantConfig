@@ -1,4 +1,5 @@
-"""Weather data coordinator for the OpenWeatherMap (OWM) service."""
+"""Weather data coordinator for the Pirate Weather service."""
+
 import logging
 
 import async_timeout
@@ -58,7 +59,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         """Poll weather data from PW."""
 
         forecastString = (
-            "https://api.pirateweather.net/forecast/"
+            "https://dev.pirateweather.net/forecast/"
             + self._api_key
             + "/"
             + str(self.latitude)
@@ -67,11 +68,13 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             + "?units="
             + self.requested_units
             + "&extend=hourly"
+            + "&tz=precise"
         )
 
-        async with aiohttp.ClientSession(raise_for_status=True) as session, session.get(
-            forecastString
-        ) as resp:
+        async with (
+            aiohttp.ClientSession(raise_for_status=True) as session,
+            session.get(forecastString) as resp,
+        ):
             resptext = await resp.text()
             jsonText = json.loads(resptext)
             headers = resp.headers

@@ -1,4 +1,5 @@
-"""Support for the Pirate Weather (PW) service."""
+"""Support for the Pirate Weather service."""
+
 from __future__ import annotations
 
 import logging
@@ -58,6 +59,7 @@ from .const import (
     PW_PLATFORMS,
     PW_PLATFORM,
     PW_PREVPLATFORM,
+    PW_ROUND,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -115,6 +117,9 @@ async def async_setup_platform(
     # Add source to config
     config_entry[PW_PLATFORM] = [PW_PLATFORMS[1]]
 
+    # Set as no rounding for compatability
+    config_entry[PW_ROUND] = "No"
+
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN, context={"source": SOURCE_IMPORT}, data=config_entry
@@ -135,6 +140,7 @@ def _map_daily_forecast(forecast) -> Forecast:
         "humidity": round(forecast.d.get("humidity") * 100, 2),
         "cloud_coverage": round(forecast.d.get("cloudCover") * 100, 0),
         "native_wind_speed": round(forecast.d.get("windSpeed"), 2),
+        "wind_gust_speed": round(forecast.d.get("windGust"), 2),
         "wind_bearing": round(forecast.d.get("windBearing"), 0),
     }
 
@@ -149,6 +155,7 @@ def _map_hourly_forecast(forecast) -> Forecast:
         "native_pressure": forecast.d.get("pressure"),
         "native_wind_speed": round(forecast.d.get("windSpeed"), 2),
         "wind_bearing": round(forecast.d.get("windBearing"), 0),
+        "wind_gust_speed": round(forecast.d.get("windGust"), 2),
         "humidity": round(forecast.d.get("humidity") * 100, 2),
         "native_precipitation": round(forecast.d.get("precipIntensity"), 2),
         "precipitation_probability": round(
@@ -172,8 +179,11 @@ async def async_setup_entry(
 
     unique_id = f"{config_entry.unique_id}"
 
+    # Round Output
+    outputRound = domain_data[PW_ROUND]
+
     pw_weather = PirateWeather(
-        name, unique_id, forecast_mode, weather_coordinator
+        name, unique_id, forecast_mode, weather_coordinator, outputRound
     )
 
     async_add_entities([pw_weather], False)
@@ -181,7 +191,7 @@ async def async_setup_entry(
 
 
 class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
-    """Implementation of an PirateWeather sensor."""
+    """Implementation of an Pirate Weather sensor."""
 
     _attr_attribution = ATTRIBUTION
     _attr_should_poll = False
@@ -198,6 +208,7 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         unique_id,
         forecast_mode: str,
         weather_coordinator: WeatherUpdateCoordinator,
+        outputRound: str,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(weather_coordinator)
@@ -217,6 +228,8 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         self._ds_hourly = self._weather_coordinator.data.hourly()
         self._ds_daily = self._weather_coordinator.data.daily()
 
+        self.outputRound = outputRound
+
     @property
     def unique_id(self):
         """Return a unique_id for this entity."""
@@ -233,7 +246,7 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
 
     @property
     def available(self):
-        """Return if weather data is available from PirateWeather."""
+        """Return if weather data is available from Pirate Weather."""
         return self._weather_coordinator.data is not None
 
     @property
@@ -254,11 +267,20 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         return round(temperature, 2)
 
     @property
+    def cloud_coverage(self):
+        """Return the cloud coverage."""
+        cloudCover = (
+            self._weather_coordinator.data.currently().d.get("cloudCover") * 100.0
+        )
+
+        return round(cloudCover, 2)
+
+    @property
     def humidity(self):
         """Return the humidity."""
         humidity = self._weather_coordinator.data.currently().d.get("humidity") * 100.0
 
-        return round(humidity, 0)
+        return round(humidity, 2)
 
     @property
     def native_wind_speed(self):
@@ -266,6 +288,13 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         windspeed = self._weather_coordinator.data.currently().d.get("windSpeed")
 
         return round(windspeed, 2)
+
+    @property
+    def wind_gust_speed(self):
+        """Return the wind gust speed."""
+        windGust = self._weather_coordinator.data.currently().d.get("windGust")
+
+        return round(windGust, 2)
 
     @property
     def wind_bearing(self):

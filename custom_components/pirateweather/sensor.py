@@ -1,4 +1,5 @@
-"""Support for PirateWeather (Dark Sky Compatable weather service."""
+"""Support for Pirate Weather (Dark Sky Compatable) weather service."""
+
 import logging
 
 from dataclasses import dataclass, field
@@ -50,6 +51,7 @@ from .const import (
     PW_PLATFORMS,
     PW_PLATFORM,
     PW_PREVPLATFORM,
+    PW_ROUND,
 )
 
 
@@ -65,7 +67,7 @@ CONF_LANGUAGE = "language"
 CONF_UNITS = "units"
 
 DEFAULT_LANGUAGE = "en"
-DEFAULT_NAME = "PirateWeather"
+DEFAULT_NAME = "Pirate Weather"
 
 DEPRECATED_SENSOR_TYPES = {
     "apparent_temperature_max",
@@ -133,6 +135,7 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
         ca_unit=UnitOfLength.KILOMETERS,
         uk_unit=UnitOfLength.KILOMETERS,
         uk2_unit=UnitOfLength.MILES,
+        suggested_display_precision=2,
         icon="mdi:weather-lightning",
         forecast_mode=["currently"],
     ),
@@ -144,6 +147,7 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
         ca_unit=DEGREE,
         uk_unit=DEGREE,
         uk2_unit=DEGREE,
+        suggested_display_precision=0,
         icon="mdi:weather-lightning",
         forecast_mode=["currently"],
     ),
@@ -452,8 +456,8 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
     "moon_phase": PirateWeatherSensorEntityDescription(
         key="moon_phase",
         name="Moon Phase",
-        icon="mdi:weather-night",
         suggested_display_precision=2,
+        icon="mdi:weather-night",
         forecast_mode=["daily"],
     ),
     "sunrise_time": PirateWeatherSensorEntityDescription(
@@ -637,6 +641,9 @@ async def async_setup_platform(
     # Define as a sensor platform
     config_entry[PW_PLATFORM] = [PW_PLATFORMS[0]]
 
+    # Set as no rounding for compatability
+    config_entry[PW_ROUND] = "No"
+
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN, context={"source": SOURCE_IMPORT}, data=config_entry
@@ -658,6 +665,9 @@ async def async_setup_entry(
     conditions = domain_data[CONF_MONITORED_CONDITIONS]
     forecast_days = domain_data[CONF_FORECAST]
     forecast_hours = domain_data[CONF_HOURLY_FORECAST]
+
+    # Round Output
+    outputRound = domain_data[PW_ROUND]
 
     sensors: list[PirateWeatherSensor] = []
 
@@ -685,6 +695,7 @@ async def async_setup_entry(
                     forecast_hour=None,
                     description=sensorDescription,
                     requestUnits=requestUnits,
+                    outputRound=outputRound,
                 )
             )
 
@@ -703,6 +714,7 @@ async def async_setup_entry(
                         forecast_hour=None,
                         description=sensorDescription,
                         requestUnits=requestUnits,
+                        outputRound=outputRound,
                     )
                 )
 
@@ -721,6 +733,7 @@ async def async_setup_entry(
                         forecast_hour=int(forecast_h),
                         description=sensorDescription,
                         requestUnits=requestUnits,
+                        outputRound=outputRound,
                     )
                 )
 
@@ -728,7 +741,7 @@ async def async_setup_entry(
 
 
 class PirateWeatherSensor(SensorEntity):
-    """Class for an PirateWeather sensor."""
+    """Class for an Pirate Weather sensor."""
 
     # _attr_should_poll = False
     _attr_attribution = ATTRIBUTION
@@ -744,6 +757,7 @@ class PirateWeatherSensor(SensorEntity):
         forecast_hour: int,
         description: PirateWeatherSensorEntityDescription,
         requestUnits: str,
+        outputRound: str,
     ) -> None:
         """Initialize the sensor."""
         self.client_name = name
@@ -767,6 +781,7 @@ class PirateWeatherSensor(SensorEntity):
         self.forecast_day = forecast_day
         self.forecast_hour = forecast_hour
         self.requestUnits = requestUnits
+        self.outputRound = outputRound
         self.type = condition
         self._icon = None
         self._alerts = None
@@ -784,7 +799,7 @@ class PirateWeatherSensor(SensorEntity):
 
     @property
     def available(self) -> bool:
-        """Return if weather data is available from PirateWeather."""
+        """Return if weather data is available from Pirate Weather."""
         return self._weather_coordinator.data is not None
 
     @property
@@ -926,10 +941,18 @@ class PirateWeatherSensor(SensorEntity):
         if "summary" in self.type:
             self._icon = getattr(data, "icon", "")
 
+        # If output rounding is requested, round to nearest integer
+        if self.outputRound == "Yes":
+            roundingVal = 0
+            roundingPrecip = 2
+        else:
+            roundingVal = 2
+            roundingPrecip = 4
+
         # Some state data needs to be rounded to whole values or converted to
         # percentages
         if self.type in ["precip_probability", "cloud_cover", "humidity"]:
-            state = state * 100
+            state = int(state * 100)
 
         # Logic to convert from SI to requsested units for compatability
         # Temps in F
@@ -943,7 +966,7 @@ class PirateWeatherSensor(SensorEntity):
                 "apparent_temperature_high",
                 "apparent_temperature_low",
             ]:
-                state = (state * 9 / 5) + 32
+                state = round(state * 9 / 5) + 32
 
         # Precipitation Accumilation (mm in SI) to inches
         if self.requestUnits in ["us"]:
@@ -982,8 +1005,43 @@ class PirateWeatherSensor(SensorEntity):
                 "wind_gust",
             ]:
                 state = state * 3.6
-                
-        return state
+
+        if self.type in [
+            "dew_point",
+            "temperature",
+            "apparent_temperature",
+            "temperature_low",
+            "apparent_temperature_low",
+            "temperature_min",
+            "apparent_temperature_min",
+            "temperature_high",
+            "apparent_temperature_high",
+            "temperature_max",
+            "apparent_temperature_max",
+            "pressure",
+            "ozone",
+            "uv_index",
+            "wind_speed",
+            "wind_gust",
+            "visibility",
+            "nearest_storm_distance",
+        ]:
+            if roundingVal == 0:
+                outState = int(round(state, roundingVal))
+            else:
+                outState = round(state, roundingVal)
+
+        elif self.type in [
+            "precip_accumulation",
+            "precip_intensity",
+            "precip_intensity_max",
+        ]:
+            outState = round(state, roundingPrecip)
+
+        else:
+            outState = state
+
+        return outState
 
     async def async_added_to_hass(self) -> None:
         """Connect to dispatcher listening for entity data notifications."""
