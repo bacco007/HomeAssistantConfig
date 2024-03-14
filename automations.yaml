@@ -186,3 +186,28 @@
     input:
       media_player: media_player.currently_playing
       awtrix_device: da38247c02359f48562a1b102b5d4ac4
+- id: '1710400217767'
+  alias: '[Watchguard] Sungather'
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ states(''sensor.sun_state_day'') == "Day" }}'
+  condition:
+  - condition: template
+    value_template: '{{ now() - states.sungrow_sg5kd_daily_generation.last_updated
+      > timedelta(minutes=5) }}'
+  action:
+  - service: hassio.addon_restart
+    data:
+      addon: 7b536ee6_sungather
+  - service: notify.alert
+    data:
+      title: Sungather Restarted
+      message: Solar data hasn't been updated in 5 minutes, Sungather has been restarted
+      data:
+        tag: watchguard_sungather
+        notification_id: watchguard_sungather
+        push:
+          badge: 1
+          sound: none
+  mode: single

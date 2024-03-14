@@ -50,9 +50,9 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.3.0 |
 | No. Integrations | 200 |
 | No. Custom Integrations | 82 |
-| No. Entities | 5216 |
-| No. Sensors | 3456 |
-| No. Automations | 138 |
+| No. Entities | 5186 |
+| No. Sensors | 3455 |
+| No. Automations | 139 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 339
-Buttons | 208
+Buttons | 207
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -85,21 +85,21 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 29
-Persistent notifications | 6
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3456
+Sensors | 3455
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 285
+Switches | 284
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 276
+Update | 278
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -749,7 +749,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -811,9 +811,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
-| [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.2] | 🔹 Add CSS styles to (almost) any lovelace card |
+| [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.2.2] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.3.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
@@ -848,7 +848,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.21.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.1.8] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.2.0] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
 | [Sidebar Card](https://github.com/DBuit/sidebar-card) |  [v0.1.9.6.1] |  |
 | [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.5.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
