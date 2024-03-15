@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 
 from homeassistant.components.media_source import Unresolvable
+import homeassistant.util.dt as dt_util
 
 """Support for AWTRIX service."""
 
@@ -256,26 +257,29 @@ class AwtrixTime:
 
             now = datetime.now()
             rising = (datetime.fromisoformat(next_rising)).replace(tzinfo=None)
+            rising_local = dt_util.as_local(datetime.fromisoformat(next_rising)).time()
+            rising_str = rising_local.strftime('%H:%M')
             delta = rising - now
             min = delta.total_seconds() / 60
             if min < 30:
                 icon = icons.get("sunrise")
                 payload = {
                     "icon": icon,
-                    "text":  rising.strftime('%H:%M'),
+                    "text":  rising_str,
                     "lifetime": 900,
                     "repeat": 1
                 }
 
-            setting = (datetime.fromisoformat(
-                next_setting)).replace(tzinfo=None)
+            setting = (datetime.fromisoformat(next_setting)).replace(tzinfo=None)
+            setting_local = dt_util.as_local(datetime.fromisoformat(next_setting)).time()
+            setting_str = setting_local.strftime('%H:%M')
             delta = setting - now
             min = delta.total_seconds() / 60
             if min < 30:
                 icon = icons.get("sunset")
                 payload = {
                     "icon": icon,
-                    "text":  setting.strftime('%H:%M'),
+                    "text": setting_str,
                     "lifetime": 900,
                     "repeat": 1
                 }
