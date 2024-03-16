@@ -38,12 +38,12 @@ cards:
               div.entity:nth-child(2) state-badge {
                 color: {% if is_state(config.entity, 'off') %} #43a047 {% else %} var(--secondary-text-color) {% endif %}
               }
-      - entity: sensor.cloudflare_tunnel_home_assistant_status
+      - entity: sensor.cloudflare_tunnel_home_assistant
         name: "[Tunnel] Home Assistant"
         icon: si:cloudflare
-      - entity: sensor.cloudflare_tunnel_homelab_status
+      - entity: sensor.cloudflare_tunnel_homelab
         name: "[Tunnel] Homelab"
         icon: si:cloudflare
-      - entity: sensor.cloudflare_tunnel_uptime_kuma_status
+      - entity: sensor.cloudflare_tunnel_uptime_kuma
         name: "[Tunnel] Uptime Kuma (Oracle Cloud)"
         icon: si:cloudflare

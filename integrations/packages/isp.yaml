@@ -32,19 +32,37 @@ sensor:
   - platform: template
     sensors:
       nbn_status_home:
-        friendly_name: "NBN Status"
-        value_template: >-
-          {% set alt_reason_code = states('sensor.nbn_location_home') %}
-          {% if alt_reason_code == 'NULL_NA' %}
-            No FTTP upgrade
-          {% elif alt_reason_code == 'FTTP_NA' %}
-            FTTP Upgrade coming soon
-          {% elif alt_reason_code == 'FTTP_SA' %}
-            FTTP Upgrade available
-          {% else %}
-            {% if alt_reason_code %}
-              {{ alt_reason_code }} was returned
-            {% else %}
-              Error
-            {% endif %}
-          {% endif %}
+        friendly_name: "NBN Status (Home)"
+        unique_id: nbn_status_home
+        value_template: >
+          {%- set tech_status = state_attr('sensor.nbn_location_home', 'addressDetail')['techChangeStatus'] %}
+          {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade',
+            'Planned': 'FTTP Planned',
+            'In Design': 'FTTP Upgrade in Design',
+            'Committed': 'FTTP Upgrade Committed',
+            'Build Finalised': 'FTTP Upgrade Build Finalized',
+            'Eligible To Order': 'FTTP Upgrade Eligible to Order',
+            'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
+            'New Tech Connected': 'New Technology Connected',
+            'Previous Tech Disconnected': 'Previous Technology Disconnected'
+          } %}
+          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
+          
+      nbn_status_work:
+        friendly_name: "NBN Status (Work)"
+        unique_id: nbn_status_work
+        value_template: >
+          {%- set tech_status = state_attr('sensor.nbn_location_dadwork', 'addressDetail')['techChangeStatus'] %}
+          {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade',
+            'Planned': 'FTTP Planned',
+            'In Design': 'FTTP Upgrade in Design',
+            'Committed': 'FTTP Upgrade Committed',
+            'Build Finalised': 'FTTP Upgrade Build Finalized',
+            'Eligible To Order': 'FTTP Upgrade Eligible to Order',
+            'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
+            'New Tech Connected': 'New Technology Connected',
+            'Previous Tech Disconnected': 'Previous Technology Disconnected'
+          } %}
+          {{ status_map[tech_status] if tech_status in status_map else tech_status }}

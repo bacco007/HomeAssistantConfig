@@ -173,6 +173,8 @@ recorder:
       - sensor.device_tracker_*
       - sensor.xplorer_*
       - sensor.bus_*
+      - sensor.storage_*
+      - sensor.tbpixeltablet_*
     event_types:
       - automation_triggered
       - call_service

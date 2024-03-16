@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.3.1 |
 | No. Integrations | 200 |
 | No. Custom Integrations | 82 |
-| No. Entities | 5216 |
-| No. Sensors | 3454 |
+| No. Entities | 5220 |
+| No. Sensors | 3455 |
 | No. Automations | 139 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 339
-Buttons | 206
+Buttons | 207
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 573
+Devices | 574
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -85,21 +85,21 @@ Lights | 14
 Locks | 4
 Media players | 19
 Numbers | 29
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3454
+Sensors | 3455
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 283
+Switches | 284
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 277
+Update | 278
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -753,7 +753,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.5.4] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
@@ -766,8 +766,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [v2.0.13] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.2] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.0] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.1] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: full rewrite in progress ("temp" branch) |[@AlexanderLanin](https://github.com/AlexanderLanin).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -801,7 +801,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.5] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
-<details><summary>59 Lovelace Plugins</summary>
+<details><summary>60 Lovelace Plugins</summary>
 
 | Name | Version | Description |
 | --- | --- | --- |
@@ -862,6 +862,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.15.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.4.4] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.0.2] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Windrose Card](https://github.com/aukedejong/lovelace-windrose-card) |  [v1.4.0] | Home Assistant Lovelace Windrose Card |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>2 Themes</summary>
@@ -885,7 +886,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
-| JupyterLab | 0.14.2 |  | a0d7b954 |
+| JupyterLab | 0.14.3 |  | a0d7b954 |
 | MariaDB | 2.6.1 |  | core |
 | Matter Server | 5.4.1 |  | core |
 | Node-RED | 17.0.9 |  | a0d7b954 |
