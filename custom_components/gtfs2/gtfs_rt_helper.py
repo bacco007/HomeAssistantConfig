@@ -25,6 +25,7 @@ from .const import (
     ATTR_DUE_AT,
     ATTR_DELAY,
     ATTR_NEXT_UP,
+    ATTR_NEXT_RT,
     ATTR_ICON,
     ATTR_UNIT_OF_MEASUREMENT,
     ATTR_DEVICE_CLASS,
@@ -82,6 +83,9 @@ def get_next_services(self):
     self.delay = "unknown"
     _LOGGER.debug("Configuration for RT route: %s, RT trip: %s, RT stop: %s, RT direction: %s", self._route, self._trip, self._stop, self._direction)
     next_services = self.data.get(self._trip, {}).get(self._direction, {}).get(self._stop, [])
+    # get next realtime departures based on route
+    self._rt_group = "route"
+    next_services_all = get_rt_route_trip_statuses(self).get(self._route, {}).get(self._direction, {}).get(self._stop, [])
     if not next_services:
         # GTFS RT feed may differ, try via route
         self._direction = '0'
@@ -91,6 +95,9 @@ def get_next_services(self):
     if next_services:
         _LOGGER.debug("Next services: %s", next_services[0])
         delay = next_services[0].delay
+    if next_services_all:
+        _LOGGER.debug("Next services all: %s", next_services_all)
+
 
     if self.hass.config.time_zone is None:
         _LOGGER.error("Timezone is not set in Home Assistant configuration, using UTC instead")
@@ -121,6 +128,7 @@ def get_next_services(self):
         ATTR_LATITUDE: "",
         ATTR_LONGITUDE: ""
     }
+    
     if len(next_services) > 0:
         attrs[ATTR_DUE_AT] = (
             next_services[0].arrival_time.strftime(TIME_STR_FORMAT)
@@ -145,7 +153,9 @@ def get_next_services(self):
             if len(next_services) > 0
             else ""
         )
-
+    if len(next_services_all) >0:
+        attrs[ATTR_NEXT_RT] = next_services_all
+    
     _LOGGER.debug("Next services attributes: %s", attrs)
     return attrs
     
@@ -184,7 +194,7 @@ def get_rt_route_statuses(self):
             else:
                 route_id = entity.trip_update.trip.route_id
             if route_id == self._route_id:
-                _LOGGER.debug("Route Statuses Entity: %s", entity)
+                #_LOGGER.debug("Route Statuses Entity: %s", entity)
                 
                 if route_id not in departure_times:
                     departure_times[route_id] = {}
@@ -263,7 +273,7 @@ def get_rt_trip_statuses(self):
             trip_id = entity.trip_update.trip.trip_id   
             
             if trip_id == self._trip_id:
-                _LOGGER.debug("Trip Statuses Entity: %s", entity)
+                #_LOGGER.debug("Trip Statuses Entity: %s", entity)
 
                 if trip_id not in departure_times:
                     departure_times[trip_id] = {}
@@ -311,6 +321,83 @@ def get_rt_trip_statuses(self):
 
     self.info = departure_times
     _LOGGER.debug("Departure times Trip: %s", departure_times)
+    return departure_times 
+
+def get_rt_route_trip_statuses(self):
+    ''' Get next rt departure for route (multiple) or trip (single) '''
+
+    departure_times = {}
+
+    feed_entities = get_gtfs_feed_entities(
+        url=self._trip_update_url, headers=self._headers, label="trip data"
+    )
+    self._feed_entities = feed_entities
+    _LOGGER.debug("Departure times searching for all route: %s", self._route_id)
+    for entity in feed_entities:
+        if entity.HasField("trip_update"):
+            
+            # If delimiter specified split the route ID in the gtfs rt feed
+            if self._route_delimiter is not None:
+                route_id_split = entity.trip_update.trip.route_id.split(
+                    self._route_delimiter
+                )
+                if route_id_split[0] == self._route_delimiter:
+                    route_id = entity.trip_update.trip.route_id
+                else:
+                    route_id = route_id_split[0]
+            else:
+                route_id = entity.trip_update.trip.route_id
+            if entity.trip_update.trip.direction_id is not None:
+                    direction_id = str(entity.trip_update.trip.direction_id)
+            else:
+                direction_id = DEFAULT_DIRECTION 
+
+            trip_id = entity.trip_update.trip.trip_id   
+                
+            if ((self._rt_group == "route" and route_id == self._route_id and direction_id == self._direction) or    
+                    (self._rt_group == "trip" and trip_id == self._trip_id)):
+                
+                if route_id not in departure_times:
+                    departure_times[route_id] = {}
+
+                if direction_id not in departure_times[route_id]:
+                    departure_times[route_id][direction_id] = {}
+
+                for stop in entity.trip_update.stop_time_update:
+                    stop_id = stop.stop_id
+
+                    # Use stop arrival time;
+                    # fall back on departure time if not available
+                    if stop_id == self._stop_id:
+
+                        if not departure_times[route_id][direction_id].get(
+                            stop_id
+                        ):
+                            departure_times[route_id][direction_id][stop_id] = []                        
+                        if stop.arrival.time == 0:
+                            stop_time = stop.departure.time
+                        else:
+                            stop_time = stop.arrival.time
+                            
+                        delay = 'unknown'
+                        try:
+                            delay = stop.arrival.delay
+                        except:
+                            delay = 'unknown'
+                        # Ignore arrival times in the past
+                        if due_in_minutes(datetime.fromtimestamp(stop_time)) >= 0:
+                            departure_times[route_id][direction_id][
+                                stop_id
+                            ].append(dt_util.as_utc(datetime.fromtimestamp(stop_time)))
+
+    # Sort by arrival time
+    for route in departure_times:
+        for direction in departure_times[route]:
+            for stop in departure_times[route][direction]:
+                departure_times[route][direction][stop].sort()
+
+    self.info = departure_times
+    _LOGGER.debug("Departure times Route Trip: %s", departure_times)
     return departure_times    
 
 def get_rt_vehicle_positions(self):

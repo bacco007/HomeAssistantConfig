@@ -9,6 +9,7 @@ from decimal import Decimal
 from typing import Any
 
 from croniter import croniter
+from dateutil import tz
 from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
                                              SensorStateClass)
 from homeassistant.config_entries import ConfigEntry
@@ -49,9 +50,7 @@ async def async_setup_entry(
     for sensor in config_entry.options[CONF_SENSOR]:
         unique_id = sensor.get(CONF_UNIQUE_ID)
         sensor_name = f"{config_name}_{sensor[CONF_SENSOR_NAME]}"
-        reset_pattern = (
-            sensor.get(CONF_CRON) if sensor.get(CONF_CRON) not in ["noreset", "forever", "none"] else None
-        )
+        reset_pattern = sensor.get(CONF_CRON)
         state_class = sensor.get(CONF_STATE_CLASS)
         device_class = sensor.get(CONF_DEVICE_CLASS)
         uom = sensor.get(CONF_UNIT_OF_MEASUREMENT)
@@ -326,6 +325,8 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
             ATTR_LAST_RESET: self._last_reset.isoformat(timespec="seconds") if self._last_reset else None,
             ATTR_NEXT_RESET: self._next_reset.isoformat(timespec="seconds") if self._next_reset else None,
         }
+        if self.meter.meter_type == MeterType.SOURCE:
+            attributes["source_entity"] = self._coordinator.source_entity
         return attributes
 
     @callback
@@ -347,8 +348,12 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
             self.reset()
             return
         elif not next_reset:
-            if self._reset_pattern:
-                next_reset = croniter(self._reset_pattern, tznow).get_next(datetime)
+            if self._reset_pattern not in [None, "noreset", "forever", "none", "session"]:
+                # we have a known issue with croniter that does not correctly determine the end of the month/week reset when DST is involved
+                # https://github.com/kiorky/croniter/issues/1
+                next_reset = dt_util.as_local(croniter(self._reset_pattern, tznow.replace(tzinfo=None)).get_next(datetime))
+                if not tz.datetime_exists(next_reset):
+                    next_reset = dt_util.as_local(croniter(self._reset_pattern, next_reset.replace(tzinfo=None)).get_next(datetime))
             else:
                 self._next_reset = None
                 return
@@ -403,6 +408,9 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
             self.meter.start()
         if old_state == SensorState.MEASURING:
             self.meter.stop()
+            self._async_write_ha_state()
+            if self._reset_pattern == "session":
+                self.reset()
 
     @property
     def extra_restore_state_data(self) -> MeasureItSensorStoredData:

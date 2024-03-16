@@ -75,6 +75,8 @@ recorder:
       - sensor.weatherman_data
       - sensor.flighttracker_adsb_aircraft_list
       - sensor.adsb_planefinder_stats
+      - sensor.network_scanner
+      - sensor.hass_main_config
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*

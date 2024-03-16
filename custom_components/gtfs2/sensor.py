@@ -17,6 +17,7 @@ from .const import (
     ATTR_BICYCLE,
     ATTR_DAY,
     ATTR_DUE_IN,
+    ATTR_NEXT_RT,
     ATTR_DELAY,
     ATTR_DROP_OFF_DESTINATION,
     ATTR_DROP_OFF_ORIGIN,
@@ -423,7 +424,8 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
             # Add next departure realtime to the right level, only if populated
             if "gtfs_rt_updated_at" in self._departure_rt:
                 self._attributes["gtfs_rt_updated_at"] = self._departure_rt[ATTR_RT_UPDATED_AT]
-                self._attributes["next_departure_realtime"] = self._departure_rt[ATTR_DUE_IN]
+                self._attributes["next_departure_realtime"] = self._departure_rt[ATTR_NEXT_RT][0]
+                self._attributes["next_departures_realtime"] = self._departure_rt[ATTR_NEXT_RT]
                 self._attributes["delay"] = self._departure_rt[ATTR_DELAY]
                 self._attributes["latitude"] = self._departure_rt[ATTR_LATITUDE]
                 self._attributes["longitude"] = self._departure_rt[ATTR_LONGITUDE]
