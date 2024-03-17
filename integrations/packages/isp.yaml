@@ -48,7 +48,7 @@ sensor:
             'Previous Tech Disconnected': 'Previous Technology Disconnected'
           } %}
           {{ status_map[tech_status] if tech_status in status_map else tech_status }}
-          
+
       nbn_status_work:
         friendly_name: "NBN Status (Work)"
         unique_id: nbn_status_work
