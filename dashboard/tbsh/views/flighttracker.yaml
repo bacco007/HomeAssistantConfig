@@ -58,6 +58,7 @@ cards:
               - !include ../flighttracker/trackedaircraft.yaml
               - !include ../flighttracker/flightaware.yaml
               - !include ../flighttracker/flightradar24.yaml
+              - !include ../flighttracker/adsblol.yaml
               - !include ../flighttracker/flights_tracked.yaml
               - !include ../flighttracker/distance.yaml
           "(max-width: 1370px)":

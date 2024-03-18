@@ -177,6 +177,7 @@ recorder:
       - sensor.bus_*
       - sensor.storage_*
       - sensor.tbpixeltablet_*
+      - sensor.*in_radius_zone_home
     event_types:
       - automation_triggered
       - call_service

@@ -55,6 +55,7 @@ cards:
           - !include ../me/cakeday.yaml
           - !include ../home/home.yaml
           - !include ../home/solar.yaml
+          - !include ../home/sun_moon.yaml
           - !include ../home/untappd.yaml
           - !include ../home/tamworth.yaml
           - !include ../home/music.yaml

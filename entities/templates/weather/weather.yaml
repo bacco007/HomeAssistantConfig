@@ -68,6 +68,7 @@ sensor:
     state: >
       {%- from 'temperature_level.jinja' import temperature_level %}
       {{ temperature_level(states('sensor.weather_temperature') | round(1)) | trim }}
+    availability: "{{is_number(states('sensor.weather_temperature'))}}"
     attributes:
       category: weather
 
@@ -77,6 +78,7 @@ sensor:
     state: >
       {%- from 'dewpoint_level.jinja' import dewpoint_level %}
       {{ dewpoint_level(states('sensor.weather_dew_point') | round(1)) | trim }}
+    availability: "{{is_number(states('sensor.weather_dew_point'))}}"
     attributes:
       category: weather
 
