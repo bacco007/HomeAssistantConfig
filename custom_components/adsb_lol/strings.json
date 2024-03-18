@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+		"menu_options": {
+          "flight_details": "Search for flight details",
+		  "point_of_interest": "Search aircraft around a point of interest"
+        },
+        "description": "Select your choice "
+      },
+	  "flight_details": {
+        "data": {
+		  "extract_type": "Find flight using:",
+          "url": "Select url",
+		  "name": "Name",
+		  "extract_param": "flight parameter (registration or callsign)"
+        },
+        "description": "Select"
+      },
+	  "flight_details_input": {
+        "data": {
+		  "extract_type": "Find flight using:",
+          "url": "Select url",
+		  "name": "Name",
+		  "extract_param": "Entity providing parameter (registration or callsign)"
+        },
+        "description": "Select"
+      },	  
+	  "point_of_interest": {
+        "data": {
+		  "point_of_interest": "Search flights around:",
+          "url": "Select url",
+		  "name": "Name",
+		  "radius": "Radius (km)",
+		  "altitude_limit": "Only aircraft below altitude (km), leave 0 for all"
+        },
+        "description": "Seearch for aircraft around a chosen point of interest"
+      }	  
+	}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Customize the way the integration works",
+        "data": {
+          "refresh_interval": "Data refresh interval (in minutes)"
+        }
+      }
+    }
+  },
+  "selector": {
+    "extract_type": {
+      "options": {
+        "registration": "Use the registration of the aircraft",
+        "callsign": "Use the callsign of the aircraft",
+		"icao_hex": "Use the icao2 (hex) of the aircraft"
+      }
+    }
+  }	
+}
