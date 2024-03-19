@@ -355,7 +355,7 @@ def get_rt_route_trip_statuses(self):
             trip_id = entity.trip_update.trip.trip_id   
                
             if ((self._rt_group == "route" and route_id == self._route_id and direction_id == self._direction) or    
-                    (self._rt_group == "trip" and trip_id == self._trip_id and direction_id == self._direction)):
+                    (self._rt_group == "trip" and trip_id == self._trip_id )):
                 
                 if route_id not in departure_times:
                     departure_times[route_id] = {}
