@@ -816,12 +816,15 @@ def get_local_stops_next_departures(self):
             self._route = row['route_id']   
             self._route_id = row['route_id'] 
             self._stop_id = row['stop_id']
-            _LOGGER.debug("Local stop route: %s - direction: %s - stop: %s", self._route , self._direction, self._stop_id)
-            next_service = get_rt_route_trip_statuses(self)
             departure_rt = "-"
-            if next_service:
-                departure_rt = next_service.get(self._route, {}).get(self._direction, {}).get(self._stop_id, [])[0]
-            _LOGGER.debug("Local stop next rt service1: %s", next_service)
+            if self._realtime:
+                self._get_next_service = {}
+                _LOGGER.debug("Find rt for local stop route: %s - direction: %s - stop: %s", self._route , self._direction, self._stop_id)
+                next_service = get_rt_route_trip_statuses(self)
+                
+                if next_service:
+                    departure_rt = next_service.get(self._route, {}).get(self._direction, {}).get(self._stop_id, [])[0]
+                _LOGGER.debug("Local stop next rt service1: %s", next_service)
             timetable.append({"departure": row["departure_time"], "departure_realtime": departure_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
         
         if (

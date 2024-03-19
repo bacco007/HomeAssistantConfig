@@ -186,28 +186,31 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
         options = self.config_entry.options
         previous_data = None if self.data is None else self.data.copy()
         _LOGGER.debug("Previous data: %s", previous_data)  
-        if options["real_time"]:
-            self._get_next_service = {}
-            """Initialize the info object."""
-            self._route_delimiter = None
-            self._headers = None
-            self._trip_update_url = options.get("trip_update_url", None)
-            self._vehicle_position_url = options.get("vehicle_position_url", None)
-            self._alerts_url = options.get("alerts_url", None)
-            if options.get(CONF_API_KEY_LOCATION, None) == "query_string":
-              if options[CONF_API_KEY] != "":
-                self._trip_update_url = self._trip_update_url + "?api_key=" + options[CONF_API_KEY]
-                self._vehicle_position_url = self._vehicle_position_url + "?api_key=" + options[CONF_API_KEY]
-                self._alerts_url = self._alerts_url + "?api_key=" + options[CONF_API_KEY]
-              elif options[CONF_X_API_KEY] != "":
-                self._trip_update_url = self._trip_update_url + "?x_api_key=" + options[CONF_X_API_KEY]
-                self._vehicle_position_url = self._vehicle_position_url + "?x_api_key=" + options[CONF_X_API_KEY]
-                self._alerts_url = self._alerts_url + "?x_api_key=" + options[CONF_X_API_KEY]
-            if options.get(CONF_API_KEY_LOCATION, None) == "header":
-              if options[CONF_API_KEY] != "":
-                self._headers = {"Authorization": options[CONF_API_KEY]}
-              elif options[CONF_X_API_KEY] != "":
-                self._headers = {"x-api-key": options[CONF_X_API_KEY]}
+        self._realtime = False
+        if "real_time" in options: 
+            if options["real_time"]:
+                self._realtime = True
+                self._get_next_service = {}
+                """Initialize the info object."""
+                self._route_delimiter = None
+                self._headers = None
+                self._trip_update_url = options.get("trip_update_url", None)
+                self._vehicle_position_url = options.get("vehicle_position_url", None)
+                self._alerts_url = options.get("alerts_url", None)
+                if options.get(CONF_API_KEY_LOCATION, None) == "query_string":
+                  if options[CONF_API_KEY] != "":
+                    self._trip_update_url = self._trip_update_url + "?api_key=" + options[CONF_API_KEY]
+                    self._vehicle_position_url = self._vehicle_position_url + "?api_key=" + options[CONF_API_KEY]
+                    self._alerts_url = self._alerts_url + "?api_key=" + options[CONF_API_KEY]
+                  elif options[CONF_X_API_KEY] != "":
+                    self._trip_update_url = self._trip_update_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                    self._vehicle_position_url = self._vehicle_position_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                    self._alerts_url = self._alerts_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                if options.get(CONF_API_KEY_LOCATION, None) == "header":
+                  if options[CONF_API_KEY] != "":
+                    self._headers = {"Authorization": options[CONF_API_KEY]}
+                  elif options[CONF_X_API_KEY] != "":
+                    self._headers = {"x-api-key": options[CONF_X_API_KEY]}
         self._pygtfs = get_gtfs(
             self.hass, DEFAULT_PATH, data, False
         )        
