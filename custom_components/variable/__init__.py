@@ -1,4 +1,5 @@
 """Variable implementation for Home Assistant."""
+
 import copy
 import json
 import logging
@@ -169,9 +170,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
                         var_fields.setdefault(m, entry.data[m])
                     var_fields.update({CONF_YAML_PRESENT: True})
                     # _LOGGER.debug(f"[YAML] Updated var_fields: {var_fields}")
-                    entry.options = {}
                     hass.config_entries.async_update_entry(
-                        entry, data=var_fields, options=entry.options
+                        entry, data=var_fields, options={}
                     )
 
                     hass.async_create_task(hass.config_entries.async_reload(entry_id))
@@ -187,7 +187,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
 
-    entry.options = {}
     # _LOGGER.debug(f"[init async_setup_entry] entry: {entry.data}")
     if entry.data.get(CONF_YAML_VARIABLE, False) is True:
         if entry.data.get(CONF_YAML_PRESENT, False) is False:
@@ -200,10 +199,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         else:
             yaml_data = copy.deepcopy(dict(entry.data))
             yaml_data.pop(CONF_YAML_PRESENT, None)
-            entry.options = {}
-            hass.config_entries.async_update_entry(
-                entry, data=yaml_data, options=entry.options
-            )
+            hass.config_entries.async_update_entry(entry, data=yaml_data, options={})
 
     hass.data.setdefault(DOMAIN, {})
     hass_data = dict(entry.data)

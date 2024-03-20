@@ -1204,12 +1204,11 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                             user_input.pop(k, None)
                 user_input.update({CONF_UPDATED: True})
                 _LOGGER.debug(f"[Sensor Options Page 2] Final user_input: {user_input}")
-                self.config_entry.options = {}
 
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
                     data=user_input,
-                    options=self.config_entry.options,
+                    options={},
                 )
                 await self.hass.config_entries.async_reload(self.config_entry.entry_id)
                 return self.async_create_entry(title="", data=user_input)
@@ -1424,14 +1423,14 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                 {
                     vol.Optional(
                         sensor.CONF_STATE_CLASS,
-                        default=self.config_entry.data.get(
-                            sensor.CONF_STATE_CLASS, "None"
-                        )
-                        if (
-                            self.config_entry.data.get(CONF_DEVICE_CLASS)
-                            == self.sensor_options_page_1.get(CONF_DEVICE_CLASS)
-                        )
-                        else "None",
+                        default=(
+                            self.config_entry.data.get(sensor.CONF_STATE_CLASS, "None")
+                            if (
+                                self.config_entry.data.get(CONF_DEVICE_CLASS)
+                                == self.sensor_options_page_1.get(CONF_DEVICE_CLASS)
+                            )
+                            else "None"
+                        ),
                     ): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=SENSOR_STATE_CLASS_SELECT_LIST,
@@ -1450,14 +1449,14 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                 {
                     vol.Optional(
                         CONF_UNIT_OF_MEASUREMENT,
-                        default=self.config_entry.data.get(
-                            CONF_UNIT_OF_MEASUREMENT, "None"
-                        )
-                        if (
-                            self.config_entry.data.get(CONF_DEVICE_CLASS)
-                            == self.sensor_options_page_1.get(CONF_DEVICE_CLASS)
-                        )
-                        else "None",
+                        default=(
+                            self.config_entry.data.get(CONF_UNIT_OF_MEASUREMENT, "None")
+                            if (
+                                self.config_entry.data.get(CONF_DEVICE_CLASS)
+                                == self.sensor_options_page_1.get(CONF_DEVICE_CLASS)
+                            )
+                            else "None"
+                        ),
                     ): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=SENSOR_UNITS_SELECT_LIST,
@@ -1483,10 +1482,11 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                 user_input.setdefault(m, self.config_entry.data[m])
             user_input.update({CONF_UPDATED: True})
             _LOGGER.debug(f"[Binary Sensor Options] updated user_input: {user_input}")
-            self.config_entry.options = {}
 
             self.hass.config_entries.async_update_entry(
-                self.config_entry, data=user_input, options=self.config_entry.options
+                self.config_entry,
+                data=user_input,
+                options={},
             )
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
             return self.async_create_entry(title="", data=user_input)
@@ -1495,9 +1495,11 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
             {
                 vol.Optional(
                     CONF_VALUE,
-                    default=self.config_entry.data.get(CONF_VALUE)
-                    if self.config_entry.data.get(CONF_VALUE) is not None
-                    else "None",
+                    default=(
+                        self.config_entry.data.get(CONF_VALUE)
+                        if self.config_entry.data.get(CONF_VALUE) is not None
+                        else "None"
+                    ),
                 ): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=["None", "true", "false"],
@@ -1566,10 +1568,11 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                 user_input.setdefault(m, self.config_entry.data[m])
             user_input.update({CONF_UPDATED: True})
             _LOGGER.debug(f"[Device Tracker Options] updated user_input: {user_input}")
-            self.config_entry.options = {}
 
             self.hass.config_entries.async_update_entry(
-                self.config_entry, data=user_input, options=self.config_entry.options
+                self.config_entry,
+                data=user_input,
+                options={},
             )
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
             return self.async_create_entry(title="", data=user_input)

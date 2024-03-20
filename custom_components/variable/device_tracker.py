@@ -76,7 +76,6 @@ async def async_setup_entry(
 ) -> None:
     """Setup the Device Tracker Variable entity with a config_entry (config_flow)."""
 
-    config_entry.options = {}
     platform = entity_platform.async_get_current_platform()
 
     platform.async_register_entity_service(
@@ -201,7 +200,7 @@ class Variable(RestoreEntity, TrackerEntity):
             self._hass.config_entries.async_update_entry(
                 self._config_entry,
                 data=self._config,
-                options=self._config_entry.options,
+                options={},
             )
             _LOGGER.debug(
                 f"({self._attr_name}) Updated config_updated: "

@@ -13,5 +13,5 @@
     "iot_class": "local_push",
     "issue_tracker": "https://github.com/Wibias/hass-variables/issues",
     "requirements": ["iso4217==1.11.20220401"],
-    "version": "3.4.0"
+    "version": "3.4.2"
 }
