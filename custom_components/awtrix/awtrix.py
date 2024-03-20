@@ -421,3 +421,43 @@ class AwtrixTime:
                     )
 
             return True
+
+    async def rtttl(self, data):
+        """Play rtttl."""
+
+        state = self.hass.states.get(self.entity_id)
+        if state is not None and state.state is not None:
+            topic = state.state + "/rtttl"
+
+            if "rtttl" not in data:
+                raise Unresolvable("No rtttl.")
+
+            rtttl_text = data["rtttl"]
+            service_data = {"payload_template": rtttl_text,
+                            "topic": topic}
+
+            return await self.hass.services.async_call(
+                    "mqtt", "publish", service_data
+                )
+
+
+    async def sound(self, data):
+        """Play rtttl sound."""
+
+        state = self.hass.states.get(self.entity_id)
+        if state is not None and state.state is not None:
+            topic = state.state + "/sound"
+
+            if "sound" not in data:
+                raise Unresolvable("No sound name")
+
+            sound_id = data["sound"]
+            payload = json.dumps({"sound": sound_id})
+            service_data = {"payload_template": payload,
+                            "topic": topic}
+
+            return await self.hass.services.async_call(
+                    "mqtt", "publish", service_data
+                )
+
+

@@ -14,11 +14,17 @@ SERVICE_PUSH_APP_DATA = "push_app_data"
 SERVICE_SETTINGS = "settings"
 SERVICE_SWITCH_APP = "switch_app"
 SERVICE_WEATHER_APP = "weather_app"
+
+SERVICE_SOUND = "sound"
+SERVICE_RTTTL = "rtttl"
+
 SERVICES = [
     SERVICE_PUSH_APP_DATA,
     SERVICE_SETTINGS,
+    SERVICE_WEATHER_APP,
+    SERVICE_SOUND,
+    SERVICE_RTTTL,
     SERVICE_SWITCH_APP,
-    SERVICE_WEATHER_APP
 ]
 
 SERVICE_DATA = "data"
@@ -43,6 +49,24 @@ SERVICE_SWITCH_APP_SCHEMA = vol.All(
     cv.has_at_least_one_key(SERVICE_APP_NAME),
 )
 
+SERVICE_RTTTL_SCHEMA= vol.All(
+    vol.Schema(
+        {
+            vol.Required(SERVICE_RTTTL): str,
+        }
+    ),
+    cv.has_at_least_one_key(SERVICE_RTTTL),
+)
+
+SERVICE_SOUND_SCHEMA= vol.All(
+    vol.Schema(
+        {
+            vol.Required(SERVICE_SOUND): str,
+        }
+    ),
+    cv.has_at_least_one_key(SERVICE_SOUND),
+)
+
 SERVICE_SETTINGS_SCHEMA = vol.All(
 )
 
@@ -61,6 +85,28 @@ SERVICE_WEATHER_APP_SCHEMA = vol.All(
     ),
     extra=vol.ALLOW_EXTRA,
 )
+
+SERVICE_RTTTL_FIELDS = {
+    "rtttl": {
+        "description": "The rtttl text",
+        "required": True,
+        "example": "two_short:d=4,o=5,b=100:16e6,16e6",
+        "selector": {
+            "text": ""
+        }
+    }
+}
+
+SERVICE_SOUND_FIELDS = {
+    "sound": {
+        "description": "The sound name",
+        "required": True,
+        "example": "beep",
+        "selector": {
+            "text": ""
+        }
+    }
+}
 
 SERVICE_PUSH_APP_DATA_FIELDS = {
     "name": {
@@ -151,12 +197,16 @@ SERVICE_TO_FIELDS = {
     SERVICE_PUSH_APP_DATA: SERVICE_PUSH_APP_DATA_FIELDS,
     SERVICE_SETTINGS: SERVICE_SETTINGS_FIELDS,
     SERVICE_SWITCH_APP: SERVICE_SWITCH_APP_FIELDS,
-    SERVICE_WEATHER_APP: SERVICE_WEATHER_APP_FIELDS
+    SERVICE_WEATHER_APP: SERVICE_WEATHER_APP_FIELDS,
+    SERVICE_RTTTL: SERVICE_RTTTL_FIELDS,
+    SERVICE_SOUND: SERVICE_SOUND_FIELDS
 }
 
 SERVICE_TO_SCHEMA = {
     SERVICE_PUSH_APP_DATA: SERVICE_PUSH_APP_DATA_SCHEMA,
     SERVICE_SETTINGS: SERVICE_SETTINGS_SCHEMA,
     SERVICE_SWITCH_APP: SERVICE_SWITCH_APP_SCHEMA,
-    SERVICE_WEATHER_APP: SERVICE_WEATHER_APP_SCHEMA
+    SERVICE_WEATHER_APP: SERVICE_WEATHER_APP_SCHEMA,
+    SERVICE_RTTTL: SERVICE_RTTTL_SCHEMA,
+    SERVICE_SOUND: SERVICE_SOUND_SCHEMA
 }

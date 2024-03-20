@@ -48,9 +48,14 @@ class AwtrixNotificationService(BaseNotificationService):
                     msg["icon"] = icon
 
         # """Service to send a message."""
-        payload = json.dumps(msg)
-        service_data = {"payload_template": payload,
-                        "topic": topic + "/notify"}
+        service_data = None
+        if not message:
+            service_data = {"payload_template": "",
+                        "topic": topic + "/notify/dismiss"}
+        else:
+            payload = json.dumps(msg)
+            service_data = {"payload_template": payload,
+                            "topic": topic + "/notify"}
 
         return await self.hass.services.async_call(
             "mqtt", "publish", service_data
