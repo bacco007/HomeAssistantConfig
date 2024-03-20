@@ -26,7 +26,8 @@ from .const             import (DOMAIN, VERSION, ICLOUD3, RARROW,
                                 ZONE_DISTANCE, ZONE_DISTANCE_M, ZONE_DISTANCE_M_EDGE,
                                 HOME_DISTANCE,
                                 BATTERY, BATTERY_STATUS,
-                                WAZE_DISTANCE, WAZE_METHOD, WAZE_USED,
+                                WAZE_DISTANCE, WAZE_DISTANCE_ATTR, WAZE_METHOD, WAZE_USED,
+                                CALC_DISTANCE, CALC_DISTANCE_ATTR,
                                 CONF_TRACK_FROM_ZONES,
                                 CONF_IC3_DEVICENAME, CONF_MODEL, CONF_RAW_MODEL, CONF_FNAME,
                                 CONF_FAMSHR_DEVICENAME, CONF_MOBILE_APP_DEVICE,
@@ -38,10 +39,11 @@ from .const_sensor      import (SENSOR_DEFINITION, SENSOR_GROUPS, SENSOR_LIST_DI
 
 from .helpers.common    import (instr,  round_to_zero, isnumber, )
 from .helpers.messaging import (log_info_msg, log_debug_msg, log_error_msg, log_exception,
+                                log_info_msg_HA, log_exception_HA,
                                 _trace, _traceha, )
-from .helpers.time_util import (time_to_12hrtime, time_remove_am_pm, secs_to_time_str,
-                                mins_to_time_str, time_now_secs, datetime_now,
-                                secs_to_datetime, secs_to_day_date_time,
+from .helpers.time_util import (time_to_12hrtime, time_remove_am_pm, format_timer,
+                                format_mins_timer, time_now_secs, datetime_now,
+                                secs_to_datetime, secs_to_datetime,
                                 adjust_time_hour_values, adjust_time_hour_value)
 from .helpers.dist_util import (km_to_mi, m_to_ft, m_to_um, set_precision, reformat_um, )
 from .helpers.format    import (icon_circle, icon_box, )
@@ -60,10 +62,6 @@ from homeassistant.helpers              import entity_registry as er, device_reg
 
 import homeassistant.util.dt as dt_util
 # from homeassistant.helpers.entity       import Entity
-
-import logging
-_HA_LOGGER = logging.getLogger(__name__)
-# _LOGGER = logging.getLogger(f"icloud3")
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
@@ -115,10 +113,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         if NewSensors != []:
             async_add_entities(NewSensors, True)
             _setup_recorder_exclude_sensor_filter(NewSensors)
-            _HA_LOGGER.info(f'iCloud3 Sensor entities: {len(NewSensors)}')
+            log_info_msg_HA(f'iCloud3 Sensor entities: {len(NewSensors)}')
 
     except Exception as err:
-        _HA_LOGGER.exception(err)
         log_exception(err)
         log_msg = (f"►INTERNAL ERROR (UpdtSensorUpdate-{err})")
         log_error_msg(log_msg)
@@ -493,7 +490,7 @@ class SensorBase(SensorEntity):
         '''
         extra_attrs = OrderedDict()
         extra_attrs['integration'] = ICLOUD3
-        update_time = secs_to_day_date_time(time_now_secs())
+        update_time = secs_to_datetime(time_now_secs())
         if self.Device and self.Device.away_time_zone_offset != 0:
             update_time = adjust_time_hour_values(update_time, self.Device.away_time_zone_offset)
         extra_attrs['sensor_updated'] = update_time
@@ -507,8 +504,11 @@ class SensorBase(SensorEntity):
                 pass
 
             if _sensor_attr_name == WAZE_DISTANCE:
+                _sensor_attr_name = WAZE_DISTANCE_ATTR
                 if self._get_sensor_value(WAZE_METHOD) != WAZE_USED:
                     _sensor_value = self._get_sensor_value(WAZE_METHOD)
+            elif _sensor_attr_name == CALC_DISTANCE:
+                _sensor_attr_name = CALC_DISTANCE_ATTR
 
             if _sensor_attr_name == ZONE_DISTANCE_M_EDGE:
                 extra_attrs[_sensor_attr_name] = _sensor_value
@@ -786,7 +786,8 @@ class SensorBase(SensorEntity):
         """Update the entity's state if the state value has changed."""
 
         try:
-            self.async_write_ha_state()
+            # self.async_write_ha_state()
+            self.schedule_update_ha_state()
 
         except Exception as err:
             log_exception(err)
@@ -960,14 +961,14 @@ class Sensor_Timer(SensorBase):
             self._attr_native_unit_of_measurement = unit_of_measurement
 
         elif sensor_type_um == 'min':
-            time_str = mins_to_time_str(sensor_value)
+            time_str = format_mins_timer(sensor_value)
             if time_str and instr(time_str, 'd') is False:         # Make sure it is not a 4d2h34m12s item
                 time_min_hrs = time_str.split(' ')
                 sensor_value = time_min_hrs[0]
                 self._attr_native_unit_of_measurement = time_min_hrs[1]
 
         elif sensor_type_um == 'sec':
-            time_str = secs_to_time_str(sensor_value)
+            time_str = format_timer(sensor_value)
             if time_str and instr(time_str, 'd') is False:       # Make sure it is not a 4d2h34m12s item
                 time_secs_min_hrs = time_str.split(' ')
                 sensor_value = time_secs_min_hrs[0]
@@ -1075,7 +1076,7 @@ class Sensor_Distance(SensorBase):
                 if dist < 500:
                     zone_dist[f"={Zone.dname} ({Gb.um_m_ft})"] = dist
 
-            sorted_zone_dist[f"zones (calculated distance) ({Gb.um})"] = f"{secs_to_day_date_time(time_now_secs())}"
+            sorted_zone_dist[f"zones (calculated distance) ({Gb.um})"] = f"{secs_to_datetime(time_now_secs())}"
             sorted_zone_dist.update(dict(sorted(zone_dist.items())))
 
         except Exception as err:
@@ -1105,7 +1106,7 @@ class Sensor_Distance(SensorBase):
                 fname_dist[f"={_Device.fname}"] = set_precision(km_to_mi(dist_m/1000))
 
             sorted_fname_dist[f"devices (calculated distance) ({Gb.um})"] = \
-                        f"{secs_to_day_date_time(self.Device.dist_to_other_devices_secs)}"
+                        f"{secs_to_datetime(self.Device.dist_to_other_devices_secs)}"
             sorted_fname_dist.update(dict(sorted(fname_dist.items())))
 
         except Exception as err:
@@ -1254,7 +1255,8 @@ class Support_SensorBase(SensorEntity):
         """Update the entity's state."""
 
         try:
-            self.async_write_ha_state()
+            # self.async_write_ha_state()
+            self.schedule_update_ha_state()
 
         except RuntimeError:
             # Catch a 'RuntimeError: Attribute hass is None for <DeviceSensor: icloud3_event_log>'
