@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.3.1 |
 | No. Integrations | 201 |
 | No. Custom Integrations | 83 |
-| No. Entities | 5193 |
-| No. Sensors | 3462 |
+| No. Entities | 5228 |
+| No. Sensors | 3463 |
 | No. Automations | 139 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 339
-Buttons | 207
+Binary sensors | 340
+Buttons | 209
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -84,22 +84,22 @@ Input texts | 3
 Lights | 14
 Locks | 4
 Media players | 19
-Numbers | 29
-Persistent notifications | 2
+Numbers | 31
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3462
+Sensors | 3463
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 284
+Switches | 283
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 280
+Update | 279
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -747,12 +747,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.1] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.0] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.0.3] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -768,7 +768,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [v2.0.13] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge).|
-| [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.2] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
+| [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.3] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.1] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: full rewrite in progress ("temp" branch) |[@AlexanderLanin](https://github.com/AlexanderLanin).|
@@ -794,7 +794,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Trakt](https://github.com/dylandoamaral/trakt-integration) |  [v0.9.0] | A Trakt integration for Home Assistant compatible with upcoming media card |[@dylandoamaral](https://github.com/dylandoamaral).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
-| [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.0] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
+| [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.2] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Visual Crossing Weather Integration](https://github.com/briis/visualcrossing) |  [v0.1.6] | Home Assistant integration retrieving Weather Data from the Visual Crossing API |[@briis](https://github.com/briis).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.1] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
@@ -882,7 +882,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.2.0 |  | a0d7b954 |
 | Cloudflared | 5.1.6 |  | 9074a9fa |
-| ESPHome | 2024.2.2 |  | 15ef4d2f |
+| ESPHome | 2024.3.0 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Fusion | 2024.2.1 |  | 65f67727 |
 | Glances | 0.21.0 |  | a0d7b954 |

@@ -11,7 +11,7 @@ substitutions:
   esphome_framework_type: arduino
   esphome_comment: Weatherman, HA Dashboard  
   esphome_project_name: tbSH.Weatherman, HA Dashboard
-  esphome_project_version: Weatherman Dashboard, $software_version    
+  esphome_project_version: Weatherman, $software_version    
   devicename: weatherman_dashboard
   upper_devicename: "Weatherman Dashboard"
 
