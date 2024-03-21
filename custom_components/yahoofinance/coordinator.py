@@ -21,13 +21,13 @@ from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util.dt import utcnow
 
-#from homeassistant.util.file import write_utf8_file
+# from homeassistant.util.file import write_utf8_file
 from .const import (
     BASE,
     CONSENT_HOST,
-    CRUMB_URL,
     DATA_REGULAR_MARKET_PRICE,
     GET_CRUMB_URL,
+    INITIAL_URL,
     MANUAL_SCAN_INTERVAL,
     NUMERIC_DATA_DEFAULTS,
     NUMERIC_DATA_GROUPS,
@@ -68,7 +68,7 @@ class CrumbCoordinator:
                 _LOGGER.debug("Navigating to a base Yahoo page")
 
                 # Websession.get handles redirects by default
-                response = await websession.get(CRUMB_URL, headers=REQUEST_HEADERS)
+                response = await websession.get(INITIAL_URL, headers=REQUEST_HEADERS)
 
                 # Only keep cookies from initial response. Consent/crumb pages do not provide cookies.
                 self.cookies = response.cookies
@@ -76,10 +76,12 @@ class CrumbCoordinator:
                 _LOGGER.debug("Response %d, URL: %s", response.status, response.url)
                 _LOGGER.debug("Cookies: %s", str(self.cookies))
 
-                if (response.status == HTTPStatus.OK) and (response.url.host.lower() == CONSENT_HOST):
+                if (response.status == HTTPStatus.OK) and (
+                    response.url.host.lower() == CONSENT_HOST
+                ):
                     _LOGGER.debug("Consent page detected")
                     content = await response.text()
-                    form_data=self.build_consent_form_data(content)
+                    form_data = self.build_consent_form_data(content)
                     _LOGGER.debug("Posting consent %s", str(form_data))
                     response = await websession.post(response.url, data=form_data)
 
@@ -87,10 +89,14 @@ class CrumbCoordinator:
                         _LOGGER.info("Consent post responded with %d", response.status)
                         return
 
-                    _LOGGER.debug("Consent post response %d, URL: %s", response.status, response.url)
-                    #content = await response.text()
-                    #await self.parse_crumb_from_content(content)
-                    #_LOGGER.debug("Crumb: %s", self.crumb)
+                    _LOGGER.debug(
+                        "Consent post response %d, URL: %s",
+                        response.status,
+                        response.url,
+                    )
+                    # content = await response.text()
+                    # await self.parse_crumb_from_content(content)
+                    # _LOGGER.debug("Crumb: %s", self.crumb)
 
                 # Try another crumb page even if the consent response provided a crumb.
                 await self.try_crumb_page(websession)
@@ -103,12 +109,14 @@ class CrumbCoordinator:
         _LOGGER.debug("Crumb: %s", self.crumb)
         return self.crumb
 
-    async def try_crumb_page(self,websession: aiohttp.ClientSession) -> None:
+    async def try_crumb_page(self, websession: aiohttp.ClientSession) -> None:
         """Try to get crumb from the end point."""
 
         _LOGGER.debug("Accessing crumb page")
         response = await websession.get(GET_CRUMB_URL, headers=REQUEST_HEADERS)
-        _LOGGER.debug("Crumb response status: %d, URL: %s", response.status, response.url)
+        _LOGGER.debug(
+            "Crumb response status: %d, URL: %s", response.status, response.url
+        )
 
         if response.status == HTTPStatus.OK:
             self.crumb = await response.text()
@@ -151,17 +159,16 @@ class CrumbCoordinator:
     #                 content,
     #             )
 
-    def build_consent_form_data(self, content: str) -> dict[str,str]:
+    def build_consent_form_data(self, content: str) -> dict[str, str]:
         """Build consent form data from response content."""
-        pattern = (
-            r'<input.*?type="hidden".*?name="(.*?)".*?value="(.*?)".*?>'
-        )
+        pattern = r'<input.*?type="hidden".*?name="(.*?)".*?value="(.*?)".*?>'
         matches = re.findall(pattern, content)
         form_data = {"reject": "reject"}
         for name, value in matches:
             form_data[name] = value
 
         return form_data
+
 
 class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
     """Yahoo finance data update coordinator."""
