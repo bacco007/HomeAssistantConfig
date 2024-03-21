@@ -350,12 +350,22 @@ def get_rt_route_trip_statuses(self):
             if entity.trip_update.trip.direction_id is not None:
                     direction_id = str(entity.trip_update.trip.direction_id)
             else:
-                direction_id = DEFAULT_DIRECTION 
+                direction_id = [DEFAULT_DIRECTION]
+                
+            if self._rt_group == "trip":
+                direction_id = self._direction                
 
             trip_id = entity.trip_update.trip.trip_id   
-               
+             
             if ((self._rt_group == "route" and route_id == self._route_id and direction_id == self._direction) or    
                     (self._rt_group == "trip" and trip_id == self._trip_id )):
+                
+
+                    
+                _LOGGER.debug("Entity found params, group: %s, route_id: %s, direction_id: %s, trip_id: %s", self._rt_group, route_id, direction_id, self._trip_id)
+                _LOGGER.debug("Entity found: %s", entity)
+                
+                
                 
                 if route_id not in departure_times:
                     departure_times[route_id] = {}
