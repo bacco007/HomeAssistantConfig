@@ -170,13 +170,15 @@
     data:
       extract_from: zip
       url: na
-      file: nenw_buses
+      file: buses_nenw
+      clean_feed_info: true
   - service: gtfs2.update_gtfs
     metadata: {}
     data:
       extract_from: zip
       url: na
       file: nswtrains
+      clean_feed_info: true
   mode: single
 - id: '1708823827707'
   alias: AWTRIX now playing
