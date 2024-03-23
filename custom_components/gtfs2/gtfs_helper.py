@@ -22,12 +22,13 @@ from .const import (
     DEFAULT_PATH_GEOJSON, 
     DEFAULT_LOCAL_STOP_TIMERANGE, 
     DEFAULT_LOCAL_STOP_RADIUS,
+    DEFAULT_PATH_RT,
     ICON,
     ICONS,
     DOMAIN,
     TIME_STR_FORMAT
     )
-from .gtfs_rt_helper import get_rt_route_statuses, get_rt_trip_statuses, get_next_services, get_rt_alerts, get_rt_route_trip_statuses
+from .gtfs_rt_helper import get_rt_route_trip_statuses, get_gtfs_rt
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -719,7 +720,6 @@ def get_local_stops_next_departures(self):
     tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now'))"
     time_range = str('+' + str(self._data.get("timerange", DEFAULT_LOCAL_STOP_TIMERANGE)) + ' minute')
     radius = self._data.get("radius", DEFAULT_LOCAL_STOP_RADIUS) / 130000
-    _LOGGER.debug("Time Range: %s", time_range)
     if not latitude or not latitude:
         _LOGGER.error("No latitude and/or longitude for : %s", self._data['device_tracker_id'])
         return []
@@ -728,9 +728,7 @@ def get_local_stops_next_departures(self):
         tomorrow_name = tomorrow.strftime("%A").lower()
         tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = :tomorrow)"
-        tomorrow_select2 = f"'0' AS tomorrow,"        
-    _LOGGER.debug("today: %s", now.strftime("%A").lower())
-    _LOGGER.debug("today: %s", tomorrow.strftime("%A").lower())
+        tomorrow_select2 = f"CASE WHEN date('now') < calendar_date_today.date THEN '1' else '0' END as tomorrow,"        
     sql_query = f"""
         SELECT * FROM (
         SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,
@@ -799,24 +797,41 @@ def get_local_stops_next_departures(self):
     local_stops_list = []
     prev_stop_id = ""
     prev_entry = entry = {}
-    # params for getting rt data
-    self._rt_group = "trip"   
     
+    
+    # Set elements for realtime retrieval via local file.
+    if self._realtime:
+        self._rt_group = "trip"
+        self._rt_data = {
+            "url": self._trip_update_url,
+            "headers": self._headers,
+            "file": self._data["name"] + "_localstop",
+            }
+        check = get_gtfs_rt(self.hass,DEFAULT_PATH_RT,self._rt_data)
+        # check if local file created
+        if check != "ok":
+            _LOGGER.error("Could not download RT data from: %s", self._trip_update_url)
+            return False
+        else:
+            # use local file created as new url
+            self._trip_update_url = "file://" + DEFAULT_PATH_RT + "/" + self._data["name"] + "_localstop.rt"
+
     for row_cursor in result:
         row = row_cursor._asdict()
-        _LOGGER.debug("Row: %s", row)
+        _LOGGER.debug("Row from query: %s", row)
         if row["stop_id"] != prev_stop_id and prev_stop_id != "": 
             local_stops_list.append(prev_entry)
             timetable = []
         entry = {"stop_id": row['stop_id'], "stop_name": row['stop_name'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable}
         self._icon = ICONS.get(row['route_type'], ICON)
-        if row["today"] == 1 or row["today_cd"] == 1:
+        if row["today"] == 1 or (row["today_cd"] == 1 and row["start_date"] == row["calendar_date"]):
             self._trip_id = row["trip_id"]
             self._direction = str(row["direction_id"])
             self._route = row['route_id']   
             self._route_id = row['route_id'] 
             self._stop_id = row['stop_id']
             departure_rt = "-"
+            # Find RT if configured
             if self._realtime:
                 self._get_next_service = {}
                 _LOGGER.debug("Find rt for local stop route: %s - direction: %s - stop: %s", self._route , self._direction, self._stop_id)
@@ -831,7 +846,7 @@ def get_local_stops_next_departures(self):
             "tomorrow" in row
             and row["tomorrow"] == 1
             and row["today"] == 0
-            and tomorrow_date <= row["end_date"]
+            #and tomorrow_date <= row["end_date"]
             and now_time > row["departure_time"]            
         ):
             timetable.append({"departure": row["departure_time"], "date": tomorrow_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
@@ -857,3 +872,4 @@ async def update_gtfs_local_stops(hass, data):
         _LOGGER.debug("Reloading local stops for config_entry_id: %s", cf_entry) 
         reload = await hass.config_entries.async_reload(cf_entry)    
     return
+

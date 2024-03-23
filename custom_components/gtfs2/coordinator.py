@@ -26,7 +26,7 @@ from .const import (
     ATTR_RT_UPDATED_AT
 )    
 from .gtfs_helper import get_gtfs, get_next_departure, check_datasource_index, create_trip_geojson, check_extracting, get_local_stops_next_departures
-from .gtfs_rt_helper import get_rt_route_statuses, get_rt_trip_statuses, get_next_services, get_rt_alerts
+from .gtfs_rt_helper import get_next_services, get_rt_alerts
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -145,15 +145,14 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                 self._trip_id = self._data.get('next_departure', {}).get('trip_id', None) 
                 self._direction = data["direction"]
                 self._relative = False
-                try:
-                    self._get_rt_trip_statuses = await self.hass.async_add_executor_job(get_rt_trip_statuses, self)
-                    self._get_rt_alerts = await self.hass.async_add_executor_job(get_rt_alerts, self)
-                    self._get_next_service = await self.hass.async_add_executor_job(get_next_services, self)
-                    self._data["next_departure_realtime_attr"] = self._get_next_service
-                    self._data["next_departure_realtime_attr"]["gtfs_rt_updated_at"] = dt_util.utcnow()
-                    self._data["alert"] = self._get_rt_alerts
-                except Exception as ex:  # pylint: disable=broad-except
-                   _LOGGER.error("Error getting gtfs realtime data, for origin: %s with error: %s", data["origin"], ex)
+                #try:
+                self._get_rt_alerts = await self.hass.async_add_executor_job(get_rt_alerts, self)
+                self._get_next_service = await self.hass.async_add_executor_job(get_next_services, self)
+                self._data["next_departure_realtime_attr"] = self._get_next_service
+                self._data["next_departure_realtime_attr"]["gtfs_rt_updated_at"] = dt_util.utcnow()
+                self._data["alert"] = self._get_rt_alerts
+                #except Exception as ex:  # pylint: disable=broad-except
+                #  _LOGGER.error("Error getting gtfs realtime data, for origin: %s with error: %s", data["origin"], ex)
             else:
                 _LOGGER.debug("GTFS RT: RealTime = false, selected in entity options")            
         else:
