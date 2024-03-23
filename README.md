@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.3.1 |
-| No. Integrations | 201 |
-| No. Custom Integrations | 83 |
-| No. Entities | 5207 |
-| No. Sensors | 3445 |
-| No. Automations | 139 |
+| HA Version | 2024.3.3 |
+| No. Integrations | 202 |
+| No. Custom Integrations | 84 |
+| No. Entities | 5217 |
+| No. Sensors | 3452 |
+| No. Automations | 140 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 340
+Binary sensors | 341
 Buttons | 209
 Calendars | 71
 Cameras | 5
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 96
-Devices | 578
+Devices | 560
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -83,15 +83,15 @@ Input selects | 3
 Input texts | 3
 Lights | 14
 Locks | 4
-Media players | 19
+Media players | 20
 Numbers | 31
-Persistent notifications | 5
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3445
+Sensors | 3452
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 283
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 279
+Update | 280
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>599 Integrations</summary>
+<details><summary>601 Integrations</summary>
 
 | Name |
 | --- |
@@ -571,6 +571,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [spook.time](https://www.home-assistant.io/components/spook.time) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [spotify.media_player](https://www.home-assistant.io/components/spotify.media_player) |
+| [spotifyplus](https://www.home-assistant.io/components/spotifyplus) |
+| [spotifyplus.media_player](https://www.home-assistant.io/components/spotifyplus.media_player) |
 | [sql](https://www.home-assistant.io/components/sql) |
 | [sql.sensor](https://www.home-assistant.io/components/sql.sensor) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
@@ -720,7 +722,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>78 Custom Integrations</summary>
+<details><summary>79 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -753,10 +755,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.1] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.1] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.2.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.6.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
@@ -783,8 +785,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.7] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
-| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.2] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
+| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.3] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.10] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.7] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.0b0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Sungrow](https://github.com/alangibson/homeassistant-sungrow) |  | Sungrow Inverter integration for Home Assistant |[alangibson](https://github.com/alangibson).|
@@ -827,7 +830,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.7] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.6] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
-| [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.1] | Present the data of Formula One in a pretty way |
+| [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.2] | Present the data of Formula One in a pretty way |
 | [Fr24 Card](https://github.com/fratsloos/fr24_card) |  [v0.7.1] | Lovelace card for showing Dump1090 data from FR24 in Home Assistant |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  | Heatmap custom card for Home Assistant |
 | [History Explorer Card](https://github.com/alexarch21/history-explorer-card) |  [v1.0.51] | A card for Home Assistant Lovelace for exploring the history of your entities interactively and in real time. |
@@ -865,7 +868,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.4.4] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.0.2] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.1.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Windrose Card](https://github.com/aukedejong/lovelace-windrose-card) |  [v1.4.0] | Home Assistant Lovelace Windrose Card |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>2 Themes</summary>
@@ -946,7 +949,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.3.1-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.3.3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml

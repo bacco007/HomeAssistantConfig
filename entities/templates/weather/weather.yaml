@@ -3,26 +3,18 @@ binary_sensor:
   - name: "[Weather] Is Raining"
     unique_id: weather_is_raining
     icon: mdi:weather-pouring
-    delay_on: 20
-    delay_off: 120
-    state: >
-      {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
-        {{ states('binary_sensor.brisbane_st_binary_sensors_is_raining') }}
-      {%- endif %}
-    availability: >
-      {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
-        {{ has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') }}
-      {%- else %} False
-      {%- endif %}
+    state: "{{ is_state('sensor.weather_precipitation_type', 'rain') }}"
+    availability: "{{ has_value('sensor.weather_precipitation_type') }}"
     attributes:
       category: weather
-      provider: >
-        {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
-            and has_value('binary_sensor.brisbane_st_binary_sensors_is_raining') %}
-          Weatherflow (Cloud)
-        {%- endif %}
+
+  - name: "[Weather] Precipitation Active"
+    unique_id: weather_precipitation_active
+    icon: mdi:weather-pouring
+    state: "{{ states('sensor.weather_precipitation_type') != 'none' }}"
+    availability: "{{ has_value('sensor.weather_precipitation_type') }}"
+    attributes:
+      category: weather
 
   - name: "[Weather] Is Lightning"
     unique_id: weather_is_lightning
@@ -213,8 +205,8 @@ sensor:
             and is_number(states('sensor.tamworth_airport_temp_feels_like'))
           or is_number(states('sensor.weather_temperature')) }}
 
-  - name: '[Weather] Feels Like Temperature'
-    unique_id: 'feels_like_temperature'
+  - name: "[Weather] Feels Like Temperature"
+    unique_id: "feels_like_temperature"
     unit_of_measurement: "°C"
     state: >-
       {%- set temperature = states('sensor.weather_temperature')|float %}
@@ -323,14 +315,18 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
+      {%- if is_number(state_attr('sensor.bom_average', 'mintemp_average')) %}
       {{ (states('sensor.weather_low_temperature') | float
           - state_attr('sensor.bom_average', 'mintemp_average') | float) | round(2) }}
+      {%- else %}
+      N/A
+      {%- endif %}
     attributes:
       category: weather
-      today_temp: "{{states('sensor.weather_low_temperature') | float }}"
-      temp_average: "{{state_attr('sensor.bom_average', 'mintemp_average') | float }}"
-      temp_hottest: "{{state_attr('sensor.bom_average', 'mintemp_hottest') | float }}"
-      temp_coldest: "{{state_attr('sensor.bom_average', 'mintemp_coldest') | float }}"
+      today_temp: "{{states('sensor.weather_low_temperature') | float('N/A') }}"
+      temp_average: "{{state_attr('sensor.bom_average', 'mintemp_average') | float('N/A') }}"
+      temp_hottest: "{{state_attr('sensor.bom_average', 'mintemp_hottest') | float('N/A') }}"
+      temp_coldest: "{{state_attr('sensor.bom_average', 'mintemp_coldest') | float('N/A') }}"
     availability: >
       {{ is_number(states('sensor.weather_low_temperature'))
           and is_number(state_attr('sensor.bom_average', 'mintemp_average')) }}
@@ -343,13 +339,13 @@ sensor:
     state: >
       {% if is_state('binary_sensor.connected_weatherflow_local','on')
             and is_number(states('sensor.st_00056115_dew_point')) -%}
-        {{ states('sensor.st_00056115_dew_point')|float }}
+        {{ states('sensor.st_00056115_dew_point')|float|round(2) }}
       {%- elif is_state('binary_sensor.connected_weatherflow_cloud','on')
           and is_number(states('sensor.weatherflow_forecast_dew_point')) %}
-        {{ states('sensor.weatherflow_forecast_dew_point')|float }}
+        {{ states('sensor.weatherflow_forecast_dew_point')|float|round(2) }}
       {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
           and is_number(states('sensor.pirateweather_dew_point')) %}
-        {{ states('sensor.pirateweather_dew_point')|float }}
+        {{ states('sensor.pirateweather_dew_point')|float|round(2) }}
       {%- else %} 0
       {%- endif %}
     attributes:
@@ -485,6 +481,28 @@ sensor:
             and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1]['precipitation_probability'])
           or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
             and is_number(states('sensor.east_tamworth_rain_chance_1')) }}
+
+  - name: "[Weather] Precipitation Likely Soon"
+    unique_id: weather_precipitation_likely_soon
+    icon: mdi:weather-pouring
+    state: >
+      {%- set time = states('sensor.weather_precipitation_start') | as_datetime
+          if has_value('sensor.weather_precipitation_start') else none %}
+      {{ is_state('binary_sensor.weather_precipitation_active','off')
+          and time != none and time > now() and time - now() < timedelta(hours=2) }}
+    attributes:
+      category: weather
+
+  - name: "Precipitation Likely Today"
+    unique_id: precipitation_likely_today
+    icon: mdi:weather-pouring
+    state: >
+      {%- set time = states('sensor.weather_precipitation_start') | as_datetime
+          if has_value('sensor.weather_precipitation_start') else none %}
+      {{ (time != none and time > now() and time - now() < timedelta(hours=12))
+            or states('sensor.weather_precipitation_probability_today') | int(0) >= 40 }}
+    attributes:
+      category: weather
 
   - name: "[Weather] Precipitation Rate"
     unique_id: weather_precipitation_rate
@@ -637,30 +655,15 @@ sensor:
     unique_id: weather_precipitation_type
     icon: mdi:weather-rainy
     state: >
-      {% if is_state('binary_sensor.brisbane_st_binary_sensors_is_raining', 'on') %}
-        {% set freeze_alt = states('sensor.weatherflow_forecast_freezing_altitude')|int(-1) %}
-        {% if has_value('sensor.st_00056115_precipitation_type') %}
-          {% set type = states('sensor.st_00056115_precipitation_type')|lower %}
-          {% if type != 'none' %} {{ type }}
-          {% elif freeze_alt != -1 and freeze_alt < 200 %} snow
-          {% else %} rain
-          {% endif %}
-        {% else %}
-          {% if is_state('binary_sensor.brisbane_st_binary_sensors_is_freezing','on') %} snow
-          {% else %} rain
-          {% endif %}
-        {% endif %}
+      {% set condition = states('sensor.weather_current_condition') %}
+      {% if condition | contains('snow') %} snow
+      {% elif condition | contains('rain')
+          or condition | contains('pouring') %} rain
       {% else %} none
       {% endif %}
     attributes:
       category: weather
-      provider: >
-        {% if has_value('sensor.st_00056115_precipitation_type') %} Weatherflow (Local)
-        {% else %} Weatherflow (Cloud)
-        {% endif %}
-    availability: >
-      {{ has_value('sensor.tempest_st_00056115_precipitation_type')
-          or states('binary_sensor.brisbane_st_binary_sensors_is_freezing') in ['off','on'] }}
+    availability: "{{ has_value('sensor.weather_current_condition') }}"
 
   - name: "[Weather] Next Precipitation, Start"
     unique_id: weather_next_precipitation_start
@@ -692,14 +695,23 @@ sensor:
     icon: mdi:weather-pouring
     device_class: timestamp
     state: >
+      {%- set forecast = none %}
       {%- set time = namespace(value=none) %}
-      {%- set forecast = state_attr('sensor.weather_forecasts', 'bom_hourly') %}
-      {%- if is_state('binary_sensor.weather_is_raining', 'off') and forecast != none %}
+      {%- if state_attr('sensor.weather_forecasts', 'bom_hourly') != none %}
+        {%- set forecast = state_attr('sensor.weather_forecasts', 'bom_hourly') %}
+      {%- elif state_attr('sensor.weather_forecasts', 'weatherflow_hourly') != none %}
+        {%- set forecast = state_attr('sensor.weather_forecasts', 'weatherflow_hourly') %}
+      {%- elif state_attr('sensor.weather_forecasts', 'pirateweather_hourly') != none %}
+        {%- set forecast = state_attr('sensor.weather_forecasts', 'pirateweather_hourly') %}
+      {%- endif %}
+      {%- if is_state('binary_sensor.weather_is_raining', 'on') %}
+        {%- set time.value = states.binary_sensor.rain.last_changed %}
+      {%- elif forecast not in ['', none] %}
         {%- for item in forecast %}
           {%- if loop.index0 < 12
-              and item.precipitation_probability | int(-1) >= 50
-              and (item.condition | contains('rainy')
-                or item.condition | contains('rain')
+              and item.precipitation_probability | int(-1) >= 40
+              and (item.condition | contains('rain')
+                or item.condition | contains('snow')
                 or item.condition | contains('storm')) %}
             {%- set time.value = item.datetime %}
           {%- break %}
@@ -709,6 +721,18 @@ sensor:
       {{ time.value }}
     attributes:
       category: weather
+      provider: >
+        {%- if state_attr('sensor.weather_forecasts', 'bom_hourly') != none %}
+          Bureau of Meteorology
+        {%- elif state_attr('sensor.weather_forecasts', 'weatherflow_hourly') != none %}
+          WeatherFlow (Cloud)
+        {%- elif state_attr('sensor.weather_forecasts', 'pirateweather_hourly') != none %}
+          Pirate Weather
+        {%- endif %}
+    availability: >
+      {{ state_attr('sensor.weather_forecasts', 'bom_hourly') != none
+          or state_attr('sensor.weather_forecasts', 'weatherflow_hourly') != none
+          or state_attr('sensor.weather_forecasts', 'pirateweather_hourly') != none }}
 
   - name: "[Weather] Lightning Count"
     unique_id: weather_lightning_count
@@ -967,7 +991,7 @@ sensor:
     state: >
       {%- if is_state('binary_sensor.connected_weatherflow_cloud','on')
             and is_number(states('sensor.weatherflow_forecast_visibility')) %}
-        {{ states('sensor.weatherflow_forecast_visibility')|float }}
+        {{ states('sensor.weatherflow_forecast_visibility')|float|round(3) }}
       {%- endif %}
     attributes:
       category: weather
@@ -1036,6 +1060,13 @@ sensor:
         {{ states('sensor.pirateweather_cloud_coverage')|int(none) }}
       {%- endif %}
     attributes:
+      description: >
+        {% set cloud = states('sensor.weather_cloud_cover') | int %}
+        {%- if cloud > 80 %} Cloudy
+        {%- elif cloud > 50 %} Mostly Cloudy
+        {%- elif cloud > 10 %} Partly Cloudy
+        {%- else %} Clear
+        {%- endif %}
       category: weather
       provider: Pirate Weather
     availability: >

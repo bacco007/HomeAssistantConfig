@@ -1,0 +1,60 @@
+---
+alias: "[HA] New Device Connected"
+id: ha_newdevice
+trigger:
+  - platform: event
+    event_type: entity_registry_updated
+    event_data:
+      action: create
+condition:
+  - condition: template
+    value_template: "{{trigger.event.data.entity_id.split('.')[0] == 'device_tracker' }}"
+action:
+  - variables:
+      entity: >
+        {{trigger.event.data.entity_id}}
+
+  - service: persistent_notification.create
+    data:
+      title: &start_title "New Device Connected"
+      message: &start_message >
+        Device: {{state_attr(entity,'friendly_name')}}
+        Entity: {{entity}}
+        Host: {{state_attr(entity,'host_name')}}
+        Ip: {{state_attr(entity,'ip')}}
+        Mac-address: {{state_attr(entity,'mac')}}
+        Full data: {{trigger.event.data}}
+      notification_id: newdevice
+
+  - if:
+      - condition: state
+        entity_id: input_boolean.alerts_ha
+        state: "on"
+    then:
+      - service: notify.tbsmarthome
+        data_template:
+          message: *start_title
+          target: "#tbsmarthome"
+          data:
+            blocks:
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: *start_title
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: *start_message
+
+      - service: notify.mobile_app_tbiphone15promax
+        data:
+          message: *start_message
+          title: *start_title
+          data:
+            push:
+              badge: 1
+              sound: none
+              interruption-level: time-sensitive
+            presentation_options:
+              - alert
+              - badge

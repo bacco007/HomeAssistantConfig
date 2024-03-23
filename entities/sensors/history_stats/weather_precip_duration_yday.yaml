@@ -1,0 +1,9 @@
+---
+platform: history_stats
+name: "[Weather] Precipitation Duration (Yesterday)"
+entity_id: binary_sensor.weather_precipitation_active
+state: "on"
+type: time
+end: "{{ now().replace(hour=0, minute=0, second=0, microsecond=0) }}"
+duration:
+  hours: 24
