@@ -412,7 +412,6 @@ sequence:
           {% endif %}
         {% endif %}
 
-
         {{ endColorTemperatureKelvinValue }}
       isColorFadeRequested: |
         {% if (endColorTemperature |int) > 0 %}
@@ -1315,7 +1314,6 @@ sequence:
                     {% set expectedBrightnessAsPercentage = expectedBrightness %}
                     {% set differenceFromExpectedAsPercentage = brightnessDifferenceFromExpected %}
                   {% endif %}
-
 
                   {% set stopMessage = "Stopped Ashley’s Light Fader because " +
                   (lightFriendlyName | string) + " was found to be at " +
