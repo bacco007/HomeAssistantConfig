@@ -1,0 +1,68 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Settings and Controls
+    icon: mdi:solar-power-variant-outline
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.influxdb_to_entity_365_day_solar_yield
+            - entity_id: automation.openuv_*
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
+          head:
+            type: custom:template-entity-row
+            name: Automations
+            icon: mdi:sync-alert
+            state: ""
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          type: custom:template-entity-row
+          name: Alerts
+          icon: mdi:alert-circle
+          state: ""
+        entities:
+          - alert.forecast_solar_connected
+          - alert.solcast_solar_connected
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          type: custom:template-entity-row
+          name: HA Integrations Connected
+          icon: mdi:solar-power-variant-outline
+          state: ""
+        entities:
+          - entity: binary_sensor.connected_forecast_solar
+          - entity: binary_sensor.connected_solcast_solar

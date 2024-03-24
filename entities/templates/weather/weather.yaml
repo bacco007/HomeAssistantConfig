@@ -690,8 +690,8 @@ sensor:
     attributes:
       category: weather
 
-  - name: "[Weather] Rain Start (Next 12 Hours)"
-    unique_id: weather_rain_start
+  - name: "[Weather] Precipitation Start (Next 12 Hours)"
+    unique_id: weather_precipitation_start
     icon: mdi:weather-pouring
     device_class: timestamp
     state: >

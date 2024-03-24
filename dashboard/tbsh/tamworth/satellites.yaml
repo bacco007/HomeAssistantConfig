@@ -1,35 +1,75 @@
 ---
-type: custom:vertical-stack-in-card
+type: custom:stack-in-card
 cards:
   - type: custom:mushroom-template-card
     primary: Satellites Overhead
     icon: mdi:satellite-variant
     icon_color: blue
     card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
-        }
+      style:
+        mushroom-state-info$: |
+          .container {
+            --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
   - type: entities
     card_mod:
-      style:
-        hui-buttons-row:
-          $ hui-buttons-base $: |
-            .ha-scrollbar {
-              justify-content: center;
-            }
-        .: |
-          #states {
-            padding-top: 0 !important;
-          }
-          #states > * {
-            margin: 0 !important;
-          }
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
     entities:
-      - entity: sensor.gnss_satellite_overhead
-        name: GNSS Satellites Overhead
-        show_state: false
-        secondary_info: last-changed
+      - square: false
+        type: custom:hui-element
+        card_type: grid
+        columns: 1
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background-color: var(--card-background-color);
+                padding: 20px;
+                box-shadow: none;
+              }
+        cards:
+          - entity: sensor.gnss_satellite_overhead
+            name: GNSS Satellites Overhead
+            type: tile
+            hide_state: false
+            vertical: false
+            card_mod: &style
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
   - type: custom:plotly-graph
     entities:
       - entity: sensor.gnss_satellite_overhead
@@ -66,6 +106,8 @@ cards:
         line:
           width: 3
     layout:
+      paper_bgcolor: rgba(0,0,0,0)
+      plot_bgcolor: rgba(0,0,0,0)
       showlegend: true
       height: 300
       margin:
@@ -103,40 +145,63 @@ cards:
       scrollZoom: false
   - type: entities
     card_mod:
-      style:
-        hui-buttons-row:
-          $ hui-buttons-base $: |
-            .ha-scrollbar {
-              justify-content: center;
-            }
-        .: |
-          #states {
-            padding-top: 0 !important;
-          }
-          #states > * {
-            margin: 0 !important;
-          }
+      style: |
+        ha-card {
+          margin-top: -10px;
+        }
     entities:
-      - entity: sensor.tbsmarthome_beidou_overhead_satellites
-        secondary_info: last-updated
-        name: GNSS - Beidou
-      - entity: sensor.tbsmarthome_galileo_overhead_satellites
-        name: GNSS - Galileo
-        secondary_info: last-updated
-      - entity: sensor.tbsmarthome_glonass_overhead_satellites
-        name: GNSS - GLONASS
-        secondary_info: last-updated
-      - entity: sensor.tbsmarthome_gps_overhead_satellites
-        name: GNSS - GPS
-        secondary_info: last-updated
-      - entity: sensor.tbsmarthome_qzss_overhead_satellites
-        name: GNSS - QZSS
-        secondary_info: last-updated
-      - type: section
-      - entity: sensor.tbsmarthome_tv_overhead_satellites
-        name: Television Satellites
-        secondary_info: last-updated
-      - entity: sensor.tbsmarthome_starlink_overhead_satellites
-        name: Starlink Satellites
-        secondary_info: last-updated
-        icon: mdi:satellite-variant
+      - square: false
+        type: custom:hui-element
+        card_type: grid
+        columns: 2
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background-color: var(--card-background-color);
+                padding: 20px;
+                box-shadow: none;
+              }
+        cards:
+          - entity: sensor.tbsmarthome_beidou_overhead_satellites
+            type: tile
+            name: GNSS - Beidou
+            card_mod: *style
+          - entity: sensor.tbsmarthome_galileo_overhead_satellites
+            name: GNSS - Galileo
+            type: tile
+            card_mod: *style
+          - entity: sensor.tbsmarthome_glonass_overhead_satellites
+            name: GNSS - GLONASS
+            type: tile
+            card_mod: *style
+          - entity: sensor.tbsmarthome_gps_overhead_satellites
+            name: GNSS - GPS
+            type: tile
+            card_mod: *style
+          - entity: sensor.tbsmarthome_qzss_overhead_satellites
+            name: GNSS - QZSS
+            type: tile
+            card_mod: *style
+      - square: false
+        type: custom:hui-element
+        card_type: grid
+        columns: 2
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background-color: var(--card-background-color);
+                padding: 20px;
+                box-shadow: none;
+              }
+        cards:
+          - entity: sensor.tbsmarthome_tv_overhead_satellites
+            name: Television Satellites
+            type: tile
+            card_mod: *style
+          - entity: sensor.tbsmarthome_starlink_overhead_satellites
+            name: Starlink Satellites
+            type: tile
+            icon: mdi:satellite-variant
+            card_mod: *style

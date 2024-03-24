@@ -70,10 +70,12 @@ cards:
             cards: &cards
               - !include ../snippets/solar.yaml
               - !include ../solar/production_heatmap.yaml
+              - !include ../solar/production_stats.yaml
               - !include ../solar/solcast.yaml
               - !include ../solar/forecastsolar.yaml
               - !include ../solar/grid_costs.yaml
               - !include ../opennem/opennem.yaml
+              - !include ../solar/settings_controls.yaml
           "(max-width: 1370px)":
             type: "custom:layout-card"
             layout_type: custom:masonry-layout

@@ -4,50 +4,339 @@ cards:
   - type: custom:mushroom-template-card
     primary: Thermal Comfort
     icon: mdi:thermometer-water
-    icon_color: blue
+    icon_color: "#6eaadc"
     card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
-        }
+      style:
+        mushroom-state-info$: |
+          .container {
+            --primary-text-color: #6eaadc;
+          }
+          .primary {
+            font-size: 15px !important;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+          }
+        .: |
+          ha-card {
+            box-shadow: none !important;
+            #margin: -10px;
+          }
+          ha-state-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            '--mdc-icon-size': 2px !important;
+          }
   - type: entities
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
+        ha-card {
+          margin-top: -10px;
         }
     entities:
-      - entity: sensor.weather_thermal_comfort_absolute_humidity
-        name: Absolute humidity
-      - entity: sensor.weather_thermal_comfort_dew_point
-        name: Dew point
-      - entity: sensor.weather_thermal_comfort_dew_point_perception
-        name: Dew point perception
-      - entity: sensor.weather_thermal_comfort_frost_point
-        name: Frost point
-      - entity: sensor.weather_thermal_comfort_frost_risk
-        name: Frost risk
-      - entity: sensor.weather_thermal_comfort_heat_index
-        name: Heat index
-      - type: custom:template-entity-row
-        entity: sensor.weather_thermal_comfort_humidex
-        name: Humidex
-      - entity: sensor.weather_thermal_comfort_humidex_perception
-        name: Humidex perception
-      - entity: sensor.weather_thermal_comfort_moist_air_enthalpy
-        name: Moist air enthalpy
-      - entity: sensor.weather_thermal_comfort_relative_strain_perception
-        name: Relative strain perception
-      - entity: sensor.weather_thermal_comfort_summer_scharlau_perception
-        name: Summer Scharlau perception
-      - entity: sensor.weather_thermal_comfort_summer_simmer_index
-        name: Summer Simmer index
-      - entity: sensor.weather_thermal_comfort_summer_simmer_perception
-        name: Summer Simmer perception
-      - entity: sensor.weather_thermal_comfort_thoms_discomfort_perception
-        name: Thoms discomfort perception
-      - entity: sensor.weather_thermal_comfort_winter_scharlau_perception
-        name: Winter Scharlau perception
+      - square: false
+        type: custom:hui-element
+        card_type: grid
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background-color: var(--card-background-color);
+                padding: 20px;
+                box-shadow: none;
+              }
+        cards:
+          - entity: sensor.weather_thermal_comfort_absolute_humidity
+            name: Absolute Humidity
+            type: tile
+            hide_state: false
+            vertical: false
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_dew_point_perception
+            name: Dew Point
+            type: tile
+            state_content:
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                  .secondary:after {
+                    visibility: visible;
+                    content: " ⸱ {{ state_attr(config.entity, 'dew_point') | round(2) }} °C";
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_frost_risk
+            name: Frost
+            type: tile
+            state_content:
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                  .secondary:after {
+                    visibility: visible;
+                    content: " ⸱ {{ state_attr(config.entity, 'frost_point') | round(2) }} °C";
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_heat_index
+            name: Heat index
+            type: tile
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_humidex_perception
+            name: Humidex
+            type: tile
+            state_content:
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                  .secondary:after {
+                    visibility: visible;
+                    content: " ⸱ {{ state_attr(config.entity, 'humidex') | round(2) }} °C";
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_moist_air_enthalpy
+            name: Moist air enthalpy
+            type: tile
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_relative_strain_perception
+            name: Relative strain perception
+            type: tile
+            state_content:
+              - relative_strain_index
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_summer_scharlau_perception
+            name: Summer Scharlau
+            type: tile
+            state_content:
+              - summer_scharlau_index
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_summer_simmer_perception
+            name: Summer Simmer
+            type: tile
+            state_content:
+              - summer_simmer_index
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_thoms_discomfort_perception
+            name: Thoms Discomfort
+            type: tile
+            state_content:
+              - thoms_discomfort_index
+              - state
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+          - entity: sensor.weather_thermal_comfort_winter_scharlau_perception
+            name: Winter Scharlau
+            type: tile
+            card_mod:
+              style:
+                ha-tile-info$: |
+                  .primary {
+                    font-size: 13px !important;
+                  }
+                  .secondary {
+                    font-size: 12px !important;
+                  }
+                .: |
+                  ha-card {
+                    background-color: var(--background-color);
+                    box-shadow: none;
+                  }
+                  ha-tile-info {
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
+                  }
+                  ha-tile-icon {
+                    --mdc-icon-size: 20px;
+                  }
+        columns: 2

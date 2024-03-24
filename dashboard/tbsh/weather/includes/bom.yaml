@@ -17,6 +17,9 @@ entities:
         card_type: custom:flex-table-card
         entities:
           include: weather.east_tamworth
+        service: weather.get_forecasts
+        service_data:
+          type: daily
         css:
           table+: "border-collapse: collapse;"
         columns:
@@ -58,6 +61,9 @@ entities:
         card_type: custom:flex-table-card
         entities:
           include: weather.east_tamworth_hourly
+        service: weather.get_forecasts
+        service_data:
+          type: hourly
         css:
           table+: "border-collapse: collapse;"
         columns:
@@ -139,365 +145,346 @@ entities:
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_0') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_max_0')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_0')}}
+        {{states('sensor.east_tamworth_rain_chance_0')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_0')}}mm)
       name: Forecast - Day 0
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_0
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_0
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_0
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_0
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_0
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_0
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_0
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_0
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_0
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_0
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_0
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_0
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_0
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_0
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_0
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_0
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_0
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_0
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_0
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_0
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_0
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_0
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_0
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_0
+            name: End
+            format: time
   - type: custom:fold-entity-row
     card_mod:
       style: *style
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_1') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_min_1')}} °C -
+        {{states('sensor.east_tamworth_temp_max_1')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_1')}}
+        {{states('sensor.east_tamworth_rain_chance_1')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_1')}}mm)
       name: Forecast - Day 1
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_1
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_1
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_1
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_1
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_1
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_1
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_1
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_1
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_1
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_1
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_1
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_1
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_1
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_1
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_1
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_1
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_1
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_1
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_1
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_1
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_1
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_1
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_1
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_1
+            name: End
+            format: time
   - type: custom:fold-entity-row
     card_mod:
       style: *style
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_2') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_min_2')}} °C -
+        {{states('sensor.east_tamworth_temp_max_2')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_2')}}
+        {{states('sensor.east_tamworth_rain_chance_2')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_2')}}mm)
       name: Forecast - Day 2
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_2
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_2
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_2
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_2
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_2
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_2
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_2
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_2
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_2
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_2
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_2
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_2
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_2
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_2
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_2
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_2
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_2
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_2
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_2
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_2
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_2
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_2
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_2
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_2
+            name: End
+            format: time
   - type: custom:fold-entity-row
     card_mod:
       style: *style
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_3') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_min_3')}} °C -
+        {{states('sensor.east_tamworth_temp_max_3')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_3')}}
+        {{states('sensor.east_tamworth_rain_chance_3')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_3')}}mm)
       name: Forecast - Day 3
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_3
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_3
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_3
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_3
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_3
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_3
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_3
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_3
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_3
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_3
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_3
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_3
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_3
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_3
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_3
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_3
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_3
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_3
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_3
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_3
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_3
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_3
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_3
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_3
+            name: End
+            format: time
   - type: custom:fold-entity-row
     card_mod:
       style: *style
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_4') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_min_4')}} °C -
+        {{states('sensor.east_tamworth_temp_max_4')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_4')}}
+        {{states('sensor.east_tamworth_rain_chance_4')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_4')}}mm)
       name: Forecast - Day 4
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_4
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_4
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_4
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_4
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_4
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_4
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_4
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_4
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_4
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_4
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_4
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_4
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_4
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_4
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_4
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_4
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_4
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_4
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_4
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_4
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_4
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_4
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_4
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_4
+            name: End
+            format: time
   - type: custom:fold-entity-row
     card_mod:
       style: *style
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_5') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_min_5')}} °C -
+        {{states('sensor.east_tamworth_temp_max_5')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_5')}}
+        {{states('sensor.east_tamworth_rain_chance_5')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_5')}}mm)
       name: Forecast - Day 5
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_5
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_5
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_5
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_5
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_5
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_5
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_5
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_5
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_5
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_5
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_5
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_5
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_5
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_5
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_5
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_5
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_5
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_5
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_5
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_5
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_5
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_5
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_5
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_5
+            name: End
+            format: time
   - type: custom:fold-entity-row
     card_mod:
       style: *style
     padding: 0
     head:
       type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
+      icon: |
+        {{states('sensor.east_tamworth_mdi_icon_6') }}
+      state: >
+        {{states('sensor.east_tamworth_temp_min_6')}} °C -
+        {{states('sensor.east_tamworth_temp_max_6')}} °C
+      secondary: >
+        {{states('sensor.east_tamworth_short_text_6')}}
+        {{states('sensor.east_tamworth_rain_chance_6')}}% Rain
+        ({{states('sensor.east_tamworth_rain_amount_range_6')}}mm)
       name: Forecast - Day 6
     entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_6
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_6
-        name: Astronomical Sunset Time
+      - type: custom:multiple-entity-row
+        name: Astronomical Times
+        entity: sensor.east_tamworth_astronomical_sunrise_time_6
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_astronomical_sunrise_time_6
+            name: Sunrise
+            format: time
+          - entity: sensor.east_tamworth_astronomical_sunset_time_6
+            name: Sunset
+            format: time
       - entity: sensor.east_tamworth_extended_text_6
         name: Extended Text
       - entity: sensor.east_tamworth_fire_danger_6
         name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_6
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_6
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_6
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_6
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_6
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_6
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_6
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_6
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_6
-        name: Temp Min
+      - type: section
       - entity: sensor.east_tamworth_uv_category_6
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_6
-        name: Uv End Time
+        name: UV Category
       - entity: sensor.east_tamworth_uv_forecast_6
-        name: Uv Forecast
+        name: UV Forecast
       - entity: sensor.east_tamworth_uv_max_index_6
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_6
-        name: Uv Start Time
-  - type: custom:fold-entity-row
-    card_mod:
-      style: *style
-    padding: 0
-    head:
-      type: custom:template-entity-row
-      icon: mdi:timer
-      state: ""
-      name: Forecast - Day 7
-    entities:
-      - entity: sensor.east_tamworth_astronomical_sunrise_time_7
-        name: Astronomical Sunrise Time
-      - entity: sensor.east_tamworth_astronomical_sunset_time_7
-        name: Astronomical Sunset Time
-      - entity: sensor.east_tamworth_extended_text_7
-        name: Extended Text
-      - entity: sensor.east_tamworth_fire_danger_7
-        name: Fire Danger
-      - entity: sensor.east_tamworth_icon_descriptor_7
-        name: Icon Descriptor
-      - entity: sensor.east_tamworth_mdi_icon_7
-        name: Mdi Icon
-      - entity: sensor.east_tamworth_rain_amount_max_7
-        name: Rain Amount Max
-      - entity: sensor.east_tamworth_rain_amount_min_7
-        name: Rain Amount Min
-      - entity: sensor.east_tamworth_rain_amount_range_7
-        name: Rain Amount Range
-      - entity: sensor.east_tamworth_rain_chance_7
-        name: Rain Chance
-      - entity: sensor.east_tamworth_short_text_7
-        name: Short Text
-      - entity: sensor.east_tamworth_temp_max_7
-        name: Temp Max
-      - entity: sensor.east_tamworth_temp_min_7
-        name: Temp Min
-      - entity: sensor.east_tamworth_uv_category_7
-        name: Uv Category
-      - entity: sensor.east_tamworth_uv_end_time_7
-        name: Uv End Time
-      - entity: sensor.east_tamworth_uv_forecast_7
-        name: Uv Forecast
-      - entity: sensor.east_tamworth_uv_max_index_7
-        name: Uv Max Index
-      - entity: sensor.east_tamworth_uv_start_time_7
-        name: Uv Start Time
+        name: UV Max Index
+      - type: custom:multiple-entity-row
+        name: UV Forecast Times
+        entity: sensor.east_tamworth_uv_forecast_6
+        show_state: false
+        entities:
+          - entity: sensor.east_tamworth_uv_start_time_6
+            name: Start
+            format: time
+          - entity: sensor.east_tamworth_uv_end_time_6
+            name: End
+            format: time

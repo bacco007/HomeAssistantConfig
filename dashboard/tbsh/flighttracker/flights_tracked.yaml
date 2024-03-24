@@ -64,6 +64,8 @@ cards:
           - fn: () => { return {xs:[Date.now(),Date.now()], ys:[0,1]} }
     refresh_interval: auto
     layout:
+      paper_bgcolor: rgba(0,0,0,0)
+      plot_bgcolor: rgba(0,0,0,0)
       showlegend: true
       height: 400
       margin:

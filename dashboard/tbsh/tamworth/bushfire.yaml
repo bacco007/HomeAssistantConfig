@@ -69,6 +69,7 @@ cards:
         type: custom:multiple-entity-row
         name: Fire Danger Today
         secondary_info: last-changed
+        show_state: false
         entities:
           - attribute: danger_level_today
             name: Danger Level
@@ -77,6 +78,7 @@ cards:
         type: custom:multiple-entity-row
         name: Fire Danger Tomorrow
         secondary_info: last-changed
+        show_state: false
         entities:
           - attribute: danger_level_today
             name: Danger Level
@@ -85,6 +87,7 @@ cards:
         type: custom:multiple-entity-row
         name: Fire Danger Day 3
         secondary_info: last-changed
+        show_state: false
         entities:
           - attribute: danger_level_today
             name: Danger Level
@@ -93,6 +96,7 @@ cards:
         type: custom:multiple-entity-row
         name: Fire Danger Day 4
         secondary_info: last-changed
+        show_state: false
         entities:
           - attribute: danger_level_today
             name: Danger Level

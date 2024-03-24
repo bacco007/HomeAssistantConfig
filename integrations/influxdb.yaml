@@ -61,7 +61,6 @@ influxdb:
       - sensor.radarr_movies
       - sensor.unavailable_entities
       - sensor.adsb_fa_feeder
-      - sensor.internet_time
       - weather.east_tamworth_hourly
       - sensor.udm_unifios
       - sensor.sungrowsolar_runtime
@@ -88,7 +87,6 @@ influxdb:
       - sensor.z2m_office_airquality_humidity
       - sensor.z2m_office_airquality_co2
       - sensor.z2m_office_airquality_voc
-      - sensor.z2m_office_airquality_pm25
       - sensor.weather_wind_bearing
       - sensor.ha_automation_run_history
     entity_globs:
