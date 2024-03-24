@@ -25,6 +25,7 @@
         "title": "Premenné+história - Snímač Strana 2",
         "data": {
           "value": "Počiatočná hodnota",
+          "tz_offset": "Posun počiatočného časového pásma",
           "attributes": "Počiatočné atribúty",
           "state_class": "Trieda stavu",
           "unit_of_measurement": "Jednotky merania"
@@ -72,7 +73,16 @@
   },
   "options": {
     "step": {
-      "init": {},
+      "init": {
+        "menu_options": {
+          "change_sensor_value": "Zmeňte hodnotu a atribúty",
+          "change_binary_sensor_value": "Zmeňte hodnotu a atribúty",
+          "change_device_tracker_value": "Zmeňte hodnotu a atribúty",
+          "sensor_options": "Zmeniť možnosti",
+          "binary_sensor_options": "Zmeniť možnosti",
+          "device_tracker_options": "Zmeniť možnosti"
+        }
+      },
       "sensor_options": {
         "title": "Premenné+história - snímač",
         "data": {
@@ -87,11 +97,42 @@
         "title": "Premenné+história - snímač Strana 2",
         "data": {
           "value": "Hodnota (zvyčajne užitočná iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
+          "tz_offset": "Posun časového pásma",
           "attributes": "Atribúty (zvyčajne užitočné iba vtedy, ak je možnosť Obnoviť pri reštarte nastavená na hodnotu False)",
           "state_class": "Trieda stavu",
           "unit_of_measurement": "Jednotky merania"
         },
         "description": "Aktualizácia premennej snímača Strana 2\n\n**Premenná:&nbsp;{disp_name}**\n**Trieda zariadenia:&nbsp;{device_class}**\n**Typ hodnoty:&nbsp;{value_type}**"
+      },
+      "change_sensor_value": {
+        "title": "Premenné+História - Zmena hodnoty senzora",
+        "data": {
+          "value": "Hodnota",
+          "tz_offset": "Posun časového pásma",
+          "attributes": "Atribúty"
+        },
+        "description": "**Aktualizácia senzora:&nbsp;{disp_name}**"
+      },
+      "change_binary_sensor_value": {
+        "title": "Premenné+História – Zmeňte hodnotu binárneho senzora",
+        "data": {
+          "value": "Hodnota",
+          "attributes": "Atribúty"
+        },
+        "description": "**Aktualizácia binárneho senzora:&nbsp;{disp_name}**"
+      },
+      "change_device_tracker_value": {
+        "title": "Premenné+História – Sledovanie zariadení (GPS)",
+        "data": {
+          "latitude": "Zemepisná šírka",
+          "longitude": "Zemepisná dĺžka",
+          "location_name": "Názov miesta",
+          "delete_location_name": "Odstrániť názov miesta",
+          "gps_accuracy": "Presnosť GPS",
+          "battery_level": "Úroveň batérie",
+          "attributes": "Atribúty"
+        },
+        "description": "**Aktualizuje sa nástroj na sledovanie zariadenia:&nbsp;{disp_name}**\n**Aktuálny stav:&nbsp;{dt_state}**"
       },
       "binary_sensor_options": {
         "title": "Premenné+história - binárny snímač",
