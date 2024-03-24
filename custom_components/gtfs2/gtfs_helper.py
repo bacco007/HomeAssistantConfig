@@ -5,6 +5,7 @@ import datetime
 import time
 import logging
 import os
+import glob
 import json
 import requests
 import pygtfs
@@ -12,6 +13,8 @@ from sqlalchemy.sql import text
 import multiprocessing
 from multiprocessing import Process
 from . import zip_file as zipfile
+from pathlib import Path
+
 
 import homeassistant.util.dt as dt_util
 from homeassistant.core import HomeAssistant
@@ -78,7 +81,7 @@ def get_next_departure(self):
     # days.
     limit = 24 * 60 * 60 * 2
     tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
-    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today)"
+    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now'))"
     if include_tomorrow:
         _LOGGER.debug("Include Tomorrow")
         limit = int(limit / 2 * 3)
@@ -86,8 +89,8 @@ def get_next_departure(self):
         tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
         tomorrow_where = f"OR calendar.{tomorrow_name} = 1"
         tomorrow_order = f"calendar.{tomorrow_name} DESC,"
-        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = :today or calendar_date_today.date = :tomorrow)"
-        tomorrow_select2 = f"'0' AS tomorrow,"
+        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = date('now','+1 day') )"
+        tomorrow_select2 = f"CASE WHEN date('now') < calendar_date_today.date THEN '1' else '0' END as tomorrow,"
     sql_query = f"""
         SELECT trip.trip_id, trip.route_id,trip.trip_headsign,
         route.route_long_name,route.route_short_name,
@@ -135,9 +138,9 @@ def get_next_departure(self):
         {start_station_where}
         {end_station_where}
         AND origin_stop_sequence < dest_stop_sequence
-        AND calendar.start_date <= :today
-        AND calendar.end_date >= :today
-        AND trip.service_id not in (select service_id from calendar_dates where date = :today and exception_type = 2)
+        AND calendar.start_date <= date('now')
+        AND calendar.end_date >= date('now')
+        AND trip.service_id not in (select service_id from calendar_dates where date = date('now') and exception_type = 2)
 		UNION ALL
 	    SELECT trip.trip_id, trip.route_id,trip.trip_headsign,
                route.route_long_name,route.route_short_name,
@@ -164,8 +167,8 @@ def get_next_departure(self):
                '0' AS yesterday,
                '0' AS today,
                {tomorrow_select2}
-               :today AS start_date,
-               :today AS end_date,
+               date('now') AS start_date,
+               date('now') AS end_date,
                calendar_date_today.date as calendar_date,
                calendar_date_today.exception_type as today_cd
         FROM trips trip
@@ -194,8 +197,6 @@ def get_next_departure(self):
         {
             "origin_station_id": start_station_id,
             "end_station_id": end_station_id,
-            "today": now_date,
-            "tomorrow": tomorrow_date,
             "limit": limit,
             "route_type": route_type,
         },
@@ -442,7 +443,7 @@ def remove_from_zip(delmelist,gtfs_dir,file):
             zout.writestr(item, buffer)
     zout.close()
     zin.close()
-    os.rename (os.path.join(gtfs_dir, tempfile_out), os.path.join(gtfs_dir, filename))
+    os.rename(os.path.join(gtfs_dir, tempfile_out), os.path.join(gtfs_dir, filename))
     os.remove(os.path.join(gtfs_dir, tempfile)) 
    
 
@@ -540,9 +541,10 @@ def get_datasources(hass, path) -> dict[str]:
 
 def remove_datasource(hass, path, filename):
     gtfs_dir = hass.config.path(path)
-    _LOGGER.info(f"Removing datasource: {os.path.join(gtfs_dir, filename)}.*")
-    os.remove(os.path.join(gtfs_dir, filename + ".zip"))
-    os.remove(os.path.join(gtfs_dir, filename + ".sqlite"))
+    _LOGGER.info(f"Removing path/datasource: {os.path.join(gtfs_dir, filename)}")
+    for file in Path(path).glob(f"{filename}*"):
+        _LOGGER.info("Removing file: %s", file)
+        os.remove(file)
     return "removed"
     
 def check_extracting(hass, gtfs_dir,file):
@@ -727,7 +729,7 @@ def get_local_stops_next_departures(self):
         _LOGGER.debug("Includes Tomorrow")
         tomorrow_name = tomorrow.strftime("%A").lower()
         tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
-        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = :tomorrow)"
+        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = date('now','+1 day'))"
         tomorrow_select2 = f"CASE WHEN date('now') < calendar_date_today.date THEN '1' else '0' END as tomorrow,"        
     sql_query = f"""
         SELECT * FROM (
@@ -787,8 +789,6 @@ def get_local_stops_next_departures(self):
         {
             "latitude": latitude,
             "longitude": longitude,
-            "today": now_date,
-            "tomorrow": tomorrow_date,
             "timerange": time_range,
             "radius": radius,
         },

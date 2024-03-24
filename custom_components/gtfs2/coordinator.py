@@ -145,14 +145,14 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                 self._trip_id = self._data.get('next_departure', {}).get('trip_id', None) 
                 self._direction = data["direction"]
                 self._relative = False
-                #try:
-                self._get_rt_alerts = await self.hass.async_add_executor_job(get_rt_alerts, self)
-                self._get_next_service = await self.hass.async_add_executor_job(get_next_services, self)
-                self._data["next_departure_realtime_attr"] = self._get_next_service
-                self._data["next_departure_realtime_attr"]["gtfs_rt_updated_at"] = dt_util.utcnow()
-                self._data["alert"] = self._get_rt_alerts
-                #except Exception as ex:  # pylint: disable=broad-except
-                #  _LOGGER.error("Error getting gtfs realtime data, for origin: %s with error: %s", data["origin"], ex)
+                try:
+                    self._get_rt_alerts = await self.hass.async_add_executor_job(get_rt_alerts, self)
+                    self._get_next_service = await self.hass.async_add_executor_job(get_next_services, self)
+                    self._data["next_departure_realtime_attr"] = self._get_next_service
+                    self._data["next_departure_realtime_attr"]["gtfs_rt_updated_at"] = dt_util.utcnow()
+                    self._data["alert"] = self._get_rt_alerts
+                except Exception as ex:  # pylint: disable=broad-except
+                  _LOGGER.error("Error getting gtfs realtime data, for origin: %s with error: %s", data["origin"], ex)
             else:
                 _LOGGER.debug("GTFS RT: RealTime = false, selected in entity options")            
         else:
