@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.3.3 |
 | No. Integrations | 202 |
 | No. Custom Integrations | 84 |
-| No. Entities | 5206 |
-| No. Sensors | 3449 |
+| No. Entities | 5217 |
+| No. Sensors | 3452 |
 | No. Automations | 140 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 341
-Buttons | 206
+Buttons | 209
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -91,15 +91,15 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3449
+Sensors | 3452
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 280
+Switches | 283
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 279
+Update | 280
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -727,7 +727,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
 | [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting) |  [v1.20.0] | Adaptive Lighting custom component for Home Assistant |[@basnijholt](https://github.com/basnijholt), [@RubenKelevra](https://github.com/RubenKelevra), [@th3w1zard1](https://github.com/th3w1zard1), [@protyposis](https://github.com/protyposis).|
-| [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.0.6] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
+| [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.0.8] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.42.3] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Auto Backup](https://github.com/jcwillox/hass-auto-backup) |  [v1.4.1] | 🗃️ Improved Backup Service for Home Assistant that can Automatically Remove Backups and Supports Generational Backup Schemes. |[@jcwillox](https://github.com/jcwillox).|
@@ -754,7 +754,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.1.1] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.1] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -785,9 +785,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.38.7] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.14] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
-| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.3] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
+| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.4] | Spook 👻 Not your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.10] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.11] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.7] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.0b0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Sungrow](https://github.com/alangibson/homeassistant-sungrow) |  | Sungrow Inverter integration for Home Assistant |[alangibson](https://github.com/alangibson).|
