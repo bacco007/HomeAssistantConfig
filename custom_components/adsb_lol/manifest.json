@@ -4,7 +4,7 @@
   "codeowners": ["@vingerha"],
   "config_flow": true,
   "dependencies": [
-    "zone"
+    "zone", "input_text", "input_select"
   ],
   "documentation": "https://github.com/vingerha/ha_adsb_lol/wiki",
   "iot_class": "local_polling",

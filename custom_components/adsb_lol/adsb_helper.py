@@ -11,19 +11,18 @@ _LOGGER = logging.getLogger(__name__)
 def get_flight(self):
     _LOGGER.debug ("Get flight with data: %s", self)
     response = requests.get(self._url)
-    _LOGGER.debug ("Get flight rest output: %s", response.json())
+    _LOGGER.debug ("Get flight rest output: %s", response)
     return response.json()
     
 def get_point_of_interest(self):
     _LOGGER.debug ("Get flight poi with data: %s", self)
     response = requests.get(self._url)
-    _LOGGER.debug ("Get flight poi rest output: %s", response.json())
-    _response = []
+    _LOGGER.debug ("Get flight poi rest output: %s", response)
     _response_h = []
     aircraft = {}
     aircraft_h = {}
     for ac in response.json()["ac"]:
-        if self._altitude_limit == 0 or (self._altitude_limit > 0 and ac["alt_geom"] < self._altitude_limit * 1000 / 0.3048 ):
+        if self._altitude_limit == 0 or (self._altitude_limit > 0 and ac.get("alt_geom",0) < self._altitude_limit * 1000 / 0.3048 ):
             aircraft["callsign"] = ac.get("flight", None)
             aircraft["registration"] = ac.get("r", None)
             self._reg = ac.get("r", "NoReg")
@@ -43,8 +42,6 @@ def get_point_of_interest(self):
             aircraft[CONF_ENTITY_PICTURE_ASC] = self._CONF_ENTITY_PICTURE_ASC
             aircraft[CONF_ENTITY_PICTURE_DESC] = self._CONF_ENTITY_PICTURE_DESC            
             aircraft_h[str(self._reg)] = aircraft.copy()
-
-
     _response_h = aircraft_h
 
     _LOGGER.debug ("Get flight poi: %s", response.json())

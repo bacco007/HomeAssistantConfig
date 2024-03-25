@@ -1,0 +1,65 @@
+{
+  "config": {
+    "step": {
+      "user": {
+		"menu_options": {
+          "flight_details": "Rechercher des détails sur le vol d'un avions",
+		  "flight_details_input": "Rechercher les détails du vol de l'avion à l'aide d'une entité sélection/texte existante",
+		  "point_of_interest": "Rechercher des avions autour d'un point d'intérêt"
+        },
+        "description": "Sélectionnez votre choix"
+      },
+	  "flight_details": {
+        "data": {
+		  "extract_type": "Identifiez les avions en utilisant",
+          "url": "Selectionnez l'url",
+		  "name": "Nom",
+		  "extract_param": "Paramètre d'identification de l'avion (icao, registration or callsign)"
+        },
+        "description": "Sélectionnez les paramètres pour identifier votre avion"
+      },
+	  "flight_details_input": {
+        "data": {
+		  "extract_type": "Identifiez les avions en utilisant",
+          "url": "Selectionnez l'url",
+		  "name": "Nom",
+		  "input_entity": "Entité sélection/texte"
+
+        },
+        "description": "Identifiez votre avion via une entité sélection/texte"
+      },	  
+	  "point_of_interest": {
+        "data": {
+		  "point_of_interest": "Rechercher des vols aux alentours",
+          "url": "Selectionnez l'url",
+		  "name": "Nom",
+		  "radius": "Radius (km)",
+		  "altitude_limit": "Seuls les avions en dessous de l'altitude (km), laissez 0 pour tous"
+        },
+        "description": "Rechercher des avions autour d'un point d'intérêt"
+      }	  
+	}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Personnalisez le fonctionnement de l'intégration",
+        "data": {
+          "refresh_interval": "Intervalle d'actualisation des données (en minutes)",
+          "entity_picture": "Sélectionnez l'image de l'avion, par exemple sur la carte",
+		  "entity_picture_asc": "Sélectionnez une image pour l'avion qui monte, par exemple dans la carte",
+		  "entity_picture_desc": "Sélectionnez l'image de l'avion en descente, par exemple sur la carte"
+        }
+      }
+    }
+  },
+  "selector": {
+    "extract_type": {
+      "options": {
+        "registration": "Utiliser l'immatriculation de l'avion",
+        "callsign": "Utiliser l'indicatif de l'avion",
+		"icao_hex": "Utilisez l'icao24 (hex) de l'avion"
+      }
+    }
+  }	
+}

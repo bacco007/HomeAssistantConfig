@@ -7,11 +7,11 @@
 		  "flight_details_input": "Search for aircraft flight details using an input select/text",
 		  "point_of_interest": "Search aircraft around a point of interest"
         },
-        "description": "Select your choice "
+        "description": "Select your choice"
       },
 	  "flight_details": {
         "data": {
-		  "extract_type": "Identify aircraft by using:",
+		  "extract_type": "Identify aircraft by using",
           "url": "Select url",
 		  "name": "Name",
 		  "extract_param": "Aircraft identifying parameter (icao, registration or callsign)"
@@ -30,13 +30,13 @@
       },	  
 	  "point_of_interest": {
         "data": {
-		  "point_of_interest": "Search flights around:",
+		  "point_of_interest": "Search flights around",
           "url": "Select url",
 		  "name": "Name",
 		  "radius": "Radius (km)",
 		  "altitude_limit": "Only aircraft below altitude (km), leave 0 for all"
         },
-        "description": "Seearch for aircraft around a chosen point of interest"
+        "description": "Search for aircraft around a chosen point of interest"
       }	  
 	}
   },
@@ -58,7 +58,7 @@
       "options": {
         "registration": "Use the registration of the aircraft",
         "callsign": "Use the callsign of the aircraft",
-		"icao_hex": "Use the icao2 (hex) of the aircraft"
+		"icao_hex": "Use the icao24 (hex) of the aircraft"
       }
     }
   }	
