@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.3.3 |
 | No. Integrations | 202 |
 | No. Custom Integrations | 84 |
-| No. Entities | 5217 |
+| No. Entities | 5216 |
 | No. Sensors | 3452 |
 | No. Automations | 140 |
 
@@ -85,7 +85,7 @@ Lights | 14
 Locks | 4
 Media players | 20
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -95,11 +95,11 @@ Sensors | 3452
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 283
+Switches | 284
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 280
+Update | 279
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -826,7 +826,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.2.3] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.2.7] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, Roku, Xiaomi Mi, and Android TV remote control emulator for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.0] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.6] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.2] | Present the data of Formula One in a pretty way |
@@ -888,7 +888,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | ESPHome | 2024.3.0 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Fusion | 2024.2.1 |  | 65f67727 |
-| Glances | 0.21.0 |  | a0d7b954 |
+| Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
