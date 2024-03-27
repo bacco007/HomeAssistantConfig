@@ -300,7 +300,7 @@
           {# output result #}
             {%- set zero_values = output.items() | selectattr('1', 'eq', 0) | map(attribute='0') | list -%}
             {%- set reject_list = zero_values | reject('in', always_show) | list -%}
-            {{- dict(output.items() | selectattr('0', 'in', to_output) | rejectattr('0', 'in', reject_list)) | default({always_retrun: 0}, true) | to_json -}}
+            {{- dict(output.items() | selectattr('0', 'in', to_output) | rejectattr('0', 'in', reject_list)) | default({always_return: 0}, true) | to_json -}}
           {%- else -%} {{- dict(error='No time parts left to output') | to_json -}}
           {%- endif -%} {# 3 #}
       {%- endif -%} {# 2 #}
@@ -319,8 +319,8 @@
   {# split timedelta #}
     {%- set time_parts = time_split(date, parts, compare_date, not_use, always_show, time, round_mode) | from_json -%}
   {# check for error #}
-    {%- if error in time_parts -%}
-      {{- time_parts[error] -}}
+    {%- if 'error' in time_parts -%}
+      {{- time_parts['error'] -}}
     {%- else -%}
     {# convert to phrases #}
       {%- set ns = namespace(phrases=[]) -%}

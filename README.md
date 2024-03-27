@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.3.3 |
 | No. Integrations | 202 |
 | No. Custom Integrations | 84 |
-| No. Entities | 5216 |
-| No. Sensors | 3452 |
+| No. Entities | 5217 |
+| No. Sensors | 3451 |
 | No. Automations | 140 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 13
 Selects | 51
-Sensors | 3452
+Sensors | 3451
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 284
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 279
+Update | 280
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -755,7 +755,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.1.1] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.1] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.1.1] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
@@ -771,7 +771,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [v2.0.13] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.3] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.3] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: full rewrite in progress ("temp" branch) |[@AlexanderLanin](https://github.com/AlexanderLanin).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
@@ -789,7 +789,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.11] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.7] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
-| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.0b0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.0b1] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Sungrow](https://github.com/alangibson/homeassistant-sungrow) |  | Sungrow Inverter integration for Home Assistant |[alangibson](https://github.com/alangibson).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.11.1] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
@@ -826,7 +826,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.2.3] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.0] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.1] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.6] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.2] | Present the data of Formula One in a pretty way |
@@ -854,7 +854,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v1.21.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.2.0] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.2.2] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
 | [Sidebar Card](https://github.com/DBuit/sidebar-card) |  [v0.1.9.6.1] |  |
 | [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.6.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
@@ -868,7 +868,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.4.4] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.1.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.1.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Windrose Card](https://github.com/aukedejong/lovelace-windrose-card) |  [v1.4.0] | Home Assistant Lovelace Windrose Card |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>2 Themes</summary>
@@ -885,7 +885,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.2.0 |  | a0d7b954 |
 | Cloudflared | 5.1.7 |  | 9074a9fa |
-| ESPHome | 2024.3.0 |  | 15ef4d2f |
+| ESPHome | 2024.3.1 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Fusion | 2024.2.1 |  | 65f67727 |
 | Glances | 0.21.1 |  | a0d7b954 |
