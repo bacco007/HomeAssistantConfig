@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
@@ -16,7 +17,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (ATTR_ENTITY_ID, CONF_DEVICE_CLASS,
                                  CONF_UNIQUE_ID, CONF_UNIT_OF_MEASUREMENT,
                                  CONF_VALUE_TEMPLATE)
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_point_in_time
 from homeassistant.helpers.restore_state import ExtraStoredData, RestoreEntity
@@ -25,8 +26,7 @@ from homeassistant.util import dt as dt_util
 from .const import (ATTR_LAST_RESET, ATTR_NEXT_RESET, ATTR_PREV, ATTR_STATUS,
                     CONF_CONFIG_NAME, CONF_CRON, CONF_METER_TYPE, CONF_SENSOR,
                     CONF_SENSOR_NAME, CONF_STATE_CLASS, COORDINATOR,
-                    DOMAIN_DATA, EVENT_TYPE_RESET, ICON, MeterType,
-                    SensorState)
+                    DOMAIN_DATA, EVENT_TYPE_RESET, MeterType, SensorState)
 from .coordinator import MeasureItCoordinator, MeasureItCoordinatorEntity
 from .meter import CounterMeter, MeasureItMeter, SourceMeter, TimeMeter
 from .util import create_renderer
@@ -233,8 +233,8 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
         self._attr_state_class = state_class
         self._attr_device_class = device_class
 
-        self._attr_icon = ICON
         self._attr_should_poll = False
+        self._set_translation_key()
 
         self._time_window_active: bool = False
         self._condition_active: bool = False
@@ -264,9 +264,13 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
         self.async_on_remove(self.unsub_reset_listener)
 
         @callback
-        def event_filter(event):
+        def event_filter(event_data: Mapping[str, Any] | Event):
             """Filter events."""
-            return self.entity_id in event.data.get(ATTR_ENTITY_ID)
+
+            # Breaking change in 2024.4.0, check for Event for versions prior to this
+            if type(event_data) is Event:  # Intentionally avoid `isinstance` because it's slow and we trust `Event` is not subclassed
+                event_data = event_data.data
+            return self.entity_id in event_data.get(ATTR_ENTITY_ID)
 
         @callback
         def on_reset_event(event):
@@ -313,6 +317,15 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
         if self.state_class == SensorStateClass.TOTAL:
             return self._last_reset
         return None
+
+    def _set_translation_key(self) -> None:
+        """Set the translation key."""
+        if self.meter.meter_type == MeterType.SOURCE:
+            self._attr_translation_key = "source-meter"
+        elif self.meter.meter_type == MeterType.TIME:
+            self._attr_translation_key = "time-meter"
+        elif self.meter.meter_type == MeterType.COUNTER:
+            self._attr_translation_key = "counter-meter"
 
     @property
     def extra_state_attributes(self) -> dict[str, str]:
@@ -385,12 +398,22 @@ class MeasureItSensor(MeasureItCoordinatorEntity, RestoreEntity, SensorEntity):
         self._on_sensor_state_update(old_state, new_state)
         self._async_write_ha_state()
 
+    def source_has_reset(self, new_value: Decimal) -> bool:
+        """Check if the source has reset."""
+        if self.state_class != SensorStateClass.TOTAL_INCREASING:
+            return False
+        return new_value < self.meter.measured_value * Decimal('0.9')
+
     @callback
     def on_value_change(self, new_value: Decimal | None = None) -> None:
         """Handle a change in the value."""
         old_state = self.sensor_state
         if new_value is not None:
-            self.meter.update(new_value)
+            if self.meter.meter_type == MeterType.SOURCE and self.source_has_reset(new_value):
+                meter: SourceMeter = self.meter
+                meter.handle_source_reset(new_value)
+            else:
+                self.meter.update(new_value)
         else:
             self.meter.update()
         if old_state == SensorState.INITIALIZING_SOURCE:
