@@ -47,10 +47,10 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.3.3 |
-| No. Integrations | 202 |
+| HA Version | 2024.4.0b0 |
+| No. Integrations | 199 |
 | No. Custom Integrations | 84 |
-| No. Entities | 5217 |
+| No. Entities | 5219 |
 | No. Sensors | 3451 |
 | No. Automations | 140 |
 
@@ -70,8 +70,8 @@ Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 96
-Devices | 560
+Device trackers | 99
+Devices | 565
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -85,7 +85,7 @@ Lights | 14
 Locks | 4
 Media players | 20
 Numbers | 31
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -99,10 +99,10 @@ Switches | 284
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 280
+Update | 277
 Vacuums | 0
 Water heaters | 0
-Weather | 14
+Weather | 15
 Zones | 4
 </details>
 
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>601 Integrations</summary>
+<details><summary>573 Integrations</summary>
 
 | Name |
 | --- |
@@ -356,7 +356,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [iss.sensor](https://www.home-assistant.io/components/iss.sensor) |
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
 | [lastfm.sensor](https://www.home-assistant.io/components/lastfm.sensor) |
-| [lawn_mower](https://www.home-assistant.io/components/lawn_mower) |
 | [light](https://www.home-assistant.io/components/light) |
 | [local_calendar](https://www.home-assistant.io/components/local_calendar) |
 | [local_calendar.calendar](https://www.home-assistant.io/components/local_calendar.calendar) |
@@ -398,31 +397,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [moon](https://www.home-assistant.io/components/moon) |
 | [moon.sensor](https://www.home-assistant.io/components/moon.sensor) |
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
-| [mqtt.alarm_control_panel](https://www.home-assistant.io/components/mqtt.alarm_control_panel) |
 | [mqtt.binary_sensor](https://www.home-assistant.io/components/mqtt.binary_sensor) |
 | [mqtt.button](https://www.home-assistant.io/components/mqtt.button) |
-| [mqtt.camera](https://www.home-assistant.io/components/mqtt.camera) |
-| [mqtt.climate](https://www.home-assistant.io/components/mqtt.climate) |
-| [mqtt.cover](https://www.home-assistant.io/components/mqtt.cover) |
-| [mqtt.device_tracker](https://www.home-assistant.io/components/mqtt.device_tracker) |
-| [mqtt.event](https://www.home-assistant.io/components/mqtt.event) |
-| [mqtt.fan](https://www.home-assistant.io/components/mqtt.fan) |
-| [mqtt.humidifier](https://www.home-assistant.io/components/mqtt.humidifier) |
-| [mqtt.image](https://www.home-assistant.io/components/mqtt.image) |
-| [mqtt.lawn_mower](https://www.home-assistant.io/components/mqtt.lawn_mower) |
 | [mqtt.light](https://www.home-assistant.io/components/mqtt.light) |
 | [mqtt.lock](https://www.home-assistant.io/components/mqtt.lock) |
 | [mqtt.number](https://www.home-assistant.io/components/mqtt.number) |
-| [mqtt.scene](https://www.home-assistant.io/components/mqtt.scene) |
 | [mqtt.select](https://www.home-assistant.io/components/mqtt.select) |
 | [mqtt.sensor](https://www.home-assistant.io/components/mqtt.sensor) |
-| [mqtt.siren](https://www.home-assistant.io/components/mqtt.siren) |
 | [mqtt.switch](https://www.home-assistant.io/components/mqtt.switch) |
-| [mqtt.text](https://www.home-assistant.io/components/mqtt.text) |
 | [mqtt.update](https://www.home-assistant.io/components/mqtt.update) |
-| [mqtt.vacuum](https://www.home-assistant.io/components/mqtt.vacuum) |
-| [mqtt.valve](https://www.home-assistant.io/components/mqtt.valve) |
-| [mqtt.water_heater](https://www.home-assistant.io/components/mqtt.water_heater) |
 | [multiscrape](https://www.home-assistant.io/components/multiscrape) |
 | [multiscrape.sensor](https://www.home-assistant.io/components/multiscrape.sensor) |
 | [my](https://www.home-assistant.io/components/my) |
@@ -461,6 +444,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ping](https://www.home-assistant.io/components/ping) |
 | [ping.binary_sensor](https://www.home-assistant.io/components/ping.binary_sensor) |
 | [ping.device_tracker](https://www.home-assistant.io/components/ping.device_tracker) |
+| [ping.sensor](https://www.home-assistant.io/components/ping.sensor) |
 | [pirateweather](https://www.home-assistant.io/components/pirateweather) |
 | [pirateweather.sensor](https://www.home-assistant.io/components/pirateweather.sensor) |
 | [pirateweather.weather](https://www.home-assistant.io/components/pirateweather.weather) |
@@ -535,17 +519,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [slack](https://www.home-assistant.io/components/slack) |
 | [slack.notify](https://www.home-assistant.io/components/slack.notify) |
 | [slack.sensor](https://www.home-assistant.io/components/slack.sensor) |
-| [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
-| [smartthinq_sensors.binary_sensor](https://www.home-assistant.io/components/smartthinq_sensors.binary_sensor) |
-| [smartthinq_sensors.button](https://www.home-assistant.io/components/smartthinq_sensors.button) |
-| [smartthinq_sensors.climate](https://www.home-assistant.io/components/smartthinq_sensors.climate) |
-| [smartthinq_sensors.fan](https://www.home-assistant.io/components/smartthinq_sensors.fan) |
-| [smartthinq_sensors.humidifier](https://www.home-assistant.io/components/smartthinq_sensors.humidifier) |
-| [smartthinq_sensors.light](https://www.home-assistant.io/components/smartthinq_sensors.light) |
-| [smartthinq_sensors.select](https://www.home-assistant.io/components/smartthinq_sensors.select) |
-| [smartthinq_sensors.sensor](https://www.home-assistant.io/components/smartthinq_sensors.sensor) |
-| [smartthinq_sensors.switch](https://www.home-assistant.io/components/smartthinq_sensors.switch) |
-| [smartthinq_sensors.water_heater](https://www.home-assistant.io/components/smartthinq_sensors.water_heater) |
 | [snmp.sensor](https://www.home-assistant.io/components/snmp.sensor) |
 | [solcast_solar](https://www.home-assistant.io/components/solcast_solar) |
 | [solcast_solar.sensor](https://www.home-assistant.io/components/solcast_solar.sensor) |
@@ -664,7 +637,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [utility_meter.sensor](https://www.home-assistant.io/components/utility_meter.sensor) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
-| [valve](https://www.home-assistant.io/components/valve) |
 | [version](https://www.home-assistant.io/components/version) |
 | [version.binary_sensor](https://www.home-assistant.io/components/version.binary_sensor) |
 | [version.sensor](https://www.home-assistant.io/components/version.sensor) |
@@ -676,12 +648,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [waqi.sensor](https://www.home-assistant.io/components/waqi.sensor) |
 | [watchman](https://www.home-assistant.io/components/watchman) |
 | [watchman.sensor](https://www.home-assistant.io/components/watchman.sensor) |
-| [water_heater](https://www.home-assistant.io/components/water_heater) |
 | [waternsw.sensor](https://www.home-assistant.io/components/waternsw.sensor) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weatherflow](https://www.home-assistant.io/components/weatherflow) |
 | [weatherflow.sensor](https://www.home-assistant.io/components/weatherflow.sensor) |
 | [weatherflow_cloud](https://www.home-assistant.io/components/weatherflow_cloud) |
+| [weatherflow_cloud.weather](https://www.home-assistant.io/components/weatherflow_cloud.weather) |
 | [weatherflow_forecast](https://www.home-assistant.io/components/weatherflow_forecast) |
 | [weatherflow_forecast.binary_sensor](https://www.home-assistant.io/components/weatherflow_forecast.binary_sensor) |
 | [weatherflow_forecast.sensor](https://www.home-assistant.io/components/weatherflow_forecast.sensor) |
@@ -731,7 +703,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.42.3] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Auto Backup](https://github.com/jcwillox/hass-auto-backup) |  [v1.4.1] | 🗃️ Improved Backup Service for Home Assistant that can Automatically Remove Backups and Supports Generational Backup Schemes. |[@jcwillox](https://github.com/jcwillox).|
-| [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.3] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
+| [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.1] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
@@ -749,19 +721,19 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.1] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.1] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.2] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.1.1] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3](https://github.com/gcobb321/icloud3) |  [v2.4.7] | iCloud3 v3 Prerelease is now available, Enable Beta Versions in HACS. ---- iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.1.1] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
-| [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.6.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.7.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.14] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v6.8.1] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.3.4] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -771,7 +743,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Openweathermaphistory](https://github.com/petergridge/openweathermaphistory) |  [v2.0.13] | A home assistant sensor that uses the OpenWeatherMap API to get forecast, current obs and history data |[@petergridge](https://github.com/petergridge).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.3] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.3] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Pre Release Sungrow Inverter Integration   Custom Repository](https://github.com/AlexanderLanin/homeassistant-sungrow) |  | Status: full rewrite in progress ("temp" branch) |[@AlexanderLanin](https://github.com/AlexanderLanin).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
@@ -823,7 +795,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.2.3] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.3.0] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.1] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
@@ -949,7 +921,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.3.3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.4.0b0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
