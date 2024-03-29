@@ -1,0 +1,15 @@
+---
+sensor:
+  - name: "[HA] Integrations, Entity Count"
+    unique_id: ha_integrations_entity_count
+    icon: mdi:home-assistant
+    state: ""
+    attributes:
+      category: homeassistant
+      details: >
+        {%- set ns = namespace(items = []) %}
+        {%- for item in  states | map(attribute='entity_id')  | map('device_attr', 'identifiers') | reject('none')  | map('first') | select('defined')  | map(attribute='0') | unique %}
+          {%- set entities = integration_entities(item) %}
+          {%- set ns.items = ns.items + [ { 'integration': item, 'count': entities | count} ] %}
+        {%- endfor %}
+        {{ ns.items | sort(attribute='count', reverse=true) }}

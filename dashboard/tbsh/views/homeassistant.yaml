@@ -84,7 +84,7 @@ cards:
         type: "custom:layout-card"
         layout_type: custom:masonry-layout
         layout:
-          max_cols: 4
+          max_cols: 5
           width: 300
           max_width: 1000
         cards: *cards

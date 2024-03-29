@@ -76,3 +76,4 @@ yahoofinance:
     - ^N225
     - ^NZ50
     - COST
+    - RDDT

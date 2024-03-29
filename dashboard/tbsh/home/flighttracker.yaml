@@ -54,7 +54,7 @@ cards:
               }
             cards:
               - type: custom:decluttering-card
-                template: mushroom_entity_graph
+                template: mushroom_entity_graph_small
                 variables:
                   - entity: sensor.flighttracker_aircraft_total
                   - colour: "rgb(39, 179, 118)"
@@ -62,7 +62,7 @@ cards:
                   - icon: mdi:airplane-alert
                   - line_width: 2.5
               - type: custom:decluttering-card
-                template: mushroom_entity_graph
+                template: mushroom_entity_graph_small
                 variables:
                   - entity: sensor.flighttracker_fr24_current_tracked
                   - colour: "rgb(39, 179, 118)"
@@ -94,6 +94,10 @@ cards:
               action: none
             card_mod:
               style:
+                mushroom-shape-icon$: |
+                  .shape {
+                    --shape-color: none !important;
+                  }
                 .: |
                   ha-card:before {
                     content: '';
@@ -110,7 +114,12 @@ cards:
                     }
                   ha-card {
                     background-color: var(--background-color);
-                    box-shadow: none;
+                    --icon-size: 40px;
+                    --icon-symbol-size: 30px;
+                    --card-secondary-font-size: 10px;
+                    --card-primary-font-size: 12px;
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
                   }
 
           - type: custom:mushroom-template-card
@@ -139,7 +148,17 @@ cards:
               action: none
             card_mod:
               style:
+                mushroom-shape-icon$: |
+                  .shape {
+                    --shape-color: none !important;
+                  }
                 .: |
                   ha-card {
                     background-color: var(--background-color);
+                    --icon-size: 40px;
+                    --icon-symbol-size: 30px;
+                    --card-secondary-font-size: 10px;
+                    --card-primary-font-size: 12px;
+                    padding-top: 5px !important;
+                    padding-bottom: 5px !important;
                   }

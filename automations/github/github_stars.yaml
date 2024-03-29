@@ -5,8 +5,6 @@ trigger:
   - platform: state
     entity_id:
       - sensor.bacco007_homeassistantconfig_stars
-      - sensor.bacco007_sensor_opennem_stars
-      - sensor.bacco007_sensor_waternsw_stars
 condition:
   - condition: template
     value_template: >
@@ -22,20 +20,3 @@ action:
       notification_id: github_repostar
       message: >-
         "{{ trigger.to_state.attributes.friendly_name | regex_replace(find='bacco007/', replace='', ignorecase=False) }}: {{ trigger.from_state.state }} => {{ trigger.to_state.state }}"
-  # - service: notify.slack
-  #   data_template:
-  #     message: ""
-  #     target: "#tbsmarthome"
-  #     data:
-  #       blocks:
-  #         - type: section
-  #           text:
-  #             type: mrkdwn
-  #             text: "*Github - Repo Star*"
-  #         - type: section
-  #           text:
-  #             type: mrkdwn
-  #             text: >-
-  #               {% for repo in state_attr('sensor.hacs', 'repositories') %}
-  #                 *{{ repo.display_name }}* _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
-  #               {% endfor %}

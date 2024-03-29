@@ -47,9 +47,6 @@ cards:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
-                style: |
-                  ha-card {
-                    background-color: var(--background-color); }
                 entity: sensor.upcoming_sport_next_24_hours
                 hold_action:
                   action: none
@@ -58,17 +55,24 @@ cards:
                 secondary_info: name
                 primary_info: state
                 name: Today
-                icon_color: green
                 card_mod:
                   style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+                      }
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
+
               - type: custom:mushroom-entity-card
-                style: |
-                  ha-card {
-                    background-color: var(--background-color); }
                 entity: sensor.upcoming_sport_this_week
                 name: This Week
                 fill_container: false
@@ -83,10 +87,21 @@ cards:
                 secondary_info: name
                 card_mod:
                   style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        --shape-color: none !important;
+                      }
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 30px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
+
       - type: custom:auto-entities
         sort:
           method: attribute
@@ -108,7 +123,8 @@ cards:
                   "tap_action": "none",
                   "card_mod": {
                     "style": {
-                      ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background-color: var(--background-color);\n}\n"
+                      "mushroom-shape-icon$": ".shape {\n  --shape-color: none !important;\n}\n",
+                      ".": "ha-card {\n  background-color: var(--background-color);\n  --icon-size: 40px;\n  --icon-symbol-size: 30px;\n  --card-secondary-font-size: 10px;\n  --card-primary-font-size: 12px;\n  padding-top: 5px !important;\n  padding-bottom: 5px !important;\n}\nha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}"
                     }
                   }
                 }
@@ -120,9 +136,9 @@ cards:
           parameters:
             direction: vertical
             autoHeight: true
-            height: 80
+            height: 60
             effect: cube
             autoplay:
               delay: 2000
-            cubeEffect:
+            cube effect:
               - slideShadows: false

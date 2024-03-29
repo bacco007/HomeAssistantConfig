@@ -73,6 +73,12 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 25px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
                     mushroom-shape-icon$: |
                       .shape {
@@ -117,6 +123,12 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 25px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
                     mushroom-shape-icon$: |
                       .shape {
@@ -153,6 +165,12 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 25px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
                     mushroom-shape-icon$: |
                       {%- from 'next_birthday.jinja' import next_birthday_days -%}
@@ -185,6 +203,12 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 25px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
                     mushroom-shape-icon$: |
                       .shape {
@@ -214,6 +238,12 @@ cards:
                     .: |
                       ha-card {
                         background-color: var(--background-color);
+                        --icon-size: 40px;
+                        --icon-symbol-size: 25px;
+                        --card-secondary-font-size: 10px;
+                        --card-primary-font-size: 12px;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
                       }
                     mushroom-shape-icon$: |
                       .shape {

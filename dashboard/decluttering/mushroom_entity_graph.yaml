@@ -59,3 +59,73 @@ mushroom_entity_graph:
             ha-card:after {
               background-color: var(--background-color) !important;
             }
+
+mushroom_entity_graph_small:
+  default:
+    - title: ""
+    - entity: sun.sun
+    - colour: "#FFFFFF"
+    - hours_to_show: 24
+    - points_per_hour: 6
+    - line_width: 3
+  card:
+    type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          background-color: var(--background-color);
+          box-shadow: none !important;
+        }
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: "[[entity]]"
+        primary_info: name
+        secondary_info: state
+        name: "[[title]]"
+        icon: "[[icon]]"
+        icon_color: "[[colour]]"
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mini-graph-card
+        entities:
+          - entity: "[[entity]]"
+            name: "[[title]]"
+            color: "[[colour]]"
+        height: 30
+        hours_to_show: "[[hours_to_show]]"
+        line_width: "[[line_width]]"
+        points_per_hour: "[[points_per_hour]]"
+        animate: true
+        show:
+          name: false
+          icon: false
+          state: false
+          legend: false
+          fill: fade
+        card_mod:
+          style: |
+            ha-card {
+              background-color: var(--background-color) !important;
+              border-radius: 5px;
+              box-shadow: none;
+              padding-top: 0 !important;
+            }
+            ha-card:after {
+              background-color: var(--background-color) !important;
+            }

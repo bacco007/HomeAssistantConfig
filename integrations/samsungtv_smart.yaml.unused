@@ -1,4 +1,0 @@
----
-samsungtv_smart:
-  - host: 192.168.1.136
-    app_list: '{"Netflix": "11101200001", "YouTube": "111299001912", "Spotify": "3201606009684", "Kayo Sports": "eYuOiOLYQX.KayoSports", "Apple TV": "com.samsung.tv.aria-video", "Plex": "kIciSQlYEM.plex", "Foxtel": "AtbFvatetY.FoxtelTizenApp", "Stan": "73iTZRTc34.Stan", "ABC iView": "mWK87Xghap.ABCiview", "10 Play": "KaLitts8bq.tenplaySamsungTizen", "Binge": "as6cYRgkPy.Binge", "SBS on Demand": "OyE7OuxlUi.SBSOnDemand", "7Plus": "icp4AvUPiA.7plus", "9 Now": "Ne2ZsPWdKl.9NOW"}'
