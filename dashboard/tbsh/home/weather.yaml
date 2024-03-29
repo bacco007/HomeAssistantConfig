@@ -171,6 +171,7 @@ cards:
             show_forecast: true
             type: weather-forecast
             entity: weather.pirateweather
+            name: Weather
             forecast_type: hourly
             card_mod:
               style: |
@@ -181,11 +182,24 @@ cards:
                 }
                 .forecast-image-icon {
                   padding: 0 !important;
+                  width: 30px;
+                }
+                .forecast {
+                  font-size: 13px !important;
+                  padding-top: 2px !important;
+                  font-weight: 800;
+                }
+                .forecast .temp {
+                  font-size: 13px !important;
+                  padding: 0px !important;
+                  margin: 0px !important;
+                  font-weight: 500;
                 }
           - show_current: false
             show_forecast: true
             type: weather-forecast
             entity: weather.pirateweather
+            name: Weather
             forecast_type: daily
             card_mod:
               style: |
@@ -196,6 +210,24 @@ cards:
                 }
                 .forecast-image-icon {
                   padding: 0 !important;
+                  width: 30px;
+                }
+                .forecast {
+                  font-size: 13px !important;
+                  padding-top: 12px !important;
+                  font-weight: 800;
+                }
+                .forecast .temp {
+                  font-size: 13px !important;
+                  padding: 0px !important;
+                  margin: 0px !important;
+                  font-weight: 500;
+                }
+                .forecast .templow {
+                  font-size: 13px !important;
+                  padding: 0px !important;
+                  margin: 0px !important;
+                  font-weight: normal;
                 }
           # - type: custom:hourly-weather
           #   entity: weather.weatherflow_forecast_brisbane_st

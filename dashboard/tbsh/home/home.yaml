@@ -4,7 +4,7 @@ cards:
   - type: custom:mushroom-template-card
     primary: Home
     icon: mdi:home
-    icon_color: "#6eaadc"
+    icon_color: '#6eaadc'
     card_mod:
       style:
         mushroom-state-info$: |
@@ -61,8 +61,10 @@ cards:
                   - type: custom:mushroom-template-card
                     primary: Next Bin Day
                     secondary: >
-                      {% from 'relative_time_plus.jinja' import relative_time_plus %}
-                      {{ relative_time_plus(states('sensor.binday_nextcollectionday'), parts=1, week=false, time=true, language='en') }}
+                      {% from 'relative_time_plus.jinja' import
+                      relative_time_plus %} {{
+                      relative_time_plus(states('sensor.binday_nextcollectionday'),
+                      parts=1, language='en') }}
                     tap_action:
                       action: none
                     hold_action:
@@ -74,12 +76,18 @@ cards:
                         ha-card {
                           background-color: var(--background-color) !important;
                           --card-secondary-font-weight: 400;!important;
+                          --icon-size: 40px;
+                          --icon-symbol-size: 30px;
+                          --card-secondary-font-size: 12px;
+                          --card-primary-font-size: 12px;
+                          padding-top: 5px !important;
+                          padding-bottom: 5px !important;
                         }
                   - type: horizontal-stack
                     cards:
                       - type: custom:mushroom-template-card
-                        primary: ""
-                        secondary: ""
+                        primary: ''
+                        secondary: ''
                         icon: mdi:trash-can
                         icon_color: red
                         badge_icon: mdi:check-bold
@@ -93,30 +101,41 @@ cards:
                         double_tap_action:
                           action: none
                         card_mod:
-                          style: |
-                            ha-card {
-                              position:relative;
-                              left: 15px;
-                              margin: 0 -10px 0 0;
-                            }
+                          style:
+                            .: |
+                              ha-card {
+                                position: relative;
+                                left: 5px;
+                                margin: 0 -10px 0 0;
+                                background-color: var(--background-color);
+                                --icon-size: 40px;
+                                --icon-symbol-size: 20px;
+                                --card-secondary-font-size: 10px;
+                                --card-primary-font-size: 12px;
+                                padding-top: 5px !important;
+                                padding-bottom: 5px !important;
+                              }
                       - type: custom:mushroom-template-card
-                        primary: ""
-                        secondary: ""
+                        primary: ''
+                        secondary: ''
                         icon: mdi:recycle
-                        icon_color: |
-                          {% if state_attr('sensor.binday_recycling', 'days') < 7 %}
+                        icon_color: >
+                          {% if state_attr('sensor.binday_recycling', 'days') <
+                          7 %}
                             yellow
                           {% else %}
                             grey
                           {% endif %}
-                        badge_icon: |
-                          {% if state_attr('sensor.binday_recycling', 'days') < 7 %}
+                        badge_icon: >
+                          {% if state_attr('sensor.binday_recycling', 'days') <
+                          7 %}
                             mdi:check-bold
                           {% else %}
                             mdi:close
                           {% endif %}
-                        badge_color: |
-                          {% if state_attr('sensor.binday_recycling', 'days') < 7 %}
+                        badge_color: >
+                          {% if state_attr('sensor.binday_recycling', 'days') <
+                          7 %}
                             green
                           {% else %}
                             grey
@@ -130,30 +149,41 @@ cards:
                         double_tap_action:
                           action: none
                         card_mod:
-                          style: |
-                            ha-card {
-                              position:relative;
-                              left:5px;
-                              margin: 0 -10px 0 0;
-                            }
+                          style:
+                            .: |
+                              ha-card {
+                                position: relative;
+                                left: 5px;
+                                margin: 0 -10px 0 0;
+                                background-color: var(--background-color);
+                                --icon-size: 40px;
+                                --icon-symbol-size: 20px;
+                                --card-secondary-font-size: 10px;
+                                --card-primary-font-size: 12px;
+                                padding-top: 5px !important;
+                                padding-bottom: 5px !important;
+                              }
                       - type: custom:mushroom-template-card
-                        primary: ""
-                        secondary: ""
+                        primary: ''
+                        secondary: ''
                         icon: mdi:leaf
-                        icon_color: |
-                          {% if state_attr('sensor.binday_greenwaste', 'days') < 7 %}
+                        icon_color: >
+                          {% if state_attr('sensor.binday_greenwaste', 'days') <
+                          7 %}
                             green
                           {% else %}
                             grey
                           {% endif %}
-                        badge_icon: |
-                          {% if state_attr('sensor.binday_greenwaste', 'days') < 7 %}
+                        badge_icon: >
+                          {% if state_attr('sensor.binday_greenwaste', 'days') <
+                          7 %}
                             mdi:check-bold
                           {% else %}
                             mdi:close
                           {% endif %}
-                        badge_color: |
-                          {% if state_attr('sensor.binday_greenwaste', 'days') < 7 %}
+                        badge_color: >
+                          {% if state_attr('sensor.binday_greenwaste', 'days') <
+                          7 %}
                             green
                           {% else %}
                             grey
@@ -167,9 +197,17 @@ cards:
                         double_tap_action:
                           action: none
                         card_mod:
-                          style: |
-                            ha-card {
-                              position:relative;
-                              left:0px;
-                              margin: 0 -10px 0 -10px;
-                            }
+                          style:
+                            .: |
+                              ha-card {
+                                position:relative;
+                                left:5px;
+                                margin: 0 -10px 0 0;
+                                background-color: var(--background-color);
+                                --icon-size: 40px;
+                                --icon-symbol-size: 20px;
+                                --card-secondary-font-size: 10px;
+                                --card-primary-font-size: 12px;
+                                padding-top: 5px !important;
+                                padding-bottom: 5px !important;
+                              }
