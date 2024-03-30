@@ -383,6 +383,24 @@ class AwtrixTime:
                 "mqtt", "publish", service_data
             )
 
+            # custom
+            frames = data.get("frames")
+            for frame in frames:
+                frame_data = frames.get(frame)
+                payload = {}
+                for item in frame_data or []:
+                    payload[item] = frame_data[item]
+
+                if payload:
+                    payload = merge_custom_data({"lifetime": 900, "repeat": 1}, payload)
+                payload = json.dumps(payload)
+                service_data = {"payload_template": payload,
+                                    "topic": topic + "weather_" + frame}
+
+                await self.hass.services.async_call(
+                        "mqtt", "publish", service_data
+                )
+
             # home
             home_temperature_entity = data.get('home_temperature')
             if home_temperature_entity:

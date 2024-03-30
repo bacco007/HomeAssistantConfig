@@ -14,7 +14,6 @@ SERVICE_PUSH_APP_DATA = "push_app_data"
 SERVICE_SETTINGS = "settings"
 SERVICE_SWITCH_APP = "switch_app"
 SERVICE_WEATHER_APP = "weather_app"
-
 SERVICE_SOUND = "sound"
 SERVICE_RTTTL = "rtttl"
 
@@ -30,6 +29,15 @@ SERVICES = [
 SERVICE_DATA = "data"
 SERVICE_APP_NAME = "name"
 
+WEATHER_NAME = "weather"
+OUTSIDE_TEMPERATURE_NAME = "outside_temperature"
+HOME_TEMPERATURE_NAME = "home_temperature"
+SUN_NAME = "sun"
+MOON_NAME = "moon"
+ICONS_NAME = "icons"
+FRAMES_NAME = "frames"
+
+# Schemas
 SERVICE_PUSH_APP_DATA_SCHEMA = vol.All(
     vol.Schema(
         {
@@ -49,7 +57,7 @@ SERVICE_SWITCH_APP_SCHEMA = vol.All(
     cv.has_at_least_one_key(SERVICE_APP_NAME),
 )
 
-SERVICE_RTTTL_SCHEMA= vol.All(
+SERVICE_RTTTL_SCHEMA = vol.All(
     vol.Schema(
         {
             vol.Required(SERVICE_RTTTL): str,
@@ -58,7 +66,7 @@ SERVICE_RTTTL_SCHEMA= vol.All(
     cv.has_at_least_one_key(SERVICE_RTTTL),
 )
 
-SERVICE_SOUND_SCHEMA= vol.All(
+SERVICE_SOUND_SCHEMA = vol.All(
     vol.Schema(
         {
             vol.Required(SERVICE_SOUND): str,
@@ -73,19 +81,20 @@ SERVICE_SETTINGS_SCHEMA = vol.All(
 SERVICE_WEATHER_APP_SCHEMA = vol.All(
     vol.Schema(
         {
-            vol.Required("weather"): cv.entity_id,
-            vol.Optional("outside_temperature"): cv.entity_id,
-            vol.Optional("home_temperature"): cv.entity_id,
-            vol.Optional("sensor"): cv.entity_id,
-            vol.Optional("sun"): cv.entity_id,
-            vol.Optional("moon"): cv.entity_id,
-            vol.Optional("icons", default={}): dict,
-            vol.Optional("data", default={}): dict
+            vol.Required(WEATHER_NAME): cv.entity_id,
+            vol.Optional(OUTSIDE_TEMPERATURE_NAME): cv.entity_id,
+            vol.Optional(HOME_TEMPERATURE_NAME): cv.entity_id,
+            vol.Optional(SUN_NAME): cv.entity_id,
+            vol.Optional(MOON_NAME): cv.entity_id,
+            vol.Optional(ICONS_NAME, default={}): dict,
+            vol.Optional(SERVICE_DATA, default={}): dict,
+            vol.Optional(FRAMES_NAME, default={}): dict
         }
     ),
     extra=vol.ALLOW_EXTRA,
 )
 
+# Fields
 SERVICE_RTTTL_FIELDS = {
     "rtttl": {
         "description": "The rtttl text",
@@ -124,6 +133,7 @@ SERVICE_PUSH_APP_DATA_FIELDS = {
         }
     }
 }
+
 SERVICE_SWITCH_APP_FIELDS = {
     "name": {
         "description": "The application name",
@@ -134,6 +144,7 @@ SERVICE_SWITCH_APP_FIELDS = {
         }
     }
 }
+
 SERVICE_SETTINGS_FIELDS = {
 }
 
@@ -193,6 +204,7 @@ SERVICE_WEATHER_APP_FIELDS = {
     }
 }
 
+# services fields and schemas
 SERVICE_TO_FIELDS = {
     SERVICE_PUSH_APP_DATA: SERVICE_PUSH_APP_DATA_FIELDS,
     SERVICE_SETTINGS: SERVICE_SETTINGS_FIELDS,
