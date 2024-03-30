@@ -368,20 +368,20 @@ class AwtrixTime:
 
             # Night
             moon_entity = data.get('moon')
-            moon_phase = None
             if moon_entity:
                 moon = self.hass.states.get(moon_entity)
-                moon_phase = moon.state
-            payload = self.weather_night(moon_phase, templow)
-            payload = merge_custom_data(payload, customize.get('weather_night'))
+                if moon is not None:
+                    moon_phase = moon.state
+                    payload = self.weather_night(moon_phase, templow)
+                    payload = merge_custom_data(payload, customize.get('weather_night'))
 
-            payload = json.dumps(payload)
-            service_data = {"payload_template": payload,
-                            "topic": topic + "weather_night"}
+                    payload = json.dumps(payload)
+                    service_data = {"payload_template": payload,
+                                    "topic": topic + "weather_night"}
 
-            await self.hass.services.async_call(
-                "mqtt", "publish", service_data
-            )
+                    await self.hass.services.async_call(
+                        "mqtt", "publish", service_data
+                    )
 
             # custom
             frames = data.get("frames")
