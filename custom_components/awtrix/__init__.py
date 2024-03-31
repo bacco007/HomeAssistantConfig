@@ -5,8 +5,9 @@ from __future__ import annotations
 from functools import partial
 import logging
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, Platform
-from homeassistant.core import ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import (
     device_registry as dr,
     discovery,
@@ -25,6 +26,19 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
+    """Set up from a config entry."""
+
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+
+    return True
+
 
 async def async_setup(hass, config):
     """Set up the Awtrix."""

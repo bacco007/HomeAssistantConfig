@@ -1,3 +1,5 @@
+"""Constants for Awtrix time."""
+
 import voluptuous as vol
 
 from homeassistant.helpers import config_validation as cv
@@ -16,6 +18,7 @@ SERVICE_SWITCH_APP = "switch_app"
 SERVICE_WEATHER_APP = "weather_app"
 SERVICE_SOUND = "sound"
 SERVICE_RTTTL = "rtttl"
+SERVICE_SHOW_FORECAST_GRAPH = "forcast_graph"
 
 SERVICES = [
     SERVICE_PUSH_APP_DATA,
@@ -86,6 +89,7 @@ SERVICE_WEATHER_APP_SCHEMA = vol.All(
             vol.Optional(HOME_TEMPERATURE_NAME): cv.entity_id,
             vol.Optional(SUN_NAME): cv.entity_id,
             vol.Optional(MOON_NAME): cv.entity_id,
+            vol.Optional(SERVICE_SHOW_FORECAST_GRAPH): vol.Any("line", "bar"),
             vol.Optional(ICONS_NAME, default={}): dict,
             vol.Optional(SERVICE_DATA, default={}): dict,
             vol.Optional(FRAMES_NAME, default={}): dict

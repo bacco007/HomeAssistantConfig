@@ -125,6 +125,10 @@ def merge_custom_data(payload, data):
     """Merge the custom values."""
     return (payload | (data or {})) if payload else payload
 
+def average(lst):
+    """Average list values."""
+    return sum(lst) / len(lst)
+
 class AwtrixTime:
     """Allows to send updated to applications."""
 
@@ -194,18 +198,19 @@ class AwtrixTime:
                 "mqtt", "publish", service_data
             )
 
-    def weather_forecast(self, weather, temperature, hourly):
-        """Get Weather forecast app."""
+    def weather_current(self, weather, temperature, hourly):
+        """Get Weather current app."""
         try:
             forecast = []
+            offset = 8
             if hourly:
                 for idx, x in enumerate(hourly):
                     forecast.append(
-                        {"dp": [idx + 8, 7, temperature_color(x['temperature'])]})
-                    if idx + 8 > 32:
+                        {"dp": [idx + offset, 7, temperature_color(x['temperature'])]})
+                    if idx + offset > 32:
                         break
 
-            forecast.append({"dt": [16.0, 1, format_temperature(
+            forecast.append({"dt": [16, 1, format_temperature(
                 temperature), temperature_color(temperature)]})
             icon = icons.get(weather)
             payload = {"draw":
@@ -220,6 +225,37 @@ class AwtrixTime:
             return payload
         except Exception:
             return {}
+
+    def weather_forecast(self, hourly, kind = "line"):
+        """Get Weather forecast app."""
+
+        temperature_array = []
+        forecast_array = []
+
+        for idx, x in enumerate(hourly):
+            if idx < 11:
+                temperature_array.append(round(x['temperature']))
+                forecast_array.append(x['condition'])
+
+        t_max = max(temperature_array)
+        t_min = min(temperature_array)
+        t_avg = average(temperature_array)
+        t_delta = t_max - t_min
+        for idx, t in enumerate(temperature_array):
+            temperature_array[idx] = round((((t - t_min) * 7) / t_delta) + 1)
+
+        icon = icons.get(forecast_array[len(forecast_array)-1])
+        payload = {kind:
+                   temperature_array,
+                   "color": temperature_color(t_avg),
+                   "icon": icon,
+                   "duration": 5,
+                   "pushIcon": 2,
+                   "autoscale": False,
+                   "lifetime": 900,
+                   "repeat": 1
+                   }
+        return payload
 
     def weather_night(self, moon, temperature):
         """Get Weather night app."""
@@ -354,8 +390,8 @@ class AwtrixTime:
 
             customize = data.get('data') or {}
 
-            # Forecast
-            payload = self.weather_forecast(weather.state, temperature, hourly)
+            # current
+            payload = self.weather_current(weather.state, temperature, hourly)
             payload = merge_custom_data(payload, customize.get('weather'))
 
             payload = json.dumps(payload)
@@ -366,6 +402,21 @@ class AwtrixTime:
                 "mqtt", "publish", service_data
             )
 
+            # Forecast
+            fc_graph = data.get('forcast_graph')
+            if fc_graph and hourly:
+                payload = self.weather_forecast(hourly, fc_graph)
+                payload = merge_custom_data(
+                    payload, customize.get('weather_forecast'))
+
+                payload = json.dumps(payload)
+                service_data = {"payload_template": payload,
+                                "topic": topic + "weather_forecast"}
+
+                await self.hass.services.async_call(
+                    "mqtt", "publish", service_data
+                )
+
             # Night
             moon_entity = data.get('moon')
             if moon_entity:
@@ -373,7 +424,8 @@ class AwtrixTime:
                 if moon is not None:
                     moon_phase = moon.state
                     payload = self.weather_night(moon_phase, templow)
-                    payload = merge_custom_data(payload, customize.get('weather_night'))
+                    payload = merge_custom_data(
+                        payload, customize.get('weather_night'))
 
                     payload = json.dumps(payload)
                     service_data = {"payload_template": payload,
@@ -392,13 +444,14 @@ class AwtrixTime:
                     payload[item] = frame_data[item]
 
                 if payload:
-                    payload = merge_custom_data({"lifetime": 900, "repeat": 1}, payload)
+                    payload = merge_custom_data(
+                        {"lifetime": 900, "repeat": 1}, payload)
                 payload = json.dumps(payload)
                 service_data = {"payload_template": payload,
-                                    "topic": topic + "weather_" + frame}
+                                "topic": topic + "weather_" + frame}
 
                 await self.hass.services.async_call(
-                        "mqtt", "publish", service_data
+                    "mqtt", "publish", service_data
                 )
 
             # home
@@ -411,7 +464,8 @@ class AwtrixTime:
                         home_temperature.state, float)
                     if home_temperature_value is not None:
                         payload = self.weather_home(home_temperature_value)
-                        payload = merge_custom_data(payload, customize.get('weather_home'))
+                        payload = merge_custom_data(
+                            payload, customize.get('weather_home'))
                         payload = json.dumps(payload)
                         service_data = {"payload_template": payload,
                                         "topic": topic + "weather_home"}
@@ -429,7 +483,8 @@ class AwtrixTime:
                 if sun is not None:
                     payload = self.weather_sun(sun.attributes.get(
                         'next_rising'), sun.attributes.get('next_setting'), sun_event_minute_threshold)
-                    payload = merge_custom_data(payload, customize.get('weather_sun'))
+                    payload = merge_custom_data(
+                        payload, customize.get('weather_sun'))
                     payload = json.dumps(payload)
                     service_data = {"payload_template": payload,
                                     "topic": topic + "weather_sun"}
@@ -455,9 +510,8 @@ class AwtrixTime:
                             "topic": topic}
 
             return await self.hass.services.async_call(
-                    "mqtt", "publish", service_data
-                )
-
+                "mqtt", "publish", service_data
+            )
 
     async def sound(self, data):
         """Play rtttl sound."""
@@ -475,7 +529,5 @@ class AwtrixTime:
                             "topic": topic}
 
             return await self.hass.services.async_call(
-                    "mqtt", "publish", service_data
-                )
-
-
+                "mqtt", "publish", service_data
+            )
