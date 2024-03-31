@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play ABC New England North West"
+description: Play ABC New England North West on Sonos
+id: sonos_favourites_play_abc_new_england_north_west
+trigger:
+  - platform: webhook
+    webhook_id: sonos_abc_new_england_north_west
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_abc_new_england_north_west
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "ABC New England North West"

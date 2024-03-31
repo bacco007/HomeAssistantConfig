@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play BBC Radio 4 Extra (Comedy)"
+description: Play BBC Radio 4 Extra (Comedy) on Sonos
+id: sonos_favourites_play_bbc_radio_4_extra_comedy
+trigger:
+  - platform: webhook
+    webhook_id: sonos_bbc_radio_4_extra_comedy
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_bbc_radio_4_extra_comedy
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "BBC Radio 4 Extra (Comedy)"

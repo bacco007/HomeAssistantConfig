@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] BBC Radio 1Xtra"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - BBC Radio 1Xtra
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "BBC Radio 1Xtra"
+    target:
+      entity_id: media_player.office_sonos

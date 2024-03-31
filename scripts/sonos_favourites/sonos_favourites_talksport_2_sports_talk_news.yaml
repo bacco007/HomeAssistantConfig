@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] talkSPORT 2 (Sports Talk & News)"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - talkSPORT 2 (Sports Talk & News)
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "talkSPORT 2 (Sports Talk & News)"
+    target:
+      entity_id: media_player.office_sonos

@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] TripleM Greatest Hits Digital"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - TripleM Greatest Hits Digital
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "TripleM Greatest Hits Digital"
+    target:
+      entity_id: media_player.office_sonos

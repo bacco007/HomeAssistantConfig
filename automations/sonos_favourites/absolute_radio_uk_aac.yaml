@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Absolute Radio UK (AAC)"
+description: Play Absolute Radio UK (AAC) on Sonos
+id: sonos_favourites_play_absolute_radio_uk_aac
+trigger:
+  - platform: webhook
+    webhook_id: sonos_absolute_radio_uk_aac
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_absolute_radio_uk_aac
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Absolute Radio UK (AAC)"

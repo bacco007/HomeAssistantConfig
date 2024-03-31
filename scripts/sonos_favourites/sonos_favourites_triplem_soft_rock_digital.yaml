@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] TripleM Soft Rock Digital"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - TripleM Soft Rock Digital
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "TripleM Soft Rock Digital"
+    target:
+      entity_id: media_player.office_sonos

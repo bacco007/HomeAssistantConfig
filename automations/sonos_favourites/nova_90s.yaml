@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Nova 90s"
+description: Play Nova 90s on Sonos
+id: sonos_favourites_play_nova_90s
+trigger:
+  - platform: webhook
+    webhook_id: sonos_nova_90s
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_nova_90s
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Nova 90s"

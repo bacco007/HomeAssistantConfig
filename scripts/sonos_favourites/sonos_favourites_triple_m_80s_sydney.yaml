@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Triple M 80s (Sydney)"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Triple M 80s (Sydney)
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Triple M 80s (Sydney)"
+    target:
+      entity_id: media_player.office_sonos

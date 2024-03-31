@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Radio Hauraki 99.0 (Rock Music)"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Radio Hauraki 99.0 (Rock Music)
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Radio Hauraki 99.0 (Rock Music)"
+    target:
+      entity_id: media_player.office_sonos

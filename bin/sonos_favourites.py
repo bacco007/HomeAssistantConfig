@@ -9,7 +9,7 @@ def make_safe_filename(s):
         else:
             return "_"
 
-    return re.sub('_{2,}', '_', "".join(safe_char(c) for c in s).rstrip("_"))
+    return re.sub('_{2,}', '_', "".join(safe_char(c) for c in s).rstrip("_")).lower()
 
 zone_list = list(discover())
 soco = zone_list[0]
@@ -90,17 +90,36 @@ favorites = soco.music_library.get_sonos_favorites()
 #     f.write("        entity_id: automation.sonos_playlist_" + titleClean + "\n")
 # f.close()
 
+### SCRIPTS ###
+for fav in favorites:
+    title = fav.title
+    titleClean = make_safe_filename(title)
+    f = open("scripts/sonos_favourites/sonos_favourites_" + titleClean + ".yaml", "w")
+    f.write("---\n")
+    f.write("alias: \"[Sonos Favourites] " + title + "\"\n")
+    f.write("mode: single" + "\n")
+    f.write("icon: si:sonos" + "\n")
+    f.write("description: Play Sonos Favourite - " + title + "\n")
+    f.write("sequence:" + "\n")
+    f.write("  - service: media_player.select_source" + "\n")
+    f.write("    metadata: {}" + "\n")
+    f.write("    data:" + "\n")
+    f.write('      source: "' + title + '"\n')
+    f.write("    target:" + "\n")
+    f.write("      entity_id: media_player.office_sonos" + "\n")
+    f.close()
+
 ### AUTOMATION ###
 for fav in favorites:
     title = fav.title
     # uri = fav["uri"]
     titleClean = make_safe_filename(title)
-    f = open("automations/sonos_playlists/" + titleClean + ".yaml", "w")
+    f = open("automations/sonos_favourites/" + titleClean + ".yaml", "w")
     f.write("---")
     f.write("\n")
-    f.write("alias: \"[Sonos, Playlist] " + title + "\"\n")
+    f.write("alias: \"[Sonos Favourites] Play " + title + "\"\n")
     f.write("description: Play " + title + " on Sonos" + "\n")
-    f.write("id: " + titleClean + "\n")
+    f.write("id: sonos_favourites_play_" + titleClean + "\n")
     f.write("trigger:" + "\n")
     f.write("  - platform: webhook" + "\n")
     f.write("    webhook_id: sonos_" + titleClean + "\n")
@@ -109,10 +128,9 @@ for fav in favorites:
     f.write("      - PUT" + "\n")
     f.write("    local_only: true" + "\n")
     f.write("action:" + "\n")
-    f.write("  - service: media_player.select_source" + "\n")
-    f.write("    data:" + "\n")
-    f.write("      entity_id: media_player.office_sonos" + "\n")
-    f.write('      source: "' + title + '"\n')
+    f.write("  - service: script.toggle" + "\n")
+    f.write("    target:" + "\n")
+    f.write("      entity_id: script.sonos_favourites_" + titleClean + "\n")
     f.write("  - service: input_text.set_value" + "\n")
     f.write("    target:" + "\n")
     f.write("      entity_id: input_text.sonos_playlist_playing" + "\n")

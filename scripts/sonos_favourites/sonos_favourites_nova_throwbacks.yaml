@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Nova Throwbacks"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Nova Throwbacks
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Nova Throwbacks"
+    target:
+      entity_id: media_player.office_sonos

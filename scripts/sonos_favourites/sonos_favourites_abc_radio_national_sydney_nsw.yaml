@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] ABC Radio National (Sydney, NSW)"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - ABC Radio National (Sydney, NSW)
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "ABC Radio National (Sydney, NSW)"
+    target:
+      entity_id: media_player.office_sonos

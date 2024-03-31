@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Virgin Radio Groove UK"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Virgin Radio Groove UK
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Virgin Radio Groove UK"
+    target:
+      entity_id: media_player.office_sonos

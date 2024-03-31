@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Radio X"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Radio X
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Radio X"
+    target:
+      entity_id: media_player.office_sonos

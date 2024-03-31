@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta
-
+import pandas as pd
 import pytz
 import requests
 from requests.exceptions import HTTPError
@@ -138,6 +138,18 @@ def getdata_untappd_project52():
         else:
             log.error("Untappd_Project52: Error!")
             CONF_LAST_CNT = 0
+
+    df = pd.DataFrame(DATA)
+    df['year'] = pd.DatetimeIndex(df['first_checkin']).year
+    agg_func_math = {
+        'beer_name':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        'year': ['min', 'max']
+    }    
 
     ATTR_TARGET = 52 - len(DATA_52)
     ATTR_STARTDATE = datetime.strftime(CONF_STARTDATE,"%d/%m/%Y")
@@ -414,6 +426,18 @@ def getdata_untappd_project52():
     attributes_firstcheckin_month["unit_of_measurement"] = "beers"
     attributes_firstcheckin_month["friendly_name"] = "Untappd: Check-ins by Month"
     state.set("sensor.untappd_stats_by_checkinsbymonth", value=len(sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_month)
+
+    # Testing - Check-In by Year
+    t = df.groupby(['year']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    jd = t.to_json(orient="index")
+    jd2 = json.loads(jd)
+    attributes_test = {}
+    attributes_test["data"] = jd2
+    attributes_test["icon"] = "mdi:untappd"
+    attributes_test["unit_of_measurement"] = "beers"
+    attributes_test["friendly_name"] = "Untappd: Testing, by Year"
+    state.set("sensor.untappd_test_by_year", value="Test", new_attributes = attributes_test)
 
 def get_config(name):
     value = pyscript.app_config.get(name)

@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Gaydio (Manchester) (Dance & Electronic)"
+description: Play Gaydio (Manchester) (Dance & Electronic) on Sonos
+id: sonos_favourites_play_gaydio_manchester_dance_electronic
+trigger:
+  - platform: webhook
+    webhook_id: sonos_gaydio_manchester_dance_electronic
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_gaydio_manchester_dance_electronic
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Gaydio (Manchester) (Dance & Electronic)"

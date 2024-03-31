@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Double J (Sydney, NSW)"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Double J (Sydney, NSW)
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Double J (Sydney, NSW)"
+    target:
+      entity_id: media_player.office_sonos

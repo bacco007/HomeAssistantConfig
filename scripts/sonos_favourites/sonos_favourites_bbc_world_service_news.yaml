@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] BBC World Service News"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - BBC World Service News
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "BBC World Service News"
+    target:
+      entity_id: media_player.office_sonos

@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] TripleM 2000s"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - TripleM 2000s
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "TripleM 2000s"
+    target:
+      entity_id: media_player.office_sonos

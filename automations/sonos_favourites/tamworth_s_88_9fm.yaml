@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Tamworth's 88.9FM"
+description: Play Tamworth's 88.9FM on Sonos
+id: sonos_favourites_play_tamworth_s_88_9fm
+trigger:
+  - platform: webhook
+    webhook_id: sonos_tamworth_s_88_9fm
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_tamworth_s_88_9fm
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Tamworth's 88.9FM"

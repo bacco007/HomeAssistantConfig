@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Triple M Hard n Heavy (Sydney)"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Triple M Hard n Heavy (Sydney)
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Triple M Hard n Heavy (Sydney)"
+    target:
+      entity_id: media_player.office_sonos

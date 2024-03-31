@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play 93.5 Triple M Dubbo"
+description: Play 93.5 Triple M Dubbo on Sonos
+id: sonos_favourites_play_93_5_triple_m_dubbo
+trigger:
+  - platform: webhook
+    webhook_id: sonos_93_5_triple_m_dubbo
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_93_5_triple_m_dubbo
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "93.5 Triple M Dubbo"

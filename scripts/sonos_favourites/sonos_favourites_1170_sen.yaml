@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] 1170 SEN"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - 1170 SEN
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "1170 SEN"
+    target:
+      entity_id: media_player.office_sonos

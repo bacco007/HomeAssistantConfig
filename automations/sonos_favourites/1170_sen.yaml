@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play 1170 SEN"
+description: Play 1170 SEN on Sonos
+id: sonos_favourites_play_1170_sen
+trigger:
+  - platform: webhook
+    webhook_id: sonos_1170_sen
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_1170_sen
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "1170 SEN"

@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Absolute Radio 10s"
+description: Play Absolute Radio 10s on Sonos
+id: sonos_favourites_play_absolute_radio_10s
+trigger:
+  - platform: webhook
+    webhook_id: sonos_absolute_radio_10s
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_absolute_radio_10s
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Absolute Radio 10s"

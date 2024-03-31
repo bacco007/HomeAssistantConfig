@@ -1,0 +1,17 @@
+{% for media_id, name in state_attr("sensor.sonos_favorites", "items").items() %}
+        - type: button
+          service: script.sonos_favourites_{{ name | replace(' ', '_') | replace('.', '_') | replace('-', '_') }}
+          style:
+            background-image: url('/local/radioicons/{{ name | replace(' ', '_') | replace('.', '_') }}.png')
+            background-size: contain
+            background-repeat: no-repeat
+            background-position: center
+            mix-blend-mode: >
+              {%- raw %}
+              {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','{%endraw%}{{name}}{%raw%}') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+              {%- endraw %}
+            opacity: >
+              {%- raw %}
+              {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', '{%endraw%}{{name}}{%raw%}') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+              {%- endraw %}
+{% endfor %}

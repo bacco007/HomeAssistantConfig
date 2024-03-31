@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play ABC Sport"
+description: Play ABC Sport on Sonos
+id: sonos_favourites_play_abc_sport
+trigger:
+  - platform: webhook
+    webhook_id: sonos_abc_sport
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_abc_sport
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "ABC Sport"

@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Triple M Classic Rock Digital (Sydney)"
+description: Play Triple M Classic Rock Digital (Sydney) on Sonos
+id: sonos_favourites_play_triple_m_classic_rock_digital_sydney
+trigger:
+  - platform: webhook
+    webhook_id: sonos_triple_m_classic_rock_digital_sydney
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_triple_m_classic_rock_digital_sydney
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Triple M Classic Rock Digital (Sydney)"

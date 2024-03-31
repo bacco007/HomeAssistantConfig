@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Sky Sports Radio"
+description: Play Sky Sports Radio on Sonos
+id: sonos_favourites_play_sky_sports_radio
+trigger:
+  - platform: webhook
+    webhook_id: sonos_sky_sports_radio
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_sky_sports_radio
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Sky Sports Radio"

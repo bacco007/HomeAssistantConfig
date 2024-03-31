@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] CNN International"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - CNN International
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "CNN International"
+    target:
+      entity_id: media_player.office_sonos

@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play BBC Radio 1 Relax"
+description: Play BBC Radio 1 Relax on Sonos
+id: sonos_favourites_play_bbc_radio_1_relax
+trigger:
+  - platform: webhook
+    webhook_id: sonos_bbc_radio_1_relax
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_bbc_radio_1_relax
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "BBC Radio 1 Relax"

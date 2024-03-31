@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play talkSPORT 2 (Sports Talk & News)"
+description: Play talkSPORT 2 (Sports Talk & News) on Sonos
+id: sonos_favourites_play_talksport_2_sports_talk_news
+trigger:
+  - platform: webhook
+    webhook_id: sonos_talksport_2_sports_talk_news
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_talksport_2_sports_talk_news
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "talkSPORT 2 (Sports Talk & News)"

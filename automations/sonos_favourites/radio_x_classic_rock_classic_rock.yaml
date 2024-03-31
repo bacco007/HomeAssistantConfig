@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Radio X Classic Rock (Classic Rock)"
+description: Play Radio X Classic Rock (Classic Rock) on Sonos
+id: sonos_favourites_play_radio_x_classic_rock_classic_rock
+trigger:
+  - platform: webhook
+    webhook_id: sonos_radio_x_classic_rock_classic_rock
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_radio_x_classic_rock_classic_rock
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Radio X Classic Rock (Classic Rock)"

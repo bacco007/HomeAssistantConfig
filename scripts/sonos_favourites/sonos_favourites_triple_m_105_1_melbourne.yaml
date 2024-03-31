@@ -1,0 +1,12 @@
+---
+alias: "[Sonos Favourites] Triple M 105.1 Melbourne"
+mode: single
+icon: si:sonos
+description: Play Sonos Favourite - Triple M 105.1 Melbourne
+sequence:
+  - service: media_player.select_source
+    metadata: {}
+    data:
+      source: "Triple M 105.1 Melbourne"
+    target:
+      entity_id: media_player.office_sonos

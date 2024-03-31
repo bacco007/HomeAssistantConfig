@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play CNN International"
+description: Play CNN International on Sonos
+id: sonos_favourites_play_cnn_international
+trigger:
+  - platform: webhook
+    webhook_id: sonos_cnn_international
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_cnn_international
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "CNN International"
