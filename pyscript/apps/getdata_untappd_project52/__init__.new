@@ -240,89 +240,174 @@ def getdata_untappd_project52():
     state.set("sensor.untappd_project_52", value=len(DATA_52), new_attributes=attributes_project52)
 
     # Stats by Brewery
-    attributes_brewery = {}
-    attributes_brewery["data"] = ATTR_STATS_BREWERY
-    max_new = 0
-    for b in sorted(countOccurrence(BREWERY).items(), key=lambda x: x[1], reverse=True):
-        attributes_brewery[b[0]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = b[0]
-    #attributes_brewery["count"] = ATTR_STATS_BREWERY[0]['count']
-    attributes_brewery["max"] = max_new
-    attributes_brewery["max_desc"] = max_new_value
-    attributes_brewery["icon"] = "mdi:untappd"
-    attributes_brewery["unit_of_measurement"] = "beers"
-    attributes_brewery["friendly_name"] = "Untappd: Stats by Brewery"
-    state.set("sensor.untappd_stats_by_brewery", value=len(ATTR_STATS_BREWERY), new_attributes=attributes_brewery)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        #'brewery':[pd.Series.nunique],
+        #'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        'year': ['min', 'max']
+    }
+    t = df.groupby(['brewery_country']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Stats by Brewery"
+    state.set("sensor.untappd_stats_by_brewery", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
     # Stats by Brewery Country
-    attributes_brewerycountry = {}
-    attributes_brewerycountry["data"] = ATTR_STATS_BREWERY_COUNTRY
-    max_new = 0
-    for b in sorted(countOccurrence(BREWERY_COUNTRY).items(), key=lambda x: x[1], reverse=True):
-        attributes_brewerycountry[b[0]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = b[0]
-    #attributes_brewerycountry["count"] = ATTR_STATS_BREWERY_COUNTRY[0]['count']
-    attributes_brewerycountry["max"] = max_new
-    attributes_brewerycountry["max_desc"] = max_new_value
-    attributes_brewerycountry["icon"] = "mdi:untappd"
-    attributes_brewerycountry["unit_of_measurement"] = "beers"
-    attributes_brewerycountry["friendly_name"] = "Untappd: Stats by Brewery Country"
-    state.set("sensor.untappd_stats_by_brewerycountry", value=len(ATTR_STATS_BREWERY_COUNTRY), new_attributes=attributes_brewerycountry)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        #'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        'year': ['min', 'max']
+    }
+    t = df.groupby(['brewery_country']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Stats by Brewery Country"
+    state.set("sensor.untappd_stats_by_brewerycountry", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
     # Stats by Beer Style
-    attributes_beerstyle = {}
-    attributes_beerstyle["data"] = ATTR_STATS_BEERSTYLE
-    max_new = 0
-    for b in sorted(countOccurrence(BEER_STYLE).items(), key=lambda x: x[1], reverse=True):
-        attributes_beerstyle[b[0]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = b[0]
-    #attributes_beerstyle["count"] = ATTR_STATS_BEERSTYLE[0]['count']
-    attributes_beerstyle["max"] = max_new
-    attributes_beerstyle["max_desc"] = max_new_value
-    attributes_beerstyle["icon"] = "mdi:untappd"
-    attributes_beerstyle["unit_of_measurement"] = "beers"
-    attributes_beerstyle["friendly_name"] = "Untappd: Stats by Beer Style"
-    state.set("sensor.untappd_stats_by_beerstyle", value=len(ATTR_STATS_BEERSTYLE), new_attributes=attributes_beerstyle)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        #'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        'year': ['min', 'max']
+    }
+    t = df.groupby(['beer_style']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Stats by Beer Style"
+    state.set("sensor.untappd_stats_by_beerstyle", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
     # Stats by Beer Rating
-    attributes_beerrating = {}
-    attributes_beerrating["data"] = ATTR_STATS_RATING
-    max_new = 0
-    for b in sorted(countOccurrence(RATING_COUNT).items(), key=lambda x: float(x[0])):
-        attributes_beerrating[b[0]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = b[0]
-    #attributes_beerrating["count"] = len(ATTR_STATS_RATING)
-    attributes_beerrating["max"] = max_new
-    attributes_beerrating["max_desc"] = max_new_value
-    attributes_beerrating["icon"] = "mdi:untappd"
-    attributes_beerrating["unit_of_measurement"] = "beers"
-    attributes_beerrating["friendly_name"] = "Untappd: Stats by Beer Rating"
-    state.set("sensor.untappd_stats_by_beerrating", value=len(ATTR_STATS_RATING), new_attributes=attributes_beerrating)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        'brewery_country':[pd.Series.nunique],
+        #'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        'year': ['min', 'max']
+    }
+    t = df.groupby(['rating']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Stats by Beer Rating"
+    state.set("sensor.untappd_stats_by_beerrating", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
     # Stats by Beer ABV
-    attributes_beerabv = {}
-    attributes_beerabv["data"] = ATTR_STATS_ABV
-    max_new = 0
-    for b in sorted(countOccurrence(ABV_COUNT).items(), key=lambda x: float(x[0])):
-        attributes_beerabv[b[0]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = b[0]
-    #attributes_beerabv["count"] = len(ATTR_STATS_ABV)
-    attributes_beerabv["max"] = max_new
-    attributes_beerabv["max_desc"] = max_new_value
-    attributes_beerabv["icon"] = "mdi:untappd"
-    attributes_beerabv["unit_of_measurement"] = "beers"
-    attributes_beerabv["friendly_name"] = "Untappd: Stats by Beer ABV"
-    state.set("sensor.untappd_stats_by_beerabv", value=len(ATTR_STATS_ABV), new_attributes=attributes_beerabv)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        #'beer_abv': ['mean', 'median', 'min', 'max'],
+        'year': ['min', 'max']
+    }
+    t = df.groupby(['beer_style']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Stats by Beer ABV"
+    state.set("sensor.untappd_stats_by_beerabv", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
     # Stats by Beer Check-in Count
     attributes_beercheckincnt = {}
@@ -388,38 +473,97 @@ def getdata_untappd_project52():
     state.set("sensor.untappd_lowest_abv_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=False)[:25]), new_attributes=attributes_lowestabvbeers)
 
     # Check-Ins by Year
-    attributes_firstcheckin_year = {}
-    attributes_firstcheckin_year["data"] = ATTR_STATS_YEAR
-    max_new = 0
-    for b in sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False):
-        attributes_firstcheckin_year[b[0]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = b[0]
-    #attributes_firstcheckin_year["count"] = len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False))
-    attributes_firstcheckin_year["max"] = max_new
-    attributes_firstcheckin_year["max_desc"] = max_new_value
-    attributes_firstcheckin_year["icon"] = "mdi:untappd"
-    attributes_firstcheckin_year["unit_of_measurement"] = "beers"
-    attributes_firstcheckin_year["friendly_name"] = "Untappd: Check-ins by Year"
-    state.set("sensor.untappd_stats_by_checkinsbyyear", value=len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_year)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        #'year': ['min', 'max']
+    }
+    t = df.groupby(['year']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Check-ins by Year"
+    state.set("sensor.untappd_stats_by_checkinsbyyear", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
     # Check-Ins by Month
-    attributes_firstcheckin_month = {}
-    attributes_firstcheckin_month["data"] = ATTR_STATS_MONTH
-    max_new = 0
-    for b in sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False):
-        attributes_firstcheckin_month[calendar.month_name[b[0]]] = b[1]
-        if b[1] > max_new:
-            max_new = b[1]
-            max_new_value = calendar.month_name[b[0]]
-    #attributes_firstcheckin_month["count"] = len(sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False))
-    attributes_firstcheckin_month["max"] = max_new
-    attributes_firstcheckin_month["max_desc"] = max_new_value
-    attributes_firstcheckin_month["icon"] = "mdi:untappd"
-    attributes_firstcheckin_month["unit_of_measurement"] = "beers"
-    attributes_firstcheckin_month["friendly_name"] = "Untappd: Check-ins by Month"
-    state.set("sensor.untappd_stats_by_checkinsbymonth", value=len(sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_month)
+    agg_func_math = {
+        'count': ['sum'],
+        'beer_name_brewery':[pd.Series.nunique],
+        'beer_style':[pd.Series.nunique],
+        'brewery':[pd.Series.nunique],
+        'brewery_country':[pd.Series.nunique],
+        'rating':['mean', 'median', 'min', 'max'],
+        'beer_abv': ['mean', 'median', 'min', 'max'],
+        #'year': ['min', 'max']
+    }
+    t = df.groupby(['year']).agg(agg_func_math).round(2)
+    t.columns = t.columns.map('_'.join)
+    maxdata = []
+    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
+    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    jd = t.to_json(orient="index")
+    jd2 = []
+    for attribute, value in json.loads(jd).items():
+        tmp = []
+        tmp.append({"name": attribute})
+        print(attribute)
+        print(value)
+        for a in value:
+            tmp.append({a: value[a]})
+        jd2.append(tmp)
+    attributes = {}
+    attributes["summary"]=maxdata
+    attributes["data"] = jd2
+    attributes["icon"] = "mdi:untappd"
+    attributes["unit_of_measurement"] = "beers"
+    attributes["friendly_name"] = "Untappd: Check-ins by Month"
+    state.set("sensor.untappd_stats_by_checkinsbymonth", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
+
+    # Testing - Check-In by Year
+    # agg_func_math = {
+    #     'count': ['sum'],
+    #     'beer_name_brewery':[pd.Series.nunique],
+    #     'beer_style':[pd.Series.nunique],
+    #     'brewery':[pd.Series.nunique],
+    #     'brewery_country':[pd.Series.nunique],
+    #     'rating':['mean', 'median', 'min', 'max'],
+    #     'beer_abv': ['mean', 'median', 'min', 'max'],
+    #     #'year': ['min', 'max']
+    # }
+    # t = df.groupby(['year']).agg(agg_func_math).round(2)
+    # t.columns = t.columns.map('_'.join)
+    # maxdata = []
+    # maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "month": t['count_sum'].idxmax()}})
+    # maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "month": t['beer_name_brewery_nunique'].idxmax()}})
+    # jd = t.to_json(orient="index")
+    # jd2 = json.loads(jd)
+    # attributes = {}
+    # attributes["data"] = jd2
+    # attributes["icon"] = "mdi:untappd"
+    # attributes["unit_of_measurement"] = "beers"
+    # attributes["friendly_name"] = "Untappd: Check-ins by Month"
+    # state.set("sensor.untappd_stats_by_checkinsbymonthr", value=t['beer_name_brewery_nunique'].max(), new_attributes = attributes)
 
 def get_config(name):
     value = pyscript.app_config.get(name)
@@ -446,4 +590,5 @@ def load():
 
 
 def build_url():
+
     return url

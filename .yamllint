@@ -22,6 +22,7 @@ ignore: |
   zigbee2mqtt/
   .shortumations/
   storage-lovelace-ui.yaml
+  scripts.yaml
 rules:
   braces:
     level: error
