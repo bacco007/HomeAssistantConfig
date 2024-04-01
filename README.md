@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.4.0b3 |
-| No. Integrations | 193 |
+| No. Integrations | 191 |
 | No. Custom Integrations | 78 |
-| No. Entities | 5075 |
-| No. Sensors | 3164 |
+| No. Entities | 5073 |
+| No. Sensors | 3165 |
 | No. Automations | 267 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 93
-Devices | 541
+Devices | 540
 Fans | 1
 Humidifiers | 0
 Images | 5
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 51
-Sensors | 3164
+Sensors | 3165
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 267
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 264
+Update | 263
 Vacuums | 0
 Water heaters | 0
 Weather | 10
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>563 Integrations</summary>
+<details><summary>546 Integrations</summary>
 
 | Name |
 | --- |
@@ -595,22 +595,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [trend.binary_sensor](https://www.home-assistant.io/components/trend.binary_sensor) |
 | [tts](https://www.home-assistant.io/components/tts) |
 | [tuya](https://www.home-assistant.io/components/tuya) |
-| [tuya.alarm_control_panel](https://www.home-assistant.io/components/tuya.alarm_control_panel) |
-| [tuya.binary_sensor](https://www.home-assistant.io/components/tuya.binary_sensor) |
-| [tuya.button](https://www.home-assistant.io/components/tuya.button) |
-| [tuya.camera](https://www.home-assistant.io/components/tuya.camera) |
-| [tuya.climate](https://www.home-assistant.io/components/tuya.climate) |
-| [tuya.cover](https://www.home-assistant.io/components/tuya.cover) |
-| [tuya.fan](https://www.home-assistant.io/components/tuya.fan) |
-| [tuya.humidifier](https://www.home-assistant.io/components/tuya.humidifier) |
-| [tuya.light](https://www.home-assistant.io/components/tuya.light) |
-| [tuya.number](https://www.home-assistant.io/components/tuya.number) |
-| [tuya.scene](https://www.home-assistant.io/components/tuya.scene) |
-| [tuya.select](https://www.home-assistant.io/components/tuya.select) |
-| [tuya.sensor](https://www.home-assistant.io/components/tuya.sensor) |
-| [tuya.siren](https://www.home-assistant.io/components/tuya.siren) |
-| [tuya.switch](https://www.home-assistant.io/components/tuya.switch) |
-| [tuya.vacuum](https://www.home-assistant.io/components/tuya.vacuum) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [unifi.button](https://www.home-assistant.io/components/unifi.button) |
 | [unifi.device_tracker](https://www.home-assistant.io/components/unifi.device_tracker) |
@@ -629,7 +613,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [usb](https://www.home-assistant.io/components/usb) |
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [utility_meter.sensor](https://www.home-assistant.io/components/utility_meter.sensor) |
-| [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [version](https://www.home-assistant.io/components/version) |
 | [version.binary_sensor](https://www.home-assistant.io/components/version.binary_sensor) |
 | [version.sensor](https://www.home-assistant.io/components/version.sensor) |
@@ -730,7 +713,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.4] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -827,7 +810,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Noctis](https://github.com/aFFekopp/noctis) |  [v3.1] | 🐵 Dark Blue Theme for Home Assistant |
 </details>
 
-<details><summary>21 Addons via HA Operating System</summary>
+<details><summary>20 Addons via HA Operating System</summary>
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
@@ -835,7 +818,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Cloudflared | 5.1.7 |  | 9074a9fa |
 | ESPHome | 2024.3.1 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
-| Fusion | 2024.2.1 |  | 65f67727 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |

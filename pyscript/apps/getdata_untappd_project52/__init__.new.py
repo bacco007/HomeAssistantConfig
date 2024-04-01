@@ -255,16 +255,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -289,16 +281,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -323,16 +307,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -357,16 +333,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -391,16 +359,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -488,16 +448,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -522,16 +474,8 @@ def getdata_untappd_project52():
     maxdata = []
     maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
     maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
-    jd = t.to_json(orient="index")
-    jd2 = []
-    for attribute, value in json.loads(jd).items():
-        tmp = []
-        tmp.append({"name": attribute})
-        print(attribute)
-        print(value)
-        for a in value:
-            tmp.append({a: value[a]})
-        jd2.append(tmp)
+    jd = t.to_json(orient="table")
+    jd2 = json.loads(jd)['data']
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
