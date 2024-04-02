@@ -1,0 +1,41 @@
+---
+trigger:
+  - platform: state
+    not_to:
+      - unknown
+      - unavailable
+    entity_id: sensor.weather_temperature
+  - platform: template
+    value_template: "{{ now().hour == 0 }}" #resets each day
+action:
+  - variables:
+      source: "{{ states('sensor.weather_temperature') | float }}"
+      now: "{{ now() }}"
+sensor:
+  - name: Test Todays Maximum Temp
+    unique_id: test_today_temp_max_d
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    icon: mdi:thermometer-chevron-up
+    state: |
+      {% set current = (this.state or trigger.to_state.state) | float(source) %}
+      {{ source if trigger.platform == 'template' else [source, current] | max }}
+    attributes:
+      datetime: |
+        {% set current = (this.state or trigger.to_state.state) | float(source) %}
+        {{ now if (trigger.platform == 'template' or source > current) else this.attributes.datetime|default(now) }}
+
+  - name: Test Todays Minimum Temp
+    unique_id: test_today_temp_min_d
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    icon: mdi:thermometer-chevron-down
+    state: |
+      {% set current = (this.state or trigger.to_state.state) | float(source) %}
+      {{ source if trigger.platform == 'template' else [source, current] | min }}
+    attributes:
+      datetime: |
+        {% set current = (this.state or trigger.to_state.state) | float(source) %}
+        {{ now if (trigger.platform == 'template' or source < current) else this.attributes.datetime|default(now) }}

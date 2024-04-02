@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.4.0b3 |
-| No. Integrations | 191 |
+| HA Version | 2024.4.0b4 |
+| No. Integrations | 193 |
 | No. Custom Integrations | 78 |
-| No. Entities | 5073 |
-| No. Sensors | 3165 |
-| No. Automations | 267 |
+| No. Entities | 4889 |
+| No. Sensors | 3135 |
+| No. Automations | 139 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 336
-Buttons | 212
+Binary sensors | 337
+Buttons | 214
 Calendars | 67
 Cameras | 5
 Climate | 2
@@ -83,23 +83,23 @@ Input selects | 3
 Input texts | 3
 Lights | 14
 Locks | 4
-Media players | 20
-Numbers | 29
-Persistent notifications | 3
+Media players | 19
+Numbers | 31
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 51
-Sensors | 3165
+Sensors | 3135
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 267
+Switches | 270
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 263
+Update | 264
 Vacuums | 0
 Water heaters | 0
 Weather | 10
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>546 Integrations</summary>
+<details><summary>563 Integrations</summary>
 
 | Name |
 | --- |
@@ -595,6 +595,22 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [trend.binary_sensor](https://www.home-assistant.io/components/trend.binary_sensor) |
 | [tts](https://www.home-assistant.io/components/tts) |
 | [tuya](https://www.home-assistant.io/components/tuya) |
+| [tuya.alarm_control_panel](https://www.home-assistant.io/components/tuya.alarm_control_panel) |
+| [tuya.binary_sensor](https://www.home-assistant.io/components/tuya.binary_sensor) |
+| [tuya.button](https://www.home-assistant.io/components/tuya.button) |
+| [tuya.camera](https://www.home-assistant.io/components/tuya.camera) |
+| [tuya.climate](https://www.home-assistant.io/components/tuya.climate) |
+| [tuya.cover](https://www.home-assistant.io/components/tuya.cover) |
+| [tuya.fan](https://www.home-assistant.io/components/tuya.fan) |
+| [tuya.humidifier](https://www.home-assistant.io/components/tuya.humidifier) |
+| [tuya.light](https://www.home-assistant.io/components/tuya.light) |
+| [tuya.number](https://www.home-assistant.io/components/tuya.number) |
+| [tuya.scene](https://www.home-assistant.io/components/tuya.scene) |
+| [tuya.select](https://www.home-assistant.io/components/tuya.select) |
+| [tuya.sensor](https://www.home-assistant.io/components/tuya.sensor) |
+| [tuya.siren](https://www.home-assistant.io/components/tuya.siren) |
+| [tuya.switch](https://www.home-assistant.io/components/tuya.switch) |
+| [tuya.vacuum](https://www.home-assistant.io/components/tuya.vacuum) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [unifi.button](https://www.home-assistant.io/components/unifi.button) |
 | [unifi.device_tracker](https://www.home-assistant.io/components/unifi.device_tracker) |
@@ -613,6 +629,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [usb](https://www.home-assistant.io/components/usb) |
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [utility_meter.sensor](https://www.home-assistant.io/components/utility_meter.sensor) |
+| [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [version](https://www.home-assistant.io/components/version) |
 | [version.binary_sensor](https://www.home-assistant.io/components/version.binary_sensor) |
 | [version.sensor](https://www.home-assistant.io/components/version.sensor) |
@@ -706,7 +723,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.7.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.14] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
-| [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.0.0] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v6.8.1] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.3.4] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v3.1.3] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
@@ -759,7 +776,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.3.0] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.4.0] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.1] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
@@ -831,7 +848,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.3.1 |  | core |
 | Silicon Labs Multiprotocol | 2.4.4 |  | core |
 | SunGather | 0.1.3 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.36.0-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.36.1-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
 </details>
@@ -879,7 +896,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.4.0b3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.4.0b4-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
