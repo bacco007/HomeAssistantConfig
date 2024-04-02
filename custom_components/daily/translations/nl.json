@@ -1,0 +1,28 @@
+{
+  "title": "Dagelijkse Sensor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Dagelijkse Sensor",
+        "description": "Voor hulp bij de configuratie, ga naar https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unieke naam van deze instantie",
+          "sensor": "De entiteit die de input voor de dagelijkse sensor levert",
+          "operation": "De operatie die op de dagelijkse sensor wordt gedaan",
+          "unit_of_measurement": "De eenheid van de sensor",
+          "interval": "Ververs interval in minuten",
+          "auto_reset": "Automatische reset om 00:00"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Het gegeven interval is niet correct. Het moet >0 minuten zijn.",
+      "name": "Geef een unieke naam voor deze instantie.",
+      "operationnotfound": "Kies een operatie die wordt ondersteund.",
+      "sensornotfound": "Een of meer van de gegeven sensors bestaan niet.",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+    }
+  }
+}

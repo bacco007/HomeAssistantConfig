@@ -67,7 +67,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     for platform in PLATFORMS:
         coordinator.platforms.append(platform)
-        hass.async_add_job(
+        hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, platform)
         )
 
@@ -132,7 +132,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         self.name = name
         self.input_sensor = input_sensor
         self.operation = operation
-        self.interval = int(interval)
+        self.interval = float(interval)
         self.unit_of_measurement = unit_of_measurement
         self.auto_reset = auto_reset
         self.hass = hass
