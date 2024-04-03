@@ -3,7 +3,7 @@
 DOMAIN = "daily"
 NAME = "Daily Sensor"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "2024.4.0"
+VERSION = "2024.4.1"
 
 ISSUE_URL = "https://github.com/jeroenterheerdt/HADailySensor/issues"
 
