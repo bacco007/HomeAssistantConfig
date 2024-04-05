@@ -54,11 +54,8 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     raise OperationNotFound
                 # check the interval
                 if (
-                    not (
-                        isinstance(user_input[CONF_INTERVAL], int)
-                        or isinstance(user_input[CONF_INTERVAL], float)
-                    )
-                    or float(user_input[CONF_INTERVAL]) <= 0.0
+                    not (isinstance(user_input[CONF_INTERVAL], int))
+                    or user_input[CONF_INTERVAL] <= 0
                 ):
                     raise IntervalNotValid
                 self._name = user_input[CONF_NAME]
@@ -102,7 +99,7 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_INPUT_SENSOR): str,
                     vol.Required(CONF_OPERATION): vol.In(VALID_OPERATIONS),
                     vol.Required(CONF_UNIT_OF_MEASUREMENT): str,
-                    vol.Required(CONF_INTERVAL, default=DEFAULT_INTERVAL): float,
+                    vol.Required(CONF_INTERVAL, default=DEFAULT_INTERVAL): int,
                     vol.Required(CONF_AUTO_RESET, default=DEFAULT_AUTO_RESET): bool,
                 }
             ),

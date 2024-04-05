@@ -10,19 +10,18 @@
           "sensor": "Enheten som vil gi innspill til den daglige sensoren",
           "operation": "Operasjonen som skal brukes på sensoren",
           "unit_of_measurement": "Måleenheten",
-          "interval": "Oppdater intervall i minutter",
+          "interval": "Oppdater intervall i sekunder",
           "auto_reset": "Återställs automatiskt vid midnatt?"
         }
       }
     },
     "error": {
-      "intervalnotvalid": "Spesifisert intervall er ikke gyldig. Må være >0 minutter.",
+      "intervalnotvalid": "Spesifisert intervall er ikke gyldig. Må være >0 sekunder.",
       "name": "Angi et unikt navn for denne forekomsten.",
       "operationnotfound": "Spesifiser en støttet operasjon",
       "sensornotfound": "En eller flere av sensorene som er spesifisert, eksisterer ikke",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
-    "abort": {
-    }
+    "abort": {}
   }
 }

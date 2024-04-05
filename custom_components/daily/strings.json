@@ -10,19 +10,18 @@
           "sensor": "The entity that will provide input to the daily sensor",
           "operation": "The operation to be applied to the sensor",
           "unit_of_measurement": "The unit of measurement",
-          "interval": "Refresh interval in minutes",
+          "interval": "Refresh interval in seconds",
           "auto_reset": "Automatically reset at 00:00 ?"
         }
       }
     },
     "error": {
-      "intervalnotvalid": "Specified interval is not valid. Needs to be >0 minutes.",
+      "intervalnotvalid": "Specified interval is not valid. Needs to be >0 seconds.",
       "name": "Specify an unique name for this instance.",
       "operationnotfound": "Specify a supported operation",
       "sensornotfound": "One or more of the sensors specified do not exist",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
-    "abort": {
-    }
+    "abort": {}
   }
 }

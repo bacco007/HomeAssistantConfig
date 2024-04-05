@@ -1,28 +1,27 @@
 {
-    "title": "Capteur journalier",
-    "config": {
-      "step": {
-        "user": {
-          "title": "Capteur journalier",
-          "description": "Si vous avez besoin d'aide pour la configuration, référez-vous ici: https://github.com/jeroenterheerdt/HADailySensor",
-          "data": {
-            "name": "Nom unique de l'instance",
-            "sensor": "L'entité qui fournira les données d'entrée au capteur journalier",
-            "operation": "L'opération à appliquer au capteur",
-            "unit_of_measurement": "L'unité de mesure",
-            "interval": "L'intervalle de mise à jour en minutes",
-            "auto_reset": "Reset automatique à minuit ?"
-          }
+  "title": "Capteur journalier",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Capteur journalier",
+        "description": "Si vous avez besoin d'aide pour la configuration, référez-vous ici: https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Nom unique de l'instance",
+          "sensor": "L'entité qui fournira les données d'entrée au capteur journalier",
+          "operation": "L'opération à appliquer au capteur",
+          "unit_of_measurement": "L'unité de mesure",
+          "interval": "L'intervalle de mise à jour en secondes",
+          "auto_reset": "Reset automatique à minuit ?"
         }
-      },
-      "error": {
-        "intervalnotvalid": "L'intervalle spécifié n'est pas valide: il faut un nombre >0 de minutes.",
-        "name": "Spécifier un nom unique pour cette instance.",
-        "operationnotfound": "Spécifier une opération supportée",
-        "sensornotfound": "Au moins un des capteurs spécifiés n'existe pas",
-        "unknown": "[%key:common::config_flow::error::unknown%]"
-      },
-      "abort": {
       }
-    }
+    },
+    "error": {
+      "intervalnotvalid": "L'intervalle spécifié n'est pas valide: il faut un nombre >0 de secondes.",
+      "name": "Spécifier un nom unique pour cette instance.",
+      "operationnotfound": "Spécifier une opération supportée",
+      "sensornotfound": "Au moins un des capteurs spécifiés n'existe pas",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
   }
+}

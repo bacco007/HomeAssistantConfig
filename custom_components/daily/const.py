@@ -3,7 +3,7 @@
 DOMAIN = "daily"
 NAME = "Daily Sensor"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "2024.4.1"
+VERSION = "2024.4.2"
 
 ISSUE_URL = "https://github.com/jeroenterheerdt/HADailySensor/issues"
 
@@ -44,7 +44,7 @@ VALID_OPERATIONS = [
 ]
 
 # Defaults
-DEFAULT_INTERVAL = 30  # minutes
+DEFAULT_INTERVAL = 1800.0  # seconds
 DEFAULT_AUTO_RESET = True
 # Services
 SERVICE_RESET = "reset"

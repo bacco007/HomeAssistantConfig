@@ -132,7 +132,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         self.name = name
         self.input_sensor = input_sensor
         self.operation = operation
-        self.interval = float(interval)
+        self.interval = int(interval)
         self.unit_of_measurement = unit_of_measurement
         self.auto_reset = auto_reset
         self.hass = hass
@@ -140,7 +140,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         self.platforms = []
         self.entry_setup_completed = False
 
-        SCAN_INTERVAL = timedelta(minutes=self.interval)
+        SCAN_INTERVAL = timedelta(seconds=self.interval)
         super().__init__(hass, _LOGGER, name=name, update_interval=SCAN_INTERVAL)
 
         # reset happens at midnight

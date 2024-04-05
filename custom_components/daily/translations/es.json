@@ -10,19 +10,18 @@
           "sensor": "Entidad que provee la entrada para el sensor diario",
           "operation": "Operación a aplicar al sensor",
           "unit_of_measurement": "Unidad de medida",
-          "interval": "Intervalo de refresco en minutos",
+          "interval": "Intervalo de refresco en segundos",
           "auto_reset": "Resetear automáticamente a las 00:00"
         }
       }
     },
     "error": {
-      "intervalnotvalid": "El intervalo especificado no es válido. Necesita ser >0 minutos.",
+      "intervalnotvalid": "El intervalo especificado no es válido. Necesita ser >0 segundos.",
       "name": "Especifica un nombre único para esta instancia.",
       "operationnotfound": "Especifica una operación soportada.",
       "sensornotfound": "Uno o más de los sensores especificados no existe.",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
-    "abort": {
-    }
+    "abort": {}
   }
 }
