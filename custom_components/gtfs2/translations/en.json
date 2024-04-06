@@ -89,10 +89,11 @@
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
       "files_deleted": "Datasource deleted, this may affect existing routes",
-      "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
+      "stop_incorrect": "Start and/or End destination incorrect, \n possibly no transport 'today' or not in same direction, \n please check logs",
 	  "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
 	  "no_stops": "Data collection issue: probably no stops for the selected route",
 	  "no_zip_file": "Data collection issue: ZIP file not existing in the correct folder, note that it is capital-sensitive",
+	  "stop_limit_reached": "More than 15 stops found for this radius. \n Risking an impact on system performance. \n Please select a smaller radius",
 	  "extracting": "(Still) extracting data, this will take time [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
     }
   },
@@ -120,6 +121,9 @@
                   "api_key_location": "the location where the key is applied"
         }
       }
+    },
+	"abort": {
+	  "stop_limit_reached": "More than 15 stops found for this radius. \n Risking an impact on system performance. \n Please select a smaller radius"
     }
   },
   "selector": {
