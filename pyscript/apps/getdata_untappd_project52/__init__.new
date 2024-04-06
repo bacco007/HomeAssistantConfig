@@ -139,6 +139,9 @@ def getdata_untappd_project52():
             log.error("Untappd_Project52: Error!")
             CONF_LAST_CNT = 0
 
+    with open('data.json', 'w', encoding='utf-8') as f:
+        json.dump(DATA, f, ensure_ascii=False, indent=4)
+
     df = pd.DataFrame(DATA)
     df['beer_name_brewery'] = df[['brewery', 'beer_name']].agg(' - '.join, axis=1)
     df['year'] = pd.DatetimeIndex(df['first_checkin']).year
@@ -250,13 +253,14 @@ def getdata_untappd_project52():
         'beer_abv': ['mean', 'median', 'min', 'max'],
         'year': ['min', 'max']
     }
-    t = df.groupby(['brewery_country']).agg(agg_func_math).round(2)
+    t = df.groupby(['brewery']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -279,10 +283,11 @@ def getdata_untappd_project52():
     t = df.groupby(['brewery_country']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -305,10 +310,11 @@ def getdata_untappd_project52():
     t = df.groupby(['beer_style']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -331,10 +337,11 @@ def getdata_untappd_project52():
     t = df.groupby(['rating']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -357,10 +364,11 @@ def getdata_untappd_project52():
     t = df.groupby(['beer_style']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -446,10 +454,11 @@ def getdata_untappd_project52():
     t = df.groupby(['year']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
@@ -469,13 +478,14 @@ def getdata_untappd_project52():
         'beer_abv': ['mean', 'median', 'min', 'max'],
         #'year': ['min', 'max']
     }
-    t = df.groupby(['year']).agg(agg_func_math).round(2)
+    t = df.groupby(['month']).agg(agg_func_math).round(2)
     t.columns = t.columns.map('_'.join)
     maxdata = []
-    maxdata.append({"max_checkin": {"count": t['count_sum'].max(), "value": t['count_sum'].idxmax()}})
-    maxdata.append({"max_unique_checkin": {"count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()}})
+    maxdata.append({"type": "max_checkin", "max_checkin_count": t['count_sum'].max(), "value": t['count_sum'].idxmax()})
+    maxdata.append({"type": "max_unique_checkin", "count": t['beer_name_brewery_nunique'].max(), "value": t['beer_name_brewery_nunique'].idxmax()})
     jd = t.to_json(orient="table")
-    jd2 = json.loads(jd)['data']
+    jd = json.loads(jd)['data']
+    jd2 = json.dumps(jd, default=str)
     attributes = {}
     attributes["summary"]=maxdata
     attributes["data"] = jd2
