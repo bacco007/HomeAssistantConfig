@@ -5,6 +5,7 @@ import pytz
 import requests
 from requests.exceptions import HTTPError
 import calendar
+import os
 
 @service
 def getdata_untappd_project52():
@@ -139,8 +140,8 @@ def getdata_untappd_project52():
             log.error("Untappd_Project52: Error!")
             CONF_LAST_CNT = 0
 
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(DATA, f, ensure_ascii=False, indent=4)
+    # with open('data.json', 'w', encoding='utf-8') as f:
+    #     json.dump(DATA, f, ensure_ascii=False, indent=4)
 
     df = pd.DataFrame(DATA)
     df['beer_name_brewery'] = df[['brewery', 'beer_name']].agg(' - '.join, axis=1)
