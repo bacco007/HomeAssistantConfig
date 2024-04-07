@@ -36,7 +36,9 @@ from .const import (
 
     CONF_API_KEY,
     CONF_X_API_KEY,
+    CONF_OCP_APIM_KEY,
     CONF_API_KEY_LOCATION,
+    CONF_ACCEPT_HEADER_PB,
     CONF_STOP_ID,
     CONF_ROUTE,
     CONF_TRIP_UPDATE_URL,
@@ -313,13 +315,30 @@ def update_geojson(self):
 def get_gtfs_rt(hass, path, data):
     """Get gtfs rt data."""
     _LOGGER.debug("Getting gtfs rt locally with data: %s", data)
-    _headers = data.get("headers", None)
+    _headers = None
     gtfs_dir = hass.config.path(path)
     os.makedirs(gtfs_dir, exist_ok=True)
     url = data["url"]
     file = data["file"] + ".rt"
+    if data.get(CONF_API_KEY_LOCATION, None) == "query_string":
+        if data.get(CONF_API_KEY, None):
+            url = url + "?api_key=" + data[CONF_API_KEY]
+        elif data.get(CONF_X_API_KEY, None):
+            url = url + "?x_api_key=" + data[CONF_X_API_KEY]
+        elif data.get(CONF_OCP_APIM_KEY,None):
+            url = url + "?Ocp-Apim-Subscription-Key=" + data[CONF_OCP_APIM_KEY]             
+    if data.get(CONF_API_KEY_LOCATION, None) == "header":
+        if data.get(CONF_API_KEY, None):
+            _headers = {"Authorization": data[CONF_API_KEY]}
+        elif data.get(CONF_X_API_KEY, None):
+            _headers = {"x-api-key": data[CONF_X_API_KEY]}
+        elif data.get(CONF_OCP_APIM_KEY, None):
+            _headers = {"Ocp-Apim-Subscription-Key": data[CONF_OCP_APIM_KEY]}            
+    if data.get(CONF_ACCEPT_HEADER_PB, False):
+       _headers["Accept"] = "application/x-protobuf"
+    _LOGGER.debug("Getting gtfs rt locally with headers: %s", _headers)
     try:
-        r = requests.get(url, allow_redirects=True)
+        r = requests.get(url, headers = _headers , allow_redirects=True)
         open(os.path.join(gtfs_dir, file), "wb").write(r.content)
     except Exception as ex:  # pylint: disable=broad-except
         _LOGGER.error("Ìssues with downloading GTFS RT data to: %s", os.path.join(gtfs_dir, file))

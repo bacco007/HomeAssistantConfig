@@ -19,7 +19,9 @@ from .const import (
     DEFAULT_LOCAL_STOP_RADIUS,
     CONF_API_KEY, 
     CONF_X_API_KEY,
+    CONF_OCP_APIM_KEY,
     CONF_API_KEY_LOCATION,
+    CONF_ACCEPT_HEADER_PB,
     ATTR_DUE_IN,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
@@ -122,19 +124,27 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                 self._vehicle_position_url = options.get("vehicle_position_url", None)
                 self._alerts_url = options.get("alerts_url", None)
                 if options.get(CONF_API_KEY_LOCATION, None) == "query_string":
-                  if options[CONF_API_KEY] != "":
+                  if options.get(CONF_API_KEY, None):
                     self._trip_update_url = self._trip_update_url + "?api_key=" + options[CONF_API_KEY]
                     self._vehicle_position_url = self._vehicle_position_url + "?api_key=" + options[CONF_API_KEY]
                     self._alerts_url = self._alerts_url + "?api_key=" + options[CONF_API_KEY]
-                  elif options[CONF_X_API_KEY] != "":
+                  elif options.get(CONF_X_API_KEY, None):
                     self._trip_update_url = self._trip_update_url + "?x_api_key=" + options[CONF_X_API_KEY]
                     self._vehicle_position_url = self._vehicle_position_url + "?x_api_key=" + options[CONF_X_API_KEY]
                     self._alerts_url = self._alerts_url + "?x_api_key=" + options[CONF_X_API_KEY]
+                  elif options.get(CONF_OCP_APIM_KEY, None):
+                    self._trip_update_url = self._trip_update_url + "?Ocp-Apim-Subscription-Key=" + options[CONF_OCP_APIM_KEY]
+                    self._vehicle_position_url = self._vehicle_position_url + "?Ocp-Apim-Subscription-Key=" + options[CONF_OCP_APIM_KEY]
+                    self._alerts_url = self._alerts_url + "?Ocp-Apim-Subscription-Key=" + options[CONF_OCP_APIM_KEY] 
                 if options.get(CONF_API_KEY_LOCATION, None) == "header":
-                  if options[CONF_API_KEY] != "":
+                  if options.et(CONF_API_KEY,None):
                     self._headers = {"Authorization": options[CONF_API_KEY]}
-                  elif options[CONF_X_API_KEY] != "":
+                  elif options.get(CONF_X_API_KEY, None):
                     self._headers = {"x-api-key": options[CONF_X_API_KEY]}
+                  elif options.get(CONF_OCP_APIM_KEY, None):
+                    self._headers = {"Ocp-Apim-Subscription-Key": options[CONF_OCP_APIM_KEY]}                    
+                if options.get(CONF_ACCEPT_HEADER_PB, False):
+                    self._headers["Accept"] = "application/x-protobuf"
                 self.info = {}
                 self._route_id = self._data["next_departure"].get("route_id", None)
                 if self._route_id == None:
