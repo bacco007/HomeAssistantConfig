@@ -137,7 +137,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                     self._vehicle_position_url = self._vehicle_position_url + "?Ocp-Apim-Subscription-Key=" + options[CONF_OCP_APIM_KEY]
                     self._alerts_url = self._alerts_url + "?Ocp-Apim-Subscription-Key=" + options[CONF_OCP_APIM_KEY] 
                 if options.get(CONF_API_KEY_LOCATION, None) == "header":
-                  if options.et(CONF_API_KEY,None):
+                  if options.get(CONF_API_KEY,None):
                     self._headers = {"Authorization": options[CONF_API_KEY]}
                   elif options.get(CONF_X_API_KEY, None):
                     self._headers = {"x-api-key": options[CONF_X_API_KEY]}
