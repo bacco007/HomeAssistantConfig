@@ -41,15 +41,23 @@ class StartTime(Entity):
         logger.info = monkey_info
 
     def internal_update(self, state: float):
-        # timedelta in old Hass versions and float from Hass 2024.3
-        setup_time: dict[str, float | timedelta] = self.hass.data.get("setup_time")
+        setup_time: dict = self.hass.data.get("setup_time")
         if setup_time:
+            extra = {}  # protect original dict from changing
+
             for k, v in setup_time.items():
-                if isinstance(v, timedelta):
-                    setup_time[k] = round(v.total_seconds(), 2)
+                if isinstance(v, dict):  # Hass 2024.4
+                    value = sum(j for i in v.values() for j in i.values())
+                    extra[k] = round(value, 2)
+                elif isinstance(v, float):  # Hass 2024.3
+                    extra[k] = round(v, 2)
+                elif isinstance(v, timedelta):  # before Hass 2024.3
+                    extra[k] = round(v.total_seconds(), 2)
+                else:
+                    continue
 
             self._attr_extra_state_attributes = dict(
-                sorted(setup_time.items(), key=lambda kv: kv[1], reverse=True)
+                sorted(extra.items(), key=lambda kv: kv[1], reverse=True)
             )
 
         self._attr_state = round(state, 2)
