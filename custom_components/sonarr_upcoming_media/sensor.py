@@ -118,6 +118,7 @@ class SonarrUpcomingMediaSensor(Entity):
                 card_item['genres'] = ', '.join(show['series']['genres'])
             else:
                 card_item['genres'] = ''
+            card_item['summary'] = show.get('overview', '')
             try:
                 for img in show['series']['images']:
                     if img['coverType'] == 'poster':
@@ -131,9 +132,9 @@ class SonarrUpcomingMediaSensor(Entity):
                         card_item['fanart'] = re.sub('.jpg', '_t.jpg', img['remoteUrl'])
             except:
                 pass
-            series_title = show['series']['title']
-            series_slug = series_title.lower().replace(' ', '-')
-            card_item['deep_link'] = f'http://{self.host}:{self.port}/series/{series_slug}'
+            series_title_slug = show['series']['titleSlug']
+            protocol = 'https' if self.ssl else 'http'
+            card_item['deep_link'] = f'{protocol}://{self.host}:{self.port}/series/{series_title_slug}'
             card_json.append(card_item)
         attributes['data'] = card_json
         return attributes
