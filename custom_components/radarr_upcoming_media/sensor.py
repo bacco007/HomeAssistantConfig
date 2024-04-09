@@ -84,6 +84,7 @@ class RadarrUpcomingMediaSensor(Entity):
             default['line2_default'] = '$genres'
             default['line3_default'] = '$rating - $runtime'
             default['line4_default'] = '$studio'
+            default['line5_default'] = '$trailer'
             default['icon'] = 'mdi:arrow-down-bold'
             self.card_json.append(default)
             for movie in sorted(self.data, key=lambda i: i['path']):
@@ -97,6 +98,12 @@ class RadarrUpcomingMediaSensor(Entity):
                             card_item['release'] = 'In Theaters $day'
                         else:
                             card_item['release'] = 'In Theaters $day, $date'
+                elif 'digitalRelease' in movie:
+                    card_item['airdate'] = movie['digitalRelease']
+                    if days_until(movie['digitalRelease'], self._tz) <= 7:
+                        card_item['release'] = 'Available Online $day'
+                    else:
+                        card_item['release'] = 'Available Online $day, $date'
                 elif 'physicalRelease' in movie:
                     card_item['airdate'] = movie['physicalRelease']
                     if days_until(movie['physicalRelease'], self._tz) <= 7:
@@ -110,11 +117,15 @@ class RadarrUpcomingMediaSensor(Entity):
                 card_item['runtime'] = movie.get('runtime', '')
                 card_item['studio'] = movie.get('studio', '')
                 card_item['genres'] = movie.get('genres', '')
-                if 'ratings' in movie and movie['ratings']['tmdb']['value'] > 0:
-                    card_item['rating'] = ('\N{BLACK STAR} ' +
-                                           str(movie['ratings']['tmdb']['value']))
+                if 'ratings' in movie and movie['ratings'].get('value', 0) > 0:
+                    card_item['rating'] = ('\N{BLACK STAR} ' + str(movie['ratings']['value']))
                 else:
                     card_item['rating'] = ''
+                card_item['summary'] = movie.get('overview', '')
+                if 'youTubeTrailerId' in movie:
+                    card_item['trailer'] = f'https://www.youtube.com/watch?v={movie["youTubeTrailerId"]}'
+                else:
+                    card_item['trailer'] = ''
                 if 'images' in movie:
                     if len(movie['images']):
                         card_item['poster'] = movie['images'][0]
@@ -122,9 +133,8 @@ class RadarrUpcomingMediaSensor(Entity):
                         card_item['fanart'] = movie['images'][1]
                     else:
                         card_item['fanart'] = ''
-                else:
-                    continue
-                card_item['deep_link'] = f'http://{self.host}:{self.port}/movie/{movie.get("tmdbId")}'
+                protocol = 'https' if self.ssl else 'http'
+                card_item['deep_link'] = f'{protocol}://{self.host}:{self.port}/movie/{movie.get("tmdbId")}'
                 self.card_json.append(card_item)
                 self.change_detected = False
         attributes['data'] = self.card_json
@@ -151,9 +161,11 @@ class RadarrUpcomingMediaSensor(Entity):
             if self.days == 1:
                 in_cinemas = list(filter(
                     lambda x: x['inCinemas'][:-10] == str(start), api.json()))
+                digital_release = list(filter(lambda x: x[
+                    'digitalRelease'][:-10] == str(start), api.json()))
                 physical_release = (list(filter(lambda x: x[
                     'physicalRelease'][:-10] == str(start), api.json())))
-                combined = in_cinemas + physical_release
+                combined = in_cinemas + digital_release + physical_release
                 self.api_json = combined[:self.max_items]
             else:
                 self.api_json = api.json()[:self.max_items]
@@ -197,7 +209,6 @@ class RadarrUpcomingMediaSensor(Entity):
                                                                   ]][:3])
                     except:
                         movie['genres'] = ''
-                    movie['deep_link'] = f'http://{self.host}:{self.port}/movie/{movie.get("id", "unknown")}'
         else:
             self._state = '%s cannot be reached' % self.host
 
