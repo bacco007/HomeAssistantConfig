@@ -256,6 +256,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             self._commandScanInterval:int = 0
             self._lastKnownTimeRemainingSeconds:int = 0
             self._isInCommandEvent:bool = False
+            self._volume_level_saved:float = None
 
             # initialize base class attributes (MediaPlayerEntity).
             self._attr_icon = "mdi:spotify"
@@ -304,7 +305,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                                               | MediaPlayerEntityFeature.SHUFFLE_SET \
                                               | MediaPlayerEntityFeature.TURN_OFF \
                                               | MediaPlayerEntityFeature.TURN_ON \
-                                              | MediaPlayerEntityFeature.VOLUME_SET
+                                              | MediaPlayerEntityFeature.VOLUME_MUTE \
+                                              | MediaPlayerEntityFeature.VOLUME_SET \
+                                              | MediaPlayerEntityFeature.VOLUME_STEP
             else:
                 _logsi.LogVerbose("'%s': MediaPlayer is setting supported features for Spotify Non-Premium user" % self.name)
                 self._attr_supported_features = MediaPlayerEntityFeature.BROWSE_MEDIA
@@ -334,12 +337,6 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
     def state(self) -> MediaPlayerState:
         """ Return the playback state. """
         return self._attr_state
-
-
-    @property
-    def volume_level(self) -> float | None:
-        """ Volume level of the media player (0.0 to 1.0). """
-        return self._attr_volume_level
 
 
     @property
@@ -439,6 +436,18 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
     def repeat(self) -> RepeatMode | str | None:
         """ Return current repeat mode. """
         return self._attr_repeat
+    
+
+    @property
+    def volume_level(self) -> float | None:
+        """ Volume level of the media player (0.0 to 1.0). """
+        return self._attr_volume_level
+
+
+    @property
+    def is_volume_muted(self):
+        """ Boolean if volume is currently muted. """
+        return self._attr_is_volume_muted
 
 
     @spotify_exception_handler
@@ -497,12 +506,33 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         # update ha state.
         self._attr_media_position = position
         self._attr_media_position_updated_at = utcnow()
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
         
         # seek to track position.
         deviceId:str = self._VerifyDeviceIdByName()
         self.data.spotifyClient.PlayerMediaSeek(int(position * 1000), deviceId)
         
+
+    @spotify_exception_handler
+    def mute_volume(self, mute:bool) -> None:
+        """ Send mute command. """
+        _logsi.LogVerbose(STAppMessages.MSG_MEDIAPLAYER_SERVICE_WITH_PARMS, self.name, "mute_volume", "mute='%s'" % (mute))
+
+        self._attr_is_volume_muted = mute
+
+        if mute:
+            self._volume_level_saved = self._attr_volume_level
+            self.async_write_ha_state()
+            self.set_volume_level(0.0)
+        else:
+            # did we save the volume on a previous mute request?  if not, then default volume.
+            if self._volume_level_saved is None or self._volume_level_saved == 0.0:
+                _logsi.LogVerbose("Previously saved volume was not set; defaulting to 0.10")
+                self._volume_level_saved = 0.10
+            self._attr_volume_level = self._volume_level_saved
+            self.async_write_ha_state()
+            self.set_volume_level(self._volume_level_saved)
+            
 
     @spotify_exception_handler
     def play_media(self, media_type: MediaType | str, media_id: str, **kwargs: Any) -> None:        
@@ -526,7 +556,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             # are we currently powered off?  if so, then power on.
             if self._attr_state == MediaPlayerState.OFF:
                 self.turn_on()
-                self._isInCommandEvent = True  # turn "in a command event" indicator back on
+                self._isInCommandEvent = True  # turn "in a command event" indicator back on.
 
             # verify device id (specific device, active device, or default).
             deviceId:str = self._VerifyDeviceIdByName()
@@ -609,7 +639,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
 
         # update ha state.
         self._attr_shuffle = shuffle
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
         
         # set shuffle mode.
         deviceId:str = self._VerifyDeviceIdByName()
@@ -625,7 +655,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         if repeat not in REPEAT_MODE_MAPPING_TO_SPOTIFY:
             raise ValueError(f"Unsupported repeat mode: {repeat}")
         self._attr_repeat = repeat
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
 
         # set repeat mode.
         deviceId:str = self._VerifyDeviceIdByName()
@@ -636,6 +666,10 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
     def set_volume_level(self, volume: float) -> None:
         """ Set the volume level. """
         _logsi.LogVerbose(STAppMessages.MSG_MEDIAPLAYER_SERVICE_WITH_PARMS, self.name, "set_volume_level", "volume='%s'" % (volume))
+        
+        # validations.
+        if volume is None:
+            volume = 0.0
 
         # update ha state.
         self._attr_volume_level = volume
@@ -910,7 +944,8 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             self._attr_shuffle = None
             self._attr_source = None
             self._attr_volume_level = None
-        
+            self._attr_is_volume_muted = None
+
             # does player state exist?  if not, then we are done.
             if playerPlayState is None:
                 _logsi.LogVerbose("'%s': Spotify PlayerPlayState object was not set; nothing to do" % self.name)
@@ -928,6 +963,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                     self._attr_state = MediaPlayerState.IDLE
                 _logsi.LogVerbose("'%s': MediaPlayerState set to '%s'" % (self.name, self._attr_state))
         
+            self._attr_is_volume_muted = playerPlayState.IsMuted
             self._attr_shuffle = playerPlayState.ShuffleState
                
             # update item-related attributes (e.g. track? episode? etc)?
@@ -2725,6 +2761,68 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
 
 
     @spotify_exception_handler
+    def service_spotify_player_media_play_track_favorites(self, 
+                                                          deviceId:str, 
+                                                          shuffle:bool,
+                                                          delay:float
+                                                          ) -> None:
+        """
+        Start playing one or more tracks on the specified Spotify Connect device.
+        
+        Args:
+            deviceId (str):
+                The id of the device this command is targeting.  
+                If not supplied, the user's currently active device is the target.  
+                Example: `0d1841b0976bae2a3a310dd74c0f3df354899bc8`
+            shuffle (bool):
+                True to set player shuffle mode to on; otherwise, False for no shuffle.
+            delay (float):
+                Time delay (in seconds) to wait AFTER issuing the command to the player.  
+                This delay will give the spotify web api time to process the change before 
+                another command is issued.  
+                Default is 0.50; value range is 0 - 10.
+        """
+        apiMethodName:str = 'service_spotify_player_media_play_track_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("deviceId", deviceId)
+            apiMethodParms.AppendKeyValue("shuffle", shuffle)
+            apiMethodParms.AppendKeyValue("delay", delay)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Player Media Play Favorite Tracks Service", apiMethodParms)
+            
+            # verify device id (specific device, active device, or default).
+            deviceId = self._VerifyDeviceId(deviceId)
+
+            # start playing track favorites on the specified Spotify Connect device.
+            _logsi.LogVerbose("Playing Media Favorite Tracks on device")
+            self.data.spotifyClient.PlayerMediaPlayTrackFavorites(deviceId, shuffle, delay)
+
+            # issue transfer playback in case it needs it.
+            if deviceId is not None:
+                _logsi.LogVerbose("Transferring Spotify Playback to device")
+                self.data.spotifyClient.PlayerTransferPlayback(deviceId, True)
+
+            # update ha state.
+            self.async_write_ha_state()
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    @spotify_exception_handler
     def service_spotify_player_media_play_tracks(self, 
                                                  uris:str, 
                                                  positionMS:int, 
@@ -4206,7 +4304,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             methodParms = _logsi.EnterMethodParmList(SILevel.Debug)
             methodParms.AppendKeyValue("media_content_type", media_content_type)
             methodParms.AppendKeyValue("media_content_id", media_content_id)
-            _logsi.LogMethodParmList(SILevel.Verbose, "'%s': MediaPlayer is browsing for media" % self.name, methodParms)
+            _logsi.LogMethodParmList(SILevel.Verbose, "'%s': MediaPlayer is browsing for media content type '%s'" % (self.name, media_content_type), methodParms)
             
             # browse spotifysplus device media.
             if media_content_type is None and media_content_id is None:
@@ -4224,6 +4322,23 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                     media_content_id,
                 )
 
+            elif media_content_type == 'favorites':
+                # ignore Sonos-Card "favorites" node queries.
+                _logsi.LogVerbose("'%s': ignoring Sonos-Card favorites query (no SoundTouch equivalent)" % self.name)
+                
+                # Sonos-Card requires a valid BrowseMedia object, so return an empty one.
+                browseMedia:BrowseMedia = BrowseMedia(
+                    can_expand=False,
+                    can_play=False,
+                    children=[],
+                    children_media_class=None,
+                    media_class=None,
+                    media_content_id=media_content_id,
+                    media_content_type=media_content_type,
+                    title="Favorites not supported",
+                    )
+                return browseMedia
+                        
             else:
                 
                 # handle spotifysplus media library selection.
