@@ -54,6 +54,12 @@
                     "damp23": "23:00"
                 },
                 "description": "Modify the hourly dampening factor"
+            },
+            "customsensor": {
+                "data": {
+                    "customhoursensor": "Next X Hour Sensor"
+                },
+                "description": "Custom sensor for total energy for the next X hours"
             }
         },
         "error": {
@@ -65,7 +71,8 @@
         "solcast_config_action": {
             "options": {
                 "configure_api": "Solcast API key",
-                "configure_dampening": "Configure Dampening"
+                "configure_dampening": "Configure Dampening",
+                "configure_customsensor": "Configure Custom Hour Sensor"
             }
         }
     },
@@ -120,6 +127,7 @@
             "forecast_this_hour": {"name": "Forecast This Hour"},
             "get_remaining_today": {"name": "Forecast Remaining Today"},
             "forecast_next_hour": {"name": "Forecast Next Hour"},
+            "forecast_custom_hour": {"name": "Forecast Next {forecast_custom_hour} Hours"},
             "total_kwh_forecast_tomorrow": {"name": "Forecast Tomorrow"},
             "peak_w_tomorrow": {"name": "Peak Forecast Tomorrow"},
             "peak_w_time_tomorrow": {"name": "Peak Time Tomorrow"},
@@ -132,6 +140,9 @@
             "total_kwh_forecast_d6": {"name": "Forecast Day 6"},
             "total_kwh_forecast_d7": {"name": "Forecast Day 7"},
             "power_now": {"name": "Power Now"}
+        },
+        "select": {
+            "estimate_mode" : {"name": "Use Forecast Field"}
         }
     }
 }

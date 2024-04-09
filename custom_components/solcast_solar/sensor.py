@@ -10,6 +10,7 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
+    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -43,6 +44,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         name="Forecast Today",
         icon="mdi:solar-power",
         suggested_display_precision=2,
+        state_class= SensorStateClass.MEASUREMENT,
     ),
     "peak_w_today": SensorEntityDescription(
         key="peak_w_today",
@@ -52,6 +54,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         name="Peak Forecast Today",
         icon="mdi:solar-power",
         suggested_display_precision=0,
+        state_class= SensorStateClass.MEASUREMENT,
     ),
     "peak_w_time_today": SensorEntityDescription(
         key="peak_w_time_today",
@@ -85,6 +88,15 @@ SENSORS: dict[str, SensorEntityDescription] = {
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         translation_key="forecast_next_hour",
         name="Forecast Next Hour",
+        icon="mdi:solar-power",
+        suggested_display_precision=0,
+    ),
+    "forecast_custom_hour": SensorEntityDescription(
+        key="forecast_custom_hour",
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        translation_key="forecast_custom_hour",
+        name="Forecast Custom Hours",
         icon="mdi:solar-power",
         suggested_display_precision=0,
     ),
@@ -188,6 +200,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         translation_key="power_now",
         name="Power Now",
         suggested_display_precision=0,
+        state_class= SensorStateClass.MEASUREMENT,
     ),
     "power_now_30m": SensorEntityDescription(
         key="power_now_30m",
@@ -258,6 +271,10 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
+
+        #doesnt work :()
+        if entity_description.key == "forecast_custom_hour":
+            self._attr_translation_placeholders = {"forecast_custom_hour": f"{coordinator.solcast._customhoursensor}"}
 
         self.entity_description = entity_description
         self.coordinator = coordinator
@@ -431,4 +448,3 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             )
             self._sensor_data = None
         self.async_write_ha_state()
-        

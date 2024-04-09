@@ -76,6 +76,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             return self.solcast.get_forecast_n_hour(0)
         elif key == "forecast_next_hour":
             return self.solcast.get_forecast_n_hour(1)
+        elif key == "forecast_custom_hour":
+            return self.solcast.get_forecast_custom_hour(self.solcast._customhoursensor)
         elif key == "forecast_next_12hour":
             return self.solcast.get_forecast_n_hour(12)
         elif key == "forecast_next_24hour":

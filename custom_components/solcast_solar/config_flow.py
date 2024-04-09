@@ -13,13 +13,13 @@ from homeassistant.helpers.selector import (
     SelectSelectorMode,
 )
 from homeassistant import config_entries
-from .const import DOMAIN, CONFIG_OPTIONS
+from .const import DOMAIN, CONFIG_OPTIONS, CUSTOM_HOUR_SENSOR
 
 @config_entries.HANDLERS.register(DOMAIN)
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Solcast Solar."""
 
-    VERSION = 5 #v5 started in 4.0.8
+    VERSION = 6 #v5 started in 4.0.8, #6 started 4.0.15
 
     @staticmethod
     @callback
@@ -66,6 +66,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     "damp21":1.0,
                     "damp22":1.0,
                     "damp23":1.0,
+                    "customhoursensor":1,
                 },
             )
 
@@ -96,6 +97,8 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                     return await self.async_step_dampen()
                 elif nextAction == "configure_api":
                     return await self.async_step_api()
+                elif nextAction == "configure_customsensor":
+                    return await self.async_step_customsensor()
                 else:
                     errors["base"] = "incorrect_options_action"
 
@@ -287,6 +290,41 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                             vol.All(vol.Coerce(float), vol.Range(min=0.0,max=1.0)),
                     vol.Required("damp23", description={"suggested_value": damp23}):
                             vol.All(vol.Coerce(float), vol.Range(min=0.0,max=1.0)),
+                }
+            ),
+            errors=errors,
+        )
+
+    async def async_step_customsensor(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Manage the custom x hour sensor option."""
+
+        errors = {}
+
+        customhoursensor = self.config_entry.options[CUSTOM_HOUR_SENSOR]
+        
+        if user_input is not None:
+            try:
+                customhoursensor = user_input[CUSTOM_HOUR_SENSOR]
+
+                allConfigData = {**self.config_entry.options}
+                allConfigData[CUSTOM_HOUR_SENSOR] = customhoursensor
+
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    title="Solcast Solar",
+                    options=allConfigData,
+                )
+                
+                return self.async_create_entry(title="Solcast Solar", data=None)
+            except Exception as e:
+                errors["base"] = "unknown"
+
+        return self.async_show_form(
+            step_id="customsensor",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CUSTOM_HOUR_SENSOR, description={"suggested_value": customhoursensor}):
+                            vol.All(vol.Coerce(int), vol.Range(min=1,max=144)),
                 }
             ),
             errors=errors,

@@ -21,7 +21,9 @@ from .const import (
     SERVICE_UPDATE, 
     SERVICE_QUERY_FORECAST_DATA, 
     SERVICE_SET_DAMPENING, 
-    SOLCAST_URL
+    SOLCAST_URL,
+    CUSTOM_HOUR_SENSOR,
+    KEY_ESTIMATE
 )
 
 from .coordinator import SolcastUpdateCoordinator
@@ -31,7 +33,7 @@ from typing import Final
 
 import voluptuous as vol
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.SELECT,]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -55,6 +57,14 @@ SERVICE_QUERY_SCHEMA: Final = vol.All(
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up solcast parameters."""
 
+    #new in v4.0.16 for the selector of which field to use from the data
+    if entry.options.get(KEY_ESTIMATE,None) == None:
+        new = {**entry.options}
+        new[KEY_ESTIMATE] = "estimate"
+        entry.version = 7
+        hass.config_entries.async_update_entry(entry, options=new)
+
+
     optdamp = {}
     try:
         #if something goes wrong ever with the damp factors just create a blank 1.0
@@ -74,6 +84,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config.path('solcast.json'),
         dt_util.get_time_zone(hass.config.time_zone),
         optdamp,
+        entry.options[CUSTOM_HOUR_SENSOR],
+        entry.options.get(KEY_ESTIMATE,"estimate"),
     )
 
     solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options)
@@ -216,8 +228,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
     if config_entry.version < 4:
         new_options = {**config_entry.options}
         new_options.pop("const_disableautopoll", None)
-
         config_entry.version = 4
+
         hass.config_entries.async_update_entry(config_entry, options=new_options)
 
     #new 4.0.8
@@ -226,10 +238,31 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         new = {**config_entry.options}
         for a in range(0,24):
             new[f"damp{str(a).zfill(2)}"] = 1.0
-
-        config_entry.options = {**new}
-
         config_entry.version = 5
+
+        hass.config_entries.async_update_entry(config_entry, options=new)
+
+        
+
+    #new 4.0.15
+    #custom sensor for 'next x hours'
+    if config_entry.version == 5:
+        new = {**config_entry.options}
+        new[CUSTOM_HOUR_SENSOR] = 1
+        config_entry.version = 6
+
+        hass.config_entries.async_update_entry(config_entry, options=new)
+
+        
+
+    #new 4.0.16
+    #which estimate value to use for data calcs est,est10,est90
+    if config_entry.version == 6:
+        new = {**config_entry.options}
+        new[KEY_ESTIMATE] = "estimate"
+        config_entry.version = 7
+
+        hass.config_entries.async_update_entry(config_entry, options=new)
 
     _LOGGER.debug("Solcast Migration to version %s successful", config_entry.version)
 

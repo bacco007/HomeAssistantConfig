@@ -1,0 +1,8 @@
+{
+    "services": {
+        "update_forecasts": "mdi:sun-wireless-outline",
+        "clear_all_solcast_data": "mdi:database-off",
+        "query_forecast_data": "mdi:table-question",
+        "set_dampening": "mdi:format-align-middle"
+    }
+}
