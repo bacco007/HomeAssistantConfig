@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.4.2 |
 | No. Integrations | 193 |
 | No. Custom Integrations | 78 |
-| No. Entities | 4900 |
-| No. Sensors | 3145 |
+| No. Entities | 4868 |
+| No. Sensors | 3132 |
 | No. Automations | 139 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 337
-Buttons | 214
+Buttons | 201
 Calendars | 67
 Cameras | 5
 Climate | 2
@@ -85,21 +85,21 @@ Lights | 14
 Locks | 4
 Media players | 20
 Numbers | 31
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3145
+Sensors | 3132
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 271
+Switches | 258
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 262
+Update | 264
 Vacuums | 0
 Water heaters | 0
 Weather | 10
@@ -719,7 +719,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.2a] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.2] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.6] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.2.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.7.1] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
@@ -731,7 +731,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.4] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.0] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
@@ -767,13 +767,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description |
 | --- | --- | --- |
 | [Apexcharts Card](https://github.com/RomRider/apexcharts-card) |  [v2.0.4] | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
-| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
+| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.3.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.4.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
