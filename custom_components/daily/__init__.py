@@ -24,6 +24,7 @@ from .const import (
     EVENT_UPDATE,
     SERVICE_RESET,
     SERVICE_UPDATE,
+    COORDINATOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -47,6 +48,44 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     unit_of_measurement = entry.data.get(CONF_UNIT_OF_MEASUREMENT)
     auto_reset = entry.data.get(CONF_AUTO_RESET, DEFAULT_AUTO_RESET)
 
+    # update listener for options flow
+    hass_data = dict(entry.data)
+    unsub_options_update_listener = entry.add_update_listener(options_update_listener)
+    hass_data["unsub_options_update_listener"] = unsub_options_update_listener
+    hass.data[DOMAIN][entry.entry_id] = hass_data
+
+    # logic here is: if options are set that do not agree with the data settings, use the options
+    # handle options flow data
+    if CONF_INPUT_SENSOR in entry.options and entry.options.get(
+        CONF_INPUT_SENSOR
+    ) != entry.data.get(CONF_INPUT_SENSOR):
+        input_sensor = hass.data[DOMAIN][entry.entry_id][
+            CONF_INPUT_SENSOR
+        ] = entry.options.get(CONF_INPUT_SENSOR)
+    if CONF_AUTO_RESET in entry.options and entry.options.get(
+        CONF_AUTO_RESET
+    ) != entry.data.get(CONF_AUTO_RESET):
+        auto_reset = hass.data[DOMAIN][entry.entry_id][
+            CONF_AUTO_RESET
+        ] = entry.options.get(CONF_AUTO_RESET)
+    if CONF_INTERVAL in entry.options and entry.options.get(
+        CONF_INTERVAL
+    ) != entry.data.get(CONF_INTERVAL):
+        interval = hass.data[DOMAIN][entry.entry_id][CONF_INTERVAL] = entry.options.get(
+            CONF_INTERVAL
+        )
+    if CONF_OPERATION in entry.options and entry.options.get(
+        CONF_OPERATION
+    ) != entry.data.get(CONF_OPERATION):
+        operation = hass.data[DOMAIN][entry.entry_id][
+            CONF_OPERATION
+        ] = entry.options.get(CONF_OPERATION)
+    if CONF_UNIT_OF_MEASUREMENT in entry.options and entry.options.get(
+        CONF_UNIT_OF_MEASUREMENT
+    ) != entry.data.get(CONF_UNIT_OF_MEASUREMENT):
+        unit_of_measurement = hass.data[DOMAIN][entry.entry_id][
+            CONF_UNIT_OF_MEASUREMENT
+        ] = entry.options.get(CONF_UNIT_OF_MEASUREMENT)
     # set up coordinator
     coordinator = DailySensorUpdateCoordinator(
         hass,
@@ -63,8 +102,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
-
     for platform in PLATFORMS:
         coordinator.platforms.append(platform)
         hass.async_create_task(
@@ -72,9 +109,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         )
 
     # add update listener if not already added.
-    if weakref.ref(async_reload_entry) not in entry.update_listeners:
-        entry.add_update_listener(async_reload_entry)
+    # if weakref.ref(async_reload_entry) not in entry.update_listeners:
+    #    entry.add_update_listener(async_reload_entry)
 
+    hass.data[DOMAIN][entry.entry_id][COORDINATOR] = coordinator
     # register services
     hass.services.async_register(
         DOMAIN,
@@ -91,28 +129,58 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Reload config entry."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
     if coordinator.entry_setup_completed:
         await async_unload_entry(hass, entry)
     await async_setup_entry(hass, entry)
 
 
+async def options_update_listener(hass, config_entry):
+    """Handle options update."""
+    hass.data[DOMAIN][config_entry.entry_id][CONF_INTERVAL] = config_entry.options.get(
+        CONF_INTERVAL
+    )
+    hass.data[DOMAIN][config_entry.entry_id][
+        CONF_INPUT_SENSOR
+    ] = config_entry.options.get(CONF_INPUT_SENSOR)
+    hass.data[DOMAIN][config_entry.entry_id][
+        CONF_AUTO_RESET
+    ] = config_entry.options.get(CONF_AUTO_RESET)
+    hass.data[DOMAIN][config_entry.entry_id][CONF_OPERATION] = config_entry.options.get(
+        CONF_OPERATION
+    )
+    hass.data[DOMAIN][config_entry.entry_id][
+        CONF_UNIT_OF_MEASUREMENT
+    ] = config_entry.options.get(CONF_UNIT_OF_MEASUREMENT)
+    await hass.config_entries.async_reload(config_entry.entry_id)
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Handle removal of an entry."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    unloaded = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, platform)
-                for platform in PLATFORMS
-                if platform in coordinator.platforms
-            ]
+    if DOMAIN in hass.data and entry.entry_id in hass.data[DOMAIN]:
+        coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
+        unloaded = all(
+            await asyncio.gather(
+                *[
+                    hass.config_entries.async_forward_entry_unload(entry, platform)
+                    for platform in PLATFORMS
+                    if platform in coordinator.platforms
+                ]
+            )
         )
-    )
-    if unloaded:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        if unloaded:
+            hass.data[DOMAIN].pop(entry.entry_id)
 
-    return unloaded
+        return unloaded
+    return True
+
+
+async def async_remove_entry(hass, entry):
+    """Remove Daily sensor config entry."""
+    if DOMAIN in hass.data and entry.entry_id in hass.data[DOMAIN]:
+        coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
+        await coordinator.async_delete_config()
+        del hass.data[DOMAIN][entry.entry_id]
 
 
 class DailySensorUpdateCoordinator(DataUpdateCoordinator):

@@ -1,6 +1,7 @@
-"""Config flow for Daily Sensor integration."""
-
-from homeassistant.core import callback
+from homeassistant.helpers.selector import selector
+import logging
+import voluptuous as vol
+from homeassistant import config_entries
 from .const import (  # pylint: disable=unused-import
     DOMAIN,
     CONF_INPUT_SENSOR,
@@ -14,39 +15,44 @@ from .const import (  # pylint: disable=unused-import
     DEFAULT_INTERVAL,
     DEFAULT_AUTO_RESET,
 )
-from .exceptions import SensorNotFound, OperationNotFound, IntervalNotValid, NotUnique
-from .options_flow import DailySensorOptionsFlowHandler
-import logging
-import voluptuous as vol
-
-from homeassistant import config_entries
+from .exceptions import SensorNotFound, OperationNotFound, IntervalNotValid
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Daily Sensor."""
+class DailySensorOptionsFlowHandler(config_entries.OptionsFlow):
+    """Daily Sensor options flow options handler."""
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
-    def __init__(self):
-        """Initialize."""
-        self._name = NAME
-        self._operation = ""
-        self._input_sensor = ""
-        self._unit_of_measurement = "unknown"
+    def __init__(self, config_entry):
+        """Initialize HACS options flow."""
+        self.config_entry = config_entry
+        self.options = dict(config_entry.options)
         self._errors = {}
-        self._auto_reset = DEFAULT_AUTO_RESET
+        self._operation = self.options.get(
+            CONF_OPERATION, config_entry.data.get(CONF_OPERATION)
+        )
+        self._input_sensor = self.options.get(
+            CONF_INPUT_SENSOR, config_entry.data.get(CONF_INPUT_SENSOR)
+        )
+        self._auto_reset = self.options.get(
+            CONF_AUTO_RESET, config_entry.data.get(CONF_AUTO_RESET)
+        )
+        self._interval = self.options.get(
+            CONF_INTERVAL, config_entry.data.get(CONF_INTERVAL)
+        )
+        self._unit_of_measurement = self.options.get(
+            CONF_UNIT_OF_MEASUREMENT, config_entry.data.get(CONF_UNIT_OF_MEASUREMENT)
+        )
 
-    async def async_step_user(self, user_input=None):
-        """Handle a flow initialized by the user."""
+    async def async_step_init(self, user_input=None):  # pylint: disable=unused-argument
+        """Manage the options."""
         self._errors = {}
-
+        # set default values based on config
         if user_input is not None:
             try:
-                await self._check_unique(user_input[CONF_NAME])
-
                 # check input sensor exists
                 status = self.hass.states.get(user_input[CONF_INPUT_SENSOR])
                 if status is None:
@@ -61,14 +67,13 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     or user_input[CONF_INTERVAL] <= 0
                 ):
                     raise IntervalNotValid
-                self._name = user_input[CONF_NAME]
                 self._auto_reset = user_input[CONF_AUTO_RESET]
+                self._interval = user_input[CONF_INTERVAL]
+                self._unit_of_measurement = user_input[CONF_UNIT_OF_MEASUREMENT]
+                self._operation = user_input[CONF_OPERATION]
+                self._input_sensor = user_input[CONF_INPUT_SENSOR]
 
-                return self.async_create_entry(title=self._name, data=user_input)
-
-            except NotUnique:
-                _LOGGER.error("Instance name is not unique.")
-                self._errors["base"] = "name"
+                return self.async_create_entry(title="", data=user_input)
             except SensorNotFound:
                 _LOGGER.error(
                     "Input sensor {} not found.".format(user_input[CONF_INPUT_SENSOR])
@@ -95,27 +100,19 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def _show_config_form(self, user_input):
         """Show the configuration form to edit info."""
         return self.async_show_form(
-            step_id="user",
+            step_id="init",
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_NAME, default=NAME): str,
-                    vol.Required(CONF_INPUT_SENSOR): str,
-                    vol.Required(CONF_OPERATION): vol.In(VALID_OPERATIONS),
-                    vol.Required(CONF_UNIT_OF_MEASUREMENT): str,
-                    vol.Required(CONF_INTERVAL, default=DEFAULT_INTERVAL): int,
-                    vol.Required(CONF_AUTO_RESET, default=DEFAULT_AUTO_RESET): bool,
+                    vol.Required(CONF_INPUT_SENSOR, default=self._input_sensor): str,
+                    vol.Required(CONF_OPERATION, default=self._operation): vol.In(
+                        VALID_OPERATIONS
+                    ),
+                    vol.Required(
+                        CONF_UNIT_OF_MEASUREMENT, default=self._unit_of_measurement
+                    ): str,
+                    vol.Required(CONF_INTERVAL, default=self._interval): int,
+                    vol.Required(CONF_AUTO_RESET, default=self._auto_reset): bool,
                 }
             ),
             errors=self._errors,
         )
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry):
-        """Get options flow."""
-        return DailySensorOptionsFlowHandler(config_entry)
-
-    async def _check_unique(self, thename):
-        """Test if the specified name is not already claimed."""
-        await self.async_set_unique_id(thename)
-        self._abort_if_unique_id_configured()

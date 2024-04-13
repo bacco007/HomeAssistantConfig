@@ -26,6 +26,7 @@ from .const import (  # pylint: disable=unused-import
     CONF_UNIT_OF_MEASUREMENT,
     CONF_AUTO_RESET,
     ATTR_DATETIME_OF_OCCURRENCE,
+    COORDINATOR,
 )
 from .entity import DailySensorEntity
 
@@ -34,7 +35,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the platform and add to HA."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
 
     async_add_devices([DailySensor(hass, coordinator, entry)])
 

@@ -3,8 +3,8 @@
 DOMAIN = "daily"
 NAME = "Daily Sensor"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "2024.4.2"
-
+VERSION = "2024.4.3"
+COORDINATOR = "coordinator"
 ISSUE_URL = "https://github.com/jeroenterheerdt/HADailySensor/issues"
 
 # Icons
@@ -13,6 +13,10 @@ ICON = "mdi:timetable"
 # Platforms
 SENSOR = "sensor"
 PLATFORMS = [SENSOR]
+
+# Localization
+LANGUAGE_FILES_DIR = "translations"
+SUPPORTED_LANGUAGES = ["el", "en", "es", "fr", "nb", "nl", "sk"]
 
 # Config
 CONF_INPUT_SENSOR = "sensor"
