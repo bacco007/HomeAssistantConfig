@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.4.2 |
-| No. Integrations | 193 |
+| HA Version | 2024.4.3 |
+| No. Integrations | 194 |
 | No. Custom Integrations | 78 |
-| No. Entities | 4883 |
-| No. Sensors | 3142 |
-| No. Automations | 139 |
+| No. Entities | 4926 |
+| No. Sensors | 3141 |
+| No. Automations | 140 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,15 +62,15 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 337
-Buttons | 201
+Binary sensors | 340
+Buttons | 219
 Calendars | 67
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 93
+Device trackers | 94
 Devices | 541
 Fans | 1
 Humidifiers | 0
@@ -83,19 +83,19 @@ Input selects | 3
 Input texts | 3
 Lights | 14
 Locks | 4
-Media players | 20
-Numbers | 31
-Persistent notifications | 6
+Media players | 21
+Numbers | 35
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3142
+Sensors | 3141
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 258
+Switches | 276
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>565 Integrations</summary>
+<details><summary>571 Integrations</summary>
 
 | Name |
 | --- |
@@ -259,6 +259,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [forecast_solar](https://www.home-assistant.io/components/forecast_solar) |
 | [forecast_solar.sensor](https://www.home-assistant.io/components/forecast_solar.sensor) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
+| [fully_kiosk](https://www.home-assistant.io/components/fully_kiosk) |
+| [fully_kiosk.binary_sensor](https://www.home-assistant.io/components/fully_kiosk.binary_sensor) |
+| [fully_kiosk.button](https://www.home-assistant.io/components/fully_kiosk.button) |
+| [fully_kiosk.media_player](https://www.home-assistant.io/components/fully_kiosk.media_player) |
+| [fully_kiosk.number](https://www.home-assistant.io/components/fully_kiosk.number) |
+| [fully_kiosk.sensor](https://www.home-assistant.io/components/fully_kiosk.sensor) |
+| [fully_kiosk.switch](https://www.home-assistant.io/components/fully_kiosk.switch) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [garbage_collection.calendar](https://www.home-assistant.io/components/garbage_collection.calendar) |
 | [garbage_collection.sensor](https://www.home-assistant.io/components/garbage_collection.sensor) |
@@ -339,7 +346,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_text](https://www.home-assistant.io/components/input_text) |
 | [integration](https://www.home-assistant.io/components/integration) |
 | [integration.sensor](https://www.home-assistant.io/components/integration.sensor) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [ios.notify](https://www.home-assistant.io/components/ios.notify) |
 | [ios.sensor](https://www.home-assistant.io/components/ios.sensor) |
@@ -703,7 +709,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v3.4.0] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.3.0] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
-| [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.4.2] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
+| [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.4.3] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.11] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
@@ -734,7 +740,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.4] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.0] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.3] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
@@ -898,7 +904,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.4.2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.4.3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
