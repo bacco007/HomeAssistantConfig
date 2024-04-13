@@ -149,6 +149,11 @@ def get_next_services(self):
     
 def get_rt_route_trip_statuses(self):
     ''' Get next rt departure for route (multiple) or trip (single) '''
+    # explanatory logic
+    # sources can provide tip_id with or without route, route with or without direction hence a lot of conditions as the resultset has (!) to include the direction
+    # if route-based info is required, for start/end stops, then one needs to cover also for routes without direction_id and thus trip
+    # if response does not provide a direction_id then use trip_id, make directon temporarily nn and when the stop is identified make it equal to the requesting direction
+    # in this case the trip still covers the direction
 
     departure_times = {}
     
@@ -159,7 +164,7 @@ def get_rt_route_trip_statuses(self):
         url=self._trip_update_url, headers=self._headers, label="trip data"
     )
     self._feed_entities = feed_entities
-    _LOGGER.debug("Search departure times for route: %s, type: %s", self._route_id, self._rt_group)
+    _LOGGER.debug("Search departure times for route: %s, type: %s, direction: %s", self._route_id, self._rt_group, self._direction)
     for entity in feed_entities:
         if entity.HasField("trip_update"):
             
@@ -174,27 +179,31 @@ def get_rt_route_trip_statuses(self):
                     route_id = route_id_split[0]
             else:
                 route_id = entity.trip_update.trip.route_id
-            if entity.trip_update.trip.direction_id is not None:
+
+            if "direction_id" in str(entity.trip_update.trip):
                     direction_id = str(entity.trip_update.trip.direction_id)
             else:
-                direction_id = [DEFAULT_DIRECTION]
+                direction_id = "nn"
                 
             if self._rt_group == "trip":
                 direction_id = self._direction                
 
             trip_id = entity.trip_update.trip.trip_id   
              
-            if ((self._rt_group == "route" and route_id == self._route_id and direction_id == self._direction) or    
+            if ((self._rt_group == "route" and (route_id == self._route_id and direction_id == self._direction) or (trip_id == self._trip_id and direction_id == "nn") ) or    
                     (self._rt_group == "trip" and trip_id == self._trip_id )):
-          
-                _LOGGER.debug("Entity found params - group: %s, route_id: %s, direction_id: %s, trip_id: %s", self._rt_group, route_id, direction_id, self._trip_id)
-                _LOGGER.debug("Entity found: %s", entity.trip_update.trip)
+                
+                _LOGGER.debug("Entity found params - group: %s, route_id: %s, direction_id: %s, self_trip_id: %s, with rt trip: %s", self._rt_group, route_id, direction_id, self._trip_id, entity.trip_update.trip)
+                
                 for stop in entity.trip_update.stop_time_update:
                     stop_id = stop.stop_id
                     if stop_id == self._stop_id:
                         _LOGGER.debug("Stop found: %s", stop)
                         if route_id not in departure_times:
                             departure_times[route_id] = {}
+                            
+                        if direction_id == "nn": # i this case the trip_id serves as a basis so one can safely set direction to the requesting entity direction
+                            direction_id = self._direction
 
                         if direction_id not in departure_times[route_id]:
                             departure_times[route_id][direction_id] = {}
