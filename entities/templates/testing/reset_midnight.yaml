@@ -6,7 +6,7 @@ trigger:
       - unavailable
     entity_id: sensor.weather_temperature
   - platform: template
-    value_template: "{{ now().hour == 0 }}" #resets each day
+    value_template: "{{ now().hour == 0 }}" # resets each day
 action:
   - variables:
       source: "{{ states('sensor.weather_temperature') | float }}"

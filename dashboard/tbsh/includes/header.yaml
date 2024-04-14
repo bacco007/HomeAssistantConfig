@@ -1,0 +1,114 @@
+---
+type: custom:mod-card
+view_layout:
+  grid-area: header
+card:
+  type: custom:paper-buttons-row
+  styles:
+    justify-content: space-between
+    background: none
+    # margin: 24px 20px 16px
+    margin-left: 20px
+    margin-right: 20px
+    text-shadow: 0px 0px 20px var(--card-background-color);
+  buttons:
+    - layout: name_state
+      name: '{{ state_attr(''sensor.helper_date'', "date_long") }}'
+      state: '{{ now().strftime(''%H'') }}:{{ now().strftime(''%M'')}}'
+      styles:
+        name:
+          font-weight: 400
+          font-size: 16px
+          margin-left: 0
+          display: block
+          text-align: left
+          float: left
+          width: 300px
+          color: '#BAC0C6'
+        button:
+          pointer-events: none
+          align-items: left
+          width: 300px
+          line-height: 1.6em
+          color: '#BAC0C6'
+        state:
+          font-weight: 700
+          font-size: 30px
+          letter-spacing: '-1px'
+          margin-left: 0
+          display: block
+          text-align: left
+          float: left
+          width: 300px
+          color: '#BAC0C6'
+    - layout: icon|name_state
+      name: 🌧️ {{ states('sensor.weather_precipitation_duration_today') }}mm
+      state: >-
+        {{ state_attr('weather.weatherflow_forecast_brisbane_st','temperature')
+        }}°C
+      image: |
+        {% set mapper =
+          { 'breezy':'cloudy',
+            'clear-night':'night',
+            'clear':'day',
+            'mostly-clear':'day',
+            'clear-day':'day',
+            'cloudy':'cloudy',
+            'fog':'fog',
+            'hail':'rainy-7',
+            'haze':'haze',
+            'lightning':'thunder',
+            'mostly-cloudy':'cloudy',
+            'partlycloudy':'cloudy-day-3',
+            'partly-cloudy-day':'partly-cloudy-day',
+            'partly-cloudy-night':'partly-cloudy-night',
+            'rain':'rainy-4',
+            'scattered-showers':'rainy-3',
+            'showers':'rainy-6',
+            'sleet':'sleet',
+            'snow':'snowy-6',
+            'mostly-sunny':'day',
+            'sunny':'day',
+            'thunderstorm':'thunder',
+            'tornado':'tornado',
+            'wind':'wind',
+            'windy':'wind'} %}
+        {% set state = states('weather.openweathermap') %}
+        {% set weather = mapper[state] if state in mapper else 'weather' %}
+        {% set path = '/local/icons/weather_icons/animated/' %}
+        {% set ext = '.svg'%}
+          {{[path,weather,ext]|join('')}}
+      styles:
+        name:
+          font-weight: 400
+          font-size: 16px
+          margin-left: 0
+          display: block
+          text-align: right
+          width: 140px
+          color: '#BAC0C6'
+        button:
+          pointer-events: none
+          align-items: right
+          width: 140px
+          line-height: 1.6em
+          color: '#BAC0C6'
+        state:
+          font-weight: 600
+          font-size: 30px
+          letter-spacing: '-1px'
+          margin-left: 0
+          display: block
+          text-align: right
+          width: 140px
+          color: '#BAC0C6'
+        icon:
+          position: absolute
+          left: 2px
+          transform: scale(0.17)
+          transform-origin: 0 19.5%
+          top: '-48px;'
+          padding: 0;
+          height: 380px !important;
+          width: 380px !important;
+          color: '#BAC0C6'

@@ -57,7 +57,7 @@ pages:
       - service_data:
           id: playlist:37i9dQZF1DXaRycgyh6kXP
           source: KEF LS50
-        icon: "spotify:playlist/37i9dQZF1DXaRycgyh6kXP"  # Downloads the cover art
+        icon: "spotify:playlist/37i9dQZF1DXaRycgyh6kXP" # Downloads the cover art
         service: script.start_spotify
       # (Advanced) Use templates!
       - entity_id: media_player.kef_ls50
