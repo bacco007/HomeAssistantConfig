@@ -30,7 +30,6 @@ from .const import (
     CONF_CREATE_ENERGY_SENSORS,
     CONF_CREATE_UTILITY_METERS,
     CONF_DISABLE_EXTENDED_ATTRIBUTES,
-    CONF_DISABLE_LIBRARY_DOWNLOAD,
     CONF_ENABLE_AUTODISCOVERY,
     CONF_ENERGY_INTEGRATION_METHOD,
     CONF_ENERGY_SENSOR_CATEGORY,
@@ -130,10 +129,6 @@ CONFIG_SCHEMA = vol.Schema(
                     ): vol.In(ENTITY_CATEGORIES),
                     vol.Optional(
                         CONF_DISABLE_EXTENDED_ATTRIBUTES,
-                        default=False,
-                    ): cv.boolean,
-                    vol.Optional(
-                        CONF_DISABLE_LIBRARY_DOWNLOAD,
                         default=False,
                     ): cv.boolean,
                     vol.Optional(CONF_ENABLE_AUTODISCOVERY, default=True): cv.boolean,
