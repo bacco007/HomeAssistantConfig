@@ -16,5 +16,34 @@
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
     }
+  },
+  "entity_component": {
+    "_": {
+      "name": "MyJDownloader",
+      "state": {
+        "idle": "[%key:common::state::idle%]",
+        "running": "Running",
+        "paused": "[%key:common::state::paused%]",
+        "stopped": "Stopped"
+      }
+    }
+  },
+  "services": {
+    "restart_and_update": {
+      "name": "Restart and update",
+      "description": "Restarts and updates JDownloader."
+    },
+    "run_update_check": {
+      "name": "Run update check",
+      "description": "Checks for updates."
+    },
+    "stop_downloads": {
+      "name": "[%key:common::action::stop%]",
+      "description": "Stops downloading."
+    },
+    "start_downloads": {
+      "name": "[%key:common::action::start%]",
+      "description": "Starts downloading."
+    }
   }
 }

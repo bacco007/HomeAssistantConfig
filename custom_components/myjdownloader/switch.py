@@ -1,15 +1,19 @@
 """MyJDownloader switches."""
+
 from __future__ import annotations
 
 import datetime
 import logging
+from typing import Any
 
 from myjdapi.myjdapi import MYJDException
 
 from homeassistant.components.switch import DOMAIN, SwitchEntity
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import MyJDownloaderHub
 from .const import (
@@ -24,7 +28,12 @@ _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = datetime.timedelta(seconds=SCAN_INTERVAL_SECONDS)
 
 
-async def async_setup_entry(hass, entry, async_add_entities, discovery_info=None):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+    discovery_info=None,
+) -> None:
     """Set up the switch using config entry."""
     hub = hass.data[MYJDOWNLOADER_DOMAIN][entry.entry_id][DATA_MYJDOWNLOADER_CLIENT]
 
@@ -32,7 +41,7 @@ async def async_setup_entry(hass, entry, async_add_entities, discovery_info=None
     def async_add_switch(devices=hub.devices):
         entities = []
 
-        for device_id in devices.keys():
+        for device_id in devices:
             if DOMAIN not in hub.devices_platforms[device_id]:
                 hub.devices_platforms[device_id].add(DOMAIN)
                 entities += [
@@ -80,7 +89,7 @@ class MyJDownloaderSwitch(MyJDownloaderDeviceEntity, SwitchEntity):
         """Return the state of the switch."""
         return self._state
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off the switch."""
         try:
             await self._myjdownloader_turn_off()
@@ -90,9 +99,9 @@ class MyJDownloaderSwitch(MyJDownloaderDeviceEntity, SwitchEntity):
 
     async def _myjdownloader_turn_off(self) -> None:
         """Turn off the switch."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the switch."""
         try:
             await self._myjdownloader_turn_on()
@@ -102,7 +111,7 @@ class MyJDownloaderSwitch(MyJDownloaderDeviceEntity, SwitchEntity):
 
     async def _myjdownloader_turn_on(self) -> None:
         """Turn on the switch."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class MyJDownloaderPauseSwitch(MyJDownloaderSwitch):

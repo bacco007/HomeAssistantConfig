@@ -1,6 +1,7 @@
 """Constants for the MyJDownloader integration."""
 
 DOMAIN = "myjdownloader"
+TITLE = "MyJDownloader"
 
 SCAN_INTERVAL_SECONDS = 60
 

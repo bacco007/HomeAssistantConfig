@@ -1,4 +1,5 @@
 """MyJDownloader binary sensors."""
+
 from __future__ import annotations
 
 import datetime
@@ -8,9 +9,11 @@ from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import MyJDownloaderHub
 from .const import (
@@ -23,7 +26,12 @@ from .entities import MyJDownloaderDeviceEntity
 SCAN_INTERVAL = datetime.timedelta(seconds=SCAN_INTERVAL_SECONDS)
 
 
-async def async_setup_entry(hass, entry, async_add_entities, discovery_info=None):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+    discovery_info=None,
+) -> None:
     """Set up the binary sensor using config entry."""
     hub = hass.data[MYJDOWNLOADER_DOMAIN][entry.entry_id][DATA_MYJDOWNLOADER_CLIENT]
 
@@ -31,7 +39,7 @@ async def async_setup_entry(hass, entry, async_add_entities, discovery_info=None
     def async_add_binary_sensor(devices=hub.devices):
         entities = []
 
-        for device_id in devices.keys():
+        for device_id in devices:
             if DOMAIN not in hub.devices_platforms[device_id]:
                 hub.devices_platforms[device_id].add(DOMAIN)
                 entities += [
@@ -60,7 +68,7 @@ class MyJDownloaderBinarySensor(MyJDownloaderDeviceEntity, BinarySensorEntity):
         name_template: str,
         icon: str | None,
         measurement: str,
-        device_class: str = None,
+        device_class: BinarySensorDeviceClass | None = None,
         entity_category: EntityCategory | None = None,
         enabled_default: bool = True,
     ) -> None:
@@ -90,7 +98,7 @@ class MyJDownloaderBinarySensor(MyJDownloaderDeviceEntity, BinarySensorEntity):
         return self._state
 
     @property
-    def device_class(self) -> str | None:
+    def device_class(self) -> BinarySensorDeviceClass | None:
         """Return the device class."""
         return self._device_class
 

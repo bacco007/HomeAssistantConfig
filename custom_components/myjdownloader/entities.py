@@ -1,4 +1,5 @@
 """Base entity classes for MyJDownloader integration."""
+
 from __future__ import annotations
 
 import logging
@@ -6,8 +7,9 @@ from string import Template
 
 from myjdapi.exception import MYJDConnectionException, MYJDException
 
-from homeassistant.helpers.device_registry import DeviceEntryType
-from homeassistant.helpers.entity import DeviceInfo, Entity, EntityCategory
+from homeassistant.const import EntityCategory
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
+from homeassistant.helpers.entity import Entity
 
 from . import MyJDownloaderHub
 from .const import DOMAIN
@@ -79,7 +81,7 @@ class MyJDownloaderEntity(Entity):
 
     async def _myjdownloader_update(self) -> None:
         """Update MyJDownloader entity."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
@@ -112,7 +114,7 @@ class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
             manufacturer="AppWork GmbH",
             model=self._device_type,
             entry_type=DeviceEntryType.SERVICE,
-            # sw_version=self._sw_version # Todo await self.hub.async_query(device.jd.get_core_revision)
+            # sw_version=self._sw_version # TODO await self.hub.async_query(device.jd.get_core_revision)
         )
 
     async def async_update(self) -> None:

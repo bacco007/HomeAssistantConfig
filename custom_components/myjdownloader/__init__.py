@@ -7,17 +7,12 @@ from collections import defaultdict
 import datetime
 from http.client import HTTPException
 import logging
-from typing import Dict
 
 from myjdapi.exception import MYJDConnectionException
 from myjdapi.myjdapi import Jddevice, Myjdapi, MYJDException
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
-from homeassistant.components.update import DOMAIN as UPDATE_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -26,7 +21,7 @@ from homeassistant.util import Throttle
 
 from .const import (
     DATA_MYJDOWNLOADER_CLIENT,
-    DOMAIN,
+    DOMAIN as MYJDOWNLOADER_DOMAIN,
     MYJDAPI_APP_KEY,
     SCAN_INTERVAL_SECONDS,
     SERVICE_RESTART_AND_UPDATE,
@@ -37,7 +32,14 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = [SENSOR_DOMAIN, BINARY_SENSOR_DOMAIN, SWITCH_DOMAIN, UPDATE_DOMAIN]
+
+# For your initial PR, limit it to 1 platform.
+PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.SWITCH,
+    Platform.UPDATE,
+]
 
 
 class MyJDownloaderHub:
@@ -50,8 +52,8 @@ class MyJDownloaderHub:
         self._sem = asyncio.Semaphore(1)  # API calls need to be sequential
         self.myjd = Myjdapi()
         self.myjd.set_app_key(MYJDAPI_APP_KEY)
-        self._devices = {}  # type: Dict[str, Jddevice]
-        self.devices_platforms = defaultdict(lambda: set())  # type: Dict[str, set]
+        self._devices: dict[str, Jddevice] = {}
+        self.devices_platforms: dict[str, set] = defaultdict(lambda: set())
 
     @Throttle(datetime.timedelta(seconds=SCAN_INTERVAL_SECONDS))
     async def authenticate(self, email, password) -> bool:
@@ -64,13 +66,12 @@ class MyJDownloaderHub:
         except MYJDException as exception:
             _LOGGER.error("Failed to connect to MyJDownloader")
             raise exception
-        else:
-            return self.myjd.is_connected()
+
+        return self.myjd.is_connected()
 
     async def async_query(self, func, *args, **kwargs):
         """Perform query while ensuring sequentiality of API calls."""
-        # TODO catch exceptions, retry once with reconnect, then connect, then reauth if invalid_auth
-        # TODO maybe with self.myjd.is_connected()
+        # TODO catch exceptions, retry once with reconnect, then connect, then reauth if invalid_auth maybe with self.myjd.is_connected()
         try:
             async with self._sem:
                 return await self._hass.async_add_executor_job(func, *args, **kwargs)
@@ -94,7 +95,7 @@ class MyJDownloaderHub:
         new_devices = {}
         available_device_infos = await self.async_query(self.myjd.list_devices)
         for device_info in available_device_infos:
-            if not device_info["id"] in self._devices:
+            if device_info["id"] not in self._devices:
                 _LOGGER.debug("JDownloader (%s) is online", device_info["name"])
                 new_devices.update(
                     {
@@ -105,7 +106,7 @@ class MyJDownloaderHub:
                 )
         if new_devices:
             self._devices.update(new_devices)
-            async_dispatcher_send(self._hass, f"{DOMAIN}_new_devices")
+            async_dispatcher_send(self._hass, f"{MYJDOWNLOADER_DOMAIN}_new_devices")
 
         # remove JDownloader objects, that are not online anymore
         unavailable_device_ids = [
@@ -132,7 +133,9 @@ class MyJDownloaderHub:
         try:
             return self._devices[device_id]
         except Exception as ex:
-            raise Exception(f"JDownloader ({device_id}) not online") from ex
+            raise JDownloaderOfflineException(
+                f"JDownloader ({device_id}) offline"
+            ) from ex
 
     async def make_request(self, url):
         """Make a http request."""
@@ -146,7 +149,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up MyJDownloader from a config entry."""
 
     # create data storage
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {DATA_MYJDOWNLOADER_CLIENT: None}
+    hass.data.setdefault(MYJDOWNLOADER_DOMAIN, {})[entry.entry_id] = {
+        DATA_MYJDOWNLOADER_CLIENT: None
+    }
 
     # initial connection
     hub = MyJDownloaderHub(hass)
@@ -157,17 +162,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             raise ConfigEntryNotReady
     except MYJDException as exception:
         raise ConfigEntryNotReady from exception
-    else:
-        await hub.async_update_devices()  # get initial list of JDownloaders
-        hass.data.setdefault(DOMAIN, {})[entry.entry_id][
-            DATA_MYJDOWNLOADER_CLIENT
-        ] = hub
 
-    # setup platforms
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
+    await hub.async_update_devices()  # get initial list of JDownloaders
+    hass.data.setdefault(MYJDOWNLOADER_DOMAIN, {})[entry.entry_id][
+        DATA_MYJDOWNLOADER_CLIENT
+    ] = hub
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     # Services are defined in MyJDownloaderDeviceEntity and
     # registered in setup of sensor platform.
@@ -179,21 +180,17 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
 
     # remove services
-    hass.services.async_remove(DOMAIN, SERVICE_RESTART_AND_UPDATE)
-    hass.services.async_remove(DOMAIN, SERVICE_RUN_UPDATE_CHECK)
-    hass.services.async_remove(DOMAIN, SERVICE_START_DOWNLOADS)
-    hass.services.async_remove(DOMAIN, SERVICE_STOP_DOWNLOADS)
+    hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_RESTART_AND_UPDATE)
+    hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_RUN_UPDATE_CHECK)
+    hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_START_DOWNLOADS)
+    hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_STOP_DOWNLOADS)
 
     # unload platforms
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, platform)
-                for platform in PLATFORMS
-            ]
-        )
-    )
-    if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        hass.data[MYJDOWNLOADER_DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+
+class JDownloaderOfflineException(Exception):
+    """JDownloader offline exception."""

@@ -16,5 +16,34 @@
                 }
             }
         }
+    },
+    "entity_component": {
+        "_": {
+            "name": "MyJDownloader",
+            "state": {
+                "idle": "Idle",
+                "paused": "Paused",
+                "running": "Running",
+                "stopped": "Stopped"
+            }
+        }
+    },
+    "services": {
+        "restart_and_update": {
+            "description": "Restarts and updates JDownloader.",
+            "name": "Restart and update"
+        },
+        "run_update_check": {
+            "description": "Checks for updates.",
+            "name": "Run update check"
+        },
+        "start_downloads": {
+            "description": "Starts downloading.",
+            "name": "Start"
+        },
+        "stop_downloads": {
+            "description": "Stops downloading.",
+            "name": "Stop"
+        }
     }
 }
