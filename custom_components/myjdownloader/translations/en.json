@@ -28,7 +28,62 @@
             }
         }
     },
+    "selector": {
+        "priority": {
+            "options": {
+                "default": "Default",
+                "high": "High",
+                "higher": "Higher",
+                "highest": "Highest",
+                "low": "Low",
+                "lower": "Lower",
+                "lowest": "Lowest"
+            }
+        }
+    },
     "services": {
+        "add_links": {
+            "description": "Add links to LinkGrabber.",
+            "fields": {
+                "auto_extract": {
+                    "description": "Extract downloaded archives automatically?",
+                    "name": "Auto extract archives"
+                },
+                "autostart": {
+                    "description": "Start downloads automatically after adding?",
+                    "name": "Autostart"
+                },
+                "destination_folder": {
+                    "description": "The destination folder.",
+                    "name": "Destination folder"
+                },
+                "download_password": {
+                    "description": "The password for the link.",
+                    "name": "Download password"
+                },
+                "extract_password": {
+                    "description": "The password for archive extraction.",
+                    "name": "Extract password"
+                },
+                "links": {
+                    "description": "The link(s) to add.",
+                    "name": "Links"
+                },
+                "overwrite_packagizer_rules": {
+                    "description": "Overwrite packagizer rules?",
+                    "name": "Overwrite packagizer rules"
+                },
+                "package_name": {
+                    "description": "The name of the package.",
+                    "name": "Package name"
+                },
+                "priority": {
+                    "description": "The priority of the link(s).",
+                    "name": "Priority"
+                }
+            },
+            "name": "Add links"
+        },
         "restart_and_update": {
             "description": "Restarts and updates JDownloader.",
             "name": "Restart and update"

@@ -145,3 +145,37 @@ class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
         """Service call to stop downloads."""
         device = self.hub.get_device(self._device_id)
         await self.hub.async_query(device.downloadcontroller.stop_downloads)
+
+    async def add_links(
+        self,
+        links: list[str],
+        priority: str,
+        auto_extract: bool = False,
+        autostart: bool = False,
+        destination_folder: str | None = None,
+        download_password: str | None = None,
+        extract_password: str | None = None,
+        overwrite_packagizer_rules: bool = False,
+        package_name: str | None = None,
+    ):
+        """Service call to add links."""
+        # https://my.jdownloader.org/developers/index.html#tag_244
+        params = [
+            {
+                # assignJobID
+                "autoExtract": auto_extract,
+                "autostart": autostart,
+                # dataURLs
+                # deepDecrypt
+                "destinationFolder": destination_folder,
+                "downloadPassword": download_password,
+                "extractPassword": extract_password,
+                "links": str(links),
+                "overwritePackagizerRules": overwrite_packagizer_rules,
+                "packageName": package_name,
+                "priority": priority.upper(),
+                # sourceUrl
+            }
+        ]
+        device = self.hub.get_device(self._device_id)
+        await self.hub.async_query(device.linkgrabber.add_links, params)

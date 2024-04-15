@@ -3,6 +3,7 @@
     "restart_and_update": "mdi:restart",
     "run_update_check": "mdi:update",
     "start_downloads": "mdi:play",
-    "stop_downloads": "mdi:stop"
+    "stop_downloads": "mdi:stop",
+    "add_links": "mdi:plus"
   }
 }

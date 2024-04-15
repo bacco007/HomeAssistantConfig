@@ -24,6 +24,7 @@ from .const import (
     DOMAIN as MYJDOWNLOADER_DOMAIN,
     MYJDAPI_APP_KEY,
     SCAN_INTERVAL_SECONDS,
+    SERVICE_ADD_LINKS,
     SERVICE_RESTART_AND_UPDATE,
     SERVICE_RUN_UPDATE_CHECK,
     SERVICE_START_DOWNLOADS,
@@ -35,7 +36,6 @@ _LOGGER = logging.getLogger(__name__)
 
 # For your initial PR, limit it to 1 platform.
 PLATFORMS: list[Platform] = [
-    Platform.BINARY_SENSOR,
     Platform.SENSOR,
     Platform.SWITCH,
     Platform.UPDATE,
@@ -184,6 +184,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_RUN_UPDATE_CHECK)
     hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_START_DOWNLOADS)
     hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_STOP_DOWNLOADS)
+    hass.services.async_remove(MYJDOWNLOADER_DOMAIN, SERVICE_ADD_LINKS)
 
     # unload platforms
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):

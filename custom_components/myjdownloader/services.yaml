@@ -14,3 +14,70 @@ stop_downloads:
   target:
     device:
       integration: myjdownloader
+add_links:
+  target:
+    device:
+      integration: myjdownloader
+  fields:
+    links:
+      required: true
+      example: "http://example.org/index.html"
+      selector:
+        text:
+          multiple: true
+          type: url
+    autostart:
+      required: false
+      example: false
+      default: false
+      selector:
+        boolean:
+    package_name:
+      required: false
+      example: "My Download Package"
+      selector:
+        text:
+    priority:
+      required: true
+      example: "default"
+      default: "default"
+      selector:
+        select:
+          translation_key: "priority"
+          options:
+            - highest
+            - higher
+            - high
+            - default
+            - low
+            - lower
+            - lowest
+    download_password:
+      required: false
+      selector:
+        text:
+          type: password
+    extract_password:
+      required: false
+      selector:
+        text:
+          type: password
+    auto_extract:
+      required: false
+      example: false
+      default: false
+      selector:
+        boolean:
+    destination_folder:
+      required: false
+      advanced: true
+      example: "/home/ubuntu/Downloads"
+      selector:
+        text:
+    overwrite_packagizer_rules:
+      required: false
+      advanced: true
+      example: false
+      default: false
+      selector:
+        boolean:

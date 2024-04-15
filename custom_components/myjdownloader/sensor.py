@@ -6,12 +6,13 @@ import datetime
 from typing import Any
 
 from myjdapi.myjdapi import Jddevice
+import voluptuous as vol
 
 from homeassistant.components.sensor import DOMAIN, SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, UnitOfDataRate
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import entity_platform
+from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -21,7 +22,17 @@ from .const import (
     ATTR_PACKAGES,
     DATA_MYJDOWNLOADER_CLIENT,
     DOMAIN as MYJDOWNLOADER_DOMAIN,
+    FIELD_AUTO_EXTRACT,
+    FIELD_AUTOSTART,
+    FIELD_DESTINATION_FOLDER,
+    FIELD_DOWNLOAD_PASSWORD,
+    FIELD_EXTRACT_PASSWORD,
+    FIELD_LINKS,
+    FIELD_OVERWRITE_PACKAGIZER_RULES,
+    FIELD_PACKAGE_NAME,
+    FIELD_PRIORITY,
     SCAN_INTERVAL_SECONDS,
+    SERVICE_ADD_LINKS,
     SERVICE_RESTART_AND_UPDATE,
     SERVICE_RUN_UPDATE_CHECK,
     SERVICE_START_DOWNLOADS,
@@ -92,6 +103,21 @@ async def async_setup_entry(
         SERVICE_STOP_DOWNLOADS,
         {},
         "stop_downloads",
+    )
+    platform.async_register_entity_service(
+        SERVICE_ADD_LINKS,
+        {
+            vol.Required(FIELD_LINKS): cv.ensure_list(cv.url),
+            vol.Required(FIELD_PRIORITY): cv.string,
+            vol.Optional(FIELD_PACKAGE_NAME): cv.string,
+            vol.Optional(FIELD_AUTOSTART): cv.boolean,
+            vol.Optional(FIELD_AUTO_EXTRACT): cv.boolean,
+            vol.Optional(FIELD_EXTRACT_PASSWORD): cv.string,
+            vol.Optional(FIELD_DOWNLOAD_PASSWORD): cv.string,
+            vol.Optional(FIELD_DESTINATION_FOLDER): cv.string,
+            vol.Optional(FIELD_OVERWRITE_PACKAGIZER_RULES): cv.boolean,
+        },
+        "add_links",
     )
 
 

@@ -44,6 +44,61 @@
     "start_downloads": {
       "name": "[%key:common::action::start%]",
       "description": "Starts downloading."
+    },
+    "add_links": {
+      "description": "Add links to LinkGrabber.",
+      "name": "Add links",
+      "fields": {
+        "links": {
+          "name": "Links",
+          "description": "The link(s) to add."
+        },
+        "autostart": {
+          "name": "Autostart",
+          "description": "Start downloads automatically after adding?"
+        },
+        "package_name": {
+          "name": "Package name",
+          "description": "The name of the package."
+        },
+        "extract_password": {
+          "name": "Extract password",
+          "description": "The password for archive extraction."
+        },
+        "auto_extract": {
+          "name": "Auto extract archives",
+          "description": "Extract downloaded archives automatically?"
+        },
+        "priority": {
+          "name": "Priority",
+          "description": "The priority of the link(s)."
+        },
+        "download_password": {
+          "name": "Download password",
+          "description": "The password for the link."
+        },
+        "destination_folder": {
+          "name": "Destination folder",
+          "description": "The destination folder."
+        },
+        "overwrite_packagizer_rules": {
+          "name": "Overwrite packagizer rules",
+          "description": "Overwrite packagizer rules?"
+        }
+      }
+    }
+  },
+  "selector": {
+    "priority": {
+      "options": {
+        "highest": "Highest",
+        "higher": "Higher",
+        "high": "High",
+        "default": "Default",
+        "low": "Low",
+        "lower": "Lower",
+        "lowest": "Lowest"
+      }
     }
   }
 }
