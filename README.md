@@ -85,7 +85,7 @@ Lights | 14
 Locks | 4
 Media players | 21
 Numbers | 35
-Persistent notifications | 2
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>570 Integrations</summary>
+<details><summary>571 Integrations</summary>
 
 | Name |
 | --- |
@@ -528,6 +528,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [solcast_solar.sensor](https://www.home-assistant.io/components/solcast_solar.sensor) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
 | [sonarr.sensor](https://www.home-assistant.io/components/sonarr.sensor) |
+| [sonarr_upcoming_media](https://www.home-assistant.io/components/sonarr_upcoming_media) |
 | [sonarr_upcoming_media.sensor](https://www.home-assistant.io/components/sonarr_upcoming_media.sensor) |
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [sonos.binary_sensor](https://www.home-assistant.io/components/sonos.binary_sensor) |
@@ -712,7 +713,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.11] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
-| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.9.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
+| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.9.1] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.1] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
@@ -737,7 +738,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.4] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.0] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
@@ -749,7 +750,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.0] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.16] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
-| [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.3.0] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
+| [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.1] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.4] | Spook 👻 Your homie |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.15] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
@@ -763,7 +764,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.3] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.1] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
-| [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.9-test] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
+| [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.8] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.6] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
@@ -787,7 +788,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.4.2] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.2] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.3] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.6] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.2] | Present the data of Formula One in a pretty way |
@@ -808,11 +809,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.1.3] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
-| [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.0] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v2.0.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.1] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v2.0.2] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.2.2] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.0] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, and selectors |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
 | [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.10.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |

@@ -49,6 +49,9 @@ cards:
         color_icon: true
         display_zero: true
         color_circle: true
+        subtract_individual: false
+        use_metadata: false
+        color_value: true
       fossil_fuel_percentage:
         entity: sensor.grid_fossil_fuel_percentage
         icon: mdi:pine-tree
@@ -57,6 +60,12 @@ cards:
         name: Non-Fossil
         state_type: power
         color_circle: true
+        color_value: true
+        display_zero_state: true
+        use_metadata: false
+        unit_white_space: false
+        secondary_info:
+          color_value: false
       grid:
         entity:
           consumption: sensor.sungrow_sg5kd_daily_import_from_grid
@@ -64,13 +73,29 @@ cards:
         color_icon: true
         display_zero: true
         color_circle: true
+        display_state: two_way
+        invert_state: false
+        use_metadata: false
+        color_value: true
       solar:
         entity: sensor.sungrow_sg5kd_daily_generation
         color_icon: true
         display_zero: true
         color_circle: true
+        color_value: true
+        display_zero_state: false
+        invert_state: false
+        use_metadata: false
+      battery: {}
+      individual: []
     clickable_entities: true
-    display_zero_lines: true
+    display_zero_lines:
+      mode: transparency
+      transparency: 50
+      grey_color:
+        - 189
+        - 189
+        - 189
     use_new_flow_rate_model: true
     w_decimals: 2
     kw_decimals: 2
@@ -79,3 +104,6 @@ cards:
     max_expected_power: 16000
     min_expected_power: 0.01
     watt_threshold: 0
+    dashboard_link_label: Energy Dashboard
+    disable_dots: false
+
