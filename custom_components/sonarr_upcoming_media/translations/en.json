@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Sonarr API key",
+          "days": "How many days look ahead for the upcomming sensor",
+          "name": "Name",
+          "host": "Sonarr address",
+          "port": "Sonarr port",
+          "ssl": "SSL",
+          "urlbase": "URL base",
+          "max": "Max number of items in sensor"
+        }
+      }
+    },
+    "error": {
+      "failed_to_login": "Failed to Log-in",
+      "cannot_be_reached": "Sonarr cannot be reached"
+    },
+    "abort": {
+      "already_configured": "User is already configured",
+      "failed_to_login": "Failed to Log-in",
+      "cannot_be_reached": "Sonarr cannot be reached"
+    }
+  }
+}
