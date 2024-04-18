@@ -84,6 +84,7 @@
       "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
       "generic_failure": "Overall failure, check logs",
       "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
+	  "stop_limit_reached": "More than 15 stops found for this radius. \n Risking an impact on system performance. \n Please select a smaller radius",
 	  "no_zip_file": "Data collection issue: ZIP file not in the correct folder"
     },
     "abort": {

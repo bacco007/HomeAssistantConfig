@@ -229,6 +229,7 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
             "gtfs_dir": DEFAULT_PATH,
             "name": data["name"],
             "file": data["file"],
+            "offset": options["offset"] if "offset" in options else 0,
             "timerange": options.get("timerange", DEFAULT_LOCAL_STOP_TIMERANGE),
             "radius": options.get("radius", DEFAULT_LOCAL_STOP_RADIUS),
             "device_tracker_id": data["device_tracker_id"],

@@ -24,6 +24,7 @@ from homeassistant.const import CONF_NAME
 from .const import (
     DEFAULT_PATH_GEOJSON, 
     DEFAULT_LOCAL_STOP_TIMERANGE, 
+    DEFAULT_LOCAL_STOP_TIMERANGE_HISTORY,
     DEFAULT_LOCAL_STOP_RADIUS,
     DEFAULT_PATH_RT,
     ICON,
@@ -737,13 +738,19 @@ def get_local_stop_list(hass, schedule, data):
         
 
 def get_local_stops_next_departures(self):
+    if self.hass.config.time_zone is None:
+        _LOGGER.error("Timezone is not set in Home Assistant configuration")
+        timezone = "UTC"
+    else:
+        timezone=dt_util.get_time_zone(self.hass.config.time_zone)
     _LOGGER.debug("Get local stop departure with data: %s", self._data)
     if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):
         _LOGGER.warning("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
         return {}
     """Get next departures from data."""
     schedule = self._data["schedule"]
-    now = dt_util.now().replace(tzinfo=None)
+    offset = self._data["offset"]
+    now = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset)
     now_date = now.strftime(dt_util.DATE_STR_FORMAT)
     now_time = now.strftime(TIME_STR_FORMAT)
     tomorrow = now + datetime.timedelta(days=1)
@@ -753,8 +760,9 @@ def get_local_stops_next_departures(self):
     longitude = device_tracker.attributes.get("longitude", None)
     include_tomorrow = self._data["include_tomorrow"]    
     tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
-    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now'))"
+    tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date(:now_offset))"
     time_range = str('+' + str(self._data.get("timerange", DEFAULT_LOCAL_STOP_TIMERANGE)) + ' minute')
+    time_range_history = str('-' + str(self._data.get("timerange_history", DEFAULT_LOCAL_STOP_TIMERANGE_HISTORY)) + ' minute')
     radius = self._data.get("radius", DEFAULT_LOCAL_STOP_RADIUS) / 130000
     if not latitude or not latitude:
         _LOGGER.error("No latitude and/or longitude for : %s", self._data['device_tracker_id'])
@@ -763,8 +771,8 @@ def get_local_stops_next_departures(self):
         _LOGGER.debug("Includes Tomorrow")
         tomorrow_name = tomorrow.strftime("%A").lower()
         tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
-        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = date('now','+1 day'))"
-        tomorrow_select2 = f"CASE WHEN date('now') < calendar_date_today.date THEN '1' else '0' END as tomorrow,"        
+        tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date(:now_offset) or calendar_date_today.date = date(:now_offset,'+1 day'))"
+        tomorrow_select2 = f"CASE WHEN date(:now_offset) < calendar_date_today.date THEN '1' else '0' END as tomorrow,"        
     sql_query = f"""
         SELECT * FROM (
         SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,
@@ -773,7 +781,7 @@ def get_local_stops_next_departures(self):
                {tomorrow_select}
                calendar.start_date AS start_date,
                calendar.end_date AS end_date,
-               date('now') as calendar_date,
+               date(:now_offset) as calendar_date,
                0 as today_cd, 
                route.route_id
         FROM trips trip
@@ -786,10 +794,10 @@ def get_local_stops_next_departures(self):
         INNER JOIN routes route
                    ON route.route_id = trip.route_id 
 		WHERE 
-        trip.service_id not in (select service_id from calendar_dates where date = date('now') and exception_type = 2)
-        and  datetime(date('now') || ' ' || time(st.departure_time) ) between  datetime('now','localtime') and  datetime('now','localtime',:timerange) 
-        AND calendar.start_date <= date('now') 
-        AND calendar.end_date >= date('now') 
+        trip.service_id not in (select service_id from calendar_dates where date = date(:now_offset) and exception_type = 2)
+        and  datetime(date(:now_offset) || ' ' || time(st.departure_time) ) between  datetime(:now_offset,:timerange_history) and  datetime(:now_offset,:timerange) 
+        AND calendar.start_date <= date(:now_offset) 
+        AND calendar.end_date >= date(:now_offset) 
         )
 		UNION ALL
         SELECT * FROM (
@@ -797,8 +805,8 @@ def get_local_stops_next_departures(self):
                route.route_long_name,route.route_short_name,route.route_type,
                '0' AS today,
                {tomorrow_select2}
-               date('now') AS start_date,
-               date('now') AS end_date,
+               date(:now_offset) AS start_date,
+               date(:now_offset) AS end_date,
                calendar_date_today.date as calendar_date,
                calendar_date_today.exception_type as today_cd,
                route.route_id
@@ -813,7 +821,7 @@ def get_local_stops_next_departures(self):
 				   ON trip.service_id = calendar_date_today.service_id
 		WHERE 
         today_cd = 1
-        and  datetime(date('now') || ' ' || time(st.departure_time) ) between  datetime('now','localtime') and  datetime('now','localtime',:timerange) 
+        and  datetime(date(:now_offset) || ' ' || time(st.departure_time) ) between  datetime(:now_offset,:timerange_history) and  datetime(:now_offset,:timerange) 
 		{tomorrow_calendar_date_where}
         )
         order by stop_id, tomorrow, departure_time
@@ -824,7 +832,9 @@ def get_local_stops_next_departures(self):
             "latitude": latitude,
             "longitude": longitude,
             "timerange": time_range,
+            "timerange_history": time_range_history,
             "radius": radius,
+            "now_offset": now
         },
     )        
     timetable = []
@@ -856,7 +866,7 @@ def get_local_stops_next_departures(self):
         if row["stop_id"] != prev_stop_id and prev_stop_id != "": 
             local_stops_list.append(prev_entry)
             timetable = []
-        entry = {"stop_id": row['stop_id'], "stop_name": row['stop_name'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable}
+        entry = {"stop_id": row['stop_id'], "stop_name": row['stop_name'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable, "offset": offset}
         self._icon = ICONS.get(row['route_type'], ICON)
         if row["today"] == 1 or (row["today_cd"] == 1 and row["start_date"] == row["calendar_date"]):
             self._trip_id = row["trip_id"]
@@ -871,17 +881,26 @@ def get_local_stops_next_departures(self):
                 self._get_next_service = {}
                 _LOGGER.debug("Find rt for local stop route: %s - direction: %s - stop: %s", self._route , self._direction, self._stop_id)
                 next_service = get_rt_route_trip_statuses(self)
-                _LOGGER.debug("Next Service: %s", next_service)
                 
                 if next_service:                       
                     delays = next_service.get(self._route, {}).get(self._direction, {}).get(self._stop_id, []).get("delays", [])
                     departures = next_service.get(self._route, {}).get(self._direction, {}).get(self._stop_id, []).get("departures", [])
-                    _LOGGER.debug("ns: %s", delays)
                     delay_rt = delays[0] if delays else "-"
                     departure_rt = departures[0] if departures else "-"
                     
-                _LOGGER.debug("Local stop next rt service1: %s", next_service)
-            timetable.append({"departure": row["departure_time"], "departure_realtime": departure_rt, "delay_realtime": delay_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
+            if departure_rt != '-':
+                depart_time_corrected = departures[0]
+                _LOGGER.debug("Departure time: %s, corrected with delay timestamp: %s", dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone), depart_time_corrected)
+            else: 
+                depart_time_corrected = dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone)
+            if delay_rt != '-':
+                depart_time_corrected = dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone) + datetime.timedelta(seconds=delay_rt)
+                _LOGGER.debug("Departure time: %s, corrected with delay: %s", dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone), depart_time_corrected)
+            else:
+                depart_time_corrected = dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone)                
+                
+            if depart_time_corrected > now.replace(tzinfo=timezone):              
+                timetable.append({"departure": row["departure_time"], "departure_realtime": departure_rt, "delay_realtime": delay_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
         
         if (
             "tomorrow" in row
