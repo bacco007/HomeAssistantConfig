@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.4.3 |
 | No. Integrations | 194 |
 | No. Custom Integrations | 78 |
-| No. Entities | 5058 |
-| No. Sensors | 3233 |
+| No. Entities | 5064 |
+| No. Sensors | 3238 |
 | No. Automations | 140 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3233
+Sensors | 3238
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -766,7 +766,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.8] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
-| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.6] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
+| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.7] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
 <details><summary>57 Lovelace Plugins</summary>
