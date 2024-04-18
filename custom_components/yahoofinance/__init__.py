@@ -28,7 +28,6 @@ from .const import (
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
-    CRUMB_RETRY_DELAY,
     DEFAULT_CONF_DECIMAL_PLACES,
     DEFAULT_CONF_INCLUDE_FIFTY_DAY_VALUES,
     DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
@@ -50,11 +49,13 @@ from .coordinator import CrumbCoordinator, YahooSymbolUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 BASIC_SYMBOL_SCHEMA = vol.All(cv.string, vol.Upper)
 
+
 def minimum_scan_interval(value: timedelta) -> timedelta:
     """Validate scan_interval is the minimum value."""
     if value < MINIMUM_SCAN_INTERVAL:
         raise vol.Invalid("Scan interval should be at least 30 seconds")
     return value
+
 
 MANUAL_SCAN_INTERVAL_SCHEMA = vol.All(vol.Lower, MANUAL_SCAN_INTERVAL)
 CUSTOM_SCAN_INTERVAL_SCHEMA = vol.All(cv.time_period, minimum_scan_interval)
@@ -142,7 +143,9 @@ class SymbolDefinition:
 
     def __repr__(self) -> str:
         """Return the representation."""
-        return f"{self.symbol},{self.target_currency},{self.scan_interval},{self.no_unit}"
+        return (
+            f"{self.symbol},{self.target_currency},{self.scan_interval},{self.no_unit}"
+        )
 
     def __eq__(self, other: any) -> bool:
         """Return the comparison."""
@@ -156,7 +159,9 @@ class SymbolDefinition:
 
     def __hash__(self) -> int:
         """Make hashable."""
-        return hash((self.symbol, self.target_currency, self.scan_interval, self.no_unit))
+        return hash(
+            (self.symbol, self.target_currency, self.scan_interval, self.no_unit)
+        )
 
 
 def normalize_input_symbols(
@@ -215,17 +220,20 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     _LOGGER.info("Total %d unique scan intervals", len(symbols_by_scan_interval))
 
-     # Pass down the config to platforms.
+    # Pass down the config to platforms.
     hass.data[DOMAIN] = {
         HASS_DATA_CONFIG: domain_config,
     }
 
-    async def _setup_coordinator(now = None) -> None:
-        crumb_coordinator = CrumbCoordinator(hass)
+    async def _setup_coordinator(now=None) -> None:
+        # Using a static instance to keep the last successful cookies.
+        crumb_coordinator = CrumbCoordinator.getStaticInstance(hass)
+
         crumb = await crumb_coordinator.try_get_crumb_cookies()  # Get crumb first
         if crumb is None:
-            _LOGGER.warning("Unable to get crumb, re-trying in %d seconds", CRUMB_RETRY_DELAY)
-            async_call_later(hass, CRUMB_RETRY_DELAY, _setup_coordinator)
+            delay = crumb_coordinator.retry_duration
+            _LOGGER.warning("Unable to get crumb, re-trying in %d seconds", delay)
+            async_call_later(hass, delay, _setup_coordinator)
             return
 
         coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = {}
@@ -264,7 +272,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
         for coordinator in coordinators.values():
             if not coordinator.last_update_success:
-                _LOGGER.debug("Coordinator did not report any data, requesting async_refresh")
+                _LOGGER.debug(
+                    "Coordinator did not report any data, requesting async_refresh"
+                )
                 hass.async_create_task(coordinator.async_request_refresh())
 
         hass.async_create_task(

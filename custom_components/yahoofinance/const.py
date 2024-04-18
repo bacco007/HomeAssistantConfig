@@ -129,18 +129,19 @@ INITIAL_URL: Final = "https://finance.yahoo.com/quote/NQ%3DF"
 CONSENT_HOST: Final = "consent.yahoo.com"
 GET_CRUMB_URL: Final = "https://query2.finance.yahoo.com/v1/test/getcrumb"
 
-# pylint: disable=line-too-long
-USER_AGENT: Final = "Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.109 Safari/537.36 CrKey/1.54.248666"
-HEADER_ACCEPT: Final = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
-# pylint: enable=line-too-long
-
-HEADER_ACCEPT_ENCODING: Final = "gzip,deflate,br,zstd"
+INITIAL_REQUEST_HEADERS: Final = {
+    "accept": "text/html,application/xhtml+xml,application/xml",
+    "accept-language": "en-US,en;q=0.9",
+}
+""" Headers for INITIAL_URL. The limited headers are at attempt to avoid `Got more than 8190 byte` error. """
 
 REQUEST_HEADERS: Final = {
-    "User-Agent": USER_AGENT,
-    "accept-encoding": HEADER_ACCEPT_ENCODING,
-    "accept": HEADER_ACCEPT,
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-encoding": "gzip,deflate,br,zstd",
+    "accept-language": "en-US,en;q=0.9",
+    "user-agent": "Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.109 Safari/537.36 CrKey/1.54.248666",
 }
+""" Headers for all other requests. """
 
 CONF_SYMBOLS: Final = "symbols"
 DEFAULT_CURRENCY: Final = "USD"
@@ -151,7 +152,12 @@ SERVICE_REFRESH: Final = "refresh_symbols"
 DEFAULT_SCAN_INTERVAL: Final = timedelta(hours=6)
 MANUAL_SCAN_INTERVAL: Final = "manual"
 MINIMUM_SCAN_INTERVAL: Final = timedelta(seconds=30)
+
 CRUMB_RETRY_DELAY: Final = 15
+"""Default duration for crumb re-try request."""
+
+CRUMB_RETRY_DELAY_429: Final = 60
+"""Duration for crumb re-try when receiving 429 code."""
 
 CURRENCY_CODES: Final = {
     "bdt": "৳",

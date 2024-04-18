@@ -25,8 +25,11 @@ from homeassistant.util.dt import utcnow
 from .const import (
     BASE,
     CONSENT_HOST,
+    CRUMB_RETRY_DELAY,
+    CRUMB_RETRY_DELAY_429,
     DATA_REGULAR_MARKET_PRICE,
     GET_CRUMB_URL,
+    INITIAL_REQUEST_HEADERS,
     INITIAL_URL,
     MANUAL_SCAN_INTERVAL,
     NUMERIC_DATA_DEFAULTS,
@@ -44,6 +47,9 @@ FAILURE_ASYNC_REQUEST_REFRESH: Final = 20
 class CrumbCoordinator:
     """Class to gather crumb/cookie details."""
 
+    _instance = None
+    """Static instance of CrumbCoordinator."""
+
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize."""
 
@@ -53,6 +59,16 @@ class CrumbCoordinator:
         """Crumb for requests."""
         self._hass = hass
 
+        self.retry_duration = CRUMB_RETRY_DELAY
+        """Crumb retry request delay."""
+
+    @staticmethod
+    def getStaticInstance(hass: HomeAssistant) -> CrumbCoordinator:
+        """Return the static CrumbCoordinator instance."""
+        if CrumbCoordinator._instance is None:
+            CrumbCoordinator._instance = CrumbCoordinator(hass)
+        return CrumbCoordinator._instance
+
     def reset(self) -> None:
         """Reset crumb and cookies."""
         self.crumb = self.cookies = None
@@ -61,68 +77,80 @@ class CrumbCoordinator:
         """Try to get crumb and cookies for data requests."""
 
         websession = async_get_clientsession(self._hass)
-        self.reset()
 
-        try:
-            async with asyncio.timeout(WEBSESSION_TIMEOUT):
-                _LOGGER.debug("Navigating to a base Yahoo page")
+        if self.cookies_missing():
+            _LOGGER.debug("Navigating to base Yahoo page")
 
-                # Websession.get handles redirects by default
-                response = await websession.get(INITIAL_URL, headers=REQUEST_HEADERS)
-
-                # Only keep cookies from initial response. Consent/crumb pages do not provide cookies.
-                self.cookies = response.cookies
-
-                _LOGGER.debug("Response %d, URL: %s", response.status, response.url)
-                _LOGGER.debug("Cookies: %s", str(self.cookies))
-
-                if (response.status == HTTPStatus.OK) and (
-                    response.url.host.lower() == CONSENT_HOST
-                ):
-                    _LOGGER.debug("Consent page detected")
-                    content = await response.text()
-                    form_data = self.build_consent_form_data(content)
-                    _LOGGER.debug("Posting consent %s", str(form_data))
-                    response = await websession.post(response.url, data=form_data)
-
-                    if response.status != HTTPStatus.OK:
-                        _LOGGER.info("Consent post responded with %d", response.status)
-                        return
-
-                    _LOGGER.debug(
-                        "Consent post response %d, URL: %s",
-                        response.status,
-                        response.url,
+            try:
+                async with asyncio.timeout(WEBSESSION_TIMEOUT):
+                    # Websession.get handles redirects by default
+                    response = await websession.get(
+                        INITIAL_URL, headers=INITIAL_REQUEST_HEADERS
                     )
-                    # content = await response.text()
-                    # await self.parse_crumb_from_content(content)
-                    # _LOGGER.debug("Crumb: %s", self.crumb)
+                    self.cookies = response.cookies
 
-                # Try another crumb page even if the consent response provided a crumb.
-                await self.try_crumb_page(websession)
+                    _LOGGER.debug("Response %d, URL: %s", response.status, response.url)
+                    _LOGGER.debug("Cookies: %s", str(self.cookies))
 
-        except asyncio.TimeoutError as ex:
-            _LOGGER.error("Timed out getting crumb. %s", ex)
-        except aiohttp.ClientError as ex:
-            _LOGGER.error("Error accessing crumb url. %s", ex)
+                    if (response.status == HTTPStatus.OK) and (
+                        response.url.host.lower() == CONSENT_HOST
+                    ):
+                        _LOGGER.debug("Consent page detected")
+                        content = await response.text()
+                        form_data = self.build_consent_form_data(content)
+                        _LOGGER.debug("Posting consent %s", str(form_data))
+                        response = await websession.post(response.url, data=form_data)
 
-        _LOGGER.debug("Crumb: %s", self.crumb)
+                        if response.status != HTTPStatus.OK:
+                            _LOGGER.info(
+                                "Consent post responded with %d", response.status
+                            )
+                            return
+
+                        _LOGGER.debug(
+                            "Consent post response %d, URL: %s",
+                            response.status,
+                            response.url,
+                        )
+                        # content = await response.text()
+                        # await self.parse_crumb_from_content(content)
+                        # _LOGGER.debug("Crumb: %s", self.crumb)
+
+            except asyncio.TimeoutError as ex:
+                _LOGGER.error("Timed out getting crumb. %s", ex)
+            except aiohttp.ClientError as ex:
+                _LOGGER.error("Error accessing crumb url. %s", ex)
+
+        # Try another crumb page even if the consent response provided a crumb.
+        if not self.cookies_missing():
+            await self.try_crumb_page(websession)
+            _LOGGER.debug("Crumb: %s", self.crumb)
+
         return self.crumb
+
+    def cookies_missing(self) -> bool:
+        """Check if we don't have any cookies."""
+        return self.cookies is None or len(self.cookies) == 0
 
     async def try_crumb_page(self, websession: aiohttp.ClientSession) -> None:
         """Try to get crumb from the end point."""
 
         _LOGGER.debug("Accessing crumb page")
-        response = await websession.get(GET_CRUMB_URL, headers=REQUEST_HEADERS)
-        _LOGGER.debug(
-            "Crumb response status: %d, URL: %s", response.status, response.url
+        response = await websession.get(
+            GET_CRUMB_URL,
+            headers=REQUEST_HEADERS,
         )
+        _LOGGER.debug("Crumb response status: %d, %s", response.status, response)
 
         if response.status == HTTPStatus.OK:
             self.crumb = await response.text()
             _LOGGER.debug("Crumb page reported %s", self.crumb)
+        elif response.status == 429:
+            # Ideally we would want to use the seconds passed back in the header
+            # for 429 but there seems to be no such value.
+            self.retry_duration = CRUMB_RETRY_DELAY_429
         else:
-            _LOGGER.info("Crumb page responded with %d", response.status)
+            self.retry_duration = CRUMB_RETRY_DELAY
 
     # async def parse_crumb_from_content(self, content: str) -> str:
     #     """Parse and update crumb from response content."""
@@ -352,6 +380,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
 
                     # Reset crumb so that it gets recalculated
                     if finance_error_code == "Unauthorized":
+                        _LOGGER.log("Resetting crumbs")
                         self._cc.reset()
 
                 else:
