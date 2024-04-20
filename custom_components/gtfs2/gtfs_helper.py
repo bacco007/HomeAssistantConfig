@@ -54,7 +54,7 @@ def get_next_departure(self):
     
     # if type 2 (train) then filter on that and use name-like search 
     if route_type == "2":
-        route_type_where = f"route_type in (2,101,102,103,104,105,106,107,108, 109)"
+        route_type_where = f"route_type in (2,100,101,102,103,104,105,106,107,108, 109,100,111,112,113,114,115,116,117)"
         start_station_id = str(self._data['origin'])+'%'
         end_station_id = str(self._data['destination'])+'%'
         start_station_where = f"AND start_station.stop_id in (select stop_id from stops where stop_name like :origin_station_id)"
@@ -751,8 +751,10 @@ def get_local_stops_next_departures(self):
     schedule = self._data["schedule"]
     offset = self._data["offset"]
     now = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset)
+    now_hist_corrected = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset) - datetime.timedelta(minutes=DEFAULT_LOCAL_STOP_TIMERANGE)
     now_date = now.strftime(dt_util.DATE_STR_FORMAT)
     now_time = now.strftime(TIME_STR_FORMAT)
+    now_time_hist_corrected = now_hist_corrected.strftime(TIME_STR_FORMAT)
     tomorrow = now + datetime.timedelta(days=1)
     tomorrow_date = tomorrow.strftime(dt_util.DATE_STR_FORMAT)    
     device_tracker = self.hass.states.get(self._data['device_tracker_id']) 
@@ -875,7 +877,7 @@ def get_local_stops_next_departures(self):
             self._route_id = row['route_id'] 
             self._stop_id = row['stop_id']
             departure_rt = "-"
-            delay_rt = '-'
+            delay_rt = "-"
             # Find RT if configured
             if self._realtime:
                 self._get_next_service = {}
@@ -898,22 +900,23 @@ def get_local_stops_next_departures(self):
                 _LOGGER.debug("Departure time: %s, corrected with delay: %s", dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone), depart_time_corrected)
             else:
                 depart_time_corrected = dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone)                
-                
-            if depart_time_corrected > now.replace(tzinfo=timezone):              
+            _LOGGER.debug("Departure time: %s", depart_time_corrected)   
+            if depart_time_corrected > now.replace(tzinfo=timezone): 
+                _LOGGER.debug("Departure time corrected: %s, after now: %s", depart_time_corrected, now.replace(tzinfo=timezone))
                 timetable.append({"departure": row["departure_time"], "departure_realtime": departure_rt, "delay_realtime": delay_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
         
         if (
             "tomorrow" in row
             and row["tomorrow"] == 1
             and row["today"] == 0
-            #and tomorrow_date <= row["end_date"]
-            and now_time > row["departure_time"]            
+            and now_time_hist_corrected > row["departure_time"]            
         ):
-            timetable.append({"departure": row["departure_time"], "date": tomorrow_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
-        entry["departure"] = timetable
+            _LOGGER.debug("Tomorrow adding row_tomorrow: %s, row_today: %s, now_time: %s, departure_time: %s", row["tomorrow"],row["today"],now_time_hist_corrected,row["departure_time"])
+            timetable.append({"departure": row["departure_time"], "departure_realtime": "tomorrow", "delay_realtime": "tomorrow", "date": tomorrow_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
         
         prev_entry = entry.copy()
         prev_stop_id = str(row["stop_id"])
+        entry["departure"] = timetable          
 
     if entry:      
 
