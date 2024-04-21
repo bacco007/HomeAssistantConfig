@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.4.3 |
 | No. Integrations | 194 |
 | No. Custom Integrations | 78 |
-| No. Entities | 5079 |
+| No. Entities | 5129 |
 | No. Sensors | 3229 |
 | No. Automations | 140 |
 
@@ -103,7 +103,7 @@ Update | 268
 Vacuums | 0
 Water heaters | 0
 Weather | 10
-Zones | 4
+Zones | 5
 </details>
 
 | [Menu](#menu) |
@@ -702,7 +702,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.42.3] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
-| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.1] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
+| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.2] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.6] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
@@ -717,7 +717,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.1] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
