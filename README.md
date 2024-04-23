@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.4.3 |
-| No. Integrations | 194 |
+| No. Integrations | 193 |
 | No. Custom Integrations | 78 |
-| No. Entities | 5130 |
-| No. Sensors | 3229 |
+| No. Entities | 5157 |
+| No. Sensors | 3247 |
 | No. Automations | 140 |
 
 <details>
@@ -70,7 +70,7 @@ Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 94
+Device trackers | 91
 Devices | 544
 Fans | 1
 Humidifiers | 0
@@ -85,13 +85,13 @@ Lights | 14
 Locks | 4
 Media players | 22
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3229
+Sensors | 3247
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 283
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 268
+Update | 280
 Vacuums | 0
 Water heaters | 0
 Weather | 10
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>571 Integrations</summary>
+<details><summary>564 Integrations</summary>
 
 | Name |
 | --- |
@@ -171,7 +171,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
 | [bluetooth_adapters](https://www.home-assistant.io/components/bluetooth_adapters) |
-| [bluetooth_le_tracker.device_tracker](https://www.home-assistant.io/components/bluetooth_le_tracker.device_tracker) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [browser_mod.binary_sensor](https://www.home-assistant.io/components/browser_mod.binary_sensor) |
 | [browser_mod.camera](https://www.home-assistant.io/components/browser_mod.camera) |
@@ -260,12 +259,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [forecast_solar.sensor](https://www.home-assistant.io/components/forecast_solar.sensor) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [fully_kiosk](https://www.home-assistant.io/components/fully_kiosk) |
-| [fully_kiosk.binary_sensor](https://www.home-assistant.io/components/fully_kiosk.binary_sensor) |
-| [fully_kiosk.button](https://www.home-assistant.io/components/fully_kiosk.button) |
-| [fully_kiosk.media_player](https://www.home-assistant.io/components/fully_kiosk.media_player) |
-| [fully_kiosk.number](https://www.home-assistant.io/components/fully_kiosk.number) |
-| [fully_kiosk.sensor](https://www.home-assistant.io/components/fully_kiosk.sensor) |
-| [fully_kiosk.switch](https://www.home-assistant.io/components/fully_kiosk.switch) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [garbage_collection.calendar](https://www.home-assistant.io/components/garbage_collection.calendar) |
 | [garbage_collection.sensor](https://www.home-assistant.io/components/garbage_collection.sensor) |
@@ -738,9 +731,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.4] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.6-2-endpoint] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.4.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.0] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.0-beta.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.3] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
@@ -781,14 +774,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.4.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.5.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.4.2] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.3.3] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.4.0] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.6] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.2] | Present the data of Formula One in a pretty way |
@@ -844,13 +837,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.2.0 |  | a0d7b954 |
 | Cloudflared | 5.1.8 |  | 9074a9fa |
-| ESPHome | 2024.4.0 |  | 15ef4d2f |
+| ESPHome | 2024.4.1 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
-| JupyterLab | 0.14.3 |  | a0d7b954 |
+| JupyterLab | 0.14.4 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.5.1 |  | core |
 | Node-RED | 17.0.12 |  | a0d7b954 |
