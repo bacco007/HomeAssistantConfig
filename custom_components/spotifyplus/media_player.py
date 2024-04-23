@@ -76,6 +76,11 @@ if (_logsi == None):
 _logsi.SystemLogger = LOGGER
 
 
+# our extra state attribute names.
+ATTR_SPOTIFYPLUS_DEVICE_ID = "spotifyplus_device_id"
+ATTR_SPOTIFYPLUS_DEVICE_NAME = "spotifyplus_device_name"
+
+
 # annotate the `spotify_exception_handler` callable.
 _SpotifyMediaPlayerT = TypeVar("_SpotifyMediaPlayerT", bound="SpotifyMediaPlayer")
 _R = TypeVar("_R")
@@ -331,6 +336,23 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
 
             # trace.
             _logsi.LeaveMethod(SILevel.Debug)
+
+
+    @property
+    def extra_state_attributes(self):
+        """ Return entity specific state attributes. """
+        # build list of our extra state attributes to return to HA UI.
+        attributes = {}
+        attributes[ATTR_SPOTIFYPLUS_DEVICE_ID] = "no_device"
+        attributes[ATTR_SPOTIFYPLUS_DEVICE_NAME] = "no_device"
+        
+        # get currently active device id.
+        if self._playerState is not None:
+            if self._playerState.Device is not None:
+                attributes[ATTR_SPOTIFYPLUS_DEVICE_ID] = self._playerState.Device.Id
+                attributes[ATTR_SPOTIFYPLUS_DEVICE_NAME] = self._playerState.Device.Name
+
+        return attributes
 
 
     @property
@@ -1170,6 +1192,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         _logsi.LogVerbose("'%s': Transferring playback to SpotifyPlus default device '%s' (%s)" %  (self.name, self._attr_source, deviceId))
         self.data.spotifyClient.PlayerTransferPlayback(deviceId, (self.state == MediaPlayerState.PLAYING))
         return deviceId
+
 
     def service_spotify_follow_artists(self, 
                                        ids:str=None, 
@@ -2922,6 +2945,11 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 play = True
             if deviceId is None or deviceId == "*":
                 deviceId = PlayerDevice.GetIdFromSelectItem(self.data.OptionDeviceDefault)
+                
+            # ensure spotify client has the most current device list.
+            # we don't do anything with them here, but it will refresh the cache which is
+            # what the PlayerTransferPlayback method uses to resolve device id from a device name.
+            self.data.spotifyClient.GetPlayerDevices(True)
                 
             # transfer playback to the specified Spotify Connect device.
             _logsi.LogVerbose("Transferring Spotify Playback to device")
