@@ -1,95 +1,76 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: custom:mushroom-template-card
-    primary: Latest News
-    icon: mdi:newspaper
-    icon_color: "#6eaadc"
-    card_mod:
-      style:
-        mushroom-state-info$: |
-          .container {
-          --primary-text-color: #6eaadc;
-          }
-          .primary {
-            font-size: 15px !important;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-          }
-        .: |
-          ha-card {
-            box-shadow: none !important;
-            #margin: -10px;
-          }
-          ha-state-icon {
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-            '--mdc-icon-size': 2px !important;
-          }
-  - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
-    entities:
-      - type: custom:hui-element
-        card_type: grid
-        columns: 1
-        square: false
-        style: |
-          ha-card {
-            background-color: var(--card-background-color);
-            padding: 20px;
-            box-shadow: none;
-          }
-        cards:
-          - type: custom:auto-entities
-            sort:
-              method: attribute
-              attribute: sortorder
-            card_param: cards
-            filter:
-              template: >-
-                {%- set ns = namespace(result=[]) -%}
-                {%- for s in expand(states.group.rssfeeds)|map(attribute='entity_id')|list|sort -%}
-                {%- for e in state_attr(s, 'entries')[0:5] -%}
-                {%- set tmpdate = strptime((e.published|replace(' UTC','')|trim), "%a, %d %b %Y %H:%M:%S",default=0) -%}
-                {%- set new = [{
-                  "title": e.title,
-                  "published": as_timestamp(tmpdate),
-                  "source": state_attr(s, 'friendly_name'),
-                  "icon": state_attr(s, 'icon'),
-                  }] -%}
-                {%- set ns.result = ns.result + new -%}
-                {%- endfor -%}
-                {%- endfor -%}
-                {%- for a in ns.result|sort(attribute='published', reverse=true) -%}
-                  {{
-                    {
-                      "type": "custom:mushroom-template-card",
-                      "primary": a.title,
-                      "multiline_secondary": true,
-                      "secondary": "Latest News from " + a.source,
-                      "icon": a.icon,
-                      "tap_action": "none",
-                      "card_mod": {
-                          "style": {
-                              ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: var(--background-color);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background-color: var(--background-color);\n  --icon-size: 40px;\n  --icon-symbol-size: 30px;\n  --card-secondary-font-size: 10px;\n  --card-primary-font-size: 12px;\n  padding-top: 5px !important;\n  padding-bottom: 5px !important;\n}\n",
-                              "mushroom-shape-icon$": ".shape {\n  --shape-color: none !important;\n}      \n",
-                              "mushroom-state-info$": ".container {\n  overflow: hidden !important;\n}\n.primary {\n  animation: marquee 5s linear infinite;\n  overflow: visible !important;\n } \n@keyframes marquee {\n  from {\n    transform: translateX(0%);\n  }\n  to {\n    transform: translateX(-100%);\n  }\n}    \n"
-                          }
+  - type: custom:decluttering-card
+    template: bubble_header
+    variables:
+      - name: Latest News
+      - icon: newspaper
+      - navpath: news
+  - type: grid
+    columns: 1
+    square: false
+    style: |
+      ha-card {
+        background-color: var(--card-background-color);
+        padding: 20px;
+        box-shadow: none;
+      }
+    cards:
+      - type: custom:auto-entities
+        sort:
+          method: attribute
+          attribute: sortorder
+        card_param: cards
+        filter:
+          template: >-
+            {%- set ns = namespace(result=[]) -%}
+            {%- for s in expand(states.group.rssfeeds)|map(attribute='entity_id')|list|sort -%}
+            {%- for e in state_attr(s, 'entries')[0:5] -%}
+            {%- set tmpdate = strptime((e.published|replace(' UTC','')|trim), "%a, %d %b %Y %H:%M:%S",default=0) -%}
+            {%- set new = [{
+              "title": e.title,
+              "published": as_timestamp(tmpdate),
+              "source": state_attr(s, 'friendly_name'),
+              "icon": state_attr(s, 'icon'),
+              }] -%}
+            {%- set ns.result = ns.result + new -%}
+            {%- endfor -%}
+            {%- endfor -%}
+            {%- for a in ns.result|sort(attribute='published', reverse=true) -%}
+              {{
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": a.title,
+                  "multiline_secondary": true,
+                  "secondary": "Latest News from " + a.source,
+                  "icon": a.icon,
+                  "tap_action": "none",
+                  "card_mod": {
+                      "style": {
+                          ".": "ha-card:before {\n  content: '';\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: var(--background-color);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background-color: var(--background-color);\n  --icon-size: 40px;\n  --icon-symbol-size: 30px;\n  --card-secondary-font-size: 10px;\n  --card-primary-font-size: 12px;\n  padding-top: 5px !important;\n  padding-bottom: 5px !important;\n}\n",
+                          "mushroom-shape-icon$": ".shape {\n  --shape-color: none !important;\n}      \n",
+                          "mushroom-state-info$": ".container {\n  overflow: hidden !important;\n}\n.primary {\n  animation: marquee 5s linear infinite;\n  overflow: visible !important;\n } \n@keyframes marquee {\n  from {\n    transform: translateX(0%);\n  }\n  to {\n    transform: translateX(-100%);\n  }\n}    \n"
                       }
-                    }
-                  }},
-                {%- endfor -%}
-            show_empty: false
-            card:
-              type: custom:swipe-card
-              parameters:
-                direction: vertical
-                autoHeight: true
-                height: 60
-                effect: cube
-                autoplay:
-                  delay: 1000
-                cubeEffect:
-                  - slideShadows: false
+                  }
+                }
+              }},
+            {%- endfor -%}
+        show_empty: false
+        card:
+          type: custom:swipe-card
+          parameters:
+            direction: vertical
+            autoHeight: true
+            height: 60
+            effect: cube
+            autoplay:
+              delay: 1000
+            cubeEffect:
+              - slideShadows: false

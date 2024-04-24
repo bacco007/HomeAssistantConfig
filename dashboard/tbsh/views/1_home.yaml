@@ -38,6 +38,8 @@ cards:
           - !include ../home/flighttracker.yaml
           - !include ../home/network.yaml
           - !include ../home/news.yaml
+          # Popups
+          # - !include ../home/sport_popup.yaml
       "(max-width: 1370px)":
         type: "custom:layout-card"
         layout_type: custom:masonry-layout

@@ -44,8 +44,7 @@ card:
     - layout: icon|name_state
       name: 🌧️ {{ states('sensor.weather_precipitation_duration_today') }}mm
       state: >-
-        {{ state_attr('weather.weatherflow_forecast_brisbane_st','temperature')
-        }}°C
+        {{ states('sensor.weather_temperature') | round(1) }}°C
       image: |
         {% set mapper =
           { 'breezy':'cloudy',
@@ -73,9 +72,9 @@ card:
             'tornado':'tornado',
             'wind':'wind',
             'windy':'wind'} %}
-        {% set state = states('weather.openweathermap') %}
+        {% set state = states('weather.weatherflow_forecast_brisbane_st') %}
         {% set weather = mapper[state] if state in mapper else 'weather' %}
-        {% set path = '/local/icons/weather_icons/animated/' %}
+        {% set path = '/local/icons/weather_icons/static/' %}
         {% set ext = '.svg'%}
           {{[path,weather,ext]|join('')}}
       styles:

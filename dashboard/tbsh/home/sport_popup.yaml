@@ -1,0 +1,65 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#sportstoday"
+    button_type: name
+    name: Sport Today
+    icon: mdi:football-australian
+    close_on_click: true
+    width_desktop: 50%
+    background_update: false
+  - type: custom:week-planner-card
+    calendars:
+      - entity: calendar.ical_anaheim_ducks
+        color: "#b5985a"
+      - entity: calendar.ical_new_england_patriots
+        color: "#002244"
+      - entity: calendar.ical_new_york_yankees
+        color: "#c4ced3"
+      - entity: calendar.ical_newcastle_knights
+        color: "#0054a6"
+      - entity: calendar.ical_nsw_waratahs
+        color: "#D41042"
+      - entity: calendar.ical_manchester_united
+        color: "#DA291C"
+      - entity: calendar.ical_wallabies
+        color: "#F0AF00"
+      - entity: calendar.ical_sydney_kings
+        color: "#5b4099"
+      - entity: calendar.ical_sydney_sixers
+        color: "#ea008a"
+      - entity: calendar.ical_sydney_sixers_women
+        color: "#ea008a"
+      - entity: calendar.ical_australia_cricket_women
+        color: "#F0AF00"
+      - entity: calendar.ical_australia_cricket
+        color: "#F0AF00"
+      - entity: calendar.ical_sydney_swans_aflw
+        color: "#E1251B"
+      - entity: calendar.ical_toronto_maple_leafs
+        color: "#00205b"
+      - entity: calendar.ical_manchester_united_women
+        color: "#DA291C"
+      - entity: calendar.ical_newcastle_knights_nrlw
+        color: "#0054a6"
+      - entity: calendar.ical_sydney_fc_women
+        color: "#62a8da"
+      - entity: calendar.ical_sydney_fc
+        color: "#62a8da"
+      - entity: calendar.ical_bayern_munich
+        color: "#0066b2"
+      - entity: calendar.ical_sydney_swans
+        color: "#E1251B"
+      - entity: calendar.ical_socceroos
+        color: "#F0AF00"
+      - entity: calendar.ical_swifts
+        color: "#ee3124"
+      - entity: calendar.ical_sydney_swans_vfl
+        color: "#E1251B"
+    updateInterval: 3600
+    days: 1
+    noCardBackground: true
+    eventBackground: rgba(0, 0, 0, .15)
+    compact: true

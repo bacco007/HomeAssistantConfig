@@ -1,0 +1,1280 @@
+---
+title: tbSH-Mobile
+# kiosk_mode:
+#   admin_settings:
+#     ignore_entity_settings: true
+#   entity_settings:
+#     - entity:
+#         input_boolean.kiosk_hide_header_and_sidebar: 'on'
+#       hide_sidebar: true
+#       hide_header: true
+#     - entity:
+#         input_boolean.kiosk_hide_header_and_sidebar: 'off'
+#       hide_sidebar: false
+#       hide_header: false
+views:
+  - theme: geek_light
+    icon: mdi:home
+    path: default_view
+    title: HOME
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:paper-buttons-row
+            styles:
+              justify-content: space-between
+              background: none
+              margin-left: 0px
+              margin-right: 0px
+              text-shadow: 0px 0px 20px var(--card-background-color);
+            buttons:
+              - layout: name_state
+                name: '{{ state_attr(''sensor.helper_date'', "date_long") }}'
+                state: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
+                styles:
+                  name:
+                    font-weight: 400
+                    font-size: 16px
+                    margin-left: 0
+                    display: block
+                    text-align: left
+                    float: left
+                    width: 200px
+                    color: "#BAC0C6"
+                  button:
+                    pointer-events: none
+                    align-items: left
+                    width: 200px
+                    line-height: 1.6em
+                    color: "#BAC0C6"
+                  state:
+                    font-weight: 700
+                    font-size: 30px
+                    letter-spacing: "-1px"
+                    margin-left: 0
+                    display: block
+                    text-align: left
+                    float: left
+                    width: 200px
+                    color: "#BAC0C6"
+              - layout: icon|name_state
+                tap_action:
+                  action: navigate
+                  navigation_path: "#weather"
+                name: 🌧️ {{ states('sensor.weather_precipitation_duration_today') }}mm
+                state: >-
+                  {{
+                  state_attr('weather.weatherflow_forecast_brisbane_st','temperature')
+                  }}°C
+                image: >
+                  {% set mapper =
+                    { 'breezy':'cloudy',
+                      'clear-night':'night',
+                      'clear':'day',
+                      'mostly-clear':'day',
+                      'clear-day':'day',
+                      'cloudy':'cloudy',
+                      'fog':'fog',
+                      'hail':'rainy-7',
+                      'haze':'haze',
+                      'lightning':'thunder',
+                      'mostly-cloudy':'cloudy',
+                      'partlycloudy':'cloudy-day-3',
+                      'partly-cloudy-day':'partly-cloudy-day',
+                      'partly-cloudy-night':'partly-cloudy-night',
+                      'rain':'rainy-4',
+                      'scattered-showers':'rainy-3',
+                      'showers':'rainy-6',
+                      'sleet':'sleet',
+                      'snow':'snowy-6',
+                      'mostly-sunny':'day',
+                      'sunny':'day',
+                      'thunderstorm':'thunder',
+                      'tornado':'tornado',
+                      'wind':'wind',
+                      'windy':'wind'} %}
+                  {% set state = states('weather.weatherflow_forecast_brisbane_st') %}
+
+                  {% set weather = mapper[state] if state in mapper else 'weather'
+                  %}
+
+                  {% set path = '/local/icons/weather_icons/static/' %}
+
+                  {% set ext = '.svg'%}
+                    {{[path,weather,ext]|join('')}}
+                styles:
+                  name:
+                    font-weight: 400
+                    font-size: 16px
+                    margin-left: 0
+                    display: block
+                    text-align: right
+                    width: 140px
+                    color: "#BAC0C6"
+                  button:
+                    pointer-events: none
+                    align-items: right
+                    width: 140px
+                    line-height: 1.6em
+                    color: "#BAC0C6"
+                  state:
+                    font-weight: 600
+                    font-size: 30px
+                    letter-spacing: "-1px"
+                    margin-left: 0
+                    display: block
+                    text-align: right
+                    width: 140px
+                    color: "#BAC0C6"
+                  icon:
+                    position: absolute
+                    left: 2px
+                    transform: scale(0.17)
+                    transform-origin: 0 19.5%
+                    top: "-48px;"
+                    padding: 0;
+                    height: 380px !important;
+                    width: 380px !important;
+                    color: "#BAC0C6"
+          - type: custom:bubble-card
+            card_type: media-player
+            entity: media_player.currently_playing
+            show_state: false
+            show_last_updated: false
+            show_attribute: true
+            force_icon: false
+            show_icon: true
+            show_name: false
+            hide:
+              play_pause_button: false
+              power_button: true
+              next_button: true
+              previous_button: true
+            attribute: media_title
+            tap_action:
+              action: navigate
+              navigation_path: "#media"
+            sub_button:
+              - entity: media_player.currently_playing
+                icon: ""
+                tap_action:
+                  action: navigate
+                  navigation_path: "#media"
+                show_background: false
+      - !include home.yaml
+      - !include flighttracker.yaml
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sport
+            icon: mdi:football-australian
+            sub_button:
+              - icon: mdi:calendar-alert
+                tap_action:
+                  action: navigate
+                  navigation_path: "#sportcalendar"
+              - icon: mdi:arrow-top-right-thin
+                tap_action:
+                  action: navigate
+                  navigation_path: "#sport"
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.upcoming_sport_next_24_hours
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    secondary_info: name
+                    primary_info: state
+                    name: Today
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.upcoming_sport_this_week
+                    name: This Week
+                    fill_container: false
+                    icon_color: yellow
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    primary_info: state
+                    secondary_info: name
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+      - !include popup/lights.yaml
+      - !include popup/flighttracker.yaml
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#media"
+            name: Currently Playing
+            icon: mdi:play-box
+            back_open: true
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mushroom-media-player-card
+                entity: media_player.currently_playing
+                icon_type: none
+                layout: vertical
+                media_controls:
+                  - previous
+                  - play_pause_stop
+                  - next
+                volume_controls:
+                  - volume_set
+                  - volume_buttons
+                show_volume_level: false
+                use_media_info: true
+                collapsible_controls: false
+                card_mod:
+                  style:
+                    mushroom-state-info$: |
+                      /* CSS for Mushroom Popup Media Player */
+                      .secondary:before {
+
+                        /* Add album name between song title and artist name */
+                        {% if state_attr(config.entity, 'media_album_name') != none %}
+                          content: "{{ state_attr(config.entity, 'media_album_name')}}\A";
+                        {% endif %}
+
+                        /* Format title to fit on seperate line */
+                        white-space: pre;
+                        text-overflow: ellipsis;
+                      }
+                    .: |
+                      mushroom-shape-icon {
+
+                      }
+                      ha-card {
+
+                        /* Remove border from media player */
+                        --ha-card-border-width: 0;
+
+                        /* Apply album art color to media player icon & volume bar */
+                        --rgb-state-media-player: var(--album-art-color);
+
+                        /* Disable transitions */
+                        transition: all 0s;
+                      }
+                      .actions {
+
+                        /* Apply album art color to media player controls */
+                        --rgb-primary-text-color: var(--album-art-color);
+                        --primary-text-color: rgb(var(--album-art-color));
+
+                        /* Move volume button to seperate row */
+                        display: block !important;
+                      }
+                      ha-card:before {
+                        content: "";
+
+                        /* Show album art above media player when active and default image when idle */
+                        {% if is_state(config.entity, ['playing', 'paused']) %}
+                          background: url( '{{ state_attr(config.entity, "entity_picture") }}') center no-repeat;
+                        {% else %}
+                          background: url('/local/idle_art.png') center no-repeat;
+                        {% endif %}
+
+                        /* Add padding around album art */
+                        margin: 0px 4px 16px;
+
+                        /* Add drop shadow to album art */
+                        filter: drop-shadow(4px 4px 6px rgba(var(--album-art-color), 0.3));
+
+                        /* Round borders of album art */
+                        border-radius: var(--control-border-radius);
+
+                        /* Adjust the album art aspect ratio based on media type */
+                        {% set media_type = state_attr(config.entity, 'media_content_type') %}
+                        {% if media_type == 'tvshow' %}
+                          aspect-ratio: 16 / 9;
+                        {% elif media_type == 'movie' %}
+                          aspect-ratio: 2 / 3;
+                        {% else %}
+                          aspect-ratio: 1 / 1;
+                        {% endif %}
+
+                        /* Stretch album art to fit box. Fix for if album art is not sized correctly */
+                        background-size: 100% 100%;
+                      }
+                      mushroom-button {
+
+                        /* Size volume button to match other controls and center */
+                        display: flex;
+                        width: calc((100% / 3) - (var(--spacing) / 3) * 2);
+                        margin: auto;
+                      }
+                      mushroom-media-player-media-control,
+                      mushroom-media-player-volume-control {
+
+                        /* Correct margins for volume button on second row */
+                        display: flex;
+                        margin-right: 0px !important;
+
+                        /* Check if PLAY|STOP are supported and adjust margin accordingly */
+                        {% if state_attr(config.entity, 'supported_features') | int | bitwise_and(20480) > 0 %}
+                          margin-bottom: var(--spacing) !important;
+                        {% endif %}
+                      }
+              - entity: media_player.currently_playing
+                hide:
+                  icon: true
+                  name: true
+                  runtime: true
+                  source: true
+                  power: true
+                  state_label: true
+                  volume: true
+                  info: true
+                  progress: false
+                  controls: true
+                more_info: false
+                type: custom:mini-media-player
+                toggle_power: false
+                group: true
+                card_mod:
+                  style:
+                    mmp-progress$: |
+                      paper-progress {
+
+                        /* Apply album art color to progress bar when paused */
+                        --paper-progress-container-color: rgba(var(--album-art-color), 0.2) !important;
+
+                        /* Apply album art color to progress bar when playing */
+                        --paper-progress-active-color: rgb(var(--album-art-color)) !important;
+                      }
+                    .: |
+                      ha-card {
+
+                        /* Move progress bar up into gap. Check if PLAY|STOP are supported */
+                        --base-offset: calc(4 * var(--mush-spacing, 12px)
+                                            + 1.33 * var(--mush-spacing, 12px)
+                                            + var(--mush-card-primary-line-height, 1.5) * var(--mush-card-primary-font-size, 14px)
+                                            + var(--mush-card-secondary-line-height, 1.5) * var(--mush-card-secondary-font-size, 12px)
+                                            + var(--mush-control-height, 42px));
+
+                        /* Check if Play (16385) or Stop (4096) are supported and add control button height if they are */
+                        {% if state_attr(config.entity, 'supported_features') | int | bitwise_and(20480) > 0 %}
+                          --control-offset: calc(var(--mush-spacing, 12px) + var(--mush-control-height, 42px));
+                        {% else %}
+                          --control-offset: 0px;
+                        {% endif %}
+
+                        /* Check if album name is present and add to height if it is */
+                        {% set album_name = state_attr(config.entity, 'media_album_name') %}
+                        {% if album_name == None or album_name == "" %}
+                          --album-offset: 0px;
+                        {% else %}
+                          --album-offset: calc(var(--mush-card-secondary-line-height, 1.5) * var(--mush-card-secondary-font-size, 12px));
+                        {% endif %}
+
+                        bottom: calc(var(--base-offset) + var(--control-offset) + var(--album-offset));
+
+                        /* Correct margins for progress bar */
+                        margin: 0px 28px -12px;
+
+                        /* Set height of card to match pregress bar height */
+                        height: var(--mmp-progress-height);
+
+                        /* Remove border outline */
+                        --ha-card-border-width: 0;
+
+                        /* Round corners of progress bar */
+                        --mmp-border-radius: var(--control-border-radius, 12px) !important;
+
+                        /* Set height of progress bar */
+                        --mmp-progress-height: 12px !important;
+
+                        /* Remove transitions to prevent progress bar floating in */
+                        transition: all 0s;
+                      }
+            card_mod:
+              style: |
+                :host {
+
+                  /* Assign album art color to variable used in popup */
+                  --album-art-color:
+                  {% if is_state('media_player.currently_playing', ['playing', 'paused']) %}
+                    {{ states('sensor.muted_color') }}
+                  {% else %}
+                    141, 117, 238
+                  {% endif %};
+
+                  /* Remove background because it is applied to popup */
+                  --ha-card-background: none;
+
+                }
+          - features:
+              - type: custom:service-call
+                entries:
+                  - type: button
+                    service: script.sonos_favourites_abc_news
+                    style:
+                      background-image: url('/local/radioicons/abc_news.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','ABC News') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'ABC News') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_abc_sport
+                    style:
+                      background-image: url('/local/radioicons/ABC_Sport.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','ABC Sport') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'ABC Sport') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_cnn_international
+                    style:
+                      background-image: url('/local/radioicons/CNN_International.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','CNN International') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'CNN International') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_double_j_sydney_nsw
+                    style:
+                      background-image: url('/local/radioicons/Double_J_Sydney_NSW.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Double J (Sydney, NSW)') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Double J (Sydney, NSW)') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_gold_104_3
+                    style:
+                      background-image: url('/local/radioicons/GOLD_104_3.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','GOLD 104.3') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'GOLD 104.3') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_nova_96_9
+                    style:
+                      background-image: url('/local/radioicons/Nova_96_9.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Nova 96.9') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Nova 96.9') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+              - type: custom:service-call
+                entries:
+                  - type: button
+                    service: script.sonos_favourites_radio_hauraki_99_0_rock_music
+                    style:
+                      background-image: url('/local/radioicons/Radio_Hauraki_99_0_Rock_Music.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Radio Hauraki 99.0 (Rock Music)') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Radio Hauraki 99.0 (Rock Music)') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_radio_x
+                    style:
+                      background-image: url('/local/radioicons/Radio_X.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Radio X London') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Radio X London') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_triple_j_new_south_wales
+                    style:
+                      background-image: url('/local/radioicons/triple_j_New_South_Wales.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','triple j (New South Wales)') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'triple j (New South Wales)') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_triple_j_hottest
+                    style:
+                      background-image: url('/local/radioicons/triple_j_hottest.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Triple J Hottest') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Triple J Hottest') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_triple_m_104_9_sydney
+                    style:
+                      background-image: url('/local/radioicons/triple_m_104_9_Sydney.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Triple M 104.9 Sydney') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Triple M 104.9 Sydney') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_triple_m_105_1_melbourne
+                    style:
+                      background-image: url('/local/radioicons/Triple_M_105_1_Melbourne.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Triple M 105.1 Melbourne') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Triple M 105.1 Melbourne') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_virgin_radio_uk
+                    style:
+                      background-image: url('/local/radioicons/Virgin_Radio_UK.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','Virgin Radio UK') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'Virgin Radio UK') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+              - type: custom:service-call
+                entries:
+                  - type: button
+                    service: script.sonos_favourites_bbc_radio_1
+                    style:
+                      background-image: url('/local/radioicons/BBC_Radio_1.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC Radio 1') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC Radio 1') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_bbc_radio_2
+                    style:
+                      background-image: url('/local/radioicons/BBC_Radio_2.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC Radio 2') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC Radio 2') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_bbc_radio_4_extra_comedy
+                    style:
+                      background-image: url('/local/radioicons/BBC_Radio_4_Extra_Comedy.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC Radio 4 Extra (Comedy)') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC Radio 4 Extra (Comedy)') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_bbc_radio_5_live
+                    style:
+                      background-image: url('/local/radioicons/BBC_Radio_5_live.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC Radio 5 live') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC Radio 5 live') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_bbc_radio_5_live_sports_extra
+                    style:
+                      background-image: url('/local/radioicons/BBC_Radio_5_live_sports_extra.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC Radio 5 live sports extra') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC Radio 5 live sports extra') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_bbc_radio_6_music
+                    style:
+                      background-image: url('/local/radioicons/BBC_Radio_6_Music.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC Radio 6 Music') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC Radio 6 Music') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                  - type: button
+                    service: script.sonos_favourites_bbc_world_service_bews
+                    style:
+                      background-image: url('/local/radioicons/BBC_World_Service_News.png')
+                      background-size: contain
+                      background-repeat: no-repeat
+                      background-position: center
+                      mix-blend-mode: >
+                        {{ 'normal' if is_state_attr('media_player.office_sonos',
+                        'media_channel','BBC World Service News') and
+                        is_state('media_player.office_sonos','playing') else
+                        'luminosity' }}
+                      opacity: >
+                        {{ 1 if is_state_attr('media_player.office_sonos',
+                        'media_channel', 'BBC World Service News') and
+                        is_state('media_player.office_sonos', 'playing') else 0.2 }}
+            type: tile
+            entity: media_player.currently_playing
+            show_entity_picture: false
+            icon: phu:sonos-one
+            vertical: false
+            hide_state: true
+            name: Sonos Radio Channels
+            tap_action:
+              action: more-info
+            color: blue-grey
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#weather"
+            name: Weather
+            icon: mdi:weather-partly-rainy
+            back_open: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Observations
+            icon: mdi:weather-sunny-alert
+          - type: grid
+            columns: 1
+            square: false
+            card_mod:
+              style: |
+                ha-card {
+                  #background-color: var(--card-background-color);
+                  padding: 20px;
+                  box-shadow: none;
+                }
+            cards:
+              - square: false
+                columns: 3
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_temperature
+                    name: Temperature
+                    fill_container: true
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_humidity
+                    name: Humidity
+                    fill_container: true
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                          # background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_precipitation_today
+                    name: Rainfall
+                    fill_container: true
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_feels_like_temperature
+                    name: Feels Like
+                    fill_container: true
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_temperature_daily_high
+                    name: High Temp
+                    fill_container: true
+                    icon: mdi:thermometer-chevron-up
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_temperature_daily_low
+                    name: Low Temp
+                    fill_container: true
+                    icon: mdi:thermometer-chevron-down
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weatherflow_rainfall_weekly
+                    name: Rain (Week)
+                    fill_container: true
+                    icon: mdi:weather-lightning-rainy
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weatherflow_rainfall_monthly
+                    name: Rain (Month)
+                    fill_container: true
+                    icon: mdi:weather-lightning-rainy
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weatherflow_rainfall_yearly
+                    name: Rain (Year)
+                    fill_container: true
+                    icon: mdi:weather-lightning-rainy
+                    tap_action:
+                      action: more-info
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    card_mod:
+                      style:
+                        mushroom-shape-icon$: |
+                          .shape {
+                            --shape-color: none !important;
+
+                          }
+                        .: |
+                          ha-card {
+                            #background-color: var(--background-color);
+                            --icon-size: 40px;
+                            --icon-symbol-size: 30px;
+                            --card-secondary-font-size: 10px;
+                            --card-primary-font-size: 12px;
+                            padding-top: 5px !important;
+                            padding-bottom: 5px !important;
+                          }
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.east_tamworth_warnings
+                    above: 0
+                card:
+                  type: custom:auto-entities
+                  card_param: cards
+                  show_empty: false
+                  unique: true
+                  card:
+                    type: grid
+                    columns: 1
+                    square: false
+                  filter:
+                    template: >-
+                      {% for s in
+                      state_attr('sensor.east_tamworth_warnings','warnings') -%}
+                        {{
+                          {
+                          "type": "custom:mushroom-template-card",
+                          "primary": s.short_title,
+                          "secondary": s.title,
+                          "multiline_secondary": true,
+                          "badge_icon": "mdi:alert-circle",
+                          "badge_color": "red",
+                          "icon": "phu:weather-page-alt",
+                          "tap_action": "none",
+                          "hold_action": "none",
+                          "fill_container": true,
+                          "layout": "horizontal",
+                          "card_mod": {
+                            "style": {
+                              ".": "ha-card {\n  background-color: var(--background-color);\n}\n"
+                            }}
+                          }
+                        }},
+                      {%- endfor %}
+          - type: custom:bubble-card
+            card_type: separator
+            name: Forecast
+            icon: mdi:weather-sunny-alert
+          - type: vertical-stack
+            cards:
+              - type: custom:hourly-weather
+                entity: weather.weatherflow_forecast_brisbane_st
+                forecast_type: hourly
+                icons: true
+                show_precipitation_amounts: false
+                show_precipitation_probability: false
+                show_wind: false
+                offset: 0
+                num_segments: |
+                  {{ 24 - now().hour }}
+                label_spacing: |
+                  {% set segments = 24 - now().hour %}
+                  {{ 4 if segments > 12 else 2 }}
+                name: " "
+                card_mod:
+                  style:
+                    weather-bar$: |
+                      .main {
+                        --mush-rgb-red: 244, 67, 54;
+                        --mush-rgb-pink: 233, 30, 99;
+                        --mush-rgb-purple: 156, 39, 176;
+                        --mush-rgb-deep-purple: 103, 58, 183;
+                        --mush-rgb-indigo: 63, 81, 181;
+                        --mush-rgb-blue: 33, 150, 243;
+                        --mush-rgb-light-blue: 3, 169, 244;
+                        --mush-rgb-cyan: 0, 188, 212;
+                        --mush-rgb-teal: 0, 150, 136;
+                        --mush-rgb-green: 76, 175, 80;
+                        --mush-rgb-light-green: 139, 195, 74;
+                        --mush-rgb-lime: 205, 220, 57;
+                        --mush-rgb-yellow: 255, 235, 59;
+                        --mush-rgb-amber: 255, 193, 7;
+                        --mush-rgb-orange: 255, 152, 0;
+                        --mush-rgb-deep-orange: 255, 87, 34;
+                        --mush-rgb-brown: 121, 85, 72;
+                        --mush-rgb-grey: 158, 158, 158;
+                        --mush-rgb-blue-grey: 96, 125, 139;
+                        --mush-rgb-black: 0, 0, 0;
+                        --mush-rgb-white: 255, 255, 255;
+
+                        --color-clear-night: rgba(var(--mush-rgb-black), 0.2) !important;
+                        --color-cloudy: rgba(var(--mush-rgb-grey), 0.2) !important;
+                        --color-fog: var(--color-cloudy);
+                        --color-hail: rgba(var(--mush-rgb-indigo), 0.2) !important;
+                        --color-lightning: var(--color-rainy);
+                        --color-lightning-rainy: var(--color-rainy);
+                        --color-partlycloudy: rgba(var(--mush-rgb-blue), 0.2) !important;
+                        --color-pouring: var(--color-rainy);
+                        --color-rainy: rgba(var(--mush-rgb-indigo), 0.2) !important;
+                        --color-snowy: rgba(var(--mush-rgb-white), 0.2) !important;
+                        --color-snowy-rainy: var(--color-partlycloudy);
+                        --color-sunny: rgba(var(--mush-rgb-yellow), 0.2) !important;
+                        --color-windy: var(--color-sunny);
+                        --color-windy-variant: var(--color-sunny);
+                        --color-exceptional: rgba(var(--mush-rgb-amber), 0.2) !important;
+                      }
+                      .bar > div {
+                        height: 42px !important;
+                      }
+                      .bar > div:first-child {
+                        border-top-left-radius: 12px !important;
+                        border-bottom-left-radius: 12px !important;
+                      }
+                      .bar > div:last-child {
+                        border-top-right-radius: 12px !important;
+                        border-bottom-right-radius: 12px !important;
+                      }
+                      .bar > div > span {
+                        text-shadow: none !important;
+                        color: rgb(var(--primary-text-color));
+                        font-size: 14px;
+                        font-weight: bold;
+                      }
+                      .axes > div > .bar-block-bottom > .hour {
+                        font-size: 12px;
+                        font-weight: bolder;
+                      }
+                      .axes > div > .bar-block-bottom > .temperature {
+                        font-size: 12px;
+                        font-weight: bolder;
+                      }
+                      .axes {
+                        margin-top: 10px !important;
+                      }
+                    .: |
+                      ha-card {
+                        background: none;
+                        border: 0;
+                        --ha-card-box-shadow: 0px;
+                        margin: -8px -4px -4px -8px;
+                      }
+              - type: custom:clock-weather-card
+                entity: weather.weatherflow_forecast_brisbane_st
+                weather_icon_type: line
+                animated_icon: true
+                forecast_rows: 7
+                locale: en-GB
+                time_format: 24
+                date_pattern: P
+                hide_today_section: true
+                hide_forecast_section: false
+                hide_clock: true
+                hide_date: true
+                hourly_forecast: false
+                use_browser_time: false
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background: none;
+                        border: 0;
+                        --ha-card-box-shadow: 0px;
+                        margin: -8px -4px -4px -8px;
+                      }
+
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#sportcalendar"
+            button_type: name
+            name: Sport This Week
+            icon: mdi:football-australian
+            sub_button: []
+          - type: custom:week-planner-card
+            calendars:
+              - entity: calendar.ical_anaheim_ducks
+                color: "#b5985a"
+              - entity: calendar.ical_new_england_patriots
+                color: "#002244"
+              - entity: calendar.ical_new_york_yankees
+                color: "#c4ced3"
+              - entity: calendar.ical_newcastle_knights
+                color: "#0054a6"
+              - entity: calendar.ical_nsw_waratahs
+                color: "#D41042"
+              - entity: calendar.ical_manchester_united
+                color: "#DA291C"
+              - entity: calendar.ical_wallabies
+                color: "#F0AF00"
+              - entity: calendar.ical_sydney_kings
+                color: "#5b4099"
+              - entity: calendar.ical_sydney_sixers
+                color: "#ea008a"
+              - entity: calendar.ical_sydney_sixers_women
+                color: "#ea008a"
+              - entity: calendar.ical_australia_cricket_women
+                color: "#F0AF00"
+              - entity: calendar.ical_australia_cricket
+                color: "#F0AF00"
+              - entity: calendar.ical_sydney_swans_aflw
+                color: "#E1251B"
+              - entity: calendar.ical_toronto_maple_leafs
+                color: "#00205b"
+              - entity: calendar.ical_manchester_united_women
+                color: "#DA291C"
+              - entity: calendar.ical_newcastle_knights_nrlw
+                color: "#0054a6"
+              - entity: calendar.ical_sydney_fc_women
+                color: "#62a8da"
+              - entity: calendar.ical_sydney_fc
+                color: "#62a8da"
+              - entity: calendar.ical_bayern_munich
+                color: "#0066b2"
+              - entity: calendar.ical_sydney_swans
+                color: "#E1251B"
+              - entity: calendar.ical_socceroos
+                color: "#F0AF00"
+              - entity: calendar.ical_swifts
+                color: "#ee3124"
+              - entity: calendar.ical_sydney_swans_vfl
+                color: "#E1251B"
+            updateInterval: 3600
+            days: 7
+            noCardBackground: true
+            eventBackground: rgba(0, 0, 0, .15)
+            compact: true
+    type: sidebar

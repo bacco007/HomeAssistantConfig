@@ -1,8 +1,0 @@
----
-title: tbSH
-button_card_templates: !include_dir_merge_named button-card
-decluttering_templates: !include_dir_merge_named decluttering
-apexcharts_card_templates: !include apexcharts.yaml
-views: !include_dir_list tbsh/views/
-# sak_sys_templates: !include www/community/swiss-army-knife-card/sak_templates.yaml
-# sak_user_templates: !include lovelace/sak_templates/sak_templates.yaml

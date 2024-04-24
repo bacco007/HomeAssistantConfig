@@ -1,19 +1,16 @@
 ---
-type: custom:stack-in-card
-mode: vertical
-keep:
-  background: true
-  margin: true
-  border_radius: true
-  outer_padding: true
+type: vertical-stack
 cards:
-  - type: custom:decluttering-card
-    template: bubble_header
-    variables:
-      - name: Home
-      - icon: home
-      - navpath: home
-
+  - type: custom:bubble-card
+    card_type: separator
+    name: Home
+    icon: mdi:home
+    sub_button:
+      - icon: mdi:lightbulb-multiple-outline
+        tap_action:
+          action: navigate
+          navigation_path: "#lights"
+      - icon: mdi:weather-cloudy-arrow-right
   - type: custom:stack-in-card
     mode: vertical
     keep:
@@ -25,7 +22,7 @@ cards:
     card_mod:
       style: |
         ha-card {
-          background-color: var(--background-color) !important;
+          @background-color: var(--background-color) !important;
         }
     cards:
       - type: horizontal-stack
@@ -33,8 +30,8 @@ cards:
           - type: custom:mushroom-template-card
             primary: Next Bin Day
             secondary: >
-              {% from 'relative_time_plus.jinja' import
-              relative_time_plus %} {{
+              {% from 'relative_time_plus.jinja' import relative_time_plus
+              %} {{
               relative_time_plus(states('sensor.binday_nextcollectionday'),
               parts=1, language='en') }}
             tap_action:
@@ -46,20 +43,20 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  background-color: var(--background-color) !important;
+                  @background-color: var(--background-color) !important;
                   --card-secondary-font-weight: 400;!important;
                   --icon-size: 40px;
                   --icon-symbol-size: 30px;
-                  --card-secondary-font-size: 12px;
-                  --card-primary-font-size: 12px;
+                  #--card-secondary-font-size: 12px;
+                  #--card-primary-font-size: 12px;
                   padding-top: 5px !important;
                   padding-bottom: 5px !important;
                 }
           - type: horizontal-stack
             cards:
               - type: custom:mushroom-template-card
-                primary: ''
-                secondary: ''
+                primary: ""
+                secondary: ""
                 icon: mdi:trash-can
                 icon_color: red
                 badge_icon: mdi:check-bold
@@ -88,26 +85,23 @@ cards:
                         padding-bottom: 5px !important;
                       }
               - type: custom:mushroom-template-card
-                primary: ''
-                secondary: ''
+                primary: ""
+                secondary: ""
                 icon: mdi:recycle
-                icon_color: >
-                  {% if state_attr('sensor.binday_recycling', 'days') <
-                  7 %}
+                icon_color: |
+                  {% if state_attr('sensor.binday_recycling', 'days') < 7 %}
                     yellow
                   {% else %}
                     grey
                   {% endif %}
-                badge_icon: >
-                  {% if state_attr('sensor.binday_recycling', 'days') <
-                  7 %}
+                badge_icon: |
+                  {% if state_attr('sensor.binday_recycling', 'days') < 7 %}
                     mdi:check-bold
                   {% else %}
                     mdi:close
                   {% endif %}
-                badge_color: >
-                  {% if state_attr('sensor.binday_recycling', 'days') <
-                  7 %}
+                badge_color: |
+                  {% if state_attr('sensor.binday_recycling', 'days') < 7 %}
                     green
                   {% else %}
                     grey
@@ -136,26 +130,26 @@ cards:
                         padding-bottom: 5px !important;
                       }
               - type: custom:mushroom-template-card
-                primary: ''
-                secondary: ''
+                primary: ""
+                secondary: ""
                 icon: mdi:leaf
                 icon_color: >
-                  {% if state_attr('sensor.binday_greenwaste', 'days') <
-                  7 %}
+                  {% if state_attr('sensor.binday_greenwaste', 'days') < 7
+                  %}
                     green
                   {% else %}
                     grey
                   {% endif %}
                 badge_icon: >
-                  {% if state_attr('sensor.binday_greenwaste', 'days') <
-                  7 %}
+                  {% if state_attr('sensor.binday_greenwaste', 'days') < 7
+                  %}
                     mdi:check-bold
                   {% else %}
                     mdi:close
                   {% endif %}
                 badge_color: >
-                  {% if state_attr('sensor.binday_greenwaste', 'days') <
-                  7 %}
+                  {% if state_attr('sensor.binday_greenwaste', 'days') < 7
+                  %}
                     green
                   {% else %}
                     grey

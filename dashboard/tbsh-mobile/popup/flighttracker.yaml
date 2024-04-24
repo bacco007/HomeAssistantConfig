@@ -1,0 +1,131 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#flighttracker"
+    button_type: name
+    name: Flight Tracker
+    icon: mdi:airplane-clock
+    sub_button: []
+  - type: custom:bubble-card
+    card_type: separator
+    name: Hourly Flights
+    icon: mdi:airplane
+  - type: custom:apexcharts-card
+    graph_span: 1d
+    span:
+      start: day
+    yaxis:
+      - id: tv
+        show: false
+    series:
+      - entity: sensor.flights_above_hourly
+        color: teal
+        type: column
+        group_by:
+          func: last
+          duration: 1h
+        show:
+          as_duration: hour
+          datalabels: true
+        yaxis_id: tv
+    apex_config:
+      grid:
+        show: false
+      dataLabels:
+        offsetY: -10
+        background:
+          enabled: false
+        style:
+          colors:
+            - var(--primary-text-color)
+      plotOptions:
+        bar:
+          columnWidth: 60%
+          borderRadius: 4
+      xaxis:
+        axisTicks:
+          show: false
+        axisBorder:
+          show: false
+        labels:
+          offsetY: -5
+          datetimeFormatter:
+            day: hh
+      yaxis:
+        decimals: 0
+        crosshairs:
+          show: true
+        axisTicks:
+          show: true
+        tickAmount: 5
+        labels:
+          show: true
+          maxwidth: 4
+      tooltip:
+        enabled: false
+  - type: custom:bubble-card
+    card_type: separator
+    name: Daily Flights
+    icon: mdi:airplane
+  - type: custom:apexcharts-card
+    update_interval: 1min
+    graph_span: 7d
+    span:
+      start: day
+      offset: "-6d"
+    yaxis:
+      - id: tv
+        show: false
+    series:
+      - entity: sensor.flights_above_daily
+        color: teal
+        type: column
+        group_by:
+          func: last
+          duration: 1d
+        show:
+          datalabels: true
+        yaxis_id: tv
+    apex_config:
+      grid:
+        show: false
+      dataLabels:
+        offsetY: -10
+        background:
+          enabled: false
+        style:
+          colors:
+            - var(--primary-text-color)
+      plotOptions:
+        bar:
+          columnWidth: 50%
+          borderRadius: 4
+      xaxis:
+        axisTicks:
+          show: false
+        axisBorder:
+          show: false
+        labels:
+          offsetY: -5
+          datetimeFormatter:
+            day: ddd
+      yaxis:
+        decimals: 0
+        crosshairs:
+          show: true
+        axisTicks:
+          show: true
+        tickAmount: 5
+        labels:
+          show: true
+          maxwidth: 4
+      tooltip:
+        enabled: false
+    # - type: custom:bubble-card
+    #   card_type: separator
+    #   name: Whats Near?
+    #   icon: mdi:airplane
+    # - !include ../../tbsh/flighttracker/closestplane.yaml
+    # - !include ../../tbsh/flighttracker/planeofinterest.yaml
