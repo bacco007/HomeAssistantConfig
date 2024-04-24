@@ -59,7 +59,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         """Poll weather data from PW."""
 
         forecastString = (
-            "https://dev.pirateweather.net/forecast/"
+            "https://api.pirateweather.net/forecast/"
             + self._api_key
             + "/"
             + str(self.latitude)
