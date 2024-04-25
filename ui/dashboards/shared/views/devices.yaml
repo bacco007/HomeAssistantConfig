@@ -39,6 +39,7 @@ cards:
       - !include /config/ui/cards/devices/lg_washer.yaml
       - !include /config/ui/cards/devices/office_splitty.yaml
       - !include /config/ui/cards/devices/dyson_fan.yaml
+      - !include /config/ui/cards/devices/thinksmart_view.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

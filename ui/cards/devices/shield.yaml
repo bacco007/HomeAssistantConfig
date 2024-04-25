@@ -1,95 +1,96 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: entities
-    entities:
-      - type: custom:paper-buttons-row
-        buttons:
-          - icon: phu:nvidia-shield
-            layout: icon|name
-            name: Nvidia Shield (Bedroom)
-            style:
-              name:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                margin-left: 18px
-                font-size: 15px
-                font-weight: 600
-                color: var(--title)
-              icon:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                "--mdc-icon-size": 20px
-                color: var(--title)
-        style: |
-          div.flex-box {
-            margin-top: -6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-      - type: custom:hui-element
-        card_type: grid
-        columns: 1
-        square: false
+  - type: custom:bubble-card
+    card_type: separator
+    name: Nvidia Shield (Bedroom)
+    icon: phu:nvidia-shield
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
+
+  - type: grid
+    columns: 1
+    square: false
+    style: |
+      ha-card {
+        background-color: var(--card-background-color);
+        padding: 2px;
+        box-shadow: none;
+      }
+    cards:
+      - type: custom:mini-media-player
+        entity: media_player.nvidia_shield
+        name: Nvidia Shield (Bedroom)
+        volume_stateless: false
+        group: false
+        artwork: cover
+        source: icon
+        info: scroll
+        hide:
+          volume: true
+          source: true
+          power_state: true
         style: |
           ha-card {
-            background-color: var(--card-background-color);
-            padding: 2px;
-            box-shadow: none;
+            background-color: var(--background-color) !important;
+            box-shadow: none !important;
           }
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: auto auto
+          grid-template-rows: auto
+          grid-template-areas: |
+            "left right"
         cards:
-          - type: custom:mini-media-player
+          - type: custom:firemote-card
             entity: media_player.nvidia_shield
-            name: Nvidia Shield (Bedroom)
-            volume_stateless: false
-            group: false
-            artwork: cover
-            source: icon
-            info: scroll
-            hide:
-              volume: true
-              source: true
-              power_state: true
-            style: |
-              ha-card {
-                background-color: var(--background-color) !important;
-                box-shadow: none !important;
-              }
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: auto auto
-              grid-template-rows: auto
-              grid-template-areas: |
-                "left right"
-            cards:
-              - type: custom:firemote-card
-                entity: media_player.nvidia_shield
-                device_family: nvidia-shield
-                device_type: shield-tv-pro-2019
-                compatibility_mode: default
-                android_tv_remote_entity: remote.shield
-                defaultRemoteStyle_override: ""
-                app_launch_1: ""
-                scale: "72"
-              - type: custom:firemote-card
-                entity: media_player.nvidia_shield
-                device_family: nvidia-shield
-                device_type: shield-tv-2019
-                android_tv_remote_entity: media_player.shield
-                defaultRemoteStyle_override: AL1
-                scale: "70"
-                app_launch_1: plex
-                app_launch_2: kayo
-                app_launch_3: optus-sport
-                app_launch_4: abc-iview
-                app_launch_5: sbs-on-demand
-                app_launch_6: seven-plus
-                app_launch_7: nine-now
-                app_launch_8: ten-play
-                app_launch_9: netflix
-                app_launch_10: stan
-                app_launch_11: binge-au
-                app_launch_12: tivimate
-                app_launch_13: prime-video
-                app_launch_14: spotify
-                app_launch_15: youtube
+            device_family: nvidia-shield
+            device_type: shield-tv-pro-2019
+            compatibility_mode: default
+            android_tv_remote_entity: remote.shield
+            defaultRemoteStyle_override: ""
+            app_launch_1: ""
+            scale: "72"
+          - type: custom:firemote-card
+            entity: media_player.nvidia_shield
+            device_family: nvidia-shield
+            device_type: shield-tv-2019
+            android_tv_remote_entity: media_player.shield
+            defaultRemoteStyle_override: AL1
+            scale: "70"
+            app_launch_1: plex
+            app_launch_2: kayo
+            app_launch_3: optus-sport
+            app_launch_4: abc-iview
+            app_launch_5: sbs-on-demand
+            app_launch_6: seven-plus
+            app_launch_7: nine-now
+            app_launch_8: ten-play
+            app_launch_9: netflix
+            app_launch_10: stan
+            app_launch_11: binge-au
+            app_launch_12: tivimate
+            app_launch_13: prime-video
+            app_launch_14: spotify
+            app_launch_15: youtube

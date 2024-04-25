@@ -1,0 +1,57 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Thinksmart View Kiosk
+    icon: mdi:tablet-cellphone
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none !important;
+        }
+  - type: custom:stack-in-card
+    card_mod:
+      style: &style |
+        ha-card {
+          box-shadow: none !important;
+        }
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    cards:
+      - type: entities
+        card_mod:
+          style: *style
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - binary_sensor.hello_device_admin_2
+          - binary_sensor.hello_kiosk_mode_2
+          - binary_sensor.hello_plugged_in_2
+          - button.hello_bring_to_foreground_2
+          - button.hello_load_start_url_2
+          - button.hello_restart_browser_2
+          - button.hello_restart_device_2
+          - button.hello_send_to_background_2
+          - media_player.hello_2
+          - number.hello_screen_brightness_2
+          - number.hello_screen_off_timer_2
+          - number.hello_screensaver_brightness_2
+          - number.hello_screensaver_timer_2
+          - sensor.hello_battery_2
+          - sensor.hello_current_page_2
+          - sensor.hello_foreground_app_2
+          - sensor.hello_free_memory_2
+          - sensor.hello_internal_storage_free_space_2
+          - sensor.hello_internal_storage_total_space_2
+          - sensor.hello_screen_orientation_2
+          - sensor.hello_total_memory_2
+          - switch.hello_kiosk_lock_2
+          - switch.hello_maintenance_mode_2
+          - switch.hello_motion_detection_2
+          - switch.hello_screen_2
+          - switch.hello_screensaver_2

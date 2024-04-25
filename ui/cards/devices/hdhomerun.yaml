@@ -91,7 +91,7 @@ cards:
       - entity: select.1251b32b_channel_sources
         name: Channel Sources
       - type: section
-      - entity: update.1251b32b_update
+      - entity: update.1251b32b_firmware
         type: custom:template-entity-row
         name: "{{ state_attr(config.entity, 'friendly_name').split(':',1)[0] }}"
         state: "New: {{ state_attr(config.entity, 'latest_version') }}"

@@ -1,108 +1,109 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: entities
-    entities:
-      - type: custom:paper-buttons-row
-        buttons:
-          - icon: phu:apple-tv-box
-            layout: icon|name
-            name: Apple TV (Bedroom)
-            style:
-              name:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                margin-left: 18px
-                font-size: 15px
-                font-weight: 600
-                color: var(--title)
-              icon:
-                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
-                "--mdc-icon-size": 20px
-                color: var(--title)
-        style: |
-          div.flex-box {
-            margin-top: -6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-      - type: custom:hui-element
-        card_type: grid
-        columns: 1
-        square: false
+  - type: custom:bubble-card
+    card_type: separator
+    name: Apple TV (Bedroom)
+    icon: phu:apple-tv-box
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
+
+  - type: grid
+    columns: 1
+    square: false
+    style: |
+      ha-card {
+        background-color: var(--card-background-color);
+        padding: 2px;
+        box-shadow: none;
+      }
+    cards:
+      - type: custom:mini-media-player
+        entity: media_player.bedroom_apple_tv
+        name: Apple TV (Bedroom)
+        volume_stateless: false
+        group: false
+        artwork: cover
+        source: icon
+        info: scroll
+        hide:
+          volume: true
+          source: true
+          power_state: true
         style: |
           ha-card {
-            background-color: var(--card-background-color);
-            padding: 2px;
-            box-shadow: none;
+            background-color: var(--background-color) !important;
+            box-shadow: none !important;
           }
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: auto auto
+          grid-template-rows: auto
+          grid-template-areas: |
+            "left right"
         cards:
-          - type: custom:mini-media-player
+          - type: custom:firemote-card
             entity: media_player.bedroom_apple_tv
-            name: Apple TV (Bedroom)
-            volume_stateless: false
-            group: false
-            artwork: cover
-            source: icon
-            info: scroll
-            hide:
-              volume: true
-              source: true
-              power_state: true
-            style: |
-              ha-card {
-                background-color: var(--background-color) !important;
-                box-shadow: none !important;
-              }
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: auto auto
-              grid-template-rows: auto
-              grid-template-areas: |
-                "left right"
-            cards:
-              - type: custom:firemote-card
-                entity: media_player.bedroom_apple_tv
-                device_family: apple-tv
-                device_type: appletv-4k-gen2
-                compatibility_mode: default
-                apple_tv_remote_entity: remote.bedroom_apple_tv
-                defaultRemoteStyle_override: ""
-                app_launch_1: ""
-                app_launch_2: ""
-                app_launch_3: ""
-                app_launch_4: ""
-                visible_name_text: ""
-                scale: "70"
-                view_layout:
-                  grid-area: left
-              - type: custom:firemote-card
-                entity: media_player.bedroom_apple_tv
-                device_family: apple-tv
-                device_type: appletv-4k-gen2
-                compatibility_mode: default
-                apple_tv_remote_entity: remote.bedroom_apple_tv
-                defaultRemoteStyle_override: AL1
-                app_launcher_relative_size: 0
-                app_launch_1: apple-tv
-                app_launch_2: apple-tv-music
-                app_launch_3: channels-dvr
-                app_launch_4: plex
-                app_launch_5: kayo
-                app_launch_6: optus-sport
-                app_launch_7: abc-iview
-                app_launch_8: sbs-on-demand
-                app_launch_9: seven-plus
-                app_launch_10: nine-now
-                app_launch_11: ten-play
-                app_launch_12: netflix
-                app_launch_13: stan
-                app_launch_14: binge-au
-                app_launch_15: flash
-                app_launch_16: prime-video
-                app_launch_17: spotify
-                app_launch_18: youtube
-                scale: "70"
-                view_layout:
-                  grid-area: right
+            device_family: apple-tv
+            device_type: appletv-4k-gen2
+            compatibility_mode: default
+            apple_tv_remote_entity: remote.bedroom_apple_tv
+            defaultRemoteStyle_override: ""
+            app_launch_1: ""
+            app_launch_2: ""
+            app_launch_3: ""
+            app_launch_4: ""
+            visible_name_text: ""
+            scale: "70"
+            view_layout:
+              grid-area: left
+          - type: custom:firemote-card
+            entity: media_player.bedroom_apple_tv
+            device_family: apple-tv
+            device_type: appletv-4k-gen2
+            compatibility_mode: default
+            apple_tv_remote_entity: remote.bedroom_apple_tv
+            defaultRemoteStyle_override: AL1
+            app_launcher_relative_size: 0
+            app_launch_1: apple-tv
+            app_launch_2: apple-tv-music
+            app_launch_3: channels-dvr
+            app_launch_4: plex
+            app_launch_5: kayo
+            app_launch_6: optus-sport
+            app_launch_7: abc-iview
+            app_launch_8: sbs-on-demand
+            app_launch_9: seven-plus
+            app_launch_10: nine-now
+            app_launch_11: ten-play
+            app_launch_12: netflix
+            app_launch_13: stan
+            app_launch_14: binge-au
+            app_launch_15: flash
+            app_launch_16: prime-video
+            app_launch_17: spotify
+            app_launch_18: youtube
+            scale: "70"
+            view_layout:
+              grid-area: right
