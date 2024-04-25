@@ -130,6 +130,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         user_input[CONF_EXTRACT_FROM] = "zip"    
         self._user_inputs.update(user_input)
         _LOGGER.debug(f"UserInputs Local Stops: {self._user_inputs}") 
+        stop_limit = await _check_stop_list(self, self._user_inputs)
+        if stop_limit :
+            errors["base"] = stop_limit
+            return self.async_abort(reason=stop_limit) 
         return self.async_create_entry(
             title=user_input[CONF_NAME], data=self._user_inputs
             )                
@@ -408,7 +412,6 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
                 _data["url"] = self.config_entry.data["url"]
                 _data["extract_from"] = self.config_entry.data["extract_from"]
                 _data["device_tracker_id"] = self.config_entry.data["device_tracker_id"]
-                _data["radius"] = user_input["radius"]
                 stop_limit = await _check_stop_list(self, _data)
                 if stop_limit :
                     return self.async_abort(reason=stop_limit) 
