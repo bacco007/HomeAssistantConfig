@@ -1,0 +1,50 @@
+---
+theme: geek_light
+icon: mdi:devices
+subview: true
+path: devices
+title: devices
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: "custom:layout-card"
+    view_layout:
+      grid-area: content
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 4
+      width: 500
+      max_width: 1000
+    cards:
+      - !include /config/ui/cards/devices/appletv.yaml
+      - !include /config/ui/cards/devices/shield.yaml
+      - !include /config/ui/cards/devices/synology.yaml
+      - !include /config/ui/cards/devices/hdhomerun.yaml
+      - !include /config/ui/cards/devices/sonos_office.yaml
+      - !include /config/ui/cards/devices/sonos_symfonisk.yaml
+      - !include /config/ui/cards/devices/weatherflow.yaml
+      - !include /config/ui/cards/devices/einkdisplay.yaml
+      - !include /config/ui/cards/devices/weathermandash.yaml
+      - !include /config/ui/cards/devices/zigbee2mqtt.yaml
+      - !include /config/ui/cards/devices/lg_washer.yaml
+      - !include /config/ui/cards/devices/office_splitty.yaml
+      - !include /config/ui/cards/devices/dyson_fan.yaml
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml

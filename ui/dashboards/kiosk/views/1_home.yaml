@@ -1,0 +1,11 @@
+---
+theme: geek_light
+icon: mdi:home
+path: home
+title: Home
+type: sidebar
+cards:
+  - type: vertical-stack
+    cards:
+    - !include /config/ui/cards/common/header.yaml
+    - !include /config/ui/cards/common/media_player.yaml

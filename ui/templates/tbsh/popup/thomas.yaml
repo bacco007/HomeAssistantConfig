@@ -1,0 +1,89 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Popup
+    style: |
+      --popup-padding-x: 0px;
+      --popup-padding-y: 0px;
+    content:
+      type: entities
+      card_mod:
+        style: |
+          ha-card {
+            margin: 0 !important;
+          }
+      entities:
+        - type: custom:mushroom-entity-card
+          entity: person.thomas_baxter
+          use_entity_picture: true
+          secondary_info: last-changed
+          tap_action:
+            action: none
+          hold_action:
+            action: none
+          double_tap_action:
+            action: none
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                --ha-card-box-shadow: 0px;
+                border: 0;
+              }
+        - entity: sensor.historystats_tom_away
+          type: custom:multiple-entity-row
+          name: Location Stats
+          state_header: Away
+          secondary_info: Last 24 Hours
+          entities:
+            - entity: sensor.historystats_tom_home
+              name: Home
+            - entity: sensor.historystats_tom_work
+              name: Work
+        - type: section
+        - entity: sensor.tbiphone15promax_battery_level
+          type: custom:multiple-entity-row
+          name: Mobile Phone
+          state_header: Battery
+          entities:
+            - entity: sensor.tbiphone15promax_activity
+              name: Activity
+        - type: section
+        - entity: sensor.tbiphone15promax_geocoded_location
+          type: custom:multiple-entity-row
+          name: Location
+          styles:
+            text-align: right
+        - type: section
+        - type: custom:vertical-stack-in-card
+          cards:
+            - type: history-graph
+              entities:
+                - entity: person.thomas_baxter
+                  name: " "
+              hours_to_show: 24
+              refresh_interval: 0
+              style: |
+                ha-card {
+                  background: none;
+                  margin-top: -15px;
+                  margin-bottom: -15px;
+                  margin-left: -5px;
+                  margin-right: 10px;
+                  --ha-card-box-shadow: 0px;
+                }
+            - type: map
+              entities:
+                - entity: person.thomas_baxter
+              hours_to_show: 24
+              style: |
+                ha-card {
+                  border-radius: 28px !important;
+                }
+      style: |
+        ha-card {
+          margin: 14px 20px 28px !important;
+        }

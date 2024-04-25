@@ -1,0 +1,24 @@
+---
+mode: storage
+dashboards:
+  tbsh-browser:
+    mode: yaml
+    filename: /config/ui/dashboards/browser/ui-config.yaml
+    title: "tbSH-Browser"
+    icon: mdi:google-downasaur
+    show_in_sidebar: true
+    require_admin: false
+  tbsh-kiosk:
+    mode: yaml
+    filename: /config/ui/dashboards/kiosk/ui-config.yaml
+    title: "tbSH-Kiosk"
+    icon: mdi:tablet
+    show_in_sidebar: true
+    require_admin: false
+  tbsh-mobile:
+    mode: yaml
+    filename: /config/ui/dashboards/mobile/ui-config.yaml
+    title: "tbSH-Mobile"
+    icon: mdi:cellphone
+    show_in_sidebar: true
+    require_admin: false

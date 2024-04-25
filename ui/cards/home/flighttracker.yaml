@@ -10,7 +10,7 @@ cards:
   - type: custom:decluttering-card
     template: bubble_header
     variables:
-      - name: Bird Watch ✈️
+      - name: Bird Watch
       - icon: airplane-alert
       - navpath: flighttracker
 

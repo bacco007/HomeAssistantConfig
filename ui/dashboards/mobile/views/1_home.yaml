@@ -1,0 +1,7 @@
+---
+theme: geek_light
+icon: mdi:home
+path: home
+title: Home
+cards:
+  - !include /config/ui/cards/common/header.yaml

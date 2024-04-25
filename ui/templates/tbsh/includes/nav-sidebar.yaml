@@ -1,0 +1,189 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:stack-in-card
+    cards:
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: template
+            icon: mdi:home-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: home
+          - type: template
+            icon: mdi:cctv
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: cameras
+          - type: template
+            icon: mdi:devices
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: devices
+          - type: template
+            icon: mdi:shield-airplane-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: flighttracker
+          - type: template
+            icon: mdi:music-note-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: music
+          - type: template
+            icon: mdi:lan
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: network
+          - type: template
+            icon: mdi:newspaper-variant-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: news
+          - type: template
+            icon: mdi:server-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: server
+          - type: template
+            icon: mdi:solar-power-variant-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: solar
+          - type: template
+            icon: mdi:football-australian
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: sport
+          - type: template
+            icon: mdi:city-variant-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: tamworth
+          - type: template
+            icon: mdi:television
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: tv-movies
+          - type: template
+            icon: mdi:beer-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: untappd
+          - type: template
+            icon: mdi:weather-cloudy-alert
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: weather
+        alignment: start
+        card_mod:
+          style: |
+            .chip-container {
+              flex-flow: column !important;
+            }
+            ha-card {
+              --chip-background: rgba(var(--cstm-rgb-on-secondary), 0.05);
+              --chip-box-shadow: none;
+              --ha-card-box-shadow: none;
+              --chip-border-radius: var(--mush-control-border-radius);
+              --chip-height: 50px;
+            }
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 20px;
+          padding: 8px;
+          width: auto;
+        }
+  - type: custom:mushroom-template-card
+    entity: sensor.time
+    primary: '{{states(entity)}}'
+    secondary: TMW
+    fill_container: true
+    layout: vertical
+    icon: ''
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            --card-primary-font-size: 14px;
+            --card-primary-font-weight: 800;
+          }
+  - type: custom:mushroom-template-card
+    entity: sensor.time_london
+    primary: '{{states(entity)}}'
+    secondary: LDN
+    fill_container: true
+    layout: vertical
+    icon: ''
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            --card-primary-font-size: 14px;
+            --card-primary-font-weight: 800;
+          }
+  - type: custom:mushroom-template-card
+    entity: sensor.time_new_york
+    primary: '{{states(entity)}}'
+    secondary: NYC
+    fill_container: true
+    layout: vertical
+    icon: ''
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            --card-primary-font-size: 14px;
+            --card-primary-font-weight: 800;
+          }
+view_layout:
+  grid-area: sidebar
+  show:
+    mediaquery: "(min-width: 500px)"

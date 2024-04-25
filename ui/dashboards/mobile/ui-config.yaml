@@ -1,0 +1,6 @@
+---
+title: "tbSH-Mobile"
+button_card_templates: !include_dir_merge_named ../../templates/button
+decluttering_templates: !include_dir_merge_named ../../templates/decluttering
+apexcharts_card_templates: !include_dir_merge_named ../../templates/apexcharts
+views: !include_dir_list views/

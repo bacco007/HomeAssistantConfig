@@ -1,0 +1,383 @@
+---
+type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
+cards:
+  - type: custom:decluttering-card
+    template: bubble_header
+    variables:
+      - name: Weather
+      - icon: weather-cloudy-arrow-right
+      - navpath: weather
+
+  - square: false
+    columns: 3
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.weather_temperature
+        name: Temperature
+        fill_container: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: &style
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-entity-card
+        entity: sensor.weather_humidity
+        name: Humidity
+        fill_container: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weather_precipitation_today
+        name: Rainfall
+        fill_container: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weather_feels_like_temperature
+        name: Feels Like
+        fill_container: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weather_temperature_daily_high
+        name: High Temp
+        fill_container: true
+        icon: mdi:thermometer-chevron-up
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weather_temperature_daily_low
+        name: Low Temp
+        fill_container: true
+        icon: mdi:thermometer-chevron-down
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weatherflow_rainfall_weekly
+        name: Rainfall (Week)
+        fill_container: true
+        icon: mdi:weather-lightning-rainy
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weatherflow_rainfall_monthly
+        name: Rainfall (Month)
+        fill_container: true
+        icon: mdi:weather-lightning-rainy
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+      - type: custom:mushroom-entity-card
+        entity: sensor.weatherflow_rainfall_yearly
+        name: Rainfall (Year)
+        fill_container: true
+        icon: mdi:weather-lightning-rainy
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod: *style
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.east_tamworth_warnings
+        above: 0
+    card:
+      type: custom:auto-entities
+      card_param: cards
+      show_empty: false
+      unique: true
+      card:
+        type: grid
+        columns: 1
+        square: false
+      filter:
+        template: |-
+          {% for s in state_attr('sensor.east_tamworth_warnings','warnings') -%}
+            {{
+              {
+              "type": "custom:mushroom-template-card",
+              "primary": s.short_title,
+              "secondary": s.title,
+              "multiline_secondary": true,
+              "badge_icon": "mdi:alert-circle",
+              "badge_color": "red",
+              "icon": "phu:weather-page-alt",
+              "tap_action": "none",
+              "hold_action": "none",
+              "fill_container": true,
+              "layout": "horizontal",
+              "card_mod": {
+                "style": {
+                  ".": "ha-card {\n  background-color: var(--background-color);\n}\n"
+                }}
+              }
+            }},
+          {%- endfor %}
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Forecast
+      icon: mdi:weather-cloudy-alert
+      card_mod:
+        style:
+          mushroom-shape-icon$: |
+            .shape {
+              --shape-color: none !important;
+            }
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              --card-secondary-font-size: 10px;
+              --card-primary-font-size: 12px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - show_current: false
+        show_forecast: true
+        type: weather-forecast
+        entity: weather.pirateweather
+        name: Weather
+        forecast_type: hourly
+        card_mod:
+          style: |
+            ha-card {
+              padding: 0 !important;
+              background-color: transparent !important;
+              box-shadow: none !important;
+            }
+            .forecast-image-icon {
+              padding: 0 !important;
+              width: 30px;
+            }
+            .forecast {
+              font-size: 13px !important;
+              padding-top: 2px !important;
+              font-weight: 800;
+            }
+            .forecast .temp {
+              font-size: 13px !important;
+              padding: 0px !important;
+              margin: 0px !important;
+              font-weight: 500;
+            }
+        # show_forecast: true
+        # type: weather-forecast
+        # entity: weather.pirateweather
+        # name: Weather
+        # forecast_type: daily
+        # card_mod:
+        #   style: |
+        #     ha-card {
+        #       padding: 0 !important;
+        #       background-color: transparent !important;
+        #       box-shadow: none !important;
+        #     }
+        #     .forecast-image-icon {
+        #       padding: 0 !important;
+        #       width: 30px;
+        #     }
+        #     .forecast {
+        #       font-size: 13px !important;
+        #       padding-top: 12px !important;
+        #       font-weight: 800;
+        #     }
+        #     .forecast .temp {
+        #       font-size: 13px !important;
+        #       padding: 0px !important;
+        #       margin: 0px !important;
+        #       font-weight: 500;
+        #     }
+        #     .forecast .templow {
+        #       font-size: 13px !important;
+        #       padding: 0px !important;
+        #       margin: 0px !important;
+        #       font-weight: normal;
+        #     }
+      # - show_current: false
+      # - type: custom:hourly-weather
+      #   entity: weather.weatherflow_forecast_brisbane_st
+      #   forecast_type: hourly
+      #   icons: true
+      #   show_precipitation_amounts: false
+      #   show_precipitation_probability: false
+      #   show_wind: false
+      #   offset: 0
+      #   num_segments: |
+      #     {{ 24 - now().hour }}
+      #   label_spacing: |
+      #     {% set segments = 24 - now().hour %}
+      #     {{ 4 if segments > 12 else 2 }}
+      #   name: " "
+      #   card_mod:
+      #     style:
+      #       weather-bar$: |
+      #         .main {
+      #           --mush-rgb-red: 244, 67, 54;
+      #           --mush-rgb-pink: 233, 30, 99;
+      #           --mush-rgb-purple: 156, 39, 176;
+      #           --mush-rgb-deep-purple: 103, 58, 183;
+      #           --mush-rgb-indigo: 63, 81, 181;
+      #           --mush-rgb-blue: 33, 150, 243;
+      #           --mush-rgb-light-blue: 3, 169, 244;
+      #           --mush-rgb-cyan: 0, 188, 212;
+      #           --mush-rgb-teal: 0, 150, 136;
+      #           --mush-rgb-green: 76, 175, 80;
+      #           --mush-rgb-light-green: 139, 195, 74;
+      #           --mush-rgb-lime: 205, 220, 57;
+      #           --mush-rgb-yellow: 255, 235, 59;
+      #           --mush-rgb-amber: 255, 193, 7;
+      #           --mush-rgb-orange: 255, 152, 0;
+      #           --mush-rgb-deep-orange: 255, 87, 34;
+      #           --mush-rgb-brown: 121, 85, 72;
+      #           --mush-rgb-grey: 158, 158, 158;
+      #           --mush-rgb-blue-grey: 96, 125, 139;
+      #           --mush-rgb-black: 0, 0, 0;
+      #           --mush-rgb-white: 255, 255, 255;
+
+      #           --color-clear-night: rgba(var(--mush-rgb-black), 0.2) !important;
+      #           --color-cloudy: rgba(var(--mush-rgb-grey), 0.2) !important;
+      #           --color-fog: var(--color-cloudy);
+      #           --color-hail: rgba(var(--mush-rgb-indigo), 0.2) !important;
+      #           --color-lightning: var(--color-rainy);
+      #           --color-lightning-rainy: var(--color-rainy);
+      #           --color-partlycloudy: rgba(var(--mush-rgb-blue), 0.2) !important;
+      #           --color-pouring: var(--color-rainy);
+      #           --color-rainy: rgba(var(--mush-rgb-indigo), 0.2) !important;
+      #           --color-snowy: rgba(var(--mush-rgb-white), 0.2) !important;
+      #           --color-snowy-rainy: var(--color-partlycloudy);
+      #           --color-sunny: rgba(var(--mush-rgb-yellow), 0.2) !important;
+      #           --color-windy: var(--color-sunny);
+      #           --color-windy-variant: var(--color-sunny);
+      #           --color-exceptional: rgba(var(--mush-rgb-amber), 0.2) !important;
+      #         }
+      #         .bar > div {
+      #           height: 42px !important;
+      #         }
+      #         .bar > div:first-child {
+      #           border-top-left-radius: 12px !important;
+      #           border-bottom-left-radius: 12px !important;
+      #         }
+      #         .bar > div:last-child {
+      #           border-top-right-radius: 12px !important;
+      #           border-bottom-right-radius: 12px !important;
+      #         }
+      #         .bar > div > span {
+      #           text-shadow: none !important;
+      #           color: rgb(var(--primary-text-color));
+      #           font-size: 14px;
+      #           font-weight: bold;
+      #         }
+      #         .axes > div > .bar-block-bottom > .hour {
+      #           font-size: 12px;
+      #           font-weight: bolder;
+      #         }
+      #         .axes > div > .bar-block-bottom > .temperature {
+      #           font-size: 12px;
+      #           font-weight: bolder;
+      #         }
+      #         .axes {
+      #           margin-top: 10px !important;
+      #         }
+      #       .: |
+      #         ha-card {
+      #           background: none;
+      #           border: 0;
+      #           --ha-card-box-shadow: 0px;
+      #           margin: -8px -4px -4px -8px;
+      #         }
+      - type: custom:clock-weather-card
+        entity: weather.weatherflow_forecast_brisbane_st
+        weather_icon_type: line
+        animated_icon: true
+        forecast_rows: 7
+        locale: en-GB
+        time_format: 24
+        date_pattern: P
+        hide_today_section: true
+        hide_forecast_section: false
+        hide_clock: true
+        hide_date: true
+        hourly_forecast: false
+        use_browser_time: false
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: none;
+                border: 0;
+                --ha-card-box-shadow: 0px;
+                margin: -8px -4px -4px -8px;
+              }

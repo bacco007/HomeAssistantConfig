@@ -1,0 +1,271 @@
+---
+type: custom:mod-card
+style: |
+  ha-card {
+    border-radius: 0px;
+    margin: 0px;
+    height: auto;
+  }
+view_layout:
+  grid-area: otherActions
+card:
+  type: custom:layout-card
+  layout_type: custom:grid-layout
+  layout:
+    grid-template-columns: repeat(10, 1fr)
+    grid-template-rows: 1
+    grid-gap: 0px
+    mediaquery:
+      "(max-width: 500px)":
+        grid-template-columns: 1fr
+        grid-template-rows: auto
+        grid-gap: 0em
+      "(max-width: 1370px)":
+        grid-template-columns: repeat(5, 1fr)
+        grid-template-rows: auto
+        grid-gap: 0px
+  cards:
+    - type: custom:mushroom-template-card
+      primary: Alarm Clock
+      secondary: >
+        {% if states('binary_sensor.alarm_tomorrow') == 'on' %} Alarm for Tomorrow
+        {% else %} No Alarm for Tomorrow {% endif %}
+      icon: mdi:bed-clock
+      entity: binary_sensor.alarm_today
+      tap_action: !include /config/ui/popup/alarm_clock.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('binary_sensor.alarm_today') == 'on' %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: custom:mushroom-template-card
+      primary: Home Assistant
+      secondary: ""
+      icon: mdi:home-assistant
+      tap_action:
+        action: navigate
+        navigation_path: homeassistant
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+    - type: custom:mushroom-template-card
+      primary: Notifications
+      secondary: ""
+      icon: mdi:message-badge
+      tap_action: !include /config/ui/popup/notifications.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+    - type: custom:mushroom-template-card
+      primary: Lights
+      secondary: ""
+      icon: mdi:lightbulb
+      entity: sensor.summary_lights
+      tap_action: !include /config/ui/popup/lights.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('sensor.summary_lights') | float > 0 %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: custom:mushroom-template-card
+      primary: Media Players
+      secondary: ""
+      icon: mdi:play-network
+      entity: sensor.summary_media_players
+      tap_action: !include /config/ui/popup/media_players.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('sensor.summary_media_players') | float > 0 %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: custom:mushroom-template-card
+      primary: Updates
+      secondary: |
+        {{ states('sensor.summary_updates') }} Updates Available
+      icon: mdi:update
+      entity: sensor.summary_updates
+      tap_action: !include /config/ui/popup/updates.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+          mushroom-shape-icon$: |
+            {% if states('sensor.summary_updates') | float > 0 %}
+            .shape {
+              --shape-animation: ping 2s infinite;
+            }
+            @keyframes ping {
+                0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                70% {box-shadow: 0 0 0 10px transparent;}
+                100% {box-shadow: 0 0 0 0 transparent;}
+            }
+            {% endif %}
+    - type: conditional
+      conditions:
+        - entity: media_player.currently_playing
+          state: playing
+      card:
+        type: custom:mushroom-template-card
+        primary: Currently Playing
+        secondary: ""
+        icon: mdi:play
+        icon_color: red
+        tap_action: !include /config/ui/popup/currently_playing.yaml
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                border-radius: 8px;
+                --icon-size: 40px;
+                --icon-symbol-size: 20px;
+                --card-secondary-font-size: 12px;
+                --card-primary-font-size: 14px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+                box-shadow: none !important;
+              }
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-animation: ping 2s infinite;
+              }
+              @keyframes ping {
+                  0% {box-shadow: 0 0 0 0 rgba(var(--rgb-red), 0.7);}
+                  70% {box-shadow: 0 0 0 10px transparent;}
+                  100% {box-shadow: 0 0 0 0 transparent;}
+              }
+    - type: custom:mushroom-template-card
+      primary: Sonos
+      secondary: ""
+      icon: si:sonos
+      tap_action: !include /config/ui/popup/sonos.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+    - type: custom:mushroom-template-card
+      primary: Upcoming Sport
+      secondary: |
+        {{ states('sensor.upcoming_sport_next_24_hours') }} Events Today
+      icon: mdi:football-australian
+      entity: sensor.upcoming_sport_next_24_hours
+      badge_icon: |-
+        {% if states('sensor.upcoming_sport_next_24_hours') | float > 0 %}
+          mdi:exclamation-thick
+        {% else %}
+          none
+        {% endif %}
+      badge_color: |-
+        {% if states('sensor.upcoming_sport_next_24_hours') | float > 0 %}
+          red
+        {% else %}
+          none
+        {% endif %}
+      tap_action: !include /config/ui/popup/sport_24hrs.yaml
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 8px;
+              --icon-size: 40px;
+              --icon-symbol-size: 20px;
+              --card-secondary-font-size: 12px;
+              --card-primary-font-size: 14px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+              box-shadow: none !important;
+            }

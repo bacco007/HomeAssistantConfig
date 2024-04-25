@@ -1,0 +1,32 @@
+---
+square: false
+type: grid
+columns: 2
+cards:
+  - type: custom:mushroom-template-card
+    entity: sensor.time_london
+    primary: "{{states(entity)}}"
+    secondary: United Kingdom
+    fill_container: true
+    layout: vertical
+    icon: ""
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    badge_color: ""
+  - type: custom:mushroom-template-card
+    entity: sensor.time_new_york
+    primary: "{{states(entity)}}"
+    secondary: USA, East Coast
+    fill_container: true
+    layout: vertical
+    icon: ""
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none

@@ -1,0 +1,21 @@
+---
+sun_elevation:
+  series:
+    - entity: sensor.elevation
+      color: rgb(255,255,255)
+      opacity: .2
+      stroke_width: .5
+      yaxis_id: sun
+      unit: °
+      show:
+        legend_value: false
+    - entity: sensor.elevation
+      color: rgb(255,255,255)
+      opacity: .2
+      stroke_width: .5
+      yaxis_id: sun
+      unit: °
+      data_generator: |
+        const now = new Date();
+        const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
+        return data;

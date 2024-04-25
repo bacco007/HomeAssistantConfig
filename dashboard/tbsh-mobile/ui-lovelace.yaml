@@ -1,4 +1,5 @@
 ---
+decluttering_templates: !include_dir_merge_named ../decluttering
 title: tbSH-Mobile
 # kiosk_mode:
 #   admin_settings:
@@ -161,8 +162,27 @@ views:
                   action: navigate
                   navigation_path: "#media"
                 show_background: false
+      - type: vertical-stack
+        cards:
+          - !include ../tbsh/home/home.yaml
+          - !include ../tbsh/home/weather.yaml
+          - !include ../tbsh/home/tamworth.yaml
+          - !include ../tbsh/me/cakeday.yaml
+      - type: vertical-stack
+        cards:
+          - !include ../tbsh/home/solar.yaml
+          - !include ../tbsh/home/sun_moon.yaml
+      - type: vertical-stack
+        cards:
+          - !include ../tbsh/home/untappd.yaml
+          - !include ../tbsh/home/music.yaml
+          - !include ../tbsh/home/sport.yaml
+      - !include ../tbsh/home/media.yaml
+      - !include ../tbsh/home/flighttracker.yaml
+      - !include ../tbsh/home/network.yaml
       - !include home.yaml
       - !include flighttracker.yaml
+      - !include media.yaml
       - type: vertical-stack
         cards:
           - type: custom:bubble-card

@@ -1,0 +1,172 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: Time & Daylight Saving
+    content:
+      type: custom:stack-in-card
+      cards:
+        - type: entities
+          entities:
+            - type: custom:paper-buttons-row
+              buttons:
+                - icon: mdi:clock-alert
+                  layout: icon|name
+                  name: Time & Daylight Saving
+                  style:
+                    name:
+                      filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                      margin-left: 18px
+                      font-size: 15px
+                      font-weight: 600
+                      color: var(--title)
+                    icon:
+                      filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5))
+                      "--mdc-icon-size": 20px
+                      color: var(--title)
+              style: |
+                div.flex-box {
+                  margin-top: -6px;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                }
+            - type: custom:hui-element
+              card_type: grid
+              square: false
+              columns: 3
+              style: |
+                ha-card {
+                  background-color: var(--card-background-color);
+                  padding: 2px;
+                  box-shadow: none;
+                }
+              cards:
+                - type: custom:mushroom-template-card
+                  style: |
+                    ha-card {
+                      background-color: var(--background-color); }
+                  entity: sensor.time
+                  primary: "{{states(entity)}}"
+                  secondary: Home
+                  fill_container: true
+                  layout: vertical
+                  icon: ""
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                - type: custom:mushroom-template-card
+                  style: |
+                    ha-card {
+                      background-color: var(--background-color); }
+                  entity: sensor.time_london
+                  primary: "{{states(entity)}}"
+                  secondary: United Kingdom
+                  fill_container: true
+                  layout: vertical
+                  icon: ""
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                  badge_color: ""
+                - type: custom:mushroom-template-card
+                  style: |
+                    ha-card {
+                      background-color: var(--background-color); }
+                  entity: sensor.time_new_york
+                  primary: "{{states(entity)}}"
+                  secondary: USA, East Coast
+                  fill_container: true
+                  layout: vertical
+                  icon: ""
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                - type: custom:mushroom-template-card
+                  style: |
+                    ha-card {
+                      background-color: var(--background-color); }
+                  entity: sensor.dst_dates_local
+                  primary: Home
+                  secondary: >-
+                    {% if states(entity) == 'False' %}
+                      DST Starts
+                      {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+                    {% else %}
+                      DST Ends
+                      {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+                    {% endif %}
+                  icon: mdi:clock
+                  fill_container: true
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                  badge_icon: '{{ "none" if states(entity) == "False" else "mdi:sun-clock" }}'
+                  badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
+                  multiline_secondary: true
+                  layout: vertical
+                - type: custom:mushroom-template-card
+                  style: |
+                    ha-card {
+                      background-color: var(--background-color); }
+                  entity: sensor.dst_dates_uk
+                  primary: United Kingdom
+                  secondary: >-
+                    {% if states(entity) == 'False' %}
+                      DST Starts
+                      {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+                    {% else %}
+                      DST Ends
+                      {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+                    {% endif %}
+                  icon: mdi:clock
+                  fill_container: true
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                  badge_icon: '{{ "none" if states(entity) == "False" else "mdi:sun-clock" }}'
+                  badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
+                  multiline_secondary: true
+                  layout: vertical
+                - type: custom:mushroom-template-card
+                  style: |
+                    ha-card {
+                      background-color: var(--background-color); }
+                  entity: sensor.dst_dates_usa_east
+                  primary: USA, East Coast
+                  secondary: >-
+                    {% if states(entity) == 'False' %}
+                      DST Starts
+                      {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+                    {% else %}
+                      DST Ends
+                      {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+                    {% endif %}
+                  icon: mdi:clock
+                  fill_container: true
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                  badge_icon: '{{ "none" if states(entity) == "False" else "mdi:sun-clock" }}'
+                  badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
+                  layout: vertical
+                  multiline_secondary: true

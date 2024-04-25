@@ -1,0 +1,26 @@
+---
+type: custom:bubble-card
+card_type: media-player
+entity: media_player.currently_playing
+show_state: false
+show_last_updated: false
+show_attribute: true
+force_icon: false
+show_icon: true
+show_name: false
+hide:
+  play_pause_button: false
+  power_button: true
+  next_button: true
+  previous_button: true
+attribute: media_title
+tap_action:
+  action: navigate
+  navigation_path: "#media"
+sub_button:
+  - entity: media_player.currently_playing
+    icon: ""
+    tap_action:
+      action: navigate
+      navigation_path: "#media"
+    show_background: false
