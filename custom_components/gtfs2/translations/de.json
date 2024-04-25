@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "menu_options": {
+          "start_end": "Fahrplan für Start-/Endstopps erstellen",
+          "local_stops": "Geplante Abfahrt an Haltestellen in Ihrer Nähe",
+          "source": "Eine neue Datenquelle einrichten",
+          "remove": "Eine vorhandene Datenquelle entfernen, z. B. um Speicherplatz freizugeben"
+        },
+        "description": "Wählen Sie Ihre Option [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+      "start_end": {
+        "data": {
+          "file": "Quelle auswählen"
+        },
+        "description": "Aus vorhandenen Quellen in Ihrem GTFS2-Ordner auswählen [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+      "local_stops": {
+        "data": {
+          "file": "Quelle auswählen",
+          "device_tracker_id": "Objekt/Person zur Verwendung für Lat/Lon",
+          "name": "Name des Sensors"
+        },
+        "description": "Wählen Sie aus vorhandenen Quellen in Ihrem GTFS2-Ordner [(docu)](https://github.com/vingerha/gtfs2/wiki/2c.-Acquire-local-stops-&-departures)"
+      },
+      "source": {
+        "data": {
+          "file": "Neuer Name der Datenquellen",
+          "url": "Externe URL zur GTFS-Datendatei (zip)",
+          "extract_from": "Daten extrahieren von:"
+        },
+        "description": "HINWEIS: Bei einer neuen URL/ZIP-Datei kann dies je \n nach Dateigröße und Systemleistung einige Zeit in Anspruch nehmen [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+      "agency": {
+        "data": {
+          "agency": "Wählen Sie den Dienstanbieter (oder ALLE)"
+        },
+        "description": "Wählen Sie aus den Optionen unten [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
+      "route_type": {
+        "data": {
+          "route_type": "Transportart"
+        },
+        "description": "Wählen Sie aus den Optionen unten [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
+      "route": {
+        "data": {
+          "route": "Name der Route",
+          "direction": "Haupt-/Anfangsrichtung des Fahrzeugs"
+        },
+        "description": "Wählen Sie aus den Optionen unten [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
+      "stops": {
+        "data": {
+          "origin": "Origin Stop",
+          "destination": "Zielhaltestelle",
+          "name": "Name der Route",
+          "include_tomorrow": "Inklusive morgen"
+        },
+        "description": "Wählen Sie aus den Optionen unten [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
+      "stops_train": {
+        "data": {
+          "origin": "Wählen sie die Stadt ihrer Abfahrt",
+          "destination": "Wählen sie die Stadt ihrer Ankunf",
+          "name": "Name der Route",
+          "refresh_interval": "Aktualisierungsintervall in Minuten",
+          "include_tomorrow": "Inklusive morgen"
+        },
+        "description": "Wählen Sie aus den Optionen unten [(docu)](https://github.com/vingerha/gtfs2/wiki/2b.-Setup-route-for-trains)"
+      },
+      "remove": {
+        "data": {
+          "file": "Quelle zum Entfernen auswählen"
+        },
+        "description": "Wählen Sie aus vorhandenen Quellen in Ihrem GTFS2-Ordner [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "stop_incorrect": "Start- und/oder Endziel falsch, möglicherweise kein Transport ‚heute‘ oder nicht in die gleiche Richtung, Protokolle prüfen",
+      "generic_failure": "Gesamtfehler, Protokolle prüfen",
+      "no_data_file": "Problem bei der Datenerfassung: URL falsch oder Dateiname nicht im richtigen Ordner",
+      "no_zip_file": "Problem bei der Datenerfassung: ZIP-Datei nicht im richtigen Ordner"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "files_deleted": "Datenquelle gelöscht, dies kann sich auf bestehende Routen auswirken",
+      "stop_incorrect": "Start- und/oder Endziel falsch, möglicherweise kein Transport ‚heute‘ oder nicht in die gleiche Richtung, Protokolle prüfen",
+	  "no_stops": "Problem bei der Datenerfassung: wahrscheinlich keine Stops für die gewählte Route",
+      "no_data_file": "Problem bei der Datenerfassung: URL falsch oder Dateiname nicht im richtigen Ordner",
+      "no_zip_file": "Problem bei der Datenerfassung: ZIP-Datei ist nicht im richtigen Ordner vorhanden. Beachten Sie, dass Groß- und Kleinschreibung berücksichtigt werden muss",
+	  "stop_limit_reached": "Für diesen Umkreis wurden mehr als 15 Haltestellen gefunden. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Bitte wählen Sie einen kleineren Radius",
+      "extracting": "Es werden (noch) Daten extrahiert, dies wird einige Zeit dauern [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Passen Sie die Funktionsweise der Integration an [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
+        "data": {
+          "refresh_interval": "Datenaktualisierungsintervall (in Minuten)",
+          "offset": "Offset in Minuten",
+          "real_time": "Echtzeitintegration einrichten? \n (benötigt Daten aus derselben Quelle)",
+          "local_stop_refresh_interval": "Datenaktualisierungsintervall (in Minuten)",
+          "timerange": "Prüfung auf zukünftige Abfahrten ab ‚jetzt‘ (in Minuten: zwischen 15 und 120)",
+          "radius": "Radius für die Suche nach Haltestellen (in Metern zwischen 50 und 500)"
+        }
+      },
+      "real_time": {
+        "description": "URL zur Echtzeit-API bereitstellen [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
+        "data": {
+          "trip_update_url": "URL zu Reisedaten",
+          "vehicle_position_url": "URL zur Fahrzeugposition",
+          "alerts_url": "URL zu Warnungen",
+          "api_key": "API-Schlüssel, falls erforderlich",
+          "x_api_key": "X_API-Schlüssel, falls erforderlich",
+		  "ocp_apim_subscription_key": "Ocp_Apim-Schlüssel, falls erforderlich",
+          "api_key_location": "der Ort, an dem der Schlüssel angewendet wird",
+		  "accept": "Zufügung am Header von Accept:application/x-protobuf "
+        }
+      }
+    },
+	"abort": {
+	  "stop_limit_reached": "Für diesen Umkreis wurden mehr als 15 Haltestellen gefunden. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Bitte wählen Sie einen kleineren Radius"
+    }
+  },
+  "selector": {
+    "extract_from": {
+      "options": {
+        "zip": "ZIP: erwartet eine Datei im GTFS2-Ordner mit dem folgenden Namen, ohne Erweiterung .zip",
+        "url": "URL: verwendet Ihre URL unten, lassen Sie ‚na‘, wenn Sie zip verwenden"
+      }
+    },
+    "direction": {
+      "options": {
+        "0": "Ausgehend",
+        "1": "Zurück"
+      }
+    },
+    "route_type": {
+      "options": {
+        "2": "Züge, zwischen manuell eingegebene Städte (nächsten Bildschirm)",
+        "99": "Alle, außer Züge, zwischen ausgewählte Haltestellen (nächsten Bildschirm)"
+      }
+    }
+  },
+  "services": {
+    "update_gtfs": {
+      "name": "GTFS2-Datenquelle aktualisieren/erstellen",
+      "description": "Entweder per Link oder durch Platzieren einer Zip-Datei im GTFS2-Ordner",
+      "fields": {
+        "extract_from": {
+          "name": "Quelle angeben, um ZIP oder URL zu verwenden",
+          "description": "zip (lokal) oder URL"
+        },
+        "file": {
+          "name": "Name des Transportdienstes, ohne .zip",
+          "description": "Wenn Sie denselben Namen wie einen vorhandenen verwenden, wird der vorhandene überschrieben"
+        },
+        "url": {
+          "name": "URL",
+          "description": "Geben Sie den vollständigen Pfad zur ZIP-Datei selbst an."
+        },
+        "clean_feed_info": {
+          "name": "Feed-Info entfernen",
+          "description": "Entfernt „feed_info.txt“ aus der ZIP-Datei (verwenden Sie es, falls der Dateiinhalt falsch ist)"
+        }
+      }
+    },
+    "update_gtfs_rt_local": {
+      "name": "Sammelt GTFS-Echtzeitdaten",
+      "description": "Kann für Fahrt, Fahrzeugstandort oder Warnungen verwendet werden",
+      "fields": {
+        "name": {
+          "name": "Name des Anbieters",
+          "description": "Es wird dringend empfohlen, dasselbe wie für statische Daten zu verwenden."
+        },
+        "url": {
+          "name": "URL",
+          "description": "Geben Sie den vollständigen Pfad zu den Echtzeitdaten an."
+        }
+      }
+    },
+    "update_gtfs_local_stops": {
+      "name": "Lokale GTFS-Stopps aktualisieren",
+      "description": "z. B. zum Bewegen von ‚Person‘, für jede Person/Zone zu definieren",
+      "fields": {
+        "entity_id": {
+          "name": "Entität, die mit lokalen Haltestellen verbunden ist",
+          "description": "Die Entität, für die Sie lokale Stopps eingerichtet haben"
+        }
+      }
+    }
+  }
+}

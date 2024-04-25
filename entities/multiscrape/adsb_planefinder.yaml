@@ -1,0 +1,35 @@
+---
+- name: adsb_planefinder
+  resource: http://192.168.1.132:8084/ajax/stats
+  verify_ssl: false
+  button:
+    - unique_id: adsb_planefinder_stats_refresh
+      name: Refresh
+  sensor:
+    - unique_id: adsb_planefinder_stats
+      name: "[ADS-B] Plane Finder stats"
+      icon: mdi:airplane
+      value_template: >
+        {{ value_json.client_version }}
+      attributes:
+        - name: Version
+          value_template: >
+            {{ value_json.client_version }}
+        - name: Data to Plane Finder
+          value_template: >
+            {{ value_json.master_server_bytes_out }}
+        - name: Previous Data to Plane Finder
+          value_template: >
+            {{ value_json.prev_master_server_bytes_out }}
+        - name: Start Time
+          value_template: >
+            {{ value_json.executable_start_time }}
+        - name: Mode-S Packets
+          value_template: >
+            {{ value_json.total_modes_packets }}
+        - name: Mode-AC Packets
+          value_template: >
+            {{ value_json.total_modeac_packets }}
+        - name: Mode-S Packets by Type
+          value_template: >
+            {{ value_json.total_modes_types }}

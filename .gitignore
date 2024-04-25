@@ -19,6 +19,7 @@ zigbee2mqtt
 image
 multiscrape
 gtfs2
+glances
 
 # Ignore File Extensions
 *.conf
@@ -79,3 +80,7 @@ persist_notify.log
 node-red/*
 !node-red/flows.json
 !node-red/settings.js
+
+!entities/multiscrape
+!custom_components/multiscrape
+!custom_components/gtfs2

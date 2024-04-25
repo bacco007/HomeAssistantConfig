@@ -1,0 +1,52 @@
+---
+theme: geek_light
+icon: mdi:football-australian
+subview: true
+path: sport
+title: Sport
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: vertical-stack
+    view_layout:
+      grid-area: content
+    cards:
+      - !include /config/ui/cards/sport/planner.yaml
+      - type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 500
+          max_width: 1000
+        cards:
+          - !include /config/ui/cards/sport/afl.yaml
+          - !include /config/ui/cards/sport/cricket.yaml
+          - !include /config/ui/cards/sport/football.yaml
+          - !include /config/ui/cards/sport/formula1.yaml
+          - !include /config/ui/cards/sport/mlb.yaml
+          - !include /config/ui/cards/sport/motorsports.yaml
+          - !include /config/ui/cards/sport/nba.yaml
+          - !include /config/ui/cards/sport/nfl.yaml
+          - !include /config/ui/cards/sport/nhl.yaml
+          - !include /config/ui/cards/sport/other.yaml
+          - !include /config/ui/cards/sport/league.yaml
+          - !include /config/ui/cards/sport/union.yaml
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml

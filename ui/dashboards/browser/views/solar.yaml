@@ -1,0 +1,49 @@
+---
+theme: geek_light
+icon: mdi:solar-power-variant
+subview: true
+path: solar
+title: Solar
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: vertical-stack
+    view_layout:
+      grid-area: content
+    cards:
+      - !include /config/ui/cards/solar/graph_production.yaml
+      - type: "custom:layout-card"
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 500
+          max_width: 1000
+        cards:
+          - !include /config/ui/cards/solar/solar_flow.yaml
+          - !include /config/ui/cards/solar/production_heatmap.yaml
+          - !include /config/ui/cards/solar/production_stats.yaml
+          - !include /config/ui/cards/solar/solcast.yaml
+          - !include /config/ui/cards/solar/forecastsolar.yaml
+          - !include /config/ui/cards/solar/grid_costs.yaml
+          - !include /config/ui/cards/opennem/opennem.yaml
+          - !include /config/ui/cards/solar/settings_controls.yaml
+      - !include /config/ui/cards/solar/graph_yield_year.yaml
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml

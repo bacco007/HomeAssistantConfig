@@ -1,0 +1,37 @@
+---
+# Devices
+type: custom:mushroom-template-card
+primary: Devices
+secondary: ""
+multiline_secondary: true
+icon: mdi:devices
+icon_color: grey
+layout: horizontal
+tap_action:
+  action: navigate
+  navigation_path: devices
+hold_action:
+  action: none
+double_tap_action:
+  action: none
+card_mod:
+  style:
+    .: |
+      ha-card {
+        padding: 5px 10px !important;
+        text-align: left !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      :host {
+        --mush-icon-size: 35px;
+      }
+    mushroom-state-info$: |
+      .container {
+        display: table !important;
+      }
+      .secondary {
+        display: table-cell;
+        text-align: right;
+        width: 100%;
+      }

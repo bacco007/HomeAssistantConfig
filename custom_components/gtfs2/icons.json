@@ -1,0 +1,7 @@
+{
+  "services": {
+    "update_gtfs_rt_local": "mdi:cloud-download",
+    "update_gtfs": "mdi:database-import",
+	"update_gtfs_local_stops": "mdi:refresh"
+  }
+}

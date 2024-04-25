@@ -1,0 +1,56 @@
+---
+theme: geek_light
+icon: mdi:home-assistant
+subview: true
+path: homeassistant
+title: Home Assistant
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: "custom:layout-card"
+    view_layout:
+      grid-area: content
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 4
+      width: 500
+      max_width: 1000
+    cards:
+      - !include /config/ui/cards/homeassistant/uptime.yaml
+      - !include /config/ui/cards/homeassistant/homeassistant.yaml
+      - !include /config/ui/cards/homeassistant/settings_controls.yaml
+      - !include /config/ui/cards/homeassistant/updates.yaml
+      - !include /config/ui/cards/homeassistant/addons.yaml
+      - !include /config/ui/cards/homeassistant/ha_versions.yaml
+      - !include /config/ui/cards/homeassistant/nabucasa.yaml
+      - !include /config/ui/cards/homeassistant/inputs_helpers.yaml
+      - !include /config/ui/cards/homeassistant/automation_history.yaml
+      - !include /config/ui/cards/homeassistant/snapshots.yaml
+      - !include /config/ui/cards/homeassistant/graph_entitycount.yaml
+      - !include /config/ui/cards/homeassistant/graph_dbsize.yaml
+      - type: custom:swipe-card
+        start_card: 1
+        reset_after: 300
+        parameters: !include /config/ui/cards/card-config/swipe-card.yaml
+        cards:
+          - !include /config/ui/cards/homeassistant/graph_countyamllines.yaml
+          - !include /config/ui/cards/homeassistant/graph_countyamlfiles.yaml
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml

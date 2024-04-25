@@ -139,7 +139,7 @@ for fav in favorites:
     f.close()
 
 ### SONOS CARD ###
-f = open ("dashboard/tbsh/popup/sonos_thumbnails.yaml", "w")
+f = open ("ui/popup/sonos_thumbnails.yaml", "w")
 f.write("---")
 f.write("\n")
 for fav in favorites:

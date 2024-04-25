@@ -1,0 +1,42 @@
+---
+theme: geek_light
+icon: mdi:newspaper
+subview: true
+path: news
+title: News
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: "custom:layout-card"
+    view_layout:
+      grid-area: content
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 4
+      width: 500
+      max_width: 1000
+    cards:
+      - !include /config/ui/cards/news/rssfeeds.yaml
+      - !include /config/ui/cards/news/snippets/stocks.yaml
+      - !include /config/ui/cards/news/snippets/stocks_international.yaml
+      - !include /config/ui/cards/news/snippets/indicies.yaml
+      - !include /config/ui/cards/news/snippets/exchange_rates.yaml
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml
