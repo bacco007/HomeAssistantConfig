@@ -1,0 +1,14 @@
+---
+date_format: "%a, %d %b %Y %H:%M:%S %Z"
+entity_namespace: rssfeed
+feed_url: https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
+inclusions:
+  - image
+  - link
+  - published
+  - title
+name: New York Times
+platform: feedparser
+scan_interval:
+  minutes: 15
+show_topn: 10

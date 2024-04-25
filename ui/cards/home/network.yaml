@@ -63,24 +63,27 @@ cards:
     type: grid
     cards:
       - type: custom:mushroom-template-card
+        multiline_secondary: true
         primary: "NBN FTTN Upgrade > Home"
         secondary: >-
-          {% set alt_reason_code = states(entity) %}
-          {% if alt_reason_code == 'NULL_NA' %}
-          Nup :(
-          {% elif alt_reason_code == 'FTTP_NA' %}
-          Soon, {{state_attr(entity, 'addressDetail')['techChangeStatus']}},
-          {{state_attr(entity,
-          'addressDetail')['targetEligibilityQuarter']}}
-          {% elif alt_reason_code == 'FTTP_SA' %}
-          Yes!
-          {% else %}
-          {% if alt_reason_code %}
-            {{ alt_reason_code }} was returned
-          {% else %}
-            Error
-          {% endif %}
-          {% endif %}
+          {%- set tech_status = state_attr(entity, 'addressDetail')['techChangeStatus'] %}
+          {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade',
+            'Planned': 'FTTP Planned',
+            'In Design': 'FTTP Upgrade in Design',
+            'Committed': 'FTTP Upgrade Committed',
+            'Build Finalised': 'FTTP Upgrade Build Finalized',
+            'Eligible To Order': 'FTTP Upgrade Eligible to Order',
+            'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
+            'New Tech Connected': 'New Technology Connected',
+            'Previous Tech Disconnected': 'Previous Technology Disconnected'
+          } %}
+          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
+          {%- if states(entity) == "FTTP_NA" %}
+          Target: {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
+          {%- else %}
+          No Target Date Yet
+          {%- endif %}
         icon: mdi:check-network
         tap_action:
           action: none
@@ -88,7 +91,7 @@ cards:
           action: none
         double_tap_action:
           action: none
-        entity: sensor.nbn_location_home
+        entity: sensor.nbn_upgradestatus_home
         icon_color: |-
           {% set alt_reason_code = states(entity) %}
           {% if alt_reason_code == 'NULL_NA' %}
@@ -117,24 +120,27 @@ cards:
                 padding-bottom: 5px !important;
               }
       - type: custom:mushroom-template-card
+        multiline_secondary: true
         primary: "NBN FTTN Upgrade > Work"
         secondary: >-
-          {% set alt_reason_code = states(entity) %}
-          {% if alt_reason_code == 'NULL_NA' %}
-          Nup :(
-          {% elif alt_reason_code == 'FTTP_NA' %}
-          Soon, {{state_attr(entity, 'addressDetail')['techChangeStatus']}},
-          {{state_attr(entity,
-          'addressDetail')['targetEligibilityQuarter']}}
-          {% elif alt_reason_code == 'FTTP_SA' %}
-          Yes!
-          {% else %}
-          {% if alt_reason_code %}
-            {{ alt_reason_code }} was returned
-          {% else %}
-            Error
-          {% endif %}
-          {% endif %}
+          {%- set tech_status = state_attr(entity, 'addressDetail')['techChangeStatus'] %}
+          {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade',
+            'Planned': 'FTTP Planned',
+            'In Design': 'FTTP Upgrade in Design',
+            'Committed': 'FTTP Upgrade Committed',
+            'Build Finalised': 'FTTP Upgrade Build Finalized',
+            'Eligible To Order': 'FTTP Upgrade Eligible to Order',
+            'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
+            'New Tech Connected': 'New Technology Connected',
+            'Previous Tech Disconnected': 'Previous Technology Disconnected'
+          } %}
+          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
+          {%- if states(entity) == "FTTP_NA" %}
+          Target: {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
+          {%- else %}
+          No Target Date Yet
+          {%- endif %}
         icon: mdi:check-network
         tap_action:
           action: none
@@ -142,7 +148,7 @@ cards:
           action: none
         double_tap_action:
           action: none
-        entity: sensor.nbn_location_dadwork
+        entity: sensor.nbn_upgradestatus_work
         icon_color: |-
           {% set alt_reason_code = states(entity) %}
           {% if alt_reason_code == 'NULL_NA' %}

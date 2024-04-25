@@ -145,3 +145,13 @@ sensor.yahoofinance_tls_ax:
   friendly_name: Telstra
 sensor.yahoofinance_tne_ax:
   friendly_name: TechnologyOne
+sensor.date:
+  friendly_name: Current Date
+sensor.time:
+  friendly_name: Current Time - Home
+sensor.time_utc:
+  friendly_name: Current Time - UTC
+sensor.time_london:
+  friendly_name: Current Time - UK (London)
+sensor.time_new_york:
+  friendly_name: Current Time - US (New York)

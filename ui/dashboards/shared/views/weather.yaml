@@ -26,7 +26,6 @@ cards:
       width: 500
       max_width: 1000
     cards:
-      - !include /config/ui/cards/weather/snippets/forecast_hour_day.yaml
       - !include /config/ui/cards/weather/current_weather.yaml
       - !include /config/ui/cards/weather/meteogram.yaml
       - !include /config/ui/cards/weather/thermal_comfort.yaml

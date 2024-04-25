@@ -1,0 +1,9 @@
+---
+platform: nsw_fuel_station
+entity_namespace: fuelcheck
+fuel_types:
+  - U91
+  - E10
+  - P98
+  - P95
+station_id: 16919

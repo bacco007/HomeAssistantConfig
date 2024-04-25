@@ -18,7 +18,6 @@ cards:
     type: grid
     cards:
       - type: custom:mushroom-template-card
-        entity: sensor.active_import_from_grid
         primary: Beers Tried
         secondary: >
           {{ state_attr('sensor.untappd_last_check_in_bacco007', 'total_beers') }} Beers
@@ -49,7 +48,6 @@ cards:
                 padding-bottom: 5px !important;
               }
       - type: custom:mushroom-template-card
-        entity: sensor.active_import_from_grid
         primary: Checkins
         secondary: >
           {{ states('sensor.untappd_checked') }} Beers
@@ -81,7 +79,6 @@ cards:
                 padding-bottom: 5px !important;
               }
       - type: custom:mushroom-template-card
-        entity: sensor.active_import_from_grid
         primary: Project 52
         secondary: >
           {{ state_attr('sensor.untappd_project_52', 'count') }} Beers, {{ state_attr('sensor.untappd_project_52', 'target') }} To Go

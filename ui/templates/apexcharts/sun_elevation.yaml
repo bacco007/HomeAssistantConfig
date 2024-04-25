@@ -1,7 +1,7 @@
 ---
 sun_elevation:
   series:
-    - entity: sensor.elevation
+    - entity: sensor.tbsmarthome_sun_elevation
       color: rgb(255,255,255)
       opacity: .2
       stroke_width: .5
@@ -9,7 +9,7 @@ sun_elevation:
       unit: °
       show:
         legend_value: false
-    - entity: sensor.elevation
+    - entity: sensor.tbsmarthome_sun_elevation
       color: rgb(255,255,255)
       opacity: .2
       stroke_width: .5

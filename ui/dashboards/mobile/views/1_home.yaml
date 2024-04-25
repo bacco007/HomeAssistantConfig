@@ -3,5 +3,19 @@ theme: geek_light
 icon: mdi:home
 path: home
 title: Home
+type: sidebar
 cards:
-  - !include /config/ui/cards/common/header.yaml
+  - !include /config/ui/cards/common/header-mobilekiosk.yaml
+  - !include /config/ui/cards/common/media_player.yaml
+  - !include /config/ui/cards/home/home.yaml
+  - !include /config/ui/cards/home/weather.yaml
+  - !include /config/ui/cards/home/tamworth.yaml
+  - !include /config/ui/cards/home/cakeday.yaml
+  - !include /config/ui/cards/home/solar.yaml
+  - !include /config/ui/cards/home/sun_moon.yaml
+  - !include /config/ui/cards/home/untappd.yaml
+  - !include /config/ui/cards/home/music.yaml
+  - !include /config/ui/cards/home/sport.yaml
+  - !include /config/ui/cards/home/media.yaml
+  - !include /config/ui/cards/home/flighttracker.yaml
+  - !include /config/ui/cards/home/network.yaml

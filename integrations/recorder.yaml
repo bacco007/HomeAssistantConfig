@@ -35,8 +35,6 @@ recorder:
       - sensor.e_ink_display_data
       - sensor.ha_automation_run_history
       - sensor.ha_uptime_hours
-      - sensor.hub_hb_00045437_status
-      - sensor.internet_time
       - sensor.iss
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
@@ -207,10 +205,7 @@ recorder:
       - flightradar24_exit
   include:
     entities:
-      - sensor.load_power
       - sensor.tamhospital_waitingtime
       - sensor.unifi_gateway_wan_uptimeavail
-      - sensor.unifi_gateway_wan_uptimeavail_stats
-      - sensor.unifi_gateway_www_uptime
       - sensor.unifi_networkstats_connected_devices
       - sensor.unifi_networkstats_switchap

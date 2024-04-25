@@ -50,7 +50,6 @@ cards:
             - binary_sensor.washer_child_lock
             - binary_sensor.washer_standby
             - binary_sensor.washer_error_state
-            - binary_sensor.washer_wash_completed
             - type: section
             - type: attribute
               entity: sensor.washer
@@ -78,7 +77,6 @@ cards:
               icon: mdi:clock
               name: Time Remaining
             - type: section
-            - switch.washer_power
             - sensor.washer_countdown_time
             - sensor.washer_remaining_time
             - sensor.washer_initial_time

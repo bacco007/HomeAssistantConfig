@@ -1,0 +1,5 @@
+---
+platform: tod
+name: time_of_day_night
+after: sunset
+before: sunrise

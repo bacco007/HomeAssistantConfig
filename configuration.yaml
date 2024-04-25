@@ -4,6 +4,7 @@
 
 homeassistant:
   packages: !include_dir_named "integrations"
-  customize: !include "customize.yaml"
+  customize: !include customisations/entities.yaml
+  customize_glob: !include customisations/glob.yaml
   allowlist_external_dirs:
     - /config/

@@ -1,0 +1,58 @@
+---
+theme: geek_light
+icon: mdi:weather-cloudy-alert
+path: weather
+title: Weather
+type: sidebar
+cards:
+  - !include /config/ui/cards/common/header-mobilekiosk.yaml
+  - !include /config/ui/cards/common/media_player.yaml
+  - !include /config/ui/cards/weather/current_weather.yaml
+  - !include /config/ui/cards/weather/meteogram.yaml
+  - !include /config/ui/cards/weather/thermal_comfort.yaml
+  - !include /config/ui/cards/weather/weather_other.yaml
+  - !include /config/ui/cards/weather/weather_graphs.yaml
+  - !include /config/ui/cards/weather/settings_controls.yaml
+  - !include /config/ui/cards/weather/today_vs_history.yaml
+  - !include /config/ui/cards/weather/long_term_stats.yaml
+  - !include /config/ui/cards/devices/weatherflow.yaml
+  # - type: "custom:bom-radar-card"
+  #   frame_count: 25
+  #   center_latitude: "-31.09"
+  #   center_longitude: "150.93"
+  #   marker_latitude: "-31.09"
+  #   marker_longitude: "150.93"
+  #   show_marker: true
+  #   show_range: true
+  #   show_zoom: true
+  #   show_recenter: true
+  #   show_playback: true
+  #   extra_labels: true
+  #   show_radar_coverage: true
+  #   show_radar_location: true
+  #   zoom_level: "8"
+  # - !include /config/ui/cards/weather/lookahead.yaml
+  # - type: vertical-stack
+  #   cards:
+  #     - !include /config/ui/cards/weather/home_temp.yaml
+  #     - !include /config/ui/cards/weather/home_rainfall.yaml
+  #     - !include /config/ui/cards/weather/home_humidity.yaml
+  #     - !include /config/ui/cards/weather/home_pressure.yaml
+  #     - !include /config/ui/cards/weather/home_cloud.yaml
+  #     - !include /config/ui/cards/weather/home_wind.yaml
+  #     - !include /config/ui/cards/weather/home_lightning.yaml
+  #     - !include /config/ui/cards/weather/home_uv.yaml
+  - type: custom:swipe-card
+    start_card: 1
+    reset_after: 300
+    parameters: !include /config/ui/cards/card-config/swipe-card.yaml
+    cards:
+      - !include /config/ui/cards/tamworth/snippets/sun_moon.yaml
+      - !include /config/ui/cards/tamworth/snippets/uv.yaml
+  - type: custom:swipe-card
+    start_card: 1
+    reset_after: 300
+    parameters: !include /config/ui/cards/card-config/swipe-card.yaml
+    cards:
+      - !include /config/ui/cards/tamworth/snippets/aqi_waqi.yaml
+      - !include /config/ui/cards/tamworth/snippets/aqi_nswdpe.yaml

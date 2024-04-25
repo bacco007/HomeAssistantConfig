@@ -1,0 +1,12 @@
+---
+resource: https://places.nbnco.net.au/places/v2/details/LOC000107178217
+headers:
+  Referer: https://www.nbnco.com.au/
+sensor:
+  name: nbn_upgradestatus_work
+  unique_id: nbn_upgradestatus_work
+  value_template: "{{ value_json.addressDetail.altReasonCode }}"
+  json_attributes:
+    - servingArea
+    - addressDetail
+scan_interval: 7200

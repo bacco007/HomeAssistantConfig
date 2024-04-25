@@ -26,12 +26,9 @@ cards:
       - !include includes/astroweather.yaml
       - !include includes/openweathermap.yaml
       - !include includes/pirate_weather.yaml
-      - !include includes/tomorrow_io.yaml
       - !include includes/weatherbit.yaml
       - type: section
       - entity: weather.forecast_home
         name: Met.no
-      - entity: weather.weather_home
-        name: Visual Crossing
       - entity: weather.weatherflow_forecast_brisbane_st
         name: Weatherflow Forecast

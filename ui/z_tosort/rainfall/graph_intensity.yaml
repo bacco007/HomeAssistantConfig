@@ -1,63 +1,50 @@
 ---
-type: custom:stack-in-card
-cards:
-  - type: entities
-    entities:
-      - input_select.apex_span
-
-  - type: custom:config-template-card
-    entities:
-      - input_select.apex_span
-    variables:
-      span: states['input_select.apex_span'].state
-    card:
-      type: "custom:apexcharts-card"
-      header:
-        title: Rainfall Intensity (Last 24 Hours)
-        show: true
-        show_states: false
-      apex_config:
-        chart:
-          {
-            type: "area",
-            height: 300,
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, lineCap: "square" }
-        dataLabels: { enabled: true }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        yaxis:
-          - seriesName: "Rainfall"
-            title:
-              text: "Rainfall Intensity (mm/h)"
-            min: 0
-            decimalsInFloat: 1
-      all_series_config:
-        stroke_width: 2
-        type: area
-        # extend_to_end: false
-        float_precision: 2
-        unit: "mm/h"
-      series:
-        - entity: sensor.aep_5min_last
-        - entity: sensor.aep_10min_last
-        - entity: sensor.aep_20min_last
-        - entity: sensor.aep_30min_last
-        - entity: sensor.aep_1hour_last
-        - entity: sensor.aep_2hour_last
-        - entity: sensor.aep_6hour_last
-        - entity: sensor.aep_12hour_last
-        - entity: sensor.aep_24hour_last
-      graph_span: ${span}
+type: "custom:apexcharts-card"
+header:
+  title: Rainfall Intensity (Last 24 Hours)
+  show: true
+  show_states: false
+apex_config:
+  chart:
+    {
+      type: "area",
+      height: 300,
+      toolbar: { show: true, tools: { reset: true } },
+      zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+    }
+  stroke: { show: true, lineCap: "square" }
+  dataLabels: { enabled: true }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+  yaxis:
+    - seriesName: "Rainfall"
+      title:
+        text: "Rainfall Intensity (mm/h)"
+      min: 0
+      decimalsInFloat: 1
+all_series_config:
+  stroke_width: 2
+  type: area
+  # extend_to_end: false
+  float_precision: 2
+  unit: "mm/h"
+series:
+  - entity: sensor.aep_5min_last
+  - entity: sensor.aep_10min_last
+  - entity: sensor.aep_20min_last
+  - entity: sensor.aep_30min_last
+  - entity: sensor.aep_1hour_last
+  - entity: sensor.aep_2hour_last
+  - entity: sensor.aep_6hour_last
+  - entity: sensor.aep_12hour_last
+  - entity: sensor.aep_24hour_last

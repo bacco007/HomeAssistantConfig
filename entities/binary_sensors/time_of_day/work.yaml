@@ -1,0 +1,5 @@
+---
+platform: tod
+name: time_of_day_work
+after: "07:00"
+before: "17:00"

@@ -48,7 +48,7 @@ sensor:
         Currently {{ states('sensor.weather_temperature') | round(1) | string + '°' }}, feels like {{ states('sensor.weather_apparent_temperature') | round(1) | string + '°' }}
         Min {{ states('sensor.weather_low_temperature') | round(1) | string + '°' }}, Max {{ states('sensor.weather_high_temperature') | round(1) | string + '°' }}
         Condition: {{ states('sensor.weather_current_condition') }} and {{ temperature_level(states('sensor.weather_temperature') | round(1)) | lower | trim }}
-        {%- if states('sensor.weather_next_precipitation_start') != 'unknown' %}
+        {%- if states('sensor.weather_next_precipitation_start') != 'No Rain' %}
         Rain expected {{ states('sensor.weather_next_precipitation_start') | as_datetime | as_local()| as_timestamp | timestamp_custom('%H:%M', default='') }}
         {%- else %}
         No Rain Due
@@ -500,7 +500,7 @@ sensor:
       {%- set time = states('sensor.weather_precipitation_start') | as_datetime
           if has_value('sensor.weather_precipitation_start') else none %}
       {{ (time != none and time > now() and time - now() < timedelta(hours=12))
-            or states('sensor.weather_precipitation_probability_today') | int(0) >= 40 }}
+            or states('sensor.weather_precipitation_probability') | int(0) >= 40 }}
     attributes:
       category: weather
 
@@ -672,7 +672,7 @@ sensor:
     state: >
       {{ (state_attr('sensor.weather_forecasts', 'bom_hourly')
         | selectattr('condition', 'in', ['rainy', 'lightning-rainy'])
-        | list | first | default).datetime | default(none)
+        | list | first | default).datetime | default("No Rain")
       }}
     attributes:
       category: weather
@@ -684,8 +684,8 @@ sensor:
     state: >
       {{ (state_attr('sensor.weather_forecasts', 'bom_hourly')
         | rejectattr('condition', 'in', ['rainy', 'lightning-rainy'])
-        | selectattr('datetime', '>', states('sensor.current_weather_hourly_next_precipitation_start'))
-        | list | first | default).datetime | default(none)
+        | selectattr('datetime', '>', states('sensor.weather_hourly_next_precipitation_start'))
+        | list | first | default).datetime | default("No Rain")
       }}
     attributes:
       category: weather
@@ -705,7 +705,7 @@ sensor:
         {%- set forecast = state_attr('sensor.weather_forecasts', 'pirateweather_hourly') %}
       {%- endif %}
       {%- if is_state('binary_sensor.weather_is_raining', 'on') %}
-        {%- set time.value = states.binary_sensor.rain.last_changed %}
+        {%- set time.value = states.binary_sensor.weather_is_raining.last_changed %}
       {%- elif forecast not in ['', none] %}
         {%- for item in forecast %}
           {%- if loop.index0 < 12

@@ -1,0 +1,6 @@
+---
+"geo_location.nsw_fire_service_feed_*":
+  icon: mdi:fire
+"sensor.fuelcheck_*":
+  package: "fuel"
+  icon: mdi:fuel

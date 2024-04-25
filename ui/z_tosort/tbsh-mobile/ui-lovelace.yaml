@@ -776,7 +776,7 @@ views:
                         'media_channel', 'BBC Radio 6 Music') and
                         is_state('media_player.office_sonos', 'playing') else 0.2 }}
                   - type: button
-                    service: script.sonos_favourites_bbc_world_service_bews
+                    service: script.sonos_favourites_bbc_world_service_news
                     style:
                       background-image: url('/local/radioicons/BBC_World_Service_News.png')
                       background-size: contain

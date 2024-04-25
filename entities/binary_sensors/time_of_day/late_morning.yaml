@@ -1,0 +1,5 @@
+---
+platform: tod
+name: time_of_day_late_morning
+after: "10:00"
+before: "12:00"

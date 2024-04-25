@@ -3,7 +3,7 @@ platform: template
 switches:
   harmonyhub:
     friendly_name: Bedroom TV
-    value_template: '{{ states.sensor.harmonyhub_status.state != "PowerOff" }}'
+    value_template: "{{ state_attr('remote.harmony_hub', 'current_activity') != 'PowerOff' }}"
     turn_on:
       service: remote.turn_on
       entity_id: remote.harmony_hub

@@ -1,0 +1,14 @@
+---
+date_format: "%a, %d %b %Y %H:%M:%S %Z"
+entity_namespace: rssfeed
+feed_url: https://www.smh.com.au/rss/feed.xml
+inclusions:
+  - image
+  - link
+  - published
+  - title
+name: Sydney Morning Herald
+platform: feedparser
+scan_interval:
+  minutes: 15
+show_topn: 10

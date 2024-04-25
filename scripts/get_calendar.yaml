@@ -5,7 +5,7 @@ fields:
   calendar:
     name: Calendar
     description: The calendar entity to retrieve event information from.
-    example: calendar.example
+    example: calendar.home_assistant_devs
     required: true
     selector:
       entity:

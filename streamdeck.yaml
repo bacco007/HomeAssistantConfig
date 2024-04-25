@@ -4,22 +4,13 @@ auto_reload: true
 pages:
   - name: Home
     buttons:
-      - entity_id: light.bedroom_lights
+      - entity_id: light.office_lamp
         service: light.toggle
         text: |
-          Bedroom
-          lights
-      - icon: netflix.png
-        service: script.start_spotify
-      - icon: xbox.png
-        service: script.start_xbox
-      - icon_mdi: restart
-        service: homeassistant.restart
-        text: |
-          Restart
-          HA
+          Office
+          Lamp
       # Special light control page
-      - entity_id: light.living_room_lights
+      - entity_id: light.bedroom_lamp
         special_type: light-control
         special_type_data:
           colormap: hsv
@@ -51,22 +42,3 @@ pages:
         special_type_data: 0
       - special_type: previous-page
       - special_type: next-page
-  - name: Other
-    buttons:
-      # Spotify playlist
-      - service_data:
-          id: playlist:37i9dQZF1DXaRycgyh6kXP
-          source: KEF LS50
-        icon: "spotify:playlist/37i9dQZF1DXaRycgyh6kXP" # Downloads the cover art
-        service: script.start_spotify
-      # (Advanced) Use templates!
-      - entity_id: media_player.kef_ls50
-        service: media_player.volume_set
-        service_data:
-          volume_level: '{{ (state_attr("media_player.kef_ls50", "volume_level") - 0.05) | max(0) }}'
-          entity_id: media_player.kef_ls50
-        text: '{{ (100 * state_attr("media_player.kef_ls50", "volume_level")) | int }}%'
-        text_size: 16
-        icon_mdi: "volume-minus"
-      - special_type: go-to-page
-        special_type_data: 0

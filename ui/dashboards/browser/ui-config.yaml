@@ -3,4 +3,18 @@ title: "tbSH-Browser"
 button_card_templates: !include_dir_merge_named ../../templates/button
 decluttering_templates: !include_dir_merge_named ../../templates/decluttering
 apexcharts_card_templates: !include_dir_merge_named ../../templates/apexcharts
-views: !include_dir_list views/
+views:
+  - !include /config/ui/dashboards/browser/views/1_home.yaml
+  - !include /config/ui/dashboards/shared/views/cameras.yaml
+  - !include /config/ui/dashboards/shared/views/devices.yaml
+  - !include /config/ui/dashboards/shared/views/flighttracker.yaml
+  - !include /config/ui/dashboards/shared/views/homeassistant.yaml
+  - !include /config/ui/dashboards/shared/views/music.yaml
+  - !include /config/ui/dashboards/shared/views/network.yaml
+  - !include /config/ui/dashboards/shared/views/server.yaml
+  - !include /config/ui/dashboards/shared/views/solar.yaml
+  - !include /config/ui/dashboards/shared/views/sport.yaml
+  - !include /config/ui/dashboards/shared/views/tamworth.yaml
+  - !include /config/ui/dashboards/shared/views/tv-movies.yaml
+  - !include /config/ui/dashboards/shared/views/untappd.yaml
+  - !include /config/ui/dashboards/shared/views/weather.yaml
