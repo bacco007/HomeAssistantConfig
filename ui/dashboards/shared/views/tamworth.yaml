@@ -34,6 +34,7 @@ cards:
       - !include /config/ui/cards/tamworth/snippets/hospital.yaml
       - !include /config/ui/cards/tamworth/dams.yaml
       - !include /config/ui/cards/tamworth/bushfire.yaml
+      - !include /config/ui/cards/tamworth/webcam_ystw.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

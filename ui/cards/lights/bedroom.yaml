@@ -1,0 +1,197 @@
+---
+---
+type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Bedroom Lamp
+    icon: mdi:lightbulb
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
+  - entities:
+      - light.bedroom_lamp
+      - action_name: Toggle light
+        icon: mdi:power
+        name: Reset Adaptive Lighting
+        tap_action:
+          action: call-service
+          service: adaptive_lighting.apply
+          service_data:
+            adapt_brightness: true
+            adapt_color: true
+            entity_id: switch.adaptive_lighting_bedroom_adaptive
+            prefer_rgb_color: true
+            turn_on_lights: true
+        type: button
+      - switch.adaptive_lighting_adapt_brightness_bedroom_adaptive
+      - switch.adaptive_lighting_adapt_color_bedroom_adaptive
+      - switch.adaptive_lighting_bedroom_adaptive
+      - switch.adaptive_lighting_sleep_mode_bedroom_adaptive
+    show_header_toggle: false
+    style: |
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+    type: entities
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Debugging Graphs
+      icon: mdi:lightbulb
+      card_mod:
+        style:
+          mushroom-shape-icon$: |
+            .shape {
+              --shape-color: none !important;
+            }
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              --card-secondary-font-size: 10px;
+              --card-primary-font-size: 12px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:plotly-graph
+        hours_to_show: 48
+        time_offset: |-
+          $fn () =>  {
+            now = new Date();
+            tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0,0,0,0);                                           // midnight
+            HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+            return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+          }
+        refresh_interval: auto
+        entities:
+          - entity: sensor.adaptive_lighting_bedroom_color_temp_kelvin
+            yaxis: y1
+            legendgroup: 1
+          - entity: sensor.adaptive_lighting_bedroom_brightness
+            yaxis: y2
+            legendgroup: 1
+          - entity: sensor.adaptive_lighting_bedroom_sun_position
+            yaxis: y3
+            legendgroup: 1
+        layout:
+          paper_bgcolor: rgba(0,0,0,0)
+          plot_bgcolor: rgba(0,0,0,0)
+          showlegend: false
+          height: 600
+          margin:
+            autoexpand: true
+            l: 55
+            r: 20
+          grid:
+            rows: 3
+            columns: 1
+            roworder: top to bottom
+          xaxis:
+            showline: true
+            tickformat: "%a %H"
+            showgrid: false
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: true
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title:
+              text: Colour Temp (Kelvin)
+              font:
+                family: Roboto
+                size: 12
+                color: rgb(204,204,204)
+          yaxis2:
+            title:
+              text: Brightness
+              font:
+                family: Roboto
+                size: 12
+                color: rgb(204,204,204)
+          yaxis3:
+            title:
+              text: Sun Position
+              font:
+                family: Roboto
+                size: 12
+                color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false
+        defaults:
+          entity:
+            connectgaps: true
+            show_value: true
+            filters:
+              - force_numeric
+              - resample: 5m
+            x: $fn ({xs}) => xs
+            "y": $fn ({ys}) => ys
+            fnmin: >-
+              $fn ({ ys, vars }) => {vars.miny1 =
+              Math.min(...ys.filter(Number))}
+            fnmax: >-
+              $fn ({ ys, vars }) => {vars.maxy1 =
+              Math.max(...ys.filter(Number))}
+            texttemplate: <b>%{y:,.1f}</b>
+            line:
+              width: 3
+              color: rgba(255,20,20, 0.8)
+              shape: spline
+          yaxes:
+            side: left
+            overlaying: "y"
+            visible: true
+            zeroline: true
+            showgrid: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+            title:
+              font:
+                family: Roboto
+                size: 12
+                color: rgb(204,204,204)

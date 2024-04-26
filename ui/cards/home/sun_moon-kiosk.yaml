@@ -1,0 +1,170 @@
+---
+type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
+cards:
+  - type: custom:decluttering-card
+    template: bubble_header
+    variables:
+      - name: Sun and Moon
+      - icon: mdi:theme-light-dark
+      - navpath: weather
+
+  - square: false
+    columns: 2
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.sun_next_rising
+        icon_color: yellow
+        fill_container: true
+        tap_action:
+          action: more-info
+        layout: horizontal
+        name: Next Sunrise
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-entity-card
+        entity: sensor.sun_next_setting
+        icon_color: yellow
+        fill_container: true
+        tap_action:
+          action: more-info
+        layout: horizontal
+        name: Next Sunset
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        entity: sensor.tbsmarthome_sun_daylight
+        primary: Day Length
+        secondary: |-
+          Today: {{state_attr(entity, 'today') | round(2)}} Hrs, Tomorrow: {{state_attr(entity, 'tomorrow') | round(2)}} Hrs
+        layout: horizontal
+        fill_container: false
+        icon: |
+          {{ state_attr(entity, 'icon') }}
+        icon_color: yellow
+        secondary_info: state
+        multiline_secondary: true
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        entity: sensor.tbsmarthome_sun_night
+        primary: Night Length
+        secondary: |-
+          Today: {{state_attr(entity, 'today') | round(2)}} Hrs, Tomorrow: {{state_attr(entity, 'tomorrow') | round(2)}} Hrs
+        layout: horizontal
+        fill_container: false
+        icon: |
+          {{ state_attr(entity, 'icon') }}
+        icon_color: light-grey
+        secondary_info: state
+        multiline_secondary: true
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+
+  - type: custom:mushroom-template-card
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            --shape-color: none !important;
+          }
+        .: |
+          ha-card {
+            background-color: var(--background-color);
+            --icon-size: 40px;
+            --icon-symbol-size: 30px;
+            --card-secondary-font-size: 10px;
+            --card-primary-font-size: 12px;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+          }
+    entity: sensor.dst_dates_local
+    primary: Daylight Saving
+    secondary: |-
+      {% if states(entity) == 'False' %}
+        DST Starts {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+      {% else %}
+        DST Ends {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+      {% endif %}
+    icon: mdi:clock
+    fill_container: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    badge_icon: '{{ "none" if states(entity) == "False" else "mdi:sun-clock" }}'
+    badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
+    multiline_secondary: true
+    layout: horizontal

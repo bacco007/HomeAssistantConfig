@@ -1,0 +1,71 @@
+---
+type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Galaxy Tab S5e Kiosk
+    icon: mdi:tablet-cellphone
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
+
+  - type: entities
+    card_mod:
+      style: &style |
+        ha-card {
+          box-shadow: none !important;
+        }
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - binary_sensor.galaxy_tab_s5e_device_admin
+      - binary_sensor.galaxy_tab_s5e_kiosk_mode
+      - binary_sensor.galaxy_tab_s5e_plugged_in
+      - button.galaxy_tab_s5e_bring_to_foreground
+      - button.galaxy_tab_s5e_load_start_url
+      - button.galaxy_tab_s5e_restart_browser
+      - button.galaxy_tab_s5e_restart_device
+      - button.galaxy_tab_s5e_send_to_background
+      - media_player.galaxy_tab_s5e
+      - number.galaxy_tab_s5e_screen_brightness
+      - number.galaxy_tab_s5e_screen_off_timer
+      - number.galaxy_tab_s5e_screensaver_brightness
+      - number.galaxy_tab_s5e_screensaver_timer
+      - sensor.galaxy_tab_s5e_battery
+      - sensor.galaxy_tab_s5e_current_page
+      - sensor.galaxy_tab_s5e_foreground_app
+      - sensor.galaxy_tab_s5e_free_memory
+      - sensor.galaxy_tab_s5e_internal_storage_free_space
+      - sensor.galaxy_tab_s5e_internal_storage_total_space
+      - sensor.galaxy_tab_s5e_screen_orientation
+      - sensor.galaxy_tab_s5e_total_memory
+      - switch.galaxy_tab_s5e_kiosk_lock
+      - switch.galaxy_tab_s5e_maintenance_mode
+      - switch.galaxy_tab_s5e_motion_detection
+      - switch.galaxy_tab_s5e_screen
+      - switch.galaxy_tab_s5e_screensaver

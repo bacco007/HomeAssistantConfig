@@ -3,11 +3,46 @@ theme: geek_light
 icon: mdi:home
 path: home
 title: Home
-type: sidebar
+type: custom:grid-layout
+layout:
+  grid-template-columns: auto
+  grid-template-rows: auto
+  grid-template-areas: |
+    "header"
+    "main"
+    "footer"
 cards:
+  # Header
   - type: vertical-stack
+    view_layout:
+      grid-area: header
     cards:
       - !include /config/ui/cards/common/header-mobilekiosk.yaml
-      - !include /config/ui/cards/common/media_player.yaml
+
+  # Content
+  - type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      max_cols: 2
+      width: 300
+      max_width: 1000
+    view_layout:
+      grid-area: main
+    cards:
       - !include /config/ui/cards/home/home.yaml
       - !include /config/ui/cards/home/sport.yaml
+      - !include /config/ui/cards/home/weather-kiosk.yaml
+      - !include /config/ui/cards/home/solar-kiosk.yaml
+      - !include /config/ui/cards/home/flighttracker-kiosk.yaml
+      - !include /config/ui/cards/home/sun_moon-kiosk.yaml
+      #- !include /config/ui/cards/home/tamworth.yaml
+
+  # Footer
+  - type: vertical-stack
+    view_layout:
+      grid-area: footer
+    cards:
+      - !include /config/ui/cards/common/media_player.yaml
+
+  # Popups
+  - !include /config/ui/popup/flightsnearby.yaml

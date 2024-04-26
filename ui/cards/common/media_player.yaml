@@ -4,7 +4,7 @@ card_type: media-player
 entity: media_player.currently_playing
 show_state: false
 show_last_updated: false
-show_attribute: true
+show_attribute: false
 force_icon: false
 show_icon: true
 show_name: false
@@ -24,3 +24,6 @@ sub_button:
       action: navigate
       navigation_path: "#media"
     show_background: false
+scrolling_effect: false
+name: Currently Playing
+icon: mdi:play-box-multiple-outline

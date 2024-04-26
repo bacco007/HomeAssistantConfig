@@ -161,7 +161,9 @@ card:
         {{ states('sensor.summary_updates') }} Updates Available
       icon: mdi:update
       entity: sensor.summary_updates
-      tap_action: !include /config/ui/popup/updates.yaml
+      tap_action:
+        action: navigate
+        navigation_path: "#updates"
       card_mod:
         style:
           .: |

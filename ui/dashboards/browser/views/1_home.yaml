@@ -57,3 +57,7 @@ cards:
     view_layout:
       grid-area: footer
     card: !include /config/ui/cards/common/media_player.yaml
+
+  # Popups
+  - !include /config/ui/popup/flightsnearby.yaml
+  - !include /config/ui/popup/updates.yaml

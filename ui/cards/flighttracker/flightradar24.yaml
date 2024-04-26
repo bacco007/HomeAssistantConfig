@@ -1,15 +1,33 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: custom:mushroom-template-card
-    primary: FlightRadar24
+  - type: custom:bubble-card
+    card_type: separator
+    name: FlightRadar24
     icon: mdi:airplane
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
         }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
+
   - type: entities
     card_mod:
       style: |
@@ -370,6 +388,175 @@ cards:
                       padding-left: 4px ;
                       padding-right: 4px;
                       }
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Daily Flights Tracked Graph
+      icon: mdi:airplane
+      card_mod:
+        style:
+          mushroom-shape-icon$: |
+            .shape {
+              --shape-color: none !important;
+            }
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              --card-secondary-font-size: 10px;
+              --card-primary-font-size: 12px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 1d
+        span:
+          start: day
+        yaxis:
+          - id: tv
+            show: false
+        series:
+          - entity: sensor.flights_above_hourly
+            color: teal
+            type: column
+            group_by:
+              func: last
+              duration: 1h
+            show:
+              as_duration: hour
+              datalabels: true
+            yaxis_id: tv
+        apex_config:
+          grid:
+            show: false
+          dataLabels:
+            offsetY: -10
+            background:
+              enabled: false
+            style:
+              colors:
+                - var(--primary-text-color)
+          plotOptions:
+            bar:
+              columnWidth: 60%
+              borderRadius: 4
+          xaxis:
+            axisTicks:
+              show: false
+            axisBorder:
+              show: false
+            labels:
+              offsetY: -5
+              datetimeFormatter:
+                day: hh
+          yaxis:
+            decimals: 0
+            crosshairs:
+              show: true
+            axisTicks:
+              show: true
+            tickAmount: 5
+            labels:
+              show: true
+              maxwidth: 4
+          tooltip:
+            enabled: false
+
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Weekly Flights Tracked Graph
+      icon: mdi:airplane
+      card_mod:
+        style:
+          mushroom-shape-icon$: |
+            .shape {
+              --shape-color: none !important;
+            }
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              --card-secondary-font-size: 10px;
+              --card-primary-font-size: 12px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:apexcharts-card
+        update_interval: 1min
+        graph_span: 7d
+        span:
+          start: day
+          offset: "-6d"
+        yaxis:
+          - id: tv
+            show: false
+        series:
+          - entity: sensor.flights_above_daily
+            color: teal
+            type: column
+            group_by:
+              func: last
+              duration: 1d
+            show:
+              datalabels: true
+            yaxis_id: tv
+        apex_config:
+          grid:
+            show: false
+          dataLabels:
+            offsetY: -10
+            background:
+              enabled: false
+            style:
+              colors:
+                - var(--primary-text-color)
+          plotOptions:
+            bar:
+              columnWidth: 50%
+              borderRadius: 4
+          xaxis:
+            axisTicks:
+              show: false
+            axisBorder:
+              show: false
+            labels:
+              offsetY: -5
+              datetimeFormatter:
+                day: ddd
+          yaxis:
+            decimals: 0
+            crosshairs:
+              show: true
+            axisTicks:
+              show: true
+            tickAmount: 5
+            labels:
+              show: true
+              maxwidth: 4
+          tooltip:
+            enabled: false
+
   - type: conditional
     conditions:
       - condition: numeric_state
