@@ -513,8 +513,6 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
             "gtfs_updated_at"]  
         self._attributes["device_tracker_id"] = self.coordinator.data[
             "device_tracker_id"]
-        self._attributes["offset"] = self.coordinator.data[
-            "offset"]
         
         # Add next departures with their lines
         self._attributes["next_departures_lines"] = {}
@@ -524,7 +522,6 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
                     self._attributes["next_departures_lines"] = stop["departure"]
                     self._attributes["latitude"] = stop["latitude"]  
                     self._attributes["longitude"] = stop["longitude"]  
-                    
           
         self._attr_extra_state_attributes = self._attributes
         return self._attr_extra_state_attributes
