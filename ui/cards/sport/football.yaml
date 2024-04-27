@@ -1,29 +1,32 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: custom:mushroom-template-card
-    primary: Football
+  - type: custom:bubble-card
+    card_type: separator
+    name: Football
     icon: mdi:soccer
-    icon_color: "#6eaadc"
-    card_mod:
-      style:
-        mushroom-state-info$: |
-          .container {
-           --primary-text-color: #6eaadc;
-          }
-          .primary {
-            font-size: 15px !important;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-          }
-        .: |
-          ha-card {
-            box-shadow: none !important;
-            #margin: -10px;
-          }
-          ha-state-icon {
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-            '--mdc-icon-size': 2px !important;
-          }
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
   - type: entities
     card_mod:
       style: |
@@ -41,6 +44,13 @@ cards:
           name: A-League Mens
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_alm', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -123,6 +133,13 @@ cards:
           name: A-League Womens
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_alw', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -205,6 +222,13 @@ cards:
           name: Premier League
           icon: si:premierleague
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_epl', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -286,6 +310,13 @@ cards:
           name: WSL (England)
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_wsl', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -366,6 +397,13 @@ cards:
           name: Bundesliga
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_bund', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -448,6 +486,13 @@ cards:
           name: LaLiga
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_lal', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -524,6 +569,13 @@ cards:
           name: Ligue 1
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_lig1', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -602,6 +654,13 @@ cards:
           name: Serie A
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_sea', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -754,6 +813,13 @@ cards:
           name: Major League Soccer, Eastern Conference
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_mls_eastern', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -830,6 +896,13 @@ cards:
           name: Major League Soccer, Western Conference
           icon: mdi:soccer
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_mls_western', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element

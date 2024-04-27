@@ -1,29 +1,32 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: custom:mushroom-template-card
-    primary: NBA
+  - type: custom:bubble-card
+    card_type: separator
+    name: NBA
     icon: si:nba
-    icon_color: "#6eaadc"
-    card_mod:
-      style:
-        mushroom-state-info$: |
-          .container {
-           --primary-text-color: #6eaadc;
-          }
-          .primary {
-            font-size: 15px !important;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-          }
-        .: |
-          ha-card {
-            box-shadow: none !important;
-            #margin: -10px;
-          }
-          ha-state-icon {
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-            '--mdc-icon-size': 2px !important;
-          }
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
   - type: entities
     card_mod:
       style: |
@@ -143,6 +146,13 @@ cards:
           name: Eastern Conference, Atlantic Division
           icon: si:nba
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_nba_eastern_atlantic', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+            {%- if rank == 0.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -166,6 +176,13 @@ cards:
           name: Eastern Conference, Central Division
           icon: si:nba
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_nba_eastern_central', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+            {%- if rank == 0.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -189,6 +206,13 @@ cards:
           name: Eastern Conference, Southeast Division
           icon: si:nba
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_nba_eastern_southeast', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+            {%- if rank == 0.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -236,6 +260,13 @@ cards:
           name: Western Conference, Northwest Division
           icon: si:nba
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_nba_western_northwest', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+            {%- if rank == 0.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -259,6 +290,13 @@ cards:
           name: Western Conference, Pacific Division
           icon: si:nba
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_nba_western_pacific', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+            {%- if rank == 0.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -282,6 +320,13 @@ cards:
           name: Western Conference, Southwest Division
           icon: si:nba
           state: ""
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_nba_western_southwest', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+            {%- if rank == 0.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element

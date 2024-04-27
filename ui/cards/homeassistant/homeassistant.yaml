@@ -34,6 +34,15 @@ cards:
             unit: false
             name: Ignored
       - type: custom:multiple-entity-row
+        entity: sensor.config
+        name: Syslog File Size
+        show_state: false
+        entities:
+          - entity: sensor.ha_logfile_recent_change
+            name: 30min Change
+          - entity: sensor.config
+            name: File Size
+      - type: custom:multiple-entity-row
         entity: counter.logs_critical_counter
         name: Syslog Analysis
         show_state: false
@@ -45,6 +54,20 @@ cards:
             unit: false
             name: Error
           - entity: counter.logs_warning_counter
+            unit: false
+            name: Warning
+      - type: custom:multiple-entity-row
+        entity: counter.logs_critical_counter
+        name: Syslog Analysis - Hourly Change
+        show_state: false
+        entities:
+          - entity: sensor.statistics_logs_critical_counter_hourly
+            unit: false
+            name: Critical
+          - entity: sensor.statistics_logs_error_counter_hourly
+            unit: false
+            name: Error
+          - entity: sensor.statistics_logs_warning_counter_hourly
             unit: false
             name: Warning
       - type: section

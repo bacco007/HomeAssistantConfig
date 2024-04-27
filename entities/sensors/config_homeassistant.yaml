@@ -1,0 +1,4 @@
+---
+platform: folder
+folder: /config
+filter: home-assistant.log

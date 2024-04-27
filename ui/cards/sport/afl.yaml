@@ -1,29 +1,32 @@
 ---
 type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: custom:mushroom-template-card
-    primary: Aussie Rules
+  - type: custom:bubble-card
+    card_type: separator
+    name: Aussie Rules
     icon: mdi:football-australian
-    icon_color: "#6eaadc"
-    card_mod:
-      style:
-        mushroom-state-info$: |
-          .container {
-           --primary-text-color: #6eaadc;
-          }
-          .primary {
-            font-size: 15px !important;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-          }
-        .: |
-          ha-card {
-            box-shadow: none !important;
-            #margin: -10px;
-          }
-          ha-state-icon {
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-            '--mdc-icon-size': 2px !important;
-          }
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
   - type: entities
     card_mod:
       style: |
@@ -41,18 +44,24 @@ cards:
           name: AFL Standings
           icon: mdi:football-australian
           state: ""
-          secondary:
+          secondary: >
+            {%- for x in state_attr('sensor.scoreboard_afl', 'entries') -%}
+            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+            {%- if rank == 1.0 -%}
+            {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+            {%- endif -%}
+            {%- endfor -%}
         padding: 0
         entities:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(8): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(8): "border-bottom: 2px solid rgb(255,215,0) !important;"
               tbody tr+: "user-select: text"
               tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:

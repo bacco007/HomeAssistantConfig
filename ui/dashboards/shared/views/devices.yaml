@@ -40,7 +40,6 @@ cards:
       - !include /config/ui/cards/devices/office_splitty.yaml
       - !include /config/ui/cards/devices/dyson_fan.yaml
       - !include /config/ui/cards/devices/galaxy_tab_s5e.yaml
-      - !include /config/ui/cards/devices/thinksmart_view.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

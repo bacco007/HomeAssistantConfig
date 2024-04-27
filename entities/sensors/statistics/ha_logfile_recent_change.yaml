@@ -1,0 +1,9 @@
+---
+platform: statistics
+name: ha_logfile_recent_change
+unique_id: ha_logfile_recent_change
+entity_id: sensor.config
+state_characteristic: change
+max_age:
+  minutes: 30
+precision: 0

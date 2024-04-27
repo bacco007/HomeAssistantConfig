@@ -1,0 +1,24 @@
+---
+alias: "[HA] Log File Increase - Notification"
+id: ha_logfileincrease_notification
+trigger:
+  platform: numeric_state
+  entity_id:
+    - sensor.ha_logfile_recent_change
+  above: 1
+  value_template: '{{state.state | int(0) }}'
+action:
+  - service: notify.alert
+    data:
+      message: >
+        The Home Assistant Log File recently increased {{ states("sensor.log_size_recent_change") }} MB.  Please check whether something may be wrong
+      title: >
+        Home Assistant Log Increased {{ states("sensor.log_size_recent_change") }} MB
+      data:
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge

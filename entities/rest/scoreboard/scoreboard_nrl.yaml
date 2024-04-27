@@ -1,5 +1,5 @@
 ---
-resource: https://site.web.api.espn.com/apis/v2/sports/rugby-league/3/standings?type=0&level=0&season=2023
+resource: https://site.web.api.espn.com/apis/v2/sports/rugby-league/3/standings?type=0&level=0
 sensor:
   name: scoreboard_nrl
   value_template: "{{ now() }}"
