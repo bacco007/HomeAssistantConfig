@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.5.0b0 |
-| No. Integrations | 197 |
+| HA Version | 2024.5.0b1 |
+| No. Integrations | 198 |
 | No. Custom Integrations | 79 |
-| No. Entities | 5278 |
-| No. Sensors | 3263 |
-| No. Automations | 140 |
+| No. Entities | 5176 |
+| No. Sensors | 3254 |
+| No. Automations | 141 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,16 +62,16 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 347
-Buttons | 247
-Calendars | 67
+Binary sensors | 344
+Buttons | 242
+Calendars | 68
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 117
-Devices | 574
+Devices | 573
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -83,19 +83,19 @@ Input selects | 3
 Input texts | 3
 Lights | 14
 Locks | 4
-Media players | 21
-Numbers | 39
-Persistent notifications | 5
+Media players | 19
+Numbers | 35
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3263
+Sensors | 3254
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 346
+Switches | 341
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>575 Integrations</summary>
+<details><summary>576 Integrations</summary>
 
 | Name |
 | --- |
@@ -254,6 +254,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [flightradar24](https://www.home-assistant.io/components/flightradar24) |
 | [flightradar24.sensor](https://www.home-assistant.io/components/flightradar24.sensor) |
 | [flightradar24.text](https://www.home-assistant.io/components/flightradar24.text) |
+| [folder.sensor](https://www.home-assistant.io/components/folder.sensor) |
 | [fontawesome](https://www.home-assistant.io/components/fontawesome) |
 | [forecast_solar](https://www.home-assistant.io/components/forecast_solar) |
 | [forecast_solar.sensor](https://www.home-assistant.io/components/forecast_solar.sensor) |
@@ -722,7 +723,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.0] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5.1] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -769,7 +770,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.3] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.1] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
-| [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.9-test] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
+| [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.8] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.7] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
@@ -815,7 +816,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.1.3] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.2] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v2.0.4] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.0.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.1] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
@@ -859,7 +860,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.5.1 |  | core |
 | Node-RED | 17.0.12 |  | a0d7b954 |
-| OpenThread Border Router | 2.5.1 |  | core |
+| OpenThread Border Router | 2.6.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.1 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
@@ -912,7 +913,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.5.0b0-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.5.0b1-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml

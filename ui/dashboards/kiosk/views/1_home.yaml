@@ -35,7 +35,7 @@ cards:
       - !include /config/ui/cards/home/solar-kiosk.yaml
       - !include /config/ui/cards/home/flighttracker-kiosk.yaml
       - !include /config/ui/cards/home/sun_moon-kiosk.yaml
-      #- !include /config/ui/cards/home/tamworth.yaml
+      # - !include /config/ui/cards/home/tamworth.yaml
 
   # Footer
   - type: vertical-stack

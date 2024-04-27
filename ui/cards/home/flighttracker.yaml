@@ -144,9 +144,7 @@ cards:
     primary: Closest Plane
     secondary: >-
       {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}}
-      ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
-
-      {{state_attr(entity, 'aircraft_operator')}} ({{state_attr(entity,
+      ({{state_attr('sensor.plane_overhead', 'distance')}} km away), {{state_attr(entity, 'aircraft_operator')}} ({{state_attr(entity,
       'aircraft_operator_callsign')}}) - {{state_attr(entity, 'aircraft')}}
 
       {{state_attr(entity, 'origin_airport')}} ({{state_attr(entity,
@@ -201,9 +199,7 @@ cards:
     secondary: >-
       {% from 'easy_time.jinja' import custom_relative_time%}
       {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}},
-      {{state_attr(entity, 'call')}})
-
-      {{state_attr(entity, 'equipment')}} ({{
+      {{state_attr(entity, 'call')}}) {{state_attr(entity, 'equipment')}} ({{
       custom_relative_time(state_attr(entity, 'date')|replace("/","-") +
       " " + state_attr(entity, 'time'), values='day, hour')}})
     icon: mdi:airplane-alert

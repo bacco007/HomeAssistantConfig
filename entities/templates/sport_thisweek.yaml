@@ -242,6 +242,9 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_mlb_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_wrexham_afc
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -312,6 +315,7 @@ action:
         - calendar.ical_bbl_all_teams
         - calendar.ical_nascar_truck_series
         - calendar.ical_mlb_all_teams
+        - calendar.ical_wrexham_afc
   - variables:
       all_events: >
 

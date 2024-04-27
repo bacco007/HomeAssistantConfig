@@ -977,3 +977,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_socceroos
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_wrexham_afc

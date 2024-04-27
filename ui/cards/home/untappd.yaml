@@ -116,9 +116,7 @@ cards:
     primary: Last Beer
     secondary: >-
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}}
-      ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
-
-      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
+      ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}}), {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} %
 
       My Rating: {{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}},

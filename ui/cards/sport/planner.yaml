@@ -47,6 +47,8 @@ calendars:
     color: "#ee3124"
   - entity: calendar.ical_sydney_swans_vfl
     color: "#E1251B"
+  - entity: calendar.ical_wrexham_afc
+    color: "#ee3124"
 updateInterval: 3600
 days: 14
 noCardBackground: true
