@@ -1,0 +1,243 @@
+---
+Ubiquiti v1:
+  #Color pallettes
+  green1: "#3BCC64"
+  green2: "#2AA74F"
+  green3: "#217E3C"
+  green4: "#155628"
+  green5: "#0B2D16"
+  green6: "#010502"
+
+  lemon1: "#BFE041"
+  lemon2: "#A9CD21"
+  lemon3: "#85A11A"
+  lemon4: "#617513"
+  lemon5: "#3D490C"
+  lemon6: "#1B1D05"
+
+  yellow1: "#FFDB1A"
+  yellow2: "#E6C200"
+  yellow3: "#B39700"
+  yellow4: "#806C00"
+  yellow5: "#4E4100"
+  yellow6: "#191600"
+
+  orange1: "#F5A624"
+  orange2: "#DBBC09"
+  orange3: "#AB6D09"
+  orange4: "#784E07"
+  orange5: "#452F05"
+  orange6: "#121003"
+
+  red1: "#F03A3E"
+  red2: "#E61116"
+  red3: "#B60E12"
+  red4: "#870A0D"
+  red5: "#580708"
+  red6: "#290304"
+
+  pink1: "#A252E3"
+  pink2: "#8A26DC"
+  pink3: "#6F1DB2"
+  pink4: "#541686"
+  pink5: "#390F5A"
+  pink6: "#1E082E"
+
+  magenta1: "#6A34E0"
+  magenta2: "#531EC3"
+  magenta3: "#401797"
+  magenta4: "#2E106B"
+  magenta5: "#1C093F"
+  magenta6: "#0A0213"
+
+  darkblue1: "#003C9E"
+  darkblue2: "#00296B"
+  darkblue3: "#001538"
+  darkblue4: "#000205"
+  darkblue5: "#000102"
+  darkblue6: "#000000"
+
+  lightblue1: "#006fff"
+  lightblue2: "#0059cc"
+  lightblue3: "#004399"
+  lightblue4: "#002d66"
+  lightblue5: "#001733"
+  lightblue6: "#000100"
+
+  cyan1: "#57A0FF"
+  cyan2: "#0368F0"
+  cyan3: "#0152BD"
+  cyan4: "#003CBA"
+  cyan5: "#002657"
+  cyan6: "#001024"
+
+  #Color definitions
+  dark-background: "#1C1E2E" #var(--dark-background)
+  medium-background: "#242635" #var(--medium-background)
+  light-background: "#2C2E3C" #var(--light-background)
+  components-background: "#242635" #var(--components-background)
+  bright-text: "#ffffff" #var(--bright-text)
+  dimmed-text: "#A4A7B4" #var(--dimmed-text)
+  dark-text: "#444856" #var(--dark-text)
+  cyan-text: "#1bbfff" #var(--cyan-text)
+  alert-text: "#CD1015" #var(--alert-text)
+  ok-text: "#49D000"
+  warning-text: "#D48E24"
+  accent-color: "#006FFF" #var(--accent-color)
+  cyanish: "#00b8fe" #var(--cyanish)
+  greenish: "#7cff73" #var(--greenish)
+  dark-magenta: "#7b55d5" #var(--dark-magenta)
+  light-magenta: "#fc70f3" #var(--light-magenta)
+  pinkish: "#ff6e7a" #var(--pinkish)
+  yellowish: "#ffba6b" #var(--yellowish)
+
+  # Labels
+  label-badge-background-color: var(--medium-background)
+  label-badge-text-color: var(--bright-text)
+  label-badge-red: var(--alert-text)
+  label-badge-green: var(--greenish)
+  label-badge-blue: "#0000ff"
+  label-badge-yellow: "#FF0000" #var(--accent-color)
+  label-badge-magenta: var(--dark-magenta)
+  label-badge-cyan: var(--cyanish)
+  label-badge-gray: "#888888"
+
+  #Header
+  app-header-background-color: var(--medium-background)
+  app-header-text-color: var(--bright-text)
+
+  # Main Interface Colors
+  primary-color: var(--accent-color) #var(--cyan-text)
+  light-primary-color: var(--accent-color) #var(--light-background)
+  primary-background-color: var(--dark-background)
+  secondary-background-color: var(--medium-background)
+  divider-color: var(--dark-text) #var(--dark-background)
+  material-background-color: var(--medium-background)
+  material-secondary-background-color: var(--accent-color) # probably to be corrected
+  #background-color: "#FF0000" #var(--cyan-text)
+
+  # bars in system monitor status
+  ha-bar-background-color: var(--light-background) #secondary-background-color
+
+  # Text
+  primary-text-color: "#A4A7B4" #var(--dimmed-text)
+  secondary-text-color: var(--dimmed-text)
+  text-primary-color: var(--bright-text)
+  disabled-text-color: var(--dark-text)
+
+  # Sidebar Menu
+  sidebar-icon-color: var(--dimmed-text)
+  sidebar-text-color: var(--dimmed-text)
+  sidebar-background-color: var(--medium-background)
+  sidebar-selected-background-color: var(--light-background)
+  sidebar-selected-icon-color: var(--bright-text)
+  sidebar-selected-text-color: var(--bright-text)
+
+  # Cards
+  ha-card-border-width: "0px"
+  ha-card-border-color: var(--accent-color)
+  ha-card-border-radius: "6px"
+  ha-card-header-font-size: 20px
+  ha-card-header-letter-spacing: "1.49px"
+  ha-card-header-color: var(--bright-text)
+  ha-card-background: var(--medium-background)
+  paper-card-background-color: var(--medium-background)
+  paper-item-icon-color: var(--dimmed-text)
+  #paper-material-display: "#ff0000"
+  ha-card-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.0)
+  card-background-color: var(--medium-background)
+
+  # Nav Menu
+  paper-listbox-background-color: var(--light-background)
+  paper-font-button-text-transform: "uppercase"
+
+  # Table
+  table-row-background-color: var(--primary-background-color)
+  table-row-alternative-background-color: var(--secondary-background-color)
+  data-table-background-color: var(--primary-background-color)
+
+  # States and Badges
+  state-icon-color: var(--dimmed-text)
+  state-icon-active-color: var(--orange1)
+  state-icon-unavailable-color: var(--dark-background)
+
+  # Sliders
+  paper-slider-knob-color: var(--dimmed-text)
+  paper-slider-knob-start-color: var(--dimmed-text)
+  paper-slider-pin-color: var(--accent-color)
+
+  # Slider colors used by slider row only
+  paper-slider-active-color: var(--accent-color)
+  paper-slider-container-color: var(--dark-text)
+
+  # Switches
+  switch-checked-button-color: var(--accent-color)
+  switch-checked-track-color: var(--dark-text)
+  switch-unchecked-button-color: var(--dimmed-text)
+  switch-unchecked-track-color: var(--dark-text)
+
+  # Toggles
+  paper-toggle-button-checked-button-color: "#ff0000"
+  paper-toggle-button-checked-bar-color: "#ff0000"
+  paper-toggle-button-unchecked-button-color: "#ff0000"
+  paper-toggle-button-unchecked-bar-color: "#ff0000"
+
+  # Drop down list arrow
+  iron-icon-fill-color: var(--secondary-text-color)
+
+  # Drop down list selector
+  input-idle-line-color: "var(--dark-primary-color)"
+  input-hover-line-color: "var(--error-color)"
+  input-disabled-line-color: "var(--disabled-text-color)"
+  input-outlined-idle-border-color: "var(--disabled-text-color)"
+  input-outlined-hover-border-color: "var(--disabled-text-color)"
+  input-outlined-disabled-border-color: "var(--disabled-text-color)"
+  input-fill-color: "var(--card-background-color)"
+  input-disabled-fill-color: "var(--card-background-color)"
+  input-ink-color: "var(--primary-text-color)"
+  input-label-ink-color: "var(--secondary-text-color)"
+  input-disabled-ink-color: "var(--disabled-text-color)"
+  input-dropdown-icon-color: "var(--primary-text-color)"
+
+  code-editor-background-color: "#12131c"
+  code-editor-gutter-color: var(--medium-background)
+
+  # HACS
+  hacs-status-installed: var(--greenish)
+  hacs-status-not-loaded: var(--dimmed-text)
+  hacs-status-pending-update: var(--accent-color)
+
+  # Text divider row
+  text-divider-color: var(--secondary-text-color)
+  text-divider-font-size: 15px
+  text-divider-line-size: 1px
+  text-divider-font-weight: normal
+  text-divider-margin-top: 0.1em
+  text-divider-margin-bottom: 0em
+  text-divider-text: var(--bright-text)
+
+  # Mini Media Player
+  mini-media-player-base-color: var(--primary-text-color)
+  mini-media-player-accent-color: var(--cyan-text)
+  mini-media-player-icon-color: var(--mini-media-player-base-color)
+  mini-media-player-button-color: rgba(255,255,255,0.25)
+  mini-media-player-overlay-color: rgba(0,0,0,0.5)
+  mini-media-player-overlay-color-stop: 25%
+  mini-media-player-overlay-base-color: white
+  mini-media-player-overlay-accent-color: white
+  mini-media-player-media-cover-info-color: white
+  mini-media-player-background-opacity: 0
+  mini-media-player-artwork-opacity: 1
+  mini-media-player-progress-height: 6px
+  mini-media-player-scale: 1
+  mini-media-player-name-font-weight: 400
+
+  # History Graphs Colors
+  state-on-color: var(-cyanish)
+  state-off-color: var(-red1)
+  state-home-color: var(-greenish)
+  state-not_home-color: var(-pinkish)
+  state-away-color: var(-pinkish)
+  state-unavailable-color: "#664444"
+  state-unknown-color: "#444466"
+  state-idle-color: var(-yellowish)
