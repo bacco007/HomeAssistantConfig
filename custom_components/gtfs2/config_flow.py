@@ -130,10 +130,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         user_input[CONF_EXTRACT_FROM] = "zip"    
         self._user_inputs.update(user_input)
         _LOGGER.debug(f"UserInputs Local Stops: {self._user_inputs}") 
-        stop_limit = await _check_stop_list(self, self._user_inputs)
-        if stop_limit :
-            errors["base"] = stop_limit
-            return self.async_abort(reason=stop_limit) 
         return self.async_create_entry(
             title=user_input[CONF_NAME], data=self._user_inputs
             )                
@@ -404,6 +400,7 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Manage the options."""
+        errors: dict[str, str] = {}
         if user_input is not None:
             if self.config_entry.data.get(CONF_DEVICE_TRACKER_ID, None):
                 _data = user_input
@@ -411,6 +408,7 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
                 _data["url"] = self.config_entry.data["url"]
                 _data["extract_from"] = self.config_entry.data["extract_from"]
                 _data["device_tracker_id"] = self.config_entry.data["device_tracker_id"]
+                _data["radius"] = user_input["radius"]
                 stop_limit = await _check_stop_list(self, _data)
                 if stop_limit :
                     return self.async_abort(reason=stop_limit) 
@@ -428,11 +426,13 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Optional(CONF_LOCAL_STOP_REFRESH_INTERVAL, default=self.config_entry.options.get(CONF_LOCAL_STOP_REFRESH_INTERVAL, DEFAULT_LOCAL_STOP_REFRESH_INTERVAL)): int,
                     vol.Optional(CONF_RADIUS, default=self.config_entry.options.get(CONF_RADIUS, DEFAULT_LOCAL_STOP_RADIUS)): vol.All(vol.Coerce(int), vol.Range(min=50, max=5000)),
                     vol.Optional(CONF_TIMERANGE, default=self.config_entry.options.get(CONF_TIMERANGE, DEFAULT_LOCAL_STOP_TIMERANGE)): vol.All(vol.Coerce(int), vol.Range(min=15, max=120)),
+                    vol.Optional(CONF_OFFSET, default=self.config_entry.options.get(CONF_OFFSET, DEFAULT_OFFSET)): int,
                     vol.Optional(CONF_REAL_TIME, default=self.config_entry.options.get(CONF_REAL_TIME)): selector.BooleanSelector()
                 }
             return self.async_show_form(
                 step_id="init",
-                data_schema=vol.Schema(opt1_schema)
+                data_schema=vol.Schema(opt1_schema),
+                errors = errors
             )                
         
         else:

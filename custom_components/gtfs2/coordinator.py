@@ -8,7 +8,7 @@ import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import homeassistant.util.dt as dt_util
 
 from .const import (
@@ -163,6 +163,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                     self._data["alert"] = self._get_rt_alerts
                 except Exception as ex:  # pylint: disable=broad-except
                   _LOGGER.error("Error getting gtfs realtime data, for origin: %s with error: %s", data["origin"], ex)
+                  raise UpdateFailed(f"Error in getting start/end stop data: {ex}")
             else:
                 _LOGGER.debug("GTFS RT: RealTime = false, selected in entity options")            
         else:
@@ -229,6 +230,7 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
             "gtfs_dir": DEFAULT_PATH,
             "name": data["name"],
             "file": data["file"],
+            "offset": options["offset"] if "offset" in options else 0,
             "timerange": options.get("timerange", DEFAULT_LOCAL_STOP_TIMERANGE),
             "radius": options.get("radius", DEFAULT_LOCAL_STOP_RADIUS),
             "device_tracker_id": data["device_tracker_id"],
@@ -240,9 +242,11 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.warning("Cannot update this sensor as still unpacking: %s", self._data["file"])
             previous_data["extracting"] = True
             return previous_data
-            
-        self._data["local_stops_next_departures"] = await self.hass.async_add_executor_job(
+        try:    
+            self._data["local_stops_next_departures"] = await self.hass.async_add_executor_job(
                     get_local_stops_next_departures, self
                 )
+        except Exception as ex:
+            raise UpdateFailed(f"Error in getting local stops data: {ex}")
         _LOGGER.debug("Data from coordinator: %s", self._data)              
         return self._data
