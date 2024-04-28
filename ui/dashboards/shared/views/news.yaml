@@ -30,6 +30,7 @@ cards:
       - !include /config/ui/cards/news/snippets/stocks.yaml
       - !include /config/ui/cards/news/snippets/stocks_international.yaml
       - !include /config/ui/cards/news/snippets/indicies.yaml
+      - !include /config/ui/cards/news/snippets/cryptocurrency.yaml
       - !include /config/ui/cards/news/snippets/exchange_rates.yaml
 
   # Actions

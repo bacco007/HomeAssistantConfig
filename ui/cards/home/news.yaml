@@ -71,6 +71,6 @@ cards:
             height: 60
             effect: cube
             autoplay:
-              delay: 1000
+              delay: 3000
             cubeEffect:
               - slideShadows: false

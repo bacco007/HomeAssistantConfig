@@ -18,46 +18,104 @@ cards:
     columns: 2
     type: grid
     cards:
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph_small
-        variables:
-          - entity: sensor.unifi_gateway_wan_uptimeavail_stats
-          - colour: "#8694E7"
-          - title: Internet Uptime
-          - icon: mdi:timelapse
-          - line_width: 2.5
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph_small
-        variables:
-          - entity: sensor.unifi_networkstats_connected_devices
-          - colour: "#8694E7"
-          - title: Network Connected Devices
-          - icon: mdi:download-network
-          - line_width: 2.5
+      - type: custom:mushroom-template-card
+        multiline_secondary: true
+        primary: WAN Uptime
+        secondary: "{{ state_attr(entity, 'uptime_formatted') }}"
+        icon: mdi:check-network
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        entity: sensor.unifi_system_wan
+        icon_color: |-
+          {% set status = states(entity) %}
+          {% if status == 'ok' %}
+            #49D000
+          {% else %}
+            #CD1015
+          {% endif %}
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        multiline_secondary: true
+        primary: WWW Uptime
+        secondary: "{{ state_attr(entity, 'uptime_formatted') }}"
+        icon: mdi:check-network
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        entity: sensor.unifi_system_www
+        icon_color: |-
+          {% set status = states(entity) %}
+          {% if status == 'ok' %}
+            #49D000
+          {% else %}
+            #CD1015
+          {% endif %}
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+  - square: false
+    columns: 3
+    type: grid
+    cards:
       - type: custom:decluttering-card
         template: mushroom_entity_graph_small
         variables:
           - entity: sensor.speedtest_download
-          - colour: "#8694E7"
+          - colour: "#D48E24"
           - title: Download
           - icon: mdi:download-network
-          - line_width: 2.5
+          - line_width: 3
       - type: custom:decluttering-card
         template: mushroom_entity_graph_small
         variables:
           - entity: sensor.speedtest_upload
-          - colour: "#8694E7"
+          - colour: "#006FFF"
           - title: Upload
           - icon: mdi:upload-network
-          - line_width: 2.5
+          - line_width: 3
       - type: custom:decluttering-card
         template: mushroom_entity_graph_small
         variables:
           - entity: sensor.speedtest_ping
-          - colour: "#8694E7"
+          - colour: "#7b55d5"
           - title: Ping
           - icon: mdi:web
-          - line_width: 2.5
+          - line_width: 3
   - square: false
     columns: 2
     type: grid

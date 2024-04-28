@@ -1,9 +1,0 @@
----
-platform: statistics
-name: "[Weather] Temperature Daily High Time"
-unique_id: weather_temperature_daily_high_time
-entity_id: sensor.weather_temperature
-state_characteristic: datetime_value_max
-sampling_size: 5000
-max_age:
-  days: 1

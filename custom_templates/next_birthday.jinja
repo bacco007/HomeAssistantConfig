@@ -1,6 +1,6 @@
 {% macro next_birthday_days() %}
-{%- set birthdays = states
-  |selectattr('entity_id','search','sensor.anniversary_*')
+{%- set birthdays = expand(integration_entities('anniversaries'))
+  |selectattr("state", 'is_number')
   |rejectattr('entity_id','search','sensor.anniversary_days*')
   |rejectattr('entity_id','search','sensor.anniversary_datetracking_myworkbirthday')
   |sort(attribute='attributes.weeks_remaining', reverse=false)|map(attribute='entity_id')|list %}
@@ -8,8 +8,8 @@
 {% endmacro %}
 
 {% macro next_birthday_friendly_name() %}
-{%- set birthdays = states
-  |selectattr('entity_id','search','sensor.anniversary_*')
+{%- set birthdays = expand(integration_entities('anniversaries'))
+  |selectattr("state", 'is_number')
   |rejectattr('entity_id','search','sensor.anniversary_days*')
   |rejectattr('entity_id','search','sensor.anniversary_datetracking_myworkbirthday')
   |sort(attribute='attributes.weeks_remaining', reverse=false)|map(attribute='entity_id')|list %}
@@ -17,8 +17,8 @@
 {% endmacro %}
 
 {% macro next_birthday_years() %}
-{%- set birthdays = states
-  |selectattr('entity_id','search','sensor.anniversary_*')
+{%- set birthdays = expand(integration_entities('anniversaries'))
+  |selectattr("state", 'is_number')
   |rejectattr('entity_id','search','sensor.anniversary_days*')
   |rejectattr('entity_id','search','sensor.anniversary_datetracking_myworkbirthday')
   |sort(attribute='attributes.weeks_remaining', reverse=false)|map(attribute='entity_id')|list %}

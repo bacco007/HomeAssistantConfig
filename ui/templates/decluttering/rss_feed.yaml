@@ -1,0 +1,39 @@
+
+---
+# Mushroom Entity Card + Graph
+
+rss_feed:
+  default:
+    - entity: sun.sun
+  card:
+    type: custom:fold-entity-row
+    head:
+      type: custom:template-entity-row
+      name: '{{ state_attr("[[entity]]", ''friendly_name'') }} '
+      icon: '{{ state_attr("[[entity]]", ''icon'') }}'
+      state: ''
+      secondary: >
+        Latest: {{ state_attr("[[entity]]", 'entries')[0]["title"] }}
+    padding: 0
+    entities:
+      - type: custom:hui-element
+        card_type: custom:flex-table-card
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                }
+        entities:
+          include: "[[entity]]"
+        # sort_by: entries
+        columns:
+          # - hidden: true
+          #   data: entries
+          #   modify: x.published
+          - name: Headline
+            data: entries
+            modify: >-
+              '<a style="text-decoration: none; color: var(--text-on);" href="' +
+              x.link + '">' + x.title + '</a><br/>' + x.published

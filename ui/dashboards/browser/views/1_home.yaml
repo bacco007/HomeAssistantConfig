@@ -22,8 +22,8 @@ cards:
     layout_type: custom:masonry-layout
     layout:
       max_cols: 4
-      width: 500
-      max_width: 1000
+      width: 450
+      max_width: 900
     cards:
       - type: vertical-stack
         cards:
@@ -35,6 +35,7 @@ cards:
         cards:
           - !include /config/ui/cards/home/solar.yaml
           - !include /config/ui/cards/home/sun_moon.yaml
+          # - !include /config/ui/cards/home/news.yaml
       - type: vertical-stack
         cards:
           - !include /config/ui/cards/home/untappd.yaml
@@ -45,7 +46,6 @@ cards:
           - !include /config/ui/cards/home/media.yaml
           - !include /config/ui/cards/home/flighttracker.yaml
           - !include /config/ui/cards/home/network.yaml
-      # - !include /config/ui/cards/home/news.yaml
       # Popups
       # - !include /config/ui/cards/home/sport_popup.yaml
 

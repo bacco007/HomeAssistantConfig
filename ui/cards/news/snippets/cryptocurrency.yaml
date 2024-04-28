@@ -9,7 +9,7 @@ keep:
 cards:
   - type: custom:bubble-card
     card_type: separator
-    name: Indicies
+    name: Cryptocurrency
     icon: mdi:currency-usd
     styles: |-
       ha-icon {
@@ -30,10 +30,8 @@ cards:
 
   # {% for s in states
   #   | selectattr('entity_id','search','sensor.yahoofinance')
-  #   | rejectattr('entity_id','search','_aud')
-  #   | rejectattr('entity_id','search','_ax')
   #   | sort(attribute="attributes.friendly_name")  -%}
-  # {% if s.attributes.quoteType != "EQUITY"  and s.attributes.quoteType != "CURRENCY" -%}
+  # {% if s.attributes.quoteType == "CRYPTOCURRENCY" -%}
   # - type: custom:decluttering-card
   #   template: mushroom_finance
   #   variables:
@@ -44,32 +42,12 @@ cards:
   - type: custom:decluttering-card
     template: mushroom_finance
     variables:
-      - entity: sensor.yahoofinance_aord
+      - entity: sensor.yahoofinance_btc_aud
   - type: custom:decluttering-card
     template: mushroom_finance
     variables:
-      - entity: sensor.yahoofinance_hsi
+      - entity: sensor.yahoofinance_doge_aud
   - type: custom:decluttering-card
     template: mushroom_finance
     variables:
-      - entity: sensor.yahoofinance_n225
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_gspc
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_nz50
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_ftse
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_dji
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_ixic
+      - entity: sensor.yahoofinance_shib_aud

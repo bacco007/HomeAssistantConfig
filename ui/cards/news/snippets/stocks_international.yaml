@@ -1,107 +1,167 @@
 ---
 type: custom:stack-in-card
 mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
 cards:
-  - type: custom:mushroom-template-card
-    primary: International Stocks
+  - type: custom:bubble-card
+    card_type: separator
+    name: International Stocks
     icon: mdi:currency-usd
-    icon_color: red
-    fill_container: true
-  - type: custom:auto-entities
-    unique: true
-    show_empty: true
-    card:
-      type: custom:stack-in-card
-      mode: vertical
-      card_mod:
-        style:
-          hui-vertical-stack-card$:
-            .: |
-              #root *:not(:last-child)::after {
-                content: "";
-                display: block;
-                height: 1.25px;
-                background: rgba(var(--rgb-disabled), 0.2);
-                margin-left: calc(var(--mush-icon-size) + var(--mush-spacing) * 2);
-                margin-right: var(--mush-spacing);
-              }
-    card_param: cards
-    filter:
-      template: >
-        {% for s in
-        states|selectattr('entity_id','search','sensor.yahoofinance') | rejectattr('entity_id','search','_ax') |
-            sort(attribute="attributes.friendly_name")  -%}
-            {% if s.attributes.quoteType != "INDEX" and s.attributes.quoteType != "CURRENCY" -%}
-          {{
-            {
-               "type": "custom:fold-entity-row",
-               "head": {
-                  "type": "custom:stack-in-card",
-                  "mode": "horizontal",
-                  "card_mod": {
-                     "style": "ha-card {\n  border: 0;\n  box-shadow: none;\n}\n"
-                  },
-                  "cards": [
-                     {
-                        "type": "custom:mushroom-template-card",
-                        "entity": s.entity_id,
-                        "primary": "{{state_attr(entity, 'symbol')}}",
-                        "secondary": "{{state_attr(entity, 'friendly_name')}}",
-                        "icon": "{{state_attr(entity,\"icon\")}}",
-                        "icon_color": "{% if state_attr(entity, 'trending') == \"up\" %}green{% else %}red{% endif %}\n",
-                        "card_mod": {
-                           "style": "ha-card {\n  border: 0;\n  box-shadow: none;\n}\n"
-                        }
-                     },
-                     {
-                        "type": "custom:mushroom-template-card",
-                        "entity": s.entity_id,
-                        "primary": "{% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}\n",
-                        "tap_action": {
-                           "action": "more-info"
-                        },
-                        "secondary": "{% if state_attr(entity, 'trending') == \"up\" %}+{% endif\n%}{{state_attr(entity,'regularMarketChangePercent')}}%\n",
-                        "card_mod": {
-                           "style": {
-                              "mushroom-state-info$": "* {\n  text-align: end;\n}\n",
-                              ".": "ha-card {\n  margin: 3px 8px 0px 0px;\n  border: 0;\n  box-shadow: none;\n  --secondary-text-color: {% if state_attr(config.entity, 'trending') == \"up\" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};\n}\n"
-                           }
-                        }
-                     }
-                  ]
-               },
-               "padding": 0,
-               "entities": [
-                  {
-                     "chart_type": "line",
-                     "period": "week",
-                     "type": "custom:hui-element",
-                     "card_type": "statistics-graph",
-                     "entities": [
-                        s.entity_id
-                     ],
-                     "stat_types": [
-                        "mean",
-                        "min",
-                        "max"
-                     ],
-                     "days_to_show": 365,
-                     "hide_legend": true
-                  }
-               ]
-            }
-          }},
-        {%- endif %}
-        {%- endfor %}
-card_mod:
-  style:
-    hui-vertical-stack-card$:
-      .: |
-        #root *:not(:last-child)::after {
-          content: "";
-          display: block;
-          height: 1.25px;
-          background: rgba(var(--rgb-disabled), 0.2);
-          margin-left: calc(var(--mush-icon-size) + var(--mush-spacing) * 2);
-          margin-right: var(--mush-spacing);
+    styles: |-
+      ha-icon {
+        color: #6eaadc !important;
+        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
         }
+      h4.bubble-name {
+        font: var(--primary-font-family) !important;
+        font-size: 15px !important;
+        font-weight: var(--card-primary-font-weight);
+        color: "#6eaadc" !important;
+        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+      .bubble-line {
+        background: var(--background-color);
+        opacity: 0.75;
+        }
+
+  # {% for s in states
+  #   | selectattr('entity_id','search','sensor.yahoofinance')
+  #   | rejectattr('entity_id','search','_aud')
+  #   | rejectattr('entity_id','search','_ax')
+  #   | sort(attribute="attributes.friendly_name")  -%}
+  # {% if s.attributes.quoteType != "INDEX"  and s.attributes.quoteType != "CURRENCY" -%}
+  # - type: custom:decluttering-card
+  #   template: mushroom_finance
+  #   variables:
+  #     - entity: {{s.entity_id}}
+  # {% endif %}
+  # {%- endfor %}
+
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_goog
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_googl
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_amzn
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_aal_l
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_aapl
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_t
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_team
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_adsk
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_bmw_hm
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_brk_b_2
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_bhp_l
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_cmcsa
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_cost
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_fwona
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_fwonk
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_ge
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_manu
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_mcd
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_mbg_de
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_msft
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_nflx
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_9432_t
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_rddt
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_rio
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_rio_l
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_tsla
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_vod_l
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_vow_f
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_vow3_f
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_wmt
+  - type: custom:decluttering-card
+    template: mushroom_finance
+    variables:
+      - entity: sensor.yahoofinance_wbd

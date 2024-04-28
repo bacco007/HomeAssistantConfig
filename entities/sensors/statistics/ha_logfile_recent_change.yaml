@@ -6,4 +6,3 @@ entity_id: sensor.config
 state_characteristic: change
 max_age:
   minutes: 30
-precision: 0

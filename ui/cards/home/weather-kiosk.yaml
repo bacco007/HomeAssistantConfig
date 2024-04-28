@@ -45,11 +45,15 @@ cards:
                 padding-top: 5px !important;
                 padding-bottom: 5px !important;
               }
-      - type: custom:mushroom-entity-card
-        entity: sensor.weather_temperature_daily_high
-        name: High Temp
-        fill_container: true
-        icon: mdi:thermometer-chevron-up
+      - type: custom:mushroom-template-card
+        primary: High Temp
+        secondary: >-
+          {{states(entity, rounded=True, with_unit=True)}} @
+          {{as_timestamp(state_attr(entity, 'datetime')) | timestamp_custom('%H:%M')
+          }}
+        icon: '{{state_attr(entity, ''icon'')}}'
+        entity: sensor.weather_temperature_today_maximum
+        icon_color: blue
         tap_action:
           action: more-info
         hold_action:
@@ -57,11 +61,15 @@ cards:
         double_tap_action:
           action: none
         card_mod: *style
-      - type: custom:mushroom-entity-card
-        entity: sensor.weather_temperature_daily_low
-        name: Low Temp
-        fill_container: true
-        icon: mdi:thermometer-chevron-down
+      - type: custom:mushroom-template-card
+        primary: Low Temp
+        secondary: >-
+          {{states(entity, rounded=True, with_unit=True)}} @
+          {{as_timestamp(state_attr(entity, 'datetime')) | timestamp_custom('%H:%M')
+          }}
+        icon: '{{state_attr(entity, ''icon'')}}'
+        entity: sensor.weather_temperature_today_minimum
+        icon_color: blue
         tap_action:
           action: more-info
         hold_action:

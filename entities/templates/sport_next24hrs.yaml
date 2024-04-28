@@ -112,10 +112,10 @@ trigger:
     entity_id: calendar.ical_sydney_sixers_women
   - platform: calendar
     event: end
-    entity_id: calendar.ical_australia_cricket_women
+    entity_id: calendar.ical_australia_womens_cricket_icc
   - platform: calendar
     event: end
-    entity_id: calendar.ical_australia_cricket
+    entity_id: calendar.ical_australia_cricket_icc
   - platform: calendar
     event: end
     entity_id: calendar.ical_international_cricket_mens
@@ -271,8 +271,8 @@ action:
         - calendar.ical_sydney_kings
         - calendar.ical_sydney_sixers
         - calendar.ical_sydney_sixers_women
-        - calendar.ical_australia_cricket_women
-        - calendar.ical_australia_cricket
+        - calendar.ical_australia_womens_cricket_icc
+        - calendar.ical_australia_cricket_icc
         - calendar.ical_international_cricket_mens
         - calendar.ical_swifts
         - calendar.ical_international_rugby_all_teams

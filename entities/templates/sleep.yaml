@@ -1,0 +1,41 @@
+---
+sensor:
+  - name: deep_sleep_percentage
+    unique_id: deep_sleep_percentage
+    icon: mdi:power-sleep
+    unit_of_measurement: "%"
+    state: >
+      {{ ((states('sensor.deep_sleep') | int) / (states('sensor.sleep') | int)) | round (2) * 100 }}
+    attributes:
+      time: >
+        {%- set sueno = states('sensor.deep_sleep') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %}
+        {{ sueno | int % 60}} min
+      graph: >
+        {{ ((states('sensor.deep_sleep') | int) / (states('sensor.sleep') | int)) | round (2) * 100 }}
+
+  - name: light_sleep_percentage
+    unique_id: light_sleep_percentage
+    icon: mdi:power-sleep
+    unit_of_measurement: "%"
+    state: >
+      {{ ((states('sensor.light_sleep') | int) / (states('sensor.sleep') | int)) | round (2) * 100 }}
+    attributes:
+      time: >
+        {%- set sueno = states('sensor.light_sleep') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %}
+        {{ sueno | int % 60}} min
+      graph: >
+        {{ ((states('sensor.light_sleep') | int) / (states('sensor.sleep') | int)) | round (2) * 100 + ((states('sensor.deep_sleep') | int) / (states('sensor.sleep') | int)) | round (2) * 100 }}
+
+  - name: rem_sleep_percentage
+    unique_id: rem_sleep_percentage
+    icon: mdi:power-sleep
+    unit_of_measurement: "%"
+    state: >
+      {{ ((states('sensor.rem_sleep') | int) / (states('sensor.sleep') | int)) | round (2) * 100 }}
+    attributes:
+      time: >
+        {%- set sueno = states('sensor.rem_sleep') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %}
+        {{ sueno | int % 60}} min
