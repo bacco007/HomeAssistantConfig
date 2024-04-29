@@ -51,7 +51,7 @@ _Stats as at 05:00, unknown_
 | No. Integrations | 198 |
 | No. Custom Integrations | 80 |
 | No. Entities | 5262 |
-| No. Sensors | 3256 |
+| No. Sensors | 3252 |
 | No. Automations | 141 |
 
 <details>
@@ -85,17 +85,17 @@ Lights | 14
 Locks | 4
 Media players | 21
 Numbers | 35
-Persistent notifications | 5
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3256
+Sensors | 3252
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 342
+Switches | 343
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -772,7 +772,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.3] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.1] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
-| [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.8] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
+| [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.9-test] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.7] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
@@ -785,7 +785,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.5] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.6] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
