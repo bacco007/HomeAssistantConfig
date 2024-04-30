@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Radarr API key",
+          "days": "How many days look ahead for the upcomming sensor",
+          "name": "Name",
+          "host": "Radarr address",
+          "port": "Radarr port",
+          "ssl": "SSL",
+          "urlbase": "URL base",
+          "theaters": "Theaters",
+          "max": "Max number of items in sensor"
+        }
+      }
+    },
+    "error": {
+      "failed_to_login": "Failed to Log-in",
+      "cannot_be_reached": "Radarr cannot be reached",
+      "tmdb_not_responding": "TMDB API is not responding"
+    },
+    "abort": {
+      "already_configured": "User is already configured",
+      "failed_to_login": "Failed to Log-in",
+      "cannot_be_reached": "Radarr cannot be reached",
+      "tmdb_not_responding": "TMDB API is not responding"
+    }
+  }
+}
