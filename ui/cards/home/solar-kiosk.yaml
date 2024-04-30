@@ -15,7 +15,7 @@ cards:
       - navpath: solar
 
   - square: false
-    columns: 3
+    columns: 2
     type: grid
     cards:
       - type: custom:mushroom-template-card

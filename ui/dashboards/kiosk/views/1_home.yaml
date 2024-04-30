@@ -21,9 +21,9 @@ cards:
 
   # Content
   - type: custom:layout-card
-    layout_type: custom:horizontal-layout
+    layout_type: custom:masonry-layout
     layout:
-      max_cols: 2
+      max_cols: 3
       width: 300
       max_width: 1000
     view_layout:

@@ -46,6 +46,7 @@ cards:
         secondary: "{{states(entity)}} Flights"
         icon: mdi:airplane-alert
         icon_color: blue
+        layout: vertical
         fill_container: false
         card_mod:
           style:
@@ -56,11 +57,11 @@ cards:
             .: |
               ha-card {
                 background-color: var(--background-color);
-                --icon-size: 40px;
+                --icon-size: 20px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
+                padding-top: 10px !important;
                 padding-bottom: 5px !important;
               }
       - type: custom:mushroom-template-card
@@ -69,6 +70,8 @@ cards:
         secondary: "{{states(entity)}} Flights"
         icon: mdi:airplane-alert
         icon_color: blue
+        layout: vertical
+        fill_container: false
         card_mod:
           style:
             mushroom-shape-icon$: |
@@ -78,11 +81,11 @@ cards:
             .: |
               ha-card {
                 background-color: var(--background-color);
-                --icon-size: 40px;
+                --icon-size: 20px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
+                padding-top: 10px !important;
                 padding-bottom: 5px !important;
               }
       - type: custom:mushroom-template-card
@@ -91,6 +94,8 @@ cards:
         secondary: "{{states(entity)}} Flights"
         icon: mdi:airplane-alert
         icon_color: blue
+        layout: vertical
+        fill_container: false
         card_mod:
           style:
             mushroom-shape-icon$: |
@@ -100,11 +105,11 @@ cards:
             .: |
               ha-card {
                 background-color: var(--background-color);
-                --icon-size: 40px;
+                --icon-size: 20px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
+                padding-top: 10px !important;
                 padding-bottom: 5px !important;
               }
     columns: 3

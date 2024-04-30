@@ -15,7 +15,7 @@ cards:
       - navpath: weather
 
   - square: false
-    columns: 3
+    columns: 2
     type: grid
     cards:
       - type: custom:mushroom-entity-card
