@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.5.0b3 |
+| HA Version | 2024.5.0b4 |
 | No. Integrations | 198 |
 | No. Custom Integrations | 80 |
-| No. Entities | 5597 |
-| No. Sensors | 3574 |
+| No. Entities | 5336 |
+| No. Sensors | 3315 |
 | No. Automations | 141 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 117
-Devices | 576
+Devices | 577
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,13 +85,13 @@ Lights | 14
 Locks | 4
 Media players | 21
 Numbers | 35
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3574
+Sensors | 3315
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 343
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 290
+Update | 291
 Vacuums | 0
 Water heaters | 0
 Weather | 10
@@ -745,20 +745,20 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.10.4] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@Magalex2x14](https://github.com/Magalex2x14), [@Thrilleratplay](https://github.com/Thrilleratplay).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.0] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.11.8] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.3] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
-| [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v4.0.0] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
+| [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.4.0] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive) |  [v12a] | Home Assistant custom HACS integration to integrate the next 5 global rocket launches from https://rocketlaunch.live |[@djtimca](https://github.com/djtimca).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.9] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.0] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.16] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.1] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Spook 👻 Not Your Homie](https://github.com/frenck/spook) |  [v2.2.4] | Spook 👻 Your homie |[@frenck](https://github.com/frenck).|
+| [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.18] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
@@ -788,7 +788,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.5.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.6.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
@@ -837,10 +837,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
 | [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.3.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
-</details><details><summary>2 Themes</summary>
+</details><details><summary>3 Themes</summary>
 
 | Name | Version | Description |
 | --- | --- | --- |
+| [Bubble](https://github.com/Clooos/Bubble) |  [v1.0] | A dark minimalist theme with a mobile first approach for Home Assistant |
 | [Metrology   Metro + Fluent + Windows Themes   By Mmak.Es](https://github.com/Madelena/Metrology-for-Hass) |  [v.1.9.1] | 🎨 Give your Home Assistant a modern and clean facelift. 🟥🟧🟩🟦🟪 24 Variations with 2 Styles + 6 Colors (Magenta Red / Orange / Green / Blue / Purple) + 🌞 Light and 🌚 Dark modes included. Based on Metro and Fluent UI Design Systems from Microsoft Windows. |
 | [Noctis](https://github.com/aFFekopp/noctis) |  [v3.1] | 🐵 Dark Blue Theme for Home Assistant |
 </details>
@@ -851,13 +852,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.2.0 |  | a0d7b954 |
 | Cloudflared | 5.1.9 |  | 9074a9fa |
-| ESPHome | 2024.4.1 |  | 15ef4d2f |
+| ESPHome | 2024.4.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
-| JupyterLab | 0.14.4 |  | a0d7b954 |
+| JupyterLab | 0.14.5 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.5.1 |  | core |
 | Node-RED | 17.0.12 |  | a0d7b954 |
@@ -914,7 +915,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.5.0b3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.5.0b4-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
