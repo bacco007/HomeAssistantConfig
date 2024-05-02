@@ -46,7 +46,7 @@ class RadarrApi():
             's' if self._ssl else '', 
             self._host,
             self._port,
-            '{}/'.format(self._urlbase.strip('/') if self._urlbase else self._urlbase),
+            '{}/'.format(self._urlbase.strip('/')) if self._urlbase else self._urlbase,
             start, 
             end
         )
