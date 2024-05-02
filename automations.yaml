@@ -160,6 +160,9 @@
   - service: shell_command.gtfs_get_trains
     metadata: {}
     data: {}
+  - service: shell_command.gtfs_get_tfnsw
+    metadata: {}
+    data: {}
   - delay:
       hours: 0
       minutes: 5
@@ -178,6 +181,13 @@
       extract_from: zip
       url: na
       file: nswtrains
+      clean_feed_info: true
+  - service: gtfs2.update_gtfs
+    metadata: {}
+    data:
+      extract_from: zip
+      url: na
+      file: tfnsw
       clean_feed_info: true
   mode: single
 - id: '1708823827707'
