@@ -2,6 +2,7 @@
   "domain": "nodered",
   "name": "Node-RED Companion",
   "after_dependencies": [
+    "conversation",
     "mqtt"
   ],
   "codeowners": [
@@ -12,5 +13,5 @@
   "documentation": "https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/zachowj/hass-node-red/issues",
-  "version": "3.1.7"
+  "version": "4.0.0"
 }
