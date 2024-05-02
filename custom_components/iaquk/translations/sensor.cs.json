@@ -1,0 +1,11 @@
+{
+  "state": {
+    "iaquk__level": {
+      "Excellent": "Vynikající",
+      "Good": "Dobrá",
+      "Fair": "Uspokojivá",
+      "Poor": "Špatná",
+      "Inadequate": "Velmi špatná"
+    }
+  }
+}
