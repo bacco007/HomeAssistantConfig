@@ -1,0 +1,4 @@
+---
+# https://www.home-assistant.io/integrations/homeassistant/
+homeassistant:
+  customize: !include_dir_named /config/customisations/entities

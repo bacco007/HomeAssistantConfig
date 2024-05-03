@@ -1,3 +1,0 @@
----
-script ui: !include ../scripts.yaml
-script manual: !include_dir_named ../scripts

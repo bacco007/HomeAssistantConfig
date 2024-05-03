@@ -1,0 +1,4 @@
+---
+mqtt:
+  binary_sensor: !include_dir_merge_list /config/entities/mqtt/binary_sensor
+  sensor: !include_dir_merge_list /config/entities/mqtt/sensor

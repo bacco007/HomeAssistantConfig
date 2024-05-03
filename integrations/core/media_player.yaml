@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/media_player/
+media_player: !include_dir_list /config/entities/media_players

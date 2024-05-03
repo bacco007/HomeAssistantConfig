@@ -1,0 +1,2 @@
+---
+geo_location: !include_dir_list /config/entities/geo_location

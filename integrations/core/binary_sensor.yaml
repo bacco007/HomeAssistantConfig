@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/binary_sensor/
+binary_sensor: !include_dir_list /config/entities/binary_sensors

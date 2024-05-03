@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/command_line/
+command_line: !include_dir_list /config/entities/command_line

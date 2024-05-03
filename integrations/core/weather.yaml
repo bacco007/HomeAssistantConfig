@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/weather/
+weather: !include_dir_list /config/entities/weather

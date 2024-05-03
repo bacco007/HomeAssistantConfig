@@ -1,2 +1,0 @@
----
-geo_location: !include_dir_list ../entities/geo_location

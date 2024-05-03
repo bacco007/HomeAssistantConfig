@@ -1,3 +1,0 @@
----
-# https://www.home-assistant.io/integrations/schedule/
-schedule: !include_dir_merge_named ../entities/schedules

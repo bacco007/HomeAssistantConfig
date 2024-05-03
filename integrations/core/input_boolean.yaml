@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/input_boolean/
+input_boolean: !include_dir_merge_named /config/entities/input_boolean

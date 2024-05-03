@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/sensor/
+sensor: !include_dir_list /config/entities/sensors
