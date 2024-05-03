@@ -6,7 +6,7 @@ from homeassistant.components.sensor import DOMAIN as SENSOR
 # Base component constants
 NAME: Final = "Indoor Air Quality UK Index"
 DOMAIN: Final = "iaquk"
-VERSION: Final = "1.6.7"
+VERSION: Final = "1.6.9"
 ISSUE_URL: Final = "https://github.com/Limych/ha-iaquk/issues"
 
 STARTUP_MESSAGE: Final = f"""
@@ -70,6 +70,9 @@ UNIT_UGM3: Final = {
     "µg/m³": 1,  # Target unit -- conversion rate will be ignored
     "µg/m3": 1,
     "µg/m^3": 1,
+    "ug/m³": 1,
+    "ug/m3": 1,
+    "ug/m^3": 1,
     "mg/m³": 1000,
     "mg/m3": 1000,
     "mg/m^3": 1000,
@@ -81,6 +84,9 @@ UNIT_MGM3: Final = {
     "µg/m³": 0.001,
     "µg/m3": 0.001,
     "µg/m^3": 0.001,
+    "ug/m³": 0.001,
+    "ug/m3": 0.001,
+    "ug/m^3": 0.001,
 }
 
 MWEIGTH_TVOC: Final = 78.9516  # g/mol
