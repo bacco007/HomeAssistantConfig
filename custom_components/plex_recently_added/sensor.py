@@ -186,6 +186,7 @@ class PlexRecentlyAddedSensor(Entity):
                 card_item['studio'] = media.get('studio', '')
                 card_item['genres'] = ', '.join([genre['tag'] for genre in media.get('Genre', [])][:3])
                 card_item['rating'] = ('\N{BLACK STAR} ' + str(media['rating'])) if media.get('rating', 0) > 0 else ''
+                card_item['summary'] = media.get('summary', '')
                 key = media['key'].split('/')[-1]
                 if media['type'] == 'movie':
                     poster = media.get('thumb', '')
@@ -208,7 +209,8 @@ class PlexRecentlyAddedSensor(Entity):
                             should_add = False
                 if should_add:
                     if self.server_identifier:
-                        card_item['deep_link'] = f'http://{self.server_ip}:{self.port}/web/index.html#!/server/{self.server_identifier}/details?key=%2Flibrary%2Fmetadata%2F{key}'
+                        protocol = 'https' if self.ssl else 'http'
+                        card_item['deep_link'] = f'{protocol}://{self.server_ip}:{self.port}/web/index.html#!/server/{self.server_identifier}/details?key=%2Flibrary%2Fmetadata%2F{key}'
                     else:
                         card_item['deep_link'] = None
                     self.card_json.append(card_item)
@@ -223,7 +225,8 @@ class PlexRecentlyAddedSensor(Entity):
         if self.server_name:
             return
 
-        server_info_url = f'http://{self.server_ip}:{self.port}/?X-Plex-Token={self.token}'
+        protocol = 'https' if self.ssl else 'http'
+        server_info_url = f'{protocol}://{self.server_ip}:{self.port}/?X-Plex-Token={self.token}'
         try:
             server_info_response = await request(server_info_url, self)
             server_info_data = json.loads(server_info_response)
