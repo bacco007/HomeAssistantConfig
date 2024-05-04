@@ -1,0 +1,48 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Home
+    icon: mdi:home
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.binday_nextcollectionday
+    show_state: false
+    show_attribute: true
+    name: Next Bin Day
+    icon: mdi:truck-cargo-container
+    show_icon: true
+    attribute: display
+    sub_button:
+      - entity: sensor.binday_waste
+        show_background: true
+        show_attribute: true
+        attribute: days
+        icon: mdi:trash-can
+      - entity: sensor.binday_recycling
+        show_attribute: true
+        attribute: days
+        icon: mdi:recycle
+      - entity: sensor.binday_greenwaste
+        show_name: false
+        show_last_changed: false
+        show_attribute: true
+        attribute: days
+        icon: mdi:leaf
+    styles: |-
+      .bubble-sub-button-1 {
+          background-color: ${hass.states['sensor.binday_waste'].attributes.days >= 7 ? 'transparent' : '#F03A3E'} !important;
+      }
+      .bubble-sub-button-2 {
+          background-color: ${hass.states['sensor.binday_recycling'].attributes.days >= 7 ? 'transparent' : '#DBBC09'} !important;
+      }
+      .bubble-sub-button-3 {
+          background-color: ${hass.states['sensor.binday_greenwaste'].attributes.days >= 7 ? 'transparent' : '#155628'} !important;
+      }

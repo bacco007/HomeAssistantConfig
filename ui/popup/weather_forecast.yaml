@@ -1,0 +1,33 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#weatherforecast"
+    button_type: name
+    name: Weather Forecast
+    icon: mdi:weather-cloudy-clock
+  - type: custom:clock-weather-card
+    entity: weather.pirateweather
+    temperature_sensor: sensor.weather_temperature
+    humidity_sensor: sensor.weather_humidity
+    weather_icon_type: line
+    animated_icon: true
+    forecast_rows: 10
+    locale: en-GB
+    time_format: 24
+    date_pattern: P
+    hide_today_section: true
+    hide_forecast_section: false
+    hide_clock: true
+    hide_date: true
+    hourly_forecast: false
+    use_browser_time: true
+    card_mod:
+      style: |
+        ha-card {
+          border: 0;
+          --ha-card-box-shadow: 0px;
+          margin: -8px -4px -4px -8px;
+          --bar-height: 1em !important;
+        }

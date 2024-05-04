@@ -29,7 +29,7 @@ sensor:
         {% set next = state_attr('sensor.binday_waste', 'next_date') %}
         {%- if next.day == now().day %} Today
         {%- elif next - now() <= timedelta(hours=24) %} Tomorrow
-        {%- elif next - now() <= timedelta(hours=24*7) %}In {{((as_timestamp(state_attr('sensor.binday_recycling', 'next_date')) - as_timestamp(now()))  / 86400) | round(0) }} Days
+        {%- elif next - now() <= timedelta(hours=24*7) %}In {{((as_timestamp(state_attr('sensor.binday_waste', 'next_date')) - as_timestamp(now()))  / 86400) | round(0) }} Days
         {%- elif next-now() > timedelta(days=365) %} None
         {%- else %} {{ next.strftime('%a, %b %d') }}
         {%- endif %}

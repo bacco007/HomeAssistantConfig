@@ -38,7 +38,7 @@ buttons:
         width: 200px
         color: '#BAC0C6'
   - layout: icon|name_state
-    name: 🌧️ {{ states('sensor.weather_precipitation_duration_today') }}mm
+    name: 🌧️ {{ states('sensor.weather_precipitation_today') }}mm
     state: >-
       {{ states('sensor.weather_temperature') | round(1) }}°C
     image: |

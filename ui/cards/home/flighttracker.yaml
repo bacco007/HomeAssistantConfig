@@ -39,7 +39,7 @@ cards:
       - icon: mdi:arrow-top-right-thick
         tap_action:
           action: navigate
-          navigation_path: "flighttracker"
+          navigation_path: "#flightsnear"
 
   - type: grid
     columns: 2

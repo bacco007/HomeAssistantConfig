@@ -1,0 +1,46 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Sport
+    icon: mdi:football-australian
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - icon: mdi:calendar-alert
+        tap_action:
+          action: navigate
+          navigation_path: "#sportcalendar"
+      - icon: mdi:arrow-top-right-thin
+        tap_action:
+          action: navigate
+          navigation_path: "#sport"
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    name: Upcoming Sport
+    icon: mdi:run-fast
+    sub_button:
+      - name: Today
+        icon: mdi:calendar-today
+        show_background: true
+        show_name: false
+        show_last_changed: false
+        show_state: true
+        show_attribute: false
+      - entity: sensor.upcoming_sport_this_week
+        show_icon: true
+        show_background: false
+        icon: mdi:calendar-week
+        show_last_changed: false
+        show_state: true
+        name: Week
+        show_name: false
+    entity: sensor.upcoming_sport_next_24_hours
+    show_attribute: false
+    scrolling_effect: false
+    show_state: false

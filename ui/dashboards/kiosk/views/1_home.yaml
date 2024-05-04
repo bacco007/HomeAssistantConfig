@@ -29,8 +29,9 @@ cards:
     view_layout:
       grid-area: main
     cards:
-      - !include /config/ui/cards/home/home.yaml
-      - !include /config/ui/cards/home/sport.yaml
+      - !include /config/ui/cards/home/home-kiosk.yaml
+      - !include /config/ui/cards/home/lights-kiosk.yaml
+      - !include /config/ui/cards/home/sport-kiosk.yaml
       - !include /config/ui/cards/home/weather-kiosk.yaml
       - !include /config/ui/cards/home/solar-kiosk.yaml
       - !include /config/ui/cards/home/flighttracker-kiosk.yaml
@@ -46,3 +47,4 @@ cards:
 
   # Popups
   - !include /config/ui/popup/flightsnearby.yaml
+  - !include /config/ui/popup/weather_forecast.yaml

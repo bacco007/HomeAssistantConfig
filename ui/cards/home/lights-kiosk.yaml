@@ -1,0 +1,26 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Lights
+    icon: mdi:lightbulb-alert
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - square: false
+    type: grid
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        button_type: slider
+        entity: light.office_lamp
+        name: Office Lamp
+      - type: custom:bubble-card
+        card_type: button
+        button_type: slider
+        entity: light.bedroom_lamp
+        name: Bedroom Lamp
+    columns: 2
