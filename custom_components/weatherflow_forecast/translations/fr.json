@@ -1,24 +1,24 @@
 {
     "config": {
         "abort": {
-            "unique_id": "La localisation du WeatherFlow est deja paramétrisée."
+            "unique_id": "La localisation de la station WeatherFlow est deja paramétrisée."
         },
         "error": {
-            "wrong_station_id": "La Station ID est incorrecte. Vérifiez que vous n'utilisez pas l'ID de l'appareil.",
+            "wrong_station_id": "La 'Station ID' est incorrecte. Vérifiez que vous n'utilisez pas l'ID de l'appareil.",
             "server_error": "Une erreur inattendue a été détectée avec le service infonuagique de WeatherFlow",
-            "wrong_token": "Le Jeton-API est incorrect ou ne correspond pas à la Weather Station.",
-            "offline_error": "La station est soit hors ligne, soit aucune observation récente n'est disponible. Vérifiez le statut de la station ou retirez les capteurs et réessayez.",
+            "wrong_token": "Le Jeton-API est incorrecte ou ne correspond pas à cette station WeatherFlow.",
+            "offline_error": "La station est hors ligne ou aucune observation récente n'est disponible. Vérifiez le statut de la station ou retirez les capteurs et réessayez.",
             "bad_request": "Une erreur inconnue s'est produite lors de la récupération des données."
         },
         "step": {
             "user": {
-                "description": "Configurer une Station WeatherFlow Forecast",
-                "title": "WeatherFlow Forecast",
+                "description": "Configurer une station de prévisions WeatherFlow",
+                "title": "Prévisions WeatherFlow",
                 "data": {
-                    "station_id": "Station Id",
+                    "station_id": "Station ID",
                     "api_token": "Jeton-API personnel",
-                    "forecast_hours": "Hours to show in Hourly Forecast",
-                    "add_sensors": "Ajouter les senseurs de la Weather Station"
+                    "forecast_hours": "Heures à afficher pour les prévisions horaire",
+                    "add_sensors": "Ajouter les senseurs de la station WeatherFlow"
                 }
             }
         }
@@ -28,8 +28,8 @@
             "init": {
                 "data": {
                     "api_token": "Jeton-API personnel",
-                    "forecast_hours": "Hours to show in Hourly Forecast",
-                    "add_sensors": "Ajouter les senseurs de la Weather Station"
+                    "forecast_hours": "Heures à afficher pour les prévisions horaire",
+                    "add_sensors": "Ajouter les senseurs de la station WeatherFlow"
                 }
             }
         }

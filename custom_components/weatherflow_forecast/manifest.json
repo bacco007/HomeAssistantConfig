@@ -12,5 +12,5 @@
     "requirements": [
         "pyweatherflow-forecast==1.0.11"
     ],
-    "version": "1.0.8"
+    "version": "1.0.9"
 }
