@@ -17,7 +17,7 @@
     "spotifywebapiPython==1.0.43",
     "urllib3>=1.21.1,<1.27"
   ],
-  "version": "v1.0.18",
+  "version": "v1.0.19",
   "zeroconf": [
     "_spotify-connect._tcp.local."
   ]
