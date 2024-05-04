@@ -161,7 +161,8 @@ geek_light:
   # Background
   background-color: rgb(33, 43, 63) #'#242e42'
   primary-background-color: "var(--background-color)"
-  background-color-2: "#20293c"
+  #background-color-2: "#20293c"
+  background-color-2: rgb(45, 56, 78)
   secondary-background-color: "none"
   markdown-code-background-color: "var(--background-color)"
 
@@ -320,7 +321,7 @@ geek_light:
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
         background: rgba(0,0,0,0.1);
-      } 
+      }
       .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
         box-shadow: none !important;
         border-radius: var(--ha-card-border-radius);
