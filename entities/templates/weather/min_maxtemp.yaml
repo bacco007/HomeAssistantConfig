@@ -41,3 +41,23 @@ sensor:
       datetime: |
         {% set current = (this.state or trigger.to_state.state) | float(source) %}
         {{ now if (trigger.platform == 'template' or source < current) else this.attributes.datetime|default(now) }}
+
+  - name: "[Weather] Temperature Today Maximum Display"
+    unique_id: weather_temperature_today_maximum_display
+    icon: mdi:thermometer-chevron-up
+    state: >
+      {{states('sensor.weather_temperature_today_maximum', rounded=True, with_unit=True)}} @ {{as_timestamp(state_attr('sensor.weather_temperature_today_maximum', 'datetime')) | timestamp_custom('%H:%M') }}
+    attributes:
+      category: weather
+    availability: >
+      {{ is_number(states('sensor.weather_temperature_today_maximum')) }}
+
+  - name: "[Weather] Temperature Today Minimum Display"
+    unique_id: weather_temperature_today_minimum_display
+    icon: mdi:thermometer-chevron-down
+    state: >
+      {{states('sensor.weather_temperature_today_minimum', rounded=True, with_unit=True)}} @ {{as_timestamp(state_attr('sensor.weather_temperature_today_minimum', 'datetime')) | timestamp_custom('%H:%M') }}
+    attributes:
+      category: weather
+    availability: >
+      {{ is_number(states('sensor.weather_temperature_today_minimum')) }}
