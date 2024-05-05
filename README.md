@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.5.1 |
 | No. Integrations | 200 |
 | No. Custom Integrations | 80 |
-| No. Entities | 5352 |
-| No. Sensors | 3326 |
+| No. Entities | 5172 |
+| No. Sensors | 3273 |
 | No. Automations | 141 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 345
-Buttons | 243
+Binary sensors | 340
+Buttons | 236
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 116
-Devices | 580
+Devices | 569
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -81,25 +81,25 @@ Input date/times | 0
 Input numbers | 7
 Input selects | 3
 Input texts | 3
-Lights | 14
+Lights | 9
 Locks | 4
-Media players | 17
-Numbers | 35
-Persistent notifications | 3
+Media players | 20
+Numbers | 33
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
-Selects | 52
-Sensors | 3326
+Selects | 48
+Sensors | 3273
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 345
+Switches | 250
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 293
+Update | 277
 Vacuums | 0
 Water heaters | 0
 Weather | 11
@@ -732,7 +732,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.0] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5.2] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
