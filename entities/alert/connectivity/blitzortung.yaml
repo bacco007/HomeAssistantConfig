@@ -1,0 +1,10 @@
+---
+blitzortung_connected:
+  name: "Blitzortung Connected"
+  entity_id: binary_sensor.connected_blitzortung
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: blitzortung_connected

@@ -1,11 +1,12 @@
 ---
-# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
+# {# Daily Forecast #}
+# {%- for s in states.weather | rejectattr("attributes.supported_features", "eq", 2) | map(attribute='entity_id') | list | sort %}
 # - {{s}}
 # {%- endfor %}
 
-# {% for s in states.weather|map(attribute='entity_id')|list|sort %}
-# {{s | replace('weather.','') }}_hourly: >
-#   {% raw %}{{{% endraw %} hourly['{{s}}']['forecast'] {% raw %}}}{% endraw %}
+# {# Hourly Forecast #}
+# {%- for s in states.weather | rejectattr("attributes.supported_features", "eq", 1) | map(attribute='entity_id') | list | sort %}
+# - {{s}}
 # {%- endfor %}
 
 trigger:
@@ -13,8 +14,23 @@ trigger:
     event: start
   - platform: event
     event_type: event_template_reloaded
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
   - platform: time_pattern
-    hours: /1
+    minutes: /15
+  - platform: state
+    entity_id:
+      - weather.astroweather_31_08133085871397_150_9416770935059
+      - weather.forecast_home
+      - weather.openweathermap
+      - weather.pirateweather
+      - weather.weatherflow_forecast_brisbane_st
+      - weather.east_tamworth_hourly
+      - weather.east_tamworth
+    from:
+      - unknown
+      - unavailable
 
 action:
   - service: weather.get_forecasts
@@ -23,48 +39,109 @@ action:
     target:
       entity_id:
         - weather.astroweather_31_08133085871397_150_9416770935059
+        - weather.brisbane_st
+        - weather.east_tamworth_hourly
         - weather.forecast_home
         - weather.openweathermap
         - weather.pirateweather
+        - weather.tbsmarthome
         - weather.weatherflow_forecast_brisbane_st
-        - weather.east_tamworth_hourly
     response_variable: hourly
+
   - service: weather.get_forecasts
     data:
       type: daily
     target:
       entity_id:
+        - weather.brisbane_st
+        - weather.east_tamworth
         - weather.forecast_home
         - weather.pirateweather
+        - weather.tbsmarthome
         - weather.weatherflow_forecast_brisbane_st
-        - weather.east_tamworth
     response_variable: daily
 
 sensor:
   - name: "[Weather] Forecasts"
     unique_id: weather_forecasts
     icon: mdi:weather-pouring
+    device_class: timestamp
     state: >
       {{ now().isoformat() }}
     attributes:
       category: weatherforecast
-      met_no_daily: >
-        {{ daily['weather.forecast_home']['forecast'] }}
+
+      # {# Daily Forecast #}
+      # {%- for s in states.weather | rejectattr("attributes.supported_features", "eq", 2) | map(attribute='entity_id') | list | sort %}
+      # {{s | replace('weather.','') }}_daily: >
+      #   {%- raw %}
+      #   {%- if daily is defined and daily{% endraw %}['{{s}}']{% raw %} is defined %}
+      #     {{{% endraw %} daily['{{s}}']['forecast'] {% raw %}}}
+      #   {%- endif %}{% endraw %}
+      # {%- endfor %}
+
+      # {# Hourly Forecast #}
+      # {%- for s in states.weather | rejectattr("attributes.supported_features", "eq", 1) | map(attribute='entity_id') | list | sort %}
+      # {{s | replace('weather.','') }}_hourly: >
+      #   {%- raw %}
+      #   {%- if hourly is defined and hourly{% endraw %}['{{s}}']{% raw %} is defined %}
+      #     {{{% endraw %} hourly['{{s}}']['forecast'] {% raw %}}}
+      #   {%- endif %}{% endraw %}
+      # {%- endfor %}
+
+      brisbane_st_daily: >
+        {%- if daily is defined and daily['weather.brisbane_st'] is defined %}
+          {{ daily['weather.brisbane_st']['forecast'] }}
+        {%- endif %}
+      east_tamworth_daily: >
+        {%- if daily is defined and daily['weather.east_tamworth'] is defined %}
+          {{ daily['weather.east_tamworth']['forecast'] }}
+        {%- endif %}
+      forecast_home_daily: >
+        {%- if daily is defined and daily['weather.forecast_home'] is defined %}
+          {{ daily['weather.forecast_home']['forecast'] }}
+        {%- endif %}
       pirateweather_daily: >
-        {{ daily['weather.pirateweather']['forecast'] }}
-      weatherflow_daily: >
-        {{ daily['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
-      bom_daily: >
-        {{ daily['weather.east_tamworth']['forecast'] }}
-      astroweather_hourly: >
-        {{ hourly['weather.astroweather_31_08133085871397_150_9416770935059']['forecast'] }}
-      met_no_hourly: >
-        {{ hourly['weather.forecast_home']['forecast'] }}
+        {%- if daily is defined and daily['weather.pirateweather'] is defined %}
+          {{ daily['weather.pirateweather']['forecast'] }}
+        {%- endif %}
+      tbsmarthome_daily: >
+        {%- if daily is defined and daily['weather.tbsmarthome'] is defined %}
+          {{ daily['weather.tbsmarthome']['forecast'] }}
+        {%- endif %}
+      weatherflow_forecast_brisbane_st_daily: >
+        {%- if daily is defined and daily['weather.weatherflow_forecast_brisbane_st'] is defined %}
+          {{ daily['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
+        {%- endif %}
+      astroweather_31_08133085871397_150_9416770935059_hourly: >
+        {%- if hourly is defined and hourly['weather.astroweather_31_08133085871397_150_9416770935059'] is defined %}
+          {{ hourly['weather.astroweather_31_08133085871397_150_9416770935059']['forecast'] }}
+        {%- endif %}
+      brisbane_st_hourly: >
+        {%- if hourly is defined and hourly['weather.brisbane_st'] is defined %}
+          {{ hourly['weather.brisbane_st']['forecast'] }}
+        {%- endif %}
+      east_tamworth_hourly_hourly: >
+        {%- if hourly is defined and hourly['weather.east_tamworth_hourly'] is defined %}
+          {{ hourly['weather.east_tamworth_hourly']['forecast'] }}
+        {%- endif %}
+      forecast_home_hourly: >
+        {%- if hourly is defined and hourly['weather.forecast_home'] is defined %}
+          {{ hourly['weather.forecast_home']['forecast'] }}
+        {%- endif %}
       openweathermap_hourly: >
-        {{ hourly['weather.openweathermap']['forecast'] }}
+        {%- if hourly is defined and hourly['weather.openweathermap'] is defined %}
+          {{ hourly['weather.openweathermap']['forecast'] }}
+        {%- endif %}
       pirateweather_hourly: >
-        {{ hourly['weather.pirateweather']['forecast'] }}
-      weatherflow_hourly: >
-        {{ hourly['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
-      bom_hourly: >
-        {{ hourly['weather.east_tamworth_hourly']['forecast'] }}
+        {%- if hourly is defined and hourly['weather.pirateweather'] is defined %}
+          {{ hourly['weather.pirateweather']['forecast'] }}
+        {%- endif %}
+      tbsmarthome_hourly: >
+        {%- if hourly is defined and hourly['weather.tbsmarthome'] is defined %}
+          {{ hourly['weather.tbsmarthome']['forecast'] }}
+        {%- endif %}
+      weatherflow_forecast_brisbane_st_hourly: >
+        {%- if hourly is defined and hourly['weather.weatherflow_forecast_brisbane_st'] is defined %}
+          {{ hourly['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
+        {%- endif %}

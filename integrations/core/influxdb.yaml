@@ -89,6 +89,7 @@ influxdb:
       - sensor.z2m_office_airquality_voc
       - sensor.weather_wind_bearing
       - sensor.ha_automation_run_history
+      - sensor.weather_forecasts
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

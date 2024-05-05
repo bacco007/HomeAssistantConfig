@@ -13,6 +13,7 @@ cards:
   - !include /config/ui/cards/home/cakeday.yaml
   - !include /config/ui/cards/home/solar.yaml
   - !include /config/ui/cards/home/sun_moon.yaml
+  - !include /config/ui/cards/home/sleep.yaml
   - !include /config/ui/cards/home/untappd.yaml
   - !include /config/ui/cards/home/music.yaml
   - !include /config/ui/cards/home/sport.yaml

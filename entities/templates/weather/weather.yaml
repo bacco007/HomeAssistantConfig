@@ -138,6 +138,28 @@ sensor:
           or is_state('binary_sensor.connected_pirateweather', 'on')
             and has_value('weather.pirateweather') }}
 
+  - name: "[Weather] Condition Today"
+    unique_id: weather_condition_today
+    icon: mdi:weather-partly-snowy-rainy
+    state: "{{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0].condition }}"
+    availability: >
+      {{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily') != none
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0] is defined
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0].condition is defined }}
+    attributes:
+      category: weather
+
+  - name: "[Weather] Condition Tomorrow"
+    unique_id: weather_condition_tomorrow
+    icon: mdi:weather-partly-snowy-rainy
+    state: "{{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1].condition }}"
+    availability: >
+      {{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily') != none
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1] is defined
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1].condition is defined }}
+    attributes:
+      category: weather
+
   - name: "[Weather] Temperature"
     unique_id: weather_temperature
     device_class: temperature
@@ -232,22 +254,22 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {% if states('sensor.weather_temperature_daily_high_00_00') is defined
-          and is_number(states('sensor.weather_temperature_daily_high_00_00')) %}
-        {{ states('sensor.weather_temperature_daily_high_00_00')|float }}
+      {% if states('sensor.weather_temperature_today_maximum') is defined
+          and is_number(states('sensor.weather_temperature_today_maximum')) %}
+        {{ states('sensor.weather_temperature_today_maximum')|float }}
       {% elif is_number(states('sensor.tamworth_airport_max_temp')) %}
         {{ states('sensor.tamworth_airport_max_temp')|float }}
       {% endif %}
     attributes:
       category: weather
       provider: >
-        {% if states('sensor.weather_temperature_daily_high_00_00') is defined
-            and is_number(states('sensor.weather_temperature_daily_high_00_00')) %} Weatherflow (Local)
+        {% if states('sensor.weather_temperature_today_maximum') is defined
+            and is_number(states('sensor.weather_temperature_today_maximum')) %} Weatherflow (Local)
         {% elif is_number(states('sensor.tamworth_airport_max_temp')) %} Bureau of Meteorology
         {% endif %}
     availability: >
-      {{ (states('sensor.weather_temperature_daily_high_00_00') is defined
-            and is_number(states('weather_temperature_daily_high_00_00')))
+      {{ (states('sensor.weather_temperature_today_maximum') is defined
+            and is_number(states('sensor.weather_temperature_today_maximum')))
           or is_number(states('sensor.tamworth_airport_max_temp')) }}
 
   - name: "[Weather] Low Temperature"
@@ -256,22 +278,22 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {% if states('sensor.weather_temperature_daily_low_00_00') is defined
-          and is_number(states('sensor.weather_temperature_daily_low_00_00')) %}
-        {{ states('sensor.weather_temperature_daily_low_00_00')|float }}
+      {% if states('sensor.weather_temperature_today_minimum') is defined
+          and is_number(states('sensor.weather_temperature_today_minimum')) %}
+        {{ states('sensor.weather_temperature_today_minimum')|float }}
       {% elif is_number(states('sensor.tamworth_airport_min_temp')) %}
         {{ states('sensor.tamworth_airport_min_temp')|float }}
       {% endif %}
     attributes:
       category: weather
       provider: >
-        {% if states('sensor.weather_temperature_daily_low_00_00') is defined
-            and is_number(states('sensor.weather_temperature_daily_low_00_00')) %} Weatherflow (Local)
+        {% if states('sensor.weather_temperature_today_minimum') is defined
+            and is_number(states('sensor.weather_temperature_today_minimum')) %} Weatherflow (Local)
         {% elif is_number(states('sensor.tamworth_airport_min_temp')) %} Bureau of Meteorology
         {% endif %}
     availability: >
-      {{ (states('sensor.weather_temperature_daily_low_00_00') is defined
-            and is_number(states('weather_temperature_daily_low_00_00')))
+      {{ (states('sensor.weather_temperature_today_minimum') is defined
+            and is_number(states('sensor.weather_temperature_today_minimum')))
           or is_number(states('sensor.tamworth_airport_min_temp')) }}
 
   - name: "[Weather] Temperature Range"
@@ -738,28 +760,69 @@ sensor:
     unique_id: weather_lightning_count
     icon: mdi:lightning-bolt
     state_class: measurement
-    unit_of_measurement: strikes
+    unit_of_measurement: "ϟ"
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) -%}
-        {{ states('sensor.weatherflow_forecast_lightnings_strikes')|int }}
-      {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
-            and is_number(states('sensor.st_00056115_lightning_count')) %}
-        {{ states('sensor.st_00056115_lightning_count')|int }}
-      {%- endif %}
+      {% if is_state('binary_sensor.connected_blitzortung', 'on')
+          and is_number(states('sensor.blitzortung_lightning_counter')) %}
+        {{ states('sensor.blitzortung_lightning_counter') | int }}
+      {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+          and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) %}
+        {{ states('sensor.weatherflow_forecast_lightnings_strikes') | int }}
+      {% endif %}
     attributes:
       category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) -%} Weatherflow (Cloud)
-        {%- elif is_state('binary_sensor.connected_weatherflow_local','on')
-            and is_number(states('sensor.st_00056115_lightning_count')) %} Weatherflow (Local)
-        {%- endif %}
+        {% if is_state('binary_sensor.connected_blitzortung', 'on')
+            and is_number(states('sensor.blitzortung_lightning_counter')) %}
+          Blitzortung
+        {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+            and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) %}
+          WeatherFlow Cloud
+        {% endif %}
     availability: >
-      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
-            and is_number(states('sensor.weatherflow_forecast_lightnings_strikes'))
-          or is_state('binary_sensor.connected_weatherflow_local','on')
-            and is_number(states('sensor.st_00056115_lightning_count')) }}
+      {{ (is_state('binary_sensor.connected_blitzortung', 'on')
+            and is_number(states('sensor.blitzortung_lightning_counter')))
+          or (is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+            and is_number(states('sensor.weatherflow_forecast_lightnings_strikes'))) }}
+
+  - name: "[Weather] Lightning Distance"
+    unique_id: weather_lightning_distance
+    icon: mdi:lightning-bolt
+    device_class: distance
+    state_class: measurement
+    unit_of_measurement: km
+    state: >
+      {% if is_state('binary_sensor.connected_blitzortung', 'on')
+          and is_number(states('sensor.blitzortung_lightning_distance')) %}
+        {{ states('sensor.blitzortung_lightning_distance') | int }}
+      {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+          and is_number(states('sensor.weatherflow_forecast_distance_last_lightning_strike')) %}
+        {{ states('sensor.weatherflow_forecast_distance_last_lightning_strike') | int }}
+      {% endif %}
+    attributes:
+      category: weather
+      provider: >
+        {% if is_state('binary_sensor.connected_blitzortung', 'on')
+            and is_number(states('sensor.blitzortung_lightning_distance')) %}
+          Blitzortung
+        {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+            and is_number(states('sensor.weatherflow_forecast_distance_last_lightning_strike')) %}
+          WeatherFlow Cloud
+        {% endif %}
+    availability: >
+      {{ (is_state('binary_sensor.connected_blitzortung', 'on')
+            and is_number(states('sensor.blitzortung_lightning_distance')))
+          or (is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+            and is_number(states('sensor.weatherflow_forecast_distance_last_lightning_strike'))) }}
+
+  - name: "[Weather] Lightning Last Strike"
+    unique_id: weather_lightning_last_strike
+    icon: mdi:clock-star-four-points
+    device_class: timestamp
+    state: "{{ states('sensor.weatherflow_forecast_time_of_last_lightning_strike') }}"
+    availability: "{{ has_value('sensor.weatherflow_forecast_time_of_last_lightning_strike') }}"
+    attributes:
+      category: weather
 
   - name: "[Weather] Barometric Pressure"
     unique_id: weather_barometric_pressure
@@ -1315,3 +1378,23 @@ sensor:
         {%- else -%}
         Normal
         {%- endif -%}
+
+  - name: "[Weather] Fire Danger Today"
+    unique_id: weather_fire_danger_today
+    icon: mdi:fire
+    state: >
+      {{ states('sensor.east_tamworth_fire_danger_0') }}
+    availability: "{{ is_number(states('sensor.east_tamworth_fire_danger_0')) }}"
+    attributes:
+      category: weather
+      provider: Bureau of Meterology
+
+  - name: "[Weather] Fire Danger Tomorrow"
+    unique_id: weather_fire_danger_tomorrow
+    icon: mdi:fire
+    state: >
+      {{ states('sensor.east_tamworth_fire_danger_1') }}
+    availability: "{{ is_number(states('sensor.east_tamworth_fire_danger_1')) }}"
+    attributes:
+      category: weather
+      provider: Bureau of Meterology

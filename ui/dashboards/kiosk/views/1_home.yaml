@@ -34,6 +34,7 @@ cards:
       - !include /config/ui/cards/home/sport-kiosk.yaml
       - !include /config/ui/cards/home/weather-kiosk.yaml
       - !include /config/ui/cards/home/solar-kiosk.yaml
+      - !include /config/ui/cards/home/untappd-kiosk.yaml
       - !include /config/ui/cards/home/flighttracker-kiosk.yaml
       - !include /config/ui/cards/home/sun_moon-kiosk.yaml
       # - !include /config/ui/cards/home/tamworth.yaml

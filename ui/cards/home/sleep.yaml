@@ -1,0 +1,142 @@
+---
+type: custom:stack-in-card
+mode: vertical
+keep:
+  background: true
+  margin: true
+  border_radius: true
+  outer_padding: true
+cards:
+  - type: custom:decluttering-card
+    template: bubble_header
+    variables:
+      - name: Sleep Performance
+      - icon: sleep
+      - navpath: sleep
+  - square: false
+    columns: 3
+    type: grid
+    cards:
+      - type: custom:mushroom-template-card
+        primary: REM Sleep
+        secondary: >
+          {{ state_attr('sensor.sleep_rem_sleep', 'time_formatted') }}
+        layout: horizontal
+        fill_container: false
+        icon: mdi:sleep
+        icon_color: "blue"
+        secondary_info: state
+        multiline_secondary: false
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        primary: Deep Sleep
+        secondary: >
+          {{ state_attr('sensor.sleep_deep_sleep', 'time_formatted') }}
+        layout: horizontal
+        fill_container: false
+        icon: mdi:sleep
+        icon_color: "blue"
+        secondary_info: state
+        multiline_secondary: false
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        primary: Light Sleep
+        secondary: >
+          {{ state_attr('sensor.sleep_light_sleep', 'time_formatted') }}
+        layout: horizontal
+        fill_container: false
+        icon: mdi:sleep
+        icon_color: "blue"
+        secondary_info: state
+        multiline_secondary: false
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+  - type: custom:mushroom-entity-card
+    style: |
+      ha-card {
+        background-color: var(--background-color);
+    entity: sensor.sleep_score
+    name: Sleep Score
+    icon_color: orange
+    fill_container: true
+    multiline_secondary: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            --shape-color: none !important;
+          }
+        .: |
+          ha-card {
+            background-color: var(--background-color);
+            --icon-size: 40px;
+            --icon-symbol-size: 30px;
+            --card-secondary-font-size: 10px;
+            --card-primary-font-size: 12px;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+          }

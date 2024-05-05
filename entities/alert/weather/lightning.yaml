@@ -1,0 +1,25 @@
+---
+lightning:
+  name: "Lightning"
+  title: "Lightning Alert"
+  message: "Strikes: {{ states('sensor.lightning_count') }} - Distance: {{ states('sensor.lightning_distance',with_unit=true) }}"
+  done_message: clear_notification
+  entity_id: binary_sensor.lightning_alert
+  state: "on"
+  skip_first: true
+  repeat: 1440
+  notifiers: alert
+  data:
+    tag: lightning_alert
+    notification_id: lightning_alert
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_lightning_alert

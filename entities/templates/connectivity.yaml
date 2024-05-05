@@ -217,6 +217,24 @@ binary_sensor:
     attributes:
       category: homeassistant
 
+  - name: "[Connected] CO2 Signal"
+    unique_id: connected_co2_signal
+    icon: si:cloudflare
+    device_class: connectivity
+    picture: https://brands.home-assistant.io/co2_signal/icon.png
+    state: "{{ integration_entities('co2_signal')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+
+  - name: "[Connected] Blitzortung"
+    unique_id: connected_blitzortung
+    icon: si:cloudflare
+    device_class: connectivity
+    picture: https://brands.home-assistant.io/blitzortung/icon.png
+    state: "{{ integration_entities('blitzortung')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+
   - name: "[Connected] Bluetooth"
     unique_id: connected_bluetooth
     icon: mdi:bluetooth

@@ -1,5 +1,190 @@
 ---
 sensor:
+  - name: "[Sleep] Score"
+    unique_id: sleep_score
+    state: >
+      {{ states('sensor.withings_sleep_score')}}
+    unit_of_measurement: Score
+    icon: mdi:medal
+    attributes:
+      category: sleep
+
+  - name: "[Sleep] Heart Rate"
+    unique_id: sleep_heart_rate
+    state: >
+      {{ states('sensor.withings_average_heart_rate')}}
+    unit_of_measurement: bpm
+    icon: mdi:heart-pulse
+    attributes:
+      category: sleep
+      maximum: >
+       {{ states('sensor.withings_maximum_heart_rate')}}
+      minimum: >
+        {{ states('sensor.withings_minimum_heart_rate')}}
+
+  - name: "[Sleep] Respiration Rate"
+    unique_id: sleep_resipiration_rate
+    state: >
+      {{ states('sensor.withings_average_respiratory_rate')}}
+    unit_of_measurement: br/min
+    icon: mdi:lungs
+    attributes:
+      category: sleep
+      maximum: >
+        {{ states('sensor.withings_maximum_respiratory_rate')}}
+      minimum: >
+        {{ states('sensor.withings_minimum_respiratory_rate')}}
+
+  - name: "[Sleep] Duration"
+    unique_id: sleep_duration
+    state: >
+      {{ (states('sensor.withings_rem_sleep') | int(0)) +
+         (states('sensor.withings_light_sleep') | int(0)) +
+         (states('sensor.withings_deep_sleep') | int(0))
+      }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      time_formatted: >
+        {% set sueno =  ((states('sensor.withings_rem_sleep') | int(0)) +
+                         (states('sensor.withings_light_sleep') | int(0)) +
+                         (states('sensor.withings_deep_sleep') | int(0))) / 60 %}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] Deep Sleep"
+    unique_id: sleep_deep_sleep
+    state: >
+      {{ states('sensor.withings_deep_sleep') }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      percent_sleep: >
+        {{ ((states('sensor.withings_deep_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
+      to_depth_target: >
+         {{ (((states('sensor.withings_deep_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 25 }}
+      time_formatted: >
+        {% set sueno = states('sensor.withings_deep_sleep') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] REM Sleep"
+    unique_id: sleep_rem_sleep
+    state: >
+      {{ states('sensor.withings_rem_sleep') }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      percent_sleep: >
+        {{ ((states('sensor.withings_rem_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
+      to_depth_target: >
+         {{ (((states('sensor.withings_rem_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 20 }}
+      time_formatted: >
+        {% set sueno = states('sensor.withings_rem_sleep') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] Restorative Sleep"
+    unique_id: sleep_restorative_sleep
+    state: >
+      {{ ((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      percent_sleep: >
+        {{ (((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
+      to_depth_target: >
+         {{ ((((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 40 }}
+      time_formatted: >
+        {% set sueno = ((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] Light Sleep"
+    unique_id: sleep_light_sleep
+    state: >
+      {{ states('sensor.withings_light_sleep') }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      percent_sleep: >
+        {{ ((states('sensor.withings_light_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
+      to_depth_target: >
+         {{ (((states('sensor.withings_light_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 55 }}
+      time_formatted: >
+        {% set sueno = states('sensor.withings_light_sleep') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] Interruptions"
+    unique_id: sleep_interruptions
+    state: >
+      {{ states('sensor.withings_wakeup_time') | int(0) }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      time_formatted: >
+        {% set sueno = (states('sensor.withings_wakeup_time') | int(0)) / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] To to Sleep"
+    unique_id: sleep_time_to_sleep
+    state: >
+      {{ states('sensor.withings_time_to_sleep') | int(0) }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      time_formatted: >
+        {% set sueno = (states('sensor.withings_time_to_sleep') | int(0)) / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] To to Wakeup"
+    unique_id: sleep_time_to_wakeup
+    state: >
+      {{ states('sensor.withings_time_to_wakeup') | int(0) }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      time_formatted: >
+        {% set sueno = (states('sensor.withings_time_to_wakeup') | int(0)) / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
+
+  - name: "[Sleep] Snoring"
+    unique_id: sleep_snoring
+    state: >
+      {{ (states('sensor.withings_snoring') | int(0)) }}
+    state_class: total_increasing
+    unit_of_measurement: s
+    device_class: duration
+    icon: mdi:sleep
+    attributes:
+      category: sleep
+      percent_sleep: >
+        {{ ((states('sensor.withings_snoring') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
+      episode_count: >
+        {{states('sensor.withings_snoring_episode_count') }}
+      time_formatted: >
+        {% set sueno = states('sensor.withings_snoring') | int / 60%}
+        {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
   - name: deep_sleep_percentage
     unique_id: deep_sleep_percentage
     icon: mdi:power-sleep

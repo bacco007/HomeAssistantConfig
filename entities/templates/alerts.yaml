@@ -313,6 +313,29 @@ binary_sensor:
     device_class: problem
     delay_on: 120
     state: >
-      {{ is_state('binary_sensor.cloudflare_tunnel_status','on') }}
+      {{ is_state('binary_sensor.cloudflare_tunnel_status','on')
+          and is_state('input_boolean.alerts_ha','on')  }}
+    attributes:
+      category: homeassistant
+
+  - name: "alerts_co2_signal"
+    unique_id: alerts_co2_signal
+    icon: mdi:smog
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{ is_state('binary_sensor.connected_co2_signal','off')
+          and is_state('input_boolean.alerts_ha','on')  }}
+    attributes:
+      category: homeassistant
+
+  - name: "alerts_blitzortung"
+    unique_id: alerts_blitzortung
+    icon: mdi:flash-alert
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{ is_state('binary_sensor.connected_blitzortung','off')
+          and is_state('input_boolean.alerts_weather','on')  }}
     attributes:
       category: homeassistant

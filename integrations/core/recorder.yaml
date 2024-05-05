@@ -72,6 +72,7 @@ recorder:
       - sensor.adsb_planefinder_stats
       - sensor.network_scanner
       - sensor.hass_main_config
+      - sensor.weather_forecasts
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
