@@ -4,23 +4,15 @@ import json
 import logging
 import os
 import re
+from enum import StrEnum
 from typing import NamedTuple, Protocol
-
-from awesomeversion.awesomeversion import AwesomeVersion
-from homeassistant.const import __version__ as HA_VERSION  # noqa
-
-from custom_components.powercalc.helpers import get_library_path
-
-if AwesomeVersion(HA_VERSION) >= AwesomeVersion("2023.8.0"):
-    from enum import StrEnum
-else:
-    from homeassistant.backports.enum import StrEnum  # pragma: no cover
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.camera import DOMAIN as CAMERA_DOMAIN
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.const import __version__ as HA_VERSION  # noqa
 from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers.typing import ConfigType
 
@@ -78,9 +70,6 @@ class PowerProfile:
 
     def get_model_directory(self, root_only: bool = False) -> str:
         """Get the model directory containing the data files."""
-        if self.linked_lut:
-            return get_library_path(self.linked_lut)
-
         if root_only:
             return self._directory
 
