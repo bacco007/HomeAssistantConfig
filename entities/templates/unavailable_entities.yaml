@@ -8,58 +8,12 @@ sensor:
     state_class: measurement
     unit_of_measurement: entities
     state: >
-      {% set entities = state_attr(this.entity_id,'entity_id') %}
-      {{ entities|count if entities != none else none }}
+      {%- set entities = state_attr('group.monitor_unavailable_entities', 'entity_id') %}
+      {{ entities | count if entities != none else -1 }}
     attributes:
       entity_id: >
-        {%- set ignore_seconds = 60 %}
-        {%- set ignored = state_attr('group.ignored_unavailable_entities', 'entity_id') %}
-        {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-        {%- set entities = states
-            |rejectattr('domain','in',['button', 'conversation', 'device_tracker', 'event', 'group', 'image', 'input_button', 'input_text', 'remote', 'tts', 'scene', 'stt'])
-            |selectattr('state','in',['unavailable','unknown','none'])
-            |rejectattr('entity_id','in',state_attr('group.ignored_unavailable_entities','entity_id'))
-            |rejectattr('entity_id','search','rssfeed_')
-            |rejectattr('entity_id','search','button.')
-            |rejectattr('entity_id','search','select.')
-            |rejectattr('entity_id','search','_color')
-            |rejectattr('entity_id','search','wunder')
-            |rejectattr('entity_id','search','gosungrow')
-            |rejectattr('entity_id','search','z2m')
-            |rejectattr('entity_id','search','zigbee2mqtt')
-            |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('gdacs'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('github'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('glances'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('hassio'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('openuv'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('utility_meter'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('waqi'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('tautulli'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('here_travel_time'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('tomorrowio'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('pirateweather'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('proxmoxve'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('blitzortung'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('ble_monitor'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('waternsw'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('ical'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('bureau_of_meteorology'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('weatherflow'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('eufy_security'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('mobile_app'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('gtfs2'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('google_fit'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('sensibo'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('astroweather'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('satellitetracker'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('gtfs2'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('openweathermap'))|map(attribute='entity_id')|list)
-            |rejectattr('entity_id','in',expand(integration_entities('withings'))|map(attribute='entity_id')|list)
-            |rejectattr('last_changed','ge',ignore_ts) %}
-        {% set entities =  entities | rejectattr('entity_id', 'in', ignored) if ignored != none else entities %}
-        {{ entities | map(attribute='entity_id') | list | sort }}
+        {#- Temporary #}
+        {{expand('group.monitor_unavailable_entities')| map(attribute='entity_id') | list | sort}}
 
   - name: "Unknown/Unavailable/None Entities"
     unique_id: unk_una_none_entities

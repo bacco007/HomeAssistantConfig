@@ -1,6 +1,8 @@
 ---
-alias: "[HA] Update Groups Automatically"
-mode: restart
+id: ha_autogroup_bulk
+alias: "[HA] Autogroup - Bulk"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
     id: startup

@@ -1,0 +1,77 @@
+---
+id: ha_autogroup_network_devices
+alias: "[HA] Autogroup - Network Devices"
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: homeassistant
+    id: startup
+    event: start
+
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
+
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+
+  - platform: time_pattern
+    minutes: "/5"
+
+action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
+
+  - service: group.set
+    data:
+      object_id: wired_devices
+      entities: >
+        {{ states.device_tracker
+            | selectattr('attributes.source_type', 'defined')
+            | selectattr('attributes.source_type', 'eq', 'router')
+            | rejectattr('attributes.essid', 'defined')
+            | map(attribute='entity_id') | list | sort }}
+  - service: group.set
+    data:
+      object_id: wireless_devices
+      entities: >
+        {{ states.device_tracker
+            | selectattr('attributes.source_type', 'defined')
+            | selectattr('attributes.source_type', 'eq', 'router')
+            | selectattr('attributes.essid', 'defined')
+            | map(attribute='entity_id') | list | sort }}
+  - service: group.set
+    data:
+      object_id: unknown_devices
+      entities: >
+        {{ states.device_tracker
+            | rejectattr('attributes.source_type', 'in', ['router', 'bluetooth_le'])
+            | rejectattr('attributes.device_type', 'in',
+              ['bluetooth', 'wired', 'wireless', 'location', 'bluetooth_le'])
+            | rejectattr('attributes.integration', 'in', ['iCloud3'])
+            | map(attribute='entity_id') | select('has_value') | list | sort }}
+  - service: group.set
+    data:
+      object_id: bluetooth_devices
+      entities: >
+        {{ states.device_tracker
+            | selectattr('attributes.device_type', 'eq', 'bluetooth')
+            | map(attribute='entity_id') | list | sort }}
+  - service: group.set
+    data:
+      object_id: bluetooth_le_devices
+      entities: >
+        {{ states.device_tracker
+            | selectattr('attributes.source_type', 'eq', 'bluetooth_le')
+            | map(attribute='entity_id') | list | sort }}
+  - service: group.set
+    data:
+      object_id: icloud3_devices
+      entities: >
+        {{ states.device_tracker
+            | selectattr('attributes.integration', 'in', ['iCloud3'])
+            | map(attribute='entity_id') | list | sort }}
