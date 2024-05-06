@@ -408,14 +408,22 @@ def get_gtfs_rt(hass, path, data):
         _LOGGER.error("Ìssues with downloading GTFS RT data to: %s", os.path.join(gtfs_dir, file))
         return "no_rt_data_file"
     if data.get("debug_output", False):
-        data_out = ""
-        feed_entities = get_gtfs_feed_entities(
-            url=data.get("url", None),
-            headers=_headers,
-            label="converting",
-        )
-        file_all = data["file"] + "_converted.txt"
-        open(os.path.join(gtfs_dir, file_all), "w").write(json.dumps(feed_entities, indent=4))     
+        try:
+            data_out = ""
+            feed_entities = get_gtfs_feed_entities(
+                url=data.get("url", None),
+                headers=_headers,
+                label=data.get("rt_type", "-"),
+            )
+            file_all = data["file"] + "_converted.txt" 
+        except Exception as ex:  # pylint: disable=broad-except
+            _LOGGER.info("Ìssues with converting GTFS RT data to JSON, output to string") 
+        # check if content is json else write without format
+        try:
+            open(os.path.join(gtfs_dir, file_all), "w").write(json.dumps(feed_entities, indent=4)) 
+        except Exception as ex:
+            _LOGGER.debug("Not writing to file as json because of error: %s", ex)
+            open(os.path.join(gtfs_dir, file_all), "w").write(str(feed_entities))           
     return "ok"   
         
 class LocalFileAdapter(requests.adapters.HTTPAdapter):

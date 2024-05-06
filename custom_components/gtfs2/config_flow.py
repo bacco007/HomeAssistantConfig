@@ -130,9 +130,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         user_input[CONF_EXTRACT_FROM] = "zip"    
         self._user_inputs.update(user_input)
         _LOGGER.debug(f"UserInputs Local Stops: {self._user_inputs}") 
-        return self.async_create_entry(
-            title=user_input[CONF_NAME], data=self._user_inputs
-            )                
+        check_data = await self._check_data(self._user_inputs)
+        if check_data :
+            errors["base"] = check_data
+            return self.async_abort(reason=check_data)
+        else:
+            return self.async_create_entry(
+                title=user_input[CONF_NAME], data=self._user_inputs
+                )                
                    
     async def async_step_source(self, user_input: dict | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""
