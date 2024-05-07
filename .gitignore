@@ -48,6 +48,7 @@ home-assistant_v2.db-shm
 home-assistant.log
 home-assistant.log.1
 home-assistant.log.fault
+home-assistant-rollback.log
 google_calendars.yaml
 www/images/radar_moree_256km.gif
 www/images/radar_namoi_128km.gif

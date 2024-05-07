@@ -12,118 +12,19 @@ cards:
     variables:
       - name: Sleep Performance
       - icon: sleep
-      - navpath: sleep
-  - square: false
-    columns: 3
-    type: grid
-    cards:
-      - type: custom:mushroom-template-card
-        primary: REM Sleep
-        secondary: >
-          {{ state_attr('sensor.sleep_rem_sleep', 'time_formatted') }}
-        layout: horizontal
-        fill_container: false
-        icon: mdi:sleep
-        icon_color: "blue"
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        primary: Deep Sleep
-        secondary: >
-          {{ state_attr('sensor.sleep_deep_sleep', 'time_formatted') }}
-        layout: horizontal
-        fill_container: false
-        icon: mdi:sleep
-        icon_color: "blue"
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
+      - navpath: solar
 
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        primary: Light Sleep
-        secondary: >
-          {{ state_attr('sensor.sleep_light_sleep', 'time_formatted') }}
-        layout: horizontal
-        fill_container: false
-        icon: mdi:sleep
-        icon_color: "blue"
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
   - type: custom:mushroom-entity-card
-    style: |
-      ha-card {
-        background-color: var(--background-color);
     entity: sensor.sleep_score
     name: Sleep Score
     icon_color: orange
-    fill_container: true
-    multiline_secondary: true
+    fill_container: false
+    secondary_info: state
+    multiline_secondary: false
+    badge_icon: ""
+    badge_color: ""
     tap_action:
-      action: none
-    hold_action:
-      action: none
-    double_tap_action:
-      action: none
+      action: more-info
     card_mod:
       style:
         mushroom-shape-icon$: |
@@ -140,3 +41,211 @@ cards:
             padding-top: 5px !important;
             padding-bottom: 5px !important;
           }
+  - square: false
+    type: grid
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.sleep_rem_sleep
+        primary: REM Sleep
+        secondary: "{{state_attr(entity, 'time_formatted') }}"
+        icon: mdi:sleep
+        icon_color: "#57A0FF"
+        fill_container: false
+        secondary_info: state
+        multiline_secondary: false
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        entity: sensor.sleep_light_sleep
+        primary: Light Sleep
+        secondary: "{{state_attr(entity, 'time_formatted') }}"
+        icon: mdi:sleep
+        icon_color: "#006fff"
+        fill_container: false
+        secondary_info: state
+        multiline_secondary: false
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      - type: custom:mushroom-template-card
+        entity: sensor.sleep_deep_sleep
+        primary: Deep Sleep
+        secondary: "{{state_attr(entity, 'time_formatted') }}"
+        icon: mdi:sleep
+        icon_color: "#6A34E0"
+        fill_container: false
+        secondary_info: state
+        multiline_secondary: false
+        badge_icon: ""
+        badge_color: ""
+        tap_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape {
+                --shape-color: none !important;
+              }
+            .: |
+              ha-card {
+                background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+    columns: 3
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Sleep Performance Graph
+      icon: mdi:bed
+      card_mod:
+        style:
+          mushroom-shape-icon$: |
+            .shape {
+              --shape-color: none !important;
+            }
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              --card-secondary-font-size: 10px;
+              --card-primary-font-size: 12px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:plotly-graph
+        entities:
+          - entity: sensor.sleep_rem_sleep
+            texttemplate: "%{y:.2f}"
+            textfont:
+              family: Roboto
+              size: 11
+            name: REM
+            type: bar
+            statistic: state
+            period: day
+            marker:
+              color: "#57A0FF"
+              opacity: 0.75
+            filters:
+              - map_y_numbers: y / 3600
+          - entity: sensor.sleep_light_sleep
+            texttemplate: "%{y:.2f}"
+            textfont:
+              family: Roboto
+              size: 11
+            name: Light
+            type: bar
+            statistic: state
+            period: day
+            marker:
+              color: "#006fff"
+              opacity: 0.75
+            filters:
+              - map_y_numbers: y / 3600
+          - entity: sensor.sleep_deep_sleep
+            texttemplate: "%{y:.2f}"
+            textfont:
+              family: Roboto
+              size: 11
+            name: Deep
+            type: bar
+            statistic: state
+            period: day
+            marker:
+              color: "#6A34E0"
+              opacity: 0.75
+            filters:
+              - map_y_numbers: y / 3600
+        layout:
+          paper_bgcolor: rgba(0,0,0,0)
+          plot_bgcolor: rgba(0,0,0,0)
+          barmode: relative
+          bargap: 0.2
+          uniformtext:
+            minsize: 8
+            mode: show
+          modebar:
+            orientation: h
+            remove: pan
+          margin:
+            t: 0
+            l: 20
+            r: 20
+          height: 250
+          legend:
+            "y": -0.23
+            x: 0.1
+          xaxis:
+            dragmode: false
+            gridcolor: rgba(238,235,235,0)
+            showgrid: true
+            linewidth: 0
+            linecolor: null
+            nticks: 8
+            tickformat: "%a"
+            tickfont:
+              family: Roboto
+              size: 11
+              color: rgb(204,204,204)
+          yaxis:
+            visible: false
+        hours_to_show: 7d
+        refresh_interval: 10min
+        config:
+          scrollZoom: false
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }

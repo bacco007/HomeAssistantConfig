@@ -190,14 +190,6 @@
       file: tfnsw
       clean_feed_info: true
   mode: single
-- id: '1708823827707'
-  alias: AWTRIX now playing
-  description: ''
-  use_blueprint:
-    path: blueforcer/flow_N024OvMJomr7.yaml
-    input:
-      media_player: media_player.currently_playing
-      awtrix_device: da38247c02359f48562a1b102b5d4ac4
 - id: '1710400217767'
   alias: '[Watchguard] Sungather'
   description: ''

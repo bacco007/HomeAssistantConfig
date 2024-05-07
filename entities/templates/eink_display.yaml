@@ -22,9 +22,9 @@ sensor:
       home_temperature: >
         {{ states('sensor.weather_temperature') }}
       home_temperature_max: >
-        {{ states('sensor.weather_temperature_daily_high_00_00') }}
+        {{ states('sensor.weather_temperature_today_maximum') }}
       home_temperature_min: >
-        {{ states('sensor.weather_temperature_daily_low_00_00') }}
+        {{ states('sensor.weather_temperature_today_minimum') }}
       home_rainfall_today: >
         {{ states('sensor.weather_precipitation_today') }}
       home_rainfall_week: >
@@ -40,23 +40,23 @@ sensor:
       media_playing_artist: >
         {{ state_attr('media_player.currently_playing', 'media_artist') | title }} (on {{ state_attr('media_player.currently_playing', 'media_channel') | title }})
       current_weather_condition: >
-        {%- set cond_now = states('weather.weather_home_daily') %}
+        {%- set cond_now = states('weather.east_tamworth_hourly') %}
         {%- if states('sun.sun') == 'below_horizon' %}
         {%- if cond_now == 'sunny' %} night {% elif cond_now == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond_now }} {% endif %}
         {%- else %}
         {{ cond_now }}
         {%- endif %}
       forecast_day1: >
-        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[1].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[1].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[1].temperature  | int}}°C
       forecast_day2: >
-        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[2].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[2].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[2].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[2].temperature  | int}}°C
       forecast_day3: >
-        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[3].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[3].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[3].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[3].temperature  | int}}°C
       forecast_day4: >
-        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[4].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[4].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[4].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[4].temperature  | int}}°C
       forecast_day5: >
-        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[5].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[5].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[5].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[5].temperature  | int}}°C
       forecast_day6: >
-        {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[6].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_daily')[6].temperature  | int}}°C
+        {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].temperature  | int}}°C
       solar_yield_today: >
         {{ states('sensor.sungrowsolar_daily_power_yields')}}
