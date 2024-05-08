@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.5.2 |
 | No. Integrations | 200 |
 | No. Custom Integrations | 80 |
-| No. Entities | 5201 |
-| No. Sensors | 3285 |
+| No. Entities | 5208 |
+| No. Sensors | 3283 |
 | No. Automations | 142 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 343
-Buttons | 240
+Binary sensors | 344
+Buttons | 243
 Calendars | 71
 Cameras | 5
 Climate | 2
@@ -84,18 +84,18 @@ Input texts | 3
 Lights | 13
 Locks | 4
 Media players | 20
-Numbers | 33
+Numbers | 35
 Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3285
+Sensors | 3283
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 251
+Switches | 254
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -732,13 +732,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.0] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.0] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.5.3] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.1.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.2a] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.3] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.4] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.4] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.3] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.2.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
@@ -866,7 +866,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
-| JupyterLab | 0.14.5 |  | a0d7b954 |
+| JupyterLab | 0.15.0 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.6.0 |  | core |
 | Node-RED | 17.0.12 |  | a0d7b954 |
