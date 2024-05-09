@@ -139,7 +139,8 @@
             "total_kwh_forecast_d5": {"name": "Forecast Day 5"},
             "total_kwh_forecast_d6": {"name": "Forecast Day 6"},
             "total_kwh_forecast_d7": {"name": "Forecast Day 7"},
-            "power_now": {"name": "Power Now"}
+            "power_now": {"name": "Power Now"},
+            "weather_description": {"name": "Weather"}
         },
         "select": {
             "estimate_mode" : {"name": "Use Forecast Field"}

@@ -54,6 +54,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def service_event_update(self, *args):
         await self.solcast.http_data(dopast=False)
+        await self.solcast.sites_weather()
         await self.update_integration_listeners()
 
     async def service_event_delete_old_solcast_json_file(self, *args):
@@ -116,6 +117,9 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             return self.solcast.get_api_limit()
         elif key == "lastupdated":
             return self.solcast.get_last_updated_datetime()
+        elif key == "weather_description":
+            return self.solcast.get_weather()
+        
 
         #just in case
         return None

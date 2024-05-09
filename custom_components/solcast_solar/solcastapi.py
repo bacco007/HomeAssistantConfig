@@ -81,6 +81,7 @@ class SolcastApi:
         self._damp =options.dampening
         self._customhoursensor = options.customhoursensor
         self._use_data_field = f"pv_{options.key_estimate}"
+        self._weather = ""
         
     async def serialize_data(self):
         """Serialize data to file."""
@@ -189,6 +190,42 @@ class SolcastApi:
         except Exception as e:
             _LOGGER.error("SOLCAST - sites_usage error: %s", traceback.format_exc())
 
+    async def sites_weather(self):
+        """Request rooftop site weather byline via the Solcast API."""
+        
+        try:
+            if len(self._sites) > 0:
+                sp = self.options.api_key.split(",")
+                rid = self._sites[0].get("resource_id", None)
+
+                params = {"resourceId": rid, "api_key": sp[0]}
+                _LOGGER.debug(f"SOLCAST - get rooftop weather byline from solcast")
+                async with async_timeout.timeout(60):
+                    resp: ClientResponse = await self.aiohttp_session.get(
+                        url=f"https://api.solcast.com.au/json/reply/GetRooftopSiteSparklines", params=params, ssl=False
+                    )
+                    resp_json = await resp.json(content_type=None)
+                    status = resp.status
+
+                if status == 200:
+                    d = cast(dict, resp_json)
+                    _LOGGER.debug(f"SOLCAST - sites_weather returned data: {d}")
+                    self._weather = d.get("forecast_descriptor", None).get("description", None)
+                    _LOGGER.debug(f"SOLCAST - rooftop weather description: {self._weather}")
+                else:
+                    raise Exception(f"SOLCAST - sites_weather: gathering rooftop weather description failed. request returned Status code: {status} - Responce: {resp_json}.")
+                
+        except json.decoder.JSONDecodeError:
+            _LOGGER.error("SOLCAST - sites_weather JSONDecodeError.. The rooftop weather description from Solcast is unknown, Solcast site could be having problems")
+        except ConnectionRefusedError as err:
+            _LOGGER.error("SOLCAST - sites_weather Error.. %s",err)
+        except ClientConnectionError as e:
+            _LOGGER.error('SOLCAST - sites_weather Connection Error', str(e))
+        except asyncio.TimeoutError:
+            _LOGGER.error("SOLCAST - sites_weather Connection Error - Timed out connection to solcast server")
+        except Exception as e:
+            _LOGGER.error("SOLCAST - sites_weather error: %s", traceback.format_exc())
+
     async def load_saved_data(self):
         try:
             if len(self._sites) > 0:
@@ -277,6 +314,10 @@ class SolcastApi:
         except Exception:
             return None
 
+    def get_weather(self):
+        """Return weather description"""
+        return self._weather
+    
     def get_last_updated_datetime(self) -> dt:
         """Return date time with the data was last updated"""
         return dt.fromisoformat(self._data["last_updated"])

@@ -218,6 +218,11 @@ SENSORS: dict[str, SensorEntityDescription] = {
         #name="Power Next Hour",
         suggested_display_precision=0,
     ),
+    "weather_description": SensorEntityDescription(
+        key="weather_description",
+        translation_key="weather_description",
+        icon="mdi:weather-partly-snowy-rainy",
+    ),
 }
 
 

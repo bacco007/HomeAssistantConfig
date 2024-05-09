@@ -54,6 +54,12 @@
                     "damp23": "23:00"
                 },
                 "description": "Upravte hodinový faktor tlmenia"
+            },
+            "customsensor": {
+                "data": {
+                    "customhoursensor": "Ďalší X-hodinový senzor"
+                },
+                "description": "Vlastný senzor pre celkovú energiu na ďalších X hodín"
             }
         },
         "error": {
@@ -132,6 +138,9 @@
             "total_kwh_forecast_d6": {"name": "Predpoveď deň 6"},
             "total_kwh_forecast_d7": {"name": "Predpoveď deň 7"},
             "power_now": {"name": "Výkon teraz"}
+        },
+        "select": {
+            "estimate_mode" : {"name": "Použiť pole predpovede"}
         }
     }
 }
