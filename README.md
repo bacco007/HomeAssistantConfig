@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.5.2 |
-| No. Integrations | 200 |
-| No. Custom Integrations | 80 |
-| No. Entities | 5210 |
-| No. Sensors | 3283 |
+| No. Integrations | 201 |
+| No. Custom Integrations | 81 |
+| No. Entities | 5052 |
+| No. Sensors | 3200 |
 | No. Automations | 142 |
 
 <details>
@@ -63,15 +63,15 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 344
-Buttons | 243
+Buttons | 149
 Calendars | 71
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 116
-Devices | 570
+Device trackers | 117
+Devices | 580
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -83,23 +83,23 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 20
-Numbers | 35
-Persistent notifications | 4
+Media players | 28
+Numbers | 39
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3283
+Sensors | 3200
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 254
+Switches | 255
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 277
+Update | 279
 Vacuums | 0
 Water heaters | 0
 Weather | 11
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>584 Integrations</summary>
+<details><summary>585 Integrations</summary>
 
 | Name |
 | --- |
@@ -368,6 +368,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [lovelace_gen](https://www.home-assistant.io/components/lovelace_gen) |
 | [map](https://www.home-assistant.io/components/map) |
+| [mass](https://www.home-assistant.io/components/mass) |
+| [mass.media_player](https://www.home-assistant.io/components/mass.media_player) |
 | [mastodon_profile_stats](https://www.home-assistant.io/components/mastodon_profile_stats) |
 | [mastodon_profile_stats.sensor](https://www.home-assistant.io/components/mastodon_profile_stats.sensor) |
 | [matter](https://www.home-assistant.io/components/matter) |
@@ -390,7 +392,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mobile_app.notify](https://www.home-assistant.io/components/mobile_app.notify) |
 | [mobile_app.sensor](https://www.home-assistant.io/components/mobile_app.sensor) |
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
-| [monitor_docker.button](https://www.home-assistant.io/components/monitor_docker.button) |
 | [monitor_docker.sensor](https://www.home-assistant.io/components/monitor_docker.sensor) |
 | [monitor_docker.switch](https://www.home-assistant.io/components/monitor_docker.switch) |
 | [moon](https://www.home-assistant.io/components/moon) |
@@ -705,7 +706,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>73 Custom Integrations</summary>
+<details><summary>74 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -745,8 +746,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.14] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
+| [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.15] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.5.1] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.0.0] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
@@ -770,7 +772,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.19] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
-| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.0b3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.0] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.11.1] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) |  [v0.3.9] | Sensor of Temperature Feels Like for Home Assistant. |[@Limych](https://github.com/Limych).|
@@ -781,7 +783,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.9] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
-| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.7] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
+| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.8] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
 <details><summary>57 Lovelace Plugins</summary>
@@ -830,7 +832,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.1] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.10.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -854,7 +856,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Noctis](https://github.com/aFFekopp/noctis) |  [v3.1] | 🐵 Dark Blue Theme for Home Assistant |
 </details>
 
-<details><summary>20 Addons via HA Operating System</summary>
+<details><summary>21 Addons via HA Operating System</summary>
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
@@ -869,13 +871,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.0 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.6.0 |  | core |
+| Music Assistant | 2.0.0 |  | d5369777 |
 | Node-RED | 17.0.12 |  | a0d7b954 |
 | OpenThread Border Router | 2.6.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.1 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.37.0-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.37.1-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
 </details>
