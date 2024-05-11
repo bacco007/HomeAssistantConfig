@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.5.2 |
-| No. Integrations | 201 |
+| HA Version | 2024.5.3 |
+| No. Integrations | 202 |
 | No. Custom Integrations | 81 |
-| No. Entities | 5052 |
-| No. Sensors | 3200 |
-| No. Automations | 142 |
+| No. Entities | 6273 |
+| No. Sensors | 4414 |
+| No. Automations | 143 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 117
-Devices | 580
+Devices | 581
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 28
 Numbers | 39
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3200
+Sensors | 4414
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 255
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 279
+Update | 284
 Vacuums | 0
 Water heaters | 0
 Weather | 11
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>585 Integrations</summary>
+<details><summary>586 Integrations</summary>
 
 | Name |
 | --- |
@@ -456,6 +456,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [plex.sensor](https://www.home-assistant.io/components/plex.sensor) |
 | [plex.update](https://www.home-assistant.io/components/plex.update) |
 | [plex_recently_added.sensor](https://www.home-assistant.io/components/plex_recently_added.sensor) |
+| [pocketcasts.sensor](https://www.home-assistant.io/components/pocketcasts.sensor) |
 | [powercalc](https://www.home-assistant.io/components/powercalc) |
 | [powercalc.sensor](https://www.home-assistant.io/components/powercalc.sensor) |
 | [private_ble_device](https://www.home-assistant.io/components/private_ble_device) |
@@ -742,7 +743,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.4] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.3] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.2.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
@@ -766,7 +767,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.9] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.1] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
-| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.17] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
+| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.19] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.1] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
@@ -827,7 +828,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.1.3] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.2] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.0.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.0.1] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.1] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
@@ -856,7 +857,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Noctis](https://github.com/aFFekopp/noctis) |  [v3.1] | 🐵 Dark Blue Theme for Home Assistant |
 </details>
 
-<details><summary>21 Addons via HA Operating System</summary>
+<details><summary>22 Addons via HA Operating System</summary>
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
@@ -866,12 +867,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
+| Home Assistant Git Exporter | 1.17.0 |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
 | JupyterLab | 0.15.0 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.6.0 |  | core |
-| Music Assistant | 2.0.0 |  | d5369777 |
+| Music Assistant | 2.0.1 |  | d5369777 |
 | Node-RED | 17.0.12 |  | a0d7b954 |
 | OpenThread Border Router | 2.6.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
@@ -926,7 +928,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.5.2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.5.3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
