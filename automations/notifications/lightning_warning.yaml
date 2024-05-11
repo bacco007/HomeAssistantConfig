@@ -1,15 +1,15 @@
 ---
-alias: "[Weather] Lightning Notification"
-id: weather_lightningnotification
+alias: "[Notification] Lightning Warning"
+id: notification_lightning_warning
 mode: single
 
 trigger:
   - platform: state
-    entity_id: sensor.weatherflow_forecast_lightnings_strikes
+    entity_id: sensor.weather_lightning_count
 
 condition:
   - condition: numeric_state
-    entity_id: sensor.weatherflow_forecast_distance_last_lightning_strike
+    entity_id: sensor.weather_lightning_distance
     below: 10
 
 action:

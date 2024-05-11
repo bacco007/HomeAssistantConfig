@@ -85,3 +85,4 @@ node-red/*
 !entities/multiscrape
 !custom_components/multiscrape
 !custom_components/gtfs2
+!automations/zigbee2mqtt

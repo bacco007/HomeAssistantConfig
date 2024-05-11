@@ -1,6 +1,6 @@
 ---
 id: unavailable_entities_notification
-alias: "System: Unavailable Entities Notification"
+alias: "[Notifications] Unavailable Entities"
 description: "Create persistent notification if there are unavailable entities, dismiss if none."
 mode: restart
 trigger:

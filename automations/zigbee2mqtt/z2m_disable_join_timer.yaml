@@ -1,0 +1,16 @@
+---
+alias: "[Zigbee2MQTT] Disable Z2M Join (By Timer)"
+id: z2m_disable_join_timer
+trigger:
+  - platform: event
+    event_type: timer.z2m_permit_join
+    event_data:
+      entity_id: timer.z2m_permit_join
+action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/bridge/config/permit_join
+      payload: 'false'
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.z2m_permit_join

@@ -1,5 +1,5 @@
 ---
-alias: "System - Database Repack (Weekly)"
+alias: "[HA] Database Repack (Weekly)"
 id: database_repack
 mode: single
 trigger:

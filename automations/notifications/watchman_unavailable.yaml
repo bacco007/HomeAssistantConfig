@@ -1,5 +1,5 @@
 ---
-alias: "Watchman - Notify new unavailable entities"
+alias: "[Notifications] Notify new unavailable entities, Watchman"
 id: watchman_notifyunavailable
 description: ""
 trigger:
