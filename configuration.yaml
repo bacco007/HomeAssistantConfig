@@ -1,11 +1,8 @@
 ---
-# This file bootstraps the system
-# Have a look inside the Integrations and Entities folders for my config
-
 homeassistant:
   packages: !include_dir_named /config/integrations
-  #customize: !include /config/customisations/entities.yaml
-  #customize_glob: !include /config/customisations/glob.yaml
+  # customize: !include /config/customisations/entities.yaml
+  # customize_glob: !include /config/customisations/glob.yaml
   allowlist_external_dirs:
     - /config/
   allowlist_external_urls:
