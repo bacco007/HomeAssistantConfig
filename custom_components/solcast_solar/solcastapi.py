@@ -233,6 +233,7 @@ class SolcastApi:
                     with open(self._filename) as data_file:
                         jsonData = json.load(data_file, cls=JSONDecoder)
                         json_version = jsonData.get("version", 1)
+                        self._weather = jsonData.get("weather", "unknown")
                         _LOGGER.debug(f"SOLCAST - load_saved_data file exists.. file type is {type(jsonData)}")
                         if json_version == _JSON_VERSION:
                             self._loaded_data = True
@@ -537,7 +538,8 @@ class SolcastApi:
 
         self._data["last_updated"] = dt.now(timezone.utc).isoformat()
         await self.sites_usage()
-        self._data['version'] = _JSON_VERSION
+        self._data["version"] = _JSON_VERSION
+        self._data["weather"] = self._weather
         self._loaded_data = True
         
         await self.buildforcastdata()

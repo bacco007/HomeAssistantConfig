@@ -40,6 +40,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         self._previousenergy = d
 
         try:
+            #4.0.18 - added reset usage call to reset usage sensors at UTC midnight
+            async_track_utc_time_change(self._hass, self.update_utcmidnight_usage_sensor_data, hour=0,minute=0)
             async_track_utc_time_change(self._hass, self.update_integration_listeners, second=0)
         except Exception as error:
             _LOGGER.error("SOLCAST - Error coordinator setup: %s", traceback.format_exc())
@@ -52,9 +54,16 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             #_LOGGER.error("SOLCAST - update_integration_listeners: %s", traceback.format_exc())
             pass
 
+    async def update_utcmidnight_usage_sensor_data(self, *args):
+        try:
+            self.solcast.sites_usage()
+        except Exception:
+            #_LOGGER.error("SOLCAST - update_utcmidnight_usage_sensor_data: %s", traceback.format_exc())
+            pass
+
     async def service_event_update(self, *args):
-        await self.solcast.http_data(dopast=False)
         await self.solcast.sites_weather()
+        await self.solcast.http_data(dopast=False)
         await self.update_integration_listeners()
 
     async def service_event_delete_old_solcast_json_file(self, *args):
