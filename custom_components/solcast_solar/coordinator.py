@@ -56,7 +56,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def update_utcmidnight_usage_sensor_data(self, *args):
         try:
-            self.solcast.sites_usage()
+            await self.solcast.sites_usage()
+            await self.update_integration_listeners()
         except Exception:
             #_LOGGER.error("SOLCAST - update_utcmidnight_usage_sensor_data: %s", traceback.format_exc())
             pass
