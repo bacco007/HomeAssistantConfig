@@ -92,74 +92,6 @@ sensor:
     attributes:
       category: weather
 
-  - name: "[Weather] Current Condition"
-    unique_id: weather_current_condition
-    icon: mdi:weather-partly-snowy-rainy
-    state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('weather.weatherflow_forecast_brisbane_st') %}
-        {%- set condition = states('weather.weatherflow_forecast_brisbane_st') %}
-      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
-          and has_value('weather.east_tamworth') %}
-        {%- set condition = states('weather.east_tamworth') %}
-      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
-          and has_value('weather.pirateweather') %}
-        {%- set condition = states('weather.pirateweather') %}
-      {%- endif %}
-      {%- if condition|lower == 'clear' and is_state('sun.sun','above_horizon') %} sunny
-      {%- elif condition|lower == 'clear' and is_state('sun.sun','below_horizon') %} clear-night
-      {%- elif condition|lower in ['mainly clear','mainly sunny','clear-day'] %} sunny
-      {%- elif condition|lower == 'mist' %} fog
-      {%- elif condition|lower in ['haze','partly cloudy','partly-cloudy-day','partly-cloudy-night'] %} partlycloudy
-      {%- elif condition|lower == 'mostly cloudy' %} cloudy
-      {%- elif condition|lower in ['light rain','rain'] %} rainy
-      {%- elif condition|lower in ['light snow','snow'] %} snowy
-      {%- elif condition|lower == 'thunderstorm' %} lightning-rainy
-      {%- elif condition|lower == 'heavy rain' %} pouring
-      {%- elif condition|lower == 'precipitation' %} rainy
-      {%- elif condition|lower == 'wind' %} windy
-      {%- else %} {{ condition|lower }}
-      {%- endif %}
-    attributes:
-      category: weather
-      provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
-          and has_value('weather.weatherflow_forecast_brisbane_st') %} Weatherflow (Cloud)
-        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
-          and has_value('weather.east_tamworth') %} Bureau of Meteorology
-        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
-          and has_value('weather.pirateweather') %} Pirate Weather
-        {%- endif %}
-    availability: >
-      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
-            and has_value('weather.weatherflow_forecast_brisbane_st')
-          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
-            and has_value('weather.east_tamworth')
-          or is_state('binary_sensor.connected_pirateweather', 'on')
-            and has_value('weather.pirateweather') }}
-
-  - name: "[Weather] Condition Today"
-    unique_id: weather_condition_today
-    icon: mdi:weather-partly-snowy-rainy
-    state: "{{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0].condition }}"
-    availability: >
-      {{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily') != none
-          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0] is defined
-          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0].condition is defined }}
-    attributes:
-      category: weather
-
-  - name: "[Weather] Condition Tomorrow"
-    unique_id: weather_condition_tomorrow
-    icon: mdi:weather-partly-snowy-rainy
-    state: "{{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1].condition }}"
-    availability: >
-      {{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily') != none
-          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1] is defined
-          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1].condition is defined }}
-    attributes:
-      category: weather
-
   - name: "[Weather] Temperature"
     unique_id: weather_temperature
     device_class: temperature
@@ -1300,7 +1232,7 @@ sensor:
     unique_id: weather_uv_index
     icon: mdi:weather-sunny-alert
     state_class: measurement
-    unit_of_measurement: UV index
+    unit_of_measurement: UVi
     state: >
       {% if is_state('binary_sensor.connected_weatherflow_local','on')
             and is_number(states('sensor.st_00056115_uv_index')) -%}
@@ -1317,6 +1249,16 @@ sensor:
       {%- endif %}
     attributes:
       category: weather
+      risk: >
+        {% set level = states(this.entity_id)|int(0) %}
+        {% if is_number(level) %}
+          {% if level < 3 %} Low
+          {% elif level < 5 %} Moderate
+          {% elif level < 7 %} Moderate High
+          {% elif level < 9 %} High
+          {% else %} Very High
+          {% endif %}
+        {% endif %}
       provider: >
         {% if is_state('binary_sensor.connected_weatherflow_local','on')
             and is_number(states('sensor.st_00056115_uv_index')) -%} Weatherflow (Local)
@@ -1336,65 +1278,3 @@ sensor:
             and is_number(states('sensor.pirateweather_uv_index'))
           or is_state('binary_sensor.connected_openuv', 'on')
             and is_number(states('sensor.current_uv_index')) }}
-
-  - name: "[Weather] Heat Index"
-    unique_id: weather_heat_index
-    device_class: temperature
-    state_class: measurement
-    unit_of_measurement: °C
-    state: >
-      {%- if states('sensor.weather_temperature') | float(default=0) > 27 and states('sensor.weather_humidity') | float(default=0) > 40 -%}
-        {% set T = states('sensor.weather_temperature') | float(default=0) %}
-        {% set R = states('sensor.weather_humidity') | float(default=0) %}
-        {% set c1 = -8.78469475556 %}
-        {% set c2 = 1.61139411 %}
-        {% set c3 = 2.33854883889 %}
-        {% set c4 = -0.14611605 %}
-        {% set c5 = -0.012308094 %}
-        {% set c6 = -0.0164248277778 %}
-        {% set c7 = 0.002211732 %}
-        {% set c8 = 0.00072546 %}
-        {% set c9 = -0.000003582 %}
-        {% set HI = c1 + (c2 * T ) + (c3 * R) + ( c4 * T * R ) + ( c5 * T**2 ) + ( c6 * R**2 ) + ( c7 * T**2 * R ) + ( c8 * T * R**2 ) + ( c9 * T**2 * R**2 ) %}
-        {{ HI | round }}
-      {%- else -%}
-        0
-      {%- endif -%}
-    attributes:
-      category: weather
-      provider: >
-        {{ state_attr('sensor.weather_temperature', 'provider') }}
-      index_rating: >
-        {%- if states(this.entity_id) == 'n/a' -%}
-        Out of range
-        {%- elif states(this.entity_id) | float(default=0)  >= 54 -%}
-        Extreme danger: heat stroke imminent
-        {%- elif states(this.entity_id) | float(default=0)  >= 41 -%}
-        Danger: cramps, exhaustion heat stroke probable
-        {%- elif states(this.entity_id) | float(default=0)  >= 32 -%}
-        Extreme caution: cramps and exhaustion possible
-        {%- elif states(this.entity_id) | float(default=0)  >= 26 -%}
-        Caution: fatigue possible
-        {%- else -%}
-        Normal
-        {%- endif -%}
-
-  - name: "[Weather] Fire Danger Today"
-    unique_id: weather_fire_danger_today
-    icon: mdi:fire
-    state: >
-      {{ states('sensor.east_tamworth_fire_danger_0') }}
-    availability: "{{ is_number(states('sensor.east_tamworth_fire_danger_0')) }}"
-    attributes:
-      category: weather
-      provider: Bureau of Meterology
-
-  - name: "[Weather] Fire Danger Tomorrow"
-    unique_id: weather_fire_danger_tomorrow
-    icon: mdi:fire
-    state: >
-      {{ states('sensor.east_tamworth_fire_danger_1') }}
-    availability: "{{ is_number(states('sensor.east_tamworth_fire_danger_1')) }}"
-    attributes:
-      category: weather
-      provider: Bureau of Meterology

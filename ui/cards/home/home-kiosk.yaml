@@ -21,11 +21,6 @@ cards:
     show_icon: true
     attribute: display
     sub_button:
-      - entity: sensor.binday_waste
-        show_background: true
-        show_attribute: true
-        attribute: days
-        icon: mdi:trash-can
       - entity: sensor.binday_recycling
         show_attribute: true
         attribute: days
@@ -38,11 +33,12 @@ cards:
         icon: mdi:leaf
     styles: |-
       .bubble-sub-button-1 {
-          background-color: ${hass.states['sensor.binday_waste'].attributes.days >= 7 ? 'transparent' : '#F03A3E'} !important;
-      }
-      .bubble-sub-button-2 {
           background-color: ${hass.states['sensor.binday_recycling'].attributes.days >= 7 ? 'transparent' : '#DBBC09'} !important;
       }
-      .bubble-sub-button-3 {
+      .bubble-sub-button-2 {
           background-color: ${hass.states['sensor.binday_greenwaste'].attributes.days >= 7 ? 'transparent' : '#155628'} !important;
       }
+      ha-card > div > div > div {
+        background: rgba(255, 87, 34, 0.2) !important;
+      }
+    card_layout: large-2-rows

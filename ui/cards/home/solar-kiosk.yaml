@@ -26,3 +26,7 @@ cards:
         show_background: false
         show_state: true
         icon: mdi:transmission-tower-import
+    show_last_changed: false
+    show_attribute: false
+    columns: 2
+    card_layout: large-2-rows

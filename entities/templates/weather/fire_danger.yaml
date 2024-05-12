@@ -1,0 +1,21 @@
+---
+sensor:
+  - name: "[Weather] Fire Danger Today"
+    unique_id: weather_fire_danger_today
+    icon: mdi:fire
+    state: >
+      {{ states('sensor.east_tamworth_fire_danger_0') }}
+    availability: "{{ is_number(states('sensor.east_tamworth_fire_danger_0')) }}"
+    attributes:
+      category: weather
+      provider: Bureau of Meterology
+
+  - name: "[Weather] Fire Danger Tomorrow"
+    unique_id: weather_fire_danger_tomorrow
+    icon: mdi:fire
+    state: >
+      {{ states('sensor.east_tamworth_fire_danger_1') }}
+    availability: "{{ is_number(states('sensor.east_tamworth_fire_danger_1')) }}"
+    attributes:
+      category: weather
+      provider: Bureau of Meterology

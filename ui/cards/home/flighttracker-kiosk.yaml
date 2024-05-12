@@ -18,13 +18,9 @@ cards:
   - type: custom:bubble-card
     card_type: button
     entity: sensor.flights_above_hourly
-    scrolling_effect: false
-    show_state: false
-    show_last_changed: false
     button_type: state
     icon: mdi:airplane-alert
     name: Flights
-    show_attribute: false
     attribute: state_class
     sub_button:
       - entity: sensor.flightradar24_current_in_area
@@ -46,6 +42,17 @@ cards:
         show_attribute: false
         show_state: true
         show_background: false
+    styles: ""
+    show_state: false
+    show_last_changed: false
+    card_layout: large-2-rows
+    columns: 2
+    rows: 2
+    show_icon: true
+    scrolling_effect: false
+    show_name: true
+    show_attribute: false
+
   - type: custom:mushroom-template-card
     primary: Latest Aircraft of Interest
     secondary: >-

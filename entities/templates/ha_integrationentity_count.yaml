@@ -3,7 +3,9 @@ sensor:
   - name: "[HA] Integrations, Entity Count"
     unique_id: ha_integrations_entity_count
     icon: mdi:home-assistant
-    state: ""
+    state: 0
+    unit_of_measurement: Integrations
+    state_class: measurement
     attributes:
       category: homeassistant
       details: >

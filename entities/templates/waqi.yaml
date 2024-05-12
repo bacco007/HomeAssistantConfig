@@ -17,6 +17,29 @@ sensor:
     unit_of_measurement: AQI
     state: "{{ states('sensor.waqi_tamworth_north_west_slopes')|float('unknown') }}"
     availability: "{{ is_number(states('sensor.waqi_tamworth_north_west_slopes')) }}"
+    attributes:
+      category: waqi
+      risk_level: >
+        {% set level = states('sensor.waqi_tamworth_north_west_slopes')|float(-1) %}
+        {%- if level < 51 %} Good
+        {%- elif level < 101 %} Moderate
+        {%- elif level < 151 %} Unhealthy Sensitive Groups
+        {%- elif level < 201 %} Unhealthy
+        {%- elif level < 301 %} Very Unhealthy
+        {%- elif level == -1 %} Not Recorded
+        {%- else %} Hazardous
+        {%- endif %}
+      dominant_pollutant: "{{state_attr('sensor.waqi_tamworth_north_west_slopes', 'dominantpol')}}"
+      aqi_rgb_color: >
+        {% set level = states('sensor.waqi_tamworth_north_west_slopes')|float(-1) %}
+        {%- if level < 51 %} "0, 153, 102"
+        {%- elif level < 101 %} "255, 222, 51"
+        {%- elif level < 151 %} "255, 153, 51"
+        {%- elif level < 201 %} "204, 0, 51"
+        {%- elif level < 301 %} "102, 0, 153"
+        {%- elif level == -1 %} "192, 192, 192"
+        {%- else %} "126, 0, 35"
+        {%- endif %}
 
   - name: "[WAQI] AQI Risk Level"
     unique_id: waqi_aqi_risk_level
@@ -31,6 +54,8 @@ sensor:
       {% else %} Hazardous
       {% endif %}
     availability: "{{ is_number(states('sensor.waqi_air_quality_index')) }}"
+    attributes:
+      category: waqi
 
   - name: "[WAQI] Ozone"
     unique_id: waqi_ozone
@@ -40,6 +65,8 @@ sensor:
     icon: si:co2
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','ozone') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','ozone')) }}"
+    attributes:
+      category: waqi
 
   # - name: "[WAQI] Carbon Monoxide"
   #   unique_id: waqi_carbon_monoxide
@@ -57,6 +84,8 @@ sensor:
     unit_of_measurement: AQI
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide')) }}"
+    attributes:
+      category: waqi
 
   # - name: "[WAQI] Sulphur Dioxide"
   #   unique_id: waqi_sulphur_dioxide
@@ -74,6 +103,8 @@ sensor:
     icon: si:pm2-5
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5')) }}"
+    attributes:
+      category: waqi
 
   - name: "[WAQI] Particulate Matter 10"
     unique_id: waqi_particulate_matter_10
@@ -83,3 +114,5 @@ sensor:
     icon: si:pm2-5
     state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_10') }}"
     availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_10')) }}"
+    attributes:
+      category: waqi

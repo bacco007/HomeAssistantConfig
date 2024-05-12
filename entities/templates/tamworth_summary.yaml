@@ -1,0 +1,13 @@
+---
+sensor:
+  - name: "[Tamworth] Summary"
+    unique_id: tamworth_summary
+    state: "OK"
+    icon: mdi:city-variant
+    attributes:
+      ee_outages: >
+        {{states('sensor.essential_energy_outages_current')|int(0)}}
+      livetraffic_incidents: >
+        {{state_attr('binary_sensor.livetrafficnsw_nearby_active_incident', 'count')|int(0)}}
+      fires_near_me: >
+        {{ states('sensor.nsw_rfs_alerts_near_me')|int(0)}}

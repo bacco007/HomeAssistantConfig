@@ -5,6 +5,11 @@ cards:
     card_type: separator
     name: Untappd
     icon: mdi:beer
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:bubble-card
     card_type: button
     button_type: state
@@ -12,6 +17,7 @@ cards:
     name: Beer Stats
     show_state: true
     icon: ""
+    card_layout: large-2-rows
     sub_button:
       - entity: sensor.untappd_total_beers
         show_background: true
@@ -30,6 +36,7 @@ cards:
     name: Project 52
     show_state: false
     icon: mdi:beer
+    card_layout: large-2-rows
     sub_button:
       - show_background: true
         show_state: false

@@ -1,0 +1,57 @@
+---
+sensor:
+  - name: "[Weather] Heat Index"
+    unique_id: weather_heat_index
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    state: >
+      {%- if states('sensor.weather_temperature') | float(default=0) > 27 and states('sensor.weather_humidity') | float(default=0) > 40 -%}
+        {% set T = states('sensor.weather_temperature') | float(default=0) %}
+        {% set R = states('sensor.weather_humidity') | float(default=0) %}
+        {% set c1 = -8.78469475556 %}
+        {% set c2 = 1.61139411 %}
+        {% set c3 = 2.33854883889 %}
+        {% set c4 = -0.14611605 %}
+        {% set c5 = -0.012308094 %}
+        {% set c6 = -0.0164248277778 %}
+        {% set c7 = 0.002211732 %}
+        {% set c8 = 0.00072546 %}
+        {% set c9 = -0.000003582 %}
+        {% set HI = c1 + (c2 * T ) + (c3 * R) + ( c4 * T * R ) + ( c5 * T**2 ) + ( c6 * R**2 ) + ( c7 * T**2 * R ) + ( c8 * T * R**2 ) + ( c9 * T**2 * R**2 ) %}
+        {{ HI | round(2) }}
+      {%- else -%}
+        0
+      {%- endif -%}
+    attributes:
+      category: weather
+      provider: >
+        {{ state_attr('sensor.weather_temperature', 'provider') }}
+      index_rating: >
+        {%- if states(this.entity_id) == 'n/a' -%}
+        Out of range
+        {%- elif states(this.entity_id) | float(default=0)  >= 54 -%}
+        Extreme Danger
+        {%- elif states(this.entity_id) | float(default=0)  >= 41 -%}
+        Danger
+        {%- elif states(this.entity_id) | float(default=0)  >= 32 -%}
+        Extreme Caution
+        {%- elif states(this.entity_id) | float(default=0)  >= 26 -%}
+        Caution
+        {%- else -%}
+        Normal
+        {%- endif -%}
+      index_description: >
+        {%- if states(this.entity_id) == 'n/a' -%}
+        Out of range
+        {%- elif states(this.entity_id) | float(default=0)  >= 54 -%}
+        Heat stroke is imminent
+        {%- elif states(this.entity_id) | float(default=0)  >= 41 -%}
+        Heat cramps and heat exhaustion are likely; heat stroke is probable with continued activity.
+        {%- elif states(this.entity_id) | float(default=0)  >= 32 -%}
+        Heat cramps and heat exhaustion are possible. Continuing activity could result in heat stroke.
+        {%- elif states(this.entity_id) | float(default=0)  >= 26 -%}
+        Fatigue is possible with prolonged exposure and activity. Continuing activity could result in heat cramps.
+        {%- else -%}
+        Normal
+        {%- endif -%}

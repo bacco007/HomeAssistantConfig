@@ -44,3 +44,4 @@ cards:
     show_attribute: false
     scrolling_effect: false
     show_state: false
+    card_layout: large-2-rows

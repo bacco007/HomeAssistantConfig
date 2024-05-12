@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.5.3 |
 | No. Integrations | 202 |
 | No. Custom Integrations | 81 |
-| No. Entities | 6273 |
-| No. Sensors | 4414 |
+| No. Entities | 6282 |
+| No. Sensors | 4416 |
 | No. Automations | 143 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 117
-Devices | 581
+Devices | 585
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -83,7 +83,7 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 28
+Media players | 32
 Numbers | 39
 Persistent notifications | 4
 Persons | 4
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4414
+Sensors | 4416
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 255
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 284
+Update | 285
 Vacuums | 0
 Water heaters | 0
 Weather | 11
@@ -795,7 +795,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.6] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.7] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -873,7 +873,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.0 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 5.6.0 |  | core |
-| Music Assistant | 2.0.1 |  | d5369777 |
+| Music Assistant | 2.0.2 |  | d5369777 |
 | Node-RED | 17.0.12 |  | a0d7b954 |
 | OpenThread Border Router | 2.6.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |

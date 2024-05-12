@@ -19,58 +19,59 @@ cards:
   - type: custom:bubble-card
     card_type: button
     button_type: state
-    entity: sensor.weather_current_condition
-    name: Current Weather
+    entity: weather.east_tamworth_hourly
+    name: Weather
+    styles: |-
+      ha-card > div > div > div {
+        background: rgba(33, 150, 243, 0.2) !important;
+      }
     sub_button:
       - entity: sensor.weather_temperature
         show_name: false
         show_icon: true
-        show_background: false
+        show_background: true
         show_state: true
         icon: mdi:thermometer
-      - entity: sensor.weather_humidity
+      - entity: sensor.weather_feels_like_temperature
         show_background: false
         show_state: true
-  - type: grid
+        icon: mdi:thermometer-check
+      - entity: sensor.weather_temperature_today_maximum_display
+        show_name: false
+        show_background: false
+        show_attribute: false
+        show_state: true
+      - entity: sensor.weather_temperature_today_minimum_display
+        show_name: false
+        show_state: true
+        show_background: false
+    show_state: true
+    show_last_changed: false
+    card_layout: large-2-rows
     columns: 2
-    square: false
-    cards:
-      - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: sensor.weather_temperature_today_maximum_display
-        name: High Temp
-      - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: sensor.weather_temperature_today_minimum_display
-        name: Low Temp
+    rows: 2
+    show_icon: true
+    scrolling_effect: false
+    show_name: true
+    show_attribute: false
   - type: custom:bubble-card
     card_type: button
     button_type: state
     entity: sensor.weatherflow_rainfall_daily
-    scrolling_effect: false
-    show_state: false
     name: Rainfall
     icon: mdi:weather-rainy
+    styles: |-
+      ha-card > div > div > div {
+        background: rgba(63, 81, 181, 0.2) !important;
+      }
     sub_button:
-      - entity: sensor.weatherflow_rainfall_daily
-        icon: mdi:calendar-today
+      - icon: mdi:calendar-today
         show_background: false
         show_state: true
       - entity: sensor.weatherflow_rainfall_weekly
         icon: mdi:calendar-week
         show_background: false
         show_state: true
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    scrolling_effect: false
-    show_state: false
-    entity: sensor.weatherflow_rainfall_monthly
-    name: Long Term Rainfall
-    icon: mdi:weather-rainy
-    sub_button:
       - entity: sensor.weatherflow_rainfall_monthly
         icon: mdi:calendar-month
         show_background: false
@@ -79,3 +80,12 @@ cards:
         icon: mdi:calendar-arrow-left
         show_background: false
         show_state: true
+    show_state: false
+    show_last_changed: false
+    card_layout: large-2-rows
+    columns: 2
+    rows: 2
+    show_icon: true
+    scrolling_effect: false
+    show_name: true
+    show_attribute: false

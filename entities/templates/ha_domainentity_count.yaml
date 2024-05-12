@@ -1,0 +1,23 @@
+---
+sensor:
+  - name: "[HA] Domains, Entity Count"
+    unique_id: ha_domains_entity_count
+    icon: mdi:home-assistant
+    state: >
+      {% set ns = namespace(domains=[]) %}
+      {%- for s in states -%}
+      {%- set ns.domains = (ns.domains + [s.domain])|unique|list -%}
+      {%- endfor %}
+      {{ ns.domains|length }}
+    unit_of_measurement: Domains
+    state_class: measurement
+    attributes:
+      category: homeassistant
+      details: >
+        {% set ns = namespace(domains=[]) %}
+        {%- for s in states -%}
+        {%- set ns.domains = (ns.domains + [s.domain])|unique|list -%}
+        {%- endfor %}
+        [{%- for domain in ns.domains | sort %}
+          {"{{ domain }}":{{ states[domain]|length }}},
+        {%- endfor %}]

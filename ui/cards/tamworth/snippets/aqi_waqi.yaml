@@ -265,7 +265,7 @@ cards:
           x1: 1
           y1: 300
           y0: 200
-          fillcolor: "#660099"
+          fillcolor: ""
           opacity: 0.2
           layer: below
           line:

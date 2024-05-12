@@ -1,0 +1,69 @@
+---
+sensor:
+  - name: "[Weather] Current Condition"
+    unique_id: weather_current_condition
+    icon: mdi:weather-partly-snowy-rainy
+    state: >
+      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('weather.weatherflow_forecast_brisbane_st') %}
+        {%- set condition = states('weather.weatherflow_forecast_brisbane_st') %}
+      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and has_value('weather.east_tamworth') %}
+        {%- set condition = states('weather.east_tamworth') %}
+      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('weather.pirateweather') %}
+        {%- set condition = states('weather.pirateweather') %}
+      {%- endif %}
+      {%- if condition|lower == 'clear' and is_state('sun.sun','above_horizon') %} sunny
+      {%- elif condition|lower == 'clear' and is_state('sun.sun','below_horizon') %} clear-night
+      {%- elif condition|lower in ['mainly clear','mainly sunny','clear-day'] %} sunny
+      {%- elif condition|lower == 'mist' %} fog
+      {%- elif condition|lower in ['haze','partly cloudy','partly-cloudy-day','partly-cloudy-night'] %} partlycloudy
+      {%- elif condition|lower == 'mostly cloudy' %} cloudy
+      {%- elif condition|lower in ['light rain','rain'] %} rainy
+      {%- elif condition|lower in ['light snow','snow'] %} snowy
+      {%- elif condition|lower == 'thunderstorm' %} lightning-rainy
+      {%- elif condition|lower == 'heavy rain' %} pouring
+      {%- elif condition|lower == 'precipitation' %} rainy
+      {%- elif condition|lower == 'wind' %} windy
+      {%- else %} {{ condition|lower }}
+      {%- endif %}
+    attributes:
+      category: weather
+      provider: >
+        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+          and has_value('weather.weatherflow_forecast_brisbane_st') %} Weatherflow (Cloud)
+        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          and has_value('weather.east_tamworth') %} Bureau of Meteorology
+        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+          and has_value('weather.pirateweather') %} Pirate Weather
+        {%- endif %}
+    availability: >
+      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+            and has_value('weather.weatherflow_forecast_brisbane_st')
+          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+            and has_value('weather.east_tamworth')
+          or is_state('binary_sensor.connected_pirateweather', 'on')
+            and has_value('weather.pirateweather') }}
+
+  - name: "[Weather] Condition Today"
+    unique_id: weather_condition_today
+    icon: mdi:weather-partly-snowy-rainy
+    state: "{{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0].condition }}"
+    availability: >
+      {{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily') != none
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0] is defined
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[0].condition is defined }}
+    attributes:
+      category: weather
+
+  - name: "[Weather] Condition Tomorrow"
+    unique_id: weather_condition_tomorrow
+    icon: mdi:weather-partly-snowy-rainy
+    state: "{{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1].condition }}"
+    availability: >
+      {{ state_attr('sensor.weather_forecasts', 'east_tamworth_daily') != none
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1] is defined
+          and state_attr('sensor.weather_forecasts', 'east_tamworth_daily')[1].condition is defined }}
+    attributes:
+      category: weather
