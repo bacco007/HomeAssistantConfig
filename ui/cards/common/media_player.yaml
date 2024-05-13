@@ -27,3 +27,4 @@ sub_button:
 scrolling_effect: false
 name: Currently Playing
 icon: mdi:play-box-multiple-outline
+card_layout: large

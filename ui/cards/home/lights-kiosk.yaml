@@ -12,15 +12,19 @@ cards:
         }
   - square: false
     type: grid
+    columns: 2
     cards:
       - type: custom:bubble-card
         card_type: button
         button_type: slider
         entity: light.office_lamp
         name: Office Lamp
+        styles: >-
+          ${state === 'on' ? icon.setAttribute("icon", "mdi:lightbulb") : icon.setAttribute("icon", "mdi:lightbulb-off")};
       - type: custom:bubble-card
         card_type: button
         button_type: slider
         entity: light.bedroom_lamp
         name: Bedroom Lamp
-    columns: 2
+        styles: >-
+          ${state === 'on' ? icon.setAttribute("icon", "mdi:lightbulb") : icon.setAttribute("icon", "mdi:lightbulb-off")};
