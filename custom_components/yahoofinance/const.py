@@ -16,6 +16,8 @@ ATTR_DIVIDEND_DATE: Final = "dividendDate"
 ATTR_REGULAR_MARKET_TIME: Final = "regularMarketTime"
 ATTR_PRE_MARKET_TIME: Final = "preMarketTime"
 ATTR_POST_MARKET_TIME: Final = "postMarketTime"
+ATTR_FORWARD_PE: Final = "forwardPE"
+ATTR_TRAILING_PE: Final = "trailingPE"
 
 # Hass data
 HASS_DATA_CONFIG: Final = "config"
@@ -30,10 +32,10 @@ DATA_SHORT_NAME: Final = "shortName"
 DATA_MARKET_STATE: Final = "marketState"
 DATA_DIVIDEND_DATE: Final = "dividendDate"
 DATA_REGULAR_MARKET_TIME: Final = "regularMarketTime"
-DATA_PRE_MARKET_TIME: Final = 'preMarketTime'
+DATA_PRE_MARKET_TIME: Final = "preMarketTime"
 DATA_POST_MARKET_TIME: Final = "postMarketTime"
-
-
+DATA_FORWARD_PE: Final = "forwardPE"
+DATA_TRAILING_PE: Final = "trailingPE"
 
 DATA_REGULAR_MARKET_PREVIOUS_CLOSE: Final = "regularMarketPreviousClose"
 DATA_REGULAR_MARKET_PRICE: Final = "regularMarketPrice"
@@ -76,6 +78,8 @@ NUMERIC_DATA_GROUPS: Final = {
         ("regularMarketVolume", False),
         (DATA_REGULAR_MARKET_TIME, False),
         (DATA_DIVIDEND_DATE, False),
+        (DATA_FORWARD_PE, False),
+        (DATA_TRAILING_PE, False),
     ],
     CONF_INCLUDE_FIFTY_DAY_VALUES: [
         ("fiftyDayAverage", True),
