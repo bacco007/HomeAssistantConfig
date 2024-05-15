@@ -14,10 +14,11 @@ sensor:
     attributes:
       category: homeassistant
       details: >
-        {% set ns = namespace(domains=[]) %}
-        {%- for s in states -%}
-        {%- set ns.domains = (ns.domains + [s.domain])|unique|list -%}
+        {%- set ns = namespace(items = [], domains = []) %}
+        {%- for s in states %}
+          {%- set ns.domains = (ns.domains + [s.domain])|unique|list -%}
         {%- endfor %}
-        [{%- for domain in ns.domains | sort %}
-          {"{{ domain }}":{{ states[domain]|length }}},
-        {%- endfor %}]
+        {%- for item in ns.domains | sort %}
+          {%- set ns.items = ns.items + [ { 'domain': item, 'count': states[item]|length} ] %}
+        {%- endfor %}
+        {{ ns.items | sort(attribute='count', reverse=true) }}

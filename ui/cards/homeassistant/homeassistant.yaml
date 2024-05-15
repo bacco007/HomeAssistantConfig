@@ -235,6 +235,39 @@ cards:
                   padding-bottom: 20px;
                   font-size: 12px;
                 }
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Domains Entity Count
+          icon: mdi:home-assistant
+          state: ""
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.ha_domains_entity_count
+            css:
+              table+: "border-collapse: collapse;"
+            #sort_by: details
+            columns:
+              - name: Domain
+                data: details
+                modify: x.domain
+              - name: Count
+                data: details
+                modify: x.count
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-bottom: 20px;
+                  font-size: 12px;
+                }
+
       - type: section
       - entity: sensor.entities
         name: Entities in Use
