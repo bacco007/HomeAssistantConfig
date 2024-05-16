@@ -171,11 +171,6 @@ class SolcastApi:
                 _LOGGER.debug(f"SOLCAST - sites_usage returned data: {d}")
                 self._api_limit = d.get("daily_limit", None)
                 self._api_used = d.get("daily_limit_consumed", None)
-                # if "daily_limit" in d:
-                #     self._api_limit = d["daily_limit"]
-                #     self._api_used = d["daily_limit_consumed"]
-                # else:
-                #     raise Exception(f"SOLCAST - sites_usage: gathering site data failed. request returned Status code: {status} - Responce: {resp_json}.")
             else:
                 raise Exception(f"SOLCAST - sites_usage: gathering site data failed. request returned Status code: {status} - Responce: {resp_json}.")
             
@@ -537,7 +532,7 @@ class SolcastApi:
             await self.http_data_call(site['resource_id'], site['apikey'], dopast)
 
         self._data["last_updated"] = dt.now(timezone.utc).isoformat()
-        await self.sites_usage()
+        #await self.sites_usage()
         self._data["version"] = _JSON_VERSION
         self._data["weather"] = self._weather
         self._loaded_data = True
@@ -676,6 +671,7 @@ class SolcastApi:
 
                     if status == 200:
                         _LOGGER.debug(f"SOLCAST - API returned data. API Counter incremented from {self._api_used} to {self._api_used + 1}")
+                        self._api_used = self._api_used + 1
                     else:
                         _LOGGER.warning(f"SOLCAST - API returned status {status}. API data  {self._api_used} to {self._api_used + 1}")
                         _LOGGER.warning("This is an error with the data returned from Solcast, not the integration!")

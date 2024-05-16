@@ -63,7 +63,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             pass
 
     async def service_event_update(self, *args):
-        await self.solcast.sites_weather()
+        #await self.solcast.sites_weather()
         await self.solcast.http_data(dopast=False)
         await self.update_integration_listeners()
 
