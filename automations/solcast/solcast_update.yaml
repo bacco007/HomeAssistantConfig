@@ -12,6 +12,8 @@ condition:
     before: sunset
     after: sunrise
 action:
+  - delay:
+      seconds: "{{ range(30, 360)|random|int }}"
   - service: solcast_solar.update_forecasts
     data: {}
 mode: single

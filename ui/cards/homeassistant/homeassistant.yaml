@@ -249,7 +249,7 @@ cards:
               include: sensor.ha_domains_entity_count
             css:
               table+: "border-collapse: collapse;"
-            #sort_by: details
+            # sort_by: details
             columns:
               - name: Domain
                 data: details
