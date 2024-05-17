@@ -22,13 +22,13 @@ cards:
     attribute: display
     sub_button:
       - entity: sensor.binday_recycling
-        show_attribute: true
+        show_attribute: false
         attribute: days
         icon: mdi:recycle
       - entity: sensor.binday_greenwaste
         show_name: false
         show_last_changed: false
-        show_attribute: true
+        show_attribute: false
         attribute: days
         icon: mdi:leaf
     styles: |-
@@ -39,6 +39,8 @@ cards:
           background-color: ${hass.states['sensor.binday_greenwaste'].attributes.days >= 7 ? 'transparent' : '#155628'} !important;
       }
       ha-card > div > div > div {
-        background: rgba(255, 87, 34, 0.2) !important;
+        background: rgba(255, 87, 34, 0.1) !important;
       }
-    card_layout: large-2-rows
+    card_layout: normal
+    columns: 2
+    rows: 1

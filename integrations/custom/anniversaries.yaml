@@ -54,3 +54,6 @@ anniversaries:
     - name: !secret date10_name
       date: !secret date10_date
       show_half_anniversary: true
+    - name: !secret date11_name
+      date: !secret date11_date
+      show_half_anniversary: true

@@ -73,6 +73,8 @@ recorder:
       - sensor.network_scanner
       - sensor.hass_main_config
       - sensor.weather_forecasts
+      - sensor.the_dream_police_memory_utilization
+      - sensor.the_dream_police_cpu_utilization
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -80,6 +82,7 @@ recorder:
       - binary_sensor.pve*
       - binary_sensor.vmtbsh03*
       - binary_sensor.wud*
+      - binary_sensor.espresense*
       - sensor.*_thermal_comfort_*
       - sensor.*_upcoming_media
       - sensor.*_uptime
@@ -174,6 +177,7 @@ recorder:
       - sensor.storage_*
       - sensor.tbpixeltablet_*
       - sensor.*in_radius_zone_home
+      - sensor.awtrix_b85b5c*
     event_types:
       - automation_triggered
       - call_service
@@ -204,6 +208,8 @@ recorder:
       - transmission_started_torrent
       - flightradar24_entry
       - flightradar24_exit
+      - lastfm_daily_playcount_update
+      - flightradar24_most_tracked_new
   include:
     entities:
       - sensor.tamhospital_waitingtime
