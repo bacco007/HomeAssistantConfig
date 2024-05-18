@@ -6,11 +6,17 @@ title: Home
 type: custom:grid-layout
 layout:
   grid-template-columns: auto
-  grid-template-rows: auto
+  grid-template-rows: 60px auto 60px
   grid-template-areas: |
     "header"
     "main"
     "footer"
+  height: 100%
+  grid-gap: 8px
+  place-content: space-between
+  margin: 0px 0px 0px 0px !important
+  card_margin: 0px 0px 0px 0px !important
+  padding: 0px 0px 0px 0px !important
 cards:
   # Header
   - type: vertical-stack
@@ -29,16 +35,15 @@ cards:
     view_layout:
       grid-area: main
     cards:
-      - !include /config/ui/cards/home/home-kiosk.yaml
-      - !include /config/ui/cards/home/weather-kiosk.yaml
-      - !include /config/ui/cards/home/tamworth-kiosk.yaml
+      - !include /config/ui/cards/home/home.yaml
+      - !include /config/ui/cards/home/weather.yaml
+      - !include /config/ui/cards/home/tamworth.yaml
       - !include /config/ui/cards/home/sun_moon.yaml
-      - !include /config/ui/cards/home/lights-kiosk.yaml
+      # - !include /config/ui/cards/home/lights-kiosk.yaml
       - !include /config/ui/cards/home/sport-kiosk.yaml
-      - !include /config/ui/cards/home/solar-kiosk.yaml
-      - !include /config/ui/cards/home/untappd-kiosk.yaml
+      - !include /config/ui/cards/home/solar.yaml
+      - !include /config/ui/cards/home/untappd.yaml
       - !include /config/ui/cards/home/flighttracker-kiosk.yaml
-      # - !include /config/ui/cards/home/tamworth.yaml
 
   # Footer
   - type: vertical-stack
@@ -50,3 +55,7 @@ cards:
   # Popups
   - !include /config/ui/popup/flightsnearby.yaml
   - !include /config/ui/popup/weather_forecast.yaml
+  - !include /config/ui/popup/updates.yaml
+  - !include /config/ui/popup/sleep_analysis.yaml
+  - !include /config/ui/popup/solar.yaml
+  - !include /config/ui/popup/media_upcoming.yaml

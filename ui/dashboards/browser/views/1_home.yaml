@@ -60,5 +60,9 @@ cards:
     card: !include /config/ui/cards/common/media_player.yaml
 
   # Popups
+  - !include /config/ui/popup/weather_forecast.yaml
   - !include /config/ui/popup/flightsnearby.yaml
   - !include /config/ui/popup/updates.yaml
+  - !include /config/ui/popup/sleep_analysis.yaml
+  - !include /config/ui/popup/solar.yaml
+  - !include /config/ui/popup/media_upcoming.yaml

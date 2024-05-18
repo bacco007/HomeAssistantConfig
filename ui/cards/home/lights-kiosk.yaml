@@ -10,6 +10,7 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
+    card_layout: normal
   - square: false
     type: grid
     columns: 2
@@ -17,14 +18,28 @@ cards:
       - type: custom:bubble-card
         card_type: button
         button_type: slider
-        entity: light.office_lamp
-        name: Office Lamp
+        entity: light.bedroom_lamp
+        name: Bedroom
         styles: >-
-          ${state === 'on' ? icon.setAttribute("icon", "mdi:lightbulb") : icon.setAttribute("icon", "mdi:lightbulb-off")};
+          ${state === 'on' ? icon.setAttribute("icon", "mdi:lightbulb") :
+          icon.setAttribute("icon", "mdi:lightbulb-off")};
+        sub_button:
+          - show_background: false
+            show_icon: false
+            show_name: false
+            show_attribute: true
+            attribute: brightness
       - type: custom:bubble-card
         card_type: button
         button_type: slider
-        entity: light.bedroom_lamp
-        name: Bedroom Lamp
+        entity: light.office_lamp
+        name: Office
         styles: >-
-          ${state === 'on' ? icon.setAttribute("icon", "mdi:lightbulb") : icon.setAttribute("icon", "mdi:lightbulb-off")};
+          ${state === 'on' ? icon.setAttribute("icon", "mdi:lightbulb") :
+          icon.setAttribute("icon", "mdi:lightbulb-off")};
+        sub_button:
+          - show_background: false
+            show_icon: false
+            show_name: false
+            show_attribute: true
+            attribute: brightness

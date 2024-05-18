@@ -12,21 +12,34 @@ cards:
         }
     sub_button:
       - icon: mdi:arrow-top-right-thick
+        show_name: false
+        show_attribute: false
+        show_background: false
         tap_action:
           action: navigate
-          navigation_path: "#flighttracker"
+          navigation_path: "#flightsnear"
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.flighttracker_aircraft_total
+        button_type: state
+        name: Current (ADS-B)
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.flightradar24_current_in_area
+        button_type: state
+        name: Current (FR24)
   - type: custom:bubble-card
     card_type: button
     entity: sensor.flights_above_hourly
     button_type: state
     icon: mdi:airplane-alert
-    name: Flights
+    name: Flight History (FR24)
     attribute: state_class
     sub_button:
-      - entity: sensor.flightradar24_current_in_area
-        icon: mdi:clock-fast
-        show_attribute: false
-        show_state: true
       - entity: sensor.flights_above_hourly
         icon: mdi:clock-start
         show_attribute: false
@@ -45,7 +58,7 @@ cards:
     styles: ""
     show_state: false
     show_last_changed: false
-    card_layout: large-2-rows
+    card_layout: normal
     columns: 2
     rows: 2
     show_icon: true

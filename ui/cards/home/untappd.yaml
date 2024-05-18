@@ -1,129 +1,69 @@
 ---
-type: custom:stack-in-card
-mode: vertical
-keep:
-  background: true
-  margin: true
-  border_radius: true
-  outer_padding: true
+type: vertical-stack
 cards:
-  - type: custom:decluttering-card
-    template: bubble_header
-    variables:
-      - name: Untappd
-      - icon: beer
-      - navpath: untappd
-  - square: false
-    columns: 3
-    type: grid
-    cards:
-      - type: custom:mushroom-template-card
-        primary: Beers Tried
-        secondary: >
-          {{ state_attr('sensor.untappd_last_check_in_bacco007', 'total_beers') }} Beers
-        layout: horizontal
-        fill_container: false
-        icon: mdi:beer-outline
-        icon_color: "orange"
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        primary: Checkins
-        secondary: >
-          {{ states('sensor.untappd_checked') }} Beers
-        layout: horizontal
-        fill_container: false
-        icon: mdi:beer-outline
-        icon_color: "orange"
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        primary: Project 52
-        secondary: >
-          {{ state_attr('sensor.untappd_project_52', 'count') }} Beers, {{ state_attr('sensor.untappd_project_52', 'target') }} To Go
-        layout: horizontal
-        fill_container: false
-        icon: mdi:beer-outline
-        icon_color: "orange"
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
+  - type: custom:bubble-card
+    card_type: separator
+    name: Untappd
+    icon: mdi:beer
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.untappd_beer
+    name: Beer Stats
+    show_state: true
+    icon: ""
+    card_layout: large-2-rows
+    sub_button:
+      - entity: sensor.untappd_total_beers
+        show_background: true
+        show_state: true
+        icon: mdi:beer
+      - entity: sensor.untappd_checked
+        show_background: false
+        show_state: true
+        icon: mdi:beer
+      - entity: sensor.untappd_total_badges
+        show_background: false
+        show_state: true
+        icon: mdi:medal
+    show_icon: true
+    show_attribute: false
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.untappd_project_52
+    name: Project 52
+    show_state: false
+    icon: mdi:beer
+    sub_button:
+      - show_background: true
+        show_state: false
+        icon: mdi:beer
+        show_attribute: true
+        attribute: count
+      - show_background: false
+        show_state: false
+        icon: mdi:target
+        show_attribute: true
+        attribute: target
+    show_icon: true
   - type: custom:mushroom-template-card
     style: |
       ha-card {
         background-color: var(--background-color);
-    primary: Last Beer
+    #primary: Last Beer
     secondary: >-
-      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}}
-      ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}}), {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
-      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} %
+      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}} ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
 
-      My Rating: {{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}},
-      Untappd: {{state_attr('sensor.untappd_recent_beers',
-      'data')[0]['beer_rating']|round(2)}}
+      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
+      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} % - ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}} / {{state_attr('sensor.untappd_recent_beers',
+      'data')[0]['beer_rating']|round(2)}})
     icon: mdi:beer-outline
-    icon_color: orange
     entity: sensor.untappd_recent_beers
     fill_container: true
     multiline_secondary: true
@@ -135,17 +75,13 @@ cards:
       action: none
     card_mod:
       style:
-        mushroom-shape-icon$: |
-          .shape {
-            --shape-color: none !important;
-          }
         .: |
           ha-card {
-            background-color: var(--background-color);
+            # background-color: var(--background-color);
             --icon-size: 40px;
             --icon-symbol-size: 30px;
-            --card-secondary-font-size: 10px;
-            --card-primary-font-size: 12px;
+            --card-secondary-font-size: 12px;
+            --card-primary-font-size: 14px;
             padding-top: 5px !important;
             padding-bottom: 5px !important;
           }

@@ -1,0 +1,26 @@
+---
+sensor:
+  - name: aurora_chance
+    unique_id: aurora_chance
+    icon: mdi:sun
+    state: >
+      {% set auroraChance = states('sensor.aurora_31_150')|int/100 %}
+      {% set cloudCoverage = (states('sensor.openweathermap_cloud_coverage')|int/100) %}
+      {% set skyClarity = 1-(states('sensor.openweathermap_cloud_coverage')|int/100) %}
+      {% set darkness = max(0,min(1,1-(state_attr('sun.sun','elevation')+6)/6)) %}
+      {{ (auroraChance * skyClarity * darkness * 100)|round(0) }}
+    unit_of_measurement: "%"
+    attributes:
+      category: aurora
+      aurora: >
+        {% set auroraChance = states('sensor.aurora_31_150')|int/100 %}
+        {{ (auroraChance * 100)|round(0) }}%
+      cloud_coverage: >
+        {% set cloudCoverage = (states('sensor.openweathermap_cloud_coverage')|int/100) %}
+        {{ (cloudCoverage * 100)|round(0)}}%
+      sky_clarity: >
+        {% set skyClarity = 1-(states('sensor.openweathermap_cloud_coverage')|int/100) %}
+        {{ (skyClarity*100)|round(0) }}%
+      darkness: >
+        {% set darkness = max(0,min(1,1-(state_attr('sun.sun','elevation')+6)/6)) %}
+        {{ (darkness*100)|round(0) }}%

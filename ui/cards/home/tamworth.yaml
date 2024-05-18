@@ -1,190 +1,74 @@
 ---
-type: custom:stack-in-card
-mode: vertical
-keep:
-  background: true
-  margin: true
-  border_radius: true
-  outer_padding: true
+type: vertical-stack
 cards:
-  - type: custom:decluttering-card
-    template: bubble_header
-    variables:
-      - name: Tamworth
-      - icon: city
-      - navpath: tamworth
-  - square: false
-    columns: 3
-    type: grid
-    cards:
-      - type: custom:mushroom-template-card
-        entity: sensor.essential_energy_outages_current
-        primary: Electrical Outages
-        secondary: >
-          {{states('sensor.essential_energy_outages_current')}} Incidents
-        layout: horizontal
-        fill_container: false
-        icon: mdi:grid
-        icon_color: >
-          {% if states('sensor.essential_energy_outages_current') != "0" %} red {% else %} green {% endif %}
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        entity: binary_sensor.livetrafficnsw_nearby_active_incident
-        primary: Live Traffic
-        secondary: >
-          {{ state_attr('binary_sensor.livetrafficnsw_nearby_active_incident', 'count') }} Incidents
-        layout: horizontal
-        fill_container: false
+  - type: custom:bubble-card
+    card_type: separator
+    name: Tamworth
+    icon: mdi:city-variant-outline
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - entity: sensor.tamworth_airport_temp
+        icon: mdi:thermometer
+        show_state: true
+        show_background: false
+      - entity: sensor.tamworth_airport_rain_since_9am
+        icon: mdi:water
+        show_state: true
+        show_background: false
+    card_layout: normal
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.tamworth_summary
+    show_state: false
+    show_attribute: false
+    name: Status
+    icon: mdi:home-city
+    show_icon: true
+    attribute: display
+    sub_button:
+      - entity: sensor.tamworth_summary
+        icon: mdi:transmission-tower-off
+        show_attribute: true
+        attribute: ee_outages
+        show_state: false
+        show_background: false
+        show_name: false
+        show_last_changed: false
+        show_icon: true
+      - entity: sensor.tamworth_summary
         icon: mdi:traffic-cone
-        icon_color: >
-          {% if state_attr('binary_sensor.livetrafficnsw_nearby_active_incident', 'count') != "0" %} red {% else %} green {% endif %}
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        entity: sensor.nsw_rfs_alerts_near_me
-        primary: Bushfires Near Me
-        secondary: >
-          {{ states('sensor.nsw_rfs_alerts_near_me') }} Incidents
-        layout: horizontal
-        fill_container: false
+        show_attribute: true
+        attribute: livetraffic_incidents
+        show_state: false
+        show_background: false
+        show_name: false
+        show_last_changed: false
+      - entity: sensor.tamworth_summary
         icon: mdi:fire-alert
-        icon_color: >
-          {% if states('sensor.nsw_rfs_alerts_near_me') != "0" %} red {% else %} green {% endif %}
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        entity: sensor.waqi_air_quality_index
-        primary: Air Quality Index
-        secondary: >
-          {{ states('sensor.waqi_air_quality_index') }} AQI
-        layout: horizontal
-        fill_container: false
-        icon: mdi:virus
-        icon_color: >
-          {% set level = states('sensor.waqi_air_quality_index')|float(0) %}
-          {% if level < 50 %} green
-          {% elif level < 100 %} yellow
-          {% elif level < 150 %} orange
-          {% elif level < 300 %} orangered
-          {% elif level >= 300 %} red
-          {% else %} grey
-          {% endif %}
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        entity: sensor.waqi_air_quality_index
-        primary: UV Index
-        secondary: >
-          {{ states('sensor.current_uv_index') }} UVI
-        layout: horizontal
-        fill_container: false
-        icon: mdi:virus
-        icon_color: blue
-        secondary_info: state
-        multiline_secondary: false
-        badge_icon: ""
-        badge_color: ""
-        tap_action:
-          action: more-info
-        card_mod:
-          style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-
-              }
-            .: |
-              ha-card {
-                background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
+        show_attribute: true
+        attribute: fires_near_me
+        show_state: false
+        show_background: false
+        show_name: false
+        show_last_changed: false
+    styles: |-
+      .bubble-sub-button-1 {
+          background-color: ${hass.states['sensor.tamworth_summary'].attributes.ee_outages >= 1 ? '#CD1015': 'transparent'} !important;
+      }
+      .bubble-sub-button-2 {
+          background-color: ${hass.states['sensor.tamworth_summary'].attributes.livetraffic_incidents >= 1 ? '#CD1015': 'transparent'} !important;
+      }
+      .bubble-sub-button-3 {
+          background-color: ${hass.states['sensor.tamworth_summary'].attributes.fires_near_me >= 1 ? '#CD1015': 'transparent'} !important;
+      }
+      .bubble-icon {
+        opacity: 1;
+      }
+    card_layout: normal
+    rows: 3
+    columns: 1

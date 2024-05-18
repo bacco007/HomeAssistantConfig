@@ -5,11 +5,6 @@ cards:
     card_type: separator
     name: Sport
     icon: mdi:football-australian
-    styles: |-
-      .bubble-line {
-        background: var(--ha-card-background);
-        opacity: 1;
-        }
     sub_button:
       - icon: mdi:calendar-alert
         tap_action:
@@ -19,6 +14,11 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "#sport"
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:bubble-card
     card_type: button
     button_type: state
@@ -44,7 +44,6 @@ cards:
     show_attribute: false
     scrolling_effect: false
     show_state: false
-    card_layout: large-2-rows
 # type: custom:stack-in-card
 # mode: vertical
 # keep:

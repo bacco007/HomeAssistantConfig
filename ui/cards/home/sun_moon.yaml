@@ -18,23 +18,25 @@ cards:
   - type: custom:bubble-card
     card_type: button
     button_type: state
-    entity: sensor.nextsunrise
-    card_layout: large-2-rows
+    entity: sun.sun
     scrolling_effect: false
-    show_state: false
+    show_state: true
     sub_button:
       - entity: sensor.nextsunrise
         show_state: true
+        icon: ios:sunrise-fill
       - entity: sensor.nextsunset
         show_name: false
         show_state: true
+        icon: ios:sunset-fill
     name: Sunrise / Sunset
+    show_last_changed: false
+    icon: mdi:theme-light-dark
   - type: custom:bubble-card
     card_type: button
     button_type: state
     entity: sensor.tbsmarthome_sun_daylight
     scrolling_effect: false
-    card_layout: large-2-rows
     show_state: false
     sub_button:
       - entity: sensor.tbsmarthome_sun_daylight
@@ -60,7 +62,6 @@ cards:
     button_type: state
     entity: sensor.tbsmarthome_sun_night
     scrolling_effect: false
-    card_layout: large-2-rows
     show_state: false
     sub_button:
       - entity: sensor.tbsmarthome_sun_night

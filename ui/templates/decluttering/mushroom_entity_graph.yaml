@@ -14,7 +14,7 @@ mushroom_entity_graph:
     card_mod:
       style: |
         ha-card {
-          background-color: var(--background-color);
+          # background-color: var(--background-color);
           box-shadow: none !important;
         }
     cards:
@@ -30,7 +30,7 @@ mushroom_entity_graph:
         card_mod:
           style: |
             ha-card {
-              background-color: var(--background-color);
+              # background-color: var(--background-color);
             }
       - type: custom:mini-graph-card
         entities:
@@ -51,14 +51,14 @@ mushroom_entity_graph:
         card_mod:
           style: |
             ha-card {
-              background-color: var(--background-color) !important;
+              # background-color: var(--background-color) !important;
               border-radius: 5px;
               box-shadow: none;
               padding-top: 0 !important;
             }
-            ha-card:after {
-              background-color: var(--background-color) !important;
-            }
+            # ha-card:after {
+            #   background-color: var(--background-color) !important;
+            # }
 
 mushroom_entity_graph_small:
   default:
@@ -73,7 +73,7 @@ mushroom_entity_graph_small:
     card_mod:
       style: |
         ha-card {
-          background-color: var(--background-color);
+          # background-color: var(--background-color);
           box-shadow: none !important;
         }
     cards:
@@ -88,13 +88,9 @@ mushroom_entity_graph_small:
           action: more-info
         card_mod:
           style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
             .: |
               ha-card {
-                background-color: var(--background-color);
+                # background-color: var(--background-color);
                 --icon-size: 40px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
@@ -121,11 +117,11 @@ mushroom_entity_graph_small:
         card_mod:
           style: |
             ha-card {
-              background-color: var(--background-color) !important;
+              # background-color: var(--background-color) !important;
               border-radius: 5px;
               box-shadow: none;
               padding-top: 0 !important;
             }
-            ha-card:after {
-              background-color: var(--background-color) !important;
-            }
+            # ha-card:after {
+            #   background-color: var(--background-color) !important;
+            # }

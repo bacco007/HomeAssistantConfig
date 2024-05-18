@@ -1,0 +1,113 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#solar"
+    button_type: name
+    name: Solar - Last 7 Days
+    icon: mdi:solar-power-variant
+  - type: custom:plotly-graph
+    entities:
+      - entity: sensor.sungrow_sg5kd_daily_import
+        texttemplate: "%{y:.2f}"
+        textfont:
+          family: Roboto
+          size: 11
+        name: Import from Grid
+        type: bar
+        statistic: state
+        period: day
+        marker:
+          color: "#FC937E"
+          opacity: 0.75
+        filters:
+          - filter: i>0 && i < xs.length - 1
+          - fn: |
+              ({ys,xs,hass}) => ({
+                xs: [...xs, new Date().setHours(0,0,0)],
+                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_import'].state],
+              })
+      - entity: sensor.sungrow_sg5kd_daily_export
+        texttemplate: "%{y:.2f}"
+        textfont:
+          family: Roboto
+          size: 11
+        name: Export to Grid
+        type: bar
+        statistic: state
+        period: day
+        marker:
+          color: "#00CA8B"
+          opacity: 0.75
+        filters:
+          - map_y_numbers: y *(-1)
+          - filter: i>0 && i < xs.length - 1
+          - fn: |
+              ({ys,xs,hass}) => ({
+                xs: [...xs, new Date().setHours(0,0,0)],
+                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_export'].state * (-1)],
+              })
+      - entity: sensor.sungrow_sg5kd_daily_direct_energy_consumption
+        texttemplate: "%{y:.2f}"
+        # textposition: outside
+        textfont:
+          family: Roboto
+          size: 11
+        name: Consumed
+        type: bar
+        statistic: state
+        period: day
+        marker:
+          color: "#1A89F5"
+          opacity: 0.75
+        filters:
+          - filter: i>0 && i < xs.length - 1
+          - fn: |
+              ({ys,xs,hass}) => ({
+                xs: [...xs, new Date().setHours(0,0,0)],
+                ys: [...ys, hass.states['sensor.sungrow_sg5kd_daily_direct_energy_consumption'].state],
+              })
+    layout:
+      paper_bgcolor: rgba(0,0,0,0)
+      plot_bgcolor: rgba(0,0,0,0)
+      barmode: relative
+      bargap: 0.2
+      uniformtext:
+        minsize: 8
+        mode: show
+      modebar:
+        orientation: h
+        remove: pan
+      margin:
+        t: 0
+        l: 20
+        r: 20
+      height: 250
+      legend:
+        "y": -0.23
+        x: 0.1
+      xaxis:
+        dragmode: false
+        gridcolor: rgba(238,235,235,0)
+        showgrid: true
+        linewidth: 0
+        linecolor: null
+        nticks: 8
+        tickformat: "%a"
+        tickfont:
+          family: Roboto
+          size: 11
+          color: rgb(204,204,204)
+      yaxis:
+        visible: false
+    hours_to_show: 7d
+    refresh_interval: 10min
+    config:
+      scrollZoom: false
+    card_mod:
+      style: |
+        ha-card {
+            border-width: 0px;
+            box-shadow: none !important;
+          }

@@ -197,9 +197,18 @@
   - platform: template
     value_template: '{{ states(''sensor.sun_state_day'') == "Day" }}'
   condition:
-  - condition: template
-    value_template: '{{ now() - states.sungrow_sg5kd_daily_generation.last_updated
-      > timedelta(minutes=5) }}'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: sensor.sungrow_sg5kd_daily_generation
+      state: unavailable
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+    - condition: template
+      value_template: '{{ (as_timestamp(now())-as_timestamp(states.sensor[''sungrow_sg5kd_daily_generation''].last_updated))/60
+        > 240 }}'
   action:
   - service: hassio.addon_restart
     data:

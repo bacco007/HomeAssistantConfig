@@ -1,18 +1,16 @@
 ---
-type: custom:stack-in-card
-mode: vertical
-keep:
-  background: true
-  margin: true
-  border_radius: true
-  outer_padding: true
+type: vertical-stack
 cards:
-  - type: custom:decluttering-card
-    template: bubble_header
-    variables:
-      - name: Internet and Network
-      - icon: network
-      - navpath: network
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Network and Internet
+    icon: mdi:network
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
 
   - square: false
     columns: 2
@@ -39,13 +37,9 @@ cards:
           {% endif %}
         card_mod:
           style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
             .: |
               ha-card {
-                background-color: var(--background-color);
+                #background-color: var(--background-color);
                 --icon-size: 40px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
@@ -74,13 +68,9 @@ cards:
           {% endif %}
         card_mod:
           style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
             .: |
               ha-card {
-                background-color: var(--background-color);
+                #background-color: var(--background-color);
                 --icon-size: 40px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
@@ -163,13 +153,9 @@ cards:
           {% endif %}
         card_mod:
           style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
             .: |
               ha-card {
-                background-color: var(--background-color);
+                #background-color: var(--background-color);
                 --icon-size: 40px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
@@ -220,13 +206,9 @@ cards:
           {% endif %}
         card_mod:
           style:
-            mushroom-shape-icon$: |
-              .shape {
-                --shape-color: none !important;
-              }
             .: |
               ha-card {
-                background-color: var(--background-color);
+                #background-color: var(--background-color);
                 --icon-size: 40px;
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
