@@ -1,4 +1,5 @@
 """Constants for Google Fit."""
+
 from __future__ import annotations
 from typing import Final
 from logging import Logger, getLogger

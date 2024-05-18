@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for Google Fit."""
+
 from __future__ import annotations
 
 from datetime import timedelta, datetime
@@ -228,6 +229,8 @@ class Coordinator(DataUpdateCoordinator):
                     if (
                         self.fitness_data["sleepSeconds"] is not None
                         and self.fitness_data["awakeSeconds"] is not None
+                        and self.fitness_data["sleepSeconds"]
+                        >= self.fitness_data["awakeSeconds"]
                     ):
                         self.fitness_data["sleepSeconds"] -= self.fitness_data[
                             "awakeSeconds"

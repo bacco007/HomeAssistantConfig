@@ -1,4 +1,5 @@
 """application_credentials platform for Google Fit."""
+
 from homeassistant.core import HomeAssistant
 from homeassistant.components.application_credentials import AuthorizationServer
 

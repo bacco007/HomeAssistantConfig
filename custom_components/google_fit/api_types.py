@@ -1,4 +1,5 @@
 """TypeDefinition for Google Fit API."""
+
 from datetime import datetime, timedelta
 from typing import TypedDict, Any
 from collections.abc import Callable

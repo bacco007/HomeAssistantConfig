@@ -1,4 +1,5 @@
 """Support for Google Fit."""
+
 from __future__ import annotations
 
 from aiohttp.client_exceptions import ClientError, ClientResponseError

@@ -1,4 +1,5 @@
 """Config flow for Google Fit integration."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping

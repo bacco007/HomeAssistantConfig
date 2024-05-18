@@ -1,4 +1,5 @@
 """API for Google Fit bound to Home Assistant OAuth."""
+
 from datetime import datetime
 from aiohttp import ClientSession
 from google.auth.exceptions import RefreshError
