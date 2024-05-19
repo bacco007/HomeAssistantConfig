@@ -148,6 +148,13 @@ SENSORS: dict[str, SensorEntityDescription] = {
         icon="mdi:clock",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    "hard_limit": SensorEntityDescription(
+        key="hard_limit",
+        translation_key="hard_limit",
+        name="Hard Limit Set",
+        icon="mdi:speedometer",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     "total_kwh_forecast_d3": SensorEntityDescription(
         key="total_kwh_forecast_d3",
         device_class=SensorDeviceClass.ENERGY,

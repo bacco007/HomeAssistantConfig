@@ -26,3 +26,14 @@ set_dampening:
   fields:
     damp_factor:
       example: "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"
+
+set_hard_limit:
+  name: Set inverter forecast hard limit
+  description: Prevent forcast values being higher than the inverter can produce
+  fields:
+    hard_limit:
+      example: "5000"
+
+remove_hard_limit:
+  name: Remove inverter forecast hard limit
+  description: Remove set limit

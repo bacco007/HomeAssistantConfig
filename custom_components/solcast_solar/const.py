@@ -22,6 +22,8 @@ SERVICE_UPDATE = "update_forecasts"
 SERVICE_CLEAR_DATA = "clear_all_solcast_data"
 SERVICE_QUERY_FORECAST_DATA = "query_forecast_data"
 SERVICE_SET_DAMPENING = "set_dampening"
+SERVICE_SET_HARD_LIMIT = "set_hard_limit"
+SERVICE_REMOVE_HARD_LIMIT = "remove_hard_limit"
 
 #new 4.0.8 - integration config options menu
 #new 4.0.15 - integration config options for custom hour (option 3)

@@ -52,6 +52,7 @@ class ConnectionOptions:
     dampening: dict
     customhoursensor: int
     key_estimate: str
+    hard_limit: int
 
 
 class SolcastApi:
@@ -81,7 +82,8 @@ class SolcastApi:
         self._damp =options.dampening
         self._customhoursensor = options.customhoursensor
         self._use_data_field = f"pv_{options.key_estimate}"
-        self._weather = ""
+        self._hardlimit = options.hard_limit
+        #self._weather = ""
         
     async def serialize_data(self):
         """Serialize data to file."""
@@ -158,7 +160,7 @@ class SolcastApi:
             sp = self.options.api_key.split(",")
 
             params = {"api_key": sp[0]}
-            _LOGGER.debug(f"SOLCAST - getting usage data from solcast")
+            _LOGGER.debug(f"SOLCAST - getting API limit and usage from solcast")
             async with async_timeout.timeout(60):
                 resp: ClientResponse = await self.aiohttp_session.get(
                     url=f"https://api.solcast.com.au/json/reply/GetUserUsageAllowance", params=params, ssl=False
@@ -185,41 +187,41 @@ class SolcastApi:
         except Exception as e:
             _LOGGER.error("SOLCAST - sites_usage error: %s", traceback.format_exc())
 
-    async def sites_weather(self):
-        """Request rooftop site weather byline via the Solcast API."""
+    # async def sites_weather(self):
+    #     """Request rooftop site weather byline via the Solcast API."""
         
-        try:
-            if len(self._sites) > 0:
-                sp = self.options.api_key.split(",")
-                rid = self._sites[0].get("resource_id", None)
+    #     try:
+    #         if len(self._sites) > 0:
+    #             sp = self.options.api_key.split(",")
+    #             rid = self._sites[0].get("resource_id", None)
 
-                params = {"resourceId": rid, "api_key": sp[0]}
-                _LOGGER.debug(f"SOLCAST - get rooftop weather byline from solcast")
-                async with async_timeout.timeout(60):
-                    resp: ClientResponse = await self.aiohttp_session.get(
-                        url=f"https://api.solcast.com.au/json/reply/GetRooftopSiteSparklines", params=params, ssl=False
-                    )
-                    resp_json = await resp.json(content_type=None)
-                    status = resp.status
+    #             params = {"resourceId": rid, "api_key": sp[0]}
+    #             _LOGGER.debug(f"SOLCAST - get rooftop weather byline from solcast")
+    #             async with async_timeout.timeout(60):
+    #                 resp: ClientResponse = await self.aiohttp_session.get(
+    #                     url=f"https://api.solcast.com.au/json/reply/GetRooftopSiteSparklines", params=params, ssl=False
+    #                 )
+    #                 resp_json = await resp.json(content_type=None)
+    #                 status = resp.status
 
-                if status == 200:
-                    d = cast(dict, resp_json)
-                    _LOGGER.debug(f"SOLCAST - sites_weather returned data: {d}")
-                    self._weather = d.get("forecast_descriptor", None).get("description", None)
-                    _LOGGER.debug(f"SOLCAST - rooftop weather description: {self._weather}")
-                else:
-                    raise Exception(f"SOLCAST - sites_weather: gathering rooftop weather description failed. request returned Status code: {status} - Responce: {resp_json}.")
+    #             if status == 200:
+    #                 d = cast(dict, resp_json)
+    #                 _LOGGER.debug(f"SOLCAST - sites_weather returned data: {d}")
+    #                 self._weather = d.get("forecast_descriptor", None).get("description", None)
+    #                 _LOGGER.debug(f"SOLCAST - rooftop weather description: {self._weather}")
+    #             else:
+    #                 raise Exception(f"SOLCAST - sites_weather: gathering rooftop weather description failed. request returned Status code: {status} - Responce: {resp_json}.")
                 
-        except json.decoder.JSONDecodeError:
-            _LOGGER.error("SOLCAST - sites_weather JSONDecodeError.. The rooftop weather description from Solcast is unknown, Solcast site could be having problems")
-        except ConnectionRefusedError as err:
-            _LOGGER.error("SOLCAST - sites_weather Error.. %s",err)
-        except ClientConnectionError as e:
-            _LOGGER.error('SOLCAST - sites_weather Connection Error', str(e))
-        except asyncio.TimeoutError:
-            _LOGGER.error("SOLCAST - sites_weather Connection Error - Timed out connection to solcast server")
-        except Exception as e:
-            _LOGGER.error("SOLCAST - sites_weather error: %s", traceback.format_exc())
+    #     except json.decoder.JSONDecodeError:
+    #         _LOGGER.error("SOLCAST - sites_weather JSONDecodeError.. The rooftop weather description from Solcast is unknown, Solcast site could be having problems")
+    #     except ConnectionRefusedError as err:
+    #         _LOGGER.error("SOLCAST - sites_weather Error.. %s",err)
+    #     except ClientConnectionError as e:
+    #         _LOGGER.error('SOLCAST - sites_weather Connection Error', str(e))
+    #     except asyncio.TimeoutError:
+    #         _LOGGER.error("SOLCAST - sites_weather Connection Error - Timed out connection to solcast server")
+    #     except Exception as e:
+    #         _LOGGER.error("SOLCAST - sites_weather error: %s", traceback.format_exc())
 
     async def load_saved_data(self):
         try:
@@ -228,7 +230,7 @@ class SolcastApi:
                     with open(self._filename) as data_file:
                         jsonData = json.load(data_file, cls=JSONDecoder)
                         json_version = jsonData.get("version", 1)
-                        self._weather = jsonData.get("weather", "unknown")
+                        #self._weather = jsonData.get("weather", "unknown")
                         _LOGGER.debug(f"SOLCAST - load_saved_data file exists.. file type is {type(jsonData)}")
                         if json_version == _JSON_VERSION:
                             self._loaded_data = True
@@ -310,9 +312,9 @@ class SolcastApi:
         except Exception:
             return None
 
-    def get_weather(self):
-        """Return weather description"""
-        return self._weather
+    # def get_weather(self):
+    #     """Return weather description"""
+    #     return self._weather
     
     def get_last_updated_datetime(self) -> dt:
         """Return date time with the data was last updated"""
@@ -534,7 +536,7 @@ class SolcastApi:
         self._data["last_updated"] = dt.now(timezone.utc).isoformat()
         #await self.sites_usage()
         self._data["version"] = _JSON_VERSION
-        self._data["weather"] = self._weather
+        #self._data["weather"] = self._weather
         self._loaded_data = True
         
         await self.buildforcastdata()
@@ -557,7 +559,7 @@ class SolcastApi:
             resp_dict = await self.fetch_data("estimated_actuals", 168, site=r_id, apikey=api, cachedname="actuals")
             if not isinstance(resp_dict, dict):
                 _LOGGER.warning("SOLCAST - No data was returned so this WILL cause errors.. either your limit is up, internet down.. what ever the case is it is NOT a problem with the integration, and all other problems of sensor values being wrong will be a seen")
-                raise TypeError(f"resp_dict must be a dict, not {type(resp_dict)}")
+                raise TypeError(f"Solcast API did not return a json object. Returned {resp_dict}")
             
             ae = resp_dict.get("estimated_actuals", None)
             
@@ -586,7 +588,7 @@ class SolcastApi:
 
         resp_dict = await self.fetch_data("forecasts", 168, site=r_id, apikey=api, cachedname="forecasts")
         if not isinstance(resp_dict, dict):
-            raise TypeError(f"resp_dict must be a dict, not {type(resp_dict)}")
+            raise TypeError(f"Solcast API did not return a json object. Returned {resp_dict}")
         
         af = resp_dict.get("forecasts", None)
         if not isinstance(af, list):
@@ -760,17 +762,17 @@ class SolcastApi:
                     if zz.date() < lastday and zz.date() > yesterday:
                         h = f"{zz.hour}"
                         if zz.date() == today:
-                            tally += x[self._use_data_field] * 0.5 * self._damp[h]
-                            
+                            tally += min(x[self._use_data_field] * 0.5 * self._damp[h], self._hardlimit)
+                        
                         itm = next((item for item in _forecasts if item["period_start"] == z), None)
                         if itm:
-                            itm["pv_estimate"] = round(itm["pv_estimate"] + (x["pv_estimate"] * self._damp[h]),4)
-                            itm["pv_estimate10"] = round(itm["pv_estimate10"] + (x["pv_estimate10"] * self._damp[h]),4)
-                            itm["pv_estimate90"] = round(itm["pv_estimate90"] + (x["pv_estimate90"] * self._damp[h]),4)
+                            itm["pv_estimate"] = min(round(itm["pv_estimate"] + (x["pv_estimate"] * self._damp[h]),4), self._hardlimit)
+                            itm["pv_estimate10"] = min(round(itm["pv_estimate10"] + (x["pv_estimate10"] * self._damp[h]),4), self._hardlimit)
+                            itm["pv_estimate90"] = min(round(itm["pv_estimate90"] + (x["pv_estimate90"] * self._damp[h]),4), self._hardlimit)
                         else:    
-                            _forecasts.append({"period_start": z,"pv_estimate": round((x["pv_estimate"]* self._damp[h]),4),
-                                                                "pv_estimate10": round((x["pv_estimate10"]* self._damp[h]),4),
-                                                                "pv_estimate90": round((x["pv_estimate90"]* self._damp[h]),4)})
+                            _forecasts.append({"period_start": z,"pv_estimate": min(round((x["pv_estimate"]* self._damp[h]),4), self._hardlimit),
+                                                                "pv_estimate10": min(round((x["pv_estimate10"]* self._damp[h]),4), self._hardlimit),
+                                                                "pv_estimate90": min(round((x["pv_estimate90"]* self._damp[h]),4), self._hardlimit)})
                         
                 self._data['siteinfo'][s]['tally'] = round(tally, 4)
                         

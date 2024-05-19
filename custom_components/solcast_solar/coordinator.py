@@ -41,7 +41,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         try:
             #4.0.18 - added reset usage call to reset usage sensors at UTC midnight
-            async_track_utc_time_change(self._hass, self.update_utcmidnight_usage_sensor_data, hour=0,minute=0)
+            async_track_utc_time_change(self._hass, self.update_utcmidnight_usage_sensor_data, hour=0,minute=0,second=0)
             async_track_utc_time_change(self._hass, self.update_integration_listeners, second=0)
         except Exception as error:
             _LOGGER.error("SOLCAST - Error coordinator setup: %s", traceback.format_exc())
@@ -56,8 +56,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def update_utcmidnight_usage_sensor_data(self, *args):
         try:
-            await self.solcast.sites_usage()
-            await self.update_integration_listeners()
+            self.solcast._api_used = 0
+            self.async_update_listeners()
         except Exception:
             #_LOGGER.error("SOLCAST - update_utcmidnight_usage_sensor_data: %s", traceback.format_exc())
             pass
@@ -127,8 +127,11 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             return self.solcast.get_api_limit()
         elif key == "lastupdated":
             return self.solcast.get_last_updated_datetime()
-        elif key == "weather_description":
-            return self.solcast.get_weather()
+        elif key == "hard_limit":
+            #return self.solcast._hardlimit < 100
+            return False if self.solcast._hardlimit == 100 else f"{round(self.solcast._hardlimit * 1000)}w"
+        # elif key == "weather_description":
+        #     return self.solcast.get_weather()
         
 
         #just in case

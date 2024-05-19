@@ -115,6 +115,20 @@
                     "description": "String of hourly dampening factor values comma seperated."
                 }
             }
+        },
+        "set_hard_limit": {
+            "name": "Set inverter forecast hard limit",
+            "description": "Prevent forcast values being higher than the inverter can produce.",
+            "fields": {
+                "hard_limit": {
+                    "name": "Limit value in Watts",
+                    "description": "Set the max value in watts that the inverter can produce."
+                }
+            }
+        },
+        "remove_hard_limit": {
+            "name": "Remove inverter forecast hard limit",
+            "description": "Remove set limit."
         }
     },
     "entity": {
@@ -140,7 +154,8 @@
             "total_kwh_forecast_d6": {"name": "Forecast Day 6"},
             "total_kwh_forecast_d7": {"name": "Forecast Day 7"},
             "power_now": {"name": "Power Now"},
-            "weather_description": {"name": "Weather"}
+            "weather_description": {"name": "Weather"},
+            "hard_limit": {"name": "Hard Limit Set"}
         },
         "select": {
             "estimate_mode" : {"name": "Use Forecast Field"}
