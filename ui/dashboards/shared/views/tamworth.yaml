@@ -31,6 +31,7 @@ cards:
       - !include /config/ui/cards/tamworth/snippets/fuel.yaml
       - !include /config/ui/cards/tamworth/pubtransport.yaml
       - !include /config/ui/cards/tamworth/satellites.yaml
+      - !include /config/ui/cards/tamworth/nbn_fttnupgrade.yaml
       - !include /config/ui/cards/tamworth/snippets/hospital.yaml
       - !include /config/ui/cards/tamworth/dams.yaml
       - !include /config/ui/cards/tamworth/bushfire.yaml

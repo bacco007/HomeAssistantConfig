@@ -1,97 +1,183 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Solcast Solar Forecasting
+  - type: custom:bubble-card
+    card_type: separator
+    name: Solcast Solar Forecasting
     icon: mdi:solar-panel-large
-    icon_color: orange
-    tap_action:
-      action: none
-  - type: entities
-    card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
-        #states > * {
-          margin: 0 !important;
-        }
-    entities:
-      - type: custom:fold-entity-row
+  - type: custom:stack-in-card
+    cards:
+      - type: entities
         card_mod:
           style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
+            #states > * {
               margin: 0 !important;
             }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: Today
-          icon: mdi:solar-panel
-          state: "{{states('sensor.solcast_pv_forecast_forecast_today') }} kWh"
         entities:
-          - entity: sensor.solcast_pv_forecast_forecast_today
-          - entity: sensor.solcast_pv_forecast_peak_forecast_today
-          - entity: sensor.solcast_pv_forecast_peak_time_today
-          - entity: sensor.solcast_pv_forecast_forecast_this_hour
-          - entity: sensor.solcast_pv_forecast_forecast_remaining_today
-          - entity: sensor.solcast_pv_forecast_forecast_next_hour
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: Tomorrow
-          icon: mdi:solar-panel
-          state: "{{states('sensor.solcast_pv_forecast_forecast_tomorrow') }} kWh"
-        entities:
-          - entity: sensor.solcast_pv_forecast_forecast_tomorrow
-          - entity: sensor.solcast_pv_forecast_peak_forecast_tomorrow
-          - entity: sensor.solcast_pv_forecast_peak_time_tomorrow
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: This Week
-          icon: mdi:solar-panel
-          state: |
-            {{ ((states('sensor.solcast_pv_forecast_forecast_today') | float
-               + states('sensor.solcast_pv_forecast_forecast_tomorrow') | float
-               + states('sensor.solcast_pv_forecast_forecast_day_3') | float
-               + states('sensor.solcast_pv_forecast_forecast_day_4') | float
-               + states('sensor.solcast_pv_forecast_forecast_day_5') | float
-               + states('sensor.solcast_pv_forecast_forecast_day_6') | float
-               + states('sensor.solcast_pv_forecast_forecast_day_7') | float) / 7) | round(2) }} kWh (avg)
+          - type: custom:fold-entity-row
+            card_mod:
+              style: |
+                #items {
+                  padding-left: 12px !important;
+                  padding-right: 12px !important;
+                }
+                #measure {
+                  padding-top: 0 !important;
+                }
+                #measure > * {
+                  margin: 0 !important;
+                }
+            padding: 0
+            head:
+              type: custom:template-entity-row
+              name: Today
+              icon: mdi:solar-panel
+              state: "{{states('sensor.solcast_pv_forecast_forecast_today') }} kWh"
+            entities:
+              - entity: sensor.solcast_pv_forecast_forecast_today
+              - entity: sensor.solcast_pv_forecast_peak_forecast_today
+              - entity: sensor.solcast_pv_forecast_peak_time_today
+              - entity: sensor.solcast_pv_forecast_forecast_this_hour
+              - entity: sensor.solcast_pv_forecast_forecast_remaining_today
+              - entity: sensor.solcast_pv_forecast_forecast_next_hour
+          - type: custom:fold-entity-row
+            card_mod:
+              style: |
+                #items {
+                  padding-left: 12px !important;
+                  padding-right: 12px !important;
+                }
+                #measure {
+                  padding-top: 0 !important;
+                }
+                #measure > * {
+                  margin: 0 !important;
+                }
+            padding: 0
+            head:
+              type: custom:template-entity-row
+              name: Tomorrow
+              icon: mdi:solar-panel
+              state: "{{states('sensor.solcast_pv_forecast_forecast_tomorrow') }} kWh"
+            entities:
+              - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+              - entity: sensor.solcast_pv_forecast_peak_forecast_tomorrow
+              - entity: sensor.solcast_pv_forecast_peak_time_tomorrow
+          - type: custom:fold-entity-row
+            card_mod:
+              style: |
+                #items {
+                  padding-left: 12px !important;
+                  padding-right: 12px !important;
+                }
+                #measure {
+                  padding-top: 0 !important;
+                }
+                #measure > * {
+                  margin: 0 !important;
+                }
+            padding: 0
+            head:
+              type: custom:template-entity-row
+              name: This Week
+              icon: mdi:solar-panel
+              state: |
+                {{ ((states('sensor.solcast_pv_forecast_forecast_today') | float
+                  + states('sensor.solcast_pv_forecast_forecast_tomorrow') | float
+                  + states('sensor.solcast_pv_forecast_forecast_day_3') | float
+                  + states('sensor.solcast_pv_forecast_forecast_day_4') | float
+                  + states('sensor.solcast_pv_forecast_forecast_day_5') | float
+                  + states('sensor.solcast_pv_forecast_forecast_day_6') | float
+                  + states('sensor.solcast_pv_forecast_forecast_day_7') | float) / 7) | round(2) }} kWh (avg)
+            entities:
+              - entity: sensor.solcast_pv_forecast_forecast_today
+              - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+              - entity: sensor.solcast_pv_forecast_forecast_day_3
+              - entity: sensor.solcast_pv_forecast_forecast_day_4
+              - entity: sensor.solcast_pv_forecast_forecast_day_5
+              - entity: sensor.solcast_pv_forecast_forecast_day_6
+              - entity: sensor.solcast_pv_forecast_forecast_day_7
+          - type: section
+          - type: custom:fold-entity-row
+            card_mod:
+              style: |
+                #items {
+                  padding-left: 12px !important;
+                  padding-right: 12px !important;
+                }
+                #measure {
+                  padding-top: 0 !important;
+                }
+                #measure > * {
+                  margin: 0 !important;
+                }
+            padding: 0
+            head:
+              type: custom:template-entity-row
+              name: Solcast API
+              icon: mdi:api
+              state: ""
+            entities:
+              - entity: sensor.solcast_pv_forecast_api_used
+              - entity: sensor.solcast_pv_forecast_api_limit
+              - entity: sensor.solcast_pv_forecast_api_last_polled
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: automation.solcast*
+                  options:
+                    secondary_info: last-triggered
+            sort:
+              method: friendly_name
+              ignore_case: true
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              card_mod:
+                style: |
+                  #measure {
+                    padding-top: 0 !important;
+                  }
+                  #measure > * {
+                    margin: 0 !important;
+                  }
+              head:
+                type: custom:template-entity-row
+                name: Solcast Automations
+                icon: mdi:sync-alert
+                state: ""
+          - type: custom:auto-entities
+            filter:
+              include:
+                - domain: alert
+                  entity_id: alert.solcast*
+                  options:
+                    secondary_info: last-changed
+            sort:
+              method: friendly_name
+              ignore_case: true
+            card:
+              type: custom:fold-entity-row
+              padding: 5
+              card_mod:
+                style: |
+                  #measure {
+                    padding-top: 0 !important;
+                  }
+                  #measure > * {
+                    margin: 0 !important;
+                  }
+              head:
+                type: custom:template-entity-row
+                name: Solcast Alerts
+                icon: mdi:alert-plus
+                state: ""
+      - type: custom:plotly-graph
         entities:
           - entity: sensor.solcast_pv_forecast_forecast_today
           - entity: sensor.solcast_pv_forecast_forecast_tomorrow
@@ -100,141 +186,57 @@ cards:
           - entity: sensor.solcast_pv_forecast_forecast_day_5
           - entity: sensor.solcast_pv_forecast_forecast_day_6
           - entity: sensor.solcast_pv_forecast_forecast_day_7
-      - type: section
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: Solcast API
-          icon: mdi:api
-          state: ""
-        entities:
-          - entity: sensor.solcast_pv_forecast_api_used
-          - entity: sensor.solcast_pv_forecast_api_limit
-          - entity: sensor.solcast_pv_forecast_api_last_polled
-      - type: custom:auto-entities
-        filter:
-          include:
-            - entity_id: automation.solcast*
-              options:
-                secondary_info: last-triggered
-        sort:
-          method: friendly_name
-          ignore_case: true
-        card:
-          type: custom:fold-entity-row
-          padding: 5
-          card_mod:
-            style: |
-              #measure {
-                padding-top: 0 !important;
-              }
-              #measure > * {
-                margin: 0 !important;
-              }
-          head:
-            type: custom:template-entity-row
-            name: Solcast Automations
-            icon: mdi:sync-alert
-            state: ""
-      - type: custom:auto-entities
-        filter:
-          include:
-            - domain: alert
-              entity_id: alert.solcast*
-              options:
-                secondary_info: last-changed
-        sort:
-          method: friendly_name
-          ignore_case: true
-        card:
-          type: custom:fold-entity-row
-          padding: 5
-          card_mod:
-            style: |
-              #measure {
-                padding-top: 0 !important;
-              }
-              #measure > * {
-                margin: 0 !important;
-              }
-          head:
-            type: custom:template-entity-row
-            name: Solcast Alerts
-            icon: mdi:alert-plus
-            state: ""
-  - type: custom:plotly-graph
-    entities:
-      - entity: sensor.solcast_pv_forecast_forecast_today
-      - entity: sensor.solcast_pv_forecast_forecast_tomorrow
-      - entity: sensor.solcast_pv_forecast_forecast_day_3
-      - entity: sensor.solcast_pv_forecast_forecast_day_4
-      - entity: sensor.solcast_pv_forecast_forecast_day_5
-      - entity: sensor.solcast_pv_forecast_forecast_day_6
-      - entity: sensor.solcast_pv_forecast_forecast_day_7
-    hours_to_show: 1w
-    refresh_interval: auto
-    defaults:
-      entity:
-        connectgaps: true
-        legendgroup: 1
-        filters:
-          - fn: |-
-              ({ meta }) => ({
-                xs: meta.detailedForecast.map(({ period_start }) => new Date(period_start)),
-                ys: meta.detailedForecast.map(({ pv_estimate }) => pv_estimate),
-              })
-        texttemplate: <b>%{y:,.2f}</b>
-        line:
-          width: 3
-          color: lightyellow
-          shape: spline
-    layout:
-      showlegend: false
-      height: 300
-      margin:
-        autoexpand: true
-        l: 30
-        r: 30
-      xaxis:
-        autorange: true
-        showline: true
-        showgrid: false
-        tickformat: "%a"
-        showticklabels: true
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        autotick: false
-        ticks: outside
-        tickwidth: 2
-        ticklen: 5
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      yaxis:
-        title: ""
-        autorange: true
-        zeroline: true
-        fixedrange: true
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      dragmode: false
-    config:
-      scrollZoom: false
+        hours_to_show: 1w
+        refresh_interval: auto
+        defaults:
+          entity:
+            connectgaps: true
+            legendgroup: 1
+            filters:
+              - fn: |-
+                  ({ meta }) => ({
+                    xs: meta.detailedForecast.map(({ period_start }) => new Date(period_start)),
+                    ys: meta.detailedForecast.map(({ pv_estimate }) => pv_estimate),
+                  })
+            texttemplate: <b>%{y:,.2f}</b>
+            line:
+              width: 3
+              color: lightyellow
+              shape: spline
+        layout:
+          showlegend: false
+          height: 300
+          margin:
+            autoexpand: true
+            l: 30
+            r: 30
+          xaxis:
+            autorange: true
+            showline: true
+            showgrid: false
+            tickformat: "%a"
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: false
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title: ""
+            autorange: true
+            zeroline: true
+            fixedrange: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false

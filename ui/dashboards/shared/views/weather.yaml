@@ -61,20 +61,15 @@ cards:
       #     - !include /config/ui/cards/weather/home_wind.yaml
       #     - !include /config/ui/cards/weather/home_lightning.yaml
       #     - !include /config/ui/cards/weather/home_uv.yaml
-      - type: custom:swipe-card
-        start_card: 1
-        reset_after: 300
-        parameters: !include /config/ui/cards/card-config/swipe-card.yaml
-        cards:
-          - !include /config/ui/cards/tamworth/snippets/sun_moon.yaml
-          - !include /config/ui/cards/tamworth/snippets/uv.yaml
-      - type: custom:swipe-card
-        start_card: 1
-        reset_after: 300
-        parameters: !include /config/ui/cards/card-config/swipe-card.yaml
-        cards:
-          - !include /config/ui/cards/tamworth/snippets/aqi_waqi.yaml
-          - !include /config/ui/cards/tamworth/snippets/aqi_nswdpe.yaml
+      # - type: custom:swipe-card
+      #   start_card: 1
+      #   reset_after: 300
+      #   parameters: !include /config/ui/cards/card-config/swipe-card.yaml
+      #   cards:
+      - !include /config/ui/cards/tamworth/snippets/sun_moon.yaml
+      - !include /config/ui/cards/tamworth/snippets/uv.yaml
+      - !include /config/ui/cards/tamworth/snippets/aqi_waqi.yaml
+      - !include /config/ui/cards/tamworth/snippets/aqi_nswdpe.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

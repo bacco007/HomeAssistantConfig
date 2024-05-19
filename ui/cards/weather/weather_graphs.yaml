@@ -1,23 +1,20 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Weather Graphs
+  - type: custom:bubble-card
+    card_type: separator
+    name: Weather Graphs
     icon: phu:weather-page-alt
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     show_header_toggle: false
     state_color: true
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }
@@ -172,18 +169,18 @@ cards:
                   width: 2
                   color: "#3D82FF"
                   shape: spline
-              - entity: sensor.barometric_pressure_24h_spread
-                name: 24hr Spread
-                connectgaps: true
-                show_value: true
-                filters:
-                  - force_numeric
-                  - resample: 15m
-                texttemplate: <b>%{y:,.1f}</b>
-                line:
-                  width: 2
-                  color: "#B6B8BA"
-                  shape: spline
+              # - entity: sensor.barometric_pressure_24h_spread
+              #   name: 24hr Spread
+              #   connectgaps: true
+              #   show_value: true
+              #   filters:
+              #     - force_numeric
+              #     - resample: 15m
+              #   texttemplate: <b>%{y:,.1f}</b>
+              #   line:
+              #     width: 2
+              #     color: "#B6B8BA"
+              #     shape: spline
             refresh_interval: auto
             layout:
               showlegend: true

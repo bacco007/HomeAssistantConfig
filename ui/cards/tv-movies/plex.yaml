@@ -1,21 +1,18 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Plex
+  - type: custom:bubble-card
+    card_type: separator
+    name: Plex
     icon: mdi:plex
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }

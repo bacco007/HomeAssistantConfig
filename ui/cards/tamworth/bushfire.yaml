@@ -1,24 +1,27 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: NSW RFS Alerts / Fire Warning Level
+  - type: custom:bubble-card
+    card_type: separator
+    name: NSW RFS Alerts / Fire Warning Level
     icon: mdi:fire-alert
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     card_mod:
-      style: |
-        #states {
-          padding-top: 0 !important;
-        }
-        #states > * {
-          margin: 0 !important;
-        }
+      style:
+        hui-buttons-row:
+          $ hui-buttons-base $: |
+            .ha-scrollbar {
+              justify-content: center;
+            }
+        .: |
+          #states > * {
+            margin: 0 !important;
+          }
     entities:
       - entity: sensor.nsw_rfs_alerts_near_me
         name: Alerts Near Me
@@ -101,15 +104,6 @@ cards:
           - attribute: danger_level_today
             name: Danger Level
             unit: ""
-  - type: entities
-    card_mod:
-      style:
-        hui-buttons-row:
-          $ hui-buttons-base $: |
-            .ha-scrollbar {
-              justify-content: center;
-            }
-    entities:
       - type: buttons
         entities:
           - entity: sensor.helper_weblink

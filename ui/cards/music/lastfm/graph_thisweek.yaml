@@ -1,14 +1,16 @@
 ---
-type: custom:vertical-stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
+  - type: custom:bubble-card
+    card_type: separator
     entity: sensor.lastfm_user_playcount
-    primary_info: name
-    secondary_info: none
     name: Play Count (This Week)
-    fill_container: true
     icon: fab:lastfm
-    icon_color: red
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:plotly-graph
     entities:
       - entity: sensor.lastfm_user_playcount

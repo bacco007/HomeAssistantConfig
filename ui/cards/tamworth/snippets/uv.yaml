@@ -1,23 +1,20 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: UV Index
+  - type: custom:bubble-card
+    card_type: separator
+    name: UV Index
     icon: mdi:sun-clock
-    icon_color: yellow
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     show_header_toggle: false
     state_color: true
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }

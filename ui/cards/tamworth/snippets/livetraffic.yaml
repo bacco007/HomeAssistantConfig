@@ -1,36 +1,28 @@
 ---
-type: custom:vertical-stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
+  - type: custom:bubble-card
+    card_type: separator
+    name: NSW Live Traffic
+    icon: mdi:car-multiple
     entity: sensor.stats_livetraffic
-    name: Incident Count
-    fill_container: true
-    icon_color: red
-  - type: entities
-    card_mod:
-      style:
-        hui-buttons-row:
-          $ hui-buttons-base $: |
-            .ha-scrollbar {
-              justify-content: center;
-            }
-        .: |
-          #states {
-            padding-top: 0 !important;
-          }
-          #states > * {
-            margin: 0 !important;
-          }
-    entities:
-      - entity: binary_sensor.livetrafficnsw_nearby_active_incident
-        name: Incidents Near Me
-        type: custom:multiple-entity-row
-        show_state: false
-        secondary_info: last-changed
-        entities:
-          - attribute: count
-            name: Current
-            unit: ""
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - show_name: false
+        show_icon: false
+        show_last_changed: false
+        show_state: true
+  - type: tile
+    entity: binary_sensor.livetrafficnsw_nearby_active_incident
+    name: Incidents Near Me
+    hide_state: false
+    state_content:
+      - count
+      - last-changed
   - type: custom:plotly-graph
     entities:
       - entity: sensor.stats_livetraffic
@@ -122,9 +114,6 @@ cards:
               justify-content: center;
             }
         .: |
-          #states {
-            padding-top: 0 !important;
-          }
           #states > * {
             margin: 0 !important;
           }

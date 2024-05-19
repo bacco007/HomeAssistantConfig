@@ -1,7 +1,6 @@
 ---
 type: vertical-stack
 cards:
-cards:
   - type: custom:bubble-card
     card_type: separator
     name: Music

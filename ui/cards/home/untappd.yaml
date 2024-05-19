@@ -56,7 +56,7 @@ cards:
     style: |
       ha-card {
         background-color: var(--background-color);
-    #primary: Last Beer
+    # primary: Last Beer
     secondary: >-
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}} ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
 

@@ -1,8 +1,17 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Solar Flow (Live)
+    icon: mdi:solar-panel-large
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:power-flow-card-plus
-    title: Live Action
+    title: ""
     dashboard_link: /energy
     entities:
       home:
@@ -40,8 +49,18 @@ cards:
     max_expected_power: 2000
     min_expected_power: 0.01
     watt_threshold: 0
+
+  - type: custom:bubble-card
+    card_type: separator
+    name: Solar Flow (Today)
+    icon: mdi:solar-panel-large
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:power-flow-card-plus
-    title: Today
+    title: ""
     dashboard_link: /energy
     entities:
       home:

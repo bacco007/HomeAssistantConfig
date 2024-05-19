@@ -1,24 +1,20 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    entity: sensor.opennem_au
-    primary: OpenNEM
+  - type: custom:bubble-card
+    card_type: separator
+    name: OpenNEM
     icon: mdi:transmission-tower
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
-    icon_color: orange
   - type: entities
     show_header_toggle: false
     state_color: true
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }

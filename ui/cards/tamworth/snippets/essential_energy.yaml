@@ -1,131 +1,93 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
+  - type: custom:bubble-card
+    card_type: separator
     entity: sensor.essential_energy_outages_near_me
     name: Essential Energy Outages
-    fill_container: true
-    icon_color: red
-    card_mod:
-      style:
-        mushroom-state-info$: |
-          .container {
-            --primary-text-color: #6eaadc;
-          }
-          .primary {
-            font-size: 15px !important;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-          }
-        .: |
-          ha-card {
-            box-shadow: none !important;
-            #margin: -10px;
-          }
-          ha-state-icon {
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-            '--mdc-icon-size': 2px !important;
-          }
-  - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
-    entities:
-      - square: false
-        type: custom:hui-element
-        card_type: grid
-        columns: 3
+    sub_button:
+      - show_name: false
+        show_icon: false
+        show_last_changed: false
+        show_state: true
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - type: tile
+        entity: binary_sensor.essential_energy_nearby_active_outage
+        name: Current
+        hide_state: false
+        color: red
+        state_content: count_current
         card_mod:
           style:
-            .: |
-              ha-card {
-                background-color: var(--card-background-color);
-                padding: 20px;
-                box-shadow: none;
+            ha-tile-info$: |
+              .primary {
+                font-size: 13px !important;
               }
-        cards:
-          - type: tile
-            entity: binary_sensor.essential_energy_nearby_active_outage
-            name: Current
-            hide_state: false
-            color: red
-            state_content: count_current
-            card_mod:
-              style:
-                ha-tile-info$: |
-                  .primary {
-                    font-size: 13px !important;
-                  }
-                  .secondary {
-                    font-size: 12px !important;
-                  }
-                .: |
-                  ha-card {
-                    background-color: var(--background-color);
-                    box-shadow: none;
-                  }
-                  ha-tile-info {
-                    padding-top: 5px !important;
-                    padding-bottom: 5px !important;
-                  }
-                  ha-tile-icon {
-                    --mdc-icon-size: 20px;
-                  }
-          - type: tile
-            entity: binary_sensor.essential_energy_nearby_active_outage
-            name: Future
-            hide_state: false
-            color: orange
-            state_content: count_future
-            card_mod:
-              style:
-                ha-tile-info$: |
-                  .primary {
-                    font-size: 13px !important;
-                  }
-                  .secondary {
-                    font-size: 12px !important;
-                  }
-                .: |
-                  ha-card {
-                    background-color: var(--background-color);
-                    box-shadow: none;
-                  }
-                  ha-tile-info {
-                    padding-top: 5px !important;
-                    padding-bottom: 5px !important;
-                  }
-                  ha-tile-icon {
-                    --mdc-icon-size: 20px;
-                  }
-          - type: tile
-            entity: binary_sensor.essential_energy_nearby_active_outage
-            name: Cancelled
-            hide_state: false
-            color: yellow
-            state_content: count_cancelled
-            card_mod:
-              style:
-                ha-tile-info$: |
-                  .primary {
-                    font-size: 13px !important;
-                  }
-                  .secondary {
-                    font-size: 12px !important;
-                  }
-                .: |
-                  ha-card {
-                    background-color: var(--background-color);
-                    box-shadow: none;
-                  }
-                  ha-tile-info {
-                    padding-top: 5px !important;
-                    padding-bottom: 5px !important;
-                  }
-                  ha-tile-icon {
-                    --mdc-icon-size: 20px;
-                  }
+              .secondary {
+                font-size: 12px !important;
+              }
+            .: |
+              ha-tile-info {
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+              ha-tile-icon {
+                --mdc-icon-size: 20px;
+              }
+      - type: tile
+        entity: binary_sensor.essential_energy_nearby_active_outage
+        name: Future
+        hide_state: false
+        color: orange
+        state_content: count_future
+        card_mod:
+          style:
+            ha-tile-info$: |
+              .primary {
+                font-size: 13px !important;
+              }
+              .secondary {
+                font-size: 12px !important;
+              }
+            .: |
+              ha-tile-info {
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+              ha-tile-icon {
+                --mdc-icon-size: 20px;
+              }
+      - type: tile
+        entity: binary_sensor.essential_energy_nearby_active_outage
+        name: Cancelled
+        hide_state: false
+        color: yellow
+        state_content: count_cancelled
+        card_mod:
+          style:
+            ha-tile-info$: |
+              .primary {
+                font-size: 13px !important;
+              }
+              .secondary {
+                font-size: 12px !important;
+              }
+            .: |
+              ha-tile-info {
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+              ha-tile-icon {
+                --mdc-icon-size: 20px;
+              }
   - type: custom:plotly-graph
     entities:
       - entity: sensor.essential_energy_outages_near_me
@@ -201,9 +163,6 @@ cards:
               justify-content: center;
             }
         .: |
-          #states {
-            padding-top: 0 !important;
-          }
           #states > * {
             margin: 0 !important;
           }

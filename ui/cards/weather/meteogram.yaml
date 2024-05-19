@@ -1,16 +1,14 @@
 ---
-type: custom:stack-in-card
-keep:
-  margin: true
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: 7 Day Meteogram
+  - type: custom:bubble-card
+    card_type: separator
+    name: 7 Day Meteogram
     icon: mdi:weather-partly-snowy-rainy
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: vertical-stack
     cards:
@@ -20,8 +18,8 @@ cards:
             cards:
               - type: custom:mushroom-template-card
                 primary: Today
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: &datestyle
                   style:
                     mushroom-state-info$: |
@@ -41,7 +39,7 @@ cards:
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[0].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -61,8 +59,8 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[0].temperature | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: &tempstyle
                   style:
                     mushroom-state-info$: |
@@ -79,19 +77,19 @@ cards:
                         margin-top: -15px !important;
                         margin-bottom: -10px !important;
                         }
-                picture: ''
+                picture: ""
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[1].datetime) | timestamp_custom('%a %-d') }}
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *datestyle
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[1].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -101,21 +99,21 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[1].temperature | round(0) }}° -‎ ‎‎{{ state_attr('sensor.weather_forecasts','bom_daily')[1].templow | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[2].datetime) | timestamp_custom('%a %-d') }}
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *datestyle
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[2].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -125,21 +123,21 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[2].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[2].templow | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[3].datetime) | timestamp_custom('%a %-d') }}
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *datestyle
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[3].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -149,21 +147,21 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[3].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[3].templow | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[4].datetime) | timestamp_custom('%a %-d') }}
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *datestyle
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[4].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -173,21 +171,21 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[4].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[4].templow | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[5].datetime) | timestamp_custom('%a %-d') }}
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *datestyle
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[5].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -197,21 +195,21 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[5].temperature | round(0) }}° - {{ state_attr('sensor.weather_forecasts','bom_daily')[5].templow | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[6].datetime) | timestamp_custom('%a %-d') }}
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *datestyle
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    content: ''
+                    content: ""
                     picture: >-
                       {% set cond = (state_attr('sensor.weather_forecasts','bom_daily')[6].condition) %}
                       {%- from 'weathercond2img.jinja' import weathercond2img -%}
@@ -221,8 +219,8 @@ cards:
               - type: custom:mushroom-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[6].temperature | round(0)  }}° - {{ state_attr('sensor.weather_forecasts','bom_daily')[6].templow | round(0) }}°
-                secondary: ''
-                icon: ''
+                secondary: ""
+                icon: ""
                 card_mod: *tempstyle
       - type: custom:apexcharts-card
         graph_span: 7d
@@ -264,23 +262,23 @@ cards:
             fill_raw: last
             color_threshold: &tempthres
               - value: 0
-                color: '#0066ff'
+                color: "#0066ff"
               - value: 5
-                color: '#00ffff'
+                color: "#00ffff"
               - value: 10
-                color: '#00ffa6'
+                color: "#00ffa6"
               - value: 15
-                color: '#00ff08'
+                color: "#00ff08"
               - value: 20
-                color: '#91ff00'
+                color: "#91ff00"
               - value: 25
-                color: '#fff700'
+                color: "#fff700"
               - value: 30
-                color: '#ffc400'
+                color: "#ffc400"
               - value: 35
-                color: '#ff0800'
+                color: "#ff0800"
               - value: 40
-                color: '#ae00ff'
+                color: "#ae00ff"
             data_generator: |
               return entity.attributes.pirateweather_hourly.map((entry) => {
                 return [new Date(entry.datetime), entry.temperature];

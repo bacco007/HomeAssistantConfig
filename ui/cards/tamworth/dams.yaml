@@ -1,16 +1,15 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Dam Levels
+  - type: custom:bubble-card
+    card_type: separator
+    name: Dam Levels
     icon: mdi:water
-    icon_color: yellow
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
-
   - type: custom:plotly-graph
     style: |
       ha-card {
@@ -163,9 +162,6 @@ cards:
               justify-content: center;
             }
         .: |
-          #states {
-            padding-top: 0 !important;
-          }
           #states > * {
             margin: 0 !important;
           }

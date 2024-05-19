@@ -47,8 +47,6 @@ cards:
           - !include /config/ui/cards/home/media.yaml
           - !include /config/ui/cards/home/flighttracker.yaml
           - !include /config/ui/cards/home/network.yaml
-      # Popups
-      # - !include /config/ui/cards/home/sport_popup.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

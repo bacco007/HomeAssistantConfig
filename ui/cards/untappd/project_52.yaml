@@ -1,23 +1,20 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Untappd - Project 52
+  - type: custom:bubble-card
+    card_type: separator
+    name: Untappd - Project 52
     icon: mdi:beer-outline
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     show_header_toggle: false
     state_color: true
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }
@@ -87,19 +84,19 @@ cards:
             type: area
             name: Minimum
             max: 5
-            color: var(--color-img-cell-red)
+            color: "#E61116"
           - entity: sensor.untappd_project_52
             attribute: rating_average
             type: area
             name: Average
             max: 5
-            color: var(--color-img-cell-yellow)
+            color: "#FFDB1A"
           - entity: sensor.untappd_project_52
             attribute: rating_maximum
             type: area
             name: Maximum
             max: 5
-            color: var(--color-img-cell-green)
+            color: "#3BCC64"
         card_mod:
           style: |
             ha-card {

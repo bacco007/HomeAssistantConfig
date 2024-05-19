@@ -22,10 +22,10 @@ cards:
     entities:
       - entity: sensor.flights_in_radius_zone_home
         name: Inside Tracked Area
-      # - entity: sensor.flightradar24_entered_area
-      #   name: Entering Tracked Area
-      # - entity: sensor.flightradar24_exited_area
-      #   name: Exiting Tracked Area
+        # - entity: sensor.flightradar24_entered_area
+        #   name: Entering Tracked Area
+        # - entity: sensor.flightradar24_exited_area
+        #   name: Exiting Tracked Area
   - type: conditional
     conditions:
       - condition: numeric_state

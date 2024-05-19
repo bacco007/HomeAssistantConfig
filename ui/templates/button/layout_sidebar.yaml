@@ -22,7 +22,7 @@ sidebar:
       - border-radius: 0
       - border-right: "1px solid var(--sidebar-border-color)"
       - box-shadow: none
-      - color: "#F0F0F0" 
+      - color: "#F0F0F0"
       - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
       - height: "calc(100vh - 64px)"
       - padding: 32px 16px 16px

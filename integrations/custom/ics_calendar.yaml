@@ -2,22 +2,22 @@
 ics_calendar:
   calendars:
     - name: "ical_rugby_australia_autumninternationals"
-      include_all_day: True
+      include_all_day: true
       url: "https://fixturedownload.com/download/autumn-internationals-2024-australia-GMTStandardTime.ics"
       download_interval: 360
       days: 365
     - name: "ical_icc_cricket_mens"
-      include_all_day: True
+      include_all_day: true
       url: "https://ics.ecal.com/ecal-sub/63afdb7a0b7153000ee61cff/ICC%20Cricket.ics"
       download_interval: 360
       days: 365
     - name: "ical_cricket_australia_mens"
-      include_all_day: True
+      include_all_day: true
       url: "https://ics.ecal.com/ecal-sub/662d9a0ef79861000822b80d/ICC%20Cricket.ics"
       download_interval: 360
       days: 365
     - name: "ical_cricket_australia_womens"
-      include_all_day: True
+      include_all_day: true
       url: "https://ics.ecal.com/ecal-sub/662d9a552570170008678e2f/ICC%20Cricket.ics"
       download_interval: 360
       days: 365

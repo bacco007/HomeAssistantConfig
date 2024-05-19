@@ -1,11 +1,15 @@
 ---
-type: custom:vertical-stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Solar Production (Today)
-    fill_container: true
+  - type: custom:bubble-card
+    card_type: separator
+    name: Solar Production (Today)
     icon: mdi:solar-power
-    icon_color: yellow
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:plotly-graph
     hours_to_show: 24
     time_offset: |-

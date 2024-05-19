@@ -29,6 +29,7 @@ cards:
       - !include /config/ui/cards/tv-movies/sonarr.yaml
       - !include /config/ui/cards/tv-movies/radarr.yaml
       - !include /config/ui/cards/tv-movies/plex.yaml
+      - !include /config/ui/cards/tv-movies/upcoming_media.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

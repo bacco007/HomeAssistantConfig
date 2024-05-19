@@ -1,16 +1,15 @@
 ---
 type: vertical-stack
 cards:
-  - type: "custom:button-card"
-    template: header_card
-    variables:
-      name: Plex
-      label: Manage
-      arrow: "mdi:arrow-top-right"
-      action: url
-      link: http://192.168.1.100:32400
-    view_layout:
-      grid-column: 1/-1
+  - type: custom:bubble-card
+    card_type: separator
+    name: Plex
+    icon: mdi:plex
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - square: false
     columns: 1
     type: grid

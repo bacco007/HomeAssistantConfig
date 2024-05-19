@@ -1,21 +1,18 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Last FM Stats
+  - type: custom:bubble-card
+    card_type: separator
+    name: Last FM Stats
     icon: fab:lastfm
-    icon_color: red
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     card_mod:
       style: &entstyle |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }
@@ -232,12 +229,19 @@ cards:
       - type: section
       - type: custom:fold-entity-row
         head:
-          type: custom:template-entity-row
-          name: Top Albums (All Time)
-          state: >
+          type: custom:mushroom-template-card
+          primary: Top Albums (All Time)
+          secondary: >
             {{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].name }}
           icon: fab:lastfm
           icon_color: red
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
         padding: 0
         entities:
           - type: custom:hui-element
@@ -260,12 +264,10 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  background: none;
-                  border: 0;
-                  box-shadow: none;
                   overflow: auto;
-                  padding-top: 5px;
-                  font-size: 12px;
+                  padding-left: 20px;
+                  padding-right: 20px;
+                  padding-bottom: 20px
                 }
                 tbody tr:hover {
                   background-color: coral !important
