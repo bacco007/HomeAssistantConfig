@@ -1,23 +1,68 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: AdGuard Home
+  - type: custom:bubble-card
+    card_type: separator
+    name: AdGuard Home
     icon: si:adguard
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
+  - type: grid
+    columns: 5
+    square: false
+    cards:
+      - entity: switch.adguard_filtering
+        type: custom:mushroom-entity-card
+        name: Filtering
+        icon: mdi:shield-check
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+      - entity: switch.adguard_parental_control
+        size: 35px
+        type: custom:mushroom-entity-card
+        name: Parental
+        icon: mdi:shield-account
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+      - entity: switch.adguard_protection
+        size: 35px
+        type: custom:mushroom-entity-card
+        name: Protection
+        icon: mdi:shield-bug
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+      - entity: switch.adguard_safe_browsing
+        size: 35px
+        type: custom:mushroom-entity-card
+        name: Browsing
+        icon: mdi:shield-star
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+      - entity: switch.adguard_safe_search
+        size: 35px
+        type: custom:mushroom-entity-card
+        name: Searching
+        icon: mdi:shield-search
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
   - type: entities
     show_header_toggle: false
     state_color: true
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }
@@ -50,36 +95,6 @@ cards:
         name: Safe browsing blocked
       - entity: sensor.adguard_safe_searches_enforced
         name: Safe searches enforced
-      - type: section
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: Controls
-          icon: mdi:switch
-          state: ""
-        entities:
-          - entity: switch.adguard_filtering
-            name: Filtering
-          - entity: switch.adguard_parental_control
-            name: Parental control
-          - entity: switch.adguard_protection
-            name: Protection
-          - entity: switch.adguard_query_log
-            name: Query log
-          - entity: switch.adguard_safe_browsing
-            name: Safe browsing
-          - entity: switch.adguard_safe_search
-            name: Safe search
+  - !include /config/ui/cards/network/adguard/graph_adsblocked.yaml
+  - !include /config/ui/cards/network/adguard/graph_adsblockedpct.yaml
+  - !include /config/ui/cards/network/adguard/graph_procspeed.yaml

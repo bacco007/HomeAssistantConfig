@@ -5,8 +5,15 @@ mushroom_finance:
   default:
     - entity: sun.sun
   card:
-    type: custom:fold-entity-row
-    head:
+    type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
       type: custom:stack-in-card
       mode: horizontal
       card_mod:
@@ -54,8 +61,7 @@ mushroom_finance:
                   box-shadow: none;
                   --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
                 }
-    padding: 0
-    entities:
+    cards:
       - chart_type: line
         period: week
         type: custom:hui-element

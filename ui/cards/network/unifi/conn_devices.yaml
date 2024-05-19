@@ -1,0 +1,50 @@
+---
+type: vertical-stack
+view_layout:
+  grid-area: devices
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Network Connected Devices
+    icon: mdi:devices
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+      }
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - entity: sensor.unifi_networkstats_connected_devices
+        type: custom:mushroom-template-card
+        primary: Wired
+        icon: mdi:check-network-outline
+        secondary: |-
+          {{state_attr(entity, 'lan_devices')}} Devices
+          0 Guest Devices
+        fill_container: true
+        layout: vertical
+        multiline_secondary: true
+      - entity: sensor.unifi_networkstats_connected_devices
+        type: custom:mushroom-template-card
+        primary: WiFi
+        icon: mdi:access-point-network
+        secondary: |-
+          {{state_attr(entity, 'wlan_devices')}} Devices
+          {{state_attr(entity, 'wlan_guest_devices')}} Guest Devices
+        fill_container: true
+        layout: vertical
+        multiline_secondary: true
+      - entity: sensor.unifi_networkstats_connected_devices
+        type: custom:mushroom-template-card
+        primary: IoT
+        icon: mdi:help-network-outline
+        secondary: |-
+          {{state_attr(entity, 'lan_iot_devices')}} LAN Devices
+          {{state_attr(entity, 'wlan_iot_devices')}} WLAN Devices
+        fill_container: true
+        layout: vertical
+        multiline_secondary: true
+  - !include /config/ui/cards/network/unifi/netconn_wifi.yaml
+  - !include /config/ui/cards/network/unifi/netconn_wired.yaml

@@ -24,35 +24,39 @@ cards:
   # {% endif %}
   # {%- endfor %}
 
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_aord
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_hsi
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_n225
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_gspc
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_nz50
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_ftse
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_dji
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_ixic
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_aord
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_hsi
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_n225
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_gspc
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_nz50
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_ftse
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_dji
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_ixic

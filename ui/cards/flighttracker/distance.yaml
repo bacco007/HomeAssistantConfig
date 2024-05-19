@@ -1,14 +1,15 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
-    entity: sensor.flighttracker_distance_max
-    primary_info: name
-    secondary_info: none
-    name: Distance (Min and Max)
-    fill_container: true
+  - type: custom:bubble-card
+    card_type: separator
+    name: Distance (Min/Max)
     icon: mdi:airplane-alert
-    icon_color: red
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
   - type: custom:plotly-graph
     hours_to_show: 24
     time_offset: |-

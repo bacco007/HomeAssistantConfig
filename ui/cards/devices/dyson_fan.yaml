@@ -1,49 +1,61 @@
 ---
-features:
-  - type: climate-hvac-modes
-    hvac_modes:
-      - "off"
-      - cool
-      - heat
-  - type: target-temperature
-  - type: custom:service-call
-    buttons:
-      - service: fan.set_preset_mode
-        icon: mdi:fan
-        data:
-          preset_mode: Normal
-          entity_id: fan.bedroom
-      - service: fan.set_preset_mode
-        icon: mdi:fan-auto
-        data:
-          preset_mode: Auto
-          entity_id: fan.bedroom
-  - type: custom:mushroom-fan-card
-    entity: fan.bedroom
-    primary_info: none
-    show_percentage_control: true
-    layout: horizontal
-    secondary_info: none
-    icon_type: none
-    icon_animation: false
-    fill_container: true
-    show_oscillate_control: true
-    collapsible_controls: true
-    card_mod:
-      style: |
-        ha-card {
-          margin: 0px 0px 0px 0px;
-          --rgb-state-fan: {{ 'var(--rgb-deep-orange)' if is_state('climate.bedroom','heat') else 'var(--rgb-blue)' }}
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Bedroom Dyson
+    icon: phu:dyson-floor
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
 
-type: tile
-name: Bedroom Dyson
-entity: climate.bedroom
-icon: phu:dyson-floor
-vertical: false
-show_entity_picture: false
-hide_state: false
-state_content:
-  - state
-  - current_temperature
-  - current_humidity
+  - features:
+      - type: climate-hvac-modes
+        hvac_modes:
+          - "off"
+          - cool
+          - heat
+      - type: target-temperature
+      - type: custom:service-call
+        buttons:
+          - service: fan.set_preset_mode
+            icon: mdi:fan
+            data:
+              preset_mode: Normal
+              entity_id: fan.bedroom
+          - service: fan.set_preset_mode
+            icon: mdi:fan-auto
+            data:
+              preset_mode: Auto
+              entity_id: fan.bedroom
+      - type: custom:mushroom-fan-card
+        entity: fan.bedroom
+        primary_info: none
+        show_percentage_control: true
+        layout: horizontal
+        secondary_info: none
+        icon_type: none
+        icon_animation: false
+        fill_container: true
+        show_oscillate_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              margin: 0px 0px 0px 0px;
+              --rgb-state-fan: {{ 'var(--rgb-deep-orange)' if is_state('climate.bedroom','heat') else 'var(--rgb-blue)' }}
+            }
+
+    type: tile
+    name: Bedroom Dyson
+    entity: climate.bedroom
+    icon: phu:dyson-floor
+    vertical: false
+    show_entity_picture: false
+    hide_state: false
+    state_content:
+      - state
+      - current_temperature
+      - current_humidity

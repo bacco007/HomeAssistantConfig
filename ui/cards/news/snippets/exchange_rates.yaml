@@ -20,19 +20,23 @@ cards:
     # {% endif %}
     # {%- endfor %}
 
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_audeur_x
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_audgbp_x
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_audnzd_x
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_audusd_x
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_audeur_x
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_audgbp_x
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_audnzd_x
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_audusd_x

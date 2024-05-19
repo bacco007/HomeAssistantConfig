@@ -1,18 +1,34 @@
 ---
-type: custom:vertical-stack-in-card
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }
+type: custom:yet-another-expander-card
+gap: 0.6em
+padding: 0
+clear: false
+title: Expander
+overlay-margin: 0em
+child-padding: 0.5em
+button-background: transparent
+title-card:
+  type: custom:mushroom-entity-card
+  entity: sensor.adguard_average_processing_speed
+  name: Graph - Processing Speed
+  card_mod:
+    style:
+      mushroom-shape-icon$: |
+        .shape {
+          --shape-color: none !important;
+        }
+      .: |
+        ha-card {
+          # background-color: var(--background-color);
+          box-shadow: none !important;
+          --icon-size: 40px;
+          --icon-symbol-size: 30px;
+          --card-secondary-font-size: 10px;
+          --card-primary-font-size: 15px;
+          padding-top: 5px !important;
+          padding-bottom: 5px !important;
+        }
 cards:
-  - type: custom:mushroom-entity-card
-    entity: sensor.adguard_average_processing_speed
-    primary_info: state
-    secondary_info: name
-    fill_container: true
-    name: Processing Speed
-    icon_color: red
   - type: custom:plotly-graph
     hours_to_show: 24
     time_offset: |-

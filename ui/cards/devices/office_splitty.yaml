@@ -1,21 +1,32 @@
 ---
-entity: climate.thomas_s_smart_ac
-features:
-  - hvac_modes:
-      - cool
-      - dry
-      - fan_only
-      - heat
-      - heat_cool
-      - "off"
-    type: climate-hvac-modes
-  - type: target-temperature
-hide_state: false
-name: Office Split System
-show_entity_picture: false
-state_content:
-  - current_humidity
-  - current_temperature
-  - state
-type: tile
-vertical: false
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Office Split System
+    icon: mdi:air-conditioner
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - entity: climate.thomas_s_smart_ac
+    features:
+      - hvac_modes:
+          - cool
+          - dry
+          - fan_only
+          - heat
+          - heat_cool
+          - "off"
+        type: climate-hvac-modes
+      - type: target-temperature
+    hide_state: false
+    name: Office Split System
+    show_entity_picture: false
+    state_content:
+      - current_humidity
+      - current_temperature
+      - state
+    type: tile
+    vertical: false

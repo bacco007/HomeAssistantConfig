@@ -1,21 +1,18 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: Currently Tracked Planes
-    icon: mdi:airplane-cog
-    icon_color: blue
-    card_mod:
-      style: |
-        ha-card {
-          box-shadow: none !important;
+  - type: custom:bubble-card
+    card_type: separator
+    name: Currently Tracked Planes (ADS-B Tracker)
+    icon: mdi:airplane-alert
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
         }
   - type: entities
     card_mod:
       style: |
-        #states {
-          padding-top: 0 !important;
-        }
         #states > * {
           margin: 0 !important;
         }
@@ -58,7 +55,6 @@ cards:
     card_mod:
       style: |
         ha-card {
-          background: none;
           border: 0;
           box-shadow: none;
           overflow: auto;

@@ -1,14 +1,21 @@
 ---
-type: custom:vertical-stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
-    entity: sensor.tamhospital_waitingtime
-    primary_info: name
-    secondary_info: state
-    fill_container: true
+  - type: custom:bubble-card
+    card_type: separator
     name: Tamworth Hospital - People Waiting
     icon: mdi:hospital
-    icon_color: red
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - show_name: false
+        show_icon: false
+        show_state: true
+        show_background: true
+        entity: sensor.tamhospital_waitingtime
   - type: custom:plotly-graph
     hours_to_show: 24
     time_offset: |-

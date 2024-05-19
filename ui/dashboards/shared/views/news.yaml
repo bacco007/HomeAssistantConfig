@@ -22,7 +22,7 @@ cards:
       grid-area: content
     layout_type: custom:masonry-layout
     layout:
-      max_cols: 4
+      max_cols: 3
       width: 500
       max_width: 1000
     cards:

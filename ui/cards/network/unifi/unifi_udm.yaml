@@ -1,0 +1,72 @@
+---
+type: vertical-stack
+view_layout:
+  grid-area: wan
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: UniFi UDM Status
+    icon: si:ubiquiti
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - entity: sensor.unifi_system_www
+        type: custom:mushroom-template-card
+        primary: WWW
+        icon: mdi:wan
+        secondary: |-
+          {{state_attr(entity, 'data')['drops']}} Drops
+          {{state_attr(entity, 'uptime_formatted')}}
+        fill_container: true
+        layout: vertical
+        multiline_secondary: true
+        icon_color: |-
+          {% if states(entity) == "ok" %}
+            #49D000
+          {% else %}
+            #CD1015
+          {% endif %}
+        tap_action:
+          action: more-info
+      - entity: sensor.unifi_system_wan
+        type: custom:mushroom-template-card
+        primary: WAN
+        icon: mdi:access-point-network
+        secondary: |-
+          {{state_attr(entity, 'data')['wan_ip']}}
+          {{state_attr(entity, 'uptime_formatted')}}
+        fill_container: true
+        layout: vertical
+        multiline_secondary: true
+        icon_color: |-
+          {% if states(entity) == "ok" %}
+            #49D000
+          {% else %}
+            #CD1015
+          {% endif %}
+        tap_action:
+          action: more-info
+      - entity: sensor.unifi_system_vpn
+        type: custom:mushroom-template-card
+        primary: VPN
+        icon: mdi:shield-link-variant-outline
+        secondary: |-
+          {{state_attr(entity, 'data')['users_active']}} Active Users
+          {{state_attr(entity, 'data')['users_inactive']}} Inactive Users
+        fill_container: true
+        layout: vertical
+        multiline_secondary: true
+        icon_color: |-
+          {% if states(entity) == "ok" %}
+            #49D000
+          {% else %}
+            #CD1015
+          {% endif %}
+        tap_action:
+          action: more-info

@@ -22,15 +22,19 @@ cards:
   # {% endif %}
   # {%- endfor %}
 
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_btc_aud
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_doge_aud
-  - type: custom:decluttering-card
-    template: mushroom_finance
-    variables:
-      - entity: sensor.yahoofinance_shib_aud
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_btc_aud
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_doge_aud
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_shib_aud

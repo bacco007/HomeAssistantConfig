@@ -28,25 +28,13 @@ cards:
     cards:
       - !include /config/ui/cards/network/settings_controls.yaml
       - !include /config/ui/cards/network/cloudflare_tunnels.yaml
-      - type: vertical-stack
-        cards:
-          - !include /config/ui/cards/network/unifi.yaml
-          - !include /config/ui/cards/network/unifi/netconn_wifi.yaml
-          - !include /config/ui/cards/network/unifi/netconn_wired.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include /config/ui/cards/network/adguard/card.yaml
-          - !include /config/ui/cards/network/adguard/graph_adsblocked.yaml
-          - !include /config/ui/cards/network/adguard/graph_adsblockedpct.yaml
-          - !include /config/ui/cards/network/adguard/graph_procspeed.yaml
-
-      - type: vertical-stack
-        cards:
-          - !include /config/ui/cards/network/snippets/internetuptime.yaml
-          - !include /config/ui/cards/network/snippets/speedtest.yaml
-          - !include /config/ui/cards/network/snippets/graph_week.yaml
-          - !include /config/ui/cards/network/snippets/graph_year.yaml
+      - !include /config/ui/cards/network/unifi/unifi_udm.yaml
+      - !include /config/ui/cards/network/unifi/conn_devices.yaml
+      - !include /config/ui/cards/network/unifi.yaml
+      - !include /config/ui/cards/network/adguard/card.yaml
+      - !include /config/ui/cards/network/snippets/internetuptime.yaml
+      - !include /config/ui/cards/network/snippets/speedtest.yaml
+      - !include /config/ui/cards/network/snippets/graph_fast_week.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml
