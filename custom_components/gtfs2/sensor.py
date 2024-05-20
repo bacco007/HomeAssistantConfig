@@ -66,30 +66,36 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
     ) -> None:
-    """Initialize the setup."""   
+    """Initialize the setup."""
     if config_entry.data.get('device_tracker_id',None):
         sensors = []
         coordinator: GTFSLocalStopUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
            "coordinator"
         ]
         await coordinator.async_config_entry_first_refresh()
+
+        # create a sensor with all stops
+        sensors.append(
+            GTFSLocalStopSensorList( coordinator=coordinator)
+        )
+
         for stop in coordinator.data["local_stops_next_departures"]:
             sensors.append(
                     GTFSLocalStopSensor(stop, coordinator, coordinator.data.get("name", "No Name"))
                 )
-        
+
     else:
         coordinator: GTFSUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
            "coordinator"
         ]
         await coordinator.async_config_entry_first_refresh()
-        
+
         sensors = [
             GTFSDepartureSensor(coordinator),
         ]
 
     async_add_entities(sensors, False)
-    
+
 class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
     """Implementation of a GTFS departure sensor."""
 
@@ -145,7 +151,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
         self._route = None
         self._agency = None
         self._origin = None
-        self._destination = None        
+        self._destination = None
         # Fetch valid stop information once
         # exclude check if route_type =2 (trains) as no ID is used
         if not self._origin and not self.extracting and self._route_type != "2":
@@ -155,7 +161,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
                 _LOGGER.warning("Origin stop ID %s not found", self.origin)
                 return
             self._origin = stops[0]
-        else: 
+        else:
             self._origin = self.origin
         # exclude check if route_type =2 (trains) as no ID is used
         if not self._destination and not self.extracting and self._route_type != "2":
@@ -224,7 +230,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
                 {self._departure.get("departure_time")},
             )
             self._state = self._departure.get("departure_time")
-            
+
         # settin state value
         self._attr_native_value = self._state
 
@@ -321,7 +327,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
                     self._destination.wheelchair_boarding, WHEELCHAIR_BOARDING_DEFAULT
                 )
         else:
-            self._attributes["destination_station_stop_name"] = self._departure.get("destination_stop_name", None)        
+            self._attributes["destination_station_stop_name"] = self._departure.get("destination_stop_name", None)
 
         # Manage Route metadata
         key = "route_id"
@@ -366,7 +372,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
             )
         else:
             self.remove_keys(prefix)
-        
+
         if "destination_stop_time" in self._departure:
             _LOGGER.debug("Destination_stop_time %s", self._departure["destination_stop_time"])
         else:
@@ -399,23 +405,23 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
         self._attributes["next_departures_lines"] = []
         if self._next_departures:
             self._attributes["next_departures_lines"] = self._departure[
-                "next_departures_lines"][:10]                         
-            
+                "next_departures_lines"][:10]
+
         # Add next departures with their headsign
         prefix = "next_departures_headsign"
         self._attributes["next_departures_headsign"] = []
         if self._next_departures:
             self._attributes["next_departures_headsign"] = self._departure[
-                "next_departures_headsign"][:10] 
+                "next_departures_headsign"][:10]
 
         self._attributes["gtfs_updated_at"] = self.coordinator.data[
             "gtfs_updated_at"]
-        
+
         self._attributes["origin_stop_alert"] = self.coordinator.data[
             "alert"].get("origin_stop_alert", "no info")
         self._attributes["destination_stop_alert"] = self.coordinator.data[
-            "alert"].get("destination_stop_alert", "no info")            
-        
+            "alert"].get("destination_stop_alert", "no info")
+
         if self._departure_rt:
             _LOGGER.debug("next dep realtime attr: %s", self._departure_rt)
             # Add next departure realtime to the right level, only if populated
@@ -428,13 +434,13 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
                     self._attributes["next_departure_realtime"] = '-'
                     self._attributes["next_departures_realtime"] = '-'
             if ATTR_INFO_RT in self._attributes:
-                del self._attributes[ATTR_INFO_RT]    
+                del self._attributes[ATTR_INFO_RT]
         else:
-            _LOGGER.debug("No next departure realtime attributes")         
+            _LOGGER.debug("No next departure realtime attributes")
             self._attributes[ATTR_INFO_RT] = (
                 "No realtime information"
             )
-               
+
         self._attr_extra_state_attributes = self._attributes
         return self._attr_extra_state_attributes
 
@@ -474,7 +480,11 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
         self._name = self._stop["stop_id"] + "_local_stop_" + self.coordinator.data['device_tracker_id']
         self._attributes: dict[str, Any] = {}
 
-        self._attr_unique_id = self._name
+        self._attr_unique_id = "sensor.gtfs2_" + self._name
+        self._attr_unique_id = self._attr_unique_id.lower()
+        self._attr_unique_id = self._attr_unique_id.replace(" ", "_")
+        self.entity_id = self._attr_unique_id
+
         self._attr_device_info = DeviceInfo(
             name=f"GTFS - {name}",
             entry_type=DeviceEntryType.SERVICE,
@@ -499,32 +509,105 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
 
     def _update_attrs(self):  # noqa: C901 PLR0911
         _LOGGER.debug("SENSOR: %s, update with attr data: %s", self._name, self.coordinator.data)
-        self._departure = self.coordinator.data.get("local_stops_next_departures",None) 
+        self._departure = self.coordinator.data.get("local_stops_next_departures",None)
         self._state: str | None = None
         # if no data or extracting, stop
         self._extracting = False
-        if self._extracting:  
+        if self._extracting:
             self._state = None
         else:
             self._state = self._stop["stop_name"]
 
-        self._attr_native_value = self._state        
+        self._attr_native_value = self._state
         self._attributes["gtfs_updated_at"] = self.coordinator.data[
-            "gtfs_updated_at"]  
+            "gtfs_updated_at"]
         self._attributes["device_tracker_id"] = self.coordinator.data[
             "device_tracker_id"]
         self._attributes["offset"] = self.coordinator.data[
             "offset"]
-        
+
         # Add next departures with their lines
         self._attributes["next_departures_lines"] = {}
         if self._departure:
             for stop in self._departure:
                 if self._name.startswith(stop["stop_id"]):
                     self._attributes["next_departures_lines"] = stop["departure"]
-                    self._attributes["latitude"] = stop["latitude"]  
-                    self._attributes["longitude"] = stop["longitude"]  
-                    
-          
+                    self._attributes["latitude"] = stop["latitude"]
+                    self._attributes["longitude"] = stop["longitude"]
+
+
         self._attr_extra_state_attributes = self._attributes
         return self._attr_extra_state_attributes
+
+
+
+
+###########################
+###########################
+###########################
+class GTFSLocalStopSensorList(CoordinatorEntity, SensorEntity):
+    """Implementation of a GTFS local stops departures sensor."""
+
+    def __init__( self, coordinator ) -> None:
+        """Initialize the GTFSsensor."""
+        super().__init__(coordinator)
+        provided_name = coordinator.data.get("name", "No Name")
+        self._previous_longitude = -1
+        self._previous_latitude = -1
+
+
+
+        self._name =  provided_name + " local_stoplist"
+        self._attributes: dict[str, Any] = {}
+
+        self._attr_unique_id = "sensor.gtfs2_" + self._name
+        self._attr_unique_id = self._attr_unique_id.lower()
+        self._attr_unique_id = self._attr_unique_id.replace(" ", "_")
+        self.entity_id = self._attr_unique_id
+
+        self._attr_device_info = DeviceInfo(
+            name=f"GTFS - {provided_name}",
+            entry_type=DeviceEntryType.SERVICE,
+            identifiers={(DOMAIN, f"GTFS - {provided_name}")},
+            manufacturer="GTFS",
+            model=provided_name,
+        )
+        self._state: str | None = None
+        self._state = "Initialized"
+        self._attr_native_value = self._state
+
+        self._attributes["gtfs_updated_at"] = self.coordinator.data["gtfs_updated_at"]
+        self._attributes["device_tracker_id"] = self.coordinator.data["device_tracker_id"]
+        self._attributes["offset"] = self.coordinator.data["offset"]
+        self._attributes["stops"] = []
+        self._attr_extra_state_attributes = self._attributes
+
+
+    @property
+    def name(self) -> str:
+        """Return the name of the sensor."""
+        return self._name
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._update_attrs()
+        self._attr_extra_state_attributes = self._attributes
+        self._state = "Updated"
+        self._attr_native_value = self._state        
+        super()._handle_coordinator_update()
+
+
+    def _update_attrs(self):  # noqa: C901 PLR0911
+        _LOGGER.debug("GTFSLocalStopSensorList: %s, update with attr data: %s", self._name, self.coordinator.data)
+
+# TO TO
+# if current GPS position is +/same as th last update and last update < 5 min ago
+# => no nothing
+# else update 
+
+        self._attributes["gtfs_updated_at"] = self.coordinator.data["gtfs_updated_at"]
+        self._departure = self.coordinator.data.get("local_stops_next_departures",None)
+        self._attributes["stops"] = self._departure
+        return self._attributes
+

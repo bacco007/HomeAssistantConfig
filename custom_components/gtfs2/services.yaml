@@ -96,6 +96,19 @@ update_gtfs_rt_local:
       required: true      
       selector:
         boolean: 
+        
+    rt_type:
+      name: Indicate type of realtime data 
+      description: Select if you update from url or zip
+      required: true
+      default: "trip_data"
+      selector:
+        select:
+          translation_key: "extract_from"
+          options:
+            - "trip_data"
+            - "vehicle_positions"   
+            - "alerts"
       
     debug_output:
       name: Save all to local file in readable format
