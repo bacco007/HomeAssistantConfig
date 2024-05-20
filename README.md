@@ -50,9 +50,9 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.5.4 |
 | No. Integrations | 205 |
 | No. Custom Integrations | 82 |
-| No. Entities | 5270 |
-| No. Sensors | 3401 |
-| No. Automations | 143 |
+| No. Entities | 5144 |
+| No. Sensors | 3378 |
+| No. Automations | 141 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,16 +62,16 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 348
-Buttons | 149
+Binary sensors | 346
+Buttons | 146
 Calendars | 75
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 117
-Devices | 591
+Device trackers | 116
+Devices | 592
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -83,23 +83,23 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 32
-Numbers | 39
-Persistent notifications | 3
+Media players | 31
+Numbers | 37
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3401
+Sensors | 3378
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 250
+Switches | 247
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 287
+Update | 277
 Vacuums | 0
 Water heaters | 0
 Weather | 11
@@ -751,7 +751,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v4.2.0] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.3] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.2.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
@@ -839,7 +839,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.2.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.2] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.3] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
 | [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
@@ -870,7 +870,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 17.3.0 |  | a0d7b954 |
-| Cloudflared | 5.1.9 |  | 9074a9fa |
+| Cloudflared | 5.1.10 |  | 9074a9fa |
 | DbStats | 0.5.6 |  | 8bce8ef4 |
 | ESPHome | 2024.5.0 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
