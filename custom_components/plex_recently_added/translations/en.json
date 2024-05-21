@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "name": "Name",
+          "host": "Plex address",
+          "port": "Plex port",
+          "api_key": "Plex token",
+          "ssl": "SSL",
+          "max": "Max number of items in sensor",
+          "on_deck": "Show \"on deck\" items",
+          "section_types": "Which section types to consider",
+          "exclude_keywords": "Keyword to be exclude from the sensor",
+          "section_libraries": "Which libraries to consider",
+          "verify_ssl": "Verify SSL"
+        }
+      }
+    },
+    "error": {
+      "failed_to_login": "Failed to Log-in",
+      "cannot_be_reached": "Plex cannot be reached"
+    },
+    "abort": {
+      "already_configured": "User is already configured (check README)",
+      "failed_to_login": "Failed to Log-in",
+      "cannot_be_reached": "Plex cannot be reached"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "max": "Max number of items in sensor",
+          "section_types": "Which section types to consider",
+          "exclude_keywords": "Keyword to be exclude from the sensor",
+          "section_libraries": "Which libraries to consider",
+          "on_deck": "Show \"on deck\" items"
+      }
+      }
+    }
+  }
+}
