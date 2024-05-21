@@ -1,0 +1,19 @@
+{
+    "domain": "apparent_temperature",
+    "name": "Apparent Temperature",
+    "after_dependencies": [
+        "history",
+        "recorder",
+        "weather"
+    ],
+    "codeowners": [
+        "@Limych"
+    ],
+    "config_flow": false,
+    "dependencies": [],
+    "documentation": "https://github.com/Limych/ha-apparent-temperature",
+    "iot_class": "calculated",
+    "issue_tracker": "https://github.com/Limych/ha-temperature-feeling/issues",
+    "requirements": [],
+    "version": "0.4.0"
+}
