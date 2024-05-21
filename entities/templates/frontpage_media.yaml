@@ -2,14 +2,14 @@
 sensor:
   - name: frontpage_plex_unwatched_movies
     unique_id: frontpage_plex_unwatched_movies
-    state: "{{ states('sensor.plex_recently_added_movies') }}"
+    state: "{{ states('sensor.plex_recently_added_movie') }}"
     attributes:
-      data: "{{ state_attr('sensor.plex_recently_added_movies', 'data') | selectattr('flag', 'defined') | selectattr('flag', 'eq', true) | list }}"
+      data: "{{ state_attr('sensor.plex_recently_added_movie', 'data') | selectattr('flag', 'defined') | selectattr('flag', 'eq', true) | list }}"
   - name: frontpage_plex_unwatched_tv
     unique_id: frontpage_plex_unwatched_tv
-    state: "{{ states('sensor.plex_recently_added') }}"
+    state: "{{ states('sensor.plex_recently_added_show') }}"
     attributes:
-      data: "{{ state_attr('sensor.plex_recently_added', 'data') | selectattr('flag', 'defined') | selectattr('flag', 'eq', true) | list }}"
+      data: "{{ state_attr('sensor.plex_recently_added_show', 'data') | selectattr('flag', 'defined') | selectattr('flag', 'eq', true) | list }}"
   - name: frontpage_radarr_upcoming
     unique_id: frontpage_radarr_upcoming
     state: "{{ states('sensor.radarr_upcoming_media') }}"

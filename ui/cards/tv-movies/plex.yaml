@@ -291,7 +291,7 @@ cards:
           name: Recently Added - TV
           icon: mdi:plex
           state: >
-            {{state_attr('sensor.plex_recently_added', 'data')[1].title }}
+            {{state_attr('sensor.plex_recently_added_show', 'data')[1].title }}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -299,7 +299,6 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  background: none;
                   border: 0;
                   box-shadow: none;
                   overflow: auto;
@@ -310,11 +309,14 @@ cards:
                   background-color: coral !important
                 }
             entities:
-              include: sensor.plex_recently_added
+              include: sensor.plex_recently_added_show
             css:
-              table+: "border-collapse: collapse; padding: 0px;"
-              tbody tr td:nth-child(1): "width: 20%;"
-              span: "font-size: smaller"
+              table+: "padding: 16px 0px 16px 16px;"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(1)+: "min-width: 1fr;width: 1fr;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
+              tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             strict: true
             columns:
               - name: test
@@ -329,16 +331,47 @@ cards:
                     String(date.getDate()).padStart(2,'0')+"/"+
                     (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
                   }
-              - name: Detail
+
+              - name: Show
                 data: data
-                modify: '{ x.title + "<br/><span>" + x.number + ", " + x.episode + "</span>" }'
+                modify: |-
+                  if(x.title != null)
+                    {x.title}
+                  else {
+                      '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+                  }
+              - name: S/Ep
+                data: data
+                modify: |-
+                  if(x.number != null)
+                    {x.number}
+                  else {
+                      '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+                  }
+              - name: Episode
+                data: data
+                modify: |-
+                  if(x.episode != null)
+                    {x.episode}
+                  else {
+                      '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+                  }
+              - name: Poster
+                data: data
+                align: center
+                modify: |
+                  if(x.poster != null)
+                    '<img height=75 src="' + x.poster + '">'
+                  else {
+                      'n/A';
+                  }
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
           name: Recently Added - Movies
           icon: mdi:plex
           state: >
-            {{state_attr('sensor.plex_recently_added_movies', 'data')[1].title }}
+            {{state_attr('sensor.plex_recently_added_movie', 'data')[1].title }}
         padding: 0
         entities:
           - type: custom:hui-element
@@ -346,7 +379,6 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  background: none;
                   border: 0;
                   box-shadow: none;
                   overflow: auto;
@@ -357,11 +389,14 @@ cards:
                   background-color: coral !important
                 }
             entities:
-              include: sensor.plex_recently_added_movies
+              include: sensor.plex_recently_added_movie
             css:
-              table+: "border-collapse: collapse; padding: 0px;"
-              tbody tr td:nth-child(1): "width: 25%;"
-              span: "font-size: smaller"
+              table+: "padding: 16px 0px 16px 16px;"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(1)+: "min-width: 1fr;width: 1fr;"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
+              tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             strict: true
             columns:
               - name: test
@@ -378,7 +413,21 @@ cards:
                   }
               - name: Detail
                 data: data
-                modify: x.title
+                modify: |-
+                  if(x.title != null)
+                    {x.title}
+                  else {
+                      '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+                  }
+              - name: Poster
+                data: data
+                align: center
+                modify: |
+                  if(x.poster != null)
+                    '<img height=75 src="' + x.poster + '">'
+                  else {
+                      'n/A';
+                  }
       - type: section
       - type: custom:fold-entity-row
         head:
