@@ -11,7 +11,6 @@ cards:
         opacity: 1;
         }
 
-
   - type: entities
     card_mod:
       style: |

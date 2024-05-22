@@ -69,34 +69,34 @@ cards:
           width: 2
           color: rgba(128,128,128,0.9)
           shape: spline
-      # - entity: sensor.zha_office_pressure
-      #   yaxis: y3
-      #   legendgroup: 1
-      #   showlegend: false
-      #   name: Today
-      #   connectgaps: true
-      #   show_value: true
-      #   filters:
-      #     - force_numeric
-      #     - resample: 30m
-      #   line:
-      #     width: 3
-      #     color: rgba(255,155,255, 0.8)
-      #     shape: spline
-      # - entity: sensor.zha_office_pressure
-      #   yaxis: y3
-      #   legendgroup: 2
-      #   showlegend: false
-      #   name: Yesterday
-      #   connectgaps: true
-      #   time_offset: 1d
-      #   filters:
-      #     - force_numeric
-      #     - resample: 30m
-      #   line:
-      #     width: 2
-      #     color: rgba(128,128,128,0.9)
-      #     shape: spline
+        # - entity: sensor.zha_office_pressure
+        #   yaxis: y3
+        #   legendgroup: 1
+        #   showlegend: false
+        #   name: Today
+        #   connectgaps: true
+        #   show_value: true
+        #   filters:
+        #     - force_numeric
+        #     - resample: 30m
+        #   line:
+        #     width: 3
+        #     color: rgba(255,155,255, 0.8)
+        #     shape: spline
+        # - entity: sensor.zha_office_pressure
+        #   yaxis: y3
+        #   legendgroup: 2
+        #   showlegend: false
+        #   name: Yesterday
+        #   connectgaps: true
+        #   time_offset: 1d
+        #   filters:
+        #     - force_numeric
+        #     - resample: 30m
+        #   line:
+        #     width: 2
+        #     color: rgba(128,128,128,0.9)
+        #     shape: spline
     layout:
       height: 500
       margin:

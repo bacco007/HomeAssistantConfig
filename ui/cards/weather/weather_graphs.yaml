@@ -169,18 +169,18 @@ cards:
                   width: 2
                   color: "#3D82FF"
                   shape: spline
-              # - entity: sensor.barometric_pressure_24h_spread
-              #   name: 24hr Spread
-              #   connectgaps: true
-              #   show_value: true
-              #   filters:
-              #     - force_numeric
-              #     - resample: 15m
-              #   texttemplate: <b>%{y:,.1f}</b>
-              #   line:
-              #     width: 2
-              #     color: "#B6B8BA"
-              #     shape: spline
+                # - entity: sensor.barometric_pressure_24h_spread
+                #   name: 24hr Spread
+                #   connectgaps: true
+                #   show_value: true
+                #   filters:
+                #     - force_numeric
+                #     - resample: 15m
+                #   texttemplate: <b>%{y:,.1f}</b>
+                #   line:
+                #     width: 2
+                #     color: "#B6B8BA"
+                #     shape: spline
             refresh_interval: auto
             layout:
               showlegend: true

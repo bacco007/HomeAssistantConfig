@@ -29,80 +29,80 @@ title-card:
           padding-bottom: 5px !important;
         }
 cards:
-- type: custom:plotly-graph
-  hours_to_show: 24
-  time_offset: |-
-    $fn () =>  {
-      now = new Date();
-      tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0,0,0,0);                                           // midnight
-      HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
-      return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
-    }
-  entities:
-    - entity: sensor.adguard_dns_queries_blocked_ratio
-      name: Yesterday
-      time_offset: 1d
-      connectgaps: true
-      filters:
-        - force_numeric
-        - resample: 30m
-      x: $fn ({xs}) => xs
-      "y": $fn ({ys}) => ys
-      fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
-      fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
-      texttemplate: <b>%{y:,.0f}</b>
-      line:
-        width: 1.5
-        color: lightgray
-        shape: spline
-    - entity: sensor.adguard_dns_queries_blocked_ratio
-      name: Today
-      connectgaps: true
-      show_value: true
-      filters:
-        - force_numeric
-        - resample: 30m
-      texttemplate: <b>%{y:,.2f}</b>
-      line:
-        width: 3
-        color: "#FF4400"
-        shape: spline
-  refresh_interval: auto
-  layout:
-    showlegend: true
-    height: 250
-    margin:
-      autoexpand: true
-      l: 30
-      r: 20
-    xaxis:
-      showline: true
-      tickformat: "%H:%M"
-      showgrid: false
-      showticklabels: true
-      linecolor: rgb(204,204,204)
-      linewidth: 2
-      autotick: true
-      ticks: outside
-      tickwidth: 2
-      ticklen: 5
-      tickfont:
-        family: Roboto
-        size: 12
-        color: rgb(204,204,204)
-    yaxis:
-      title: ""
-      autorange: true
-      zeroline: true
-      fixedrange: true
-      linecolor: rgb(204,204,204)
-      linewidth: 2
-      tickfont:
-        family: Roboto
-        size: 12
-        color: rgb(204,204,204)
-    dragmode: false
-  config:
-    scrollZoom: false
+  - type: custom:plotly-graph
+    hours_to_show: 24
+    time_offset: |-
+      $fn () =>  {
+        now = new Date();
+        tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0,0,0,0);                                           // midnight
+        HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+        return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+      }
+    entities:
+      - entity: sensor.adguard_dns_queries_blocked_ratio
+        name: Yesterday
+        time_offset: 1d
+        connectgaps: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        x: $fn ({xs}) => xs
+        "y": $fn ({ys}) => ys
+        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+        texttemplate: <b>%{y:,.0f}</b>
+        line:
+          width: 1.5
+          color: lightgray
+          shape: spline
+      - entity: sensor.adguard_dns_queries_blocked_ratio
+        name: Today
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 3
+          color: "#FF4400"
+          shape: spline
+    refresh_interval: auto
+    layout:
+      showlegend: true
+      height: 250
+      margin:
+        autoexpand: true
+        l: 30
+        r: 20
+      xaxis:
+        showline: true
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false
