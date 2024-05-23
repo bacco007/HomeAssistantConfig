@@ -27,6 +27,7 @@ PLATFORMS = [Platform.SENSOR]
 
 # constants used in helpers
 ATTR_API_KEY_LOCATIONS = ["not_applicable","header","query_string"]
+ATTR_API_KEY_NAMES = ["api_key","x_api_key", "apiKey","Ocp-Apim-Subscription-Key"]
 ATTR_ARRIVAL = "arrival"
 ATTR_BICYCLE = "trip_bikes_allowed_state"
 ATTR_DAY = "day"
@@ -287,8 +288,7 @@ CONF_REAL_TIME = "real_time"
 
 # gtfs_rt specific
 CONF_API_KEY = "api_key"
-CONF_X_API_KEY = "x_api_key"
-CONF_OCP_APIM_KEY = "ocp_apim_subscription_key"
+CONF_API_KEY_NAME = "api_key_name"
 CONF_ACCEPT_HEADER_PB = "accept"
 CONF_STOP_ID = "stopid"
 CONF_TRIP_UPDATE_URL = "trip_update_url"
@@ -302,6 +302,7 @@ DEFAULT_ACCEPT_HEADER_PB = False
 DEFAULT_SERVICE = "Service"
 DEFAULT_ICON = "mdi:bus"
 DEFAULT_DIRECTION = "0"
+DEFAULT_API_KEY_NAME = "api_key"
 
 TIME_STR_FORMAT = "%H:%M"
 

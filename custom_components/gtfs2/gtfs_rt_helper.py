@@ -35,8 +35,7 @@ from .const import (
     ATTR_LONGITUDE,
 
     CONF_API_KEY,
-    CONF_X_API_KEY,
-    CONF_OCP_APIM_KEY,
+    CONF_API_KEY_NAME,
     CONF_API_KEY_LOCATION,
     CONF_ACCEPT_HEADER_PB,
     CONF_STOP_ID,
@@ -385,21 +384,14 @@ def get_gtfs_rt(hass, path, data):
     url = data["url"]
     file = data["file"] + ".rt"
     if data.get(CONF_API_KEY_LOCATION, None) == "query_string":
-        if data.get(CONF_API_KEY, None):
-            url = url + "?api_key=" + data[CONF_API_KEY]
-        elif data.get(CONF_X_API_KEY, None):
-            url = url + "?x_api_key=" + data[CONF_X_API_KEY]
-        elif data.get(CONF_OCP_APIM_KEY,None):
-            url = url + "?Ocp-Apim-Subscription-Key=" + data[CONF_OCP_APIM_KEY]             
+      if data.get(CONF_API_KEY, None):
+        self._trip_update_url = self._trip_update_url + "?" + data[CONF_API_KEY_NAME] + "=" + data[CONF_API_KEY]
+        self._vehicle_position_url = self._vehicle_position_url ++ "?" + data[CONF_API_KEY_NAME] + "=" + data[CONF_API_KEY]
+        self._alerts_url = self._alerts_url + "?" + data[CONF_API_KEY_NAME] + "=" + data[CONF_API_KEY]
     if data.get(CONF_API_KEY_LOCATION, None) == "header":
-        if data.get(CONF_API_KEY, None):
-            _headers = {"Authorization": data[CONF_API_KEY]}
-        elif data.get(CONF_X_API_KEY, None):
-            _headers = {"x-api-key": data[CONF_X_API_KEY]}
-        elif data.get(CONF_OCP_APIM_KEY, None):
-            _headers = {"Ocp-Apim-Subscription-Key": data[CONF_OCP_APIM_KEY]}            
+        self._headers = {data[CONF_API_KEY_NAME]: data[CONF_API_KEY]}               
     if data.get(CONF_ACCEPT_HEADER_PB, False):
-       _headers["Accept"] = "application/x-protobuf"
+        self._headers["Accept"] = "application/x-protobuf"
     _LOGGER.debug("Getting gtfs rt locally with headers: %s", _headers)
     try:
         r = requests.get(url, headers = _headers , allow_redirects=True)

@@ -117,8 +117,7 @@
           "vehicle_position_url": "URL zur Fahrzeugposition",
           "alerts_url": "URL zu Warnungen",
           "api_key": "API-Schlüssel, falls erforderlich",
-          "x_api_key": "X_API-Schlüssel, falls erforderlich",
-		  "ocp_apim_subscription_key": "Ocp_Apim-Schlüssel, falls erforderlich",
+          "api_key_name": "API Schlüssel Name, falls erforderlich",
           "api_key_location": "der Ort, an dem der Schlüssel angewendet wird",
 		  "accept": "Zufügung am Header von Accept:application/x-protobuf "
         }
