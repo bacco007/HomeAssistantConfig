@@ -1,6 +1,7 @@
 {
   "domain": "plex_recently_added",
   "name": "Plex Recently Added",
+  "after_dependencies": ["http"],
   "codeowners": ["@maykar"],
   "config_flow": true,
   "dependencies": [],
@@ -8,5 +9,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/custom-components/sensor.plex_recently_added/issues",
   "requirements": [],
-  "version": "0.4.2"
+  "version": "0.4.3"
 }
