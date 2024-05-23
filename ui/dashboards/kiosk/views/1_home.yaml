@@ -27,7 +27,7 @@ cards:
 
   # Content
   - type: custom:layout-card
-    layout_type: custom:masonry-layout
+    layout_type: custom:vertical-layout
     layout:
       max_cols: 3
       width: 300
@@ -38,10 +38,12 @@ cards:
       - !include /config/ui/cards/home/home.yaml
       - !include /config/ui/cards/home/weather.yaml
       - !include /config/ui/cards/home/tamworth.yaml
+      - type: custom:layout-break
+      - !include /config/ui/cards/home/solar.yaml
       - !include /config/ui/cards/home/sun_moon.yaml
       # - !include /config/ui/cards/home/lights-kiosk.yaml
+      - type: custom:layout-break
       - !include /config/ui/cards/home/sport-kiosk.yaml
-      - !include /config/ui/cards/home/solar.yaml
       - !include /config/ui/cards/home/untappd.yaml
       - !include /config/ui/cards/home/flighttracker-kiosk.yaml
 

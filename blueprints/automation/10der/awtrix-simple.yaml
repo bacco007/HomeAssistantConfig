@@ -1,0 +1,140 @@
+blueprint:
+  name: AWTRIX show entity
+  description: Show entity
+  domain: automation
+  input:
+    app_name:
+      name: (Required) Application name
+      description: Application name
+      default: awtrix_app
+      selector:
+        text:
+          multiline: false
+          multiple: false
+    app_icon:
+      name: Application Icon
+      description: Application icon
+      default: ''
+      selector:
+        text:
+          multiline: false
+          multiple: false
+    entity:
+      name: Entity
+      description: Entity
+      selector:
+        entity:
+          multiple: false
+    prefix_text:
+      name: Text prefix
+      description: Text prefix
+      selector:
+        object: {}
+      default: ''
+    suffix_text:
+      name: Text suffix
+      description: Text suffix
+      selector:
+        object: {}
+      default: ''
+    extra_trigger:
+      name: Extra trigger
+      description: Additional trigger to actions.
+      selector:
+        object: {}
+      default: false
+    pre_actions:
+      name: Actions
+      description: Actions when starting...
+      selector:
+        action: {}
+      default:
+    additional_options:
+      name: Additional options
+      description: Extra options
+      selector:
+        object: {}
+      default: {}
+    value_template:
+      name: Value template
+      description: Value template
+      selector:
+        object: {}
+      default:
+        icon: '{{app_icon}}'
+        text: '{{states(entity_id)}}'
+    user_options:
+      name: AWTRIX application options
+      description: AWTRIX application useroptions.
+      selector:
+        object: {}
+      default:
+        duration: 5
+    additional_conditions:
+      name: Additional conditions
+      description: "Extra conditions you may want to add to this automation \n(Example:
+        Home occupied, TV on, etc)\n"
+      default: []
+      selector:
+        condition: {}
+    awtrix_device:
+      name: AWTRIX device
+      description: The AWTRIX device for show app.
+      default: []
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+          multiple: true
+  source_url: https://raw.githubusercontent.com/10der/homeassistant-custom_components-awtrix/main/awtrix-simple.yaml
+trigger:
+- platform: state
+  entity_id: !input entity
+- platform: homeassistant
+  event: start
+- platform: event
+  event_type: automation_reloaded
+- platform: template
+  value_template: !input extra_trigger
+condition: []
+variables:
+  entity_id: !input entity
+  app_name: !input app_name
+  app_icon: !input app_icon
+  additional_conditions: !input additional_conditions
+action:
+- choose: []
+  default: !input pre_actions
+- alias: Variable Entity
+  variables: &id001 !input additional_options
+- variables:
+    alias: Variable Entity
+    variables: *id001
+    device_ids: !input awtrix_device
+    user_data: !input additional_options
+    value_template: !input value_template
+    prefix_text: !input prefix_text
+    suffix_text: !input suffix_text
+    user_options: !input user_options
+    payload: "{\n  {{('\"icon\"' if value_template.icon) ~ (\":\" if value_template.icon)
+      ~ ('\"' ~ value_template.icon ~ '\"' if value_template.icon) }}\n  {{\",\" if
+      value_template.icon}} \"text\":\"{{prefix_text~value_template.text~suffix_text}}\"\n}"
+- repeat:
+    for_each: '{{ device_ids }}'
+    sequence:
+    - variables:
+        awtrix_device_name: '{{ iif( device_attr(repeat.item, ''name_by_user'') !=
+          none, device_attr(repeat.item, ''name_by_user''), device_attr(repeat.item,
+          ''name'') ) }}'
+    - if: !input additional_conditions
+      then:
+      - service: awtrix.{{awtrix_device_name}}_push_app_data
+        data:
+          name: '{{app_name}}'
+          data: '{{ dict(payload, **user_options) }}'
+      else:
+      - service: awtrix.{{awtrix_device_name}}_push_app_data
+        data:
+          name: '{{app_name}}'
+          data: {}
