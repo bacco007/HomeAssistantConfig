@@ -104,6 +104,10 @@ LEAGUE_MAP = {
         CONF_SPORT_PATH: SOCCER,
         CONF_LEAGUE_PATH: "uefa.champions",
     },
+    "CLA": {
+        CONF_SPORT_PATH: SOCCER,
+        CONF_LEAGUE_PATH: "conmebol.libertadores",
+    },
     "EPL": {
         CONF_SPORT_PATH: SOCCER,
         CONF_LEAGUE_PATH: "eng.1",
@@ -188,7 +192,7 @@ RAPID_REFRESH_RATE = timedelta(seconds=5)
 
 # Misc
 TEAM_ID = ""
-VERSION = "v0.11.0"
+VERSION = "v0.12.1"
 ISSUE_URL = "https://github.com/vasqued2/ha-teamtracker"
 DOMAIN = "teamtracker"
 ATTRIBUTION = "Data provided by ESPN"
