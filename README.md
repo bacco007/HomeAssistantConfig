@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.5.4 |
 | No. Integrations | 205 |
 | No. Custom Integrations | 83 |
-| No. Entities | 5236 |
-| No. Sensors | 3372 |
+| No. Entities | 5234 |
+| No. Sensors | 3371 |
 | No. Automations | 141 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3372
+Sensors | 3371
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -730,7 +730,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.0] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.0] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.6] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
-| [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v3.4.1] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
+| [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v3.4.2] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.3.0] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
 | [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.4.3] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
@@ -785,7 +785,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.1] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
-| [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.12.0] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
+| [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.12.1] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.3] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
