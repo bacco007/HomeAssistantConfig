@@ -1,191 +1,229 @@
 ---
-action: fire-dom-event
-browser_mod:
-  service: browser_mod.popup
-  data:
-    title: Alarm Clock
-    content:
-      type: custom:stack-in-card
-      card_mod:
-        style: |
-          ha-card {
-            overflow: visible !important;
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#alarmclock'
+    button_type: state
+    name: Alarm Clock
+    icon: mdi:alarm
+    show_state: false
+    show_last_updated: false
+    show_attribute: false
+    scrolling_effect: false
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+            border-width: 0px;
+            box-shadow: none !important;
           }
-      cards:
-        - type: custom:mushroom-template-card
-          primary: Alarm Clock
-          icon: mdi:alarm
-          icon_color: blue
+        #states {
+          padding-top: 0 !important;
+        }
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          entity: input_boolean.alarm_wakestatus_weekday
+          name: Weekday Alarm
+          toggle: true
+          secondary: Wake Time {{states('sensor.alarm_waketime_weekday')}}
+        entities:
+          - entity: sensor.alarm_waketime_weekday
+            name: Wake Time
+          - entity: input_number.alarm_wakehour_weekday
+          - entity: input_number.alarm_wakeminute_weekday
+      - type: custom:fold-entity-row
+        padding: 0
+        head:
+          type: custom:template-entity-row
+          entity: input_boolean.alarm_wakestatus_weekend
+          name: Weekend Alarm
+          toggle: true
+          secondary: Wake Time {{states('sensor.alarm_waketime_weekend')}}
+        entities:
+          - entity: sensor.alarm_waketime_weekend
+            name: Wake Time
+          - entity: input_number.alarm_wakehour_weekend
+          - entity: input_number.alarm_wakeminute_weekend
+      - type: section
+      - entity: timer.alarm_length
+        name: Alarm Length
+      - entity: binary_sensor.alarm_today
+        name: Alarm Today?
+        icon: mdi:bed-clock
+      - entity: binary_sensor.alarm_tomorrow
+        name: Alarm Tomorrow?
+        icon: mdi:bed-clock
+      - entity: input_select.alarm_music
+      - type: section
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: automation.alarm_cloc*
+              options:
+                secondary_info: last-triggered
+        sort:
+          method: friendly_name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          padding: 5
           card_mod:
             style: |
-              ha-card {
-                box-shadow: none !important;
-              }
-        - type: entities
-          card_mod:
-            style: |
-              #states {
+              #measure {
                 padding-top: 0 !important;
               }
-              #states > * {
+              #measure > * {
                 margin: 0 !important;
               }
-          entities:
-            - type: custom:fold-entity-row
-              padding: 0
-              head:
-                type: custom:template-entity-row
-                entity: input_boolean.alarm_wakestatus_weekday
-                name: Weekday Alarm
-                toggle: true
-                secondary: Wake Time {{states('sensor.alarm_waketime_weekday')}}
-              entities:
-                - entity: sensor.alarm_waketime_weekday
-                  name: Wake Time
-                - entity: input_number.alarm_wakehour_weekday
-                - entity: input_number.alarm_wakeminute_weekday
-            - type: custom:fold-entity-row
-              padding: 0
-              head:
-                type: custom:template-entity-row
-                entity: input_boolean.alarm_wakestatus_weekend
-                name: Weekend Alarm
-                toggle: true
-                secondary: Wake Time {{states('sensor.alarm_waketime_weekend')}}
-              entities:
-                - entity: sensor.alarm_waketime_weekend
-                  name: Wake Time
-                - entity: input_number.alarm_wakehour_weekend
-                - entity: input_number.alarm_wakeminute_weekend
-            - type: section
-            - entity: timer.alarm_length
-              name: Alarm Length
-            - entity: binary_sensor.alarm_today
-              name: Alarm Today?
-              icon: mdi:bed-clock
-            - entity: binary_sensor.alarm_tomorrow
-              name: Alarm Tomorrow?
-              icon: mdi:bed-clock
-            - entity: input_select.alarm_music
-            - type: section
-            - type: custom:auto-entities
-              filter:
-                include:
-                  - entity_id: automation.alarm_cloc*
-                    options:
-                      secondary_info: last-triggered
-              sort:
-                method: friendly_name
-                ignore_case: true
-              card:
-                type: custom:fold-entity-row
-                padding: 5
-                card_mod:
-                  style: |
-                    #measure {
-                      padding-top: 0 !important;
-                    }
-                    #measure > * {
-                      margin: 0 !important;
-                    }
-                head:
-                  type: custom:template-entity-row
-                  name: Alarm Clock Automations
-                  icon: mdi:sync-alert
-                  state: ''
-            - type: custom:fold-entity-row
-              padding: 5
-              card_mod:
-                style: |
-                  #measure {
-                    padding-top: 0 !important;
-                  }
-                  #measure > * {
-                    margin: 0 !important;
-                  }
-              head:
-                type: custom:template-entity-row
-                name: Alarm Clock Debugging
-                icon: mdi:bed-clock
-                state: ''
-              entities:
-                - entity: input_boolean.alarm_debug_testing
-                  name: Alarm Testing
-                - type: attribute
-                  entity: sensor.alarm_defaults
-                  attribute: default_music
-                  name: Default Music
-                - type: attribute
-                  entity: sensor.alarm_defaults
-                  attribute: default_sonos
-                  name: Default Sonos
-                - type: attribute
-                  entity: sensor.alarm_defaults
-                  attribute: default_light
-                  name: Default Light
-          show_header_toggle: false
-        - type: horizontal-stack
-          cards:
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_sunday
-              name: Sun
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_monday
-              name: Mon
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_tuesday
-              name: Tue
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_wednesday
-              name: Wed
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_thursday
-              name: Thu
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_friday
-              name: Fri
-            - type: custom:mushroom-entity-card
-              fill_container: true
-              layout: vertical
-              primary_info: name
-              secondary_info: none
-              tap_action:
-                action: toggle
-              entity: input_boolean.alarm_day_saturday
-              name: Sat
+          head:
+            type: custom:template-entity-row
+            name: Alarm Clock Automations
+            icon: mdi:sync-alert
+            state: ''
+      - type: custom:fold-entity-row
+        padding: 5
+        card_mod:
+          style: |
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        head:
+          type: custom:template-entity-row
+          name: Alarm Clock Debugging
+          icon: mdi:bed-clock
+          state: ''
+        entities:
+          - entity: input_boolean.alarm_debug_testing
+            name: Alarm Testing
+          - type: attribute
+            entity: sensor.alarm_defaults
+            attribute: default_music
+            name: Default Music
+          - type: attribute
+            entity: sensor.alarm_defaults
+            attribute: default_sonos
+            name: Default Sonos
+          - type: attribute
+            entity: sensor.alarm_defaults
+            attribute: default_light
+            name: Default Light
+    show_header_toggle: false
+  - type: grid
+    square: false
+    columns: 7
+    cards:
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_sunday
+        name: Sun
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_monday
+        name: Mon
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_tuesday
+        name: Tue
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_wednesday
+        name: Wed
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_thursday
+        name: Thu
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_friday
+        name: Fri
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }
+      - type: custom:mushroom-entity-card
+        fill_container: true
+        layout: vertical
+        primary_info: name
+        secondary_info: none
+        tap_action:
+          action: toggle
+        entity: input_boolean.alarm_day_saturday
+        name: Sat
+        card_mod:
+          style: |
+            ha-card {
+                border-width: 0px;
+                box-shadow: none !important;
+              }

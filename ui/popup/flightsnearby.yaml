@@ -5,23 +5,6 @@ cards:
     card_type: pop-up
     name: FR24 Tracked Flights Nearby
     icon: mdi:airplane
-    styles: |-
-      ha-icon {
-        color: #6eaadc !important;
-        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-        }
-      h4.bubble-name {
-        font: var(--primary-font-family) !important;
-        font-size: 15px !important;
-        font-weight: var(--card-primary-font-weight);
-        color: "#6eaadc" !important;
-        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-        }
-      .bubble-line {
-        background: var(--background-color);
-        opacity: 0.75;
-        }
-    sub_button: []
     hash: "#flightsnear"
     entity: sensor.flightradar24_current_in_area
     scrolling_effect: false

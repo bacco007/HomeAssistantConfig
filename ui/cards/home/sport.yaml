@@ -10,6 +10,10 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "#sportcalendar"
+      - icon: mdi:calendar-today
+        tap_action:
+          action: navigate
+          navigation_path: "#sport24hrs"
       - icon: mdi:arrow-top-right-thin
         tap_action:
           action: navigate

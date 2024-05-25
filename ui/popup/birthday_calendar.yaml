@@ -1,0 +1,64 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#birthdaycalendar"
+    button_type: name
+    name: Birthday Calendar
+    icon: mdi:cake-variant-outline
+  - type: custom:atomic-calendar-revive
+    enableModeChange: true
+    entities:
+      - entity: calendar.anniversaries
+        name: Anniversaries
+        maxDaysToShow: 365
+        icon: mdi:cake-variant
+        showMultiDay: true
+    cardHeight: 100%
+    showDeclined: false
+    showDate: false
+    offsetHeaderDate: true
+    showLocation: false
+    hideFinishedEvents: false
+    showRelativeTime: true
+    compactMode: false
+    showProgressBar: false
+    showCurrentEventLine: false
+    showMonth: true
+    showWeekDay: true
+    showDescription: false
+    showEventIcon: true
+    showHiddenText: false
+    showDatePerEvent: false
+    showEventDate: true
+    hideDuplicates: false
+    showMultiDayEventParts: false
+    showMultiDay: false
+    maxDaysToShow: 1
+    sortBy: start
+    allDayBottom: false
+    disableLocationLink: true
+    disableEventLink: false
+    showNoEventsForToday: false
+    showFullDayProgress: true
+    hoursOnSameLine: false
+    showTimeRemaining: true
+    showAllDayHours: false
+    showAllDayEvents: true
+    defaultMode: Event
+    titleLength: 150
+    showWeekNumber: false
+    noEventsForNextDaysText: " "
+    noEventText: " "
+    disableCalEventLink: false
+    dimFinishedEvents: false
+    untilText: " "
+    hiddenEventText: " "
+    eventTitle: " "
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none;
+          background: none;
+        }

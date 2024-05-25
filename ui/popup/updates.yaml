@@ -434,6 +434,10 @@ cards:
                       }}
     card_mod:
       style: |
+        ha-card {
+            border-width: 0px;
+            box-shadow: none !important;
+          }
         #states {
           padding-top: 0 !important;
         }

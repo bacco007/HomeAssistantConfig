@@ -32,7 +32,9 @@ card:
         {% else %} No Alarm for Tomorrow {% endif %}
       icon: mdi:bed-clock
       entity: binary_sensor.alarm_today
-      tap_action: !include /config/ui/popup/alarm_clock.yaml
+      tap_action:
+        action: navigate
+        navigation_path: "#alarmclock"
       card_mod:
         style:
           .: |
@@ -100,7 +102,9 @@ card:
       secondary: ""
       icon: mdi:lightbulb
       entity: sensor.summary_lights
-      tap_action: !include /config/ui/popup/lights.yaml
+      tap_action:
+        action: navigate
+        navigation_path: "#lights"
       card_mod:
         style:
           .: |
@@ -257,7 +261,9 @@ card:
         {% else %}
           none
         {% endif %}
-      tap_action: !include /config/ui/popup/sport_24hrs.yaml
+      tap_action:
+        action: navigate
+        navigation_path: "#sport24hrs"
       card_mod:
         style:
           .: |

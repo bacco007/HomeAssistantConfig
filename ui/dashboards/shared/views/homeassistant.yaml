@@ -37,14 +37,11 @@ cards:
       - !include /config/ui/cards/homeassistant/automation_history.yaml
       - !include /config/ui/cards/homeassistant/snapshots.yaml
       - !include /config/ui/cards/homeassistant/graph_entitycount.yaml
+      - !include /config/ui/cards/homeassistant/graph_sensorcount.yaml
       - !include /config/ui/cards/homeassistant/graph_dbsize.yaml
-      - type: custom:swipe-card
-        start_card: 1
-        reset_after: 300
-        parameters: !include /config/ui/cards/card-config/swipe-card.yaml
-        cards:
-          - !include /config/ui/cards/homeassistant/graph_countyamllines.yaml
-          - !include /config/ui/cards/homeassistant/graph_countyamlfiles.yaml
+      - !include /config/ui/cards/homeassistant/graph_dbsize_influx.yaml
+      - !include /config/ui/cards/homeassistant/graph_countyamllines.yaml
+      - !include /config/ui/cards/homeassistant/graph_countyamlfiles.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml
@@ -54,3 +51,6 @@ cards:
     view_layout:
       grid-area: footer
     card: !include /config/ui/cards/common/media_player.yaml
+
+  # Popups
+  - !include /config/ui/dashboards/shared/includes/popup.yaml

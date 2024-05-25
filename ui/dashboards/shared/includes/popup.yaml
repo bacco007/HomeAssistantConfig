@@ -1,0 +1,14 @@
+---
+type: vertical-stack
+cards:
+  - !include /config/ui/popup/weather_forecast.yaml
+  - !include /config/ui/popup/flightsnearby.yaml
+  - !include /config/ui/popup/updates.yaml
+  - !include /config/ui/popup/lights.yaml
+  - !include /config/ui/popup/sleep_analysis.yaml
+  - !include /config/ui/popup/solar.yaml
+  - !include /config/ui/popup/media_upcoming.yaml
+  - !include /config/ui/popup/birthday_calendar.yaml
+  - !include /config/ui/popup/alarm_clock.yaml
+  - !include /config/ui/popup/sport_24hrs.yaml
+  - !include /config/ui/popup/sports_calendar.yaml

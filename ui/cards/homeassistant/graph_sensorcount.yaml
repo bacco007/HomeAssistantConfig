@@ -3,15 +3,15 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
-    name: Database Size (MariaDB)
-    icon: mdi:database
+    name: Sensors in Use
+    icon: mdi:code-braces
     styles: |-
       .bubble-line {
         background: var(--ha-card-background);
         opacity: 1;
         }
     sub_button:
-      - entity: sensor.ha_db_size
+      - entity: sensor.sensors
         show_name: false
         show_icon: false
         show_background: true
@@ -24,7 +24,7 @@ cards:
             box-shadow: none;
           }
     entities:
-      - entity: sensor.ha_db_size
+      - entity: sensor.sensors
         connectgaps: true
         show_value: true
         filters:
@@ -34,7 +34,7 @@ cards:
         line:
           width: 3
           color: yellow
-      - entity: sensor.ha_db_size
+      - entity: sensor.sensors
         statistic: state
         time_offset: 1w
         connectgaps: true

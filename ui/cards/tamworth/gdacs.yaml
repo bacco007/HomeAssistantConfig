@@ -1,0 +1,77 @@
+---
+type: conditional
+conditions:
+  - entity: sensor.gdacs_31_08133085871397_150_9416770935059
+    state_not: "0"
+card:
+  type: vertical-stack
+  cards:
+    - type: custom:bubble-card
+      card_type: separator
+      name: GDACS Alerts
+      icon: mdi:alert-circle
+      styles: |-
+        .bubble-line {
+          background: var(--ha-card-background);
+          opacity: 1;
+          }
+      sub_button:
+        - entity: sensor.gdacs_31_08133085871397_150_9416770935059
+          show_attribute: false
+          show_state: true
+          show_name: false
+          show_icon: false
+          show_background: true
+    - type: custom:yet-another-expander-card
+      gap: 0.6em
+      padding: 0
+      clear: false
+      title: Expander
+      overlay-margin: 0em
+      child-padding: 0.5em
+      button-background: transparent
+      title-card:
+        type: custom:mushroom-template-card
+        primary: GDACS Alerts
+        icon: mdi:alert-circle
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                #background-color: var(--background-color);
+                box-shadow: none !important;
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+              }
+      cards:
+        - type: markdown
+          card_mod:
+            style: |-
+              ha-card {
+                border: none;
+                box-shadow: none;
+              }
+          content: >-
+            {% for state in states.geo_location %}
+              {% if state.attributes.source=="gdacs" %}
+            <ha-icon icon="{{ state.attributes.icon }}"></ha-icon> **<font
+            color="{{ state.attributes.alert_level }}">{{ state.name }}</font>**
+
+            {{ state.attributes.description }}
+
+            Event: {{  state.attributes.event_type  }}
+
+            Severity/Type: {{ state.attributes.alert_level }}; {{
+            state.attributes.severity  }}
+
+            See detailed report <a
+            href="https://www.gdacs.org/report.aspx?eventtype={{
+            state.attributes.external_id[:2] }}&eventid={{
+            state.attributes.external_id[2:255] }}">here</a>
+
+            *Alert Duration: {{ state.attributes.from_date.strftime("%B %d, %Y")
+            }} - {{ state.attributes.to_date.strftime("%B %d, %Y") }}
+
+            {% endif %} {% endfor %}

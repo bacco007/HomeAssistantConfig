@@ -20,3 +20,6 @@ cards:
   - !include /config/ui/cards/home/media.yaml
   - !include /config/ui/cards/home/flighttracker.yaml
   - !include /config/ui/cards/home/network.yaml
+
+  # Popups
+  - !include /config/ui/dashboards/shared/includes/popup.yaml

@@ -1,20 +1,28 @@
 ---
-type: custom:vertical-stack-in-card
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
-    entity: sensor.count_yaml_files
-    primary_info: state
-    secondary_info: name
-    fill_container: true
+  - type: custom:bubble-card
+    card_type: separator
     name: Count YAML Files
-    icon: mdi:file
-    icon_color: yellow
+    icon: mdi:file-alert
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - entity: sensor.count_yaml_files
+        show_name: false
+        show_icon: false
+        show_background: true
+        show_state: true
   - type: custom:plotly-graph
+    card_mod: &style
+      style:
+        .: |
+          ha-card {
+            box-shadow: none;
+          }
     entities:
       - entity: sensor.count_yaml_files
         connectgaps: true
@@ -29,6 +37,8 @@ cards:
     hours_to_show: 1w
     refresh_interval: auto
     layout:
+      paper_bgcolor: rgba(0,0,0,0)
+      plot_bgcolor: rgba(0,0,0,0)
       showlegend: false
       height: 200
       margin:

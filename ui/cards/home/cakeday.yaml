@@ -10,7 +10,12 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-
+    sub_button:
+      - name: Calendar
+        icon: mdi:calendar-account
+        tap_action:
+          action: navigate
+          navigation_path: '#birthdaycalendar'
   - square: false
     columns: 2
     type: grid
@@ -23,10 +28,8 @@ cards:
         secondary: |
           Cake Day, {{ states("sensor.anniversary_days_on_earth") }} Days
         badge_icon: >-
-          {%- set event = int(states('sensor.anniversary_my_birthday')) %}
-          {% if (event) <= 10 %}
-          mdi:exclamation-thick
-          {% endif %}
+          {%- set event = int(states('sensor.anniversary_my_birthday')) %} {% if
+          (event) <= 10 %} mdi:exclamation-thick {% endif %}
         badge_color: red
         fill_container: true
         multiline_secondary: true
@@ -69,9 +72,7 @@ cards:
           Work Cake Day, {{ states("sensor.anniversary_days_at_work") }} Days
         badge_icon: >-
           {%- set event = int(states('sensor.anniversary_my_work_birthday')) %}
-          {% if (event) <= 10 %}
-          mdi:exclamation-thick
-          {% endif %}
+          {% if (event) <= 10 %} mdi:exclamation-thick {% endif %}
         badge_color: red
         layout: horizontal
         fill_container: true
@@ -106,7 +107,6 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-
       - type: custom:mushroom-template-card
         icon: mdi:gift
         primary: |
@@ -115,8 +115,8 @@ cards:
           {{ next_birthday_friendly_name() }} ({{next_birthday_years()|trim}})
         icon_color: green
         secondary: >
-          {%- from 'next_birthday.jinja' import next_birthday_days -%}
-          {{ next_birthday_days() }}  days
+          {%- from 'next_birthday.jinja' import next_birthday_days -%} {{
+          next_birthday_days() }}  days
         badge_icon: |-
           {%- from 'next_birthday.jinja' import next_birthday_days -%}
           {%- set event = int(next_birthday_days()) %}
@@ -157,9 +157,12 @@ cards:
         primary: Month End
         icon_color: orange
         secondary: >
-          {% set month_days = (31 if now().month == 12 else (now().replace(month=now().month+1, day=1) - timedelta(days=1)).day) %}
+          {% set month_days = (31 if now().month == 12 else
+          (now().replace(month=now().month+1, day=1) - timedelta(days=1)).day)
+          %}
 
-          {{ now().day }}/{{ month_days }} Days | {{ ((month_days - now().day) / month_days * 100) | round(2) }}%
+          {{ now().day }}/{{ month_days }} Days | {{ ((month_days - now().day) /
+          month_days * 100) | round(2) }}%
         card_mod:
           style:
             .: |
@@ -193,7 +196,8 @@ cards:
         primary: Year End
         icon_color: orange
         secondary: >
-          {{ now().strftime('%j') }}/365 Days | {{ ((365 - (now().strftime('%j')|int)) / 365 * 100) | round(2) }}%
+          {{ now().strftime('%j') }}/365 Days | {{ ((365 -
+          (now().strftime('%j')|int)) / 365 * 100) | round(2) }}%
         card_mod:
           style:
             .: |

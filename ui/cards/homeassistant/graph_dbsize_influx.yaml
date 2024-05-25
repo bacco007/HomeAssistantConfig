@@ -3,7 +3,7 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
-    name: Database Size (MariaDB)
+    name: Database Size (InfluxDB)
     icon: mdi:database
     styles: |-
       .bubble-line {
@@ -11,7 +11,7 @@ cards:
         opacity: 1;
         }
     sub_button:
-      - entity: sensor.ha_db_size
+      - entity: sensor.influxdb_size_homeassistant
         show_name: false
         show_icon: false
         show_background: true
@@ -24,7 +24,7 @@ cards:
             box-shadow: none;
           }
     entities:
-      - entity: sensor.ha_db_size
+      - entity: sensor.influxdb_size_homeassistant
         connectgaps: true
         show_value: true
         filters:
@@ -34,18 +34,6 @@ cards:
         line:
           width: 3
           color: yellow
-      - entity: sensor.ha_db_size
-        statistic: state
-        time_offset: 1w
-        connectgaps: true
-        show_value: true
-        filters:
-          - force_numeric
-          - resample: 6h
-        texttemplate: <b>%{y:,.0f}</b>
-        line:
-          width: 2
-          color: dodgerblue
     hours_to_show: 1w
     refresh_interval: auto
     layout:
