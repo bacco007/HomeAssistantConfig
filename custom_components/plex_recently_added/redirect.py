@@ -1,6 +1,6 @@
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.config_entries import ConfigEntry
-from aiohttp import web
+from aiohttp import web, ClientSession
 import requests
 
 from homeassistant.const import (
@@ -26,5 +26,11 @@ class ImagesRedirect(HomeAssistantView):
     async def get(self, request):
         path = request.query.get("path", "")
         url = f'{self._base_url}{path}?X-Plex-Token={self._token}'
-        return web.HTTPFound(url)
 
+        async with ClientSession() as session:
+            async with session.get(url) as res:
+                if res.ok:
+                    content = await res.read()
+                    return web.Response(body=content, content_type=res.content_type)
+
+                return web.HTTPNotFound()
