@@ -13,7 +13,7 @@ from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -225,13 +225,61 @@ class HDHomerunEntity(CoordinatorEntity):
         """Return the device information of the entity."""
         return DeviceInfo(
             configuration_url=self.coordinator.data.base_url,
+            entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, self._config.unique_id)},
             manufacturer=f"SiliconDust ({self.coordinator.data.discovery_method.name})",
             model=self.coordinator.data.model if self.coordinator.data else "",
             name=self._config.title,
-            sw_version=self.coordinator.data.installed_version
-            if self.coordinator.data
-            else "",
+            sw_version=(
+                self.coordinator.data.installed_version if self.coordinator.data else ""
+            ),
+        )
+
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Additional attributes for the entity."""
+        if hasattr(self.entity_description, "extra_attributes") and isinstance(
+            self.entity_description.extra_attributes, Callable
+        ):
+            return self.entity_description.extra_attributes(self.coordinator.data)
+
+        return None
+
+
+class HDHomerunTunerEntity(CoordinatorEntity):
+    """Representation of an HDHomerun Tuner entity."""
+
+    def __init__(
+        self,
+        config_entry: ConfigEntry,
+        coordinator: DataUpdateCoordinator,
+        description,
+    ) -> None:
+        """Initialize the entity."""
+        super().__init__(coordinator)
+
+        self._config: ConfigEntry = config_entry
+
+        self.entity_description = description
+
+        if not getattr(self, "entity_domain", None):
+            self.entity_domain: str = ""
+
+        self._attr_has_entity_name = False
+        self._attr_unique_id = (
+            f"{config_entry.unique_id}::"
+            f"{self.entity_domain.lower()}::"
+            f"{slugify(self.entity_description.name)}"
+        )
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device information of the entity."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, f"{self._config.unique_id}_{self._device_name}")},
+            manufacturer=f"SiliconDust ({self.coordinator.data.discovery_method.name})",
+            model=self.coordinator.data.model if self.coordinator.data else "",
+            name=self._device_name,
         )
 
     @property

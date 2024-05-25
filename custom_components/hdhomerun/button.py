@@ -92,7 +92,6 @@ async def async_setup_entry(
                 config_entry=config_entry,
                 coordinator=coordinator,
                 description=ButtonEntityDescription(
-                    icon="mdi:text-search",
                     key="",
                     name="Channel Scan",
                     translation_key="channel_scan",

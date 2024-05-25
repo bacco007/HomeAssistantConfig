@@ -6,7 +6,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import struct
-from enum import Enum, unique
+from enum import Enum, StrEnum, unique
 from typing import Any, Dict, List
 from urllib.parse import urlparse
 
@@ -31,9 +31,8 @@ from .protocol import HDHomeRunProtocol
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO: Python 3.11 includes StrEnum by default.
-# switch to using that at some point in the future.
-class DevicePaths(str, Enum):
+
+class DevicePaths(StrEnum):
     """Available paths on the device."""
 
     DISCOVER = "discover.json"
@@ -290,7 +289,9 @@ class HDHomeRunDevice:
                 tag, value = tuple(map(str, detail.split("=")))
                 try:
                     value = int(value)
-                except ValueError:  # we're only interested in the items that are numbers
+                except (
+                    ValueError
+                ):  # we're only interested in the items that are numbers
                     pass
                 else:
                     if value != 0:  # if the value is 0 don't include it

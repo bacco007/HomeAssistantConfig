@@ -1,0 +1,33 @@
+{
+    "entity": {
+        "button": {
+            "channel_scan": {
+                "default": "mdi:text-search"
+            }
+        },
+        "sensor": {
+            "channel_count": {
+                "default": "mdi:text-long"
+            },
+            "disabled_channels": {
+                "default": "mdi:playlist-remove"
+            },
+            "fav_channels": {
+                "default": "mdi:playlist-star"
+            },
+            "tuner_count": {
+                "default": "mdi:transmission-tower-import"
+            },
+            "tuner_status": {
+                "default": "mdi:television-classic",
+                "state": {
+                    "idle": "mdi:television-classic-off",
+                    "scanning": "mdi:television-classic-off"
+                }
+            },
+            "tuner_target_ip": {
+                "default": "mdi:ip-outline"
+            }
+        }
+    }
+}

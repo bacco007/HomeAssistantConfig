@@ -10,7 +10,7 @@
         },
         "progress": {
             "task_discover": "Discovering tuners..."
-        },    
+        },
         "step": {
             "friendly_name": {
                 "data": {
@@ -62,12 +62,30 @@
             "tuner_count": {
                 "name": "Tuner Count"
             },
+            "tuner_frequency": {
+                "name": "Frequency"
+            },
+            "tuner_network_rate": {
+                "name": "Network Rate"
+            },
+            "tuner_signal_quality": {
+                "name": "Signal Quality"
+            },
+            "tuner_signal_strength": {
+                "name": "Signal Strength"
+            },
             "tuner_status": {
                 "state": {
                     "idle": "Idle",
                     "in_use": "In use",
                     "scanning": "Scanning"
                 }
+            },
+            "tuner_symbol_quality": {
+                "name": "Symbol Quality"
+            },
+            "tuner_target_ip": {
+                "name": "Target IP"
             }
         },
         "update": {
