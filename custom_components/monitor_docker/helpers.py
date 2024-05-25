@@ -64,19 +64,19 @@ from .const import (
     PRECISION,
 )
 
-VERSION = "1.15"
+VERSION = "1.17"
 
 _LOGGER = logging.getLogger(__name__)
 
 
 def toKB(value: float, precision: int = PRECISION) -> float:
     """Converts bytes to kBytes."""
-    return round(value / (1024**1), precision)
+    return round(value / (1024 ** 1), precision)
 
 
 def toMB(value: float, precision: int = PRECISION) -> float:
     """Converts bytes to MBytes."""
-    return round(value / (1024**2), precision)
+    return round(value / (1024 ** 2), precision)
 
 
 #################################################################
@@ -369,15 +369,54 @@ class DockerAPI:
                                 oname,
                                 cname,
                             )
-                            self._containers[cname] = self._containers[oname]
-                            del self._containers[oname]
 
-                            # We also need to rename the internal name
-                            self._containers[cname].set_name(cname)
+                            # First remove the newly create container, has a temporary name
+                            if oname in self._event_create:
+                                _LOGGER.warning(
+                                    "[%s] %s: Event rename received, but create wasn't executed yet",
+                                    self._instance,
+                                    oname,
+                                )
+                                del self._event_create[cname]
+                            elif oname not in self._event_destroy:
+                                _LOGGER.debug(
+                                    "[%s] %s: Event rename (destroy) container",
+                                    self._instance,
+                                    oname,
+                                )
+                                self._event_destroy[oname] = 0
+                            else:
+                                _LOGGER.error(
+                                    "%s: Event rename (destroy) container, but already in working table?",
+                                    oname,
+                                )
 
-                            # We also should remove entities, rename does not work
-                            self._containers[cname].remove_entities()
+                            if self._event_destroy and not taskcreated:
+                                await self._container_create_destroy()
 
+                            # Second re-add the container with the original name
+                            taskcreated = (
+                                True
+                                if self._event_create or self._event_destroy
+                                else False
+                            )
+
+                            if cname not in self._event_create:
+                                _LOGGER.debug(
+                                    "[%s] %s: Event rename (create) container",
+                                    self._instance,
+                                    cname,
+                                )
+                                self._event_create[cname] = 0
+                            else:
+                                _LOGGER.error(
+                                    "[%s] %s: Event rename (create) container, but already in working table?",
+                                    self._instance,
+                                    cname,
+                                )
+
+                            if self._event_create and not taskcreated:
+                                await self._container_create_destroy()
                         else:
                             _LOGGER.error(
                                 "[%s] %s: Event rename container doesn't exist in list?",
@@ -529,13 +568,11 @@ class DockerAPI:
                     self._info[ATTR_MEMORY_LIMIT] is not None
                     and self._info[ATTR_MEMORY_LIMIT] != 0
                 ):
-                    self._info[DOCKER_STATS_MEMORY_PERCENTAGE] = (
+                    self._info[DOCKER_STATS_MEMORY_PERCENTAGE] = round(
                         self._info[DOCKER_STATS_MEMORY]
-                        / toMB(
-                            self._info[ATTR_MEMORY_LIMIT],
-                            self._config[CONF_PRECISION_MEMORY_PERCENTAGE],
-                        )
-                        * 100
+                        / toMB(self._info[ATTR_MEMORY_LIMIT], 4)
+                        * 100,
+                        self._config[CONF_PRECISION_MEMORY_PERCENTAGE],
                     )
 
                 # Try to fix possible 0 values in history at start-up
@@ -783,10 +820,15 @@ class DockerContainerAPI:
         self._info[CONTAINER_INFO_STATE] = raw["State"]["Status"]
         self._info[CONTAINER_INFO_IMAGE] = raw["Config"]["Image"]
 
-        if CONTAINER_INFO_NETWORK_AVAILABLE not in self._info:
-            self._info[CONTAINER_INFO_NETWORK_AVAILABLE] = (
-                False if raw["HostConfig"]["NetworkMode"] in ["host", "none"] else True
-            )
+        if self._network_error <= 5:
+            if CONTAINER_INFO_NETWORK_AVAILABLE not in self._info:
+                self._info[CONTAINER_INFO_NETWORK_AVAILABLE] = (
+                    False
+                    if raw["HostConfig"]["NetworkMode"] in ["host", "none"]
+                    else True
+                )
+        else:
+            self._info[CONTAINER_INFO_NETWORK_AVAILABLE] = False
 
         try:
             self._info[CONTAINER_INFO_HEALTH] = raw["State"]["Health"]["Status"]
@@ -847,8 +889,8 @@ class DockerContainerAPI:
         stats["read"] = {}
 
         # Get container stats, only interested in [0]
-        raw = await self._container.stats(stream=False)
-        raw: dict[str, Any] = raw[0]
+        rawarr = await self._container.stats(stream=False)
+        raw: dict[str, Any] = rawarr[0]
 
         stats["read"] = parser.parse(raw["read"])
 
@@ -878,7 +920,7 @@ class DockerContainerAPI:
                         (cpu_delta / system_delta)
                         * float(cpu_stats["online_cpus"])
                         * 100.0,
-                        PRECISION,
+                        self._config[CONF_PRECISION_CPU],
                     )
 
             self._cpu_old = cpu_new
@@ -947,7 +989,7 @@ class DockerContainerAPI:
             )
             memory_stats["usage_percent"] = round(
                 float(memory_stats["usage"]) / float(memory_stats["limit"]) * 100.0,
-                PRECISION,
+                self._config[CONF_PRECISION_MEMORY_PERCENTAGE],
             )
 
             if self._memory_error > 0:
