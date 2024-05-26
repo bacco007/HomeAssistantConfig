@@ -48,11 +48,11 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.5.5 |
-| No. Integrations | 204 |
+| No. Integrations | 203 |
 | No. Custom Integrations | 83 |
-| No. Entities | 5067 |
-| No. Sensors | 3289 |
-| No. Automations | 141 |
+| No. Entities | 5070 |
+| No. Sensors | 3301 |
+| No. Automations | 142 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,16 +62,16 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 347
+Binary sensors | 348
 Buttons | 149
-Calendars | 75
+Calendars | 69
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 116
-Devices | 598
+Devices | 599
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -83,15 +83,15 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 31
+Media players | 32
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3289
+Sensors | 3301
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>591 Integrations</summary>
+<details><summary>590 Integrations</summary>
 
 | Name |
 | --- |
@@ -276,8 +276,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
 | [gdacs.geo_location](https://www.home-assistant.io/components/gdacs.geo_location) |
 | [gdacs.sensor](https://www.home-assistant.io/components/gdacs.sensor) |
-| [geo_json_events](https://www.home-assistant.io/components/geo_json_events) |
-| [geo_json_events.geo_location](https://www.home-assistant.io/components/geo_json_events.geo_location) |
 | [geo_location](https://www.home-assistant.io/components/geo_location) |
 | [github](https://www.home-assistant.io/components/github) |
 | [github.sensor](https://www.home-assistant.io/components/github.sensor) |
@@ -613,6 +611,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [time](https://www.home-assistant.io/components/time) |
 | [time_date.sensor](https://www.home-assistant.io/components/time_date.sensor) |
 | [timer](https://www.home-assistant.io/components/timer) |
+| [tod](https://www.home-assistant.io/components/tod) |
 | [tod.binary_sensor](https://www.home-assistant.io/components/tod.binary_sensor) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [trend.binary_sensor](https://www.home-assistant.io/components/trend.binary_sensor) |
@@ -754,7 +753,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.17] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
+| [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.18] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.5.1] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -801,7 +800,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.8] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.10] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
