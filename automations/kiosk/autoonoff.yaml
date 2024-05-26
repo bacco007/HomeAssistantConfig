@@ -1,0 +1,53 @@
+---
+id: kiosk_turnonoffauto
+alias: "[Kiosk] Turn On/Off Automatically"
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.kiosk_off
+    to: "off"
+    id: kiosk_off
+  - platform: state
+    entity_id:
+      - binary_sensor.kiosk_off
+    to: "on"
+    id: kiosk_on
+  - platform: state
+    entity_id:
+      - person.thomas_baxter
+    to: not_home
+    id: kiosk_off
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - platform: state
+    entity_id:
+      - person.thomas_baxter
+    to: home
+    id: kiosk_on
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+condition: []
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - kiosk_off
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.galaxy_tab_s5e_screensaver
+      - conditions:
+          - condition: trigger
+            id:
+              - kiosk_on
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.galaxy_tab_s5e_screensaver
+mode: single

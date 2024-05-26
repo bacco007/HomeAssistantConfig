@@ -3,7 +3,7 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: pop-up
-    hash: '#alarmclock'
+    hash: "#alarmclock"
     button_type: state
     name: Alarm Clock
     icon: mdi:alarm
@@ -86,7 +86,7 @@ cards:
             type: custom:template-entity-row
             name: Alarm Clock Automations
             icon: mdi:sync-alert
-            state: ''
+            state: ""
       - type: custom:fold-entity-row
         padding: 5
         card_mod:
@@ -101,7 +101,7 @@ cards:
           type: custom:template-entity-row
           name: Alarm Clock Debugging
           icon: mdi:bed-clock
-          state: ''
+          state: ""
         entities:
           - entity: input_boolean.alarm_debug_testing
             name: Alarm Testing

@@ -10,104 +10,98 @@ cards:
         }
     name: Motorsports
     icon: mdi:go-kart
-  - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
-    entities:
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_btcc
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_dtm
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_btcc
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_extreme_e
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_dtm
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_formula_e
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_extreme_e
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_gt_world_challenge_asia
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_formula_e
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_gt_world_challenge_australia
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_gt_world_challenge_asia
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_igtc
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_gt_world_challenge_australia
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_imsa
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_igtc
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_indycar
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_imsa
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_misc_motorsport
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_indycar
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_motogp
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_misc_motorsport
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_nascar_cup_series
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_motogp
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_nascar_xfinity_series
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_nascar_cup_series
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_nascar_truck_series
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_nascar_xfinity_series
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_supercars
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_nascar_truck_series
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_tcr_australia
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_supercars
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_wec
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_tcr_australia
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_worldsbk
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_wec
 
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_wrc
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_worldsbk
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_wrc

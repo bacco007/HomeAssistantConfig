@@ -1,53 +1,34 @@
 ---
+id: "1710400217767"
 alias: "[Addon Watchguard] Sungather"
 description: ""
 trigger:
-  - platform: time_pattern
-    minutes: "*"
+  - platform: template
+    value_template: '{{ states(''sensor.sun_state_day'') == "Day" }}'
 condition:
-  - condition: state
-    entity_id: binary_sensor.sungather_running
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 0
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: sensor.sungrow_sg5kd_daily_generation
+        state: unavailable
+        for:
+          hours: 0
+          minutes: 5
+          seconds: 0
+      - condition: template
+        value_template: "{{ (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_daily_generation'].last_updated))/60 > 240 }}"
 action:
-  - repeat:
-      until:
-        - condition: state
-          entity_id: binary_sensor.sungather_running
-          state: "on"
-          for:
-            hours: 0
-            minutes: 5
-            seconds: 0
-      sequence:
-        - if:
-            - condition: state
-              entity_id: binary_sensor.sungather_running
-              state: "off"
-          then:
-            - service: hassio.addon_start
-              data:
-                addon: 7b536ee6_sungather
-            - delay:
-                hours: 0
-                minutes: 1
-                seconds: 0
-                milliseconds: 0
-            - service: homeassistant.update_entity
-              data: {}
-              target:
-                entity_id: binary_sensor.sungather_running
-          else:
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 30
-                milliseconds: 0
-            - service: homeassistant.update_entity
-              data: {}
-              target:
-                entity_id: binary_sensor.sungather_running
+  - service: hassio.addon_restart
+    data:
+      addon: 7b536ee6_sungather
+  - service: notify.alert
+    data:
+      title: Sungather Restarted
+      message: Solar data hasn't been updated in 5 minutes, Sungather has been restarted
+      data:
+        tag: watchguard_sungather
+        notification_id: watchguard_sungather
+        push:
+          badge: 1
+          sound: none
 mode: single

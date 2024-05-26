@@ -1,0 +1,15 @@
+---
+id: "1699662929982"
+alias: "[pixelclock] Solar Energy"
+description: ""
+use_blueprint:
+  path: awtrix_solar.yaml
+  input:
+    awtrix:
+      - da38247c02359f48562a1b102b5d4ac4
+    skip_during_night_hours: true
+    night_starts_after_time: "19:00:00"
+    night_ends_after_time: 06:30:00
+    skip_if_zero_watts: true
+    power_source: sensor.sungrow_sg5kd_active_generation
+    threshold_high: 3500

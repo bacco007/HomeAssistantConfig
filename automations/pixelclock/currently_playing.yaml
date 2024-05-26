@@ -1,0 +1,13 @@
+---
+id: "1698470577800"
+alias: "[pixelclock] Currently Playing"
+description: ""
+use_blueprint:
+  path: GKXydoDmOpjL.yaml
+  input:
+    awtrix_light: da38247c02359f48562a1b102b5d4ac4
+    media_player: media_player.currently_playing
+    text_case: "2"
+    show_rainbow: false
+    icon_in: "29944"
+    push_icon: "0"

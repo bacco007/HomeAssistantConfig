@@ -1,0 +1,35 @@
+---
+id: "1712972875484"
+alias: "[Webhooks] Notifications from Synology (TheCube2)"
+description: ""
+trigger:
+  - platform: webhook
+    webhook_id: synology_notify
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+condition: []
+action:
+  - service: notify.alert
+    data:
+      title: Synology Notification
+      message: "{{trigger.json.text}}"
+      data:
+        tag: synology_notify
+        notification_id: synology_notify
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge
+        group: alerts
+        actions:
+          - action: URI
+            title: OPEN WWW
+            uri: http://192.168.1.100:5000
+          - action: URI
+            title: OPEN APP
+            uri: app://com.synology.DSfinder

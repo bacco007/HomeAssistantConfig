@@ -1,0 +1,22 @@
+---
+id: "1698473315369"
+alias: "[pixelclock] Flight Tracker Stats"
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.flighttracker_aircraft_total
+condition: []
+action:
+  - service: mqtt.publish
+    data:
+      payload: >
+        {%- set value = states(''sensor.flighttracker_aircraft_total'') -%}
+        {%- set nearest_rego = state_attr(''sensor.plane_overhead_detail'', ''aircraft_rego'') -%}
+        {%- set nearest_type = state_attr(''sensor.plane_overhead_detail'', ''aircraft'') -%}
+        {%- set nearest_trip = state_attr(''sensor.plane_overhead_detail'', ''origin_airport_code'') + " > " + state_attr(''sensor.plane_overhead_detail'', ''destination_airport_code'') -%}
+        { "icon": 2933, "pushIcon": 0, "repeat": 1, "textCase": 2, "text": "{{value }}, {{ nearest_type }}, {{ nearest_rego }}, {{nearest_trip}}" }
+      topic: pixelclock/custom/flighttracker
+      qos: 0
+      retain: false
+mode: single

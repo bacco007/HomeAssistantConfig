@@ -1,0 +1,63 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Birthdays & Anniversaries
+    icon: mdi:gift-outline
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:auto-entities
+    card:
+      type: entities
+      show_header_toggle: false
+      card_mod:
+        style: |
+          ha-card {
+            background: none;
+            box-shadow: none;
+          }
+          .card-content {
+            padding: 0 !important
+          }
+    filter:
+      include:
+        - entity_id: sensor.anniversary_*
+          options:
+            type: custom:mushroom-template-card
+            icon: mdi:gift
+            primary: |
+              {{ state_attr(entity, 'friendly_name') }} ({{state_attr(entity, 'years_at_anniversary') }})
+            icon_color: green
+            secondary: "{{ states(entity) }} days"
+            badge_icon: |-
+              {%- set event = int(states(entity)) %}
+              {% if (event) <= 10 %}
+              mdi:exclamation-thick
+              {% endif%}
+            badge_color: red
+            card_mod:
+              style:
+                mushroom-shape-icon$: |
+                  .shape {
+                    background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states(config.entity)))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+                  }
+                  .shape:after {
+                    content: "";
+                    height: 100%;
+                    width: 100%;
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+                  }
+      exclude:
+        - entity_id: sensor.anniversary_days*
+        - entity_id: sensor.anniversary_datetracking_my*
+    sort:
+      method: attribute
+      attribute: weeks_remaining
+      reverse: false
+      numeric: true

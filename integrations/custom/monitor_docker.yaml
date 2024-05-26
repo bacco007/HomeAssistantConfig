@@ -11,8 +11,8 @@ monitor_docker:
   - name: TBSH1_monitordocker
     url: tcp://192.168.1.91:2375
     scan_interval: 60
-    monitored_conditions:
-      - allinone
+    # monitored_conditions:
+    #   - allinone
     rename:
       alertmanager: Alert Manager
       authelia: Authelia
@@ -59,8 +59,8 @@ monitor_docker:
   - name: TBSH2_monitordocker
     url: tcp://192.168.1.131:2375
     scan_interval: 60
-    monitored_conditions:
-      - allinone
+    # monitored_conditions:
+    #   - allinone
     rename:
       alertmanager: Alert Manager
       authelia: Authelia
@@ -107,8 +107,8 @@ monitor_docker:
   - name: TBSH3_monitordocker
     url: tcp://192.168.1.132:2375
     scan_interval: 60
-    monitored_conditions:
-      - allinone
+    # monitored_conditions:
+    #   - allinone
     rename:
       adsb2influxdb: ADS-B to InfluxDB
       adsb2mqtt: ADS-B to MQTT

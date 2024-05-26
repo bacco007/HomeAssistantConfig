@@ -21,3 +21,8 @@ ics_calendar:
       url: "https://ics.ecal.com/ecal-sub/662d9a552570170008678e2f/ICC%20Cricket.ics"
       download_interval: 360
       days: 365
+    - name: "ical_nfl_all_teams"
+      include_all_day: true
+      url: "https://fixturedownload.com/download/nfl-2024-UTC.ics"
+      download_interval: 360
+      days: 365

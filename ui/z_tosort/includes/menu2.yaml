@@ -1,5 +1,0 @@
----
-type: vertical-stack
-view_layout:
-  grid-area: sidebar
-cards: !include_dir_list menu/
