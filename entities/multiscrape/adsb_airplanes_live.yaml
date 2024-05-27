@@ -1,0 +1,15 @@
+---
+- name: Airplanes.live connected
+  resource: https://airplanes.live/myfeed/
+  scan_interval: 60
+  #log_response: true
+  sensor:
+    - unique_id: airplanes_live_connected
+      name: Airplanes.live - Uplink Status
+      value_template: Connected
+      icon: mdi:plane
+      attributes:
+        - name: beast_connected
+          select: "#beast-detect > div > div > span"
+        - name: mlat_connected
+          select: "#mlat-detect > div > div > span"

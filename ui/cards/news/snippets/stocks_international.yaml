@@ -31,6 +31,14 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
+          - entity: sensor.yahoofinance_csc
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_ajrd
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
           - entity: sensor.yahoofinance_goog
       - type: custom:decluttering-card
         template: mushroom_finance
@@ -40,6 +48,10 @@ cards:
         template: mushroom_finance
         variables:
           - entity: sensor.yahoofinance_amzn
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_amc
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
@@ -75,11 +87,31 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
+          - entity: sensor.yahoofinance_csco
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_cde
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
           - entity: sensor.yahoofinance_cmcsa
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
           - entity: sensor.yahoofinance_cost
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_dxc
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_fsmax
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_f
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
@@ -91,7 +123,23 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
+          - entity: sensor.yahoofinance_gme
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
           - entity: sensor.yahoofinance_ge
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_gm
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_ibm
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_slv
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
@@ -119,6 +167,14 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
+          - entity: sensor.yahoofinance_orcl
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_paas
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
           - entity: sensor.yahoofinance_rddt
       - type: custom:decluttering-card
         template: mushroom_finance
@@ -135,6 +191,10 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
+          - entity: sensor.yahoofinance_txt
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
           - entity: sensor.yahoofinance_vod_l
       - type: custom:decluttering-card
         template: mushroom_finance
@@ -144,6 +204,10 @@ cards:
         template: mushroom_finance
         variables:
           - entity: sensor.yahoofinance_vow3_f
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
+          - entity: sensor.yahoofinance_vwagy
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:

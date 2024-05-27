@@ -1,0 +1,34 @@
+---
+- name: adsb.lol stats
+  resource: https://api.adsb.lol/0/me
+  scan_interval: 60
+  sensor:
+    - unique_id: adsb_lol_daily_stats
+      name: ADSB.lol - Daily Stats
+      value_template: Connected
+      icon: mdi:airplane-takeoff
+      attributes:
+        - name: global_aircraft
+          value_template: "{{ value_json.global.aircraft }}"
+        - name: global_beast
+          value_template: "{{ value_json.global.beast }}"
+        - name: global_mlat
+          value_template: "{{ value_json.global.mlat }}"
+        - name: beast_connected_seconds
+          value_template: "{{ value_json.clients.beast[0].connected_seconds }}"
+        - name: beast_kbps
+          value_template: "{{ value_json.clients.beast[0].kbps }}"
+        - name: beast_ms
+          value_template: "{{ value_json.clients.beast[0].ms }}"
+        - name: beast_messages_per_second
+          value_template: "{{ value_json.clients.beast[0].messages_per_second }}"
+        - name: beast_positions
+          value_template: "{{ value_json.clients.beast[0].positions }}"
+        - name: beast_positions_per_second
+          value_template: "{{ value_json.clients.beast[0].positions_per_second }}"
+        - name: mlat_peer_count
+          value_template: "{{ value_json.clients.mlat[0].peer_count }}"
+        - name: mlat_outlier_percent
+          value_template: "{{ value_json.clients.mlat[0].outlier_percent }}"
+        - name: mlat_bad_sync_timeout
+          value_template: "{{ value_json.clients.mlat[0].bad_sync_timeout }}"

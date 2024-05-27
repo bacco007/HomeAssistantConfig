@@ -1,0 +1,14 @@
+---
+- name: FlyItaly adsb stats
+  resource: https://my.flyitalyadsb.com/am_i_feeding
+  scan_interval: 60
+  sensor:
+    - unique_id: adsb_flyitaly_stats
+      name: FlyItaly ADSB - Stats
+      value_template: Connected
+      icon: mdi:plane
+      attributes:
+        - name: beast
+          value_template: "{{ value_json.feeding.beast }}"
+        - name: mlat
+          value_template: "{{ value_json.feeding.mlat }}"

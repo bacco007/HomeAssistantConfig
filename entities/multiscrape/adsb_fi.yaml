@@ -1,0 +1,30 @@
+---
+- name: adsb.fi stats
+  resource: https://api.adsb.fi/v1/myip
+  scan_interval: 60
+  sensor:
+    - unique_id: adsb_fi_daily_stats
+      name: ADSB.fi - Daily Stats
+      value_template: Connected
+      icon: mdi:plane
+      attributes:
+        - name: beast_connected_seconds
+          value_template: "{{ value_json.beast[0].connTime }}"
+        - name: beast_bandwidth
+          value_template: "{{ value_json.beast[0].bandwidth }}"
+        - name: beast_recentRtt
+          value_template: "{{ value_json.beast[0].recentRtt }}"
+        - name: beast_messages_per_second
+          value_template: "{{ value_json.beast[0].messageRate }}"
+        - name: beast_positions
+          value_template: "{{ value_json.beast[0].positions }}"
+        - name: beast_positions_per_second
+          value_template: "{{ value_json.beast[0].positionRate }}"
+        - name: mlat_messages_per_second
+          value_template: "{{ value_json.mlat[0].messageRate }}"
+        - name: mlat_peer_count
+          value_template: "{{ value_json.mlat[0].peerCount }}"
+        - name: mlat_outlier_percent
+          value_template: "{{ value_json.mlat[0].outlierPercent }}"
+        - name: mlat_bad_sync_timeout
+          value_template: "{{ value_json.mlat[0].badSyncTimeout }}"

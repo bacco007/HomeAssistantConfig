@@ -1,0 +1,17 @@
+---
+- name: ADSB Exchange Status
+  resource: https://www.adsbexchange.com/myip/
+  scan_interval: 60
+  #log_response: true
+  sensor:
+    - unique_id: adsb_exchange_status
+      name: ADSB Exchange - Uplink Status
+      value_template: Connected
+      icon: mdi:plane
+      attributes:
+        - name: beast_status
+          select: "#feeder-status > div > div.col.text-center.m-3.p-2 > div > div > div:nth-child(4) > div:nth-child(1) > small"
+        - name: mlat_status
+          select: "#feeder-status > div > div.col.text-center.m-3.p-2 > div > div > div:nth-child(4) > div:nth-child(2) > small"
+        # - name: beast_kbs
+        #   select: '#feeder-status > div > div.col.text-center.m-3.p-2 > div > div > div:nth-child(4) > div:nth-child(2) > input'

@@ -1,6 +1,14 @@
 ---
 ics_calendar:
   calendars:
+    - name: "Astronomy Calendar"
+      url: "https://cantonbecker.com/astronomy-calendar/astrocal.ics"
+      include_all_day: true
+      download_interval: 21600
+    - name: "Astronomical Events"
+      url: "https://in-the-sky.org/newscalyear_ical.php?year=2024&maxdiff=7"
+      include_all_day: true
+      download_interval: 21600
     - name: "ical_rugby_australia_autumninternationals"
       include_all_day: true
       url: "https://fixturedownload.com/download/autumn-internationals-2024-australia-GMTStandardTime.ics"

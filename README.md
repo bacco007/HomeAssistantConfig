@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.5.5 |
-| No. Integrations | 203 |
+| No. Integrations | 204 |
 | No. Custom Integrations | 83 |
-| No. Entities | 5070 |
-| No. Sensors | 3301 |
+| No. Entities | 6377 |
+| No. Sensors | 4518 |
 | No. Automations | 142 |
 
 <details>
@@ -62,16 +62,16 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 348
+Binary sensors | 349
 Buttons | 149
-Calendars | 69
+Calendars | 72
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 116
-Devices | 599
+Device trackers | 117
+Devices | 600
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -91,11 +91,11 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3301
+Sensors | 4518
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 161
+Switches | 251
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>590 Integrations</summary>
+<details><summary>593 Integrations</summary>
 
 | Name |
 | --- |
@@ -394,6 +394,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mobile_app.device_tracker](https://www.home-assistant.io/components/mobile_app.device_tracker) |
 | [mobile_app.notify](https://www.home-assistant.io/components/mobile_app.notify) |
 | [mobile_app.sensor](https://www.home-assistant.io/components/mobile_app.sensor) |
+| [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
+| [monitor_docker.sensor](https://www.home-assistant.io/components/monitor_docker.sensor) |
+| [monitor_docker.switch](https://www.home-assistant.io/components/monitor_docker.switch) |
 | [moon](https://www.home-assistant.io/components/moon) |
 | [moon.sensor](https://www.home-assistant.io/components/moon.sensor) |
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
@@ -800,7 +803,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.10] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.11] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |

@@ -3,5 +3,5 @@
 # https://www.home-assistant.io/integrations/usgs_earthquakes_feed/
 
 platform: usgs_earthquakes_feed
-feed_type: "past_week_all_earthquakes"
+feed_type: "past_week_significant_earthquakes"
 radius: 1500

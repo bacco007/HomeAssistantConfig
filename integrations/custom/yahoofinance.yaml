@@ -11,6 +11,7 @@ yahoofinance:
     - AAL.L
     - AAPL
     - ADSK
+    - AMC
     - AMX.AX
     - AMZN
     - AUDEUR=X
@@ -26,12 +27,20 @@ yahoofinance:
     - CBA.AX
     - CMCSA
     - COL.AX
+    - COST
+    - CSCO
     - DOGE-AUD
+    - DXC
+    - F
+    - FSMAX
     - FWONA
     - FWONK
     - GE
+    - GM
+    - GME
     - GOOG
     - GOOGL
+    - IBM
     - IOZ.AX
     - JBH.AX
     - MANU
@@ -42,7 +51,9 @@ yahoofinance:
     - NEC.AX
     - NFLX
     - NWS.AX
+    - ORCL
     - QOZ.AX
+    - RDDT
     - REX.AX
     - RIO
     - RIO.AX
@@ -59,9 +70,11 @@ yahoofinance:
     - TNE.AX
     - TPG.AX
     - TSLA
+    - TXT
     - VOD.L
     - VOW.F
     - VOW3.F
+    - VWAGY
     - WBD
     - WES.AX
     - WMT
@@ -75,5 +88,3 @@ yahoofinance:
     - ^IXIC
     - ^N225
     - ^NZ50
-    - COST
-    - RDDT
