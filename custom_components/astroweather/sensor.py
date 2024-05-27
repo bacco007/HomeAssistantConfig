@@ -1,32 +1,21 @@
-"""
-    Support for the AstroWeather from 7Timer
-    This component will create a few sensors.
+"""Support for the AstroWeather sensors."""
 
-    For a full description, go here: https://github.com/mawinkler/astroweather
-
-    Author: Markus Winkler
-"""
 import logging
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-)
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.typing import HomeAssistantType
-from homeassistant.util import dt as dt_util
 
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     DEGREE,
     PERCENTAGE,
     UnitOfLength,
     UnitOfSpeed,
-    UnitOfTime,
     UnitOfTemperature,
+    UnitOfTime,
 )
-from .const import (
-    DOMAIN,
-    UPTONIGHT,
-)
+from homeassistant.core import HomeAssistant
+from homeassistant.util import dt as dt_util
+
+from .const import CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME, DOMAIN, UPTONIGHT
 from .entity import AstroWeatherEntity
 
 SENSOR_NAME = 0
@@ -45,6 +34,13 @@ SENSOR_TYPES = {
         "Forecast Length",
         UnitOfTime.HOURS,
         "mdi:map-marker-distance",
+        None,
+        None,
+    ],
+    "location_name": [
+        "Location Name",
+        None,
+        "mdi:map-marker-outline",
         None,
         None,
     ],
@@ -97,13 +93,6 @@ SENSOR_TYPES = {
         None,
         STATE_CLASS_MEASUREMENT,
     ],
-    "cloudcover_plain": [
-        "Clouds Plain",
-        None,
-        "mdi:weather-night-partly-cloudy",
-        None,
-        None,
-    ],
     "cloud_area_fraction_percentage": [
         "Clouds Area",
         PERCENTAGE,
@@ -140,18 +129,18 @@ SENSOR_TYPES = {
         STATE_CLASS_MEASUREMENT,
     ],
     "seeing_percentage": [
-        "Seeing",
+        "Seeing Percentage",
         PERCENTAGE,
         "mdi:waves",
         None,
         STATE_CLASS_MEASUREMENT,
     ],
-    "seeing_plain": [
-        "Seeing Plain",
+    "seeing": [
+        "Seeing",
         None,
         "mdi:waves",
         None,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ],
     "transparency_percentage": [
         "Transparency",
@@ -186,6 +175,13 @@ SENSOR_TYPES = {
         PERCENTAGE,
         "mdi:water-percent",
         SensorDeviceClass.HUMIDITY,
+        STATE_CLASS_MEASUREMENT,
+    ],
+    "calm_percentage": [
+        "Calm Percentage",
+        PERCENTAGE,
+        "mdi:weather-windy",
+        None,
         STATE_CLASS_MEASUREMENT,
     ],
     "wind10m_direction": [
@@ -401,8 +397,11 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+) -> None:
     """Set up the AstroWeather sensor platform."""
+
     _LOGGER.info("Set up AstroWeather sensor platform")
 
     fcst_coordinator = hass.data[DOMAIN][entry.entry_id]["fcst_coordinator"]
@@ -419,39 +418,59 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_a
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator))
+        sensors.append(
+            AstroWeatherSensor(coordinator, entry.data, sensor, fcst_coordinator, entry)
+        )
 
     async_add_entities(sensors, True)
+
     return True
 
 
 class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
     """Implementation of a AstroWeather Weatherflow Sensor."""
 
-    def __init__(self, coordinator, entries, sensor, fcst_coordinator):
+    def __init__(self, coordinator, entries, sensor, fcst_coordinator, entry):
         """Initialize the sensor."""
-        super().__init__(coordinator, entries, sensor, fcst_coordinator)
+        super().__init__(coordinator, entries, sensor, fcst_coordinator, entry.entry_id)
         self._sensor = sensor
+        self._device_class = SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+        self._state_class = SENSOR_TYPES[self._sensor][SENSOR_STATE_CLASS]
+        self._icon = SENSOR_TYPES[self._sensor][SENSOR_ICON]
         self._state = None
-        self._name = f"{DOMAIN.capitalize()} {SENSOR_TYPES[self._sensor][SENSOR_NAME]}"
+
+        self._location_name = entries.get(CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME)
+        self._sensor_name = SENSOR_TYPES[self._sensor][SENSOR_NAME]
+        self._attr_unique_id = f"{entry.entry_id}_{DOMAIN.lower()}_{self._sensor_name.lower().replace(' ', '_')}"
+        self._name = f"{DOMAIN.capitalize()} {self._location_name} {self._sensor_name}"
 
     @property
     def name(self):
         """Return the name of the sensor."""
+
         return self._name
 
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
-            return dt_util.parse_datetime(str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)))
-        else:
-            return getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)
+
+        if (
+            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+            == SensorDeviceClass.TIMESTAMP
+        ):
+            return dt_util.parse_datetime(
+                str(getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None))
+            )
+        return getattr(self.coordinator.data[SENSOR_NAME], self._sensor, None)
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        if SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP:
+
+        if (
+            SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+            == SensorDeviceClass.TIMESTAMP
+        ):
             return None
         else:
             return SENSOR_TYPES[self._sensor][SENSOR_UNIT]
@@ -459,21 +478,29 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
     @property
     def icon(self):
         """Icon to use in the frontend."""
-        return SENSOR_TYPES[self._sensor][SENSOR_ICON]
+
+        return self._icon
 
     @property
     def device_class(self):
         """Return the device class of the sensor."""
-        return SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
+
+        return self._device_class
 
     @property
     def state_class(self) -> str:
         """State class of sensor."""
-        return SENSOR_TYPES[self._sensor][SENSOR_STATE_CLASS]
+
+        return self._state_class
 
     @property
     def extra_state_attributes(self) -> {}:
-        if self._sensor == UPTONIGHT and self.coordinator.data[SENSOR_NAME].uptonight is not None:
+        """Extra state attributes for UpTonight."""
+
+        if (
+            self._sensor == UPTONIGHT
+            and self.coordinator.data[SENSOR_NAME].uptonight is not None
+        ):
             dso_list = []
             for dso in self.coordinator.data[SENSOR_NAME].uptonight_list:
                 obj = {

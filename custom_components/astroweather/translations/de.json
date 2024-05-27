@@ -1,35 +1,68 @@
 {
     "config": {
         "step": {
-            "user": {
-                "description": "Konfiguration der geografischen Lokation, des Aktualisierungsintervalls und Kalkulation der Beobachtungsqualität",
+            "location": {
+                "description": "Konfiguration der geografischen Lokation und Zeitzone",
                 "data": {
+                    "location_name": "Name für den Standort Deines Teleskops",
                     "latitude": "Breitengrad (-89° bis 89°)",
                     "longitude": "Längengrad (-180° bis 180°)",
                     "elevation": "Höhe über dem Meeresspiegel (0m bis 4000m)",
-                    "timezone_info": "Zeitzone im TZ Datenbankformat",
-                    "forecast_interval": "Aktualisierungsintervall (Min)",
+                    "timezone_info": "Zeitzone im TZ Datenbankformat"
+                }
+            },
+            "calculation": {
+                "description": "Konfiguration der Kalkulation der Beobachtungsqualität, des Aktualisierungsintervalls, dem Pfad zu /conf/www und Aktivierung experimenteller Funktionen von AstroWeather.",
+                "data": {
                     "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
                     "seeing_weight": "Gewichtung des Seeings",
                     "transparency_weight": "Gewichtung der Transparenz",
-                    "uptonight_path": "Pfad zu conf/www"
+                    "calm_weight": "Gewichtung des Grades der Windstille",
+                    "forecast_interval": "Aktualisierungsintervall (Min)",
+                    "uptonight_path": "Pfad zu /conf/www",
+                    "experimental_features": "Experimentelle Funktionen"
+                }
+            },
+            "cloudweakening": {
+                "description": "Konfiguration des Einflusses unterschiedlicher Wolkenhöhen auf die Berechnung.",
+                "data": {
+                    "cloudcover_high_weakening": "Einfluss der hohen Wolkenbedeckung (%)",
+                    "cloudcover_medium_weakening": "Einfluss der mittleren Wolkenbedeckung (%)",
+                    "cloudcover_low_weakening": "Einfluss der niedrigen Wolkenbedeckung (%)"
                 }
             }
         }
     },
     "options": {
         "step": {
-            "init": {
+            "location": {
+                "description": "Konfiguration der geografischen Lokation und Zeitzone",
                 "data": {
+                    "location_name": "Name für den Standort Deines Teleskops",
                     "latitude": "Breitengrad (-89° bis 89°)",
                     "longitude": "Längengrad (-180° bis 180°)",
                     "elevation": "Höhe über dem Meeresspiegel (0m bis 4000m)",
-                    "timezone_info": "Zeitzone im TZ Datenbankformat",
-                    "forecast_interval": "Aktualisierungsintervall (Min)",
+                    "timezone_info": "Zeitzone im TZ Datenbankformat"
+                }
+            },
+            "calculation": {
+                "description": "Konfiguration der Kalkulation der Beobachtungsqualität, des Aktualisierungsintervalls, dem Pfad zu /conf/www und Aktivierung experimenteller Funktionen von AstroWeather.",
+                "data": {
                     "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
                     "seeing_weight": "Gewichtung des Seeings",
                     "transparency_weight": "Gewichtung der Transparenz",
-                    "uptonight_path": "Pfad zu conf/www"
+                    "calm_weight": "Gewichtung des Grades der Windstille",
+                    "forecast_interval": "Aktualisierungsintervall (Min)",
+                    "uptonight_path": "Pfad zu /conf/www",
+                    "experimental_features": "Experimentelle Funktionen"
+                }
+            },
+            "cloudweakening": {
+                "description": "Konfiguration des Einflusses unterschiedlicher Wolkenhöhen auf die Berechnung.",
+                "data": {
+                    "cloudcover_high_weakening": "Einfluss der hohen Wolkenbedeckung (%)",
+                    "cloudcover_medium_weakening": "Einfluss der mittleren Wolkenbedeckung (%)",
+                    "cloudcover_low_weakening": "Einfluss der niedrigen Wolkenbedeckung (%)"
                 }
             }
         }

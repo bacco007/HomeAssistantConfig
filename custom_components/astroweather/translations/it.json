@@ -1,35 +1,68 @@
 {
     "config": {
         "step": {
-            "user": {
-                "description": "Configurazione della posizione geografica, intervallo di aggiornamento delle previsioni e calcolo delle condizioni.",
+            "location": {
+                "description": "Configurazione della posizione geografica e del fuso orario.",
                 "data": {
+                    "location_name": "Nome per la posizione del tuo telescopio",
                     "latitude": "Latitudine (-89° a 89°)",
                     "longitude": "Longitudine (-180° a 180°)",
                     "elevation": "Elevazione (0m a 4000m)",
-                    "timezone_info": "Fuso orario nel database TZ",
-                    "forecast_interval": "Intervallo tra gli aggiornamenti delle previsioni (min)",
+                    "timezone_info": "Fuso orario nel database TZ"
+                }
+            },
+            "calculation": {
+                "description": "Configurazione del calcolo delle condizioni, intervallo di aggiornamento delle previsioni, percorso del tuo /config/www e passaggio per abilitare le funzionalità sperimentali di AstroWeathers.",
+                "data": {
                     "cloudcover_weight": "Peso della copertura nuvolosa per il calcolo delle condizioni",
                     "seeing_weight": "Vedere il peso per il calcolo delle condizioni",
                     "transparency_weight": "Peso della trasparenza per il calcolo delle condizioni",
-                    "uptonight_path": "Percorso verso conf/www"
+                    "calm_weight": "Ponderazione della calma per il calcolo delle condizioni",
+                    "forecast_interval": "Intervallo tra gli aggiornamenti delle previsioni (min)",
+                    "uptonight_path": "Percorso verso /conf/www",
+                    "experimental_features": "Caratteristiche sperimentali"
+                }
+            },
+            "cloudweakening": {
+                "description": "Configurazione dell'influenza delle diverse altezze delle nuvole sul calcolo.",
+                "data": {
+                    "cloudcover_high_weakening": "Influenza delle nuvole alte (%)",
+                    "cloudcover_medium_weakening": "Influenza delle nubi medie (%)",
+                    "cloudcover_low_weakening": "Influenza delle nuvole basse (%)"
                 }
             }
         }
     },
     "options": {
         "step": {
-            "init": {
+            "location": {
+                "description": "Configurazione della posizione geografica e del fuso orario.",
                 "data": {
+                    "location_name": "Nome per la posizione del tuo telescopio",
                     "latitude": "Latitudine (-89° a 89°)",
                     "longitude": "Longitudine (-180° a 180°)",
                     "elevation": "Elevazione (0m a 4000m)",
-                    "timezone_info": "Fuso orario nel database TZ",
-                    "forecast_interval": "Intervallo tra gli aggiornamenti delle previsioni (min)",
+                    "timezone_info": "Fuso orario nel database TZ"
+                }
+            },
+            "calculation": {
+                "description": "Configurazione del calcolo delle condizioni, intervallo di aggiornamento delle previsioni, percorso del tuo /config/www e passaggio per abilitare le funzionalità sperimentali di AstroWeathers.",
+                "data": {
                     "cloudcover_weight": "Peso della copertura nuvolosa per il calcolo delle condizioni",
                     "seeing_weight": "Vedere il peso per il calcolo delle condizioni",
                     "transparency_weight": "Peso della trasparenza per il calcolo delle condizioni",
-                    "uptonight_path": "Percorso verso conf/www"
+                    "calm_weight": "Ponderazione della calma per il calcolo delle condizioni",
+                    "forecast_interval": "Intervallo tra gli aggiornamenti delle previsioni (min)",
+                    "uptonight_path": "Percorso verso /conf/www",
+                    "experimental_features": "Caratteristiche sperimentali"
+                }
+            },
+            "cloudweakening": {
+                "description": "Configurazione dell'influenza delle diverse altezze delle nuvole sul calcolo.",
+                "data": {
+                    "cloudcover_high_weakening": "Influenza delle nuvole alte (%)",
+                    "cloudcover_medium_weakening": "Influenza delle nubi medie (%)",
+                    "cloudcover_low_weakening": "Influenza delle nuvole basse (%)"
                 }
             }
         }

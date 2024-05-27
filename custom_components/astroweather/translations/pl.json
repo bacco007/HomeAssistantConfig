@@ -1,35 +1,68 @@
 {
     "config": {
         "step": {
-            "user": {
-                "description": "Konfiguracja lokalizacji geograficznej i częstotliwości aktualizacji prognozy.",
+            "location": {
+                "description": "Konfiguracja położenia geograficznego i strefy czasowej.",
                 "data": {
+                    "location_name": "Nazwa lokalizacji teleskopu",
                     "latitude": "Szerokość geograficzna (-89° do 89°)",
                     "longitude": "Długość geograficzna (-180° do 180°)",
                     "elevation": "Wzniesienie (0m do 4000m n.p.m.)",
-                    "timezone_info": "Strefa czasowa w bazie danych TZ",
-                    "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
+                    "timezone_info": "Strefa czasowa w bazie danych TZ"
+                }
+            },
+            "calculation": {
+                "description": "Konfiguracja obliczania warunku, interwału aktualizacji prognozy, ścieżki do pliku /config/www i przełącznika umożliwiającego włączenie funkcji eksperymentalnych AstroWeathers.",
+                "data": {
                     "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
                     "seeing_weight": "Widząc wagę do obliczenia stanu",
                     "transparency_weight": "Waga przezroczystości do obliczania stanu",
-                    "uptonight_path": "ścieżka do conf/www"
+                    "calm_weight": "Waga spokoju do obliczania stanu",
+                    "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
+                    "uptonight_path": "ścieżka do /conf/www",
+                    "experimental_features": "Cechy eksperymentalne"
+                }
+            },
+            "cloudweakening": {
+                "description": "Konfiguracja wpływu różnych wysokości chmur na obliczenia.",
+                "data": {
+                    "cloudcover_high_weakening": "Wysokie chmury wpływają (%)",
+                    "cloudcover_medium_weakening": "Wpływ średnich chmur (%)",
+                    "cloudcover_low_weakening": "Wpływ niskich chmur (%)"
                 }
             }
         }
     },
     "options": {
         "step": {
-            "init": {
+            "location": {
+                "description": "Konfiguracja położenia geograficznego i strefy czasowej.",
                 "data": {
+                    "location_name": "Nazwa lokalizacji teleskopu",
                     "latitude": "Szerokość geograficzna (-89° do 89°)",
                     "longitude": "Długość geograficzna (-180° do 180°)",
                     "elevation": "Wzniesienie (0m do 4000m n.p.m.)",
-                    "timezone_info": "Strefa czasowa w bazie danych TZ",
-                    "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
+                    "timezone_info": "Strefa czasowa w bazie danych TZ"
+                }
+            },
+            "calculation": {
+                "description": "Konfiguracja obliczania warunku, interwału aktualizacji prognozy, ścieżki do pliku /config/www i przełącznika umożliwiającego włączenie funkcji eksperymentalnych AstroWeathers.",
+                "data": {
                     "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
                     "seeing_weight": "Widząc wagę do obliczenia stanu",
                     "transparency_weight": "Waga przezroczystości do obliczania stanu",
-                    "uptonight_path": "ścieżka do conf/www"
+                    "calm_weight": "Waga spokoju do obliczania stanu",
+                    "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
+                    "uptonight_path": "ścieżka do /conf/www",
+                    "experimental_features": "Cechy eksperymentalne"
+                }
+            },
+            "cloudweakening": {
+                "description": "Konfiguracja wpływu różnych wysokości chmur na obliczenia.",
+                "data": {
+                    "cloudcover_high_weakening": "Wysokie chmury wpływają (%)",
+                    "cloudcover_medium_weakening": "Wpływ średnich chmur (%)",
+                    "cloudcover_low_weakening": "Wpływ niskich chmur (%)"
                 }
             }
         }

@@ -1,19 +1,12 @@
-"""
-    Support for the AstroWeather from 7Timer
-    This component will create a few binary sensors.
+"""Support for the AstroWeather binary sensors."""
 
-    For a full description, go here: https://github.com/mawinkler/astroweather
-
-    Author: Markus Winkler
-"""
 import logging
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.typing import HomeAssistantType
-from .const import (
-    DOMAIN,
-)
+from homeassistant.core import HomeAssistant
+
+from .const import CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME, DOMAIN
 from .entity import AstroWeatherEntity
 
 SENSOR_NAME = 0
@@ -53,7 +46,9 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_add_entities) -> None:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+) -> None:
     """Set up the AstroWeather binary sensor platform."""
     _LOGGER.info("Set up AstroWeather binary sensor platform")
 
@@ -71,7 +66,11 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_a
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(AstroWeatherBinarySensor(coordinator, entry.data, sensor, fcst_coordinator))
+        sensors.append(
+            AstroWeatherBinarySensor(
+                coordinator, entry.data, sensor, fcst_coordinator, entry
+            )
+        )
 
     async_add_entities(sensors, True)
     return True
@@ -80,12 +79,16 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry, async_a
 class AstroWeatherBinarySensor(AstroWeatherEntity, BinarySensorEntity):
     """Implementation of a AstroWeather Weatherflow Binary Sensor."""
 
-    def __init__(self, coordinator, entries, sensor, fcst_coordinator) -> None:
+    def __init__(self, coordinator, entries, sensor, fcst_coordinator, entry) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator, entries, sensor, fcst_coordinator)
+        super().__init__(coordinator, entries, sensor, fcst_coordinator, entry.entry_id)
         self._sensor = sensor
         self._device_class = SENSOR_TYPES[self._sensor][SENSOR_DEVICE_CLASS]
-        self._name = f"{DOMAIN.capitalize()} {SENSOR_TYPES[self._sensor][SENSOR_NAME]}"
+
+        self._location_name = entries.get(CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME)
+        self._sensor_name = SENSOR_TYPES[self._sensor][SENSOR_NAME]
+        self._attr_unique_id = f"{entry.entry_id}_{DOMAIN.lower()}_{self._sensor_name.lower().replace(' ', '_')}"
+        self._name = f"{DOMAIN.capitalize()} {self._location_name} {self._sensor_name}"
 
     @property
     def name(self):
