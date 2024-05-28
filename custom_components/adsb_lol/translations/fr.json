@@ -46,9 +46,10 @@
         "description": "Personnalisez le fonctionnement de l'intégration",
         "data": {
           "refresh_interval": "Intervalle d'actualisation des données (en minutes)",
-          "entity_picture": "Sélectionnez l'image de l'avion, par exemple sur la carte",
-		  "entity_picture_asc": "Sélectionnez une image pour l'avion qui monte, par exemple dans la carte",
-		  "entity_picture_desc": "Sélectionnez l'image de l'avion en descente, par exemple sur la carte"
+		  "entity_picture": "Sélectionnez une image pour l'avion, par exemple pour la carte-map",
+		  "entity_picture_asc": "Sélectionnez une image pour l'avion qui monte, par exemple pour la carte-map",
+		  "entity_picture_desc": "Sélectionnez l'image de l'avion en descente, par exemple pour la carte-map",
+		  "entity_picture_heli": "Sélectionnez l'image d'hélicopter, par exemple pour la carte-map"
         }
       }
     }

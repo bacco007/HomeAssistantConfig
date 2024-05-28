@@ -46,9 +46,10 @@
         "description": "Customize the way the integration works",
         "data": {
           "refresh_interval": "Data refresh interval (in minutes)",
-          "entity_picture": "Select aircraft picture e.g in map card",
+		  "entity_picture": "Select picture for aircraft e.g in map card",
 		  "entity_picture_asc": "Select picture for ascending aircraft e.g in map card",
-		  "entity_picture_desc": "Select picture for descending aircraft e.g in map card"
+		  "entity_picture_desc": "Select picture for descending aircraft e.g in map card",
+		  "entity_picture_heli": "Select picture for helicopter e.g in map card"
         }
       }
     }

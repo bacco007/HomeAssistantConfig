@@ -21,7 +21,8 @@ from .const import (
     ICONS_URL,
     CONF_ENTITY_PICTURE,
     CONF_ENTITY_PICTURE_ASC,
-    CONF_ENTITY_PICTURE_DESC
+    CONF_ENTITY_PICTURE_DESC,
+    CONF_ENTITY_PICTURE_HELI
 )
 
 from .coordinator import ADSBUpdateCoordinator, ADSBPointUpdateCoordinator
@@ -241,11 +242,14 @@ class ADSBPointACSensor(CoordinatorEntity, SensorEntity):
         self._attr_native_value = self._aircraft["callsign"]
         self._attributes = self._aircraft
         self._attr_extra_state_attributes = self._attributes
+        
         if self._aircraft.get("altitude_baro_rate", 0) < 0 or self._aircraft.get("altitude_geom_rate",0) < 0 :
             self._attr_entity_picture = f'{ICONS_URL}/{self._aircraft[CONF_ENTITY_PICTURE_DESC]}'
         else:
             self._attr_entity_picture = f'{ICONS_URL}/{self._aircraft[CONF_ENTITY_PICTURE_ASC]}'
-            
+        # helicopter
+        if self._aircraft.get("category", None) == "A7":     
+            self._attr_entity_picture = f'{ICONS_URL}/{self._aircraft[CONF_ENTITY_PICTURE_HELI]}'
         return self._attr_extra_state_attributes   
 
     async def remove_entity(self):

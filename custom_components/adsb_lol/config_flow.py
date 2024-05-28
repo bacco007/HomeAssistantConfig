@@ -33,6 +33,8 @@ from .const import (
     ATTR_DEFAULT_ENTITY_PICTURE_ASC,
     CONF_ENTITY_PICTURE_DESC,
     ATTR_DEFAULT_ENTITY_PICTURE_DESC,
+    CONF_ENTITY_PICTURE_HELI,
+    ATTR_DEFAULT_ENTITY_PICTURE_HELI,
     ICONS_URL,
     ICONS_PATH
 )    
@@ -179,6 +181,7 @@ class ADSBOptionsFlowHandler(config_entries.OptionsFlow):
                             vol.Optional(CONF_REFRESH_INTERVAL, default=self.config_entry.options.get(CONF_REFRESH_INTERVAL, ATTR_DEFAULT_REFRESH_INTERVAL)): vol.All(vol.Coerce(int), vol.Range(min=1)),
                             vol.Optional(CONF_ENTITY_PICTURE_ASC, default=self.config_entry.options.get(CONF_ENTITY_PICTURE_ASC, ATTR_DEFAULT_ENTITY_PICTURE_ASC)): vol.In(entity_pictures),
                             vol.Optional(CONF_ENTITY_PICTURE_DESC, default=self.config_entry.options.get(CONF_ENTITY_PICTURE_DESC, ATTR_DEFAULT_ENTITY_PICTURE_DESC)): vol.In(entity_pictures),
+                            vol.Optional(CONF_ENTITY_PICTURE_HELI, default=self.config_entry.options.get(CONF_ENTITY_PICTURE_HELI, ATTR_DEFAULT_ENTITY_PICTURE_HELI)): vol.In(entity_pictures),
                         },
                     ),
                 ) 

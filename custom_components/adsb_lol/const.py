@@ -32,9 +32,11 @@ CONF_EXTRACT_PARAM_INPUT = "input_entity"
 CONF_ENTITY_PICTURE = "entity_picture"
 CONF_ENTITY_PICTURE_ASC = "entity_picture_asc"
 CONF_ENTITY_PICTURE_DESC = "entity_picture_desc"
+CONF_ENTITY_PICTURE_HELI = "entity_picture_heli"
 ATTR_DEFAULT_ENTITY_PICTURE = "airplane_1.png"
 ATTR_DEFAULT_ENTITY_PICTURE_ASC = "airplane_asc.png"
 ATTR_DEFAULT_ENTITY_PICTURE_DESC = "airplane_desc.png"
+ATTR_DEFAULT_ENTITY_PICTURE_HELI = "helicopter_1.png"
 
 # constants used in helpers
 ATTR_DELAY = "Delay"
