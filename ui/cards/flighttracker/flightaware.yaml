@@ -18,22 +18,94 @@ cards:
         }
     entities:
       - entity: sensor.adsb_fa_adsbfeed
-        name: ADS-B Feed
         type: custom:multiple-entity-row
+        name: ADS-B Feed Status
         secondary_info:
           attribute: message
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+          - icon: mdi:check-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ''
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('sensor.adsb_fa_adsbfeed') == 'red' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('sensor.adsb_fa_adsbfeed') == 'amber' %} orange {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(3) state-badge {
+                color: {% if states('sensor.adsb_fa_adsbfeed') == 'green' %} green {% else %} grey {% endif %}
+              }
       - entity: sensor.adsb_fa_mlat
-        name: MLAT Feed
         type: custom:multiple-entity-row
+        name: MLAT Feed Status
         secondary_info:
           attribute: message
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+          - icon: mdi:check-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ''
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('sensor.adsb_fa_mlat') == 'red' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('sensor.adsb_fa_mlat') == 'amber' %} orange {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(3) state-badge {
+                color: {% if states('sensor.adsb_fa_mlat') == 'green' %} green {% else %} grey {% endif %}
+              }
       - entity: sensor.adsb_fa_piaware
+        type: custom:multiple-entity-row
         name: PiAware Status
-        type: custom:multiple-entity-row
         secondary_info:
           attribute: message
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+          - icon: mdi:check-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ''
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('sensor.adsb_fa_piaware') == 'red' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('sensor.adsb_fa_piaware') == 'amber' %} orange {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(3) state-badge {
+                color: {% if states('sensor.adsb_fa_piaware') == 'green' %} green {% else %} grey {% endif %}
+              }
       - entity: sensor.adsb_fa_flightaware
-        name: Connection to FlightAware
         type: custom:multiple-entity-row
+        name: Connection to FlightAware
         secondary_info:
           attribute: message
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+          - icon: mdi:check-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ''
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('sensor.adsb_fa_flightaware') == 'red' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('sensor.adsb_fa_flightaware') == 'amber' %} orange {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(3) state-badge {
+                color: {% if states('sensor.adsb_fa_flightaware') == 'green' %} green {% else %} grey {% endif %}
+              }

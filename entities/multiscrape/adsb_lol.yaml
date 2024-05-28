@@ -6,7 +6,7 @@
     - unique_id: adsb_lol_daily_stats
       name: ADSB.lol - Daily Stats
       value_template: Connected
-      icon: mdi:airplane-takeoff
+      icon: mdi:airplane
       attributes:
         - name: global_aircraft
           value_template: "{{ value_json.global.aircraft }}"
