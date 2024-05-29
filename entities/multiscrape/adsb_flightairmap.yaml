@@ -1,0 +1,23 @@
+---
+- name: FlightAirMap Stats
+  resource: http://192.168.1.132:7777/statistics
+  scan_interval: 60
+  #log_response: true
+  sensor:
+    - unique_id: flightairmap_stats
+      name: FlightAirMap Stats
+      value_template: Connected
+      icon: mdi:airplane
+      attributes:
+        - name: arrivals_seen
+          select: "body > section > div > p > span:nth-child(2) > span"
+        - name: aircraft_type
+          select: "body > section > div > p > span:nth-child(4) > span"
+        - name: owners
+          select: "body > section > div > p > span:nth-child(3) > span"
+        - name: military_flights ## not accurate for some reason, use the sql query
+          select: "body > section > div > p > span:nth-child(6) > span"
+        - name: airlines
+          select: "body > section > div > p > span:nth-child(5) > span"
+        - name: flights
+          select: "body > section > div > p > span:nth-child(1) > span"

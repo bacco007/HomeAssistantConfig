@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.5.5 |
 | No. Integrations | 204 |
 | No. Custom Integrations | 83 |
-| No. Entities | 6381 |
-| No. Sensors | 4522 |
+| No. Entities | 6420 |
+| No. Sensors | 4548 |
 | No. Automations | 142 |
 
 <details>
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 2
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4522
+Sensors | 4548
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 251
+Switches | 253
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 280
+Update | 295
 Vacuums | 0
 Water heaters | 0
 Weather | 12
@@ -742,7 +742,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.1] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.0] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.6.1] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.6.2] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1b0] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -803,7 +803,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.11] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.12] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -879,7 +879,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Git Exporter | 1.17.0 |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
-| JupyterLab | 0.15.0 |  | a0d7b954 |
+| JupyterLab | 0.15.1 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.0.0 |  | core |
 | Music Assistant | 2.0.4 |  | d5369777 |

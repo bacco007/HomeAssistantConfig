@@ -19,6 +19,7 @@ sensor:
       - radio
       - site_url
       - time
+      - system_uptime
 
   - platform: template
     sensors:
@@ -54,3 +55,9 @@ sensor:
         attribute_templates:
           message: >
             {{ states.sensor.adsb_fa_feeder.attributes["mlat"]["message"] }}
+      adsb_fa_uptime:
+        friendly_name: FA Uptime
+        icon_template: mdi:clock-alert
+        device_class: timestamp
+        value_template: >
+          {{ ((now().timestamp() - states.sensor.adsb_fa_feeder.attributes["system_uptime"] | int / 100) | round(0)) | as_datetime }}
