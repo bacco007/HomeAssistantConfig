@@ -31,8 +31,10 @@ def parse_data(data, max, base_url, token, identifier, section_key, images_base_
 
     output = []
     for item in sorted_data:
-        thumb = item.get("thumb", item.get("parentThumb", item.get("grandparentThumb", None)))
-        art = item.get("art", item.get("grandparentArt", None))
+        media_type_map = {'movie': ('thumb', 'art'), 'episode': ('grandparentThumb', 'grandparentArt')}
+        thumb_key, art_key = media_type_map.get(item['type'], ('thumb', 'grandparentArt'))
+        thumb = item.get(thumb_key, item.get("parentThumb", item.get("grandparentThumb", None)))
+        art = item.get(art_key, item.get("grandparentArt", None))
         deep_link_position = -1
         if section_key == "artist":
             deep_link_position = -2

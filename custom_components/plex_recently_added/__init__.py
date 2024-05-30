@@ -6,9 +6,9 @@ from homeassistant.const import (
     CONF_NAME,
     CONF_API_KEY, 
     CONF_HOST, 
-    CONF_PORT, 
+    CONF_PORT,
     CONF_SSL
-    )
+)
 
 from .const import (
     DOMAIN, 
@@ -17,10 +17,8 @@ from .const import (
     CONF_SECTION_TYPES,
     CONF_SECTION_LIBRARIES,
     CONF_EXCLUDE_KEYWORDS,
-    CONF_ON_DECK,
-    CONF_VERIFY_SSL
-    )
-
+    CONF_ON_DECK
+)
 
 from .coordinator import PlexDataCoordinator
 from .helpers import setup_client
@@ -28,7 +26,6 @@ from .plex_api import (
     FailedToLogin,
 )
 from .redirect import ImagesRedirect
-
 
 PLATFORMS = [
     Platform.SENSOR
@@ -48,7 +45,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             config_entry.data.get(CONF_SECTION_TYPES, []),
             config_entry.data.get(CONF_SECTION_LIBRARIES, []),
             config_entry.data.get(CONF_EXCLUDE_KEYWORDS, []),
-            config_entry.data[CONF_VERIFY_SSL],
         )
     except FailedToLogin as err:
         raise ConfigEntryNotReady("Failed to Log-in") from err

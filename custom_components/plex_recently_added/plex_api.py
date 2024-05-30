@@ -25,8 +25,7 @@ class PlexApi():
         port: int,
         section_types: list,
         section_libraries: list,
-        exclude_keywords: list,
-        verify_ssl: bool
+        exclude_keywords: list
     ):
         self._hass = hass
         self._ssl = 's' if ssl else ''
@@ -38,7 +37,6 @@ class PlexApi():
         self._section_types = section_types
         self._section_libraries = section_libraries
         self._exclude_keywords = exclude_keywords
-        self._verify_ssl = verify_ssl
         self._images_base_url = f'/{name.lower() + "_" if len(name) > 0 else ""}plex_recently_added'
     
     async def update(self):
@@ -49,8 +47,6 @@ class PlexApi():
         )
 
         """ Getting the server identifier """
-        if not self._verify_ssl:
-            requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
         try:
             info_res = await self._hass.async_add_executor_job(
                 requests.get,
@@ -60,7 +56,6 @@ class PlexApi():
                         "User-agent": USER_AGENT,
                         "Accept": ACCEPTS,
                     },
-                    "verify":self._verify_ssl,
                     "timeout":10
                 }
             )
@@ -87,7 +82,6 @@ class PlexApi():
                         "User-agent": USER_AGENT,
                         "Accept": ACCEPTS,
                     },
-                    "verify":self._verify_ssl,
                     "timeout":10
                 }
             )
@@ -117,7 +111,6 @@ class PlexApi():
                         "User-agent": USER_AGENT,
                         "Accept": ACCEPTS,
                     },
-                    "verify":self._verify_ssl,
                     "timeout":10
                 }
             )

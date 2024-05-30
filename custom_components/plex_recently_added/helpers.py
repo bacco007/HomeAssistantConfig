@@ -13,9 +13,8 @@ async def setup_client(
     section_types: list,
     section_libraries: list,
     exclude_keywords: list,
-    verify_ssl: bool,
-    ):
-    client = PlexApi(hass, name, ssl, token, max, on_deck, host, port, section_types, section_libraries, exclude_keywords, verify_ssl)
+):
+    client = PlexApi(hass, name, ssl, token, max, on_deck, host, port, section_types, section_libraries, exclude_keywords)
 
     await client.update()
     return client
