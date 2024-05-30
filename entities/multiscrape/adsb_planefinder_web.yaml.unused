@@ -1,0 +1,29 @@
+---
+- name: adsb_planefinder_web
+  resource: https://planefinder.net/coverage/receiver/226414
+  verify_ssl: false
+  scan_interval: 600
+  # button:
+  #   - unique_id: adsb_planefinder_stats_refresh
+  #     name: Refresh
+  log_response: true
+  timeout: 60
+  parser: "html.parser"
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+  sensor:
+    - unique_id: adsb_planefinder_web_stats
+      name: "[ADS-B] Plane Finder Web stats"
+      icon: mdi:airplane
+      value_template: Connected
+      attributes:
+        - name: worldwide_rank
+          select: "body > #receiver-page > div.masthead-section.section > div > div.stats > div:nth-child(2) > div:nth-child(1) > div"
+        - name: australia_rank
+          select: "body > #receiver-page > div.masthead-section.section > div > div.stats > div:nth-child(2) > div:nth-child(2) > div"
+        - name: aircraft_tracked
+          select: "body > #receiver-page > div.masthead-section.section > div > div.stats > div:nth-child(2) > div:nth-child(3) > div"
+        - name: days_online
+          select: "body > #receiver-page > div.masthead-section.section > div > div.stats > div:nth-child(2) > div:nth-child(4) > div"
+        - name: positions_reported
+          select: "body > #receiver-page > div.masthead-section.section > div > div.stats > div:nth-child(2) > div:nth-child(5) > div"
