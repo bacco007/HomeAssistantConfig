@@ -1,6 +1,8 @@
 from typing import Any
 import voluptuous as vol
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import (
     CONF_API_KEY, 
@@ -24,6 +26,8 @@ from .radarr_api import (
 )
 from .parsing import TMDBApiNotResponding
 
+from .options_flow import RadarrOptionFlow
+
 RADARR_SCHEMA = vol.Schema({
     vol.Optional(CONF_NAME, default=''): vol.All(str),
     vol.Optional(CONF_HOST, default='localhost'): vol.All(str),
@@ -38,6 +42,11 @@ RADARR_SCHEMA = vol.Schema({
 
 class RadarrConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for the Radarr integration."""
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> RadarrOptionFlow:
+        return RadarrOptionFlow(config_entry)
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ):

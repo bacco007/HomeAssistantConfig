@@ -73,7 +73,7 @@ class RadarrApi():
 
             return {
                 'online': True,
-                'data': parse_data(api.json()[:self._max], tz, self._host, self._port, self._ssl, self._theaters)
+                'data': parse_data(api.json()[:self._max], tz, self._host, self._port, self._ssl, self._theaters, self._urlbase)
             }
 
         raise RadarrCannotBeReached
