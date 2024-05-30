@@ -32,6 +32,7 @@ class SonarrApi():
         self._host = host
         self._port = port
         self._ssl = ssl
+        self._url_base = urlbase
 
         self._address = 'http{0}://{1}:{2}/{3}api/v3/calendar?start={4}&end={5}&includeEpisodeImages=true&includeSeries=true'.format(
                             's' if ssl else '', 
@@ -57,12 +58,12 @@ class SonarrApi():
                     'data': parse_data(list(
                                         filter(
                                             lambda x: x['airDate'][:-10] == str(start),
-                                            api.json()))[:self._max], self._host, self._port, self._ssl)
+                                            api.json()))[:self._max], tz, self._host, self._port, self._ssl, self._url_base)
                 }
                             
             return {
                 'online': True,
-                'data': parse_data(api.json()[:self._max], tz, self._host, self._port, self._ssl)
+                'data': parse_data(api.json()[:self._max], tz, self._host, self._port, self._ssl, self._url_base)
             }
         
         raise SonarrCannotBeReached

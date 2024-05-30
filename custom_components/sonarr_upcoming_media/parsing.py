@@ -15,7 +15,7 @@ def days_until(date, tz):
     now = time.mktime(now)
     return int((date - now) / 86400)
 
-def parse_data(data, tz, host, port, ssl):
+def parse_data(data, tz, host, port, ssl, url_base=None):
     import re
     """Return JSON for the sensor."""
     attributes = {}
@@ -75,7 +75,7 @@ def parse_data(data, tz, host, port, ssl):
             pass
         series_title_slug = show['series']['titleSlug']
         protocol = 'https' if ssl else 'http'
-        card_item['deep_link'] = f'{protocol}://{host}:{port}/series/{series_title_slug}'
+        card_item['deep_link'] = f'{protocol}://{host}:{port}/{url_base.strip("/") + "/" if url_base else ""}series/{series_title_slug}'
         card_json.append(card_item)
     attributes['data'] = card_json
     return attributes
