@@ -1,9 +1,9 @@
 ---
 resource: "https://ll.thespacedevs.com/2.0.0/launch/upcoming/?format=json&limit=3&offset=0"
+scan_interval: 600
 sensor:
   name: spacelibrary
   unique_id: spacelibrary
-  scan_interval: 600
   json_attributes:
     - results
   value_template: "{{ value_json.results[0].window_start }}"

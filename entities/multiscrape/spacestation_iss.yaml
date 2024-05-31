@@ -1,7 +1,7 @@
 ---
 - name: International Space Station
   resource: https://api.wheretheiss.at/v1/satellites/25544
-  scan_interval: 30
+  scan_interval: 60
   sensor:
     - unique_id: iss
       name: International Space Station
