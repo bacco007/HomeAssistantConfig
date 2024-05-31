@@ -1,0 +1,68 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimut (360 de grade, 0 = Nord, 90 = Est, 180 = Sud, 270 = Vest)",
+          "declination": "Declinație (0 = Orizontal, 90 = Vertical)",
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "modules power": "Puterea totală de vârf a modulelor tale solare, în Watti",
+          "name": "Nume"
+        },
+        "description": "Completează datele panourilor solare. Te rugăm să consulți documentația dacă vreun câmp este neclar."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Producția estimată de energie - această oră"
+      },
+      "energy_next_hour": {
+        "name": "Producția estimată de energie - următoarea oră"
+      },
+      "energy_production_today": {
+        "name": "Producția estimată de energie - astăzi"
+      },
+      "energy_production_today_remaining": {
+        "name": "Producția estimată de energie - rămasă astăzi"
+      },
+      "energy_production_tomorrow": {
+        "name": "Producția estimată de energie - mâine"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Ora vârfului de putere maxim - astăzi"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Ora vârfului de putere maxim - mâine"
+      },
+      "power_production_next_12hours": {
+        "name": "Producția estimată de energie - următoarele 12 ore"
+      },
+      "power_production_next_24hours": {
+        "name": "Producția estimată de energie - următoarele 24 de ore"
+      },
+      "power_production_next_hour": {
+        "name": "Producția estimată de energie - următoarea oră"
+      },
+      "power_production_now": {
+        "name": "Producția estimată de energie - acum"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Cheie API nevalidă"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "damping": "Factor de atenuare: ajustează rezultatele dimineața și seara",
+          "inverter_size": "Dimensiune invertor (Watt)"
+        },
+        "description": "Aceste valori permit ajustarea rezultatului Forecast.Solar. Te rugăm să consulți documentația daca vreun câmp este neclar."
+      }
+    }
+  }
+}

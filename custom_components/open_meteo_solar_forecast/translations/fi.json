@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Atsimuutti (360 astetta, 0 = pohjoinen, 90 = itä, 180 = etelä, 270 = länsi)",
+          "declination": "Deklinaatio (0 = vaaka, 90 = pystysuuntainen)",
+          "latitude": "Leveysaste",
+          "longitude": "Pituusaste",
+          "modules_power": "Aurinkopaneelien kokonaisteho watteina",
+          "name": "Nimi"
+        },
+        "description": "Täytä aurinkopaneelien tiedot. Katso dokumentaatiosta, jos jokin kenttä on epäselvä."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Arvioitu energiantuotanto - tämä tunti"
+      },
+      "energy_next_hour": {
+        "name": "Arvioitu energiantuotanto - seuraava tunti"
+      },
+      "energy_production_today": {
+        "name": "Arvioitu energiantuotanto - tänään"
+      },
+      "energy_production_today_remaining": {
+        "name": "Arvioitu energiantuotanto - tämän päivän loppuun"
+      },
+      "energy_production_tomorrow": {
+        "name": "Arvioitu energiantuotanto - huomenna"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Suurin tehohuippu - tänään"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Suurin tehohuippu - huomenna"
+      },
+      "power_production_next_12hours": {
+        "name": "Arvioitu sähköntuotanto - seuraavat 12 tuntia"
+      },
+      "power_production_next_24hours": {
+        "name": "Arvioitu sähköntuotanto - seuraavat 24 tuntia"
+      },
+      "power_production_next_hour": {
+        "name": "Arvioitu sähköntuotanto - seuraava tunti"
+      },
+      "power_production_now": {
+        "name": "Arvioitu sähköntuotanto - nyt"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Virheellinen API-avain"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API-avain",
+          "azimuth": "Atsimuutti (360 astetta, 0 = pohjoinen, 90 = itä, 180 = etelä, 270 = länsi)",
+          "damping": "Vaimennuskerroin: säätää tuloksia aamulla ja illalla.",
+          "damping_evening": "Vaimennuskerroin: säätää tuloksia illalla",
+          "damping_morning": "Vaimennuskerroin: säätää tuloksia aamulla",
+          "declination": "Deklinaatio (0 = vaaka, 90 = pystysuuntainen)",
+          "inverter_size": "Invertterin koko (W)",
+          "modules_power": "Aurinkopaneelien kokonaisteho watteina"
+        },
+        "description": "Nämä arvot mahdollistavat Forecast.Solar-tuloksen säätämisen. Katso dokumentaatiosta, jos jokin kenttä on epäselvä."
+      }
+    }
+  }
+}

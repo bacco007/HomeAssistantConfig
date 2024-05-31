@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Asimuut (360 kraadi, 0 = põhi, 90 = ida, 180 = lõuna, 270 = lääs)",
+          "declination": "Deklinatsioon (0 = horisontaalne, 90 = vertikaalne)",
+          "latitude": "Laiuskraad",
+          "longitude": "Pikkuskraad",
+          "modules_power": "Päikesemoodulite koguvõimsus vattides",
+          "name": "Nimi"
+        },
+        "description": "Sisesta oma päikesepaneelide andmed. Kui väli on ebaselge, loe dokumentatsiooni."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Hinnanguline energiatoodang – see tund"
+      },
+      "energy_next_hour": {
+        "name": "Hinnanguline energiatoodang – järgmine tund"
+      },
+      "energy_production_today": {
+        "name": "Hinnanguline energiatoodang – täna"
+      },
+      "energy_production_today_remaining": {
+        "name": "Hinnanguline energiatoodang – tänaseks jäänud"
+      },
+      "energy_production_tomorrow": {
+        "name": "Hinnanguline energiatoodang – homme"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Suurim võimsuse tippaeg – täna"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Suurim võimsuse tippaeg – homme"
+      },
+      "power_production_next_12hours": {
+        "name": "Eeldatav elektritoodang – järgmised 12 tundi"
+      },
+      "power_production_next_24hours": {
+        "name": "Hinnanguline energiatoodang – järgmised 24 tundi"
+      },
+      "power_production_next_hour": {
+        "name": "Hinnanguline elektritoodang – järgmine tund"
+      },
+      "power_production_now": {
+        "name": "Hinnanguline elektritoodang – praegu"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Kehtetu API võti"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API võti",
+          "azimuth": "Asimuut (360 kraadi, 0 = põhi, 90 = ida, 180 = lõuna, 270 = lääs)",
+          "damping": "Summutustegur: reguleerib tulemusi hommikul ja õhtul",
+          "damping_evening": "Summutustegur: korrigeerib tulemusi õhtul",
+          "damping_morning": "Summutustegur: korrigeerib tulemusi hommikul",
+          "declination": "Deklinatsioon (0 = horisontaalne, 90 = vertikaalne)",
+          "inverter_size": "Inverteri võimsus (vatti)",
+          "modules_power": "Päikesemoodulite koguvõimsus vattides"
+        },
+        "description": "Need väärtused võimaldavad muuta Solar.Forecast tulemust. Vaata dokumentatsiooni kui see väli on ebaselge."
+      }
+    }
+  }
+}

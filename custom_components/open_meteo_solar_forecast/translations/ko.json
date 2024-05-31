@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "방위각(360도, 0 = 북쪽, 90 = 동쪽, 180 = 남쪽, 270 = 서쪽)",
+          "declination": "편각(0 = 수평, 90 = 수직)",
+          "latitude": "위도",
+          "longitude": "경도",
+          "modules power": "태양광 모듈의 총 와트 피크 전력",
+          "modules_power": "태양광 모듈의 총 와트 피크 전력",
+          "name": "이름"
+        },
+        "description": "태양광 패널의 데이터를 입력합니다. 필드가 명확하지 않은 경우 설명서를 참조하십시오."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "예상 에너지 생산량 - 이 시간"
+      },
+      "energy_next_hour": {
+        "name": "예상 에너지 생산량 - 다음 시간"
+      },
+      "energy_production_today": {
+        "name": "예상 에너지 생산량 - 오늘"
+      },
+      "energy_production_today_remaining": {
+        "name": "예상 에너지 생산량 - 오늘 남은 시간"
+      },
+      "energy_production_tomorrow": {
+        "name": "예상 에너지 생산량 - 내일"
+      },
+      "power_highest_peak_time_today": {
+        "name": "최고 전력 피크 시간 - 오늘"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "최고 전력 피크 시간 - 내일"
+      },
+      "power_production_next_12hours": {
+        "name": "예상 전력 생산량 - 다음 12시간"
+      },
+      "power_production_next_24hours": {
+        "name": "예상 전력 생산량 - 다음 24시간"
+      },
+      "power_production_next_hour": {
+        "name": "예상 전력 생산량 - 다음 시간"
+      },
+      "power_production_now": {
+        "name": "예상 전력 생산량 - 지금"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "API 키가 잘못되었습니다"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API 키",
+          "azimuth": "방위각(360도, 0 = 북쪽, 90 = 동쪽, 180 = 남쪽, 270 = 서쪽)",
+          "damping": "댐핑 팩터: 아침과 저녁에 결과를 조정합니다.",
+          "damping_evening": "댐핑 팩터: 저녁에 결과를 조정합니다.",
+          "damping_morning": "댐핑 팩터: 아침에 결과를 조정합니다.",
+          "declination": "편각(0 = 수평, 90 = 수직)",
+          "inverter_size": "인버터 크기(와트)",
+          "modules power": "태양광 모듈의 총 와트 피크 전력",
+          "modules_power": "태양광 모듈의 총 와트 피크 전력"
+        },
+        "description": "이 값을 사용하면 Forecast.Solar 결과를 조정할 수 있습니다. 필드가 명확하지 않은 경우 설명서를 참조하십시오."
+      }
+    }
+  }
+}

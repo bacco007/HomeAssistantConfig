@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimut (360 fok, 0 = észak, 90 = kelet, 180 = dél, 270 = nyugat)",
+          "declination": "Elhajlás (0 = vízszintes, 90 = függőleges)",
+          "latitude": "Szélesség",
+          "longitude": "Hosszúság",
+          "modules power": "A napelemmodulok teljes Watt csúcsteljesítménye",
+          "modules_power": "A napelemmodulok teljes Watt csúcsteljesítménye",
+          "name": "Elnevezés"
+        },
+        "description": "Töltse ki a napelemek adatait. Kérem, olvassa el a dokumentációt, ha egy mező nem egyértelmű."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Becsült energia termelés - ebben az órában"
+      },
+      "energy_next_hour": {
+        "name": "Becsült energia termelés - következő órában"
+      },
+      "energy_production_today": {
+        "name": "Becsült energia termelés - ma"
+      },
+      "energy_production_today_remaining": {
+        "name": "Becsült energia termelés - a mai napra még hátralévő"
+      },
+      "energy_production_tomorrow": {
+        "name": "Becsült energia termelés - holnap"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Legnagyobb teljesítmény csúcsidő - ma"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Legnagyobb teljesítmény csúcsidő - holnap"
+      },
+      "power_production_next_12hours": {
+        "name": "Becsült energia termelés - következő 12 óra"
+      },
+      "power_production_next_24hours": {
+        "name": "Becsült energia termelés - következő 24 óra"
+      },
+      "power_production_next_hour": {
+        "name": "Becsült energia termelés - következő óra"
+      },
+      "power_production_now": {
+        "name": "Becsült energia termelés - most"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Érvénytelen API kulcs"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API kulcs",
+          "azimuth": "Azimut (360 fok, 0 = észak, 90 = kelet, 180 = dél, 270 = nyugat)",
+          "damping": "Csillapítási tényező: beállítja az eredményeket reggelre és estére",
+          "damping_evening": "Csillapítási tényező: korrigálja az esti eredményeket",
+          "damping_morning": "Csillapítási tényező: korrigálja a reggeli eredményeket",
+          "declination": "Elhajlás (0 = vízszintes, 90 = függőleges)",
+          "inverter_size": "Inverter teljesítménye (Watt)",
+          "modules power": "A napelemmodulok teljes Watt csúcsteljesítménye",
+          "modules_power": "A napelemmodulok teljes Watt csúcsteljesítménye"
+        },
+        "description": "Ezek az értékek lehetővé teszik a Forecast.Solar eredményének finomhangolását. Ha egy mező nem egyértelmű, kérem, olvassa el a dokumentációt."
+      }
+    }
+  }
+}

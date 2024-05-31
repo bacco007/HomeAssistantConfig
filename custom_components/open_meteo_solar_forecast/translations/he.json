@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "latitude": "קו רוחב",
+          "longitude": "קו אורך",
+          "name": "שם"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "מפתח API לא חוקי"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "מפתח API"
+        }
+      }
+    }
+  }
+}

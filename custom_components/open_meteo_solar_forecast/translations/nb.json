@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimut (360 grader, 0 = Nord, 90 = Øst, 180 = Sør, 270 = Vest)",
+          "declination": "Deklinasjon (0 = horisontal, 90 = vertikal)",
+          "latitude": "Breddegrad",
+          "longitude": "Lengdegrad",
+          "modules power": "Total Watt-toppeffekt i solcellemodulene dine",
+          "name": "Navn"
+        },
+        "description": "Fyll ut dataene til solcellepanelene. Se dokumentasjonen hvis et felt er uklart."
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Ugyldig API-nøkkel"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API-nøkkel",
+          "damping": "Dempingsfaktor: justerer resultatene om morgenen og kvelden",
+          "inverter_size": "Inverterstørrelse (Watt)"
+        },
+        "description": "Disse verdiene gjør det mulig å justere Forecast.Solar-resultatet. Vennligst se dokumentasjonen hvis et felt er uklart."
+      }
+    }
+  }
+}

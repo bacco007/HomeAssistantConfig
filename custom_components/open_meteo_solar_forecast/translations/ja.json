@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "方位角(360度、0=北、90=東、180=南、270=西)",
+          "declination": "偏角(0＝水平、90＝垂直)",
+          "latitude": "緯度",
+          "longitude": "経度",
+          "modules power": "ソーラーモジュールの総ワットピーク電力",
+          "modules_power": "ソーラーモジュールの総ワットピーク電力",
+          "name": "名前"
+        },
+        "description": "ソーラーパネルのデータを入力してください。不明な場合は、ドキュメントを参照してください。"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "推定エネルギー生産量 - この時間"
+      },
+      "energy_next_hour": {
+        "name": "推定エネルギー生産量 - 今後 1 時間"
+      },
+      "energy_production_today": {
+        "name": "推定エネルギー生産量 - 今日"
+      },
+      "energy_production_today_remaining": {
+        "name": "推定エネルギー生産量 - 今日の残り"
+      },
+      "energy_production_tomorrow": {
+        "name": "推定エネルギー生産量 - 明日"
+      },
+      "power_highest_peak_time_today": {
+        "name": "最高電力ピーク時間 - 今日"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "最高電力ピーク時間 - 明日"
+      },
+      "power_production_next_12hours": {
+        "name": "推定発電量 - 今後 12 時間"
+      },
+      "power_production_next_24hours": {
+        "name": "推定発電量 - 今後 24 時間"
+      },
+      "power_production_next_hour": {
+        "name": "推定発電量 - 今後 1 時間"
+      },
+      "power_production_now": {
+        "name": "推定発電量 - 今"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "無効なAPIキー"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "APIキー",
+          "azimuth": "方位角(360度、0=北、90=東、180=南、270=西)",
+          "damping": "減衰係数(ダンピングファクター): 朝と夕方の結果を調整する",
+          "damping_evening": "ダンピングファクター：夕方の結果を調整する。",
+          "damping_morning": "ダンピングファクター：朝の結果を調整する。",
+          "declination": "偏角(0＝水平、90＝垂直)",
+          "inverter_size": "インバーターのサイズ（ワット）",
+          "modules power": "ソーラーモジュールの総ワットピーク電力",
+          "modules_power": "ソーラーモジュールの総ワットピーク電力"
+        },
+        "description": "これらの値により、Forecast.Solar の結果を微調整できます。フィールドが不明な場合は、ドキュメントを参照してください。"
+      }
+    }
+  }
+}

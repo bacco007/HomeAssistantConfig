@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimut (360˚, 0 = sever, 90 = východ, 180 = juh, 270 = západ)",
+          "declination": "Deklinácia (0 = horizontálna, 90 = vertikálna)",
+          "latitude": "Zemepisná šírka",
+          "longitude": "Zemepisná dĺžka",
+          "modules power": "Celkový špičkový výkon solárnych modulov",
+          "modules_power": "Celkový špičkový výkon solárnych modulov",
+          "name": "Názov"
+        },
+        "description": "Vyplňte údaje o svojich solárnych paneloch. Ak je niektoré pole nejasné, pozrite si dokumentáciu."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Odhadovaná výroba energie - táto hodina"
+      },
+      "energy_next_hour": {
+        "name": "Odhadovaná výroba energie - nasledujúca hodina"
+      },
+      "energy_production_today": {
+        "name": "Odhadovaná výroba energie - dnes"
+      },
+      "energy_production_today_remaining": {
+        "name": "Odhadovaná výroba energie - zostávajúca dnes"
+      },
+      "energy_production_tomorrow": {
+        "name": "Odhadovaná výroba energie - zajtra"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Najvyšší výkon v čase špičky - dnes"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Čas najvyššieho výkonu - zajtra"
+      },
+      "power_production_next_12hours": {
+        "name": "Odhadovaná výroba energie - nasledujúcich 12 hodín"
+      },
+      "power_production_next_24hours": {
+        "name": "Odhadovaná výroba energie - nasledujúcich 24 hodín"
+      },
+      "power_production_next_hour": {
+        "name": "Odhadovaná výroba energie - nasledujúca hodina"
+      },
+      "power_production_now": {
+        "name": "Odhadovaná výroba energie - teraz"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Neplatný API kľúč"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API kľúč",
+          "azimuth": "Azimut (360˚, 0 = sever, 90 = východ, 180 = juh, 270 = západ)",
+          "damping": "Činiteľ tlmenia: upravuje výsledky ráno a večer",
+          "damping_evening": "Tlmiaci faktor: upravuje výsledky vo večerných hodinách",
+          "damping_morning": "Tlmiaci faktor: upravuje výsledky ráno",
+          "declination": "Deklinácia (0 = horizontálna, 90 = vertikálna)",
+          "inverter_size": "Veľkosť meniča (Watt)",
+          "modules power": "Celkový špičkový výkon solárnych modulov",
+          "modules_power": "Celkový špičkový výkon solárnych modulov"
+        },
+        "description": "Tieto hodnoty umožňujú upraviť výsledné hodnoty Solar.Forecast. Ak je niektoré pole nejasné, pozrite si dokumentáciu."
+      }
+    }
+  }
+}

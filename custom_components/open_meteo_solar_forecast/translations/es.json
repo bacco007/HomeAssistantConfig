@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimut (360 grados, 0 = Norte, 90 = Este, 180 = Sur, 270 = Oeste)",
+          "declination": "Declinación (0 = Horizontal, 90 = Vertical)",
+          "latitude": "Latitud",
+          "longitude": "Longitud",
+          "modules_power": "Potencia pico total en vatios de tus módulos solares",
+          "name": "Nombre"
+        },
+        "description": "Rellena los datos de tus placas solares. Por favor, consulta la documentación si un campo no está claro."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Producción de energía estimada - esta hora"
+      },
+      "energy_next_hour": {
+        "name": "Producción de energía estimada - próxima hora"
+      },
+      "energy_production_today": {
+        "name": "Producción de energía estimada - hoy"
+      },
+      "energy_production_today_remaining": {
+        "name": "Producción de energía estimada - restante hoy"
+      },
+      "energy_production_tomorrow": {
+        "name": "Producción de energía estimada - mañana"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Hora pico de mayor potencia - hoy"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Hora pico de mayor potencia - mañana"
+      },
+      "power_production_next_12hours": {
+        "name": "Producción de energía estimada - próximas 12 horas"
+      },
+      "power_production_next_24hours": {
+        "name": "Producción de energía estimada - próximas 24 horas"
+      },
+      "power_production_next_hour": {
+        "name": "Producción de energía estimada - próxima hora"
+      },
+      "power_production_now": {
+        "name": "Producción de energía estimada - ahora"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Clave API no válida"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "Clave API",
+          "azimuth": "Azimut (360 grados, 0 = Norte, 90 = Este, 180 = Sur, 270 = Oeste)",
+          "damping": "Factor de amortiguación: ajusta los resultados por la mañana y por la noche",
+          "damping_evening": "Factor de amortiguación: ajusta los resultados por la noche.",
+          "damping_morning": "Factor de amortiguación: ajusta los resultados por la mañana.",
+          "declination": "Declinación (0 = Horizontal, 90 = Vertical)",
+          "inverter_size": "Tamaño del inversor (vatios)",
+          "modules_power": "Potencia pico total en vatios de tus módulos solares"
+        },
+        "description": "Estos valores permiten modificar el resultado de Forecast.Solar. Por favor, consulta la documentación si un campo no está claro."
+      }
+    }
+  }
+}

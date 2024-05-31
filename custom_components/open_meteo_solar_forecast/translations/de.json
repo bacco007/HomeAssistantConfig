@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "API-Schlüssel",
+          "azimuth": "Azimut (360 Grad, 0 = Norden, 90 = Osten, 180 = Süden, 270 = Westen)",
+          "declination": "Deklination (0 = Horizontal, 90 = Vertikal)",
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "modules_power": "Gesamt-Watt-Spitzenleistung deiner Solarmodule",
+          "name": "Name"
+        },
+        "description": "Gib die Daten deiner Solarmodule ein. Wenn ein Feld unklar ist, schlage bitte in der Dokumentation nach."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Geschätzte Energieproduktion – diese Stunde"
+      },
+      "energy_next_hour": {
+        "name": "Geschätzte Energieproduktion – nächste Stunde"
+      },
+      "energy_production_today": {
+        "name": "Geschätzte Energieproduktion – heute"
+      },
+      "energy_production_today_remaining": {
+        "name": "Geschätzte Energieproduktion – heute noch verbleibend"
+      },
+      "energy_production_tomorrow": {
+        "name": "Geschätzte Energieproduktion – morgen"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Höchste Leistungsspitzenzeit - heute"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Höchste Leistungsspitzenzeit - morgen"
+      },
+      "power_production_next_12hours": {
+        "name": "Geschätzte Stromproduktion – nächste 12 Stunden"
+      },
+      "power_production_next_24hours": {
+        "name": "Geschätzte Stromproduktion – nächste 24 Stunden"
+      },
+      "power_production_next_hour": {
+        "name": "Geschätzte Stromproduktion – nächste Stunde"
+      },
+      "power_production_now": {
+        "name": "Geschätzte Stromproduktion – jetzt"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Ungültiger API-Schlüssel"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API-Schlüssel",
+          "azimuth": "Azimut (360 Grad, 0 = Norden, 90 = Osten, 180 = Süden, 270 = Westen)",
+          "damping": "Dämpfungsfaktor: passt die Ergebnisse morgens und abends an",
+          "damping_evening": "Dämpfungsfaktor: Passt die Ergebnisse am Abend an",
+          "damping_morning": "Dämpfungsfaktor: Passt die Ergebnisse am Morgen an",
+          "declination": "Deklination (0 = Horizontal, 90 = Vertikal)",
+          "inverter_size": "Wechselrichtergröße (Watt)",
+          "modules_power": "Gesamt-Watt-Spitzenleistung deiner Solarmodule"
+        },
+        "description": "Mit diesen Werten kann das Ergebnis von Forecast.Solar angepasst werden. Wenn ein Feld unklar ist, lies bitte in der Dokumentation nach."
+      }
+    }
+  }
+}

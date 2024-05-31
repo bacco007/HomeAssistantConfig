@@ -1,0 +1,11 @@
+{
+  "domain": "open_meteo_solar_forecast",
+  "name": "Open-Meteo Solar Forecast",
+  "codeowners": ["@rany2"],
+  "config_flow": true,
+  "documentation": "https://github.com/rany2/ha-open-meteo-solar-forecast",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": ["open_meteo_solar_forecast==0.1.7"],
+  "version": "0.1.1"
+}

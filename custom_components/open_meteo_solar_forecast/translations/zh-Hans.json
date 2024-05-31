@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "方位角（360 度，以 0 为北，90 为东，180 为南，270 为西）",
+          "declination": "倾斜（以 0 为水平，90 为垂直）",
+          "latitude": "纬度",
+          "longitude": "经度",
+          "modules power": "光伏发电模组的总峰值功率(W)",
+          "modules_power": "您的太阳能模块的总瓦特峰值功率",
+          "name": "名称"
+        },
+        "description": "请填写您的太阳能板的参数。对于不清楚的字段，请参阅有关文档。"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "预计发电量 - 本小时"
+      },
+      "energy_next_hour": {
+        "name": "预计发电量 - 下一小时"
+      },
+      "energy_production_today": {
+        "name": "预计能源产量 - 今天"
+      },
+      "energy_production_today_remaining": {
+        "name": "预计能源产量 - 今天剩余"
+      },
+      "energy_production_tomorrow": {
+        "name": "预计能源产量 - 明天"
+      },
+      "power_highest_peak_time_today": {
+        "name": "最高功率峰值时间 - 今天"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "最高功率峰值时间 - 明天"
+      },
+      "power_production_next_12hours": {
+        "name": "预计发电量 - 未来 12 小时"
+      },
+      "power_production_next_24hours": {
+        "name": "预计发电量 - 未来 24 小时"
+      },
+      "power_production_next_hour": {
+        "name": "预计发电量 - 下一小时"
+      },
+      "power_production_now": {
+        "name": "预计发电量 - 现在"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "API 密钥无效"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API 密钥",
+          "azimuth": "方位角（360 度，以 0 为北，90 为东，180 为南，270 为西）",
+          "damping": "阻尼系数：调节早间和晚间的结果",
+          "damping_evening": "阻尼系数：调节晚间的结果",
+          "damping_morning": "阻尼系数：调节早间的结果",
+          "declination": "倾斜（以 0 为水平，90 为垂直）",
+          "inverter_size": "逆变器尺寸（瓦特）",
+          "modules power": "您的太阳能模块的总瓦特峰值功率",
+          "modules_power": "您的太阳能模块的总瓦特峰值功率"
+        },
+        "description": "这些值用于调节 Forecast.Solar 结果。对于不清楚的字段，请参阅文档。"
+      }
+    }
+  }
+}

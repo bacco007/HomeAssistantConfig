@@ -1,0 +1,33 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimute (360 graus, 0 = Norte, 90 = Este, 180 = Sul, 270 = Oeste)",
+          "declination": "Declive (0 = Horizontal, 90 = Vertical)",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "modules power": "Potência de pico total em watts dos seus módulos solares",
+          "name": "Nome"
+        },
+        "description": "Preencha os dados dos seus painéis solares. Consulte a documentação se algum campo não for claro."
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Chave de API inválida"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "azimuth": "Azimute (360 graus, 0 = Norte, 90 = Este, 180 = Sul, 270 = Oeste)",
+          "damping": "Fator de amortecimento: ajusta os resultados de manhã e à noite",
+          "declination": "Declive (0 = Horizontal, 90 = Vertical)",
+          "inverter_size": "Tamanho do inversor (Watt)"
+        },
+        "description": "Estes valores permitem ajustar o resultado do Forecast.Solar. Consulte a documentação se um campo não for claro."
+      }
+    }
+  }
+}

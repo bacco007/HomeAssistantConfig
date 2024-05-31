@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Klíč API",
+          "azimuth": "Azimut (360˚, 0 = sever, 90 = východ, 180 = jih, 270 = západ)",
+          "declination": "Deklinace (0 = horizontální, 90 = vertikální)",
+          "latitude": "Zeměpisná šířka",
+          "longitude": "Zeměpisná délka",
+          "modules_power": "Celkový špičkový výkon solárních modulů ve Wattech",
+          "name": "Název"
+        },
+        "description": "Vyplňte údaje o vašich solárních panelech. Pokud je některé pole nejasné, nahlédněte do dokumentace."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Odhadovaná výroba energie - tato hodina"
+      },
+      "energy_next_hour": {
+        "name": "Odhadovaná výroba energie - příští hodina"
+      },
+      "energy_production_today": {
+        "name": "Odhadovaná výroba energie - dnes"
+      },
+      "energy_production_today_remaining": {
+        "name": "Odhadovaná výroba energie - zbývající dnes"
+      },
+      "energy_production_tomorrow": {
+        "name": "Odhadovaná výroba energie - zítra"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Nejvyšší výkonová špička - dnes"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Nejvyšší výkonová špička - zítra"
+      },
+      "power_production_next_12hours": {
+        "name": "Odhadovaná výroba energie - příštích 12 hodin"
+      },
+      "power_production_next_24hours": {
+        "name": "Odhadovaná výroba energie - příštích 24 hodin"
+      },
+      "power_production_next_hour": {
+        "name": "Odhadovaná výroba energie - příští hodina"
+      },
+      "power_production_now": {
+        "name": "Odhadovaná výroba energie - nyní"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Neplatný klíč API"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "Klíč API",
+          "azimuth": "Azimut (360˚, 0 = sever, 90 = východ, 180 = jih, 270 = západ)",
+          "damping": "Činitel tlumení: upravuje výsledky ráno a večer",
+          "damping_evening": "Činitel tlumení: upravuje výsledky večer",
+          "damping_morning": "Činitel tlumení: upravuje výsledky ráno",
+          "declination": "Deklinace (0 = horizontální, 90 = vertikální)",
+          "inverter_size": "Velikost měniče (W)",
+          "modules_power": "Celkový špičkový výkon solárních modulů ve Wattech"
+        },
+        "description": "Tyto hodnoty umožňují vyladit výsledky Forecast.Solar. Pokud některé pole není jasné, nahlédněte do dokumentace."
+      }
+    }
+  }
+}

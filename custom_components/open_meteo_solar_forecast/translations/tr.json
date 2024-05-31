@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimut (360 derece, 0 = Kuzey, 90 = Doğu, 180 = Güney, 270 = Batı)",
+          "declination": "Sapma (0 = Yatay, 90 = Dikey)",
+          "latitude": "Enlem",
+          "longitude": "Boylam",
+          "modules power": "Solar modüllerinizin toplam en yüksek Watt gücü",
+          "modules_power": "Solar modüllerinizin toplam en yüksek Watt gücü",
+          "name": "Ad"
+        },
+        "description": "Güneş panellerinizin verilerini doldurun. Bir alan net değilse lütfen belgelere bakın."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Tahmini enerji üretimi - bu saat"
+      },
+      "energy_next_hour": {
+        "name": "Tahmini enerji üretimi - sonraki saat"
+      },
+      "energy_production_today": {
+        "name": "Tahmini enerji üretimi - bugün"
+      },
+      "energy_production_today_remaining": {
+        "name": "Tahmini enerji üretimi - bugün kalan"
+      },
+      "energy_production_tomorrow": {
+        "name": "Tahmini enerji üretimi - yarın"
+      },
+      "power_highest_peak_time_today": {
+        "name": "En yüksek güç zirve zamanı - bugün"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "En yüksek güç tepe zamanı - yarın"
+      },
+      "power_production_next_12hours": {
+        "name": "Tahmini güç üretimi - sonraki 12 saat"
+      },
+      "power_production_next_24hours": {
+        "name": "Tahmini güç üretimi - sonraki 24 saat"
+      },
+      "power_production_next_hour": {
+        "name": "Tahmini güç üretimi - sonraki saat"
+      },
+      "power_production_now": {
+        "name": "Tahmini güç üretimi - şimdi"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Geçersiz API anahtarı"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API Anahtarı",
+          "azimuth": "Azimut (360 derece, 0 = Kuzey, 90 = Doğu, 180 = Güney, 270 = Batı)",
+          "damping": "Sönümleme faktörü: sonuçları sabah ve akşam ayarlar",
+          "damping_evening": "Sönümleme faktörü: akşam sonuçları ayarlar",
+          "damping_morning": "Sönümleme faktörü: sabah sonuçları ayarlar",
+          "declination": "Sapma (0 = Yatay, 90 = Dikey)",
+          "inverter_size": "İnverter boyutu (Watt)",
+          "modules power": "Solar modüllerinizin toplam en yüksek Watt gücü",
+          "modules_power": "Solar modüllerinizin toplam en yüksek Watt gücü"
+        },
+        "description": "Bu değerler, Forecast.Solar sonucunun değiştirilmesine izin verir. Bir alan net değilse lütfen belgelere bakın."
+      }
+    }
+  }
+}

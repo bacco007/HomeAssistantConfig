@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimute (360º, 0º = Norte, 90º = Leste, 180º = Sul, 270º = Oeste)",
+          "declination": "Declinação (0 = Horizontal, 90 = Vertical)",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "modules power": "Potência de pico total em Watts de seus módulos solares",
+          "modules_power": "Potência de pico total em Watts de seus módulos solares",
+          "name": "Nome"
+        },
+        "description": "Esses valores permitem ajustar o resultado do Forecast.Solar. Consulte a documentação se um campo não estiver claro."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Produção de energia estimada - esta hora"
+      },
+      "energy_next_hour": {
+        "name": "Produção de energia estimada - próxima hora"
+      },
+      "energy_production_today": {
+        "name": "Produção de energia estimada - hoje"
+      },
+      "energy_production_today_remaining": {
+        "name": "Produção de energia estimada - restante hoje"
+      },
+      "energy_production_tomorrow": {
+        "name": "Produção de energia estimada - amanhã"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Horário de pico de maior potência - hoje"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Horário de pico de maior potência - amanhã"
+      },
+      "power_production_next_12hours": {
+        "name": "Produção de energia estimada - próximas 12 horas"
+      },
+      "power_production_next_24hours": {
+        "name": "Produção de energia estimada - próximas 24 horas"
+      },
+      "power_production_next_hour": {
+        "name": "Produção de energia estimada - próxima hora"
+      },
+      "power_production_now": {
+        "name": "Produção de energia estimada - agora"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Chave de API inválida"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "Chave da API",
+          "azimuth": "Azimute (360º, 0º = Norte, 90º = Leste, 180º = Sul, 270º = Oeste)",
+          "damping": "Fator de amortecimento: ajusta os resultados de manhã e à noite",
+          "declination": "Declinação (0 = Horizontal, 90 = Vertical)",
+          "inverter_size": "Potência do inversor (Watt)",
+          "modules power": "Potência de pico total em Watts de seus módulos solares",
+          "modules_power": "Potência de pico total em Watts de seus módulos solares"
+        },
+        "description": "Esses valores permitem ajustar o resultado do Forecast.Solar. Consulte a documentação se um campo não estiver claro."
+      }
+    }
+  }
+}

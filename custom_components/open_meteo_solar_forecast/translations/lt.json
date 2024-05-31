@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "Azimutas (360 laipsnių, 0 = šiaurė, 90 = rytai, 180 = pietai, 270 = vakarai)",
+          "declination": "Deklinacija (0 = horizontali, 90 = vertikali)",
+          "latitude": "Platuma",
+          "longitude": "Ilguma",
+          "modules power": "Bendra jūsų saulės modulių didžiausia galia vatais",
+          "modules_power": "Bendra jūsų saulės modulių didžiausia galia vatais",
+          "name": "Vardas"
+        },
+        "description": "Užpildykite savo saulės kolektorių duomenis. Jei laukas neaiškus, žr. dokumentaciją."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Apskaičiuota energijos gamyba – šią valandą"
+      },
+      "energy_next_hour": {
+        "name": "Numatoma energijos gamyba – kitą valandą"
+      },
+      "energy_production_today": {
+        "name": "Apskaičiuota energijos gamyba – šiandien"
+      },
+      "energy_production_today_remaining": {
+        "name": "Apskaičiuota energijos gamyba – likusi šiandien"
+      },
+      "energy_production_tomorrow": {
+        "name": "Numatoma energijos gamyba – rytoj"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Didžiausios galios piko laikas – šiandien"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Didžiausios galios piko laikas – rytoj"
+      },
+      "power_production_next_12hours": {
+        "name": "Numatoma elektros energijos gamyba – ateinančios 12 valandų"
+      },
+      "power_production_next_24hours": {
+        "name": "Numatoma elektros energijos gamyba – artimiausias 24 valandas"
+      },
+      "power_production_next_hour": {
+        "name": "Numatoma elektros energijos gamyba – kitą valandą"
+      },
+      "power_production_now": {
+        "name": "Numatoma energijos gamyba – dabar"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Neteisingas API raktas"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API raktas",
+          "azimuth": "Azimutas (360 laipsnių, 0 = šiaurė, 90 = rytai, 180 = pietai, 270 = vakarai)",
+          "damping": "Slopinimo koeficientas: koreguoja rezultatus ryte ir vakare",
+          "damping_evening": "Slopinimo koeficientas: koreguoja rezultatus vakare",
+          "damping_morning": "Slopinimo koeficientas: koreguoja rezultatus ryte",
+          "declination": "Deklinacija (0 = horizontali, 90 = vertikali)",
+          "inverter_size": "Inverterio dydis (vatai)",
+          "modules power": "Bendra jūsų saulės modulių didžiausia galia vatais",
+          "modules_power": "Bendra jūsų saulės modulių didžiausia galia vatais"
+        },
+        "description": "Šios vertės leidžia koreguoti prognozę. Saulės rezultatas. Jei laukas neaiškus, žr. dokumentaciją."
+      }
+    }
+  }
+}

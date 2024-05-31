@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "azimuth": "方位角（360 度單位。0 = 北、90 = 東、180 = 南、270 = 西）",
+          "declination": "偏角（0 = 水平、90 = 垂直）",
+          "latitude": "緯度",
+          "longitude": "經度",
+          "modules power": "太陽能模組總峰值功率",
+          "modules_power": "太陽能模組總峰值功率",
+          "name": "名稱"
+        },
+        "description": "填寫太陽能板資料。如果有不清楚的地方，請參考文件說明。"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "預估能源產量 - 此一小時"
+      },
+      "energy_next_hour": {
+        "name": "預估能源產量 - 下一小時"
+      },
+      "energy_production_today": {
+        "name": "預估能源產量 - 本日"
+      },
+      "energy_production_today_remaining": {
+        "name": "預估能源產量 - 今日剩餘時間"
+      },
+      "energy_production_tomorrow": {
+        "name": "預估能源產量 - 明日"
+      },
+      "power_highest_peak_time_today": {
+        "name": "最高功率峰值時間 - 本日"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "最高功率峰值時間 - 明日"
+      },
+      "power_production_next_12hours": {
+        "name": "預計電力產量 - 未來 12 小時"
+      },
+      "power_production_next_24hours": {
+        "name": "預計電力產量 - 未來 24 小時"
+      },
+      "power_production_next_hour": {
+        "name": "預計電力產量 - 下一小時"
+      },
+      "power_production_now": {
+        "name": "預計電力產量 - 現在"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "API 金鑰無效"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "API 金鑰",
+          "azimuth": "方位角（360 度單位。0 = 北、90 = 東、180 = 南、270 = 西）",
+          "damping": "阻尼因素：調整清晨與傍晚結果",
+          "damping_evening": "阻尼因素：調整傍晚結果",
+          "damping_morning": "阻尼因素：調整清晨結果",
+          "declination": "偏角（0 = 水平、90 = 垂直）",
+          "inverter_size": "變流器尺寸（Watt）",
+          "modules power": "太陽能模組總峰值功率",
+          "modules_power": "太陽能模組總峰值功率"
+        },
+        "description": "此些數值允許微調 Forecast.Solar 結果。如果有不清楚的地方、請參考文件說明。"
+      }
+    }
+  }
+}

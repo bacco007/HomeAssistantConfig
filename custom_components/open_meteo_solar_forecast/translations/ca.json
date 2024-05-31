@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Clau API",
+          "azimuth": "Azimut (360 graus, 0 = nord, 90 = est, 180 = sud, 270 = oest)",
+          "declination": "Inclinació (0 = horitzontal, 90 = vertical)",
+          "latitude": "Latitud",
+          "longitude": "Longitud",
+          "modules_power": "Potència màxima total dels panells solars",
+          "name": "Nom"
+        },
+        "description": "Introdueix les dades dels teus panells solars. Consulta la documentació si tens dubtes en algun camp."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_current_hour": {
+        "name": "Producció d'energia estimada - aquesta hora"
+      },
+      "energy_next_hour": {
+        "name": "Producció d'energia estimada - pròxima hora"
+      },
+      "energy_production_today": {
+        "name": "Producció d'energia estimada - avui"
+      },
+      "energy_production_today_remaining": {
+        "name": "Producció d'energia estimada - avui restant"
+      },
+      "energy_production_tomorrow": {
+        "name": "Producció d'energia estimada - demà"
+      },
+      "power_highest_peak_time_today": {
+        "name": "Hora de màxima potència - avui"
+      },
+      "power_highest_peak_time_tomorrow": {
+        "name": "Hora de màxima potència - demà"
+      },
+      "power_production_next_12hours": {
+        "name": "Producció d'energia estimada - pròximes 12 hores"
+      },
+      "power_production_next_24hours": {
+        "name": "Producció d'energia estimada - pròximes 24 hores"
+      },
+      "power_production_next_hour": {
+        "name": "Producció d'energia estimada - pròxima hora"
+      },
+      "power_production_now": {
+        "name": "Producció d'energia estimada - ara"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_api_key": "Clau API invàlida"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "api_key": "Clau API",
+          "azimuth": "Azimut (360 graus, 0 = nord, 90 = est, 180 = sud, 270 = oest)",
+          "damping": "Factor d'amortiment: ajusta els resultats al matí i al vespre",
+          "damping_evening": "Factor d'amortiment: ajusta els resultats al vespre",
+          "damping_morning": "Factor d'amortiment: ajusta els resultats al matí",
+          "declination": "Inclinació (0 = horitzontal, 90 = vertical)",
+          "inverter_size": "Potència de l'inversor (Watts)",
+          "modules_power": "Potència màxima total dels panells solars"
+        },
+        "description": "Aquests valors permeten ajustar els resultats de Forecast.Solar. Consulta la documentació si tens dubtes sobre algun camp."
+      }
+    }
+  }
+}
