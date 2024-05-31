@@ -1,0 +1,23 @@
+---
+  - name: Tiangong Space Station
+    resource: !secret n2yo_css_url
+    scan_interval: 30
+    sensor:
+
+      - unique_id: css
+        name: Tiangong Space Station
+        value_template: 'OK'
+        attributes:
+          - name: latitude
+            value_template: '{{ value_json.positions[0].satlatitude }}'
+          - name: longitude
+            value_template: '{{ value_json.positions[0].satlongitude }}'
+          - name: altitude
+            value_template: '{{ value_json.positions[0].sataltitude }}'
+          - name: azimuth
+            value_template: '{{ value_json.positions[0].azimuth }}'
+
+      - unique_id: css_altitude
+        name: Tiangong Space Station - Altitude
+        value_template: '{{ value_json.positions[0].sataltitude }}'
+        unit_of_measurement: "km"

@@ -313,11 +313,15 @@
         {%- if check_mth -%}
         {#- set numer of months, and set highest date using this number of months #}
           {%- set ns = namespace(dm=date_max, mth=0) -%}
+          {%- set dmd = ns.dm.day -%}
           {%- for m in range(1, 12) -%}
               {%- set dmm, dmy = ns.dm.month, ns.dm.year -%}
+              {%- set day_max = (ns.dm.replace(day=1) - timedelta(days=1)).day -%}
               {%- set dm = ns.dm.replace(
                       month=12 if dmm == 1 else dmm - 1,
-                      year=dmy - 1 if dmm == 1 else dmy)
+                      year=dmy - 1 if dmm == 1 else dmy,
+                      day= [dmd, day_max] | min
+                      )
               -%}
               {%- if dm < date_min -%}
                   {%- break -%}

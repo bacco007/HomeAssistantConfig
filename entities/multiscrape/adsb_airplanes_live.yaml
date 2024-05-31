@@ -7,7 +7,7 @@
     - unique_id: airplanes_live_connected
       name: Airplanes.live - Uplink Status
       value_template: Connected
-      icon: mdi:plane
+      icon: mdi:airplane
       attributes:
         - name: beast_connected
           select: "#beast-detect > div > div > span"

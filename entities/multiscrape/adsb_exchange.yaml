@@ -7,7 +7,7 @@
     - unique_id: adsb_exchange_status
       name: ADSB Exchange - Uplink Status
       value_template: Connected
-      icon: mdi:plane
+      icon: mdi:airplane
       attributes:
         - name: beast_status
           select: "#feeder-status > div > div.col.text-center.m-3.p-2 > div > div > div:nth-child(4) > div:nth-child(1) > small"

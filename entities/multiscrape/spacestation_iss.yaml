@@ -1,0 +1,29 @@
+---
+- name: International Space Station
+  resource: https://api.wheretheiss.at/v1/satellites/25544
+  scan_interval: 30
+  sensor:
+    - unique_id: iss
+      name: International Space Station
+      value_template: "OK"
+      attributes:
+        - name: latitude
+          value_template: "{{ value_json.latitude }}"
+        - name: longitude
+          value_template: "{{ value_json.longitude }}"
+        - name: altitude
+          value_template: "{{ value_json.altitude }}"
+        - name: velocity
+          value_template: "{{ value_json.velocity }}"
+        - name: visibility
+          value_template: "{{ value_json.visibility }}"
+
+    - unique_id: iss_velocity
+      name: International Space Station - Velocity
+      value_template: "{{ value_json.velocity }}"
+      unit_of_measurement: "km/h"
+
+    - unique_id: iss_altitude
+      name: International Space Station - Altitude
+      value_template: "{{ value_json.altitude }}"
+      unit_of_measurement: "km"
