@@ -10,5 +10,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/vingerha/ha_adsb_lol/issues",
   "requirements": [],
-  "version": "0.0.1"
+  "version": "0.1.0"
 }

@@ -26,6 +26,7 @@ CONF_REQUEST_TYPE = "request_type"
 CONF_EXTRACT_TYPE = "extract_type"
 CONF_URL = "url"
 ATTR_DEFAULT_URL = "https://api.adsb.lol/v2"
+ATTR_DEFAULT_URL_ROUTE = "https://api.adsb.lol/api/0/routeset"
 CONF_EXTRACT_PARAM = "extract_param"
 CONF_EXTRACT_PARAM_INPUT = "input_entity"
 

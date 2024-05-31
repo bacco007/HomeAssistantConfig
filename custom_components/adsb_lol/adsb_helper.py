@@ -9,7 +9,8 @@ from .const import (
     CONF_ENTITY_PICTURE, 
     CONF_ENTITY_PICTURE_ASC, 
     CONF_ENTITY_PICTURE_DESC, 
-    CONF_ENTITY_PICTURE_HELI
+    CONF_ENTITY_PICTURE_HELI,
+    ATTR_DEFAULT_URL_ROUTE
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -44,6 +45,7 @@ def get_point_of_interest(self):
             aircraft["latitude"] = ac.get("lat", None)
             aircraft["longitude"] = ac.get("lon", None)
             aircraft["category"] = ac.get("category", None)
+            aircraft["route"] = get_route(ac.get("flight", None))
             aircraft[CONF_EXTRACT_TYPE] = self._CONF_EXTRACT_TYPE
             aircraft[CONF_ENTITY_PICTURE] = self._CONF_ENTITY_PICTURE
             aircraft[CONF_ENTITY_PICTURE_ASC] = self._CONF_ENTITY_PICTURE_ASC
@@ -65,3 +67,19 @@ def get_entity_pictures(hass, path) -> dict[str]:
         entity_pictures.append(file)      
     _LOGGER.debug(f"Icons in folder: {entity_pictures}")
     return entity_pictures    
+    
+def get_route(callsign):
+    _url = ATTR_DEFAULT_URL_ROUTE
+    _callsign = callsign.strip()
+    _headers = {"accept": "application/json","Content-Type": "application/json"}
+    if callsign: 
+        _data = '{"planes": [{"callsign": "' + _callsign + '","lat": 0,"lng": 0}]}'
+        response = requests.post(_url, headers = _headers, data = _data)
+        if response.status_code == 200:
+            _LOGGER.debug("Route details: %s", response.json())
+            return response.json()
+        return {}
+    else:
+        return {}
+    
+    
