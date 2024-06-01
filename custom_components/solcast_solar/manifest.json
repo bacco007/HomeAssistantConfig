@@ -5,7 +5,7 @@
     "http"
   ],
   "codeowners": [
-    "@oziee"
+    "@BJReplay"
   ],
   "config_flow": true,
   "dependencies": [
@@ -13,14 +13,14 @@
     "recorder",
     "select"
   ],
-  "documentation": "https://github.com/oziee/ha-solcast-solar",
+  "documentation": "https://github.com/BJReplay/ha-solcast-solar",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/oziee/ha-solcast-solar/issues",
+  "issue_tracker": "https://github.com/BJReplay/ha-solcast-solar/issues",
   "requirements": [
     "aiohttp>=3.8.5",
     "datetime>=4.3",
     "isodate>=0.6.1"
   ],
-  "version": "v4.0.22"
+  "version": "v4.0.25"
 }

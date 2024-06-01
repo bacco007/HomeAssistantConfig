@@ -115,7 +115,7 @@ class EstimateModeEntity(SelectEntity):
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
             ATTR_NAME: "Solcast PV Forecast", 
-            ATTR_MANUFACTURER: "Oziee",
+            ATTR_MANUFACTURER: "BJReplay",
             ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
             ATTR_SW_VERSION: coordinator._version,

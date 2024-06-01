@@ -748,37 +748,36 @@ class SolcastApi:
             yesterday = dt.now(self._tz).date() + timedelta(days=-730)
             lastday = dt.now(self._tz).date() + timedelta(days=7)
             
-            _forecasts = []
-        
-            for s in self._data['siteinfo']:
+            _forecasts = {}
+
+            for s, siteinfo in self._data['siteinfo'].items():
                 tally = 0
-                for x in self._data['siteinfo'][s]['forecasts']:   
+                for x in siteinfo['forecasts']:   
                     #loop each rooftop site and its forecasts
                     z = x["period_start"]
                     zz = z.astimezone(self._tz) #- timedelta(minutes=30)
 
                     #v4.0.8 added code to dampen the forecast data.. (* self._damp[h])
                     
-                    if zz.date() < lastday and zz.date() > yesterday:
+                    if yesterday < zz.date() < lastday:
                         h = f"{zz.hour}"
                         if zz.date() == today:
                             tally += min(x[self._use_data_field] * 0.5 * self._damp[h], self._hardlimit)
                         
-                        itm = next((item for item in _forecasts if item["period_start"] == z), None)
+                        itm = _forecasts.get(z)
                         if itm:
                             itm["pv_estimate"] = min(round(itm["pv_estimate"] + (x["pv_estimate"] * self._damp[h]),4), self._hardlimit)
                             itm["pv_estimate10"] = min(round(itm["pv_estimate10"] + (x["pv_estimate10"] * self._damp[h]),4), self._hardlimit)
                             itm["pv_estimate90"] = min(round(itm["pv_estimate90"] + (x["pv_estimate90"] * self._damp[h]),4), self._hardlimit)
                         else:    
-                            _forecasts.append({"period_start": z,"pv_estimate": min(round((x["pv_estimate"]* self._damp[h]),4), self._hardlimit),
-                                                                "pv_estimate10": min(round((x["pv_estimate10"]* self._damp[h]),4), self._hardlimit),
-                                                                "pv_estimate90": min(round((x["pv_estimate90"]* self._damp[h]),4), self._hardlimit)})
-                        
-                self._data['siteinfo'][s]['tally'] = round(tally, 4)
-                        
-            _forecasts = sorted(_forecasts, key=itemgetter("period_start"))     
-            
-            self._data_forecasts = _forecasts 
+                            _forecasts[z] = {"period_start": z,"pv_estimate": min(round((x["pv_estimate"]* self._damp[h]),4), self._hardlimit),
+                                            "pv_estimate10": min(round((x["pv_estimate10"]* self._damp[h]),4), self._hardlimit),
+                                            "pv_estimate90": min(round((x["pv_estimate90"]* self._damp[h]),4), self._hardlimit)}
+                
+                siteinfo['tally'] = round(tally, 4)
+
+            self._data_forecasts = list(_forecasts.values())
+            self._data_forecasts.sort(key=itemgetter("period_start"))
 
             await self.checkDataRecords()
                     
