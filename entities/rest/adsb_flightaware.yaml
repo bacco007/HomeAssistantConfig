@@ -1,0 +1,19 @@
+---
+resource: http://192.168.1.132:8081/status.json
+method: GET
+scan_interval: 60
+sensor:
+  name: ADSB FA Feeder
+  value_template: "{{ value_json.piaware.status }}"
+  json_attributes:
+    - uat_enabled
+    - piaware
+    - expiry
+    - interval
+    - mlat
+    - modes_enabled
+    - adept
+    - radio
+    - site_url
+    - time
+    - system_uptime

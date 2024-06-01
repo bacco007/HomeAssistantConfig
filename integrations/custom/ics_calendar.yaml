@@ -39,3 +39,13 @@ ics_calendar:
       url: "https://calendar.google.com/calendar/ical/nextspaceflight.com_l328q9n2alm03mdukb05504c44%40group.calendar.google.com/public/basic.ics"
       download_interval: 21600
       days: 365
+    - name: "ical_aflw_all_teams"
+      include_all_day: true
+      url: "https://fixturedownload.com/download/aflw-2024-UTC.ics"
+      download_interval: 21600
+      days: 365
+    - name: "ical_sydney_swans_aflw"
+      include_all_day: true
+      url: "https://fixturedownload.com/download/aflw-2024-sydney-swans-UTC.ics"
+      download_interval: 21600
+      days: 365

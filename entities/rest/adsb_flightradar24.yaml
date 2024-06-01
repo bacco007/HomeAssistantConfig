@@ -1,0 +1,20 @@
+---
+resource: http://192.168.1.132:8754/monitor.json
+method: GET
+scan_interval: 60
+sensor:
+  name: ADSB FR24 Feeder
+  value_template: "{{ value_json.feed_alias }}"
+  json_attributes:
+    - rx_connected
+    - feed_status
+    - d11_map_size
+    - feed_num_ac_tracked
+    - build_version
+    - build_timestamp
+    - feed_alias
+    - mlat-ok
+    - mlat-number-seen
+    - last_rx_connect_time
+    - feed_num_ac_adsb_tracked
+    - feed_num_ac_non_adsb_tracked

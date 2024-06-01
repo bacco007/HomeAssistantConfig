@@ -1,0 +1,276 @@
+---
+binary_sensor:
+  - unique_id: adsb_fr24_receiver_connected
+    name: "[ADS-B] FR24 Reciever Connected"
+    state: '{{ is_state_attr("sensor.adsb_fr24_feeder", "rx_connected", "1") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_fr24_feeder") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_link_connected
+    name: "[ADS-B] FR24 Link Connected"
+    state: '{{ is_state_attr("sensor.adsb_fr24_feeder", "feed_status", "connected") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_fr24_feeder") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_mlat_connected
+    name: "[ADS-B] FR24 MLAT Connected"
+    state: '{{ is_state_attr("sensor.adsb_fr24_feeder", "mlat-ok", "OK") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_fr24_feeder") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_flightaware_link_connected
+    name: "[ADS-B] FlightAware Link Connected"
+    state: '{{ is_state_attr("sensor.piaware_conn_status", "piaware_status", "green") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.piaware_conn_status") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightAware
+
+  - unique_id: adsb_flightaware_radio_connected
+    name: "[ADS-B] FlightAware Radio Connected"
+    state: '{{ is_state_attr("sensor.piaware_conn_status", "radio_status", "green") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.piaware_conn_status") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightAware
+
+  - unique_id: adsb_flightaware_adept_connected
+    name: "[ADS-B] FlightAware Adept Connected"
+    state: '{{ is_state_attr("sensor.piaware_conn_status", "adept_status", "green") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.piaware_conn_status") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightAware
+
+  - unique_id: adsb_flightaware_mlat_connected
+    name: "[ADS-B] FlightAware MLAT Connected"
+    state: '{{ is_state_attr("sensor.piaware_conn_status", "mlat_status", "green") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.piaware_conn_status") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: FlightAware
+
+  - unique_id: adsb_lol_feeder_connected
+    name: "[ADS-B] adsb.lol Feeder Connected"
+    state: '{{ state_attr("sensor.adsb_lol_daily_stats", "beast_connected_seconds") | float(0) > 0 }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_lol_daily_stats") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: adsb.lol
+
+  - unique_id: adsb_lol_mlat_connected
+    name: "[ADS-B] adsb.lol MLAT Connected"
+    state: '{{ state_attr("sensor.adsb_lol_daily_stats", "global_mlat") | float(0) > 0 }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_lol_daily_stats") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: adsb.lol
+
+  - unique_id: adsb_adsb_fi_feeder_connected
+    name: "[ADS-B] adsb.fi Feeder Connected"
+    state: '{{ state_attr("sensor.adsb_fi_daily_stats", "beast_connected_seconds") | float(0) > 0 }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_fi_daily_stats") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: adsb.fi
+
+  - unique_id: adsb_radarplane_feeder_connected
+    name: "[ADS-B] RadarPlane Feeder Connected"
+    state: '{{ state_attr("sensor.radarplane_stats", "connection_time") | float(0) > 0 }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.radarplane_stats") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: RadarPlane
+
+  - unique_id: adsb_airplanes_live_feeder_connected
+    name: "[ADS-B] AirPlanes.Live Feeder Connected"
+    state: '{{ is_state_attr("sensor.airplanes_live_connected", "beast_connected", "Success!") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.airplanes_live_connected") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: Airplanes.live
+
+  - unique_id: adsb_adsbexchange_feeder_connected
+    name: "[ADS-B] ADS-B Exchange Feeder Connected"
+    state: '{{ is_state_attr("sensor.adsb_exchange_status", "beast_status", "Feed Ok ADS-B Status") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_exchange_status") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: ADS-B Exchange
+
+
+  - unique_id: adsb_adsbexchange_mlat_connected
+    name: "[ADS-B] ADS-B Exchange MLAT Connected"
+    state: '{{ is_state_attr("sensor.adsb_exchange_status", "mlat_status", "Feed Ok MLAT Status") }}'
+    device_class: connectivity
+    availability: >
+      {{ states("sensor.adsb_exchange_status") not in ("unavailable", "unknown") }}
+    attributes:
+      category: adsb
+      provider: ADS-B Exchange
+
+sensor:
+  - unique_id: adsb_fr24_radar_code
+    name: "[ADS-B] FlightRadar24 Radar Code"
+    state: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_alias"] }}'
+    icon: mdi:radar
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_aircraft_tracked
+    name: "[ADS-B] FlightRadar24 Aircraft Tracked"
+    state: '{{ states.sensor.adsb_fr24_feeder.attributes["d11_map_size"] | round(0) }}'
+    unit_of_measurement: Aircraft
+    state_class: measurement
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_aircraft_uploaded
+    name: "[ADS-B] FlightRadar24 Aircraft Uploaded"
+    state: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_num_ac_tracked"] | round(0) }}'
+    unit_of_measurement: Aircraft
+    state_class: measurement
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_feeder_version
+    name: "[ADS-B] FlightRadar24 Feeder Version"
+    state: '{{ states.sensor.adsb_fr24_feeder.attributes["build_version"] }}'
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_adsb_aircraft_tracked
+    name: "[ADS-B] FlightRadar24 ADS-B Aircraft Tracked"
+    state: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_num_ac_adsb_tracked"] | round(0) }}'
+    unit_of_measurement: Aircraft
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fr24_nonadsb_aircraft_tracked
+    name: "[ADS-B] FlightRadar24 Non ADS-B Aircraft Tracked"
+    state: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_num_ac_non_adsb_tracked"] | round(0) }}'
+    unit_of_measurement: Aircraft
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightRadar24
+
+  - unique_id: adsb_fa_adsbfeed_status
+    name: "[ADS-B] FlightAware ADS-B Feed Status"
+    state: '{{ states.sensor.adsb_fa_feeder.attributes["radio"]["status"] }}'
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightAware
+      message: >
+        {{ states.sensor.adsb_fa_feeder.attributes["radio"]["message"] }}
+
+  - unique_id: adsb_fa_piaware_status
+    name: "[ADS-B] FlightAware PiAware Status"
+    state: '{{ states.sensor.adsb_fa_feeder.attributes["piaware"]["status"] }}'
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightAware
+      message: >
+        {{ states.sensor.adsb_fa_feeder.attributes["piaware"]["message"] }}
+
+  - unique_id: adsb_fa_adept_status
+    name: "[ADS-B] FlightAware Adept Status"
+    state: '{{ states.sensor.adsb_fa_feeder.attributes["adept"]["status"] }}'
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightAware
+      message: >
+        {{ states.sensor.adsb_fa_feeder.attributes["adept"]["message"] }}
+
+  - unique_id: adsb_fa_mlat_status
+    name: "[ADS-B] FlightAware MLAT Status"
+    state: '{{ states.sensor.adsb_fa_feeder.attributes["mlat"]["status"] }}'
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: FlightAware
+      message: >
+        {{ states.sensor.adsb_fa_feeder.attributes["mlat"]["message"] }}
+
+  - unique_id: adsb_fa_uptime
+    name: "[ADS-B] FlightAware Uptime"
+    state: '{{ ((now().timestamp() - states.sensor.piaware_conn_status.attributes["system_uptime"] | int / 100) | round(0)) | as_datetime }}'
+    icon: mdi:airplane
+    device_class: timestamp
+    attributes:
+      category: adsb
+      provider: FlightAware
+
+  - unique_id: adsb_adsblol_positionsuploadedpersec
+    name: "[ADS-B] adsb.lol Positions Uploaded Per Second"
+    state: '{{ states.sensor.adsb_lol_daily_stats.attributes["beast_positions_per_second"] }}'
+    unit_of_measurement: "Pos/Sec"
+    state_class: measurement
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: adsb.lol
+
+  - unique_id: adsb_adsblol_messagesuploadedpersec
+    name: "[ADS-B] adsb.lol Messages Uploaded Per Second"
+    state: '{{ states.sensor.adsb_lol_daily_stats.attributes["beast_messages_per_second"] }}'
+    unit_of_measurement: "Msg/Sec"
+    state_class: measurement
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: adsb.lol
+
+  - unique_id: adsb_adsblol_uplinkthroughput
+    name: "[ADS-B] adsb.lol Uplink Throughput"
+    state: '{{ states.sensor.adsb_lol_daily_stats.attributes["beast_kbps"] | round(2) }}'
+    unit_of_measurement: "kbps"
+    state_class: measurement
+    icon: mdi:airplane
+    attributes:
+      category: adsb
+      provider: adsb.lol

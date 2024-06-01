@@ -10,17 +10,13 @@ cards:
         }
     name: Formula 1
     icon: si:f1
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_formula_1
   - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
     entities:
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_formula_1
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -139,13 +135,13 @@ cards:
                 background-color: none;
                 box-shadow: none;
               }
-      - type: section
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_formula_2
-      - type: section
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_formula_3
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_formula_2
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_formula_3

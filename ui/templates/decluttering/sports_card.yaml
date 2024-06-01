@@ -9,77 +9,120 @@ sports_card:
     - points_per_hour: 6
     - line_width: 3
   card:
-    type: custom:mushroom-template-card
-    entity: "[[entity]]"
-    primary: '{{ state_attr(entity, ''friendly_name'') | replace(''[Upcoming Sport] '', '''') }}'
-    secondary: >-
-      {{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No Event
-      Scheduled', state_attr(entity, 'nextevent_desc') + ' ' + state_attr(entity,
-      'nextevent_time')) }}
+    type: vertical-stack
+    cards:
+      - type: custom:mushroom-template-card
+        entity: "[[entity]]"
+        primary: '{{ state_attr(entity, ''friendly_name'') | replace(''[Upcoming Sport] '', '''') }}'
+        secondary: >-
+          {{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No Event
+          Scheduled', state_attr(entity, 'nextevent_desc') + ' ' + state_attr(entity,
+          'nextevent_time')) }}
 
-      {{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No
-      Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' +
-      state_attr(entity, 'afterevent_time')) }}
-    fill_container: true
-    multiline_secondary: true
-    badge_icon: '{%- if is_state_attr(entity, ''nextevent_timeto'', 0) %} mdi:clock {%- endif %}'
-    badge_color: green
-    icon: '{{ state_attr(entity, ''icon'') }}'
-    card_mod:
-      style:
-        .: |
-          ha-card:before {
-            content: '';
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            right: 5px;
-            background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
-            background-repeat: no-repeat;
-            background-size: auto 100%, cover;
-            background-position: right;
-            background-blend-mode: saturation;
-            filter: opacity(0.25);
-            }
-          ha-card {
-            background-color: var(--background-color);
-            box-shadow: none;
-          }
-    # tap_action:
-    #   action: fire-dom-event
-    #   browser_mod:
-    #     service: browser_mod.popup
-    #     hide_header: false
-    #     data:
-    #       title: Calendar
-    #       content:
-    #         type: custom:layout-card
-    #         layout_type: custom:grid-layout
-    #         layout:
-    #           margin: 0px
-    #         cards:
-    #           - type: custom:atomic-calendar-revive
-    #             entities:
-    #               - entity: "[[entity]]"
-    #             maxDaysToShow: 365
-    #             enableModeChange: true
-    #             showWeekDay: true
-    #             firstDayOfWeek: 1
-    #             refreshInterval: 600
-    #             showMonth: true
-    #             showCurrentEventLine: false
-    #             showDate: false
-    #             sortByStartTime: true
-    #             showDeclined: true
-    #             showRelativeTime: true
-    #             showMultiDay: true
-    #             showMultiDayEventParts: false
-    #             hideDuplicates: true
-    #             showLastCalendarWeek: false
-    #             calShowDescription: true
-    #             disableCalLink: false
-    #             disableCalLocationLink: false
-    #             disableCalEventLink: false
-    #             dimFinishedEvents: true
-    #             showProgressBar: false
-    #             showDescription: false
+          {{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No
+          Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' +
+          state_attr(entity, 'afterevent_time')) }}
+        fill_container: true
+        multiline_secondary: true
+        badge_icon: '{%- if is_state_attr(entity, ''nextevent_timeto'', 0) %} mdi:clock {%- endif %}'
+        badge_color: green
+        icon: '{{ state_attr(entity, ''icon'') }}'
+        card_mod:
+          style:
+            .: |
+              ha-card:before {
+                content: '';
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                right: 5px;
+                background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);
+                background-repeat: no-repeat;
+                background-size: auto 100%, cover;
+                background-position: right;
+                background-blend-mode: saturation;
+                filter: opacity(0.25);
+                }
+              ha-card {
+                # background-color: var(--background-color);
+                box-shadow: none;
+              }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            hide_header: false
+            data:
+              title: Calendar
+              content:
+                type: custom:layout-card
+                layout_type: custom:grid-layout
+                layout:
+                  margin: 0
+                  grid-template-columns: 1fr
+                  grid-template-rows: 1fr
+                  grid-template-areas: |
+                    "col1"
+                cards:
+                  - type: custom:hui-element
+                    view_layout:
+                      grid-area: col1
+                    card_type: custom:flex-table-card
+                    entities:
+                      include: '[[entity]]'
+                    sort_by: next_5_events
+                    css:
+                      table+: 'border-collapse: collapse;'
+                      th.left:nth-child(2): 'min-width: 1fr;width: 1fr; white-space: nowrap;'
+                      th.left:nth-child(3): 'min-width: 1fr;width: 1fr; white-space: nowrap;'
+                    columns:
+                      - name: test
+                        data: next_5_events
+                        modify: x.start
+                        hidden: true
+                      - name: ' '
+                        data: next_5_events
+                        modify: |-
+                          var start = new Date(x.start);
+                          var end = new Date(x.end);
+                          var now = Date.now();
+                          if(now <= end && now >= start) {
+                            '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                          } else { "" };
+                      - name: Start
+                        data: next_5_events
+                        modify: |-
+                          if(x.start == 0)
+                          {"-"}
+                          else {
+                            var date = new Date(x.start);
+                            date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                            " @ "+
+                            String(date.getHours()).padStart(2,'0')+":"+
+                            String(date.getMinutes()).padStart(2,'0')
+                          }
+                      - name: End
+                        data: next_5_events
+                        modify: |-
+                          if(x.end == 0)
+                          {"-"}
+                          else {
+                            var date = new Date(x.end);
+                            date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                            " @ "+
+                            String(date.getHours()).padStart(2,'0')+":"+
+                            String(date.getMinutes()).padStart(2,'0')
+                          }
+                      - name: Event
+                        data: next_5_events
+                        modify: x.summary + '<br/><i>' + x.location + '</i>'
+                    card_mod:
+                      style: |
+                        ha-card {
+                          background: none;
+                          border: 0;
+                          box-shadow: none;
+                          overflow: auto;
+                          padding-top: 5px;
+                          font-size: 12px;
+                        }

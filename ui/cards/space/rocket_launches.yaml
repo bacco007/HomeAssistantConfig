@@ -1,0 +1,107 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Rocket Launches
+    icon: mdi:rocket-launch
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      entity: sensor.next_spaceflight
+      primary: Upcoming Rocket Launches
+      secondary: >-
+        {{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No Event
+        Scheduled', state_attr(entity, 'nextevent_desc') + ' ' + state_attr(entity,
+        'nextevent_time')) }}
+
+        {{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No
+        Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' +
+        state_attr(entity, 'afterevent_time')) }}
+      fill_container: true
+      multiline_secondary: true
+      badge_icon: "{%- if is_state_attr(entity, 'nextevent_timeto', 0) %} mdi:clock {%- endif %}"
+      badge_color: green
+      icon: mdi:rocket-launch-outline
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          margin: 0
+          grid-template-columns: 1fr
+          grid-template-rows: 1fr
+          grid-template-areas: |
+            "col1"
+        cards:
+          - type: custom:hui-element
+            view_layout:
+              grid-area: col1
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.next_spaceflight
+            sort_by: all_events
+            css:
+              table+: "border-collapse: collapse;"
+              th.left:nth-child(2): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+            columns:
+              - name: test
+                data: all_events
+                modify: x.start
+                hidden: true
+              - name: " "
+                data: all_events
+                modify: |-
+                  var start = new Date(x.start);
+                  var end = new Date(x.end);
+                  var now = Date.now();
+                  if(now <= end && now >= start) {
+                    '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                  } else { "" };
+              - name: Start
+                data: all_events
+                modify: |-
+                  if(x.start == 0)
+                  {"-"}
+                  else {
+                    var date = new Date(x.start);
+                    date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                    " @ "+
+                    String(date.getHours()).padStart(2,'0')+":"+
+                    String(date.getMinutes()).padStart(2,'0')
+                  }
+              - name: Event
+                data: all_events
+                modify: x.summary + '<br/><i>' + x.location + '</i>'
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  border: 0;
+                  box-shadow: none;
+                  overflow: auto;
+                  padding-top: 5px;
+                  font-size: 12px;
+                }

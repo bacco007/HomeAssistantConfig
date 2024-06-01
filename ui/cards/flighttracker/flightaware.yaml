@@ -3,7 +3,7 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
-    name: Flightaware
+    name: FlightAware
     icon: mdi:airplane-alert
     styles: |-
       .bubble-line {
@@ -17,7 +17,7 @@ cards:
           margin: 0 !important;
         }
     entities:
-      - entity: sensor.adsb_fa_adsbfeed
+      - entity: sensor.ads_b_flightaware_ads_b_feed_status
         type: custom:multiple-entity-row
         name: ADS-B Feed Status
         secondary_info:
@@ -29,18 +29,18 @@ cards:
           - icon: mdi:check-decagram
         card_mod:
           style:
-            hui-generic-entity-row $: ''
+            hui-generic-entity-row $: ""
             .: |
               div.entity:nth-child(1) state-badge {
-                color: {% if states('sensor.adsb_fa_adsbfeed') == 'red' %} red {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_ads_b_feed_status') == 'red' %} red {% else %} grey {% endif %}
               }
               div.entity:nth-child(2) state-badge {
-                color: {% if states('sensor.adsb_fa_adsbfeed') == 'amber' %} orange {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_ads_b_feed_status') == 'amber' %} orange {% else %} grey {% endif %}
               }
               div.entity:nth-child(3) state-badge {
-                color: {% if states('sensor.adsb_fa_adsbfeed') == 'green' %} green {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_ads_b_feed_status') == 'green' %} green {% else %} grey {% endif %}
               }
-      - entity: sensor.adsb_fa_mlat
+      - entity: sensor.ads_b_flightaware_mlat_status
         type: custom:multiple-entity-row
         name: MLAT Feed Status
         secondary_info:
@@ -52,18 +52,18 @@ cards:
           - icon: mdi:check-decagram
         card_mod:
           style:
-            hui-generic-entity-row $: ''
+            hui-generic-entity-row $: ""
             .: |
               div.entity:nth-child(1) state-badge {
-                color: {% if states('sensor.adsb_fa_mlat') == 'red' %} red {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_mlat_status') == 'red' %} red {% else %} grey {% endif %}
               }
               div.entity:nth-child(2) state-badge {
-                color: {% if states('sensor.adsb_fa_mlat') == 'amber' %} orange {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_mlat_status') == 'amber' %} orange {% else %} grey {% endif %}
               }
               div.entity:nth-child(3) state-badge {
-                color: {% if states('sensor.adsb_fa_mlat') == 'green' %} green {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_mlat_status') == 'green' %} green {% else %} grey {% endif %}
               }
-      - entity: sensor.adsb_fa_piaware
+      - entity: sensor.ads_b_flightaware_piaware_status
         type: custom:multiple-entity-row
         name: PiAware Status
         secondary_info:
@@ -75,18 +75,18 @@ cards:
           - icon: mdi:check-decagram
         card_mod:
           style:
-            hui-generic-entity-row $: ''
+            hui-generic-entity-row $: ""
             .: |
               div.entity:nth-child(1) state-badge {
-                color: {% if states('sensor.adsb_fa_piaware') == 'red' %} red {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_piaware_status') == 'red' %} red {% else %} grey {% endif %}
               }
               div.entity:nth-child(2) state-badge {
-                color: {% if states('sensor.adsb_fa_piaware') == 'amber' %} orange {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_piaware_status') == 'amber' %} orange {% else %} grey {% endif %}
               }
               div.entity:nth-child(3) state-badge {
-                color: {% if states('sensor.adsb_fa_piaware') == 'green' %} green {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_piaware_status') == 'green' %} green {% else %} grey {% endif %}
               }
-      - entity: sensor.adsb_fa_flightaware
+      - entity: sensor.ads_b_flightaware_adept_status
         type: custom:multiple-entity-row
         name: Connection to FlightAware
         secondary_info:
@@ -98,14 +98,17 @@ cards:
           - icon: mdi:check-decagram
         card_mod:
           style:
-            hui-generic-entity-row $: ''
+            hui-generic-entity-row $: ""
             .: |
               div.entity:nth-child(1) state-badge {
-                color: {% if states('sensor.adsb_fa_flightaware') == 'red' %} red {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_adept_status') == 'red' %} red {% else %} grey {% endif %}
               }
               div.entity:nth-child(2) state-badge {
-                color: {% if states('sensor.adsb_fa_flightaware') == 'amber' %} orange {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_adept_status') == 'amber' %} orange {% else %} grey {% endif %}
               }
               div.entity:nth-child(3) state-badge {
-                color: {% if states('sensor.adsb_fa_flightaware') == 'green' %} green {% else %} grey {% endif %}
+                color: {% if states('sensor.ads_b_flightaware_adept_status') == 'green' %} green {% else %} grey {% endif %}
               }
+      - type: section
+      - entity: sensor.ads_b_flightaware_uptime
+        name: Flightaware Uptime

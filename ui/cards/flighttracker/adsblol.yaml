@@ -1,10 +1,9 @@
----
 type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
-    name: ADSB.LOL
-    icon: mdi:airplane-alert
+    name: adsb.lol
+    icon: mdi:airplane
     styles: |-
       .bubble-line {
         background: var(--ha-card-background);
@@ -17,111 +16,103 @@ cards:
           margin: 0 !important;
         }
     entities:
+      - entity: binary_sensor.ads_b_adsb_lol_feeder_connected
+        type: custom:multiple-entity-row
+        name: Feeder Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_adsb_lol_feeder_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_adsb_lol_feeder_connected') == 'on' %} green {% else %} grey {% endif %}
+              }
+      - entity: binary_sensor.ads_b_adsb_lol_mlat_connected
+        type: custom:multiple-entity-row
+        name: MLAT Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_adsb_lol_mlat_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_adsb_lol_mlat_connected') == 'on' %} green {% else %} grey {% endif %}
+              }
+      - type: section
+      - entity: sensor.ads_b_adsb_lol_messages_uploaded_per_second
+        name: Messages Uploaded
+      - entity: sensor.ads_b_adsb_lol_positions_uploaded_per_second
+        name: Positions Uploaded
+      - entity: sensor.ads_b_adsb_lol_uplink_throughput
+        name: Uplink Throughput
+      - type: section
       - entity: sensor.flights_in_radius_zone_home
         name: Inside Tracked Area
-        # - entity: sensor.flightradar24_entered_area
-        #   name: Entering Tracked Area
-        # - entity: sensor.flightradar24_exited_area
-        #   name: Exiting Tracked Area
   - type: conditional
     conditions:
       - condition: numeric_state
         entity: sensor.flights_in_radius_zone_home
         above: 0
     card:
-      type: custom:flex-table-card
-      strict: false
-      sort_by:
-        - aircraft-
-      entities:
-        include: sensor.flights_in_radius_zone_home
-      card_mod:
-        style: |
-          ha-card {
-            background: none;
-            border: 0;
-            box-shadow: none;
-            overflow: auto;
-            padding-top: 5px;
-            font-size: 12px;
-          }
-          tbody tr:hover {
-            background-color: coral !important
-          }
-      css:
-        table+: "padding: 16px 0px 16px 16px;"
-        tbody tr+: "user-select: text"
-        tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
-        tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
-        tbody tr td:nth-child(4)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-        tbody tr td:nth-child(5)+: "min-width: 1fr;width: 1fr;"
-        tbody tr td:nth-child(6)+: "min-width: 1fr;width: 1fr;"
-        th+: "border-bottom: 1px solid rgb(127,127,127);"
-      columns:
-        # - name: TAIL
-        #   data: flights
-        #   align: center
-        #   modify: |
-        #     if(x.airline_icao != null)
-        #       '<img src="https://content.airhex.com/content/logos/airlines_' + x.airline_icao + '_50_50_f.png?proportions=keep">'
-        #     else {
-        #         '<img src="https://content.airhex.com/content/logos/airlines_' + x.airline_icao + '_50_50_f.png?proportions=keep">';
-        #     }
-        # - name: FLIGHT
-        #   data: flights
-        #   align: center
-        #   modify: |
-        #     if(x.airline != null)
-        #       {x.airline + ' (' + x.airline_iata + ' / ' + x.airline_icao + ')'}
-        #     else {
-        #         '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
-        #     }
-        - name: FLTNO
-          data: flights
-          align: center
-          modify: |
-            if(x.callsign != null)
-              {x.callsign}
-            else {
-                x.callsign
+      type: custom:auto-entities
+      filter:
+        include:
+          - entity_id: sensor.*_in_radius_zone_home
+        exclude:
+          - state: unavailable
+          - state: unknown
+          - state: none
+          - entity_id: sensor.flights_in_radius_zone_home
+      card:
+        type: custom:flex-table-card
+        strict: false
+        card_mod:
+          style: |
+            ha-card {
+              background: none;
+              border: 0;
+              box-shadow: none;
+              overflow: auto;
+              padding-top: 5px;
+              font-size: 12px;
             }
-        - name: REGO
-          data: flights
-          align: center
-          modify: |
-            if(x.registration != null)
-              {x.registration}
-            else {
-                '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+            tbody tr:hover {
+              background-color: coral !important
             }
-        - name: AIRCRAFT
-          data: flights
-          align: center
-          modify: |
-            if(x.type != null)
-              {x.type + ' (' + x.type + ')'}
-            else {
-                '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
-            }
-        # - name: ALT
-        #   data: flights
-        #   align: center
-        #   modify: |
-        #     if(x.altitude != null)
-        #       {var data = x.altitude * 0.3048;
-        #       data.toFixed(0) + "m"
-        #       }
-        #     else {
-        #         '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
-        #     }
-        # - name: SPD
-        #   data: flights
-        #   align: center
-        #   modify: |
-        #     if(x.ground_speed != null)
-        #       {var data = x.ground_speed * 1.852;
-        #       data.toFixed(0) + "km/h"
-        #       }
-        #     else {
-        #         '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
-        #     }
+        css:
+          table+: "padding: 16px 0px 16px 16px;"
+          tbody tr+: "user-select: text"
+          tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
+          tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
+          tbody tr td:nth-child(4)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+          tbody tr td:nth-child(5)+: "min-width: 1fr;width: 1fr;"
+          tbody tr td:nth-child(6)+: "min-width: 1fr;width: 1fr;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        columns:
+          - name: FLTNO
+            data: callsign
+            align: center
+          - name: REGO
+            data: registration
+            align: center
+          - name: AIRCRAFT
+            data: type
+            align: center
+          - name: ALT
+            data: altitude_geom_ft
+            align: center
+          - name: SPD
+            data: groundspeed_nmph
+            align: center

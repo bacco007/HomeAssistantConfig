@@ -18,12 +18,73 @@ cards:
           margin: 0 !important;
         }
     entities:
-      - entity: sensor.adsb_fr24_feeder_radar_code
+      - entity: sensor.ads_b_flightradar24_radar_code
         type: custom:multiple-entity-row
         name: FR24 Radar Code
-      - entity: sensor.adsb_fr24_feeder_version
+      - entity: sensor.ads_b_flightradar24_feeder_version
         type: custom:multiple-entity-row
         name: FR24 Version
+      - type: section
+      - entity: binary_sensor.ads_b_fr24_link_connected
+        type: custom:multiple-entity-row
+        name: Link Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_fr24_link_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_fr24_link_connected') == 'on' %} green {% else %} grey {% endif %}
+              }
+      - entity: binary_sensor.ads_b_fr24_reciever_connected
+        type: custom:multiple-entity-row
+        name: Reciever Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_fr24_reciever_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_fr24_reciever_connected') == 'on' %} green {% else %} grey {% endif %}
+              }
+      - entity: binary_sensor.ads_b_fr24_mlat_connected
+        type: custom:multiple-entity-row
+        name: MLAT Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_fr24_mlat_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_fr24_mlat_connected') == 'on' %} green {% else %} grey {% endif %}
+              }
+      - type: section
+      - entity: sensor.ads_b_flightradar24_aircraft_tracked
+        name: Aircraft Tracked
+      - entity: sensor.ads_b_flightradar24_ads_b_aircraft_tracked
+        name: ADS-B Aircraft Tracked
+      - entity: sensor.ads_b_flightradar24_non_ads_b_aircraft_tracked
+        name: Non ADS-B Aircraft Tracked
+      - entity: sensor.ads_b_flightradar24_aircraft_uploaded
+        name: Non ADS-B Aircraft Uploaded
       - type: section
       - entity: sensor.flightradar24_current_in_area
         name: Inside Tracked Area
@@ -31,343 +92,7 @@ cards:
         name: Entering Tracked Area
       - entity: sensor.flightradar24_exited_area
         name: Exiting Tracked Area
-  - square: false
-    type: grid
-    columns: 2
-    cards:
-      - type: custom:stack-in-card
-        mode: vertical
-        keep:
-          margin: false
-        card_mod:
-          style: |-
-            ha-card {
-              border: none;
-              box-shadow: none;
-            }
-        cards:
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: minmax(0, 1fr)
-              grid-template-rows: auto
-              grid-template-areas: |
-                "a b"
-                "c c"
-            cards:
-              - type: custom:mushroom-template-card
-                view_layout:
-                  grid-area: a
-                entity: binary_sensor.adsb_fr24_feeder_link_connected
-                primary: Link Connectivity
-                secondary: |-
-                  {% if is_state(config.entity, 'on') %}
-                    connected
-                  {% elif is_state(config.entity, 'off') %}
-                    disconnected
-                  {% else %}
-                    unknown
-                  {% endif %}
-                icon: mdi:airplane-alert
-                icon_color: |-
-                  {% if is_state(config.entity, 'on') %}
-                    #45C669
-                  {% elif is_state(config.entity, 'off') %}
-                    #C66445
-                  {% else %}
-                    disabled
-                  {% endif %}
-                fill_container: true
-                tap_action:
-                  action: more-info
-                double_tap_action:
-                  action: none
-                hold_action:
-                  action: none
-                card_mod:
-                  style: |-
-                    {% if is_state(config.entity, 'on') %}
-                      ha-card {
-                        border: none;
-                        box-shadow: none;
-                        padding: 0px !important;
-                        --primary-text-color: #45C669;
-                        --secondary-text-color: #45C669;
-                        }
-                    {% elif is_state(config.entity, 'off') %}
-                      ha-card {
-                        border: none;
-                        box-shadow: none;
-                        padding: 0px !important;
-                        --primary-text-color: #C66445;
-                        --secondary-text-color: #C66445;
-                      }
-                    {% endif %}
-                    {% if is_state(config.entity, 'off') %}
-                      ha-state-icon {
-                        animation: pulse 2s ease-in-out infinite;
-                      }
-                    {% endif %}
-              - type: custom:uptime-card
-                view_layout:
-                  grid-area: c
-                entity: binary_sensor.adsb_fr24_feeder_link_connected
-                hours_to_show: 24
-                update_interval: 30
-                severity: 10
-                bar:
-                  height: 36
-                  amount: 36
-                tap_action:
-                  action: none
-                init:
-                  animation: slide
-                  slide duration: 0.5
-                show:
-                  header: false
-                  title: false
-                  icon: false
-                  average: false
-                  footer: false
-                  timeline: true
-                  status: false
-                card_mod:
-                  style: |-
-                    ha-card {
-                      border: none;
-                      box-shadow: none;
-                      margin-top: -5px ;
-                      padding-top: 0px !important;
-                      padding-bottom: 0px !important;
-                    }
-                    .timeline {
-                      margin-top: 0px;
-                      padding-top: 0px !important;
-                      padding-left: 4px ;
-                      padding-right: 4px;
-                      }
-      - type: custom:stack-in-card
-        mode: vertical
-        keep:
-          margin: false
-        card_mod:
-          style: |-
-            ha-card {
-              border: none;
-              box-shadow: none;
-            }
-        cards:
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: minmax(0, 1fr)
-              grid-template-rows: auto
-              grid-template-areas: |
-                "a b"
-                "c c"
-            cards:
-              - type: custom:mushroom-template-card
-                view_layout:
-                  grid-area: a
-                entity: binary_sensor.adsb_fr24_feeder_receiver_connected
-                primary: Reciever Connectivity
-                secondary: |-
-                  {% if is_state(config.entity, 'on') %}
-                    connected
-                  {% elif is_state(config.entity, 'off') %}
-                    disconnected
-                  {% else %}
-                    unknown
-                  {% endif %}
-                icon: mdi:airplane-alert
-                icon_color: |-
-                  {% if is_state(config.entity, 'on') %}
-                    #45C669
-                  {% elif is_state(config.entity, 'off') %}
-                    #C66445
-                  {% else %}
-                    disabled
-                  {% endif %}
-                fill_container: true
-                tap_action:
-                  action: more-info
-                double_tap_action:
-                  action: none
-                hold_action:
-                  action: none
-                card_mod:
-                  style: |-
-                    {% if is_state(config.entity, 'on') %}
-                      ha-card {
-                        border: none;
-                        box-shadow: none;
-                        padding: 0px !important;
-                        --primary-text-color: #45C669;
-                        --secondary-text-color: #45C669;
-                        }
-                    {% elif is_state(config.entity, 'off') %}
-                      ha-card {
-                        border: none;
-                        box-shadow: none;
-                        padding: 0px !important;
-                        --primary-text-color: #C66445;
-                        --secondary-text-color: #C66445;
-                      }
-                    {% endif %}
-                    {% if is_state(config.entity, 'off') %}
-                      ha-state-icon {
-                        animation: pulse 2s ease-in-out infinite;
-                      }
-                    {% endif %}
-              - type: custom:uptime-card
-                view_layout:
-                  grid-area: c
-                entity: binary_sensor.adsb_fr24_feeder_receiver_connected
-                hours_to_show: 24
-                update_interval: 30
-                severity: 10
-                bar:
-                  height: 36
-                  amount: 36
-                tap_action:
-                  action: none
-                init:
-                  animation: slide
-                  slide duration: 0.5
-                show:
-                  header: false
-                  title: false
-                  icon: false
-                  average: false
-                  footer: false
-                  timeline: true
-                  status: false
-                card_mod:
-                  style: |-
-                    ha-card {
-                      border: none;
-                      box-shadow: none;
-                      margin-top: -5px ;
-                      padding-top: 0px !important;
-                      padding-bottom: 0px !important;
-                    }
-                    .timeline {
-                      margin-top: 0px;
-                      padding-top: 0px !important;
-                      padding-left: 4px ;
-                      padding-right: 4px;
-                      }
-      - type: custom:stack-in-card
-        mode: vertical
-        keep:
-          margin: false
-        card_mod:
-          style: |-
-            ha-card {
-              border: none;
-              box-shadow: none;
-            }
-        cards:
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: minmax(0, 1fr)
-              grid-template-rows: auto
-              grid-template-areas: |
-                "a b"
-                "c c"
-            cards:
-              - type: custom:mushroom-template-card
-                view_layout:
-                  grid-area: a
-                entity: binary_sensor.adsb_fr24_mlat_connected
-                primary: MLAT Connectivity
-                secondary: |-
-                  {% if is_state(config.entity, 'on') %}
-                    connected
-                  {% elif is_state(config.entity, 'off') %}
-                    disconnected
-                  {% else %}
-                    unknown
-                  {% endif %}
-                icon: mdi:airplane-alert
-                icon_color: |-
-                  {% if is_state(config.entity, 'on') %}
-                    #45C669
-                  {% elif is_state(config.entity, 'off') %}
-                    #C66445
-                  {% else %}
-                    disabled
-                  {% endif %}
-                fill_container: true
-                tap_action:
-                  action: more-info
-                double_tap_action:
-                  action: none
-                hold_action:
-                  action: none
-                card_mod:
-                  style: |-
-                    {% if is_state(config.entity, 'on') %}
-                      ha-card {
-                        border: none;
-                        box-shadow: none;
-                        padding: 0px !important;
-                        --primary-text-color: #45C669;
-                        --secondary-text-color: #45C669;
-                        }
-                    {% elif is_state(config.entity, 'off') %}
-                      ha-card {
-                        border: none;
-                        box-shadow: none;
-                        padding: 0px !important;
-                        --primary-text-color: #C66445;
-                        --secondary-text-color: #C66445;
-                      }
-                    {% endif %}
-                    {% if is_state(config.entity, 'off') %}
-                      ha-state-icon {
-                        animation: pulse 2s ease-in-out infinite;
-                      }
-                    {% endif %}
-              - type: custom:uptime-card
-                view_layout:
-                  grid-area: c
-                entity: binary_sensor.adsb_fr24_mlat_connected
-                hours_to_show: 24
-                update_interval: 30
-                severity: 10
-                bar:
-                  height: 36
-                  amount: 36
-                tap_action:
-                  action: none
-                init:
-                  animation: slide
-                  slide duration: 0.5
-                show:
-                  header: false
-                  title: false
-                  icon: false
-                  average: false
-                  footer: false
-                  timeline: true
-                  status: false
-                card_mod:
-                  style: |-
-                    ha-card {
-                      border: none;
-                      box-shadow: none;
-                      margin-top: -5px ;
-                      padding-top: 0px !important;
-                      padding-bottom: 0px !important;
-                    }
-                    .timeline {
-                      margin-top: 0px;
-                      padding-top: 0px !important;
-                      padding-left: 4px ;
-                      padding-right: 4px;
-                      }
+
   - type: custom:yet-another-expander-card
     gap: 0.6em
     padding: 0

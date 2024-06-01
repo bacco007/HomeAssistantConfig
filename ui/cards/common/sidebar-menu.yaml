@@ -69,6 +69,13 @@ cards:
               action: navigate
               navigation_path: solar
           - type: template
+            icon: mdi:rocket-launch-outline
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: space
+          - type: template
             icon: mdi:football-australian
             icon_color: disabled
             content: ""

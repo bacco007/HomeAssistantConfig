@@ -20,6 +20,7 @@ image
 multiscrape
 gtfs2
 glances
+www/browserless
 
 # Ignore File Extensions
 *.conf

@@ -18,8 +18,8 @@ action:
     response_variable: agenda
   - variables:
       dump: "{{ agenda['calendar.ical_cricket_australia_womens'].events }}"
-      all_events: "{{dump | list }}"
-      next_5_events: "{{dump | list }}"
+      all_events: "{{dump |sort(attribute='start') | list }}"
+      next_5_events: "{{dump |sort(attribute='start') | list }}"
       countnumb: "{{dump | length }}"
       lastevent: "{{dump[-1] }}"
 sensor:

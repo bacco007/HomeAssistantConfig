@@ -34,6 +34,13 @@ cards:
         {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
         {%- endif -%}
         {%- endfor -%}
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              # background-color: var(--background-color);
+              box-shadow: none;
+            }
     cards:
       - type: custom:flex-table-card
         css:

@@ -13,6 +13,7 @@ views:
   - !include /config/ui/dashboards/shared/views/network.yaml
   - !include /config/ui/dashboards/shared/views/server.yaml
   - !include /config/ui/dashboards/shared/views/solar.yaml
+  - !include /config/ui/dashboards/shared/views/space.yaml
   - !include /config/ui/dashboards/shared/views/sport.yaml
   - !include /config/ui/dashboards/shared/views/tamworth.yaml
   - !include /config/ui/dashboards/shared/views/tv-movies.yaml

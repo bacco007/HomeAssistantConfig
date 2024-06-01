@@ -10,17 +10,18 @@ cards:
         }
     name: Major League Baseball
     icon: si:mlb
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_mlb_all_teams
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_new_york_yankees
+
   - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
     entities:
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_mlb_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -327,8 +328,3 @@ cards:
               include: sensor.scoreboard_mlb_national_west
             sort_by: entries-
             columns: *mlbcols
-      - type: section
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_new_york_yankees

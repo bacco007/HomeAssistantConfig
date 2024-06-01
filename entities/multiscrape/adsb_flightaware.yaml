@@ -1,0 +1,30 @@
+---
+- name: FlightAware PiAware Status
+  resource: http://192.168.1.132:8081/status.json
+  scan_interval: 30
+  sensor:
+    - unique_id: piaware_conn_status
+      name: FlightAware PiAware Status
+      value_template: Connected
+      icon: mdi:airplane
+      attributes:
+        - name: adept_status
+          value_template: "{{ value_json.adept.status }}"
+        - name: cpu_load_percent
+          value_template: "{{ value_json.cpu_load_percent }}"
+        - name: cpu_temp_celcius
+          value_template: "{{ value_json.cpu_temp_celcius }}"
+        - name: mlat_status
+          value_template: "{{ value_json.mlat.status }}"
+        - name: piaware_status
+          value_template: "{{ value_json.piaware.status }}"
+        - name: piaware_version
+          value_template: "{{ value_json.piaware_version }}"
+        - name: radio_status
+          value_template: "{{ value_json.radio.status }}"
+        - name: system_uptime
+          value_template: "{{ value_json.system_uptime }}"
+        - name: modes_enabled
+          value_template: "{{ value_json.modes_enabled }}"
+        - name: system_uptime
+          value_template: "{{ value_json.system_uptime }}"

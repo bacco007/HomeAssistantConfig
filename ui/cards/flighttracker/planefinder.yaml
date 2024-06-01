@@ -1,0 +1,35 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: PlaneFinder
+    icon: mdi:airplane
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: entities
+    entities:
+      - entity: sensor.adsb_planefinder_stats
+        name: Feeder Version
+        type: attribute
+        attribute: version
+      - entity: sensor.adsb_planefinder_stats
+        name: Data to Plane Finder
+        type: attribute
+        attribute: data_to_plane_finder
+      - entity: sensor.adsb_planefinder_stats
+        name: Mode-S Packets
+        type: attribute
+        attribute: mode_s_packets
+      - entity: sensor.adsb_planefinder_stats
+        name: Mode-AC Packets
+        type: attribute
+        attribute: mode_ac_packets
+    card_mod:
+      style: |
+        #states > * {
+          margin: 0 !important;
+        }

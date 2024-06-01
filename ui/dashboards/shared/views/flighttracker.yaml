@@ -32,6 +32,8 @@ cards:
           - !include /config/ui/cards/flighttracker/flightaware.yaml
           - !include /config/ui/cards/flighttracker/flightradar24.yaml
           - !include /config/ui/cards/flighttracker/adsblol.yaml
+          - !include /config/ui/cards/flighttracker/adsb_exchange.yaml
+          - !include /config/ui/cards/flighttracker/planefinder.yaml
           - !include /config/ui/cards/flighttracker/flights_tracked.yaml
           - !include /config/ui/cards/flighttracker/distance.yaml
       - type: vertical-stack

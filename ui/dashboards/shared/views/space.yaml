@@ -1,9 +1,9 @@
 ---
 theme: geek_light
-icon: mdi:city
+icon: mdi:space-station
 subview: true
-path: tamworth
-title: Tamworth
+path: space
+title: Space
 type: custom:grid-layout
 layout: !include /config/ui/cards/layout/browser_grid.yaml
 cards:
@@ -26,16 +26,8 @@ cards:
       width: 500
       max_width: 1000
     cards:
-      - !include /config/ui/cards/tamworth/snippets/livetraffic.yaml
-      - !include /config/ui/cards/tamworth/snippets/essential_energy.yaml
-      - !include /config/ui/cards/tamworth/snippets/fuel.yaml
-      - !include /config/ui/cards/tamworth/pubtransport.yaml
-      - !include /config/ui/cards/tamworth/nbn_fttnupgrade.yaml
-      - !include /config/ui/cards/tamworth/snippets/hospital.yaml
-      - !include /config/ui/cards/tamworth/dams.yaml
-      - !include /config/ui/cards/tamworth/bushfire.yaml
-      - !include /config/ui/cards/tamworth/webcam_ystw.yaml
-      - !include /config/ui/cards/tamworth/gdacs.yaml
+      - !include /config/ui/cards/space/rocket_launches.yaml
+      - !include /config/ui/cards/space/satellites.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml
