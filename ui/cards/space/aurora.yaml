@@ -1,0 +1,47 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Aurora
+    icon: mdi:aurora
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: entities
+    entities:
+      - entity: binary_sensor.aurora_31_150
+        name: Visibility Alert
+      - entity: sensor.aurora_31_150
+        name: Aurora Visibility
+      - type: section
+      - entity: sensor.aurora_chance
+        name: Aurora Chance
+        icon: mdi:aurora
+      - entity: sensor.aurora_chance
+        type: attribute
+        attribute: aurora
+        name: Aurora
+        icon: mdi:aurora
+      - entity: sensor.aurora_chance
+        type: attribute
+        attribute: cloud_coverage
+        name: Cloud Coverage
+        icon: mdi:aurora
+      - entity: sensor.aurora_chance
+        type: attribute
+        attribute: sky_clarity
+        name: Sky Clarity
+        icon: mdi:aurora
+      - entity: sensor.aurora_chance
+        type: attribute
+        attribute: darkness
+        name: Darkness
+        icon: mdi:aurora
+    card_mod:
+      style: |
+        #states > * {
+          margin: 0 !important;
+        }

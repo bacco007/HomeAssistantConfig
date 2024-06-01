@@ -2,7 +2,7 @@
 - name: FlightAirMap Stats
   resource: http://192.168.1.132:7777/statistics
   scan_interval: 60
-  #log_response: true
+  # log_response: true
   sensor:
     - unique_id: flightairmap_stats
       name: FlightAirMap Stats

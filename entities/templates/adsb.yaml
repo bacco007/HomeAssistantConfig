@@ -130,7 +130,6 @@ binary_sensor:
       category: adsb
       provider: ADS-B Exchange
 
-
   - unique_id: adsb_adsbexchange_mlat_connected
     name: "[ADS-B] ADS-B Exchange MLAT Connected"
     state: '{{ is_state_attr("sensor.adsb_exchange_status", "mlat_status", "Feed Ok MLAT Status") }}'

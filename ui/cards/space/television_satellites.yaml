@@ -1,0 +1,39 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Television Satellites
+    icon: mdi:satellite-variant
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - entity: sensor.tbsmarthome_tv_overhead_satellites
+    name: Television Satellites Overhead
+    type: tile
+    hide_state: false
+    vertical: false
+    card_mod: &style
+      style:
+        ha-tile-info$: |
+          .primary {
+            font-size: 13px !important;
+          }
+          .secondary {
+            font-size: 12px !important;
+          }
+        .: |
+          ha-card {
+            # background-color: var(--background-color);
+            box-shadow: none;
+          }
+          ha-tile-info {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+          }
+          ha-tile-icon {
+            --mdc-icon-size: 20px;
+          }
+

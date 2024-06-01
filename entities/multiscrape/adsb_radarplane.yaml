@@ -2,12 +2,12 @@
 - name: RadarPlane Stats
   resource: https://radarplane.com/feed
   scan_interval: 60
-  #log_response: true
+  # log_response: true
   sensor:
     - unique_id: radarplane_stats
       name: RadarPlane Stats
       value_template: Connected
-      icon: mdi:plane
+      icon: mdi:airplane
       attributes:
         - name: connection_time
           select: "body > div.flex-grow > div > div > div:nth-child(4) > div.mt-5.overflow-auto > table > tbody > tr > td:nth-child(4)"

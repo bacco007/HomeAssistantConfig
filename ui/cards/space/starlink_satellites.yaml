@@ -1,0 +1,73 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Starlink Satellites
+    icon: si:spacex
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - entity: sensor.tbsmarthome_starlink_overhead_satellites
+    name: Starlink Satellites Overhead
+    type: tile
+    hide_state: false
+    vertical: false
+    card_mod: &style
+      style:
+        ha-tile-info$: |
+          .primary {
+            font-size: 13px !important;
+          }
+          .secondary {
+            font-size: 12px !important;
+          }
+        .: |
+          ha-card {
+            # background-color: var(--background-color);
+            box-shadow: none;
+          }
+          ha-tile-info {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+          }
+          ha-tile-icon {
+            --mdc-icon-size: 20px;
+          }
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Starlink Map
+      icon: mdi:map-clock
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: iframe
+        url: https://satellitemap.space/?constellation=starlink
+        aspect_ratio: 100%
+        card_mod:
+          style: >
+            :host {margin-bottom: 16px !important;}
+            ha-card { overflow: hidden; }
+
+            iframe { width: 100% !important; height: 140% !important; position:
+            relative; top: -20% !important; left: 0 !important;
+            filter: hue-rotate(calc(var(--hue-primary-color) - 205deg));}

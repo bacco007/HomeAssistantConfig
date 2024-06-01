@@ -2,7 +2,7 @@
 - name: Airplanes.live connected
   resource: https://airplanes.live/myfeed/
   scan_interval: 60
-  #log_response: true
+  # log_response: true
   sensor:
     - unique_id: airplanes_live_connected
       name: Airplanes.live - Uplink Status

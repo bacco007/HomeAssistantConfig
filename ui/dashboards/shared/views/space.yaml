@@ -26,8 +26,11 @@ cards:
       width: 500
       max_width: 1000
     cards:
+      - !include /config/ui/cards/space/aurora.yaml
       - !include /config/ui/cards/space/rocket_launches.yaml
-      - !include /config/ui/cards/space/satellites.yaml
+      - !include /config/ui/cards/space/navigation_satellites.yaml
+      - !include /config/ui/cards/space/television_satellites.yaml
+      - !include /config/ui/cards/space/starlink_satellites.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml
