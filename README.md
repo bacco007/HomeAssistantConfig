@@ -51,7 +51,7 @@ _Stats as at 05:00, unknown_
 | No. Integrations | 208 |
 | No. Custom Integrations | 85 |
 | No. Entities | 6474 |
-| No. Sensors | 4582 |
+| No. Sensors | 4581 |
 | No. Automations | 142 |
 
 <details>
@@ -64,7 +64,7 @@ Alarm control panels | 2
 Areas | 17
 Binary sensors | 360
 Buttons | 149
-Calendars | 71
+Calendars | 73
 Cameras | 5
 Climate | 2
 Covers | 0
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4582
+Sensors | 4581
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -783,8 +783,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.9] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.1] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
-| [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.25] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
 | [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.22] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
+| [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.25] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.2] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
@@ -856,7 +856,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swipe Card](https://github.com/bramkragten/swipe-card) |  [v5.0.0] | Card that allows you to swipe throught multiple cards for Home Assistant Lovelace |
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
-| [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.11.1] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
+| [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.13.0] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.4.4] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
@@ -898,7 +898,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.3.1 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.37.1-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.38.0-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
 </details>

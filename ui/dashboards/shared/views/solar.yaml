@@ -34,6 +34,7 @@ cards:
           - !include /config/ui/cards/solar/production_stats.yaml
           - !include /config/ui/cards/solar/solcast.yaml
           - !include /config/ui/cards/solar/forecastsolar.yaml
+          - !include /config/ui/cards/solar/openmeteo.yaml
           - !include /config/ui/cards/solar/grid_costs.yaml
           - !include /config/ui/cards/opennem/opennem.yaml
           - !include /config/ui/cards/solar/settings_controls.yaml

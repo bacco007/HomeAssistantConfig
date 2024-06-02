@@ -1,0 +1,84 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Open-Meteo Prediction
+    icon: mdi:solar-power-variant
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    card_mod:
+      style: |
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: sensor.power_highest_peak_time_today_2
+        name: Peak Generation Time - Today
+      - entity: sensor.power_highest_peak_time_tomorrow_2
+        name: Peak Generation Time - Tomorrow
+      - type: section
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Estimated Energy Production
+          icon: mdi:lightning-bolt
+          state: ""
+        entities:
+          - entity: sensor.energy_current_hour_2
+            name: This Hour
+          - entity: sensor.energy_next_hour_2
+            name: Next Hour
+          - entity: sensor.energy_production_today_remaining_2
+            name: Rest of Today
+          - entity: sensor.energy_production_today_2
+            name: Today
+          - entity: sensor.energy_production_tomorrow_2
+            name: Tomorrow
+      - type: custom:fold-entity-row
+        card_mod:
+          style: |
+            #items {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+            }
+            #measure {
+              padding-top: 0 !important;
+            }
+            #measure > * {
+              margin: 0 !important;
+            }
+        padding: 5
+        head:
+          type: custom:template-entity-row
+          name: Estimated Power Production
+          icon: mdi:lightning-bolt
+          state: ""
+        entities:
+          - entity: sensor.power_production_next_12hours_2
+            name: Next 12 Hours
+          - entity: sensor.power_production_next_24hours_2
+            name: Next 24 Hours
+          - entity: sensor.power_production_next_hour_2
+            name: Next Hour
+          - entity: sensor.power_production_now_2
+            name: Now

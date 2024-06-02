@@ -5,6 +5,8 @@ description: ""
 trigger:
   - platform: template
     value_template: '{{ states(''sensor.sun_state_day'') == "Day" }}'
+  - platform: homeassistant
+    event: start
 condition:
   - condition: or
     conditions:
