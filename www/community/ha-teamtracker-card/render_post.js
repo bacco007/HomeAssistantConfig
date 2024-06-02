@@ -21,11 +21,13 @@ export function renderPost(c) {
         .divider { font-size: 2.5em; text-align: center; opacity: 0; }
         .name { font-size: 1.4em; margin-bottom: 4px; }
         .rank { font-size:0.8em; display: ${c.rankDisplay}; }
+        .post-row0 { display:${c.seriesSummaryDisplay}; font-size: 1.2em; text-align: center; margin: 4px; }
         .post-row1 { font-size: 1.2em; text-align: center; }
     </style>
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
+            <div class="post-row0">${c.seriesSummary}</div>
             <img class="team-bg" src="${c.logoBG[1]}" />
             <img class="opponent-bg" src="${c.logoBG[2]}" />
             <div class="card-content">

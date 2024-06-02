@@ -33,6 +33,7 @@ export function setDefaults(t, lang, stateObj, c, o, sport, team, oppo) {
     c.barWrapDisplay = "flex";
     c.timeoutsDisplay = 'inline';
     c.rankDisplay = 'inline';
+    c.seriesSummaryDisplay = 'none';
 
     if (o.show_timeouts == false) {
         c.timeoutsDisplay = 'none';
@@ -186,6 +187,10 @@ export function setDefaults(t, lang, stateObj, c, o, sport, team, oppo) {
 
     c.byeTerm = t.translate("common.byeTerm");
 
+    c.seriesSummary = stateObj.attributes.series_summary;
+    if (c.seriesSummary) {
+        c.seriesSummaryDisplay= "inherit";
+    }
 }
 
 export function setCardFormat(o, c) {

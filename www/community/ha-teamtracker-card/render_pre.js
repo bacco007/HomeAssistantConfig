@@ -21,12 +21,14 @@ export function renderPre(c) {
         .gameday { font-size: 1.4em; height: 1.4em; }
         .gamedate { font-size: 1.1em; height: 1.1em; }
         .gametime { font-size: 1.1em; height: 1.1em; }
+        .pre-row0 { display:${c.seriesSummaryDisplay}; font-size: 1.2em; text-align: center; margin: 4px; }
         .pre-row1 { font-weight: 500; font-size: 1.2em; height: 1.2em; margin: 6px 0 2px; }
         .pre-row1, .pre-row2, .pre-row3 { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
     </style>
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
+            <div class="pre-row0">${c.seriesSummary}</div>
             <img class="team-bg" src="${c.logoBG[1]}" />
             <img class="opponent-bg" src="${c.logoBG[2]}" />
             <div class="card-content">
