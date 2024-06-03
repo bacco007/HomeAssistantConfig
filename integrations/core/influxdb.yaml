@@ -193,3 +193,4 @@ influxdb:
       - sensor.pirateweather*
       - sensor.disabled_entities*
       - sensor.radio_state*
+      - sensor.sportschedule_*

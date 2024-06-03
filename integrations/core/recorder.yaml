@@ -178,6 +178,7 @@ recorder:
       - sensor.tbpixeltablet_*
       - sensor.*in_radius_zone_home
       - sensor.awtrix_b85b5c*
+      - sensor.sportschedule_*
     event_types:
       - automation_triggered
       - call_service

@@ -1,0 +1,39 @@
+---
+platform: sql_json
+scan_interval: 300
+db_url: !secret flightairmap_db_url
+queries:
+  - name: adsb_flightairmap_top_airlines
+    query: >-
+      SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
+      FROM (
+        SELECT JSON_OBJECT('airline_name', airline_name, 'count', event_count) AS event_json
+        FROM (
+          SELECT airline_name, COUNT(*) AS event_count
+          FROM spotter_output
+          WHERE airline_name != "Not Available"
+          GROUP BY airline_name
+          ORDER BY event_count DESC
+          LIMIT 20
+        ) AS json_output
+      ) AS json_list;
+    value_template: '{{ value_json[0].airline_name + " - " + value_json[0].count }}'
+    column: json
+    unit_of_measurement: events
+  # - name: adsb_flightairmap_top_aircraft
+  #   query: >-
+  #     SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
+  #     FROM (
+  #       SELECT JSON_OBJECT('aircraft_name', aircraft_name, 'count', event_count) AS event_json
+  #       FROM (
+  #         SELECT aircraft_name, COUNT(*) AS event_count
+  #         FROM spotter_output
+  #         WHERE aircraft_name != "Not Available"
+  #         GROUP BY aircraft_name
+  #         ORDER BY event_count DESC
+  #         LIMIT 20
+  #       ) AS json_output
+  #     ) AS json_list;
+  #   value_template: '{{ value_json[0].aircraft_name + " - " + value_json[0].count }}'
+  #   column: json
+  #   unit_of_measurement: events

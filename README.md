@@ -47,10 +47,10 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.6.0b4 |
-| No. Integrations | 208 |
-| No. Custom Integrations | 85 |
-| No. Entities | 6474 |
+| HA Version | 2024.6.0b5 |
+| No. Integrations | 209 |
+| No. Custom Integrations | 86 |
+| No. Entities | 6479 |
 | No. Sensors | 4581 |
 | No. Automations | 142 |
 
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 360
-Buttons | 149
+Buttons | 152
 Calendars | 73
 Cameras | 5
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 117
-Devices | 605
+Devices | 607
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 5
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -99,7 +99,7 @@ Switches | 253
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 310
+Update | 312
 Vacuums | 0
 Water heaters | 0
 Weather | 12
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>598 Integrations</summary>
+<details><summary>599 Integrations</summary>
 
 | Name |
 | --- |
@@ -574,6 +574,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [spotifyplus.media_player](https://www.home-assistant.io/components/spotifyplus.media_player) |
 | [sql](https://www.home-assistant.io/components/sql) |
 | [sql.sensor](https://www.home-assistant.io/components/sql.sensor) |
+| [sql_json.sensor](https://www.home-assistant.io/components/sql_json.sensor) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
 | [start_time](https://www.home-assistant.io/components/start_time) |
 | [start_time.sensor](https://www.home-assistant.io/components/start_time.sensor) |
@@ -719,7 +720,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>78 Custom Integrations</summary>
+<details><summary>79 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -783,12 +784,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.9] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.1] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
-| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.22] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.25] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
+| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.22] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.2] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.19] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.1] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
@@ -811,7 +813,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-beta.12] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-rc.1] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -839,7 +841,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v3.6.0] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v3.6.1] | Build a beautiful Home Assistant dashboard easily |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.1.3] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -847,7 +849,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.2.2] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
-| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.6] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
+| [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.7] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
 | [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
@@ -946,7 +948,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.6.0b4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.6.0b5-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
