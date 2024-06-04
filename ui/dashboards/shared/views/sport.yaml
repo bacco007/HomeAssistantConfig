@@ -32,6 +32,7 @@ cards:
           - !include /config/ui/cards/sport/afl.yaml
           - !include /config/ui/cards/sport/cricket.yaml
           - !include /config/ui/cards/sport/football.yaml
+          - !include /config/ui/cards/sport/football_mls.yaml
           - !include /config/ui/cards/sport/formula1.yaml
           - !include /config/ui/cards/sport/mlb.yaml
           - !include /config/ui/cards/sport/motorsports.yaml

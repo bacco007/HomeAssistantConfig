@@ -7,3 +7,9 @@ queries:
     unit_of_measurement: Episodes
     # device_class: energy
     state_class: measurement
+  - name: adsb_distance_max
+    expr: readsb_distance_max * 0.000539957
+    unit_of_measurement: nm
+  - name: adsb_distance_min
+    expr: readsb_distance_min * 0.000539957
+    unit_of_measurement: nm

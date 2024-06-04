@@ -1,0 +1,23 @@
+---
+- name: sportschedule_nhl
+  resource_template: "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?limit=350&dates={{(now() - timedelta(days= 7)).strftime('%Y%m%d')|string}}-{{(now() + timedelta(days= 3)).strftime('%Y%m%d')|string}}"
+  scan_interval: 21600
+  log_response: true
+  timeout: 60
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+  button:
+    - unique_id: sportschedule_nhl_refresh
+      name: Refresh
+  sensor:
+    - unique_id: sportschedule_nhl
+      name: sportschedule_nhl
+      value_template: "{{now()}}"
+      on_error:
+        log: warning
+        value: last
+      attributes:
+        - name: events
+          value_template: "{{ value_json.events }}"
+        - name: competitions
+          value_template: "{{ value_json.competitions }}"

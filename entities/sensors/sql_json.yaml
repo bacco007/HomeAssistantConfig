@@ -17,7 +17,7 @@ queries:
           LIMIT 20
         ) AS json_output
       ) AS json_list;
-    value_template: '{{ value_json[0].airline_name + " - " + value_json[0].count }}'
+    value_template: '{{ value_json[0].count }}'
     column: json
     unit_of_measurement: events
   # - name: adsb_flightairmap_top_aircraft
