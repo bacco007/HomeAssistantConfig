@@ -52,18 +52,18 @@ cards:
       - aircraft-
     entities:
       include: sensor.adsb_aircraft_tracked
+    css:
+      table+: "padding: 16px;"
+      tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+      th+: "border-bottom: 1px solid rgb(127,127,127);"
     card_mod:
-      style: |
-        ha-card {
-          border: 0;
-          box-shadow: none;
-          overflow: auto;
-          padding-top: 5px;
-          font-size: 12px;
-        }
-        tbody tr:hover {
-          background-color: coral !important
-        }
+      style:
+        .: |
+          ha-card {
+            overflow: auto;
+            box-shadow: none !important;
+            font-size: 13px;
+            }
     columns:
       - name: FLIGHT
         data: aircraft
@@ -137,3 +137,103 @@ cards:
             else {
              '<div style="color:red;">' + "-" + '</div>'
             }
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Planes Tracked (By Type)
+      icon: mdi:airplane
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:apexcharts-card
+        chart_type: donut
+        update_interval: 10sec
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        series:
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: adsb_icao
+            name: ADS-B ICAO
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: adsb_icao_nt
+            name: ADS-B ICAO-nt
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: adsb_other
+            name: ADS-B Other
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: mlat
+            name: MLAT
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: mode_s
+            name: Mode-S
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: mode_ac
+            name: Mode-AC
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: adsc
+            name: ADS-C
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: adsr_icao
+            name: ADS-R ICAO
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: adsr_other
+            name: ADS-R Other
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: other
+            name: Other
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: tisb_icao
+            name: TIS-B ICAO
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: tisb_other
+            name: TIS-B Other
+            show:
+              legend_value: false
+          - entity: sensor.adsb_aircraft_count_by_type
+            attribute: unknown
+            name: Unknown
+            show:
+              legend_value: false

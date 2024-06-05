@@ -275,7 +275,7 @@ cards:
             background-color: coral !important
           }
       css:
-        table+: "padding: 16px 0px 16px 16px;"
+        table+: "padding: 16px;"
         tbody tr+: "user-select: text"
         tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
         tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"

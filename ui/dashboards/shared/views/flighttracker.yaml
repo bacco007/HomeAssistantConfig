@@ -29,6 +29,7 @@ cards:
           max_width: 1000
         cards:
           - !include /config/ui/cards/flighttracker/trackedaircraft.yaml
+          - !include /config/ui/cards/flighttracker/adsb_stats.yaml
           - !include /config/ui/cards/flighttracker/flightaware.yaml
           - !include /config/ui/cards/flighttracker/flightradar24.yaml
           - !include /config/ui/cards/flighttracker/adsblol.yaml

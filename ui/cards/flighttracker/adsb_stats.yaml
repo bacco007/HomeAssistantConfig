@@ -1,0 +1,64 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: ADS-B Tracker Stats (FlightAirMap)
+    icon: mdi:airplane
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Top Airlines Tracked
+      icon: mdi:airplane-search
+      secondary: >
+        {{ state_attr('sensor.adsb_flightairmap_top_airlines', 'json')[0]['airline_name'] }} - {{ state_attr('sensor.adsb_flightairmap_top_airlines', 'json')[0]['count'] }} Aircraft
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              # background-color: var(--background-color);
+              box-shadow: none;
+            }
+    cards:
+      - type: custom:flex-table-card
+        css:
+          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                font-size: 13px;
+                }
+        entities:
+          include: sensor.adsb_flightairmap_top_airlines
+        sort_by: json-
+        columns:
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+            hidden: true
+          - name: Airline
+            data: json
+            modify: x.airline_name
+            align: center
+          - name: Count
+            data: json
+            align: center
+            modify: x.count

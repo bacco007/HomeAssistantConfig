@@ -17,23 +17,74 @@ queries:
           LIMIT 20
         ) AS json_output
       ) AS json_list;
-    value_template: '{{ value_json[0].count }}'
+    value_template: "{{ value_json[0].count }}"
     column: json
     unit_of_measurement: events
-  # - name: adsb_flightairmap_top_aircraft
-  #   query: >-
-  #     SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
-  #     FROM (
-  #       SELECT JSON_OBJECT('aircraft_name', aircraft_name, 'count', event_count) AS event_json
-  #       FROM (
-  #         SELECT aircraft_name, COUNT(*) AS event_count
-  #         FROM spotter_output
-  #         WHERE aircraft_name != "Not Available"
-  #         GROUP BY aircraft_name
-  #         ORDER BY event_count DESC
-  #         LIMIT 20
-  #       ) AS json_output
-  #     ) AS json_list;
-  #   value_template: '{{ value_json[0].aircraft_name + " - " + value_json[0].count }}'
-  #   column: json
-  #   unit_of_measurement: events
+  - name: adsb_flightairmap_top_aircraft
+    query: >-
+      SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
+      FROM (
+        SELECT JSON_OBJECT('aircraft_name', aircraft_name, 'count', event_count) AS event_json
+        FROM (
+          SELECT aircraft_name, COUNT(*) AS event_count
+          FROM spotter_output
+          WHERE aircraft_name != "Not Available"
+          GROUP BY aircraft_name
+          ORDER BY event_count DESC
+          LIMIT 20
+        ) AS json_output
+      ) AS json_list;
+    value_template: "{{ value_json[0].count }}"
+    column: json
+    unit_of_measurement: events
+  - name: adsb_flightairmap_top_departure_airports
+    query: >-
+      SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
+      FROM (
+        SELECT JSON_OBJECT('departure_airport_name', departure_airport_name, 'count', event_count) AS event_json
+        FROM (
+          SELECT departure_airport_name, COUNT(*) AS event_count
+          FROM spotter_output
+          WHERE departure_airport_name != "Not available"
+          GROUP BY departure_airport_name
+          ORDER BY event_count DESC
+          LIMIT 20
+        ) AS json_output
+      ) AS json_list;
+    value_template: "{{ value_json[0].count }}"
+    column: json
+    unit_of_measurement: events
+  - name: adsb_flightairmap_top_arrival_airports
+    query: >-
+      SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
+      FROM (
+        SELECT JSON_OBJECT('arrival_airport_name', arrival_airport_name, 'count', event_count) AS event_json
+        FROM (
+          SELECT arrival_airport_name, COUNT(*) AS event_count
+          FROM spotter_output
+          WHERE arrival_airport_name != "Not available"
+          GROUP BY arrival_airport_name
+          ORDER BY event_count DESC
+          LIMIT 20
+        ) AS json_output
+      ) AS json_list;
+    value_template: "{{ value_json[0].count }}"
+    column: json
+    unit_of_measurement: events
+  - name: adsb_flightairmap_top_aircraft
+    query: >-
+      SELECT CONCAT('[', GROUP_CONCAT(event_json), ']') as json
+      FROM (
+        SELECT JSON_OBJECT('registration', registration, 'aircraft_name', aircraft_name, 'airline_name', airline_name, 'count', event_count) AS event_json
+        FROM (
+          SELECT registration, aircraft_name, airline_name, COUNT(*) AS event_count
+          FROM spotter_output
+          WHERE registration != "NA"
+          GROUP BY registration, aircraft_name, airline_name
+          ORDER BY event_count DESC
+          LIMIT 20
+        ) AS json_output
+      ) AS json_list;
+    value_template: "{{ value_json[0].count }}"
+    column: json
+    unit_of_measurement: events
