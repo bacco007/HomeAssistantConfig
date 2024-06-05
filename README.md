@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.6.0b6 |
+| HA Version | 2024.6.0b8 |
 | No. Integrations | 209 |
 | No. Custom Integrations | 86 |
-| No. Entities | 6489 |
-| No. Sensors | 4588 |
+| No. Entities | 6496 |
+| No. Sensors | 4595 |
 | No. Automations | 142 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4588
+Sensors | 4595
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>599 Integrations</summary>
+<details><summary>598 Integrations</summary>
 
 | Name |
 | --- |
@@ -125,7 +125,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [adguard.sensor](https://www.home-assistant.io/components/adguard.sensor) |
 | [adguard.switch](https://www.home-assistant.io/components/adguard.switch) |
 | [adsb_lol](https://www.home-assistant.io/components/adsb_lol) |
-| [adsb_lol.sensor](https://www.home-assistant.io/components/adsb_lol.sensor) |
 | [airvisual](https://www.home-assistant.io/components/airvisual) |
 | [airvisual.sensor](https://www.home-assistant.io/components/airvisual.sensor) |
 | [airvisual_pro](https://www.home-assistant.io/components/airvisual_pro) |
@@ -748,7 +747,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.1] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.0] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.6.3] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.6.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -833,7 +832,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v5.4.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
-| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.0.0] | 🙈 Hides the Home Assistant header and/or sidebar |
+| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.0.1] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
 | [Lovelace Yet Another Expander Card](https://github.com/spencermamer/lovelace-yet-another-expander-card) |  [vV0.0.2] | Yet Another Collapsible Expandable Lovelace Card |
@@ -883,7 +882,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.12.0-3 |  | db21ed7f |
 | Cloudflared | 5.1.10 |  | 9074a9fa |
 | DbStats | 0.5.6 |  | 8bce8ef4 |
-| ESPHome | 2024.5.4 |  | 15ef4d2f |
+| ESPHome | 2024.5.5 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
@@ -948,7 +947,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.6.0b6-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.6.0b8-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
