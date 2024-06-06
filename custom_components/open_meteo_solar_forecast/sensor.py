@@ -67,6 +67,72 @@ SENSORS: tuple[OpenMeteoSolarForecastSensorEntityDescription, ...] = (
         suggested_display_precision=1,
     ),
     OpenMeteoSolarForecastSensorEntityDescription(
+        key="energy_production_d2",
+        translation_key="energy_production_d2",
+        state=lambda estimate: estimate.day_production(
+            estimate.now().date() + timedelta(days=2)
+        ),
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+    ),
+    OpenMeteoSolarForecastSensorEntityDescription(
+        key="energy_production_d3",
+        translation_key="energy_production_d3",
+        state=lambda estimate: estimate.day_production(
+            estimate.now().date() + timedelta(days=3)
+        ),
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+    ),
+    OpenMeteoSolarForecastSensorEntityDescription(
+        key="energy_production_d4",
+        translation_key="energy_production_d4",
+        state=lambda estimate: estimate.day_production(
+            estimate.now().date() + timedelta(days=4)
+        ),
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+    ),
+    OpenMeteoSolarForecastSensorEntityDescription(
+        key="energy_production_d5",
+        translation_key="energy_production_d5",
+        state=lambda estimate: estimate.day_production(
+            estimate.now().date() + timedelta(days=5)
+        ),
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+    ),
+    OpenMeteoSolarForecastSensorEntityDescription(
+        key="energy_production_d6",
+        translation_key="energy_production_d6",
+        state=lambda estimate: estimate.day_production(
+            estimate.now().date() + timedelta(days=6)
+        ),
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+    ),
+    OpenMeteoSolarForecastSensorEntityDescription(
+        key="energy_production_d7",
+        translation_key="energy_production_d7",
+        state=lambda estimate: estimate.day_production(
+            estimate.now().date() + timedelta(days=7)
+        ),
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+    ),
+    OpenMeteoSolarForecastSensorEntityDescription(
         key="power_highest_peak_time_today",
         translation_key="power_highest_peak_time_today",
         device_class=SensorDeviceClass.TIMESTAMP,
