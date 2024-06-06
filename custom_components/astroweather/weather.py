@@ -40,8 +40,15 @@ from .const import (
     ATTR_FORECAST_LIFTED_INDEX,
     ATTR_FORECAST_PRECIPITATION_AMOUNT,
     ATTR_FORECAST_SEEING,
+    ATTR_FORECAST_SEEING_PERCENTAGE,
     ATTR_FORECAST_TRANSPARENCY,
+    ATTR_FORECAST_TRANSPARENCY_PERCENTAGE,
     ATTR_LOCATION_NAME,
+    ATTR_WEATHER_ASTRONOMICAL_DARKNESS,
+    ATTR_WEATHER_CLOUD_AREA_FRACTION,
+    ATTR_WEATHER_CLOUD_AREA_FRACTION_HIGH,
+    ATTR_WEATHER_CLOUD_AREA_FRACTION_LOW,
+    ATTR_WEATHER_CLOUD_AREA_FRACTION_MEDIUM,
     ATTR_WEATHER_CLOUDCOVER,
     ATTR_WEATHER_CLOUDLESS,
     ATTR_WEATHER_CONDITION,
@@ -53,6 +60,7 @@ from .const import (
     ATTR_WEATHER_DEEPSKY_TOMORROW_DAYNAME,
     ATTR_WEATHER_DEEPSKY_TOMORROW_DESC,
     ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN,
+    ATTR_WEATHER_FOG_AREA_FRACTION,
     ATTR_WEATHER_LIFTED_INDEX,
     ATTR_WEATHER_MOON_NEXT_FULL_MOON,
     ATTR_WEATHER_MOON_NEXT_NEW_MOON,
@@ -61,6 +69,7 @@ from .const import (
     ATTR_WEATHER_MOON_PHASE,
     ATTR_WEATHER_PRECIPITATION_AMOUNT,
     ATTR_WEATHER_SEEING,
+    ATTR_WEATHER_SEEING_PERCENTAGE,
     ATTR_WEATHER_SUN_NEXT_RISING,
     ATTR_WEATHER_SUN_NEXT_RISING_ASTRO,
     ATTR_WEATHER_SUN_NEXT_RISING_NAUTICAL,
@@ -69,6 +78,7 @@ from .const import (
     ATTR_WEATHER_SUN_NEXT_SETTING_NAUTICAL,
     ATTR_WEATHER_TIME_SHIFT,
     ATTR_WEATHER_TRANSPARENCY,
+    ATTR_WEATHER_TRANSPARENCY_PERCENTAGE,
     ATTR_WEATHER_WIND,
     CONDITION_CLASSES,
     CONF_LOCATION_NAME,
@@ -216,10 +226,24 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
-    def seeing_percentage(self) -> int:
+    def seeing(self) -> float:
         """Return current seeing."""
         if self._current is not None:
+            return self._current.seeing
+        return None
+
+    @property
+    def seeing_percentage(self) -> int:
+        """Return current seeing percentage."""
+        if self._current is not None:
             return self._current.seeing_percentage
+        return None
+
+    @property
+    def transparency(self) -> float:
+        """Return current transparency."""
+        if self._current is not None:
+            return self._current.transparency
         return None
 
     @property
@@ -430,6 +454,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def night_duration_astronomical(self) -> float:
+        """Return length of astronomical darkness."""
+        if self._current is not None:
+            return self._current.night_duration_astronomical
+        return None
+
+    @property
     def deep_sky_darkness(self) -> float:
         """Return length of deep sky darkness."""
         if self._current is not None:
@@ -446,46 +477,50 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         """Return the sensor state attributes."""
         return {
             **super().extra_state_attributes,
-            "forecast_time": self.forecast_time,
+            ATTR_FORECAST_TIME: self.forecast_time,
             ATTR_LOCATION_NAME: self.location_name,
-            ATTR_WEATHER_TIME_SHIFT: self.time_shift,
+            ATTR_WEATHER_ASTRONOMICAL_DARKNESS: self.night_duration_astronomical,
+            ATTR_WEATHER_CLOUD_AREA_FRACTION_HIGH: self.cloud_area_fraction_high,
+            ATTR_WEATHER_CLOUD_AREA_FRACTION_LOW: self.cloud_area_fraction_low,
+            ATTR_WEATHER_CLOUD_AREA_FRACTION_MEDIUM: self.cloud_area_fraction_medium,
+            ATTR_WEATHER_CLOUD_AREA_FRACTION: self.cloud_area_fraction,
             ATTR_WEATHER_CLOUDCOVER: self.cloudcover_percentage,
             ATTR_WEATHER_CLOUDLESS: self.cloudless_percentage,
-            ATTR_FORECAST_CLOUD_AREA_FRACTION: self.cloud_area_fraction,
-            ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH: self.cloud_area_fraction_high,
-            ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM: self.cloud_area_fraction_medium,
-            ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW: self.cloud_area_fraction_low,
-            ATTR_FORECAST_FOG_AREA_FRACTION: self.fog_area_fraction,
-            ATTR_WEATHER_SEEING: self.seeing_percentage,
-            ATTR_WEATHER_TRANSPARENCY: self.transparency_percentage,
-            ATTR_WEATHER_LIFTED_INDEX: self.lifted_index,
-            ATTR_WEATHER_CONDITION: self.condition_percentage,
             ATTR_WEATHER_CONDITION_PLAIN: self.condition_plain,
-            ATTR_WEATHER_PRECIPITATION_AMOUNT: self.precipitation_amount,
-            ATTR_WEATHER_WIND: self.calm_percentage,
-            ATTR_WEATHER_WIND_SPEED: self.native_wind_speed,
-            ATTR_WEATHER_WIND_BEARING: self.wind_bearing,
+            ATTR_WEATHER_CONDITION: self.condition_percentage,
+            ATTR_WEATHER_DEEP_SKY_DARKNESS: self.deep_sky_darkness,
             ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME: self.deepsky_forecast_today_dayname,
-            ATTR_WEATHER_DEEPSKY_TODAY_PLAIN: self.deepsky_forecast_today_plain,
             ATTR_WEATHER_DEEPSKY_TODAY_DESC: self.deepsky_forecast_today_desc,
+            ATTR_WEATHER_DEEPSKY_TODAY_PLAIN: self.deepsky_forecast_today_plain,
             ATTR_WEATHER_DEEPSKY_TOMORROW_DAYNAME: self.deepsky_forecast_tomorrow_dayname,
-            ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN: self.deepsky_forecast_tomorrow_plain,
             ATTR_WEATHER_DEEPSKY_TOMORROW_DESC: self.deepsky_forecast_tomorrow_desc,
-            ATTR_WEATHER_SUN_NEXT_RISING: self.sun_next_rising,
-            ATTR_WEATHER_SUN_NEXT_SETTING: self.sun_next_setting,
-            ATTR_WEATHER_SUN_NEXT_RISING_NAUTICAL: self.sun_next_rising_nautical,
-            ATTR_WEATHER_SUN_NEXT_SETTING_NAUTICAL: self.sun_next_setting_nautical,
-            ATTR_WEATHER_SUN_NEXT_RISING_ASTRO: self.sun_next_rising_astro,
-            ATTR_WEATHER_SUN_NEXT_SETTING_ASTRO: self.sun_next_setting_astro,
+            ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN: self.deepsky_forecast_tomorrow_plain,
+            ATTR_WEATHER_FOG_AREA_FRACTION: self.fog_area_fraction,
+            ATTR_WEATHER_HUMIDITY: self.humidity,
+            ATTR_WEATHER_LIFTED_INDEX: self.lifted_index,
+            ATTR_WEATHER_MOON_NEXT_FULL_MOON: self.moon_next_full_moon,
+            ATTR_WEATHER_MOON_NEXT_NEW_MOON: self.moon_next_new_moon,
             ATTR_WEATHER_MOON_NEXT_RISING: self.moon_next_rising,
             ATTR_WEATHER_MOON_NEXT_SETTING: self.moon_next_setting,
             ATTR_WEATHER_MOON_PHASE: self.moon_phase,
-            ATTR_WEATHER_MOON_NEXT_NEW_MOON: self.moon_next_new_moon,
-            ATTR_WEATHER_MOON_NEXT_FULL_MOON: self.moon_next_full_moon,
-            ATTR_WEATHER_DEEP_SKY_DARKNESS: self.deep_sky_darkness,
+            ATTR_WEATHER_PRECIPITATION_AMOUNT: self.precipitation_amount,
+            ATTR_WEATHER_SEEING_PERCENTAGE: self.seeing_percentage,
+            ATTR_WEATHER_SEEING: self.seeing,
+            ATTR_WEATHER_SUN_NEXT_RISING_ASTRO: self.sun_next_rising_astro,
+            ATTR_WEATHER_SUN_NEXT_RISING_NAUTICAL: self.sun_next_rising_nautical,
+            ATTR_WEATHER_SUN_NEXT_RISING: self.sun_next_rising,
+            ATTR_WEATHER_SUN_NEXT_SETTING_ASTRO: self.sun_next_setting_astro,
+            ATTR_WEATHER_SUN_NEXT_SETTING_NAUTICAL: self.sun_next_setting_nautical,
+            ATTR_WEATHER_SUN_NEXT_SETTING: self.sun_next_setting,
+            ATTR_WEATHER_TIME_SHIFT: self.time_shift,
+            ATTR_WEATHER_TRANSPARENCY_PERCENTAGE: self.transparency_percentage,
+            ATTR_WEATHER_TRANSPARENCY: self.transparency,
+            ATTR_WEATHER_WIND_BEARING: self.wind_bearing,
+            ATTR_WEATHER_WIND_SPEED: self.native_wind_speed,
+            ATTR_WEATHER_WIND: self.calm_percentage,
         }
 
-    def get_forecast(self, index, param):
+    def get_forecasts(self, index, param):
         """Retrieve forecast parameter."""
         try:
             forecast = self._weather["forecasts"][index]
@@ -505,25 +540,27 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             forecasts.append(
                 {
                     ATTR_FORECAST_TIME: forecast.forecast_time,
-                    ATTR_FORECAST_PRECIPITATION: None,
-                    ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
+                    ATTR_FORECAST_CALM: forecast.calm_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH: forecast.cloud_area_fraction_high_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW: forecast.cloud_area_fraction_low_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM: forecast.cloud_area_fraction_medium_percentage,
+                    ATTR_FORECAST_CLOUD_AREA_FRACTION: forecast.cloud_area_fraction_percentage,
                     ATTR_FORECAST_CLOUDCOVER: forecast.cloudcover_percentage,
                     ATTR_FORECAST_CLOUDLESS: forecast.cloudless_percentage,
-                    ATTR_FORECAST_CLOUD_AREA_FRACTION: forecast.cloud_area_fraction_percentage,
-                    ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH: forecast.cloud_area_fraction_high_percentage,
-                    ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM: forecast.cloud_area_fraction_medium_percentage,
-                    ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW: forecast.cloud_area_fraction_low_percentage,
-                    ATTR_FORECAST_FOG_AREA_FRACTION: forecast.fog_area_fraction_percentage,
-                    ATTR_FORECAST_SEEING: forecast.seeing_percentage,
-                    ATTR_FORECAST_TRANSPARENCY: forecast.transparency_percentage,
-                    ATTR_FORECAST_LIFTED_INDEX: forecast.lifted_index,
                     ATTR_FORECAST_CONDITION: forecast.condition_percentage,
+                    ATTR_FORECAST_FOG_AREA_FRACTION: forecast.fog_area_fraction_percentage,
                     ATTR_FORECAST_HUMIDITY: forecast.rh2m,
+                    ATTR_FORECAST_LIFTED_INDEX: forecast.lifted_index,
                     ATTR_FORECAST_PRECIPITATION_AMOUNT: forecast.precipitation_amount,
-                    ATTR_FORECAST_CALM: forecast.calm_percentage,
-                    ATTR_FORECAST_WIND_SPEED: forecast.wind10m_speed,
-                    ATTR_FORECAST_WIND_BEARING: forecast.wind10m_direction,
+                    ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
+                    ATTR_FORECAST_PRECIPITATION: None,
+                    ATTR_FORECAST_SEEING_PERCENTAGE: forecast.seeing_percentage,
+                    ATTR_FORECAST_SEEING: forecast.seeing,
                     ATTR_FORECAST_TEMP: forecast.temp2m,
+                    ATTR_FORECAST_TRANSPARENCY_PERCENTAGE: forecast.transparency_percentage,
+                    ATTR_FORECAST_TRANSPARENCY: forecast.transparency,
+                    ATTR_FORECAST_WIND_BEARING: forecast.wind10m_direction,
+                    ATTR_FORECAST_WIND_SPEED: forecast.wind10m_speed,
                 }
             )
 
