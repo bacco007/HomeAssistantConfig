@@ -177,8 +177,9 @@ recorder:
       - sensor.storage_*
       - sensor.tbpixeltablet_*
       - sensor.*in_radius_zone_home
-      - sensor.awtrix_b85b5c*
+      - sensor.awtrix_b86b5c*
       - sensor.sportschedule_*
+      - sensor.galaxy_tab_s5e*
     event_types:
       - automation_triggered
       - call_service
@@ -211,6 +212,8 @@ recorder:
       - flightradar24_exit
       - lastfm_daily_playcount_update
       - flightradar24_most_tracked_new
+      - flightradar24_area_landed
+      - flightradar24_area_took_off
   include:
     entities:
       - sensor.tamhospital_waitingtime

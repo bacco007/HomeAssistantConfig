@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.6.0b8 |
+| HA Version | 2024.6.0 |
 | No. Integrations | 209 |
 | No. Custom Integrations | 86 |
-| No. Entities | 6496 |
-| No. Sensors | 4595 |
+| No. Entities | 5635 |
+| No. Sensors | 3794 |
 | No. Automations | 142 |
 
 <details>
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 360
+Binary sensors | 361
 Buttons | 155
 Calendars | 73
 Cameras | 5
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 117
-Devices | 607
+Devices | 608
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,24 +85,24 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 2
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4595
+Sensors | 3794
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 253
+Switches | 190
 Texts | 2
 Times | 0
 Text-to-speech | 1
 Update | 312
 Vacuums | 0
 Water heaters | 0
-Weather | 12
+Weather | 13
 Zones | 4
 </details>
 
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>598 Integrations</summary>
+<details><summary>601 Integrations</summary>
 
 | Name |
 | --- |
@@ -125,6 +125,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [adguard.sensor](https://www.home-assistant.io/components/adguard.sensor) |
 | [adguard.switch](https://www.home-assistant.io/components/adguard.switch) |
 | [adsb_lol](https://www.home-assistant.io/components/adsb_lol) |
+| [adsb_lol.sensor](https://www.home-assistant.io/components/adsb_lol.sensor) |
 | [airvisual](https://www.home-assistant.io/components/airvisual) |
 | [airvisual.sensor](https://www.home-assistant.io/components/airvisual.sensor) |
 | [airvisual_pro](https://www.home-assistant.io/components/airvisual_pro) |
@@ -471,7 +472,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [private_ble_device.device_tracker](https://www.home-assistant.io/components/private_ble_device.device_tracker) |
 | [private_ble_device.sensor](https://www.home-assistant.io/components/private_ble_device.sensor) |
 | [prometheus_query.sensor](https://www.home-assistant.io/components/prometheus_query.sensor) |
-| [prometheus_sensor.sensor](https://www.home-assistant.io/components/prometheus_sensor.sensor) |
 | [proximity](https://www.home-assistant.io/components/proximity) |
 | [proximity.sensor](https://www.home-assistant.io/components/proximity.sensor) |
 | [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
@@ -621,6 +621,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tod](https://www.home-assistant.io/components/tod) |
 | [tod.binary_sensor](https://www.home-assistant.io/components/tod.binary_sensor) |
+| [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
+| [tomorrowio.sensor](https://www.home-assistant.io/components/tomorrowio.sensor) |
+| [tomorrowio.weather](https://www.home-assistant.io/components/tomorrowio.weather) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [trend.binary_sensor](https://www.home-assistant.io/components/trend.binary_sensor) |
 | [tts](https://www.home-assistant.io/components/tts) |
@@ -727,7 +730,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.1.0] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
 | [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v0.4.0] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
-| [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.50.1] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
+| [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.50.2] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.4] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
@@ -737,7 +740,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v3.4.2] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) |  [v3.0.2] | Apple SF Symbols icons for Home Assistant! (3000+ icons) ||
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.3.0] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
-| [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.4.3] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
+| [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.4.4] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
 | [Default Config Disabler](https://github.com/tronikos/default_config_disabler) |  [v0.0.3] | Disables components from Home Assistant's default_config |[@tronikos](https://github.com/tronikos).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.11] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.2] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
@@ -747,7 +750,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.1] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.0] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.6.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.7] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -768,7 +771,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.0.0] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
-| [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
+| [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.9] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.11.2] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.2] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
@@ -782,9 +785,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive) |  [v12a] | Home Assistant custom HACS integration to integrate the next 5 global rocket launches from https://rocketlaunch.live |[@djtimca](https://github.com/djtimca).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.9] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
-| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.1] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
-| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.22] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
+| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.25] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
+| [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar) |  [v4.0.22] | Solcast Integration for Home Assistant |[@oziee](https://github.com/oziee).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.2] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
 | [Spotcast](https://github.com/fondberg/spotcast) |  [v3.7.3] | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |[@fondberg](https://github.com/fondberg), [@fcusson](https://github.com/fcusson).|
@@ -812,7 +815,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.0-rc.1] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.0.1] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -850,7 +853,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Service Call Tile Feature For Home Assistant Tile Card](https://github.com/Nerwyn/service-call-tile-feature) |  [v3.3.7] | Home Assistant tile card custom service call (and other actions) features - buttons, sliders, selectors, and spinboxes |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.2] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -881,7 +884,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.12.0-3 |  | db21ed7f |
 | Cloudflared | 5.1.10 |  | 9074a9fa |
-| DbStats | 0.5.6 |  | 8bce8ef4 |
+| DbStats | 0.5.8 |  | 8bce8ef4 |
 | ESPHome | 2024.5.5 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
@@ -891,7 +894,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
 | JupyterLab | 0.15.1 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
-| Matter Server | 6.0.0 |  | core |
+| Matter Server | 6.1.0 |  | core |
 | Music Assistant | 2.0.4 |  | d5369777 |
 | Node-RED | 17.0.13 |  | a0d7b954 |
 | OpenThread Border Router | 2.6.0 |  | core |
@@ -947,7 +950,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.6.0b8-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.6.0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
