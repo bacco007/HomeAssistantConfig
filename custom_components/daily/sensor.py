@@ -1,9 +1,11 @@
 """Sensor platform for Daily Sensor."""
+
 import asyncio
 import logging
 from statistics import median, stdev, variance, StatisticsError
 from datetime import datetime
 
+from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import callback, Event
 
 # from homeassistant.helpers import entity_registry as er
@@ -96,11 +98,8 @@ class DailySensor(DailySensorEntity):
         input_state = self.hass.states.get(self.coordinator.input_sensor)
         state_minmax_changed = False
         try:
-            if input_state is not None:
-                if input_state.state is None:
-                    the_val = self.convert_to_float(input_state)
-                else:
-                    the_val = self.convert_to_float(input_state.state)
+            if input_state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
+                the_val = self.convert_to_float(input_state)
                 # apply the operation and update self._state
                 if self.coordinator.operation == CONF_SUM:
                     if self._state is None:
@@ -108,17 +107,11 @@ class DailySensor(DailySensorEntity):
                     else:
                         self._state = self._state + the_val
                 elif self.coordinator.operation == CONF_MAX:
-                    if self._state is None:
-                        self._state = the_val
-                        state_minmax_changed = True
-                    elif the_val > self._state:
+                    if self._state is None or the_val > self._state:
                         self._state = the_val
                         state_minmax_changed = True
                 elif self.coordinator.operation == CONF_MIN:
-                    if self._state is None:
-                        self._state = the_val
-                        state_minmax_changed = True
-                    elif the_val < self._state:
+                    if self._state is None or the_val < self._state:
                         self._state = the_val
                         state_minmax_changed = True
                 elif self.coordinator.operation == CONF_MEAN:
@@ -141,6 +134,14 @@ class DailySensor(DailySensorEntity):
                 if state_minmax_changed:
                     self._occurrence = datetime.now()
                 self.hass.add_job(self.async_write_ha_state)
+            else:
+                # sensor is unknown at startup, state which comes after is considered as initial state
+                _LOGGER.debug(
+                    "Initial state for {} is {}".format(
+                        self.coordinator.input_sensor, input_state
+                    )
+                )
+                return
         except ValueError:
             _LOGGER.error(
                 "unable to convert to float. Please check the source sensor ({}) is available.".format(
