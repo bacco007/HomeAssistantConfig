@@ -62,3 +62,219 @@ cards:
             data: json
             align: center
             modify: x.count
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Top Aircraft Tracked (By Model)
+      icon: mdi:airplane-search
+      secondary: >
+        {{ state_attr('sensor.adsb_flightairmap_top_aircraft', 'json')[0]['aircraft_name'] }} - {{ state_attr('sensor.adsb_flightairmap_top_aircraft', 'json')[0]['count'] }} Aircraft
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              # background-color: var(--background-color);
+              box-shadow: none;
+            }
+    cards:
+      - type: custom:flex-table-card
+        css:
+          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                font-size: 13px;
+                }
+        entities:
+          include: sensor.adsb_flightairmap_top_aircraft
+        sort_by: json-
+        columns:
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+            hidden: true
+          - name: Aircraft
+            data: json
+            modify: x.aircraft_name
+            align: center
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Top Aircraft Tracked (By Tail Number)
+      icon: mdi:airplane-search
+      secondary: >
+        {{ state_attr('sensor.adsb_flightairmap_top_aircraft_2', 'json')[0]['registration'] }} - {{ state_attr('sensor.adsb_flightairmap_top_aircraft_2', 'json')[0]['count'] }} Flights
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              # background-color: var(--background-color);
+              box-shadow: none;
+            }
+    cards:
+      - type: custom:flex-table-card
+        css:
+          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                font-size: 13px;
+                }
+        entities:
+          include: sensor.adsb_flightairmap_top_aircraft_2
+        sort_by: json-
+        columns:
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+            hidden: true
+          - name: Rego
+            data: json
+            modify: x.registration
+            align: center
+          - name: Airline
+            data: json
+            modify: x.airline_name
+            align: center
+          - name: Aircraft
+            data: json
+            modify: x.aircraft_name
+            align: center
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Top Flights Tracked (By Arrival Airport)
+      icon: mdi:airplane-search
+      secondary: >
+        {{ state_attr('sensor.adsb_flightairmap_top_arrival_airports', 'json')[0]['arrival_airport_name'] }} - {{ state_attr('sensor.adsb_flightairmap_top_arrival_airports', 'json')[0]['count'] }} Flights
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              # background-color: var(--background-color);
+              box-shadow: none;
+            }
+    cards:
+      - type: custom:flex-table-card
+        css:
+          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                font-size: 13px;
+                }
+        entities:
+          include: sensor.adsb_flightairmap_top_arrival_airports
+        sort_by: json-
+        columns:
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+            hidden: true
+          - name: Airport Name
+            data: json
+            modify: x.arrival_airport_name
+            align: center
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Top Flights Tracked (By Departure Airport)
+      icon: mdi:airplane-search
+      secondary: >
+        {{ state_attr('sensor.adsb_flightairmap_top_departure_airports', 'json')[0]['departure_airport_name'] }} - {{ state_attr('sensor.adsb_flightairmap_top_departure_airports', 'json')[0]['count'] }} Flights
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              # background-color: var(--background-color);
+              box-shadow: none;
+            }
+    cards:
+      - type: custom:flex-table-card
+        css:
+          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                font-size: 13px;
+                }
+        entities:
+          include: sensor.adsb_flightairmap_top_departure_airports
+        sort_by: json-
+        columns:
+          - name: Count
+            data: json
+            align: center
+            modify: x.count
+            hidden: true
+          - name: Airport Name
+            data: json
+            modify: x.departure_airport_name
+            align: center
+          - name: Count
+            data: json
+            align: center
+            modify: x.count

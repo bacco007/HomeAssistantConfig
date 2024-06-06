@@ -53,7 +53,7 @@ cards:
     entities:
       include: sensor.adsb_aircraft_tracked
     css:
-      table+: "padding: 16px;"
+      table+: "padding: 1;"
       tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
       th+: "border-bottom: 1px solid rgb(127,127,127);"
     card_mod:

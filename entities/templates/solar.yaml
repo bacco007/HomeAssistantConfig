@@ -1,4 +1,19 @@
 ---
+binary_sensor:
+  - name: solar_sungrow_dataflow
+    unique_id: solar_sungrow_dataflow
+    icon: mdi:power-cycle
+    device_class: problem
+    delay_on: 0
+    state: >
+      {%- if is_state('sensor.sun_state_day', 'day') and (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_daily_generation'].last_updated))/60 > 240 %}
+      True
+      {%- else %}
+      False
+      {%- endif %}
+    attributes:
+      category: solar
+
 sensor:
   - name: sungrow_sg5kd_solar_consumed
     unique_id: sungrow_sg5kd_solar_consumed
