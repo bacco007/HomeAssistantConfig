@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.6.0 |
 | No. Integrations | 209 |
 | No. Custom Integrations | 86 |
-| No. Entities | 5635 |
-| No. Sensors | 3794 |
+| No. Entities | 5633 |
+| No. Sensors | 3792 |
 | No. Automations | 142 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 3794
+Sensors | 3792
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -776,7 +776,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.11.2] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.2] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.6] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -804,7 +804,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.9] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
-| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.9] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
+| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.10] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
 <details><summary>57 Lovelace Plugins</summary>
@@ -843,7 +843,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v3.6.1] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v3.6.2] | Build a beautiful Home Assistant dashboard easily |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.1.3] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
