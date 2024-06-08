@@ -47,6 +47,7 @@ CONF_INCLUDE_PRE_VALUES: Final = "include_pre_values"
 CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES: Final = "include_two_hundred_day_values"
 CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES: Final = "include_fifty_two_week_values"
 CONF_SHOW_TRENDING_ICON: Final = "show_trending_icon"
+CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT = "show_currency_symbol_as_unit"
 CONF_TARGET_CURRENCY: Final = "target_currency"
 CONF_NO_UNIT: Final = "no_unit"
 
@@ -57,6 +58,7 @@ DEFAULT_CONF_INCLUDE_PRE_VALUES: Final = True
 DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES: Final = True
 DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES: Final = True
 DEFAULT_CONF_SHOW_TRENDING_ICON: Final = False
+DEFAULT_CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT: Final = False
 DEFAULT_CONF_NO_UNIT: Final = False
 
 DEFAULT_NUMERIC_DATA_GROUP: Final = "default"
@@ -176,22 +178,32 @@ CURRENCY_CODES: Final = {
     "bdt": "৳",
     "brl": "R$",
     "btc": "₿",
+    "cad": "CA$",
     "chf": "₣",
     "cny": "¥",
     "eth": "Ξ",
     "eur": "€",
     "gbp": "£",
+    "hkd": "HK$",
     "ils": "₪",
     "inr": "₹",
     "jpy": "¥",
     "krw": "₩",
     "kzt": "лв",
+    "mxn": "MX$",
     "ngn": "₦",
+    "nzd": "NZ$",
     "php": "₱",
     "rial": "﷼",
     "rub": "₽",
     "sign": "",
     "try": "₺",
-    "twd": "$",
+    "twd": "NT$",
     "usd": "$",
+    "vnd": "₫",
+    "xaf": "FCFA",
+    "xcd": "EC$",
+    "xof": "F\u202fCFA",
+    "xpf": "CFPF",
+    "xxx": "¤",
 }

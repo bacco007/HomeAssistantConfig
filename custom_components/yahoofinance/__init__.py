@@ -25,6 +25,7 @@ from .const import (
     CONF_INCLUDE_PRE_VALUES,
     CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
     CONF_NO_UNIT,
+    CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
@@ -35,6 +36,7 @@ from .const import (
     DEFAULT_CONF_INCLUDE_PRE_VALUES,
     DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
     DEFAULT_CONF_NO_UNIT,
+    DEFAULT_CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT,
     DEFAULT_CONF_SHOW_TRENDING_ICON,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -89,6 +91,10 @@ CONFIG_SCHEMA = vol.Schema(
                     CONF_SHOW_TRENDING_ICON, default=DEFAULT_CONF_SHOW_TRENDING_ICON
                 ): cv.boolean,
                 vol.Optional(
+                    CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT,
+                    default=DEFAULT_CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT,
+                ): cv.boolean,
+                vol.Optional(
                     CONF_DECIMAL_PLACES, default=DEFAULT_CONF_DECIMAL_PLACES
                 ): vol.Coerce(int),
                 vol.Optional(
@@ -134,12 +140,12 @@ class SymbolDefinition:
         """
         self.symbol = symbol
 
-        if "target_currency" in kwargs:
-            self.target_currency = kwargs["target_currency"]
-        if "scan_interval" in kwargs:
-            self.scan_interval = kwargs["scan_interval"]
-        if "no_unit" in kwargs:
-            self.no_unit = kwargs["no_unit"]
+        if CONF_TARGET_CURRENCY in kwargs:
+            self.target_currency = kwargs[CONF_TARGET_CURRENCY]
+        if CONF_SCAN_INTERVAL in kwargs:
+            self.scan_interval = kwargs[CONF_SCAN_INTERVAL]
+        if CONF_NO_UNIT in kwargs:
+            self.no_unit = kwargs[CONF_NO_UNIT]
 
     def __repr__(self) -> str:
         """Return the representation."""
