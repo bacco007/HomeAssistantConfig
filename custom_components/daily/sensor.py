@@ -1,36 +1,38 @@
 """Sensor platform for Daily Sensor."""
 
 import asyncio
-import logging
-from statistics import median, stdev, variance, StatisticsError
 from datetime import datetime
+import logging
+from statistics import StatisticsError, median, stdev, variance
 
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
-from homeassistant.core import callback, Event
-
-# from homeassistant.helpers import entity_registry as er
+from homeassistant.core import Event, callback
 
 from .const import (  # pylint: disable=unused-import
-    DOMAIN,
-    ICON,
-    EVENT_RESET,
-    EVENT_UPDATE,
+    ATTR_DATETIME_OF_OCCURRENCE,
+    CONF_AUTO_RESET,
+    CONF_INPUT_SENSOR,
+    CONF_INTERVAL,
     CONF_MAX,
-    CONF_MIN,
     CONF_MEAN,
     CONF_MEDIAN,
-    CONF_STDEV,
-    CONF_VARIANCE,
-    CONF_SUM,
-    CONF_INPUT_SENSOR,
+    CONF_MIN,
     CONF_OPERATION,
-    CONF_INTERVAL,
+    CONF_STDEV,
+    CONF_SUM,
     CONF_UNIT_OF_MEASUREMENT,
-    CONF_AUTO_RESET,
-    ATTR_DATETIME_OF_OCCURRENCE,
+    CONF_VARIANCE,
     COORDINATOR,
+    DOMAIN,
+    EVENT_RESET,
+    EVENT_UPDATE,
+    ICON,
 )
 from .entity import DailySensorEntity
+
+# from homeassistant.helpers import entity_registry as er
+from .helpers import parse_sensor_state, convert_to_float
+import contextlib
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -75,12 +77,7 @@ class DailySensor(DailySensorEntity):
         )
 
         state = await self.async_get_last_state()
-        if (
-            state is not None
-            and state.state != "unavailable"
-            and state.state != "unknown"
-        ):
-            self._state = float(state.state)
+        self._state = parse_sensor_state(state)
 
     @callback
     def _handle_reset(self, event: Event):
@@ -99,19 +96,28 @@ class DailySensor(DailySensorEntity):
         state_minmax_changed = False
         try:
             if input_state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
-                the_val = self.convert_to_float(input_state)
+                input_state = parse_sensor_state(input_state)
+                the_val = convert_to_float(input_state)
+                if self._state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
+                    self._state = convert_to_float(self._state)
                 # apply the operation and update self._state
                 if self.coordinator.operation == CONF_SUM:
-                    if self._state is None:
+                    if self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
                         self._state = the_val
                     else:
                         self._state = self._state + the_val
                 elif self.coordinator.operation == CONF_MAX:
-                    if self._state is None or the_val > self._state:
+                    if (
+                        self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE)
+                        or the_val > self._state
+                    ):
                         self._state = the_val
                         state_minmax_changed = True
                 elif self.coordinator.operation == CONF_MIN:
-                    if self._state is None or the_val < self._state:
+                    if (
+                        self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE)
+                        or the_val < self._state
+                    ):
                         self._state = the_val
                         state_minmax_changed = True
                 elif self.coordinator.operation == CONF_MEAN:
@@ -127,10 +133,8 @@ class DailySensor(DailySensorEntity):
                     self._state = stdev(self._values)
                 elif self.coordinator.operation == CONF_VARIANCE:
                     self._values.append(the_val)
-                    try:
+                    with contextlib.suppress(StatisticsError):
                         self._state = variance(self._values)
-                    except StatisticsError:
-                        pass
                 if state_minmax_changed:
                     self._occurrence = datetime.now()
                 self.hass.add_job(self.async_write_ha_state)
@@ -148,18 +152,6 @@ class DailySensor(DailySensorEntity):
                     self.coordinator.input_sensor
                 )
             )
-
-    def convert_to_float(self, float_value):
-        """Convert to Float."""
-        try:
-            return float(float_value)
-        except ValueError:
-            _LOGGER.error(
-                "unable to convert {} to float. Please check the source sensor ({}) is available.".format(
-                    float_value, self.coordinator.input_sensor
-                )
-            )
-            raise ValueError
 
     @property
     def name(self):

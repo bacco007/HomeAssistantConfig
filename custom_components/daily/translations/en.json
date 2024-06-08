@@ -47,5 +47,15 @@
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {}
+  },
+  "services": {
+    "reset": {
+      "name": "Reset",
+      "description": "Reset the value to 'unknown'"
+    },
+    "update": {
+      "name": "Update",
+      "description": "Update the daily sensor"
+    }
   }
 }

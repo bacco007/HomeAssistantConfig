@@ -1,4 +1,2 @@
 reset:
-  description: Reset the value to 'unknown'
 update:
-  description: Forces the sensor to update
