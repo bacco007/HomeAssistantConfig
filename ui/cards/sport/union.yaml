@@ -10,22 +10,16 @@ cards:
         }
     name: Rugby Union
     icon: mdi:football
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_wallabies
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_international_rugby_all_teams
   - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
     entities:
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_wallabies
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_international_rugby_all_teams
-      - type: section
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -111,7 +105,7 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.name == 'points').displayValue
                 align: center
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_nsw_waratahs
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_nsw_waratahs

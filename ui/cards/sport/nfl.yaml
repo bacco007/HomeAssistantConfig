@@ -10,17 +10,16 @@ cards:
         }
     name: NFL
     icon: mdi:football
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_nfl_all_teams
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_new_england_patriots
   - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
     entities:
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_nfl_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -333,8 +332,3 @@ cards:
               include: sensor.scoreboard_nfl_nfc_south
             sort_by: entries-
             columns: *nflcols
-      - type: section
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_new_england_patriots

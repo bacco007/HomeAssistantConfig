@@ -31,14 +31,6 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
-          - entity: sensor.yahoofinance_csc
-      - type: custom:decluttering-card
-        template: mushroom_finance
-        variables:
-          - entity: sensor.yahoofinance_ajrd
-      - type: custom:decluttering-card
-        template: mushroom_finance
-        variables:
           - entity: sensor.yahoofinance_goog
       - type: custom:decluttering-card
         template: mushroom_finance
@@ -91,10 +83,6 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
-          - entity: sensor.yahoofinance_cde
-      - type: custom:decluttering-card
-        template: mushroom_finance
-        variables:
           - entity: sensor.yahoofinance_cmcsa
       - type: custom:decluttering-card
         template: mushroom_finance
@@ -139,10 +127,6 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
-          - entity: sensor.yahoofinance_slv
-      - type: custom:decluttering-card
-        template: mushroom_finance
-        variables:
           - entity: sensor.yahoofinance_manu
       - type: custom:decluttering-card
         template: mushroom_finance
@@ -168,10 +152,6 @@ cards:
         template: mushroom_finance
         variables:
           - entity: sensor.yahoofinance_orcl
-      - type: custom:decluttering-card
-        template: mushroom_finance
-        variables:
-          - entity: sensor.yahoofinance_paas
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:

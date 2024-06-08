@@ -11,11 +11,6 @@ cards:
     name: Other Sport
     icon: mdi:run-fast
   - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
     entities:
       - type: custom:fold-entity-row
         head:
@@ -84,12 +79,11 @@ cards:
               - name: STRK
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_sydney_kings
-      - type: section
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_swifts
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_sydney_kings
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_swifts

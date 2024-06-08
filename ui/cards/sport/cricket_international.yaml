@@ -1,0 +1,24 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    name: Cricket - International
+    icon: mdi:cricket
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_international_cricket_mens
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_australia_cricket
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_australia_cricket_women

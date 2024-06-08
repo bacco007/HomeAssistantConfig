@@ -1,5 +1,4 @@
----
-type: vertical-stack
+---type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
@@ -32,9 +31,9 @@ cards:
         color: "#ea008a"
       - entity: calendar.ical_sydney_sixers_women
         color: "#ea008a"
-      - entity: calendar.ical_australia_cricket_women
+      - entity: calendar.ical_cricket_australia_womens
         color: "#F0AF00"
-      - entity: calendar.ical_australia_cricket
+      - entity: calendar.ical_cricket_australia_mens
         color: "#F0AF00"
       - entity: calendar.ical_sydney_swans_aflw
         color: "#E1251B"
@@ -60,8 +59,3 @@ cards:
         color: "#E1251B"
       - entity: calendar.ical_wrexham_afc
         color: "#ee3124"
-    updateInterval: 3600
-    days: 14
-    noCardBackground: true
-    eventBackground: rgba(0, 0, 0, .15)
-    compact: true

@@ -8,32 +8,23 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-    name: Cricket
+    name: Cricket - Domestic
     icon: mdi:cricket
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_bbl_all_teams
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_sydney_sixers
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_sydney_sixers_women
   - type: entities
-    card_mod:
-      style: |
-        ha-card {
-          margin-top: -10px;
-        }
     entities:
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_international_cricket_mens
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_australia_cricket
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_australia_cricket_women
-      - type: section
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_bbl_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -52,12 +43,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
               tbody tr+: "user-select: text"
               tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
@@ -113,11 +104,7 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
                 align: center
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_sydney_sixers
-      - type: section
+
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -136,12 +123,12 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(4): 'border-bottom: 2px solid rgb(255,215,0) !important;'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
               tbody tr+: "user-select: text"
               tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr td:nth-child(8): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
+              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
               th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
@@ -197,11 +184,7 @@ cards:
                 data: entries
                 modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
                 align: center
-      - type: custom:decluttering-card
-        template: sports_card
-        variables:
-          - entity: sensor.upcoming_sport_sydney_sixers_women
-      - type: section
+
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
@@ -220,13 +203,13 @@ cards:
           - type: custom:hui-element
             card_type: custom:flex-table-card
             css:
-              table+: 'padding: 0px; width: 100%; border-collapse: collapse;'
-              tbody tr:nth-child(2): 'border-bottom: 2px solid rgb(255,215,0) !important;'
-              tbody tr+: 'user-select: text'
-              tbody tr td:nth-child(2)+: 'min-width: 1fr;width: 1fr; white-space: nowrap;'
-              tbody tr td:nth-child(7): 'background-color: rgba(39, 179, 118,0.2); color: white;'
-              tbody tr:hover: 'background-color: rgba(180, 70, 70,0.2) !important; color:white !important;'
-              th+: 'border-bottom: 1px solid rgb(127,127,127);'
+              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+              tbody tr:nth-child(2): "border-bottom: 2px solid rgb(255,215,0) !important;"
+              tbody tr+: "user-select: text"
+              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+              tbody tr td:nth-child(7): "background-color: rgba(39, 179, 118,0.2); color: white;"
+              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+              th+: "border-bottom: 1px solid rgb(127,127,127);"
             card_mod:
               style:
                 .: |

@@ -48,6 +48,10 @@ logger:
       - "Max Retries reached"
     icloud3:
       - "unsupported operand type(s) for *: 'NoneType' and 'int'"
+    snitun.client.client_peer:
+      - "0 bytes read on a total of 32 expected bytes"
+    hass_nabucasa.remote:
+      - "Connection problem to snitun server"
   logs:
     aioharmony.harmonyclient: fatal
     custom_components.aio_geojson_query: debug

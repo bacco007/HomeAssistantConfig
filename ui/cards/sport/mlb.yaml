@@ -11,10 +11,86 @@ cards:
     name: Major League Baseball
     icon: si:mlb
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_mlb_all_teams
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:decluttering-card
+      template: sports_card
+      variables:
+        - entity: sensor.upcoming_sport_mlb_all_teams
+    cards:
+      - type: custom:flex-table-card
+        css:
+          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+          tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                overflow: auto;
+                box-shadow: none !important;
+                font-size: 12px;
+                }
+        entities:
+          include: sensor.sportschedule_mlb
+        sort_by: entries
+        columns:
+          - name: Date
+            data: events
+            modify: |-
+              if(x.date == 0)
+              {"-"}
+              else {
+                var date = new Date(x.date);
+                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                "<br>@ "+
+                String(date.getHours()).padStart(2,'0')+":"+
+                String(date.getMinutes()).padStart(2,'0')
+              }
+            align: center
+          - name: Home Team
+            data: events
+            align: right
+            modify: |-
+              if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
+                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:25px;vertical-align:middle;"></div>'
+              else
+                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
+          - name: Match
+            data: events
+            align: center
+            modify: |-
+              if (x.status.type.description == 'Scheduled')
+                ' VS '
+              else
+                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
+          - name: Away Team
+            data: events
+            align: left
+            modify: |-
+              if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
+                '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:25px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
+              else
+                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
+          - name: Time
+            data: events
+            align: center
+            modify: x.status.type.description
+          - name: Venue
+            data: events
+            modify: >-
+              x.competitions[0].venue.fullName + " (" +
+              x.competitions[0].venue.address.city + ")"
+
   - type: custom:decluttering-card
     template: sports_card
     variables:
@@ -328,88 +404,3 @@ cards:
               include: sensor.scoreboard_mlb_national_west
             sort_by: entries-
             columns: *mlbcols
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:mushroom-template-card
-      primary: MLB Schedule
-      icon: mdi:baseball
-      card_mod:
-        style:
-          .: |
-            ha-card {
-              # background-color: var(--background-color);
-              box-shadow: none;
-            }
-    cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 13px;
-                }
-        entities:
-          include: sensor.sportschedule_mlb
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: right
-            modify: |-
-              if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
-                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:25px;vertical-align:middle;"></div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
-          - name: Away Team
-            data: events
-            align: left
-            modify: |-
-              if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
-                '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:25px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Time
-            data: events
-            align: center
-            modify: x.status.type.description
-          - name: Venue
-            data: events
-            modify: >-
-              x.competitions[0].venue.fullName + " (" +
-              x.competitions[0].venue.address.city + ")"
