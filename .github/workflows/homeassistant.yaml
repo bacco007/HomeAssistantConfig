@@ -68,7 +68,7 @@ jobs:
           touch home-assistant.log
       - name: Move files
         run: |
-          (mkdir config && mv -f -v * config) || true
+          (mkdir config && mv -f -v * config && cd config && echo "$PWD") || true
       - name: 🚀  Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.4
         with:
