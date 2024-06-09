@@ -72,7 +72,7 @@ jobs:
       - name: 🚀  Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.4
         with:
-          path: "./config"
+          path: "/config"
           secrets: fake_secrets.yaml
           version: "${{ matrix.version }}"
 
@@ -85,7 +85,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: 3.10
+          python-version: 3.9
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
