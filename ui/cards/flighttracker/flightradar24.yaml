@@ -92,7 +92,49 @@ cards:
         name: Entering Tracked Area
       - entity: sensor.flightradar24_exited_area
         name: Exiting Tracked Area
-
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: FR24 Docker
+          icon: mdi:docker
+          entity: sensor.tbsh3_monitordocker_fr24_state
+        padding: 6
+        entities:
+          - entity: sensor.tbsh3_monitordocker_fr24_image
+            icon: "mdi:information-outline"
+            name: "Image"
+          - entity: sensor.tbsh3_monitordocker_fr24_up_time
+            icon: "mdi:clock"
+            name: "Container Start Time"
+          - entity: sensor.tbsh3_monitordocker_fr24_health
+            icon: "mdi:heart-pulse"
+            name: "Health"
+          - type: section
+          - entity: sensor.tbsh3_monitordocker_fr24_cpu
+            icon: "mdi:chip"
+            name: "CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_fr24_1cpu
+            icon: "mdi:chip"
+            name: "1CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_fr24_memory
+            icon: "mdi:memory"
+            name: "Memory"
+          - entity: sensor.tbsh3_monitordocker_fr24_memory_percent
+            icon: "mdi:memory"
+            name: "Memory (Percent)"
+          - entity: sensor.tbsh3_monitordocker_fr24_network_speed_up
+            icon: "mdi:upload"
+            name: "Network Speed - Up"
+          - entity: sensor.tbsh3_monitordocker_fr24_network_speed_down
+            icon: "mdi:download"
+            name: "Network Speed - Down"
+          - entity: sensor.tbsh3_monitordocker_fr24_network_total_up
+            icon: "mdi:upload"
+            name: "Network Total - Up"
+          - entity: sensor.tbsh3_monitordocker_fr24_network_total_down
+            icon: "mdi:download"
+            name: "Network Total - Down"
   - type: custom:yet-another-expander-card
     gap: 0.6em
     padding: 0

@@ -59,8 +59,70 @@ cards:
       - entity: sensor.ads_b_adsb_lol_uplink_throughput
         name: Uplink Throughput
       - type: section
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: global_aircraft
+        name: global_aircraft
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: global_beast
+        name: global_beast
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: global_mlat
+        name: global_mlat
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: beast_connected_seconds
+        name: beast_connected_seconds
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: beast_kbps
+        name: beast_kbps
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: beast_ms
+        name: beast_ms
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: beast_positions
+        name: beast_positions
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: mlat_peer_count
+        name: mlat_peer_count
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: mlat_outlier_percent
+        name: mlat_outlier_percent
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: mlat_bad_sync_timeout
+        name: mlat_bad_sync_timeout
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: icon
+        name: icon
+        icon: mdi:airplane-cog
+      - type: attribute
+        entity: sensor.adsb_lol_daily_stats
+        attribute: friendly_name
+        name: friendly_name
+        icon: mdi:airplane-cog
+      - type: section
       - entity: sensor.flights_in_radius_zone_home
         name: Inside Tracked Area
+
   - type: conditional
     conditions:
       - condition: numeric_state

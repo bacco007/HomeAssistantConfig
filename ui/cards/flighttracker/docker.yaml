@@ -1,0 +1,188 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: ADS-B Server - Docker
+    icon: mdi:docker
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: UltraFeeder Docker
+          icon: mdi:docker
+          entity: sensor.tbsh3_monitordocker_ultrafeeder_state
+        padding: 6
+        entities:
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_image
+            icon: "mdi:information-outline"
+            name: "Image"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_up_time
+            icon: "mdi:clock"
+            name: "Container Start Time"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_health
+            icon: "mdi:heart-pulse"
+            name: "Health"
+          - type: section
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_cpu
+            icon: "mdi:chip"
+            name: "CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_1cpu
+            icon: "mdi:chip"
+            name: "1CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_memory
+            icon: "mdi:memory"
+            name: "Memory"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_memory_percent
+            icon: "mdi:memory"
+            name: "Memory (Percent)"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_network_speed_up
+            icon: "mdi:upload"
+            name: "Network Speed - Up"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_network_speed_down
+            icon: "mdi:download"
+            name: "Network Speed - Down"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_network_total_up
+            icon: "mdi:upload"
+            name: "Network Total - Up"
+          - entity: sensor.tbsh3_monitordocker_ultrafeeder_network_total_down
+            icon: "mdi:download"
+            name: "Network Total - Down"
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: Planefence Docker
+          icon: mdi:docker
+          entity: sensor.tbsh3_monitordocker_planefence_state
+        padding: 6
+        entities:
+          - entity: sensor.tbsh3_monitordocker_planefence_image
+            icon: "mdi:information-outline"
+            name: "Image"
+          - entity: sensor.tbsh3_monitordocker_planefence_up_time
+            icon: "mdi:clock"
+            name: "Container Start Time"
+          - entity: sensor.tbsh3_monitordocker_planefence_health
+            icon: "mdi:heart-pulse"
+            name: "Health"
+          - type: section
+          - entity: sensor.tbsh3_monitordocker_planefence_cpu
+            icon: "mdi:chip"
+            name: "CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_planefence_1cpu
+            icon: "mdi:chip"
+            name: "1CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_planefence_memory
+            icon: "mdi:memory"
+            name: "Memory"
+          - entity: sensor.tbsh3_monitordocker_planefence_memory_percent
+            icon: "mdi:memory"
+            name: "Memory (Percent)"
+          - entity: sensor.tbsh3_monitordocker_planefence_network_speed_up
+            icon: "mdi:upload"
+            name: "Network Speed - Up"
+          - entity: sensor.tbsh3_monitordocker_planefence_network_speed_down
+            icon: "mdi:download"
+            name: "Network Speed - Down"
+          - entity: sensor.tbsh3_monitordocker_planefence_network_total_up
+            icon: "mdi:upload"
+            name: "Network Total - Up"
+          - entity: sensor.tbsh3_monitordocker_planefence_network_total_down
+            icon: "mdi:download"
+            name: "Network Total - Down"
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: FlightAirMap Docker
+          icon: mdi:docker
+          entity: sensor.tbsh3_monitordocker_flightairmap_state
+        padding: 6
+        entities:
+          - entity: sensor.tbsh3_monitordocker_flightairmap_image
+            icon: "mdi:information-outline"
+            name: "Image"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_up_time
+            icon: "mdi:clock"
+            name: "Container Start Time"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_health
+            icon: "mdi:heart-pulse"
+            name: "Health"
+          - type: section
+          - entity: sensor.tbsh3_monitordocker_flightairmap_cpu
+            icon: "mdi:chip"
+            name: "CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_1cpu
+            icon: "mdi:chip"
+            name: "1CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_memory
+            icon: "mdi:memory"
+            name: "Memory"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_memory_percent
+            icon: "mdi:memory"
+            name: "Memory (Percent)"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_network_speed_up
+            icon: "mdi:upload"
+            name: "Network Speed - Up"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_network_speed_down
+            icon: "mdi:download"
+            name: "Network Speed - Down"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_network_total_up
+            icon: "mdi:upload"
+            name: "Network Total - Up"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_network_total_down
+            icon: "mdi:download"
+            name: "Network Total - Down"
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: FlightAirMap DB Docker
+          icon: mdi:docker
+          entity: sensor.tbsh3_monitordocker_flightairmap_db_state
+        padding: 6
+        entities:
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_image
+            icon: "mdi:information-outline"
+            name: "Image"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_up_time
+            icon: "mdi:clock"
+            name: "Container Start Time"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_health
+            icon: "mdi:heart-pulse"
+            name: "Health"
+          - type: section
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_cpu
+            icon: "mdi:chip"
+            name: "CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_1cpu
+            icon: "mdi:chip"
+            name: "1CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_memory
+            icon: "mdi:memory"
+            name: "Memory"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_memory_percent
+            icon: "mdi:memory"
+            name: "Memory (Percent)"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_network_speed_up
+            icon: "mdi:upload"
+            name: "Network Speed - Up"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_network_speed_down
+            icon: "mdi:download"
+            name: "Network Speed - Down"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_network_total_up
+            icon: "mdi:upload"
+            name: "Network Total - Up"
+          - entity: sensor.tbsh3_monitordocker_flightairmap_db_network_total_down
+            icon: "mdi:download"
+            name: "Network Total - Down"

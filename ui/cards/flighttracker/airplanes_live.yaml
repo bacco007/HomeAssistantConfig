@@ -1,0 +1,36 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Airplanes.live
+    icon: mdi:airplane
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: binary_sensor.ads_b_airplanes_live_feeder_connected
+        type: custom:multiple-entity-row
+        name: Feeder Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ''
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_airplanes_live_feeder_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_airplanes_live_feeder_connected') == 'on' %} green {% else %} grey {% endif %}
+              }

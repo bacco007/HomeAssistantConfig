@@ -1,0 +1,91 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: RadarPlane
+    icon: mdi:airplane
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: entities
+    card_mod:
+      style: |
+        #states > * {
+          margin: 0 !important;
+        }
+    entities:
+      - entity: binary_sensor.ads_b_radarplane_feeder_connected
+        type: custom:multiple-entity-row
+        name: Feeder Connectivity
+        show_state: false
+        entities:
+          - icon: mdi:alert-decagram
+          - icon: mdi:alert-decagram
+        card_mod:
+          style:
+            hui-generic-entity-row $: ""
+            .: |
+              div.entity:nth-child(1) state-badge {
+                color: {% if states('binary_sensor.ads_b_radarplane_feeder_connected') == 'off' %} red {% else %} grey {% endif %}
+              }
+              div.entity:nth-child(2) state-badge {
+                color: {% if states('binary_sensor.ads_b_radarplane_feeder_connected') == 'on' %} green {% else %} grey {% endif %}
+              }
+      - entity: sensor.radarplane_stats
+        name: Messages per Sec
+        type: attribute
+        attribute: msg_sec
+      - entity: sensor.radarplane_stats
+        name: Positions per Sec
+        type: attribute
+        attribute: pos_sec
+      - entity: sensor.radarplane_stats
+        name: Kbs per Sec
+        type: attribute
+        attribute: kbs
+      - type: section
+      - type: custom:fold-entity-row
+        head:
+          type: custom:template-entity-row
+          name: RadarPlane Docker
+          icon: mdi:docker
+          entity: sensor.tbsh3_monitordocker_radarplane_state
+        padding: 6
+        entities:
+          - entity: sensor.tbsh3_monitordocker_radarplane_image
+            icon: "mdi:information-outline"
+            name: "Image"
+          - entity: sensor.tbsh3_monitordocker_radarplane_up_time
+            icon: "mdi:clock"
+            name: "Container Start Time"
+          - entity: sensor.tbsh3_monitordocker_radarplane_health
+            icon: "mdi:heart-pulse"
+            name: "Health"
+          - type: section
+          - entity: sensor.tbsh3_monitordocker_radarplane_cpu
+            icon: "mdi:chip"
+            name: "CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_radarplane_1cpu
+            icon: "mdi:chip"
+            name: "1CPU (Percent)"
+          - entity: sensor.tbsh3_monitordocker_radarplane_memory
+            icon: "mdi:memory"
+            name: "Memory"
+          - entity: sensor.tbsh3_monitordocker_radarplane_memory_percent
+            icon: "mdi:memory"
+            name: "Memory (Percent)"
+          - entity: sensor.tbsh3_monitordocker_radarplane_network_speed_up
+            icon: "mdi:upload"
+            name: "Network Speed - Up"
+          - entity: sensor.tbsh3_monitordocker_radarplane_network_speed_down
+            icon: "mdi:download"
+            name: "Network Speed - Down"
+          - entity: sensor.tbsh3_monitordocker_radarplane_network_total_up
+            icon: "mdi:upload"
+            name: "Network Total - Up"
+          - entity: sensor.tbsh3_monitordocker_radarplane_network_total_down
+            icon: "mdi:download"
+            name: "Network Total - Down"

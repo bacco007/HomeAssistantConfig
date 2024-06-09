@@ -1,4 +1,5 @@
----type: vertical-stack
+---
+type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
