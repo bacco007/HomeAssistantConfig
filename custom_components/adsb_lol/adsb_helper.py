@@ -31,7 +31,7 @@ def get_point_of_interest(self):
     for ac in response.json()["ac"]:
         if self._altitude_limit == 0 or (self._altitude_limit > 0 and ac.get("alt_geom",0) < self._altitude_limit * 1000 / 0.3048 ):
             aircraft["callsign"] = ac.get("flight", None)
-            aircraft["registration"] = ac.get("r", None)
+            aircraft["registration"] = ac.get("r", "NoReg")
             self._reg = ac.get("r", "NoReg")
             aircraft["icao24"] = ac.get("hex", None)
             aircraft["type"] = ac.get("t", None)
@@ -70,10 +70,9 @@ def get_entity_pictures(hass, path) -> dict[str]:
     
 def get_route(callsign):
     _url = ATTR_DEFAULT_URL_ROUTE
-    _callsign = callsign.strip()
     _headers = {"accept": "application/json","Content-Type": "application/json"}
     if callsign: 
-        _data = '{"planes": [{"callsign": "' + _callsign + '","lat": 0,"lng": 0}]}'
+        _data = '{"planes": [{"callsign": "' + callsign.strip() + '","lat": 0,"lng": 0}]}'
         response = requests.post(_url, headers = _headers, data = _data)
         if response.status_code == 200:
             _LOGGER.debug("Route details: %s", response.json())
