@@ -28,8 +28,8 @@ def convert_to_float(float_value):
         return float(float_value)
     except ValueError:
         _LOGGER.error(
-            "unable to convert {} to float. Please check the source sensor ({}) is available.".format(
-                float_value, self.coordinator.input_sensor
+            "unable to convert {} to float. Please check the source sensor is available.".format(
+                float_value
             )
         )
         raise ValueError
