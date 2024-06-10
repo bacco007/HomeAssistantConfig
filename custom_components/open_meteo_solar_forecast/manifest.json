@@ -4,10 +4,9 @@
   "codeowners": ["@rany2"],
   "config_flow": true,
   "documentation": "https://github.com/rany2/ha-open-meteo-solar-forecast",
+  "issue_tracker": "https://github.com/rany2/ha-open-meteo-solar-forecast/issues",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "requirements": ["open_meteo_solar_forecast==0.1.13"],
-  "version": "0.1.9",
-  "issue_tracker": "https://github.com/rany2/ha-open-meteo-solar-forecast/issues",
-  "documentation": "https://github.com/rany2/ha-open-meteo-solar-forecast"
+  "requirements": ["open_meteo_solar_forecast==0.1.14"],
+  "version": "0.1.10"
 }

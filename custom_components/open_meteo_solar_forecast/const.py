@@ -11,4 +11,8 @@ CONF_BASE_URL = "base_url"
 CONF_DECLINATION = "declination"
 CONF_AZIMUTH = "azimuth"
 CONF_MODULES_POWER = "modules_power"
+CONF_INVERTER_POWER = "inverter_power"
 CONF_EFFICIENCY_FACTOR = "efficiency_factor"
+
+ATTR_WATTS = "watts"
+ATTR_WH_PERIOD = "wh_period"

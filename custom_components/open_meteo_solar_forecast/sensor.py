@@ -27,7 +27,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from open_meteo_solar_forecast.models import Estimate
 
-from .const import DOMAIN
+from .const import ATTR_WATTS, ATTR_WH_PERIOD, DOMAIN
 from .coordinator import OpenMeteoSolarForecastDataUpdateCoordinator
 
 
@@ -290,3 +290,41 @@ class OpenMeteoSolarForecastSensorEntity(
             state = self.entity_description.state(self.coordinator.data)
 
         return state
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return the state attributes."""
+        if self.entity_description.key.startswith(
+            "energy_production_d"
+        ) or self.entity_description.key in (
+            "energy_production_today",
+            "energy_production_tomorrow",
+        ):
+            target_date = self.coordinator.data.now().date()
+            if self.entity_description.key == "energy_production_tomorrow":
+                target_date += timedelta(days=1)
+            elif self.entity_description.key.startswith("energy_production_d"):
+                target_date += timedelta(
+                    days=int(self.entity_description.key[len("energy_production_d") :])
+                )
+            elif self.entity_description.key == "energy_production_today":
+                pass  # target_date is already set to today
+            else:
+                raise ValueError(
+                    f"Unexpected key {self.entity_description.key} for extra_state_attributes"
+                )
+
+            return {
+                ATTR_WATTS: {
+                    watt_datetime.isoformat(): watt_value
+                    for watt_datetime, watt_value in self.coordinator.data.watts.items()
+                    if watt_datetime.date() == target_date
+                },
+                ATTR_WH_PERIOD: {
+                    wh_datetime.isoformat(): wh_value
+                    for wh_datetime, wh_value in self.coordinator.data.wh_period.items()
+                    if wh_datetime.date() == target_date
+                },
+            }
+
+        return None

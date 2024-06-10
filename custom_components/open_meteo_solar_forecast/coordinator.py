@@ -17,6 +17,7 @@ from .const import (
     CONF_BASE_URL,
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
+    CONF_INVERTER_POWER,
     CONF_MODULES_POWER,
     DOMAIN,
     LOGGER,
@@ -36,16 +37,21 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
         # this if statement is here to catch that.
         api_key = entry.options.get(CONF_API_KEY) or None
 
+        # Handle new options that were added after the initial release
+        ac_kwp = entry.options.get(CONF_INVERTER_POWER, 0)
+        ac_kwp = ac_kwp / 1000 if ac_kwp else None
+
         self.forecast = OpenMeteoSolarForecast(
-            base_url=entry.data.get(CONF_BASE_URL),
             api_key=api_key,
             session=async_get_clientsession(hass),
             latitude=entry.data[CONF_LATITUDE],
             longitude=entry.data[CONF_LONGITUDE],
+            azimuth=entry.options[CONF_AZIMUTH] - 180,
+            base_url=entry.options[CONF_BASE_URL],
+            ac_kwp=ac_kwp,
+            dc_kwp=(entry.options[CONF_MODULES_POWER] / 1000),
             declination=entry.options[CONF_DECLINATION],
             efficiency_factor=entry.options[CONF_EFFICIENCY_FACTOR],
-            azimuth=entry.options[CONF_AZIMUTH] - 180,
-            kwp=(entry.options[CONF_MODULES_POWER] / 1000),
         )
 
         update_interval = timedelta(minutes=30)

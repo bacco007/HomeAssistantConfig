@@ -8,7 +8,6 @@ import voluptuous as vol
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
-    ConfigFlowResult,
     OptionsFlow,
 )
 from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
@@ -21,8 +20,14 @@ from .const import (
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
     CONF_MODULES_POWER,
+    CONF_INVERTER_POWER,
     DOMAIN,
 )
+
+try:
+    from homeassistant.config_entries import ConfigFlowResult  # >=2024.4.0b0
+except ImportError:
+    from homeassistant.data_entry_flow import FlowResult as ConfigFlowResult
 
 
 class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -55,6 +60,7 @@ class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
                     CONF_BASE_URL: user_input[CONF_BASE_URL],
                     CONF_DECLINATION: user_input[CONF_DECLINATION],
                     CONF_MODULES_POWER: user_input[CONF_MODULES_POWER],
+                    CONF_INVERTER_POWER: user_input[CONF_INVERTER_POWER],
                     CONF_EFFICIENCY_FACTOR: user_input[CONF_EFFICIENCY_FACTOR],
                 },
             )
@@ -84,6 +90,9 @@ class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
                     ),
                     vol.Required(CONF_MODULES_POWER): vol.All(
                         vol.Coerce(int), vol.Range(min=1)
+                    ),
+                    vol.Required(CONF_INVERTER_POWER, default=0): vol.All(
+                        vol.Coerce(int), vol.Range(min=0)
                     ),
                     vol.Optional(CONF_EFFICIENCY_FACTOR, default=1.0): vol.All(
                         vol.Coerce(float), vol.Range(min=0)
@@ -138,6 +147,10 @@ class OpenMeteoSolarForecastOptionFlowHandler(OptionsFlow):
                         CONF_MODULES_POWER,
                         default=self.config_entry.options[CONF_MODULES_POWER],
                     ): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                    vol.Required(
+                        CONF_INVERTER_POWER,
+                        default=self.config_entry.options.get(CONF_INVERTER_POWER, 0),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=0)),
                     vol.Optional(
                         CONF_EFFICIENCY_FACTOR,
                         default=self.config_entry.options.get(
