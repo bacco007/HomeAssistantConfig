@@ -5,7 +5,7 @@
 # `self.async_write_ha_state()` should always be used inside of the event loop (any method that is async itself or a callback). 
 # If you are in a `async def` method or one wrapped in `@callback`, use `async_write_ha_state` since you are inside of the event loop. 
 
-# `self.schedule_update_ha_state(force_refresh=True)` should be unsed when not inside of the event loop (e.g. for sync functions that are ran 
+# `self.schedule_update_ha_state(force_refresh=False)` should be unsed when not inside of the event loop (e.g. for sync functions that are ran 
 # inside of the executor thread).  If you are in a `def` method (no async) then use `schedule_update_ha_state` since you are inside of the event loop.
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from datetime import timedelta, datetime
 from typing import Any, Callable, Concatenate, ParamSpec, TypeVar, Tuple
 from yarl import URL
 
-from spotifywebapipython import SpotifyClient, SpotifyApiError, SpotifyWebApiError
+from spotifywebapipython import SpotifyClient, SpotifyDiscovery, SpotifyApiError, SpotifyWebApiError
 from spotifywebapipython.models import (
     Album,
     AlbumPageSaved,
@@ -39,7 +39,9 @@ from spotifywebapipython.models import (
     Track,
     TrackPage,
     TrackPageSaved,
-    UserProfile
+    UserProfile,
+    ZeroconfGetInfo,
+    ZeroconfResponse
 )
 
 from homeassistant.components.media_player import (
@@ -209,7 +211,7 @@ def spotify_exception_handler(
             result = func(self, *args, **kwargs)
             
             # do not update HA state in this handler!  doing so causes UI buttons
-            # pressed to "toggle" between states.  the "self.schedule_update_ha_state(force_refresh=True)" 
+            # pressed to "toggle" between states.  the "self.schedule_update_ha_state(force_refresh=False)" 
             # call should be done in the individual methods.
             
             # return function result to caller.
@@ -488,7 +490,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         
         # update ha state.
         self._attr_state = MediaPlayerState.PLAYING
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
 
         # verify that a spotify connect player device is active.
         deviceId:str = self._VerifyDeviceActive()
@@ -504,7 +506,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         
         # update ha state.
         self._attr_state = MediaPlayerState.PAUSED
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
         
         # verify that a spotify connect player device is active.
         deviceId:str = self._VerifyDeviceActive()
@@ -545,7 +547,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         # update ha state.
         self._attr_media_position = position
         self._attr_media_position_updated_at = utcnow()
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
         
         # verify that a spotify connect player device is active.
         deviceId:str = self._VerifyDeviceActive()
@@ -563,7 +565,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
 
         if mute:
             self._volume_level_saved = self._attr_volume_level
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
             self.set_volume_level(0.0)
         else:
             # did we save the volume on a previous mute request?  if not, then default volume.
@@ -571,7 +573,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 _logsi.LogVerbose("Previously saved volume was not set; defaulting to 0.10")
                 self._volume_level_saved = 0.10
             self._attr_volume_level = self._volume_level_saved
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
             self.set_volume_level(self._volume_level_saved)
             
 
@@ -639,14 +641,14 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             if media_type in {MediaType.TRACK, MediaType.EPISODE, MediaType.MUSIC}:
                 
                 self._attr_state = MediaPlayerState.PLAYING
-                self.schedule_update_ha_state(force_refresh=True)
+                self.schedule_update_ha_state(force_refresh=False)
                 _logsi.LogVerbose("Playing via PlayerMediaPlayTracks: uris='%s', deviceId='%s'" % (media_id, deviceId))
                 self.data.spotifyClient.PlayerMediaPlayTracks([media_id], deviceId=deviceId)
                 
             elif media_type in PLAYABLE_MEDIA_TYPES:
                 
                 self._attr_state = MediaPlayerState.PLAYING
-                self.schedule_update_ha_state(force_refresh=True)
+                self.schedule_update_ha_state(force_refresh=False)
                 _logsi.LogVerbose("Playing via PlayerMediaPlayContext: contextUri='%s', deviceId='%s'" % (media_id, deviceId))
                 self.data.spotifyClient.PlayerMediaPlayContext(media_id, deviceId=deviceId)
                 
@@ -680,7 +682,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
 
         # update ha state.
         self._attr_shuffle = shuffle
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
         
         # verify that a spotify connect player device is active.
         deviceId:str = self._VerifyDeviceActive()
@@ -698,7 +700,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         if repeat not in REPEAT_MODE_MAPPING_TO_SPOTIFY:
             raise ValueError(f"Unsupported repeat mode: {repeat}")
         self._attr_repeat = repeat
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
 
         # verify that a spotify connect player device is active.
         deviceId:str = self._VerifyDeviceActive()
@@ -718,7 +720,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
 
         # update ha state.
         self._attr_volume_level = volume
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
 
         # verify that a spotify connect player device is active.
         deviceId:str = self._VerifyDeviceActive()
@@ -740,7 +742,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             # set media player state and update ha state.
             self._attr_state = MediaPlayerState.OFF
             _logsi.LogVerbose("'%s': MediaPlayerState set to '%s'" % (self.name, self._attr_state))
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
             # get current player state.
             self._playerState = self.data.spotifyClient.GetPlayerPlaybackState(additionalTypes=MediaType.EPISODE.value)
@@ -767,7 +769,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         finally:
         
             # update ha state.
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
             # trace.
             _logsi.LeaveMethod(SILevel.Debug)
@@ -790,7 +792,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             # set media player state and update ha state.
             self._attr_state = MediaPlayerState.IDLE
             _logsi.LogVerbose("'%s': MediaPlayerState set to '%s'" % (self.name, self._attr_state))
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
             # call script to power on device.
             self._CallScriptPower(self.data.OptionScriptTurnOn, "turn_on")
@@ -819,7 +821,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         finally:
         
             # update ha state.
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
             # trace.
             _logsi.LeaveMethod(SILevel.Debug)
@@ -887,7 +889,10 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                     return
 
             # # TEST TODO - force token expire!!!
-            # _logsi.LogWarning("TEST TODO - Forcing token expiration in 60 seconds for testing purposes", colorValue=SIColors.Red)
+            # leave the following comments in here, in case you need to test token expire logic.  
+            # this will force the token to expire in 30 seconds, instead of the 1 hour Spotify default.
+            #
+            # _logsi.LogWarning("TEST TODO - Forcing token expiration in 30 seconds for testing purposes", colorValue=SIColors.Red)
             # self.data.spotifyClient.AuthToken._ExpiresIn = 30
             # unix_epoch = datetime(1970, 1, 1)
             # dtUtcNow:datetime = datetime.utcnow()
@@ -963,7 +968,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             return
         
         # inform HA of our current state.
-        self.schedule_update_ha_state(force_refresh=True)
+        self.schedule_update_ha_state(force_refresh=False)
 
 
     def _UpdateHAFromPlayerPlayState(self, playerPlayState:PlayerPlayState) -> None:
@@ -2778,7 +2783,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             #     self.data.spotifyClient.PlayerTransferPlayback(deviceId, True)
 
             # update ha state.
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
         # the following exceptions have already been logged, so we just need to
         # pass them back to HA for display in the log (or service UI).
@@ -2840,7 +2845,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             #     self.data.spotifyClient.PlayerTransferPlayback(deviceId, True)
 
             # update ha state.
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
         # the following exceptions have already been logged, so we just need to
         # pass them back to HA for display in the log (or service UI).
@@ -2907,7 +2912,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             #     self.data.spotifyClient.PlayerTransferPlayback(deviceId, True)
 
             # update ha state.
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
         # the following exceptions have already been logged, so we just need to
         # pass them back to HA for display in the log (or service UI).
@@ -2966,7 +2971,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             self.data.spotifyClient.PlayerTransferPlayback(deviceId, play)
 
             # update ha state.
-            self.schedule_update_ha_state(force_refresh=True)
+            self.schedule_update_ha_state(force_refresh=False)
 
         # the following exceptions have already been logged, so we just need to
         # pass them back to HA for display in the log (or service UI).
@@ -4259,6 +4264,160 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             # unfollow user(s).
             _logsi.LogVerbose("Removing items(s) from Spotify Users Favorites")
             self.data.spotifyClient.UnfollowUsers(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_zeroconf_device_getinfo(self, 
+                                                actionUrl:int=5, 
+                                                ) -> dict:
+        """
+        Retrieve Spotify Connect device information from the Spotify Zeroconf API `getInfo` endpoint.
+
+        Args:
+            actionUrl (str):  
+                The Zeroconf action url to issue the request to.  
+                Example: `http://192.168.1.80:8200/zc?action=getInfo`
+
+        Returns:
+            A dictionary that contains the following keys:
+            - user_profile: A (partial) user profile that retrieved the result.
+            - result: A `ZeroconfGetInfo` object that contains the response.
+        """
+        apiMethodName:str = 'service_spotify_zeroconf_getinfo'
+        apiMethodParms:SIMethodParmListContext = None
+        result:ZeroconfGetInfo = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("actionUrl", actionUrl)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Connect ZeroConf Device GetInformation Service", apiMethodParms)
+                
+            # get Spotify zeroconf api action "getInfo" response.
+            result = self.data.spotifyClient.ZeroconfGetInformation(actionUrl)
+
+            # return the (partial) user profile that retrieved the result, as well as the result itself.
+            return {
+                "user_profile": self._GetUserProfilePartialDictionary(self.data.spotifyClient.UserProfile),
+                "result": result.ToDictionary()
+            }
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_zeroconf_device_resetusers(self, 
+                                                   actionUrl:int=5, 
+                                                   ) -> dict:
+        """
+        Reset users for a Spotify Connect device by calling the Spotify Zeroconf API `resetUsers` endpoint.
+
+        Args:
+            actionUrl (str):  
+                The Zeroconf action url to issue the request to.  
+                Example: `http://192.168.1.80:8200/zc?action=resetUsers`
+
+        Returns:
+            A dictionary that contains the following keys:
+            - user_profile: A (partial) user profile that retrieved the result.
+            - result: A `ZeroconfResponse` object that contains the response.
+        """
+        apiMethodName:str = 'service_spotify_zeroconf_getinfo'
+        apiMethodParms:SIMethodParmListContext = None
+        result:ZeroconfResponse = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("actionUrl", actionUrl)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Connect ZeroConf Device ResetUsers Service", apiMethodParms)
+                
+            # get Spotify zeroconf api action "resetUsers" response.
+            result = self.data.spotifyClient.ZeroconfResetUsers(actionUrl)
+
+            # return the (partial) user profile that retrieved the result, as well as the result itself.
+            return {
+                "user_profile": self._GetUserProfilePartialDictionary(self.data.spotifyClient.UserProfile),
+                "result": result.ToDictionary()
+            }
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_zeroconf_discover_devices(self, 
+                                                  timeout:int=5, 
+                                                  ) -> dict:
+        """
+        Discover Spotify Connect devices on the local network via the 
+        ZeroConf (aka MDNS) service, and return details about each device. 
+
+        Args:
+            timeout (int):
+                Maximum amount of time to wait (in seconds) for the 
+                discovery to complete.  
+                Default is 5 seconds.
+
+        Returns:
+            A dictionary that contains the following keys:
+            - user_profile: A (partial) user profile that retrieved the result.
+            - result: An array of `ZeroconfDiscoveryResult` objects of matching results.
+        """
+        apiMethodName:str = 'service_spotify_zeroconf_discover_devices'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("timeout", timeout)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify ZeroConf Discover Devices Service", apiMethodParms)
+                
+            # create a new instance of the discovery class.
+            # do not verify device connections;
+            # do not print device details to the console as they are discovered.
+            discovery:SpotifyDiscovery = SpotifyDiscovery(self.data.spotifyClient, False, printToConsole=False)
+
+            # discover Spotify Connect devices on the network, waiting up to the specified
+            # time in seconds for all devices to be discovered.
+            discovery.DiscoverDevices(timeout)
+
+            # return the (partial) user profile that retrieved the result, as well as the result itself.
+            return {
+                "user_profile": self._GetUserProfilePartialDictionary(self.data.spotifyClient.UserProfile),
+                "result": [ item.ToDictionary() for item in discovery.DiscoveryResults ]
+            }
 
         # the following exceptions have already been logged, so we just need to
         # pass them back to HA for display in the log (or service UI).

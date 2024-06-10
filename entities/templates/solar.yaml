@@ -6,7 +6,7 @@ binary_sensor:
     device_class: problem
     delay_on: 0
     state: >
-      {%- if is_state('sensor.sun_state_day', 'day') and (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_daily_generation'].last_updated))/60 > 240 %}
+      {%- if is_state('sensor.sun_state_day', 'day') and (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_active_generation'].last_updated))/60 > 240 %}
       True
       {%- else %}
       False
@@ -15,8 +15,29 @@ binary_sensor:
       category: solar
 
 sensor:
-  - name: sungrow_sg5kd_solar_consumed
-    unique_id: sungrow_sg5kd_solar_consumed
+  - name: solar_generated
+    unique_id: solar_generated
+    icon: mdi:solar-power
+    state: >-
+      {% if is_number(states('sensor.sungrow_sg5kd_active_generation')) -%}
+        {{states('sensor.sungrow_sg5kd_active_generation')|float(0)}}
+      {% else -%}
+        {{state_attr('sensor.sungrowsolar_alldata', 'total_active_power') | float(0)}}
+      {%- endif %}
+    unit_of_measurement: "W"
+    device_class: energy
+    state_class: total_increasing
+    attributes:
+      category: solar
+      source: >-
+        {% if is_number(states('sensor.sungrow_sg5kd_active_generation')) -%}
+          Sungather (Addon)
+        {% else -%}
+          Sungather (MQTT)
+        {%- endif %}
+
+  - name: solar_consumed
+    unique_id: solar_consumed
     state_class: "total"
     device_class: energy
     unit_of_measurement: "kWh"

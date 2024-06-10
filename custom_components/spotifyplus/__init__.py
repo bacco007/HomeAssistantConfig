@@ -9,6 +9,7 @@ from datetime import timedelta
 from typing import Any
 from urllib3._version import __version__ as urllib3_version
 
+import functools
 import logging
 import voluptuous as vol
 
@@ -38,6 +39,9 @@ __all__ = [
 ]
 
 _LOGGER = logging.getLogger(__name__)
+
+TOKEN_STATUS:str = 'status'
+TOKEN_STATUS_REFRESH_EVENT:str = 'TokenRefreshEvent'
 
 try:
 
@@ -125,6 +129,10 @@ SERVICE_SPOTIFY_SEARCH_TRACKS:str = 'search_tracks'
 SERVICE_SPOTIFY_UNFOLLOW_ARTISTS:str = 'unfollow_artists'
 SERVICE_SPOTIFY_UNFOLLOW_PLAYLIST:str = 'unfollow_playlist'
 SERVICE_SPOTIFY_UNFOLLOW_USERS:str = 'unfollow_users'
+SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO:str = 'zeroconf_device_getinfo'
+SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS:str = 'zeroconf_device_resetusers'
+SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES:str = 'zeroconf_discover_devices'
+
 
 
 SERVICE_SPOTIFY_FOLLOW_ARTISTS_SCHEMA = vol.Schema(
@@ -564,6 +572,41 @@ SERVICE_SPOTIFY_UNFOLLOW_USERS_SCHEMA = vol.Schema(
     }
 )
 
+SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("action_url"): cv.string,
+    }
+)
+
+SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("action_url"): cv.string,
+    }
+)
+
+SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Optional("timeout", default=5): vol.All(vol.Range(min=1,max=10)),
+    }
+)
+
+
+def _trace_LogTextFile(filePath: str, title: str) -> None:
+    """
+    Log the contents of the specified text file to the SmartInspect trace log.
+    
+    Args:
+        filePath (str):
+            Fully-qualified file path to log.
+        title (str):
+            Title to assign to the log entry.
+
+    """
+    _logsi.LogTextFile(SILevel.Verbose, title, filePath)
+
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """
@@ -589,12 +632,13 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         if _logsi.IsOn(SILevel.Verbose):
 
             _logsi.LogVerbose("Component async_setup starting")
-
+            
             # log the manifest file contents.
+            # as of HA 2024.6, we have to use an executor job to do this as the trace uses a blocking file open / read call.
             myConfigDir:str = "%s/custom_components/%s" % (hass.config.config_dir, DOMAIN)
             myManifestPath:str = "%s/manifest.json" % (myConfigDir)
-            _logsi.LogTextFile(SILevel.Verbose, "Integration Manifest File (%s)" % myManifestPath, myManifestPath)
-
+            await hass.async_add_executor_job(_trace_LogTextFile, myManifestPath, "Integration Manifest File (%s)" % myManifestPath)
+    
             # log verion information for supporting packages.
             _logsi.LogValue(SILevel.Verbose, "urllib3 version", urllib3_version)
 
@@ -1127,6 +1171,27 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     response = await hass.async_add_executor_job(entity.service_spotify_search_tracks, criteria, limit, offset, market, include_external, limit_total)
                     
+                elif service.service == SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO:
+
+                    # get zeroconf spotify connect device information.
+                    action_url = service.data.get("action_url")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_zeroconf_device_getinfo, action_url)
+                    
+                elif service.service == SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS:
+
+                    # zeroconf spotify connect device reset users.
+                    action_url = service.data.get("action_url")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_zeroconf_device_resetusers, action_url)
+                    
+                elif service.service == SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES:
+
+                    # zeroconf discover devices service.
+                    timeout = service.data.get("timeout")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_zeroconf_discover_devices, timeout)
+                    
                 else:
                     
                     raise HomeAssistantError("Unrecognized service identifier '%s' in method service_handle_spotify_serviceresponse" % service.service)
@@ -1623,6 +1688,33 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             supports_response=SupportsResponse.NONE,
         )
 
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO, SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS, SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_ZEROCONF_DEVICE_RESETUSERS_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES, SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
         # indicate success.
         _logsi.LogVerbose("Component async_setup complete")
         return True
@@ -1719,7 +1811,7 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
                 A dictionaty that contains the refreshed token.
             """
             token:dict = None
-
+            
             try:
 
                 # trace.
@@ -1731,12 +1823,16 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
                 # at this point, the SpotifyClient instance KNOWS that the token needs to be refreshed.
                 # we will call HA to refresh the token, and store the new token in the integration config entry.
                 # 
-                # note that the `config_entry.data['token']` and `session.token` values should match.
+                # note that the `config_entry.data['token']` and `session.token` values should match, BUT
+                # the refreshed `session.token` value will not change until AFTER `async_update_entry` is processed!
                 #
                 # the following steps will be performed to accomplish the above:
                 # - get a reference to the HA OAuth2 session instance.
                 # - call `async_refresh_token` to refresh the expired token.
-                # - call `async_update_entry` to persist the refreshed token to config storage.
+                # - set a token `status` attribute to denote the configuration update is for a token refresh event.  this allows the
+                #   `options_update_listener` to bypass the configuration reload processing since we only need to reload the configuration
+                #   if the user initiated an options change via the UI (e.g. no need to reload the configuration for token updates).
+                # - call the `add_job` method to add a job that will call `async_update_entry` to persist the refreshed token to config storage.
                 # - return the refreshed token to the caller.
 
                 # trace.
@@ -1745,35 +1841,29 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
                 
                 # we will refresh the token from the `session.config_entry.data['token']` value (instead of
                 # the `session.token` value) in case the token was refreshed in the `update` method.
-                # note - the `session.token` value will not change until AFTER `async_update_entry` is called.
+                # note - the `session.token` value will not change until AFTER `async_update_entry` is processed!
 
                 # refresh the session token. 
                 _logsi.LogVerbose("'%s': Component is calling async_refresh_token to refresh the session token" % entry.title)
                 token = run_coroutine_threadsafe(
                     session.implementation.async_refresh_token(session.config_entry.data['token']), hass.loop
                 ).result()
-                token['status'] = 'Token refreshed by _TokenUpdater method'
-
-                # temporarily remove update listeners while we update the configuration entry data with the refreshed token.
-                # if we don't do this, then the configuration entry is removed and reloaded by the update listener, which
-                # we do not want.  we will re-add the update listeners after the call to async_update_entry.
-                _logsi.LogArray(SILevel.Verbose, "'%s': Component is temporarily removing update listeners (%d items) while we store the refreshed token" % (entry.title, len(entry.update_listeners)), entry.update_listeners)
-                listeners:list = entry.update_listeners.copy()    # shallow copy, so we don't destroy object references
-                entry.update_listeners.clear()
+                token[TOKEN_STATUS] = TOKEN_STATUS_REFRESH_EVENT
 
                 # update token value in configuration entry data.
-                _logsi.LogVerbose("'%s': Component is updating configuration entry data with refreshed token" % entry.title)
-                session.hass.config_entries.async_update_entry(
-                    session.config_entry, 
-                    data={**session.config_entry.data, "token": token}
+                # updating a config entry must be done in the event loop thread, as there is no sync API to update config entries!
+                # the "hass.add_job" method is used to schedule a function in the event loop that calls hass.config_entries.async_update_entry.
+                _logsi.LogDictionary(SILevel.Verbose, "'%s': Component is submitting add_job to call async_update_entry to update configuration entry data with refreshed token" % entry.title, token, prettyPrint=True)
+                session.hass.add_job(
+                    functools.partial(
+                        session.hass.config_entries.async_update_entry,
+                        session.config_entry, 
+                        data={**session.config_entry.data, "token": token}
                     )
+                )
                 
-                # restore the update listener(s).
-                entry.update_listeners = listeners.copy()    # shallow copy, so we don't destroy object references
-                _logsi.LogArray(SILevel.Verbose, "'%s': Component update listeners (%d items) have been restored" % (entry.title, len(entry.update_listeners)), entry.update_listeners)
-
                 # trace.
-                _logsi.LogDictionary(SILevel.Verbose, "'%s': Component OAuth2 session.token (post-update)" % entry.title, session.token, prettyPrint=True)
+                #_logsi.LogDictionary(SILevel.Verbose, "'%s': Component OAuth2 session.token (post-update)" % entry.title, session.token, prettyPrint=True)
                 _logsi.LogVerbose("'%s': Component OAuth2 session token refresh complete" % entry.title)
 
                 # return refreshed token to caller.
@@ -1914,6 +2004,9 @@ async def async_unload_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
     to be removed, as they are already removed by the time this method is called.
     This is accomplished by the "entry.async_on_unload(listener)" call in async_setup_entry,
     which removes them from the configuration entry just before it is unloaded.
+
+    Note that something changed with HA 2024.6 release that causes the `update_listeners` array 
+    to still contain entries; prior to this release, the `update_listeners` array was empty by this point.
     """
     try:
 
@@ -1935,8 +2028,10 @@ async def async_unload_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
 
             # a quick check to make sure all update listeners were removed (see method doc notes above).
             if len(entry.update_listeners) > 0:
-                _logsi.LogArray(SILevel.Warning, "'%s': Component configuration update_listener(s) did not get removed before configuration unload (%d items - should be 0)" % (entry.title, len(entry.update_listeners)), entry.update_listeners)
-                entry.update_listeners.clear()
+                _logsi.LogArray(SILevel.Warning, "'%s': Component configuration update_listener(s) did not get removed before configuration unload (%d items - should be 0 prioer to HA 2026.0 release, but after that release still contains entries)" % (entry.title, len(entry.update_listeners)), entry.update_listeners)
+                # 2024/06/08 - I commented out the following line to clear the `update_listeners`, as it was causing `ValueError: list.remove(x): x not in list`
+                # exceptions starting with the HA 2024.6.0 release!
+                #entry.update_listeners.clear()
 
         # return status to caller.
         _logsi.LogVerbose("'%s': Component async_unload_entry completed" % entry.title)
@@ -1998,17 +2093,47 @@ async def options_update_listener(hass:HomeAssistant, entry:ConfigEntry) -> None
     
     Reloads the config entry after updates have been applied to a configuration entry.
 
-    This method is called when a user has updated configuration options via the UI, or
-    when a call is made to async_update_entry with changed configuration data.
+    This method is called when the configuration has been updated via any of the following methods:
+    - user initiates a configuration change via the HA UI (e.g. options update, etc).
+      in this scenario, we will reload the configuration to apply the updated settings.
+    - when a call is made to async_update_entry with changed configuration data.
+      in this scenario, we will reload the configuration to apply the updated settings.
+    - authentication token is refreshed.
+      in this scenario, we do NOT want to reload the configuration since options have not changed; it's
+      just the authentication token that is being udpated, which will occur every 1 hour (controlled by
+      Spotify Web API token expiration).
     """
     try:
 
         # trace.
         _logsi.EnterMethod(SILevel.Debug)
         _logsi.LogObject(SILevel.Verbose, "'%s': Component detected configuration entry options update" % entry.title, entry)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener entry.data dictionary" % entry.title, entry.data)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener entry.options dictionary" % entry.title, entry.options)
+
+        # check if the authentication token was refreshed; if not, then it's a user-initiated
+        # change and the configuration should be reloaded to apply the changes.
+        # if it IS an authentication token refresh, then do NOT reload the configuration.
+        shouldReload:bool = True
+        _logsi.LogVerbose("'%s': Component options_update_listener is checking for authentication token refresh event" % entry.title)
+        if (entry.data is not None):
+            token:dict = entry.data.get('token', None)
+            if (token is not None):
+                _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener token data" % entry.title, token)
+                status = token.get(TOKEN_STATUS, None)
+                if (status == TOKEN_STATUS_REFRESH_EVENT):
+                    # token refresh detected; indicate configuration should not be reloaded, and remove
+                    # the token status key so it's not saved with the configuration data.
+                    shouldReload = False
+                    entry.data['token'].pop(TOKEN_STATUS, None)
+                    _logsi.LogVerbose("'%s': Component options_update_listener detected authentication token refresh; configuration will NOT be reloaded" % entry.title)
         
-        # reload the configuration entry.
-        await hass.config_entries.async_reload(entry.entry_id)
+        # reload the configuration entry (if necessary).
+        if shouldReload:
+            _logsi.LogVerbose("'%s': Component options_update_listener is reloading the configuration (due to UI options change)" % entry.title)
+            await hass.config_entries.async_reload(entry.entry_id)
+        else:
+            _logsi.LogVerbose("'%s': Component options_update_listener is NOT reloading the configuration (due to token refresh)" % entry.title)
 
         # trace.
         _logsi.LogVerbose("'%s': Component options_update_listener completed" % entry.title)

@@ -1,0 +1,44 @@
+---
+theme: geek_light
+icon: mdi:badge-account
+subview: true
+path: random
+title: Random
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: "custom:layout-card"
+    view_layout:
+      grid-area: content
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 3
+      width: 500
+      max_width: 1000
+    cards:
+      - !include /config/ui/cards/other/birthdays.yaml
+      - !include /config/ui/cards/other/hibp_breaches.yaml
+      - !include /config/ui/cards/other/location_history.yaml
+      - !include /config/ui/cards/other/ontheline.yaml
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml
+
+  # Popups
+  - !include /config/ui/dashboards/shared/includes/popup.yaml

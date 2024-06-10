@@ -10,75 +10,114 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-  - type: entities
-    show_header_toggle: false
-    state_color: true
-    card_mod:
-      style: |
-        #states > * {
-          margin: 0 !important;
-        }
-    entities:
-      - entity: sensor.power_highest_peak_time_today
-        name: Peak Generation Time - Today
-      - entity: sensor.power_highest_peak_time_tomorrow
-        name: Peak Generation Time - Tomorrow
-      - type: section
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 5
-        head:
-          type: custom:template-entity-row
-          name: Estimated Energy Production
-          icon: mdi:lightning-bolt
-          state: ""
-        entities:
+  - square: false
+    type: grid
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.energy_production_today
+        name: Energy Production - Today
+        icon: mdi:solar-power-variant
+        show_state: true
+        sub_button:
           - entity: sensor.energy_current_hour
-            name: This Hour
+            name: Hr
+            show_name: true
+            show_icon: false
+            show_state: true
+            show_background: false
+            icon: mdi:clock
           - entity: sensor.energy_next_hour
-            name: Next Hour
+            name: Next Hr
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
+            icon: mdi:clock-plus
           - entity: sensor.energy_production_today_remaining
-            name: Rest of Today
-          - entity: sensor.energy_production_today
-            name: Today
-          - entity: sensor.energy_production_tomorrow
-            name: Tomorrow
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 5
-        head:
-          type: custom:template-entity-row
-          name: Estimated Power Production
-          icon: mdi:lightning-bolt
-          state: ""
-        entities:
-          - entity: sensor.power_production_next_12hours
-            name: Next 12 Hours
-          - entity: sensor.power_production_next_24hours
-            name: Next 24 Hours
+            name: Rest Today
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
+            icon: mdi:clock-end
+        styles: |-
+          .bubble-button-card-container {
+            background: rgba(222,176,107,0.25) !important;
+          }
+        button_type: state
+        card_layout: large-2-rows
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.power_production_now
+        name: Power Production - Now
+        icon: mdi:solar-power-variant
+        show_state: true
+        sub_button:
+          - entity: sensor.power_production_next_15minutes
+            name: 15 Min
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
+          - entity: sensor.power_production_next_30minutes
+            name: 30 Min
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
           - entity: sensor.power_production_next_hour
-            name: Next Hour
-          - entity: sensor.power_production_now
-            name: Now
+            name: 1 Hr
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
+          - entity: sensor.power_production_next_12hours
+            name: 12 Hrs
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
+          - entity: sensor.power_production_next4hours
+            name: 24 Hrs
+            show_background: false
+            show_icon: false
+            show_name: true
+            show_state: true
+        styles: |-
+          .bubble-button-card-container {
+            background: rgba(222,176,107,0.25) !important;
+          }
+        button_type: state
+        card_layout: large-2-rows
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.power_highest_peak_time_today
+        name: Peak Production Time - Today
+        icon: mdi:solar-power-variant
+        show_state: false
+        sub_button:
+          - entity: sensor.power_highest_peak_time_today
+            show_state: true
+            show_icon: false
+            show_background: false
+        styles: |-
+          .bubble-button-card-container {
+            background: rgba(0,202,139,0.25) !important;
+          }
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.power_highest_peak_time_tomorrow
+        name: Peak Production Time - Tomorrow
+        icon: mdi:solar-power-variant
+        show_state: false
+        sub_button:
+          - entity: sensor.power_highest_peak_time_tomorrow
+            show_state: true
+            show_icon: false
+            show_background: false
+        styles: |-
+          .bubble-button-card-container {
+            background: rgba(0,202,139,0.25) !important;
+          }
+    columns: 1

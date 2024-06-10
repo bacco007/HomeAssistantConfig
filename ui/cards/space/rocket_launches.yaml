@@ -47,61 +47,45 @@ cards:
               padding-bottom: 5px !important;
             }
     cards:
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          margin: 0
-          grid-template-columns: 1fr
-          grid-template-rows: 1fr
-          grid-template-areas: |
-            "col1"
-        cards:
-          - type: custom:hui-element
-            view_layout:
-              grid-area: col1
-            card_type: custom:flex-table-card
-            entities:
-              include: sensor.next_spaceflight
-            sort_by: all_events
-            css:
-              table+: "border-collapse: collapse;"
-              th.left:nth-child(2): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-            columns:
-              - name: test
-                data: all_events
-                modify: x.start
-                hidden: true
-              - name: " "
-                data: all_events
-                modify: |-
-                  var start = new Date(x.start);
-                  var end = new Date(x.end);
-                  var now = Date.now();
-                  if(now <= end && now >= start) {
-                    '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
-                  } else { "" };
-              - name: Start
-                data: all_events
-                modify: |-
-                  if(x.start == 0)
-                  {"-"}
-                  else {
-                    var date = new Date(x.start);
-                    date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                    " @ "+
-                    String(date.getHours()).padStart(2,'0')+":"+
-                    String(date.getMinutes()).padStart(2,'0')
-                  }
-              - name: Event
-                data: all_events
-                modify: x.summary + '<br/><i>' + x.location + '</i>'
-            card_mod:
-              style: |
-                ha-card {
-                  background: none;
-                  border: 0;
-                  box-shadow: none;
-                  overflow: auto;
-                  padding-top: 5px;
-                  font-size: 12px;
-                }
+      - type: custom:flex-table-card
+        entities:
+          include: sensor.next_spaceflight
+        sort_by: all_events
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+              overflow: auto;
+              padding-top: 5px;
+              font-size: 12px;
+            }
+            tbody tr:hover {
+              background-color: coral !important
+            }
+        css:
+          table+: "padding: 16px;"
+          tbody tr+: "user-select: text; vertical-align: middle;"
+          tbody tr td:nth-child(1)+: "font-weight: 700 !important"
+          tbody tr td:nth-child(4)+: "min-width: 1fr; width: 1fr;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        columns:
+          - name: test
+            data: all_events
+            modify: x.start
+            hidden: true
+          - name: Start
+            data: all_events
+            modify: |-
+              if(x.start == 0)
+              {"-"}
+              else {
+                var date = new Date(x.start);
+                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                " @ "+
+                String(date.getHours()).padStart(2,'0')+":"+
+                String(date.getMinutes()).padStart(2,'0')
+              }
+          - name: Event
+            data: all_events
+            modify: x.summary + '<br/><i>' + x.location + '</i>'

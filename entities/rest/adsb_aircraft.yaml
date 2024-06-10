@@ -1,0 +1,12 @@
+---
+resource: http://192.168.1.132:8080/data/aircraft.json
+method: GET
+scan_interval: 15
+sensor:
+  name: adsb_aircraft_tracked
+  unique_id: adsb_aircraft_tracked
+  value_template: >
+    {{ value_json.aircraft | length }}
+  json_attributes:
+    - now
+    - aircraft

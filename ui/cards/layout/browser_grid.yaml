@@ -1,6 +1,6 @@
 ---
 grid-template-columns: 0px 74px auto
-grid-template-rows: grid-title-row-height auto auto
+grid-template-rows: 70px auto auto
 grid-gap: 0.5em
 grid-template-areas: |
   ". header header"

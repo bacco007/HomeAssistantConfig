@@ -1,0 +1,48 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: HIBP Breaches
+    icon: mdi:virus-outline
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - icon: mdi:arrow-top-right-thick
+        tap_action:
+          action: url
+          url_path: https://haveibeenpwned.com/
+  - type: custom:auto-entities
+    sort:
+      method: attribute
+      attribute: sortorder
+    card_param: cards
+    filter:
+      template: >-
+        {% for s in expand(states.group.hibp_breaches)|map(attribute='entity_id')|list|sort -%}
+          {{
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "state",
+              "entity": s,
+              "show_state": true,
+              "show_attribute": false,
+              "name": state_attr(s, 'friendly_name') | replace('Breaches ', ''),
+              "icon": "mdi:virus-outline",
+              "show_icon": true,
+              "attribute": "display",
+              "sub_button": [],
+              "styles": ".bubble-icon {\n  opacity: 1;\n}",
+              "card_layout": "normal"
+            }
+          }},
+        {%- endfor %}
+    show_empty: false
+    card:
+      square: false
+      type: grid
+      columns: 2

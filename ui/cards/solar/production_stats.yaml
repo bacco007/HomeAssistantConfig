@@ -10,76 +10,95 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-
   - square: false
     type: grid
     columns: 2
     cards:
-      - entity: sensor.solar_generation_daily
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.solar_generation_daily
         name: Daily
-        type: custom:mushroom-entity-card
         icon: mdi:solar-panel
-        icon_color: "yellow"
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                # background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - entity: sensor.solar_generation_weekly
-        name: Week
-        type: custom:mushroom-entity-card
+        sub_button:
+          - show_name: false
+            show_icon: false
+            show_state: true
+            show_background: false
+            icon: mdi:clock
+        button_type: state
+        scrolling_effect: false
+        show_state: false
+        card_layout: normal
+        styles: |-
+          .bubble-icon {
+            color: yellow !important;
+          }
+          .bubble-button-card-container {
+            background: rgba(255, 235, 59,0.25) !important;
+          }
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.solar_generation_weekly
+        name: Weekly
         icon: mdi:solar-panel
-        icon_color: "yellow"
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                # background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - entity: sensor.solar_generation_monthly
+        sub_button:
+          - show_name: false
+            show_icon: false
+            show_state: true
+            show_background: false
+            icon: mdi:clock
+        button_type: state
+        scrolling_effect: false
+        show_state: false
+        card_layout: normal
+        styles: |-
+          .bubble-icon {
+            color: yellow !important;
+          }
+          .bubble-button-card-container {
+            background: rgba(255, 235, 59,0.25) !important;
+          }
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.solar_generation_monthly
         name: Monthly
-        type: custom:mushroom-entity-card
         icon: mdi:solar-panel
-        icon_color: "yellow"
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                # background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - entity: sensor.solar_generation_yearly
+        sub_button:
+          - show_name: false
+            show_icon: false
+            show_state: true
+            show_background: false
+            icon: mdi:clock
+        button_type: state
+        scrolling_effect: false
+        show_state: false
+        card_layout: normal
+        styles: |-
+          .bubble-icon {
+            color: yellow !important;
+          }
+          .bubble-button-card-container {
+            background: rgba(255, 235, 59,0.25) !important;
+          }
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.solar_generation_yearly
         name: Yearly
-        type: custom:mushroom-entity-card
         icon: mdi:solar-panel
-        icon_color: "yellow"
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                # background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
+        sub_button:
+          - show_name: false
+            show_icon: false
+            show_state: true
+            show_background: false
+            icon: mdi:clock
+        button_type: state
+        scrolling_effect: false
+        show_state: false
+        card_layout: normal
+        styles: |-
+          .bubble-icon {
+            color: yellow !important;
+          }
+          .bubble-button-card-container {
+            background: rgba(255, 235, 59,0.25) !important;
+          }

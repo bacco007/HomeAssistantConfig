@@ -1,15 +1,32 @@
 ---
-type: custom:fold-entity-row
-head:
-  type: custom:template-entity-row
-  name: Future Outages
-  icon: mdi:alert
-  state: >
-    {{states('sensor.essential_energy_outages_future')}} Incidents
-  color: >
-    {% if states('sensor.essential_energy_outages_future') != "0" %} yellow {% endif %}
+type: custom:yet-another-expander-card
+gap: 0.6em
 padding: 0
-entities:
+clear: false
+title: Expander
+overlay-margin: 0em
+child-padding: 0.5em
+button-background: transparent
+title-card:
+  type: custom:mushroom-template-card
+  primary: Future Outages
+  icon: mdi:alert
+  secondary: >
+    {{states('sensor.essential_energy_outages_future')}} Incidents
+  icon_color: >
+    {% if states('sensor.essential_energy_outages_future') != "0" %} yellow {% endif %}
+  card_mod:
+    style:
+      .: |
+        ha-card {
+          #background-color: var(--background-color);
+          box-shadow: none !important;
+          --icon-size: 40px;
+          --icon-symbol-size: 30px;
+          padding-top: 5px !important;
+          padding-bottom: 5px !important;
+        }
+cards:
   - type: custom:hui-element
     card_type: custom:flex-table-card
     entities:
@@ -24,7 +41,7 @@ entities:
       - data: data
         name: Reason
         modify: >-
-          if(x != null) { x.reason + " (" + x.dist_km + "km away)"
+          if(x != null) { x.reason + "<br/>(" + x.dist_km + "km away)"
           } else { "-" }
       - data: data
         name: Impact
@@ -40,12 +57,9 @@ entities:
             var updatestring = "<br/>Last Update: " + x.lastupdate
             startstring + endstring + updatestring
           }
-    css:
-      table+: "border-collapse: collapse; padding: 0px;"
     card_mod:
       style: |
         ha-card {
-          background: none;
           border: 0;
           box-shadow: none;
           overflow: auto;
@@ -55,3 +69,9 @@ entities:
         tbody tr:hover {
           background-color: coral !important
         }
+    css:
+      table+: "padding: 16px;"
+      tbody tr+: "user-select: text; vertical-align: middle;"
+      tbody tr td:nth-child(1)+: "font-weight: 700 !important"
+      tbody tr td:nth-child(4)+: "min-width: 1fr; width: 1fr;"
+      th+: "border-bottom: 1px solid rgb(127,127,127);"

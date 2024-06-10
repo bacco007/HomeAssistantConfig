@@ -371,29 +371,29 @@ cards:
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }
-        - name: ALT
+        - name: ALT (m)
           data: flights
           align: center
           modify: |
             if(x.altitude != null)
               {var data = x.altitude * 0.3048;
-              data.toFixed(0) + "m"
+              data.toFixed(0)
               }
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }
-        - name: SPD
+        - name: SPD (km)
           data: flights
           align: center
           modify: |
             if(x.ground_speed != null)
               {var data = x.ground_speed * 1.852;
-              data.toFixed(0) + "km/h"
+              data.toFixed(0)
               }
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }
-        - name: ORIGIN
+        - name: ORGN
           data: flights
           modify: |
             if(x.airport_origin_name != null)
@@ -401,7 +401,7 @@ cards:
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }
-        - name: DESTINATION
+        - name: DEST
           data: flights
           modify: |
             if(x.airport_destination_name != null)

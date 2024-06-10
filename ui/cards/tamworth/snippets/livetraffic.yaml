@@ -16,13 +16,21 @@ cards:
         show_icon: false
         show_last_changed: false
         show_state: true
-  - type: tile
+      - tap_action:
+          action: url
+          url_path: http://www.livetraffic.com
+        icon: mdi:menu
+        show_background: false
+  - type: custom:bubble-card
     entity: binary_sensor.livetrafficnsw_nearby_active_incident
+    card_type: button
+    button_type: state
     name: Incidents Near Me
-    hide_state: false
-    state_content:
-      - count
-      - last-changed
+    show_state: false
+    sub_button:
+      - entity: binary_sensor.livetrafficnsw_nearby_active_incident
+        show_attribute: true
+        attribute: count
   - type: custom:plotly-graph
     entities:
       - entity: sensor.stats_livetraffic
@@ -105,30 +113,11 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
-  - type: entities
-    card_mod:
-      style:
-        hui-buttons-row:
-          $ hui-buttons-base $: |
-            .ha-scrollbar {
-              justify-content: center;
-            }
-        .: |
-          #states > * {
-            margin: 0 !important;
-          }
-    entities:
-      - !include ../livetraffic/alpine.yaml
-      - !include ../livetraffic/fire.yaml
-      - !include ../livetraffic/flood.yaml
-      - !include ../livetraffic/incidents.yaml
-      - !include ../livetraffic/incidentslga.yaml
-      - !include ../livetraffic/majorevents.yaml
-      - !include ../livetraffic/roadwork.yaml
-      - type: buttons
-        entities:
-          - entity: sensor.helper_weblink
-            name: Live Traffic NSW
-            tap_action:
-              action: url
-              url_path: https://www.livetraffic.com/
+  - !include /config/ui/cards/tamworth/livetraffic/alpine.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/fire.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/flood.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/incidents.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/incidentslga.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/majorevents.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/roadwork.yaml
+

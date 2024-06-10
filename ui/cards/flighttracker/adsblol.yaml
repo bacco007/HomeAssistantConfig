@@ -109,16 +109,6 @@ cards:
         attribute: mlat_bad_sync_timeout
         name: mlat_bad_sync_timeout
         icon: mdi:airplane-cog
-      - type: attribute
-        entity: sensor.adsb_lol_daily_stats
-        attribute: icon
-        name: icon
-        icon: mdi:airplane-cog
-      - type: attribute
-        entity: sensor.adsb_lol_daily_stats
-        attribute: friendly_name
-        name: friendly_name
-        icon: mdi:airplane-cog
       - type: section
       - entity: sensor.flights_in_radius_zone_home
         name: Inside Tracked Area
@@ -144,7 +134,6 @@ cards:
         card_mod:
           style: |
             ha-card {
-              background: none;
               border: 0;
               box-shadow: none;
               overflow: auto;
@@ -155,7 +144,7 @@ cards:
               background-color: coral !important
             }
         css:
-          table+: "padding: 16px 0px 16px 16px;"
+          table+: "padding: 16px;"
           tbody tr+: "user-select: text"
           tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
           tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
@@ -175,7 +164,11 @@ cards:
             align: center
           - name: ALT
             data: altitude_geom_ft
-            align: center
+            align: right
           - name: SPD
             data: groundspeed_nmph
-            align: center
+            align: right
+          - name: ROUTE
+            data: route
+            modify: |
+              x._airport_codes_iata

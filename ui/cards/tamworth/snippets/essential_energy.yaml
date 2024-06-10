@@ -3,8 +3,9 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
-    entity: sensor.essential_energy_outages_near_me
     name: Essential Energy Outages
+    icon: mdi:car-multiple
+    entity: sensor.essential_energy_outages_near_me
     styles: |-
       .bubble-line {
         background: var(--ha-card-background);
@@ -15,79 +16,38 @@ cards:
         show_icon: false
         show_last_changed: false
         show_state: true
-  - type: grid
-    columns: 3
-    square: false
-    cards:
-      - type: tile
-        entity: binary_sensor.essential_energy_nearby_active_outage
-        name: Current
-        hide_state: false
-        color: red
-        state_content: count_current
-        card_mod:
-          style:
-            ha-tile-info$: |
-              .primary {
-                font-size: 13px !important;
-              }
-              .secondary {
-                font-size: 12px !important;
-              }
-            .: |
-              ha-tile-info {
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-              ha-tile-icon {
-                --mdc-icon-size: 20px;
-              }
-      - type: tile
-        entity: binary_sensor.essential_energy_nearby_active_outage
-        name: Future
-        hide_state: false
-        color: orange
-        state_content: count_future
-        card_mod:
-          style:
-            ha-tile-info$: |
-              .primary {
-                font-size: 13px !important;
-              }
-              .secondary {
-                font-size: 12px !important;
-              }
-            .: |
-              ha-tile-info {
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-              ha-tile-icon {
-                --mdc-icon-size: 20px;
-              }
-      - type: tile
-        entity: binary_sensor.essential_energy_nearby_active_outage
-        name: Cancelled
-        hide_state: false
-        color: yellow
-        state_content: count_cancelled
-        card_mod:
-          style:
-            ha-tile-info$: |
-              .primary {
-                font-size: 13px !important;
-              }
-              .secondary {
-                font-size: 12px !important;
-              }
-            .: |
-              ha-tile-info {
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-              ha-tile-icon {
-                --mdc-icon-size: 20px;
-              }
+      - tap_action:
+          action: url
+          url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages
+        icon: mdi:menu
+        show_background: false
+
+  - type: custom:bubble-card
+    entity: binary_sensor.essential_energy_nearby_active_outage
+    card_type: button
+    button_type: state
+    name: Incidents Near Me
+    show_state: false
+    sub_button:
+      - entity: binary_sensor.essential_energy_nearby_active_outage
+        show_attribute: true
+        attribute: count_current
+      - entity: binary_sensor.essential_energy_nearby_active_outage
+        show_attribute: true
+        attribute: count_future
+      - entity: binary_sensor.essential_energy_nearby_active_outage
+        show_attribute: true
+        attribute: count_cancelled
+    styles: |
+      .bubble-sub-button-1 {
+        background-color: rgba(244, 67, 54, 0.7) !important;
+      }
+      .bubble-sub-button-2 {
+        background-color: rgba(255, 152, 0, 0.7) !important;
+      }
+      .bubble-sub-button-3 {
+        background-color: rgba(139, 195, 74, 0.7) !important;
+      }
   - type: custom:plotly-graph
     entities:
       - entity: sensor.essential_energy_outages_near_me
@@ -154,38 +114,6 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
-  - type: entities
-    card_mod:
-      style:
-        hui-buttons-row:
-          $ hui-buttons-base $: |
-            .ha-scrollbar {
-              justify-content: center;
-            }
-        .: |
-          #states > * {
-            margin: 0 !important;
-          }
-    entities:
-      - !include ../essential_energy/current.yaml
-      - !include ../essential_energy/future.yaml
-      - !include ../essential_energy/cancelled.yaml
-      - type: buttons
-        entities:
-          - entity: sensor.helper_weblink
-            name: Current Outages
-            tap_action:
-              action: url
-              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=current
-
-          - entity: sensor.helper_weblink
-            name: Future Outages
-            tap_action:
-              action: url
-              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=future
-
-          - entity: sensor.helper_weblink
-            name: Cancelled Outages
-            tap_action:
-              action: url
-              url_path: https://www.essentialenergy.com.au/outages-and-faults/power-outages?tab=cancelled
+  - !include ../essential_energy/current.yaml
+  - !include ../essential_energy/future.yaml
+  - !include ../essential_energy/cancelled.yaml
