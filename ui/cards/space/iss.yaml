@@ -1,0 +1,285 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: International Space Station
+    icon: mdi:space-station
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - show_attribute: true
+        entity: sensor.iss_2
+        attribute: visibility
+        show_icon: false
+        show_background: true
+  - type: custom:bubble-card
+    card_type: button
+    entity: sensor.iss_2
+    name: Location
+    button_type: state
+    styles: |-
+      .bubble-button-card-container {
+        background: rgba(222,176,107,0.5) !important;
+      }
+    sub_button:
+      - entity: sensor.iss_2
+        show_icon: false
+        show_background: false
+        show_last_changed: false
+        show_state: false
+        show_attribute: true
+        attribute: latitude
+        name: Lat
+        show_name: true
+      - entity: sensor.iss_2
+        show_background: false
+        show_icon: false
+        show_name: true
+        show_attribute: true
+        name: Long
+        attribute: longitude
+    icon: mdi:space-station
+    show_state: false
+    show_attribute: false
+    scrolling_effect: false
+    card_layout: large-2-rows
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.iss_altitude
+        name: Altitude
+        button_type: state
+        sub_button:
+          - entity: sensor.iss_altitude
+            show_icon: false
+            show_background: false
+            show_last_changed: false
+            show_state: true
+        icon: mdi:space-station
+        show_state: false
+      - type: custom:bubble-card
+        card_type: button
+        entity: sensor.iss_velocity
+        name: Velocity
+        button_type: state
+        sub_button:
+          - entity: sensor.iss_velocity
+            show_icon: false
+            show_background: false
+            show_last_changed: false
+            show_state: true
+        icon: mdi:space-station
+        show_state: false
+  - type: custom:button-card
+    entity: sensor.iss_2
+    name: ISS
+    icon: mdi:space-station
+    show_state: false
+    view_layout:
+      grid-column: span 2
+      grid-row: span 2
+      margin: 0
+    state_display: "[[[ return entity.attributes.number_of_people_in_space ]]]"
+    show_label: true
+    label: "[[[ return entity.attributes.number_of_people_in_space ]]]"
+    color_type: card
+    size: 20px
+    state:
+      - value: "off"
+        styles:
+          card:
+            - background-color: var(--ha-card-background)
+          state:
+            - color: var(--primary-text-color)
+          name:
+            - color: var(--primary-text-color)
+          label:
+            - color: var(--primary-text-color)
+            - opacity: 0.67
+      - value: unavailable
+        styles:
+          card:
+            - background-color: var(--ha-card-background)
+          state:
+            - color: var(--disabled-text-color)
+          name:
+            - color: var(--disabled-text-color)
+          label:
+            - color: var(--disabled-text-color)
+            - opacity: 0.67
+      - operator: default
+        styles:
+          card:
+            - background-color: var(--ha-card-background)
+          state:
+            - color: var(--primary-text-color)
+          name:
+            - color: var(--primary-text-color)
+          label:
+            - color: var(--primary-text-color)
+            - opacity: 0.67
+    hold_action:
+      action: more-info
+    styles:
+      card:
+        - background: |
+            [[[
+              return "url('https://dev.virtualearth.net/REST/v1/Imagery/Map/CanvasDark/" + entity.attributes.latitude + "," + entity.attributes.longitude + "/3?mapSize=400,400&format=png&key=i9z14FvInFRPNIFzFaFL~0zR6Nuq43s9sU6K98GE3ag~AkYCOoSLMS9V-FTwfJKO6kkm0MURigjyxKl5AZlfGEAwA54d-WXzikHqT4ye0zCx')"
+            ]]]
+        - background-size: 120% 120%
+        - background-position: center center
+        - aspect-ratio: 1/1
+        - padding: 0
+      grid:
+        - grid-template-areas: '". i s ." "n n l l"'
+        - grid-template-columns: auto min-content min-content auto
+        - grid-template-rows: auto 16px 0
+      icon:
+        - color: var(--primary-text-color)
+        - width: 40px
+        - height: 40px
+        - margin: 0
+      img_cell:
+        - height: 40px
+        - align-self: center
+        - justify-self: end
+        - padding: 8px 0 0 0
+        - align-self: end
+        - text-align: right
+      state:
+        - color: var(--primary-text-color)
+        - font-size: var(--h2-font-size)
+        - font-weight: var(--h2-font-weight)
+        - align-self: center
+        - justify-self: start
+        - padding: 4px 0px 2px 8px
+        - align-self: start
+        - text-overflow: clip
+        - display: "-webkit-box"
+        - "-webkit-line-clamp": 2
+        - "-webkit-box-orient": vertical
+        - text-transform: capitalize
+      name:
+        - color: var(--primary-text-color)
+        - text-transform: capitalize
+        - position: absolute
+        - font-size: var(--body-font-size)
+        - padding: 4px 4px 10px 12px
+        - white-space: normal
+        - text-align: left
+        - justify-self: start
+        - align-self: end
+      label:
+        - position: absolute
+        - right: 12px
+        - bottom: 10px
+        - height: auto
+        - text-align: right
+        - color: var(--primary-text-color)
+        - opacity: 0.5
+        - padding: 0
+        - justify-self: end
+        - align-self: end
+        - font-size: var(--body-font-size)
+        - justify-self: start
+        - padding: 0px 12px
+        - align-self: start
+        - opacity: 0.67
+        - white-space: normal
+        - text-align: left
+        - height: 100%
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Next ISS Passes
+      icon: mdi:space-station
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:flex-table-card
+        entities:
+          include: sensor.international_space_station_iss_pass*
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+              overflow: auto;
+              padding-top: 5px;
+              font-size: 12px;
+            }
+            tbody tr:hover {
+              background-color: coral !important
+            }
+        css:
+          table+: "padding: 16px;"
+          tbody tr+: "user-select: text; vertical-align: middle;"
+          tbody tr td:nth-child(1)+: "font-weight: 700 !important"
+          tbody tr td:nth-child(4)+: "min-width: 1fr; width: 1fr;"
+          th+: "border-bottom: 1px solid rgb(127,127,127);"
+        columns:
+          - name: Start
+            data: pass_start
+          - name: End
+            data: pass_end
+          - name: Length
+            data: state
+            suffix: " sec"
+          - name: Quality
+            data: quality
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: ISS Position & Trajectory
+      icon: mdi:map-clock
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: iframe
+        url: https://isstracker.spaceflight.esa.int/
+        aspect_ratio: 100%
+        card_mod:
+          style: >
+            :host {margin-bottom: 16px !important;} ha-card { overflow: hidden;
+            }
+
+            iframe { width: 100% !important; height: 120% !important;

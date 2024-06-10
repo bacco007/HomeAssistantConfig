@@ -1,0 +1,11 @@
+---
+resource: https://corquaid.github.io/international-space-station-APIs/JSON/iss-docked-spacecraft.json
+scan_interval: 300
+sensor:
+  name: iss_dockedspacecraft
+  unique_id: iss_dockedspacecraft
+  value_template: "{{ value_json.number }}"
+  icon: mdi:space-station
+  state_class: measurement
+  json_attributes:
+    - spacecraft
