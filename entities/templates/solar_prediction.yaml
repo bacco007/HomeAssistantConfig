@@ -1,0 +1,59 @@
+---
+sensor:
+  - name: solar_prediction_energyproduction_openmeteo
+    unique_id: solar_prediction_energyproduction_openmeteo
+    icon: mdi:solar-power
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state: >-
+      {%- set list = ['sensor.energy_production_today_2',
+              'sensor.energy_production_tomorrow_2',
+              'sensor.energy_production_d2',
+              'sensor.energy_production_d3',
+              'sensor.energy_production_d4',
+              'sensor.energy_production_d5',
+              'sensor.energy_production_d6',
+              'sensor.energy_production_d7'] %}
+      {%- set val = namespace(value=0) %}
+      {%- for sensor in list %}
+        {%- set sd = (states(sensor) | float) %}
+        {%- set val.value = val.value + sd %}
+      {%- endfor %}
+      {{(val.value / 8) | round(4)}}
+    attributes:
+      estimate_kw: >-
+        {%- set ns = namespace(output=[]) %}
+        {%- set list = ['sensor.energy_production_today_2',
+                        'sensor.energy_production_tomorrow_2',
+                        'sensor.energy_production_d2',
+                        'sensor.energy_production_d3',
+                        'sensor.energy_production_d4',
+                        'sensor.energy_production_d5',
+                        'sensor.energy_production_d6',
+                        'sensor.energy_production_d7'] %}
+        {%- for sensor in list %}
+          {%- set sd = state_attr(sensor, 'watts') %}
+          {%- for time, value in sd.items() %}
+            {%- set output_item = {'period_start': time, 'estimate':value/1000} %}
+            {%- set ns.output = ns.output + [output_item] %}
+          {%- endfor %}
+        {%- endfor %}
+        {{ ns.output }}
+      estimate_kwh: >-
+        {%- set ns = namespace(output=[]) %}
+        {%- set list = ['sensor.energy_production_today_2',
+                        'sensor.energy_production_tomorrow_2',
+                        'sensor.energy_production_d2',
+                        'sensor.energy_production_d3',
+                        'sensor.energy_production_d4',
+                        'sensor.energy_production_d5',
+                        'sensor.energy_production_d6',
+                        'sensor.energy_production_d7'] %}
+        {%- for sensor in list %}
+          {%- set sd = state_attr(sensor, 'wh_period') %}
+          {%- for time, value in sd.items() %}
+            {%- set output_item = {'period_start': time, 'estimate':value/1000} %}
+            {%- set ns.output = ns.output + [output_item] %}
+          {%- endfor %}
+        {%- endfor %}
+        {{ ns.output }}
