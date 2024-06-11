@@ -268,15 +268,24 @@ class OpenMeteoSolarForecastSensorEntity(
             configuration_url="https://open-meteo.com",
         )
 
+    async def _update_callback(self, now: datetime) -> None:
+        """Update the entity without fetching data from server.
+
+        This is required for the power_production_* sensors to update
+        as they take data in 15-minute intervals and the update interval
+        is 30 minutes."""
+        self.async_write_ha_state()
+
     async def async_added_to_hass(self) -> None:
         """Register callbacks."""
         await super().async_added_to_hass()
 
-        # This is required for the power_production_* sensors to update
-        # as they take data in 15-minute intervals and the update interval
-        # is 30 minutes.
+        # Update the state of the sensor every minute without
+        # fetching new data from the server.
         async_track_utc_time_change(
-            self.hass, self.async_schedule_update_ha_state, second=0
+            self.hass,
+            self._update_callback,
+            second=0,
         )
 
     @property
