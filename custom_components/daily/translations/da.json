@@ -1,0 +1,61 @@
+{
+  "title": "Daglig Sensor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Daglig Sensor",
+        "description": "Hvis du har brug for hjælp til konfigurationen, se venligst https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unikt navn på din sensor",
+          "sensor": "Enheden, der vil levere input til den daglige sensor",
+          "operation": "Den handling, der skal anvendes på sensoren",
+          "unit_of_measurement": "Måleenheden",
+          "interval": "Opdateringsinterval i sekunder",
+          "auto_reset": "Nulstil automatisk kl 00:00"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Det angivne interval er ikke gyldigt. Skal være >0 sekunder.",
+      "name": "Angiv et unikt navn for denne sensor.",
+      "operationnotfound": "Angiv en understøttet handling",
+      "sensornotfound": "En eller flere af de angivne sensorer findes ikke",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Daglig Sensor",
+        "description": "Hvis du har brug for hjælp til konfigurationen, se venligst https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unikt navn på din sensor",
+          "sensor": "Enheden, der vil levere input til den daglige sensor",
+          "operation": "Den handling, der skal anvendes på sensoren",
+          "unit_of_measurement": "Måleenheden",
+          "interval": "Opdateringsinterval i sekunder",
+          "auto_reset": "Nulstil automatisk kl 00:00 ?"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Det angivne interval er ikke gyldigt. Skal være >0 sekunder.",
+      "name": "Angiv et unikt navn for denne sensor.",
+      "operationnotfound": "Angiv en understøttet handling",
+      "sensornotfound": "En eller flere af de angivne sensorer findes ikke",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "services": {
+    "reset": {
+      "name": "Nulstil",
+      "description": "Nulstil værdien til 'ukendt'"
+    },
+    "update": {
+      "name": "Opdater",
+      "description": "Opdater den daglige sensor"
+    }
+  }
+}

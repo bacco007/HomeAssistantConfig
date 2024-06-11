@@ -3,7 +3,7 @@
 DOMAIN = "daily"
 NAME = "Daily Sensor"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "2024.6.1"
+VERSION = "v2024.6.2"
 COORDINATOR = "coordinator"
 ISSUE_URL = "https://github.com/jeroenterheerdt/HADailySensor/issues"
 
@@ -16,7 +16,7 @@ PLATFORMS = [SENSOR]
 
 # Localization
 LANGUAGE_FILES_DIR = "translations"
-SUPPORTED_LANGUAGES = ["el", "en", "es", "fr", "nb", "nl", "sk"]
+SUPPORTED_LANGUAGES = ["da", "el", "en", "es", "fr", "nb", "nl", "sk"]
 
 # Config
 CONF_INPUT_SENSOR = "sensor"
