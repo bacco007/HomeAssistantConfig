@@ -21,8 +21,8 @@ class Flightradar24Card extends HTMLElement {
       throw new Error('Configuration is missing.')
     }
 
-    if (!config.location_tracker) {
-      throw new Error('Location tracker is missing in the configuration.')
+    if (!config.location_tracker && !config.location) {
+      throw new Error('Location or tracker is missing in the configuration.')
     }
 
     if (!config.flights_entity) {
@@ -33,6 +33,34 @@ class Flightradar24Card extends HTMLElement {
     this.units = Object.assign({ altitude: 'ft', speed: 'kts', distance: 'km' }, config.units)
     this.radar = Object.assign({ range: this.units.distance === 'km' ? 35 : 25 }, config.radar)
     this.defines = Object.assign({}, config.defines)
+
+    this.templates = Object.assign(
+      {
+        img_element:
+          '${flight.aircraft_photo_small ? `<img style="float: right; width: 120px; height: auto; marginLeft: 8px; border: 1px solid black;" src="${flight.aircraft_photo_small}" />` : ""}',
+        icon: '${flight.altitude > 0 ? (flight.vertical_speed > 100 ? "airplane-takeoff" : flight.vertical_speed < -100 ? "airplane-landing" : "airplane") : "airport"}',
+        icon_element: '<ha-icon style="float: left;" icon="mdi:${tpl.icon}"></ha-icon>',
+        flight_info: '${[flight.airline_short, flight.flight_number, flight.callsign !== flight.flight_number ? flight.callsign : ""].filter((el) => el).join(" - ")}',
+        flight_info_element: '<div style="font-weight: bold; padding-left: 5px; padding-top: 5px;">${tpl.flight_info}</div>',
+        header: '<div>${tpl.img_element}${tpl.icon_element}${tpl.flight_info_element}</div>',
+        aircraft_info: '${[flight.aircraft_registration, flight.aircraft_model].filter((el) => el).join(" - ")}',
+        aircraft_info_element: '${tpl.aircraft_info ? `<div style="clear: left;">${tpl.aircraft_info}</div>` : ""}',
+        departure_info:
+          '${flight.altitude === 0 && flight.time_scheduled_departure ? ` (${new Date(flight.time_scheduled_departure * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})` : ""}',
+        origin_info: '${[flight.airport_origin_code_iata, tpl.departure_info, flight.origin_flag].filter((el) => el).join("")}',
+        arrival_info: '',
+        destination_info: '${[flight.airport_destination_code_iata, tpl.arrival_info, flight.destination_flag].filter((el) => el).join(" ")}',
+        route_info: '${[tpl.origin_info, tpl.destination_info].filter((el) => el).join(" -> ")}',
+        route_element: '<div>${tpl.route_info}</div>',
+        flight_status: '<div>${[flight.alt_info, flight.spd_info, flight.hdg_info].filter((el) => el).join(" - ")}</div>',
+        position_status: '<div>${[flight.dist_info, flight.direction_info].filter((el) => el).join(" - ")}</div>',
+        proximity_info:
+          '<div style="font-weight: bold; font-style: italic;">${flight.is_approaching && flight.ground_speed > 70 && flight.closest_passing_distance < 15 ? `Closest Distance: ${Math.round(flight.closest_passing_distance)} ${units.distance}, ETA: ${Math.round(flight.eta_to_closest_distance)} min` : ""}</div>',
+        flight_element: '${tpl.header}${tpl.aircraft_info_element}${tpl.route_element}${tpl.flight_status}${tpl.position_status}${tpl.proximity_info}',
+      },
+      config.templates,
+      {}
+    )
 
     this.renderStatic()
   }
@@ -186,7 +214,7 @@ class Flightradar24Card extends HTMLElement {
     }
 
     const radarScreen = this.shadowRoot.getElementById('radar-screen')
-    if(radarScreen) {
+    if (radarScreen) {
       radarScreen.innerHTML = ''
     }
 
@@ -226,10 +254,10 @@ class Flightradar24Card extends HTMLElement {
       }
 
       if (this.radar.local_features && this.hass) {
-        const trackerState = this.config.test ? this.getTestTracker() : this.hass.states[this.config.location_tracker]
-        if (trackerState) {
-          const refLat = trackerState.attributes.latitude
-          const refLon = trackerState.attributes.longitude
+        const location = this.getLocation()
+        if (location) {
+          const refLat = location.latitude
+          const refLon = location.longitude
 
           this.radar.local_features.forEach((feature) => {
             if (feature.type === 'outline' && feature.points && feature.points.length > 1) {
@@ -389,7 +417,59 @@ class Flightradar24Card extends HTMLElement {
     this.renderRadar()
   }
 
-  renderFlight(flight) {
+  renderFlight(_flight) {
+    const flight = Object.assign({}, _flight)
+    ;[
+      'flight_number',
+      'callsign',
+      'aircraft_registration',
+      'aircraft_model',
+      'aircraft_model',
+      'aircraft_code',
+      'airline',
+      'airline_short',
+      'airline_iata',
+      'airline_icao',
+      'airport_origin_name',
+      'airport_origin_code_iata',
+      'airport_origin_code_icao',
+      'airport_origin_country_name',
+      'airport_origin_country_code',
+      'airport_destination_name',
+      'airport_destination_code_iata',
+      'airport_destination_code_icao',
+      'airport_destination_country_name',
+      'airport_destination_country_code',
+    ].forEach((field) => (flight[field] = this.flightField(flight, field)))
+    flight.origin_flag = flight.airport_origin_country_code ? this.renderFlag(flight.airport_origin_country_code, flight.airport_origin_country_name).outerHTML : ''
+    flight.destination_flag = flight.airport_destination_country_code
+      ? this.renderFlag(flight.airport_destination_country_code, flight.airport_destination_country_name).outerHTML
+      : ''
+
+    flight.climb_descend_indicator = Math.abs(flight.vertical_speed) > 100 ? (flight.vertical_speed > 100 ? '↑' : '↓') : ''
+    flight.alt_info =
+      flight.altitude >= 17750
+        ? `Alt: FL${Math.round(flight.altitude / 1000) * 10}${flight.climb_descend_indicator}`
+        : flight.altitude > 0
+        ? this.units.altitude === 'm'
+          ? `Alt: ${Math.round(flight.altitude * 0.3048)} m${flight.climb_descend_indicator}`
+          : `Alt: ${Math.round(flight.altitude)} ft${flight.climb_descend_indicator}`
+        : undefined
+
+    flight.spd_info =
+      flight.ground_speed > 0 ? (this.units.speed === 'kmh' ? `Spd: ${Math.round(flight.ground_speed * 1.852)} km/h` : `Spd: ${Math.round(flight.ground_speed)} kts`) : undefined
+
+    flight.hdg_info = flight.heading !== undefined ? `Hdg: ${Math.round(flight.heading)}°` : undefined
+
+    flight.approach_indicator = flight.ground_speed > 70 ? (flight.is_approaching ? '↓' : '↑') : ''
+    flight.dist_info = `Dist: ${Math.round(flight.distance_to_tracker)}${flight.approach_indicator} ${this.units.distance}`
+    flight.direction_info = `${Math.round(flight.heading_from_tracker)}° ${flight.cardinal_direction_from_tracker}`
+
+    const template = {}
+    Object.keys(this.templates).forEach((key) => {
+      template[key] = this.parseTemplate(this.templates[key], flight, template)
+    })
+
     const flightElement = document.createElement('div')
     flightElement.style.clear = 'both'
     flightElement.className = 'flight'
@@ -398,121 +478,8 @@ class Flightradar24Card extends HTMLElement {
       flightElement.className += ' selected'
     }
 
-    const flightDetails = document.createElement('span')
-    flightDetails.className = 'flight-details'
+    flightElement.innerHTML = template['flight_element']
 
-    const header = document.createElement('div')
-    flightDetails.appendChild(header)
-
-    if (flight.aircraft_photo_small) {
-      const imgElement = document.createElement('img')
-      imgElement.src = flight.aircraft_photo_small
-      imgElement.style.float = 'right'
-      imgElement.style.width = '120px'
-      imgElement.style.height = 'auto'
-      imgElement.style.marginLeft = '8px'
-      imgElement.style.marginBottom = '8px'
-      imgElement.style.border = '1px solid black'
-      header.appendChild(imgElement)
-    }
-
-    const iconElement = document.createElement('ha-icon')
-    iconElement.style.float = 'left'
-    const iconSuffix = flight.altitude > 0 ? (flight.vertical_speed > 100 ? 'plane-takeoff' : flight.vertical_speed < -100 ? 'plane-landing' : 'plane') : 'port'
-    iconElement.setAttribute('icon', `mdi:air${iconSuffix}`)
-    header.appendChild(iconElement)
-
-    const airlineInfo = document.createElement('div')
-    airlineInfo.style.fontWeight = 'bold'
-    airlineInfo.style.paddingLeft = '5px'
-    airlineInfo.style.paddingTop = '5px'
-    airlineInfo.innerHTML = [
-      this.flightField(flight, 'airline_short'),
-      this.flightField(flight, 'flight_number'),
-      flight.callsign !== flight.flight_number ? this.flightField(flight, 'callsign') : '',
-    ]
-      .filter((el) => el && el !== '')
-      .join(' - ')
-    header.appendChild(airlineInfo)
-
-    const aircraftInfo = document.createElement('div')
-    aircraftInfo.style.clear = 'left'
-    aircraftInfo.innerHTML = [this.flightField(flight, 'aircraft_registration'), this.flightField(flight, 'aircraft_model')].filter((el) => el && el !== '').join(' - ')
-    flightDetails.appendChild(aircraftInfo)
-
-    if (flight.airport_origin_city || flight.airport_destination_city) {
-      const routeInfo = document.createElement('div')
-      if (flight.airport_origin_city) {
-        const originInfo = document.createElement('span')
-        originInfo.textContent = `${flight.airport_origin_code_iata || ''}`
-        if (flight.time_scheduled_departure && flight.altitude === 0) {
-          originInfo.textContent += ` (${new Date(flight.time_scheduled_departure * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`
-        }
-        const originFlag = this.renderFlag(flight.airport_origin_country_code, flight.airport_origin_country_name)
-        routeInfo.appendChild(originInfo)
-        routeInfo.appendChild(originFlag)
-      }
-
-      if (flight.airport_destination_country_code) {
-        const destinationInfo = document.createElement('span')
-        destinationInfo.textContent = ` -> ${flight.airport_destination_code_iata || ''}`
-        const destinationFlag = this.renderFlag(flight.airport_destination_country_code, flight.airport_destination_country_name)
-        routeInfo.appendChild(destinationInfo)
-        routeInfo.appendChild(destinationFlag)
-      }
-      flightDetails.appendChild(routeInfo)
-    }
-
-    if (flight.altitude > 0 || flight.ground_speed > 0) {
-      const altSpdHdgInfo = []
-      const climbDescendIndicator = Math.abs(flight.vertical_speed) > 100 ? (flight.vertical_speed > 100 ? '↑' : '↓') : ''
-
-      if (flight.altitude >= 17750) {
-        altSpdHdgInfo.push(`Alt: FL${Math.round(flight.altitude / 1000) * 10}${climbDescendIndicator}`)
-      } else if (flight.altitude > 0) {
-        if (this.units.altitude === 'm') {
-          altSpdHdgInfo.push(`Alt: ${Math.round(flight.altitude * 0.3048)} m${climbDescendIndicator}`)
-        } else {
-          altSpdHdgInfo.push(`Alt: ${Math.round(flight.altitude)} ft${climbDescendIndicator}`)
-        }
-      }
-      if (flight.ground_speed > 0) {
-        if (this.units.speed === 'kmh') {
-          altSpdHdgInfo.push(`Spd: ${Math.round(flight.ground_speed * 1.852)} km/h`)
-        } else {
-          altSpdHdgInfo.push(`Spd: ${Math.round(flight.ground_speed)} kts`)
-        }
-      }
-      if (flight.heading !== undefined) {
-        altSpdHdgInfo.push(`Hdg: ${Math.round(flight.heading)}°`)
-      }
-      const altSpdHdgElement = document.createElement('div')
-      altSpdHdgElement.textContent = altSpdHdgInfo.join(' - ')
-      flightDetails.appendChild(altSpdHdgElement)
-    }
-
-    const distanceInfo = document.createElement('div')
-    distanceInfo.textContent = `Dist: ${Math.round(flight.distance_to_tracker)}${flight.ground_speed > 70 ? (flight.is_approaching ? '↓' : '↑') : ''} ${
-      this.units.distance
-    } - ${Math.round(flight.heading_from_tracker)}° ${flight.cardinal_direction_from_tracker}`
-    const mapLink = document.createElement('a')
-    mapLink.href = `https://www.google.com/maps?q=${flight.latitude},${flight.longitude}`
-    mapLink.target = 'map'
-    mapLink.textContent = '🔗'
-    distanceInfo.appendChild(mapLink)
-    flightDetails.appendChild(distanceInfo)
-
-    if (flight.is_approaching && flight.ground_speed > 70 && flight.closest_passing_distance < 15) {
-      const approachingInfo = document.createElement('div')
-      approachingInfo.style.fontWeight = 'bold'
-      approachingInfo.style.fontStyle = 'italic'
-      approachingInfo.textContent = `Closest Distance: ${Math.round(flight.closest_passing_distance)} ${this.units.distance}, ETA: ${Math.round(
-        flight.eta_to_closest_distance
-      )} min`
-      flightDetails.appendChild(approachingInfo)
-    }
-
-    flightElement.appendChild(flightDetails)
     return flightElement
   }
 
@@ -837,6 +804,15 @@ class Flightradar24Card extends HTMLElement {
     return text
   }
 
+  parseTemplate(template, flight, tpl) {
+    try {
+      return new Function('flight', 'tpl', 'units', `return \`${template.replace(/\${(.*?)}/g, (_, expr) => `\${${expr}}`)}\``)(flight, tpl, this.units)
+    } catch (e) {
+      console.error('Error when rendering: ' + template, e)
+      return ''
+    }
+  }
+
   resolvePlaceholders(value, defaultValue) {
     if (typeof value === 'string' && value.startsWith('${') && value.endsWith('}')) {
       const key = value.slice(2, -1)
@@ -855,6 +831,14 @@ class Flightradar24Card extends HTMLElement {
     }
 
     return value
+  }
+
+  getLocation() {
+    return this.config.test
+      ? this.getTestTracker()
+      : this.config.location_tracker && (this.config.location_tracker in this.hass.states)
+      ? this.hass.states[this.config.location_tracker].attributes
+      : { latitude: this.config.location.lat, longitude: this.config.location.lon } 
   }
 
   subscribeToStateChanges(hass) {
@@ -907,10 +891,10 @@ class Flightradar24Card extends HTMLElement {
     let moving = false
     const currentTime = Date.now() / 1000
 
-    const trackerState = this.config.test ? this.getTestTracker() : this.hass.states[this.config.location_tracker]
-    if (trackerState) {
-      const refLat = trackerState.attributes.latitude
-      const refLon = trackerState.attributes.longitude
+    const location = this.getLocation()
+    if (location) {
+      const refLat = location.latitude
+      const refLon = location.longitude
 
       this._flightsData.forEach((flight) => {
         if (!flight._timestamp) {
@@ -965,21 +949,18 @@ class Flightradar24Card extends HTMLElement {
             }
           }
 
-          // Calculate heading from tracker to closest passing point
           flight.heading_from_tracker_to_closest_passing = Math.round(this.calculateBearing(refLat, refLon, closestPassingLatLon.lat, closestPassingLatLon.lon))
         }
       })
 
       this._flightsData.sort((a, b) => {
-        // Check if either flight has altitude 0
         if (a.altitude === 0 && b.altitude !== 0) {
-          return 1 // Move a to the end
+          return 1
         }
         if (a.altitude !== 0 && b.altitude === 0) {
-          return -1 // Move b to the end
+          return -1
         }
 
-        // If both flights have the same altitude (either both 0 or both non-zero), sort by distance
         const distanceA = a.closest_passing_distance ?? a.distance_to_tracker
         const distanceB = b.closest_passing_distance ?? b.distance_to_tracker
 
