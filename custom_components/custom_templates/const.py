@@ -7,7 +7,7 @@ CONF_PRELOAD_TRANSLATIONS = "preload_translations"
 CUSTOM_TEMPLATES_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema({
-            vol.Required(CONF_PRELOAD_TRANSLATIONS): cv.ensure_list(cv.string)
+            vol.Optional(CONF_PRELOAD_TRANSLATIONS): cv.ensure_list(cv.string)
         })
     },
     extra=vol.ALLOW_EXTRA
@@ -26,3 +26,4 @@ CONST_STATE_ATTR_TRANSLATED_FUNCTION_NAME = "ct_state_attr_translated"
 CONST_TRANSLATED_FUNCTION_NAME = "ct_translated"
 CONST_ALL_TRANSLATIONS_FUNCTION_NAME = "ct_all_translations"
 CONST_IS_AVAILABLE_FUNCTION_NAME = "ct_is_available"
+CONST_DICT_MERGE_FUNCTION_NAME = 'ct_dict_merge'
