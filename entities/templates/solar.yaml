@@ -29,6 +29,8 @@ sensor:
     state_class: total_increasing
     attributes:
       category: solar
+      kw_value: >
+        {{ states(this.entity_id) | float(0) / 1000 }}
       source: >-
         {% if is_number(states('sensor.sungrow_sg5kd_active_generation')) -%}
           Sungather (Addon)
