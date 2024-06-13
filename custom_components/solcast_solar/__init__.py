@@ -16,11 +16,11 @@ from homeassistant.helpers.device_registry import async_get as device_registry
 from homeassistant.util import dt as dt_util
 
 from .const import (
-    DOMAIN, 
-    SERVICE_CLEAR_DATA, 
-    SERVICE_UPDATE, 
-    SERVICE_QUERY_FORECAST_DATA, 
-    SERVICE_SET_DAMPENING, 
+    DOMAIN,
+    SERVICE_CLEAR_DATA,
+    SERVICE_UPDATE,
+    SERVICE_QUERY_FORECAST_DATA,
+    SERVICE_SET_DAMPENING,
     SERVICE_SET_HARD_LIMIT,
     SERVICE_REMOVE_HARD_LIMIT,
     SOLCAST_URL,
@@ -87,11 +87,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         for a in range(0,24):
             optdamp[str(a)] = 1.0
 
+    # Introduced in 2024.6.0: async_get_time_zone
+    try:
+        dt_util.async_get_time_zone
+        asynctz = True
+    except:
+        asynctz = False
+    if asynctz:
+        tz = await dt_util.async_get_time_zone(hass.config.time_zone)
+    else:
+        tz = dt_util.get_time_zone(hass.config.time_zone)
     options = ConnectionOptions(
         entry.options[CONF_API_KEY],
         SOLCAST_URL,
         hass.config.path('solcast.json'),
-        dt_util.get_time_zone(hass.config.time_zone),
+        tz,
         optdamp,
         entry.options[CUSTOM_HOUR_SENSOR],
         entry.options.get(KEY_ESTIMATE,"estimate"),
@@ -99,7 +109,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options)
-    
+
     try:
         await solcast.sites_data()
         await solcast.sites_usage()
@@ -107,7 +117,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady(f"Getting sites data failed: {ex}") from ex
 
     await solcast.load_saved_data()
-    
+
     _VERSION = ""
     try:
         integration = await loader.async_get_integration(hass, DOMAIN)
@@ -115,9 +125,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.info(f"Solcast Integration version number: {_VERSION}")
     except loader.IntegrationNotFound:
         pass
-    
+
     coordinator = SolcastUpdateCoordinator(hass, solcast, _VERSION)
-    
+
     await coordinator.setup()
 
     await coordinator.async_config_entry_first_refresh()
@@ -159,7 +169,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             return {"data": d}
 
         return None
-    
+
     async def handle_service_set_dampening(call: ServiceCall):
         """Handle service call"""
         try:
@@ -211,7 +221,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 if val < 0:  # if not a positive int print message and ask for input again
                     raise HomeAssistantError(f"Error processing {SERVICE_SET_HARD_LIMIT}: Hard limit value not a positive number")
 
-                
                 opt = {**entry.options}
                 opt[HARD_LIMIT] = val
                 # solcast._hardlimit = val
@@ -221,7 +230,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             raise HomeAssistantError(f"Error processing {SERVICE_SET_HARD_LIMIT}: Hard limit value not a positive number")
         except intent.IntentHandleError as err:
             raise HomeAssistantError(f"Error processing {SERVICE_SET_DAMPENING}: {err}") from err
-        
+
     async def handle_service_remove_hard_limit(call: ServiceCall):
         """Handle service call"""
         try:
@@ -272,7 +281,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_remove(DOMAIN, SERVICE_SET_DAMPENING)
     hass.services.async_remove(DOMAIN, SERVICE_SET_HARD_LIMIT)
     hass.services.async_remove(DOMAIN, SERVICE_REMOVE_HARD_LIMIT)
-    
 
     return unload_ok
 
@@ -305,8 +313,6 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
 
         hass.config_entries.async_update_entry(config_entry, options=new)
 
-        
-
     #new 4.0.15
     #custom sensor for 'next x hours'
     if config_entry.version == 5:
@@ -315,8 +321,6 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         config_entry.version = 6
 
         hass.config_entries.async_update_entry(config_entry, options=new)
-
-        
 
     #new 4.0.16
     #which estimate value to use for data calcs est,est10,est90
