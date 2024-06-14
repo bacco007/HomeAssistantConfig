@@ -500,7 +500,7 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
         # prefer (exact) lookup in the library by name
         for func in library_functions:
             result = await func(search=searchname)
-            for item in result.items:
+            for item in result:
                 # handle optional artist filter
                 if (
                     artist
