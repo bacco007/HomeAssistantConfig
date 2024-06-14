@@ -50,9 +50,9 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.6.2 |
 | No. Integrations | 208 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6583 |
-| No. Sensors | 4662 |
-| No. Automations | 142 |
+| No. Entities | 6615 |
+| No. Sensors | 4693 |
+| No. Automations | 143 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 32
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4662
+Sensors | 4693
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 256
+Switches | 258
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 317
+Update | 318
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -764,7 +764,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.18] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.5.1] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
+| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.6.1] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.0.0] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
@@ -774,7 +774,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.11.3] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.2] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.6] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.9] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.10] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -893,7 +893,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.1 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.1.2 |  | core |
-| Music Assistant | 2.0.4 |  | d5369777 |
+| Music Assistant | 2.0.6 |  | d5369777 |
 | Node-RED | 17.0.13 |  | a0d7b954 |
 | OpenThread Border Router | 2.6.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |

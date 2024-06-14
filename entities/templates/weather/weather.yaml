@@ -555,7 +555,7 @@ sensor:
   - name: "[Weather] Precipitation Today"
     unique_id: weather_precipitation_today
     icon: mdi:weather-pouring
-    device_class: distance
+    device_class: precipitation
     state_class: measurement
     unit_of_measurement: mm
     state: >
@@ -578,7 +578,7 @@ sensor:
   - name: "[Weather] Precipitation Yesterday"
     unique_id: weather_precipitation_yesterday
     icon: mdi:weather-pouring
-    device_class: distance
+    device_class: precipitation
     state_class: measurement
     unit_of_measurement: mm
     state: >
