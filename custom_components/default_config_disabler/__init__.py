@@ -27,22 +27,28 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Default Config Disabler from a config entry."""
     disabled_components = entry.options.get(CONF_COMPONENTS_TO_DISABLE, [])
 
-    backup_original_default_config_manifest()
+    def _disable_components() -> bool:
+        backup_original_default_config_manifest()
 
-    new_manifest = load_original_default_config_manifest()
-    for disabled_component in disabled_components:
-        if disabled_component in new_manifest["dependencies"]:
-            new_manifest["dependencies"].remove(disabled_component)
+        new_manifest = load_original_default_config_manifest()
+        for disabled_component in disabled_components:
+            if disabled_component in new_manifest["dependencies"]:
+                new_manifest["dependencies"].remove(disabled_component)
 
-    current_manifest = load_default_config_manifest()
+        current_manifest = load_default_config_manifest()
 
-    if new_manifest == current_manifest:
+        if new_manifest == current_manifest:
+            return False
+
+        save_default_config_manifest(new_manifest)
+        return True
+
+    if not await hass.async_add_executor_job(_disable_components):
         _LOGGER.info(
             "Components: %s are already removed from default_config",
             disabled_components,
         )
     else:
-        save_default_config_manifest(new_manifest)
         _LOGGER.warning(
             "Components: %s were removed from default_config", disabled_components
         )
@@ -61,7 +67,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 )
                 await hass.services.async_call(HA_DOMAIN, SERVICE_HOMEASSISTANT_RESTART)
 
-            for minutes in [1, 2, 4, 8, 16]:
+            for minutes in (1, 2, 4, 8, 16):
                 async_track_point_in_time(
                     hass,
                     delayed_started,
@@ -77,7 +83,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    if restore_original_default_config_manifest():
+    if await hass.async_add_executor_job(restore_original_default_config_manifest):
         _LOGGER.warning("Restarting Home Assistant to use the original default_config")
         await hass.services.async_call(HA_DOMAIN, SERVICE_HOMEASSISTANT_RESTART)
     return True

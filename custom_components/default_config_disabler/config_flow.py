@@ -64,7 +64,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         default=self.config_entry.options.get(
                             CONF_COMPONENTS_TO_DISABLE, []
                         ),
-                    ): cv.multi_select(get_default_config_components()),
+                    ): cv.multi_select(
+                        await self.hass.async_add_executor_job(
+                            get_default_config_components
+                        )
+                    ),
                 }
             ),
         )
