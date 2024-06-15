@@ -53,9 +53,14 @@ action:
           |> filter(fn: (r) => r["entity_id"] == "weather_precipitation_today")
           |> filter(fn: (r) => r["_field"] == "value")
           |> drop(columns: ["friendly_name"])
-          |> filter(fn: (r) => r._value != 0.00)
-          |> aggregateWindow(every: 1d, fn: last, createEmpty: false)
-          |> yield()
+          |> window(every: 1d)
+          |> last()
+          |> group()
+          |> window(every: 1d)
+          |> sum()
+          |> group()
+          |> duplicate(column: "_start", as: "_time")
+          |> yield(name: "sum")
       entity_id: sensor.weather_archive_precipitation_daily
       unit_of_measurement: mm
       friendly_name: "[Weather] Daily Precipitation (Last Year)"

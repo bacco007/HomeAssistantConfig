@@ -53,15 +53,14 @@ cards:
         attribute: target
     show_icon: true
   - type: custom:mushroom-template-card
-    style: |
-      ha-card {
-        background-color: var(--background-color);
-    # primary: Last Beer
     secondary: >-
-      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}} ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
+      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}}
+      ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
 
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
-      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} % - ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}} / {{state_attr('sensor.untappd_recent_beers',
+      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} % -
+      ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}} /
+      {{state_attr('sensor.untappd_recent_beers',
       'data')[0]['beer_rating']|round(2)}})
     icon: mdi:beer-outline
     entity: sensor.untappd_recent_beers
@@ -73,11 +72,12 @@ cards:
       action: none
     double_tap_action:
       action: none
+    picture: |
+      {{state_attr('sensor.untappd_last_check_in_bacco007', 'entity_picture') }}
     card_mod:
       style:
         .: |
           ha-card {
-            # background-color: var(--background-color);
             --icon-size: 40px;
             --icon-symbol-size: 30px;
             --card-secondary-font-size: 12px;
