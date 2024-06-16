@@ -1,6 +1,7 @@
 """Support for Solcast PV forecast."""
 
 import logging
+import random
 
 from homeassistant import loader
 from homeassistant.config_entries import ConfigEntry
@@ -66,13 +67,13 @@ SERVICE_QUERY_SCHEMA: Final = vol.All(
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up solcast parameters."""
 
+    random.seed()
+
     #new in v4.0.16 for the selector of which field to use from the data
-    if entry.options.get(KEY_ESTIMATE,None) == None:
+    if entry.options.get(KEY_ESTIMATE,None) is None:
         new = {**entry.options}
         new[KEY_ESTIMATE] = "estimate"
-        entry.version = 7
-        hass.config_entries.async_update_entry(entry, options=new)
-
+        hass.config_entries.async_update_entry(entry, options=new, version=7)
 
     optdamp = {}
     try:
@@ -141,7 +142,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.info(f"SOLCAST - Solcast API data UTC times are converted to {hass.config.time_zone}")
 
     if options.hard_limit < 100:
-        _LOGGER.info(f"SOLCAST - Inverter hard limit value has been set. If the forecasts and graphs are not as you expect, try running the service 'solcast_solar.remove_hard_limit' to remove this setting. This setting is really only for advanced quirky solar setups.")
+        _LOGGER.info(
+            f"SOLCAST - Inverter hard limit value has been set. If the forecasts and graphs are not as you expect, try running the service 'solcast_solar.remove_hard_limit' to remove this setting. "
+            f"This setting is really only for advanced quirky solar setups."
+        )
 
     async def handle_service_update_forecast(call: ServiceCall):
         """Handle service call"""
@@ -289,8 +293,16 @@ async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEnt
     return True
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
-    """Reload entry if options change."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    """Handle options update. Only reload if any item was changed"""
+    if any(
+        entry.data.get(attrib) != entry.options.get(attrib)
+        for attrib in (DAMP_FACTOR, HARD_LIMIT,KEY_ESTIMATE, CUSTOM_HOUR_SENSOR, CONF_API_KEY)
+    ):
+        # update entry replacing data with new options
+        hass.config_entries.async_update_entry(
+            entry, data={**entry.data, **entry.options}
+        )
+        await hass.config_entries.async_reload(entry.entry_id)
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Migrate old entry."""
@@ -299,9 +311,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
     if config_entry.version < 4:
         new_options = {**config_entry.options}
         new_options.pop("const_disableautopoll", None)
-        config_entry.version = 4
-
-        hass.config_entries.async_update_entry(config_entry, options=new_options)
+        hass.config_entries.async_update_entry(config_entry, options=new_options, version=4)
 
     #new 4.0.8
     #power factor for each hour
@@ -309,27 +319,21 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         new = {**config_entry.options}
         for a in range(0,24):
             new[f"damp{str(a).zfill(2)}"] = 1.0
-        config_entry.version = 5
-
-        hass.config_entries.async_update_entry(config_entry, options=new)
+        hass.config_entries.async_update_entry(config_entry, options=new, version=5)
 
     #new 4.0.15
     #custom sensor for 'next x hours'
     if config_entry.version == 5:
         new = {**config_entry.options}
         new[CUSTOM_HOUR_SENSOR] = 1
-        config_entry.version = 6
-
-        hass.config_entries.async_update_entry(config_entry, options=new)
+        hass.config_entries.async_update_entry(config_entry, options=new, version=6)
 
     #new 4.0.16
     #which estimate value to use for data calcs est,est10,est90
     if config_entry.version == 6:
         new = {**config_entry.options}
         new[KEY_ESTIMATE] = "estimate"
-        config_entry.version = 7
-
-        hass.config_entries.async_update_entry(config_entry, options=new)
+        hass.config_entries.async_update_entry(config_entry, options=new, version=7)
 
     _LOGGER.debug("Solcast Migration to version %s successful", config_entry.version)
 

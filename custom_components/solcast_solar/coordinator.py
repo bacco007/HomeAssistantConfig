@@ -34,7 +34,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         return self.solcast._data
-            
+
     async def setup(self):
         d={}
         self._previousenergy = d
@@ -94,7 +94,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         elif key == "forecast_next_24hour":
             return self.solcast.get_forecast_n_hour(24)
         elif key == "total_kwh_forecast_tomorrow":
-            return self.solcast.get_total_kwh_forecast_day(1) 
+            return self.solcast.get_total_kwh_forecast_day(1)
         elif key == "total_kwh_forecast_d3":
             return self.solcast.get_total_kwh_forecast_day(2)
         elif key == "total_kwh_forecast_d4":
@@ -132,7 +132,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             return False if self.solcast._hardlimit == 100 else f"{round(self.solcast._hardlimit * 1000)}w"
         # elif key == "weather_description":
         #     return self.solcast.get_weather()
-        
+
 
         #just in case
         return None
