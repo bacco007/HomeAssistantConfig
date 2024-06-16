@@ -1,3 +1,5 @@
+import { GOLF_HEADSHOT_URL, MMA_HEADSHOT_URL, RACING_HEADSHOT_URL, TENNIS_HEADSHOT_URL } from "./const.js";
+
 //
 //  Call function to set the data for the sport
 //
@@ -119,6 +121,8 @@ export function setGolf(t, stateObj, c, team, oppo) {
     c.finalTerm = stateObj.attributes.clock;
     c.timeoutsDisplay = 'none';
 
+    c.logo[team] = GOLF_HEADSHOT_URL + stateObj.attributes.team_id + ".png";
+    c.logo[oppo] = GOLF_HEADSHOT_URL + stateObj.attributes.opponent_id + ".png";
 }
 
 //
@@ -149,6 +153,9 @@ export function setMMA(t, stateObj, c, team, oppo) {
     c.timeoutsDisplay = 'none';
     c.barDisplay = "none";
     c.barWrapDisplay = "none";
+
+    c.logo[team] = MMA_HEADSHOT_URL + stateObj.attributes.team_id + ".png";
+    c.logo[oppo] = MMA_HEADSHOT_URL + stateObj.attributes.opponent_id + ".png";
 }
 
 
@@ -177,17 +184,19 @@ export function setRacing(t, stateObj, c, team, oppo) {
     c.barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
     c.barLabel[oppo] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
 
-    if (stateObj.attributes.league.includes("NASCAR")) {
-        c.logo[team] = null;
-        c.logo[oppo] = null;
-        c.initials[team] = "";
-        c.initials[oppo] = "";
-        if (c.name[team] && c.name[oppo]) {
-            c.initials[team] = c.name[team].split(" ").map((n)=>n[0]).join("");
-            c.initials[oppo] = c.name[oppo].split(" ").map((n)=>n[0]).join("");
-            c.initialsDisplay = 'inline';
-        }
-    }
+//    if (stateObj.attributes.league.includes("NASCAR")) {
+//        c.logo[team] = null;
+//        c.logo[oppo] = null;
+//        c.initials[team] = "";
+//        c.initials[oppo] = "";
+//        if (c.name[team] && c.name[oppo]) {
+//            c.initials[team] = c.name[team].split(" ").map((n)=>n[0]).join("");
+//            c.initials[oppo] = c.name[oppo].split(" ").map((n)=>n[0]).join("");
+//            c.initialsDisplay = 'inline';
+//       }
+//    }
+    c.logo[team] = RACING_HEADSHOT_URL + stateObj.attributes.team_id + ".png";
+    c.logo[oppo] = RACING_HEADSHOT_URL + stateObj.attributes.opponent_id + ".png";
 }
 
 //
@@ -248,6 +257,10 @@ export function setTennis(t, stateObj, c, team, oppo) {
     }
     c.timeouts[team] = stateObj.attributes.team_sets_won;
     c.timeouts[oppo] = stateObj.attributes.opponent_sets_won;
+
+    c.logo[team] = TENNIS_HEADSHOT_URL + stateObj.attributes.team_id + ".png";
+    c.logo[oppo] = TENNIS_HEADSHOT_URL + stateObj.attributes.opponent_id + ".png";
+
     c.title = c.title || stateObj.attributes.event_name
 
     c.timeoutsDisplay = 'inline';

@@ -21,18 +21,17 @@ export function renderPost(c) {
         .divider { font-size: 2.5em; text-align: center; opacity: 0; }
         .name { font-size: 1.4em; margin-bottom: 4px; }
         .rank { font-size:0.8em; display: ${c.rankDisplay}; }
-        .post-row0 { display:${c.seriesSummaryDisplay}; font-size: 1.2em; text-align: center; margin: 4px; }
+        .post-series-info { display:${c.seriesSummaryDisplay}; font-size: 1.2em; text-align: center; margin: 4px; }
         .post-row1 { font-size: 1.2em; text-align: center; }
     </style>
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
-            <div class="post-row0">${c.seriesSummary}</div>
             <img class="team-bg" src="${c.logoBG[1]}" />
             <img class="opponent-bg" src="${c.logoBG[2]}" />
             <div class="card-content">
                 <div class="team">
-                    <img class="logo" src="${c.logo[1]}" />
+                    <img class="logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
                     <div class="circle">${c.initials[1]}</div>
                     <div class="name"><span class="rank">${c.rank[1]}</span> ${c.name[1]}</div>
                     <div class="record">${c.record[1]}</div>
@@ -41,13 +40,14 @@ export function renderPost(c) {
                 <div class="divider">&nbsp&nbsp&nbsp</div>
                 <div class="score score2op">${c.score[2]}</div>
                 <div class="team">
-                    <img class="logo" src="${c.logo[2]}" />
+                    <img class="logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
                     <div class="circle">${c.initials[2]}</div>
                     <div class="name"><span class="rank">${c.rank[2]}</span> ${c.name[2]}</div>
                     <div class="record">${c.record[2]}</div>
                 </div>
             </div>
             <div class="post-row1">${c.finalTerm}</div>
+            <div class="post-series-info">${c.seriesSummary}</div>
         </div>
     </ha-card>
     `;    // Return the HTML template

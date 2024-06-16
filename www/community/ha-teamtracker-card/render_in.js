@@ -35,7 +35,7 @@ export function renderIn(c) {
         .on-second { opacity: ${c.onSecondOp}; display: inline-block; }
         .on-third { opacity: ${c.onThirdOp}; display: inline-block; }
         .pitcher { opacity: 0.0; display: inline-block; }
-        .in-row0 { display:${c.seriesSummaryDisplay}; font-size: 1.2em; text-align: center; margin: 4px; }
+        .in-series-info { display:${c.seriesSummaryDisplay}; font-size: 1.2em; text-align: center; margin: 4px; }
         .in-row1 { font-size: 1em; height: 1em; margin: 6px 0 2px; }
         .in-row2 { ; font-size: 1em; height: 1em; margin: 6px 0 2px; }
         .in-row1, .in-row2 { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
@@ -56,12 +56,11 @@ export function renderIn(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
-            <div class="in-row0">${c.seriesSummary}</div>
             <img class="team-bg" src="${c.logoBG[1]}" />
             <img class="opponent-bg" src="${c.logoBG[2]}" />
             <div class="card-content">
                 <div class="team">
-                    <img class="logo" src="${c.logo[1]}" />
+                    <img class="logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
                     <div class="circle">${c.initials[1]}</div>
                     <div class="name"><span class="rank">${c.rank[1]}</span> ${c.name[1]}</div>
                     <div class="record">${c.record[1]}</div>
@@ -77,7 +76,7 @@ export function renderIn(c) {
                 <div class="score">${c.score[2]}</div>
                 <div class="possession2">&bull;</div>
                 <div class="team">
-                    <img class="logo" src="${c.logo[2]}" />
+                    <img class="logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
                     <div class="circle">${c.initials[2]}</div>
                     <div class="name"><span class="rank">${c.rank[2]}</span> ${c.name[2]}</div>
                     <div class="record">${c.record[2]}</div>
@@ -98,6 +97,7 @@ export function renderIn(c) {
                 <div class="on-first">&bull;</div>
             </div>
             <div class="outs">${c.in0}</div>
+            <div class="in-series-info">${c.seriesSummary}</div>
             <div class="line1"></div>
             <div class="in-row1">
                 <div class="venue">${c.venue}</div>
