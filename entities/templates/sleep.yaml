@@ -18,7 +18,7 @@ sensor:
     attributes:
       category: sleep
       maximum: >
-       {{ states('sensor.withings_maximum_heart_rate')}}
+        {{ states('sensor.withings_maximum_heart_rate')}}
       minimum: >
         {{ states('sensor.withings_minimum_heart_rate')}}
 
@@ -67,7 +67,7 @@ sensor:
       percent_sleep: >
         {{ ((states('sensor.withings_deep_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
       to_depth_target: >
-         {{ (((states('sensor.withings_deep_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 25 }}
+        {{ (((states('sensor.withings_deep_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 25 }}
       time_formatted: >
         {% set sueno = states('sensor.withings_deep_sleep') | int / 60%}
         {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
@@ -85,7 +85,7 @@ sensor:
       percent_sleep: >
         {{ ((states('sensor.withings_rem_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
       to_depth_target: >
-         {{ (((states('sensor.withings_rem_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 20 }}
+        {{ (((states('sensor.withings_rem_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 20 }}
       time_formatted: >
         {% set sueno = states('sensor.withings_rem_sleep') | int / 60%}
         {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
@@ -103,7 +103,7 @@ sensor:
       percent_sleep: >
         {{ (((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
       to_depth_target: >
-         {{ ((((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 40 }}
+        {{ ((((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 40 }}
       time_formatted: >
         {% set sueno = ((states('sensor.withings_rem_sleep') | int(0)) + (states('sensor.withings_deep_sleep') | int(0))) / 60%}
         {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min
@@ -121,7 +121,7 @@ sensor:
       percent_sleep: >
         {{ ((states('sensor.withings_light_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100 }}
       to_depth_target: >
-         {{ (((states('sensor.withings_light_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 55 }}
+        {{ (((states('sensor.withings_light_sleep') | int(0)) / (states('sensor.sleep_duration') | int(0))) | round (2) * 100) - 55 }}
       time_formatted: >
         {% set sueno = states('sensor.withings_light_sleep') | int / 60%}
         {%- if (sueno | int // 60) > 0 %}{{ sueno | int // 60}} h{% endif %} {{ sueno | int % 60}} min

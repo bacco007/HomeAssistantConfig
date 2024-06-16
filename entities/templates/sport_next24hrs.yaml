@@ -318,7 +318,6 @@ action:
         - calendar.ical_wrexham_afc
   - variables:
       all_events: >
-
         {% set ns = namespace(items=[]) -%}
         {%- for key, value in agenda.items() %}
           {%- for event in value.events %}
@@ -327,7 +326,6 @@ action:
           {%- endfor %}
         {%- endfor %}
         {{ ns.items }}
-
       events: >
         {{ all_events | list }}
 sensor:

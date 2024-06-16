@@ -57,6 +57,7 @@ sensor:
         {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
         {%- set timestamp = as_timestamp(datetime) + 2*24*60*60 %}
         {{ timestamp | timestamp_custom('%A') }}
+
   - unique_id: helper_time
     name: "[Helper] Time"
     icon: mdi:clock-check

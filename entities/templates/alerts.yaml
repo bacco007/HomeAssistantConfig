@@ -106,7 +106,7 @@ binary_sensor:
 
   - name: "alerts_connect_adguard"
     unique_id: alerts_connect_adguard
-    icon: mdi:shield_account
+    icon: mdi:shield-account
     device_class: problem
     delay_on: 300
     state: >

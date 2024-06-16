@@ -19,10 +19,14 @@ sensor:
     unique_id: solar_production_active
     icon: mdi:solar-power
     state: >-
-      {% if has_value('sensor.sungrow_sg5kd_active_generation') -%}
-        {{states('sensor.sungrow_sg5kd_active_generation')|float(0)}}
-      {% else -%}
-        {{state_attr('sensor.sungrowsolar_alldata', 'total_active_power') | float(0)}}
+      {%- if is_state('sensor.sun_state_day', 'Day') %}
+        {% if has_value('sensor.sungrow_sg5kd_active_generation') -%}
+          {{states('sensor.sungrow_sg5kd_active_generation')|float(0)}}
+        {% else -%}
+          {{state_attr('sensor.sungrowsolar_alldata', 'total_active_power') | float(0)}}
+        {%- endif %}
+      {%- else %}
+        0
       {%- endif %}
     unit_of_measurement: "W"
     device_class: power
@@ -42,10 +46,14 @@ sensor:
     unique_id: solar_return_to_grid_active
     icon: mdi:solar-power
     state: >-
-      {% if has_value('sensor.sungrow_sg5kd_active_export_to_grid') -%}
-        {{states('sensor.sungrow_sg5kd_active_export_to_grid')|float(0)}}
-      {% else -%}
-        {{state_attr('sensor.sungrowsolar_alldata', 'export_to_grid') | float(0)}}
+      {%- if is_state('sensor.sun_state_day', 'Day') %}
+        {% if has_value('sensor.sungrow_sg5kd_active_export_to_grid') -%}
+          {{states('sensor.sungrow_sg5kd_active_export_to_grid')|float(0)}}
+        {% else -%}
+          {{state_attr('sensor.sungrowsolar_alldata', 'export_to_grid') | float(0)}}
+        {%- endif %}
+      {%- else %}
+        0
       {%- endif %}
     unit_of_measurement: "W"
     device_class: power
@@ -65,10 +73,14 @@ sensor:
     unique_id: solar_import_from_grid_active
     icon: mdi:solar-power
     state: >-
-      {% if has_value('sensor.sungrow_sg5kd_active_import_from_grid') -%}
-        {{states('sensor.sungrow_sg5kd_active_import_from_grid')|float(0)}}
-      {% else -%}
-        {{state_attr('sensor.sungrowsolar_alldata', 'import_from_grid') | float(0)}}
+      {%- if is_state('sensor.sun_state_day', 'Day') %}
+        {% if has_value('sensor.sungrow_sg5kd_active_import_from_grid') -%}
+          {{states('sensor.sungrow_sg5kd_active_import_from_grid')|float(0)}}
+        {% else -%}
+          {{state_attr('sensor.sungrowsolar_alldata', 'import_from_grid') | float(0)}}
+        {%- endif %}
+      {%- else %}
+        0
       {%- endif %}
     unit_of_measurement: "W"
     device_class: power
@@ -88,10 +100,14 @@ sensor:
     unique_id: solar_load_power
     icon: mdi:solar-power
     state: >-
-      {% if has_value('sensor.sungrow_sg5kd_load_power') -%}
-        {{states('sensor.sungrow_sg5kd_load_power')|float(0)}}
-      {% else -%}
-        {{state_attr('sensor.sungrowsolar_alldata', 'load_power') | float(0)}}
+      {%- if is_state('sensor.sun_state_day', 'Day') %}
+        {% if has_value('sensor.sungrow_sg5kd_load_power') -%}
+          {{states('sensor.sungrow_sg5kd_load_power')|float(0)}}
+        {% else -%}
+          {{state_attr('sensor.sungrowsolar_alldata', 'load_power') | float(0)}}
+        {%- endif %}
+      {%- else %}
+        0
       {%- endif %}
     unit_of_measurement: "W"
     device_class: power
@@ -111,14 +127,18 @@ sensor:
     unique_id: solar_runtime
     icon: mdi:solar-power
     state: >
-      {%- set time = state_attr('sensor.sungrowsolar_alldata', 'daily_running_time') | int(default=0) * 60 %}
-      {%- set minutes = ((time % 3600) // 60) %}
-      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
-      {%- set hours = ((time % 86400) // 3600) %}
-      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
-      {%- set days = (time // 86400) %}
-      {%- set days = '{}d '.format(days) if days > 0 else '' %}
-      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      {%- if is_state('sensor.sun_state_day', 'Day') %}
+        {%- set time = state_attr('sensor.sungrowsolar_alldata', 'daily_running_time') | int(default=0) * 60 %}
+        {%- set minutes = ((time % 3600) // 60) %}
+        {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+        {%- set hours = ((time % 86400) // 3600) %}
+        {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+        {%- set days = (time // 86400) %}
+        {%- set days = '{}d '.format(days) if days > 0 else '' %}
+        {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+      {%- else %}
+        Offline
+      {%- endif %}
     attributes:
       category: solar
 
@@ -129,26 +149,30 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {{state_attr('sensor.sungrowsolar_alldata', 'internal_temperature') | float(0)}}
+      {%- if is_state('sensor.sun_state_day', 'Day') %}
+        {{state_attr('sensor.sungrowsolar_alldata', 'internal_temperature') | float(0)}}
+      {%- else %}
+        0
+      {%- endif %}
     attributes:
       category: solar
 
-  # - name: "[Solar] Consumption (Active)"
-  #   unique_id: solar_consumption_active
-  #   unit_of_measurement: "W"
-  #   device_class: power
-  #   state_class: measurement
-  #   icon: mdi:solar-power
-  #   state: >-
-  #     {%- set solar_prod = (states('sensor.solar_production_active')|float(0)) %}
-  #     {%- set return_to_grid = states('sensor.solar_export_to_grid_active')|float(0) %}
-  #     {%- set solar_consumed = (solar_prod - return_to_grid) | float(0) %}
-  #     {%- if solar_consumed <= 0 %}
-  #       {{ 0 }}
-  #     {%- else %}
-  #       {{ solar_consumed | round(2) }}
-  #     {%- endif %}
-  #   attributes:
-  #     category: solar
-  #     kw_value: >
-  #       {{ states(this.entity_id) | float(0) / 1000 }}
+  - name: "[Solar] Consumption (Active)"
+    unique_id: solar_consumption_active
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    icon: mdi:solar-power
+    state: >-
+      {%- set solar_prod = (states('sensor.solar_production_active')|float(0)) %}
+      {%- set return_to_grid = states('sensor.solar_export_to_grid_active')|float(0) %}
+      {%- set solar_consumed = (solar_prod - return_to_grid) | float(0) %}
+      {%- if solar_consumed <= 0 %}
+        {{ 0 }}
+      {%- else %}
+        {{ solar_consumed | round(2) }}
+      {%- endif %}
+    attributes:
+      category: solar
+      kw_value: >
+        {{ states(this.entity_id) | float(0) / 1000 }}

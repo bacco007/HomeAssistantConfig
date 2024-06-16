@@ -19,6 +19,7 @@ sensor:
       {%- endif %}
     attributes:
       category: energy
+
   - name: "[Energy] Time of Use Tariff"
     unique_id: energy_timeofuse_tariff
     device_class: monetary
@@ -35,6 +36,7 @@ sensor:
       {%- endif %}
     attributes:
       category: energy
+
   - name: "[Energy] Solar Feed-In Tariff"
     unique_id: energy_solar_tariff
     device_class: monetary
@@ -45,6 +47,7 @@ sensor:
       0.07
     attributes:
       category: energy
+
   - name: "[Energy] Supply Charge"
     unique_id: energy_supply_charge
     device_class: monetary

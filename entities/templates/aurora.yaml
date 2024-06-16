@@ -2,7 +2,7 @@
 sensor:
   - name: aurora_chance
     unique_id: aurora_chance
-    icon: mdi:sun
+    icon: mdi:aurora
     state: >
       {% set auroraChance = states('sensor.aurora_31_150')|int/100 %}
       {% set cloudCoverage = (states('sensor.openweathermap_cloud_coverage')|int/100) %}
