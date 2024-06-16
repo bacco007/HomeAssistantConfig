@@ -77,7 +77,7 @@ class SolcastApi:
         self._sites = []
         self._data = {'siteinfo': {}, 'last_updated': dt.fromtimestamp(0, timezone.utc).isoformat()}
         self._api_used = 0
-        self._api_limit = 0
+        self._api_limit = 10
         self._filename = options.file_path
         self._tz = options.tz
         self._dataenergy = {}
@@ -125,7 +125,7 @@ class SolcastApi:
                         retries = 3
                         retry = retries
                         success = False
-                        while retry > 0:
+                        while retry >= 0:
                             resp: ClientResponse = await self.aiohttp_session.get(
                                 url=f"{self.options.host}/rooftop_sites", params=params, ssl=False
                             )
@@ -147,12 +147,13 @@ class SolcastApi:
                                 retry = 0
                                 success = True
                             else:
-                                _LOGGER.debug(f"SOLCAST - will retry GET rooftop_sites, retry {(retries - retry) + 1}")
-                                await asyncio.sleep(5)
+                                if retry > 0:
+                                    _LOGGER.debug(f"SOLCAST - will retry GET rooftop_sites, retry {(retries - retry) + 1}")
+                                    await asyncio.sleep(5)
                                 retry -= 1
                         if not success:
                             if statusTranslate.get(status): status = str(status) + statusTranslate[status]
-                            _LOGGER.warning(f"SOLCAST - Timeout gathering rooftop sites data, last call result: {status}, using cached data if it exists")
+                            _LOGGER.warning(f"SOLCAST - Retries exhausted gathering rooftop sites data, last call result: {status}, using cached data if it exists")
                             status = 404
                             if file_exists(apiCacheFileName):
                                 _LOGGER.debug(f"SOLCAST - loading cached sites data")
@@ -724,6 +725,7 @@ class SolcastApi:
 
             async with async_timeout.timeout(480):
                 apiCacheFileName = cachedname + "_" + site + ".json"
+                usageCacheFileName = "solcast-usage.json"
                 if self.apiCacheEnabled and file_exists(apiCacheFileName):
                     _LOGGER.debug(f"SOLCAST - Getting cached testing data for site {site}")
                     status = 404
@@ -753,6 +755,9 @@ class SolcastApi:
                         if status == 200:
                             _LOGGER.debug(f"SOLCAST - API returned data. API Counter incremented from {self._api_used} to {self._api_used + 1}")
                             self._api_used = self._api_used + 1
+                            _LOGGER.debug(f"SOLCAST - writing usage cache")
+                            async with aiofiles.open(usageCacheFileName, 'w') as f:
+                                await f.write(json.dumps({"daily_limit": self._api_limit, "daily_limit_consumed": self._api_used}, ensure_ascii=False))
                         else:
                             _LOGGER.warning(f"SOLCAST - API returned status {status}. API used {self._api_used} to {self._api_used + 1}")
                             _LOGGER.warning("This is an error with the data returned from Solcast, not the integration")
