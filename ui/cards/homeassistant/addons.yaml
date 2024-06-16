@@ -108,9 +108,6 @@ cards:
           method: friendly_name
         card_mod:
           style: |
-            #states {
-              padding-top: 0 !important;
-            }
             #states > * {
               margin: 0 !important;
             }
