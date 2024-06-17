@@ -112,7 +112,10 @@ class SolcastApi:
                 #params = {"format": "json", "api_key": self.options.api_key}
                 params = {"format": "json", "api_key": spl.strip()}
                 async with async_timeout.timeout(60):
-                    apiCacheFileName = "solcast-sites.json"
+                    if len(sp) == 1:
+                        apiCacheFileName = "solcast-sites.json"
+                    else:
+                        apiCacheFileName = "solcast-sites-%s.json" % (spl,)
                     _LOGGER.debug(f"SOLCAST apiCacheEnabled={str(self.apiCacheEnabled)}, {apiCacheFileName}={str(file_exists(apiCacheFileName))}")
                     if self.apiCacheEnabled and file_exists(apiCacheFileName):
                         _LOGGER.debug(f"SOLCAST - loading cached sites data")
@@ -144,7 +147,7 @@ class SolcastApi:
                                 _LOGGER.debug(f"SOLCAST - writing sites data cache")
                                 async with aiofiles.open(apiCacheFileName, 'w') as f:
                                     await f.write(json.dumps(resp_json, ensure_ascii=False))
-                                retry = 0
+                                retry = -1
                                 success = True
                             else:
                                 if retry > 0:
