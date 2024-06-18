@@ -49,3 +49,13 @@ ics_calendar:
       url: "https://fixturedownload.com/download/aflw-2024-sydney-swans-UTC.ics"
       download_interval: 21600
       days: 365
+    - name: "ical_manchester_united_women"
+      include_all_day: true
+      url: "https://www.manutd.com/en/Manchester_United_en_Women.ics"
+      download_interval: 21600
+      days: 365
+    - name: "ical_manchester_united"
+      include_all_day: true
+      url: "https://www.manutd.com/en/Manchester_United.ics"
+      download_interval: 21600
+      days: 365

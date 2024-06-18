@@ -43,7 +43,7 @@ cards:
               ha-card {
                 overflow: auto;
                 box-shadow: none !important;
-                font-size: 12px;
+                font-size: 13px;
                 }
         entities:
           include: sensor.sportschedule_nfl_patriots
@@ -57,20 +57,19 @@ cards:
               else {
                 var date = new Date(x.date);
                 date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br/>@ "+
+                "<br>@ "+
                 String(date.getHours()).padStart(2,'0')+":"+
                 String(date.getMinutes()).padStart(2,'0')
               }
             align: center
           - name: Home Team
             data: events
-            align: right
+            align: left
             modify: >-
-              if (typeof x.competitions[0].competitors[0].team.logos[0].href !==
-              'undefined')
-                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logos[0].href + '" style="height:20px;vertical-align:middle;"></div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
+              '<div><img src="https://a.espncdn.com/i/teamlogos/nfl/500/' +
+              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() + ".png"
+              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
+              x.competitions[0].competitors[0].team.displayName + '</div>'
           - name: Match
             data: events
             align: center
@@ -78,25 +77,26 @@ cards:
               if (x.competitions[0].status.type.description == 'Scheduled')
                 ' VS '
               else
-                x.competitions[0].competitors[0].score.displayValue + " - " + x.competitions[0].competitors[1].score.displayValue
+                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
           - name: Away Team
             data: events
             align: left
             modify: >-
-              if (typeof x.competitions[0].competitors[1].team.logos[0].href !==
-              'undefined')
-                '<div><img src="' + x.competitions[0].competitors[1].team.logos[0].href + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Time
+              '<div><img src="https://a.espncdn.com/i/teamlogos/nfl/500/' +
+              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() + ".png"
+              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
+              x.competitions[0].competitors[1].team.displayName + '</div>'
+          - name: Status
             data: events
             align: center
             modify: x.competitions[0].status.type.description
-          - name: Details
+          - name: Venue
             data: events
             modify: >-
-              x.season.displayName + ' ' + x.seasonType.name + '<br/> ' +
-              x.competitions[0].venue.fullName
+              x.season.displayName + ' ' + x.seasonType.name + "<br> Venue: " +
+              x.competitions[0].venue.fullName + " (" +
+              x.competitions[0].venue.address.city + ")"
+
   - type: entities
     entities:
       - type: custom:fold-entity-row

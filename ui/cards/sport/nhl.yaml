@@ -28,9 +28,13 @@ cards:
       - type: custom:flex-table-card
         css:
           table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+          tbody tr:hover: >-
+            background-color: rgba(180, 70, 70,0.2) !important; color:white
+            !important;
           tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
+          tbody tr td:nth-child(3): >-
+            min-width: 1fr;width: 1fr; white-space: nowrap; background-color:
+            rgba(39, 179, 118,0.2); color: white;
           th+: "border-bottom: 1px solid rgb(127,127,127);"
         card_mod:
           style:
@@ -59,36 +63,36 @@ cards:
             align: center
           - name: Home Team
             data: events
-            align: right
-            modify: |-
-              if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
-                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:25px;vertical-align:middle;"></div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
+            align: left
+            modify: >-
+              '<div><img src="https://a.espncdn.com/i/teamlogos/nhl/500/' +
+              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() +
+              ".png" + '" style="height:20px;vertical-align:middle;">&nbsp;' +
+              x.competitions[0].competitors[0].team.displayName + '</div>'
           - name: Match
             data: events
             align: center
             modify: |-
-              if (x.status.type.description == 'Scheduled')
+              if (x.competitions[0].status.type.description == 'Scheduled')
                 ' VS '
               else
                 x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
           - name: Away Team
             data: events
             align: left
-            modify: |-
-              if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
-                '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:25px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Time
+            modify: >-
+              '<div><img src="https://a.espncdn.com/i/teamlogos/nhl/500/' +
+              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() +
+              ".png" + '" style="height:20px;vertical-align:middle;">&nbsp;' +
+              x.competitions[0].competitors[1].team.displayName + '</div>'
+          - name: Status
             data: events
             align: center
-            modify: x.status.type.description
+            modify: x.competitions[0].status.type.description
           - name: Venue
             data: events
             modify: >-
-              x.competitions[0].venue.fullName" (" +
+              x.competitions[0].venue.fullName + " (" +
               x.competitions[0].venue.address.city + ")"
 
   - type: custom:decluttering-card
