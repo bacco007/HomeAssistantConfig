@@ -59,3 +59,18 @@ ics_calendar:
       url: "https://www.manutd.com/en/Manchester_United.ics"
       download_interval: 21600
       days: 365
+    - name: "ical_premier_league_all_teams"
+      include_all_day: true
+      url: "https://fixturedownload.com/download/epl-2024-GMTStandardTime.ics"
+      download_interval: 21600
+      days: 365
+    - name: "ical_australia_rugby"
+      include_all_day: true
+      url: "https://c.caltrics.com/9fb0a677-6c05-489c-9231-655b6f0b2695"
+      download_interval: 21600
+      days: 365
+    - name: "ical_matildas"
+      include_all_day: true
+      url: "https://ics.fixtur.es/v2/au-women.ics"
+      download_interval: 21600
+      days: 365

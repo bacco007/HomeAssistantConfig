@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.6.3 |
-| No. Integrations | 210 |
+| No. Integrations | 211 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6815 |
-| No. Sensors | 4858 |
+| No. Entities | 6940 |
+| No. Sensors | 4991 |
 | No. Automations | 143 |
 
 <details>
@@ -64,14 +64,14 @@ Alarm control panels | 2
 Areas | 17
 Binary sensors | 361
 Buttons | 162
-Calendars | 71
+Calendars | 74
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 116
-Devices | 614
+Devices | 615
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,24 +85,24 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 39
-Persistent notifications | 6
+Persistent notifications | 5
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4858
+Sensors | 4991
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 267
+Switches | 268
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 328
+Update | 329
 Vacuums | 0
 Water heaters | 0
-Weather | 13
+Weather | 14
 Zones | 4
 </details>
 
@@ -115,10 +115,13 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>602 Integrations</summary>
+<details><summary>605 Integrations</summary>
 
 | Name |
 | --- |
+| [accuweather](https://www.home-assistant.io/components/accuweather) |
+| [accuweather.sensor](https://www.home-assistant.io/components/accuweather.sensor) |
+| [accuweather.weather](https://www.home-assistant.io/components/accuweather.weather) |
 | [adaptive_lighting](https://www.home-assistant.io/components/adaptive_lighting) |
 | [adaptive_lighting.switch](https://www.home-assistant.io/components/adaptive_lighting.switch) |
 | [adguard](https://www.home-assistant.io/components/adguard) |
@@ -778,7 +781,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.11.3] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.6] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.10] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.11] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
