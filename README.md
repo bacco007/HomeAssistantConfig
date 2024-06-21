@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.6.3 |
 | No. Integrations | 211 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6936 |
-| No. Sensors | 4986 |
+| No. Entities | 6987 |
+| No. Sensors | 5017 |
 | No. Automations | 143 |
 
 <details>
@@ -64,14 +64,14 @@ Alarm control panels | 2
 Areas | 17
 Binary sensors | 361
 Buttons | 162
-Calendars | 74
+Calendars | 76
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 116
-Devices | 615
+Devices | 616
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 39
-Persistent notifications | 5
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4986
+Sensors | 5017
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 268
+Switches | 270
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 330
+Update | 331
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -802,7 +802,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.3] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@wibias](https://github.com/wibias), [@Snuffy2](https://github.com/Snuffy2).|
-| [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.1] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
+| [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.2] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.9] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
@@ -822,7 +822,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.7.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.8.0] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
@@ -888,7 +888,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.13.0 |  | db21ed7f |
-| Cloudflared | 5.1.12 |  | 9074a9fa |
+| Cloudflared | 5.1.13 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
 | ESPHome | 2024.6.1 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
@@ -896,7 +896,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Git Exporter | 1.17.0 |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
-| Home Assistant Stream Deck | 2024.2.0 |  | dc473884 |
+| Home Assistant Stream Deck | 2024.6.1 |  | dc473884 |
 | JupyterLab | 0.15.1 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.1.2 |  | core |
