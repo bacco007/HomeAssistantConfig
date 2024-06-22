@@ -1,6 +1,5 @@
 ---
 sensor:
-sensor:
   - unique_id: helper_date
     name: "[Helper] Date"
     icon: mdi:calendar-today
@@ -37,10 +36,6 @@ sensor:
           else 'th'
         %}
         {{day}}, {{month}} {{daynum}}{{suffix}} {{now().strftime('%Y')}}
-      day: >
-        {%- set date = states('sensor.date') %}
-        {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
-        {{ datetime.strftime('%A') }}
       day_phase: >
         {%- if now() > now().replace(hour=5).replace(minute=0).replace(second=0) and
             now() < now().replace(hour=9).replace(minute=0).replace(second=0) %}

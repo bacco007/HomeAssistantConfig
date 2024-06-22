@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.6.3 |
-| No. Integrations | 211 |
+| HA Version | 2024.6.4 |
+| No. Integrations | 212 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6987 |
-| No. Sensors | 5017 |
-| No. Automations | 143 |
+| No. Entities | 6929 |
+| No. Sensors | 4991 |
+| No. Automations | 139 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -63,15 +63,15 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 361
-Buttons | 162
+Buttons | 161
 Calendars | 76
 Cameras | 5
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 116
-Devices | 616
+Device trackers | 115
+Devices | 617
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -83,7 +83,7 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 37
+Media players | 36
 Numbers | 39
 Persistent notifications | 4
 Persons | 4
@@ -91,18 +91,18 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 5017
+Sensors | 4991
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 270
+Switches | 272
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 331
+Update | 304
 Vacuums | 0
 Water heaters | 0
-Weather | 14
+Weather | 13
 Zones | 4
 </details>
 
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>605 Integrations</summary>
+<details><summary>607 Integrations</summary>
 
 | Name |
 | --- |
@@ -430,6 +430,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [nodered.binary_sensor](https://www.home-assistant.io/components/nodered.binary_sensor) |
 | [nodered.sensor](https://www.home-assistant.io/components/nodered.sensor) |
+| [nodered.switch](https://www.home-assistant.io/components/nodered.switch) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [nsw_air_quality.sensor](https://www.home-assistant.io/components/nsw_air_quality.sensor) |
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
@@ -621,6 +622,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [thermal_comfort.sensor](https://www.home-assistant.io/components/thermal_comfort.sensor) |
 | [thread](https://www.home-assistant.io/components/thread) |
 | [time](https://www.home-assistant.io/components/time) |
+| [time_date](https://www.home-assistant.io/components/time_date) |
 | [time_date.sensor](https://www.home-assistant.io/components/time_date.sensor) |
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tod](https://www.home-assistant.io/components/tod) |
@@ -755,7 +757,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.1] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.7] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.8] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -793,7 +795,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.31] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.2] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.27] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.30] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.2] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -887,7 +889,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
-| Browserless Chromium | 2.13.0 |  | db21ed7f |
+| Browserless Chromium | 2.14.0 |  | db21ed7f |
 | Cloudflared | 5.1.13 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
 | ESPHome | 2024.6.1 |  | 15ef4d2f |
@@ -902,7 +904,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Matter Server | 6.1.2 |  | core |
 | Music Assistant | 2.0.7 |  | d5369777 |
 | Node-RED | 17.0.13 |  | a0d7b954 |
-| OpenThread Border Router | 2.6.0 |  | core |
+| OpenThread Border Router | 2.7.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.1 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
@@ -955,7 +957,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.6.3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.6.4-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml

@@ -1,76 +1,76 @@
 ---
 ics_calendar:
   calendars:
-    - name: "Astronomy Calendar"
-      url: "https://cantonbecker.com/astronomy-calendar/astrocal.ics"
+    - name: Astronomy Calendar
+      url: https://cantonbecker.com/astronomy-calendar/astrocal.ics
       include_all_day: true
       download_interval: 21600
-    - name: "Astronomical Events"
-      url: "https://in-the-sky.org/newscalyear_ical.php?year=2024&maxdiff=7"
+    - name: Astronomical Events
+      url: https://in-the-sky.org/newscalyear_ical.php?year=2024&maxdiff=7
       include_all_day: true
       download_interval: 21600
-    - name: "ical_rugby_australia_autumninternationals"
+    - name: ical_rugby_australia_autumninternationals
       include_all_day: true
-      url: "https://fixturedownload.com/download/autumn-internationals-2024-australia-GMTStandardTime.ics"
-      download_interval: 21600
-      days: 365
-    - name: "ical_icc_cricket_mens"
-      include_all_day: true
-      url: "https://ics.ecal.com/ecal-sub/63afdb7a0b7153000ee61cff/ICC%20Cricket.ics"
+      url: https://fixturedownload.com/download/autumn-internationals-2024-australia-GMTStandardTime.ics
       download_interval: 21600
       days: 365
-    - name: "ical_cricket_australia_mens"
+    - name: ical_icc_cricket_mens
       include_all_day: true
-      url: "https://ics.ecal.com/ecal-sub/662d9a0ef79861000822b80d/ICC%20Cricket.ics"
+      url: https://ics.ecal.com/ecal-sub/63afdb7a0b7153000ee61cff/ICC%20Cricket.ics
       download_interval: 21600
       days: 365
-    - name: "ical_cricket_australia_womens"
+    - name: ical_cricket_australia_mens
       include_all_day: true
-      url: "https://ics.ecal.com/ecal-sub/662d9a552570170008678e2f/ICC%20Cricket.ics"
+      url: https://ics.ecal.com/ecal-sub/662d9a0ef79861000822b80d/ICC%20Cricket.ics
       download_interval: 21600
       days: 365
-    - name: "ical_nfl_all_teams"
+    - name: ical_cricket_australia_womens
       include_all_day: true
-      url: "https://fixturedownload.com/download/nfl-2024-UTC.ics"
+      url: https://ics.ecal.com/ecal-sub/662d9a552570170008678e2f/ICC%20Cricket.ics
       download_interval: 21600
       days: 365
-    - name: "ical_nextspaceflight"
+    - name: ical_nfl_all_teams
       include_all_day: true
-      url: "https://calendar.google.com/calendar/ical/nextspaceflight.com_l328q9n2alm03mdukb05504c44%40group.calendar.google.com/public/basic.ics"
+      url: https://fixturedownload.com/download/nfl-2024-UTC.ics
       download_interval: 21600
       days: 365
-    - name: "ical_aflw_all_teams"
+    - name: ical_nextspaceflight
       include_all_day: true
-      url: "https://fixturedownload.com/download/aflw-2024-UTC.ics"
+      url: https://calendar.google.com/calendar/ical/nextspaceflight.com_l328q9n2alm03mdukb05504c44%40group.calendar.google.com/public/basic.ics
       download_interval: 21600
       days: 365
-    - name: "ical_sydney_swans_aflw"
+    - name: ical_aflw_all_teams
       include_all_day: true
-      url: "https://fixturedownload.com/download/aflw-2024-sydney-swans-UTC.ics"
+      url: https://fixturedownload.com/download/aflw-2024-UTC.ics
       download_interval: 21600
       days: 365
-    - name: "ical_manchester_united_women"
+    - name: ical_sydney_swans_aflw
       include_all_day: true
-      url: "https://www.manutd.com/en/Manchester_United_en_Women.ics"
+      url: https://fixturedownload.com/download/aflw-2024-sydney-swans-UTC.ics
       download_interval: 21600
       days: 365
-    - name: "ical_manchester_united"
+    - name: ical_manchester_united_women
       include_all_day: true
-      url: "https://www.manutd.com/en/Manchester_United.ics"
+      url: https://www.manutd.com/en/Manchester_United_en_Women.ics
       download_interval: 21600
       days: 365
-    - name: "ical_premier_league_all_teams"
+    - name: ical_manchester_united
       include_all_day: true
-      url: "https://fixturedownload.com/download/epl-2024-GMTStandardTime.ics"
+      url: https://www.manutd.com/en/Manchester_United.ics
       download_interval: 21600
       days: 365
-    - name: "ical_australia_rugby"
+    - name: ical_premier_league_all_teams
       include_all_day: true
-      url: "https://c.caltrics.com/9fb0a677-6c05-489c-9231-655b6f0b2695"
+      url: https://fixturedownload.com/download/epl-2024-GMTStandardTime.ics
       download_interval: 21600
       days: 365
-    - name: "ical_matildas"
+    - name: ical_australia_rugby
       include_all_day: true
-      url: "https://ics.fixtur.es/v2/au-women.ics"
+      url: https://c.caltrics.com/9fb0a677-6c05-489c-9231-655b6f0b2695
+      download_interval: 21600
+      days: 365
+    - name: ical_matildas
+      include_all_day: true
+      url: https://ics.fixtur.es/v2/au-women.ics
       download_interval: 21600
       days: 365

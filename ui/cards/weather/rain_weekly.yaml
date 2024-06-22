@@ -1,0 +1,70 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Rainfall - Weekly for Last Year
+    icon: mdi:water-plus-outline
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card {
+          background: none !important;
+          box-shadow: none !important;
+        ]
+    graph_span: 4month
+    span:
+      end: day
+      offset: "-0d"
+    apex_config:
+      fill:
+        type: gradient
+        gradient:
+          type: vertical
+          shadeIntensity: 0
+          opacityFrom: 1
+          opacityTo: 0.5
+          stops: 10
+      chart:
+        height: 250px
+      grid:
+        show: false
+        borderColor: darkslateblue
+        strokeDashArray: 2
+      dataLabels:
+        background:
+          borderWidth: 0
+          opacity: 0
+          foreColor: white
+        offsetY: -10
+      plotOptions:
+        bar:
+          borderRadius: 0
+          dataLabels:
+            position: top
+    all_series_config:
+      type: column
+    series:
+      - entity: sensor.weather_archive_precipitation_weekly
+        data_generator: |
+          let res = [];
+          for (const [key, value] of Object.entries(entity.attributes)) {
+              let d = new Date(key).getTime();
+              if (d > 0)
+                 res.push([d, value]);
+          }
+          return res.sort((a, b) => { return a[0] - b[0] });
+        name: Rain This Month
+        color: deepskyblue
+        type: column
+        show:
+          name_in_header: true
+          datalabels: true
+          in_chart: true
+          legend_value: false
+          extremas: false

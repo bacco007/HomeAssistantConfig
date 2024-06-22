@@ -1,0 +1,90 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Temperature - Weekly Extremes for Last Year
+    icon: mdi:thermometer-lines
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:apexcharts-card
+    graph_span: 12month
+    span:
+      end: month
+      offset: "-0d"
+    apex_config:
+      fill:
+        type: gradient
+        gradient:
+          type: vertical
+          shadeIntensity: 0
+          opacityFrom: 1
+          opacityTo: 0.5
+          stops: 10
+      chart:
+        height: 275px
+      grid:
+        show: false
+        borderColor: darkslateblue
+        strokeDashArray: 2
+      dataLabels:
+        background:
+          borderWidth: 0
+          opacity: 0.1
+          foreColor: white
+        offsetY: -6
+      plotOptions:
+        bar:
+          borderRadius: 0
+          dataLabels:
+            position: top
+    all_series_config:
+      type: line
+      group_by:
+        func: last
+        duration: 1week
+        fill: last
+    series:
+      - entity: sensor.weather_archive_temperature_minimum_weekly
+        data_generator: |
+          let res = [];
+          for (const [key, value] of Object.entries(entity.attributes)) {
+              let d = new Date(key).getTime();
+              if (d > 0)
+                 res.push([d, value]);
+          }
+          return res.sort((a, b) => { return a[0] - b[0] });
+        name: Minimum Temperature
+        color: "#6A34E0"
+        show:
+          name_in_header: true
+          datalabels: false
+          in_chart: true
+          legend_value: false
+          extremas: true
+      - entity: sensor.weather_archive_temperature_maximum_weekly
+        data_generator: |
+          let res = [];
+          for (const [key, value] of Object.entries(entity.attributes)) {
+              let d = new Date(key).getTime();
+              if (d > 0)
+                 res.push([d, value]);
+          }
+          return res.sort((a, b) => { return a[0] - b[0] });
+        name: Maximum Temperature
+        color: "#F03A3E"
+        show:
+          name_in_header: true
+          datalabels: false
+          in_chart: true
+          legend_value: false
+          extremas: true
+    card_mod:
+      style: |
+        ha-card {
+          background: none !important;
+          box-shadow: none !important;
+        ]
