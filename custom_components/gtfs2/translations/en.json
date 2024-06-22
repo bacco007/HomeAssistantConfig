@@ -28,6 +28,9 @@
         "data": {
           "file": "New datasource name",
           "url": "external url to gtfs data (zip) file",
+          "api_key": "API key, if required",
+          "api_key_name": "API key name",
+          "api_key_location": "the location where the key is applied",
 		  "extract_from": "Extract data from:"
         },
         "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
