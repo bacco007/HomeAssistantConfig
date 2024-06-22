@@ -1,20 +1,420 @@
 ---
-type: custom:auto-entities
-filter:
-  include:
-    - integration: accuweather
-sort:
-  method: name
-  ignore_case: true
-card:
-  type: custom:fold-entity-row
-  card_mod:
-    style: |
-      #measure > * {
-        margin: 0 !important;
-      }
-  head:
-    type: custom:template-entity-row
-    name: Accuweather
-    icon: mdi:weather-partly-lightning
-    state: ""
+type: custom:fold-entity-row
+card_mod:
+  style: |
+    #measure > * {
+      margin: 0 !important;
+    }
+head:
+  type: custom:template-entity-row
+  name: Accuweather
+  icon: mdi:weather-partly-lightning
+  state: ""
+entities:
+  - entity: weather.tbsmarthome_2
+  - type: section
+  - entity: sensor.tbsmarthome_apparent_temperature
+    name: Apparent Temperature
+  - entity: sensor.tbsmarthome_cloud_ceiling
+    name: Cloud Ceiling
+  - entity: sensor.tbsmarthome_precipitation
+    name: Precipitation
+  - entity: sensor.tbsmarthome_pressure_tendency
+    name: Pressure Tendency
+  - entity: sensor.tbsmarthome_dew_point
+    name: Dew Point
+  - entity: sensor.tbsmarthome_wet_bulb_temperature
+    name: Wet Bulb Temperature
+  - entity: sensor.tbsmarthome_wind_chill_temperature
+    name: Wind Chill Temperature
+
+  - type: section
+  - entity: sensor.tbsmarthome_cloud_cover
+    name: Cloud Cover
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_cloud_cover_today
+        name: Today
+      - entity: sensor.tbsmarthome_cloud_cover_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_cloud_cover_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_cloud_cover_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_cloud_cover_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_cloud_cover_today
+    name: Cloud Cover (Day)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_cloud_cover_tonight
+        name: Today
+      - entity: sensor.tbsmarthome_cloud_cover_night_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_cloud_cover_night_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_cloud_cover_night_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_cloud_cover_night_4
+        name: Day 4
+    entity: sensor.tbsmarthome_cloud_cover_tonight
+    name: Cloud Cover (Night)
+
+  - type: section
+  - entity: sensor.tbsmarthome_realfeel_temperature
+    name: RealFeel Temperature
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_realfeel_temperature_max_today
+        name: Today
+      - entity: sensor.tbsmarthome_realfeel_temperature_max_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_realfeel_temperature_max_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_realfeel_temperature_max_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_realfeel_temperature_max_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_realfeel_temperature_max_today
+    name: RealFeel Temp (Max)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_realfeel_temperature_min_today
+        name: Today
+      - entity: sensor.tbsmarthome_realfeel_temperature_min_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_realfeel_temperature_min_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_realfeel_temperature_min_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_realfeel_temperature_min_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_realfeel_temperature_min_today
+    name: RealFeel Temp (Min)
+  - entity: sensor.tbsmarthome_realfeel_temperature_shade
+    name: RealFeel Temperature (Shade)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_max_today
+        name: Today
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_max_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_max_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_max_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_max_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_realfeel_temperature_shade_max_today
+    name: RealFeel Temp (Shade, Max)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_min_today
+        name: Today
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_min_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_min_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_min_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_realfeel_temperature_shade_min_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_realfeel_temperature_shade_min_today
+    name: RealFeel Temp (Shade, Min)
+
+  - type: section
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_air_quality_today
+        name: Today
+      - entity: sensor.tbsmarthome_air_quality_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_air_quality_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_air_quality_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_air_quality_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_air_quality_today
+    name: Air Quality
+
+  - type: section
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_hours_of_sun_today
+        name: Today
+      - entity: sensor.tbsmarthome_hours_of_sun_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_hours_of_sun_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_hours_of_sun_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_hours_of_sun_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_hours_of_sun_today
+    name: Hours of Sun
+
+  - type: section
+  - type: custom:fold-entity-row
+    padding: 5
+    head:
+      entity: sensor.tbsmarthome_condition_today
+      name: Condition (Day)
+    entities:
+      - entity: sensor.tbsmarthome_condition_today
+        name: Today
+      - entity: sensor.tbsmarthome_condition_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_condition_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_condition_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_condition_day_4
+        name: Day 4
+    card_mod:
+      style: |
+        #measure > * {
+          margin: 0 !important;
+        }
+  - type: custom:fold-entity-row
+    padding: 5
+    head:
+      entity: sensor.tbsmarthome_condition_tonight
+      name: Condition (Night)
+    entities:
+      - entity: sensor.tbsmarthome_condition_tonight
+        name: Tonight
+      - entity: sensor.tbsmarthome_condition_night_1
+        name: Night 1
+      - entity: sensor.tbsmarthome_condition_night_2
+        name: Night 2
+      - entity: sensor.tbsmarthome_condition_night_3
+        name: Night 3
+      - entity: sensor.tbsmarthome_condition_night_4
+        name: Night 4
+    card_mod:
+      style: |
+        #measure > * {
+          margin: 0 !important;
+        }
+
+  - type: section
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_grass_pollen_today
+        name: Today
+      - entity: sensor.tbsmarthome_grass_pollen_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_grass_pollen_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_grass_pollen_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_grass_pollen_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_grass_pollen_today
+    name: Grass Pollen
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_mold_pollen_today
+        name: Today
+      - entity: sensor.tbsmarthome_mold_pollen_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_mold_pollen_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_mold_pollen_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_mold_pollen_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_mold_pollen_today
+    name: Mold Pollen
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_ragweed_pollen_today
+        name: Today
+      - entity: sensor.tbsmarthome_ragweed_pollen_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_ragweed_pollen_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_ragweed_pollen_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_ragweed_pollen_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_ragweed_pollen_today
+    name: Ragweed Pollen
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_tree_pollen_today
+        name: Today
+      - entity: sensor.tbsmarthome_tree_pollen_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_tree_pollen_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_tree_pollen_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_tree_pollen_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_tree_pollen_today
+    name: Tree Pollen
+
+  - type: section
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_solar_irradiance_today
+        name: Today
+      - entity: sensor.tbsmarthome_solar_irradiance_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_solar_irradiance_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_solar_irradiance_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_solar_irradiance_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_solar_irradiance_today
+    name: Solar Irradiance (Day)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_solar_irradiance_tonight
+        name: Today
+      - entity: sensor.tbsmarthome_solar_irradiance_night_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_solar_irradiance_night_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_solar_irradiance_night_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_solar_irradiance_night_4
+        name: Day 4
+    entity: sensor.tbsmarthome_solar_irradiance_tonight
+    name: Solar Irradiance (Night)
+
+  - type: section
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_thunderstorm_probability_today
+        name: Today
+      - entity: sensor.tbsmarthome_thunderstorm_probability_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_thunderstorm_probability_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_thunderstorm_probability_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_thunderstorm_probability_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_thunderstorm_probability_today
+    name: Thunderstorm Probability (Day)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_thunderstorm_probability_tonight
+        name: Tonight
+      - entity: sensor.tbsmarthome_thunderstorm_probability_night_1
+        name: Night 1
+      - entity: sensor.tbsmarthome_thunderstorm_probability_night_2
+        name: Night 2
+      - entity: sensor.tbsmarthome_thunderstorm_probability_night_3
+        name: Night 3
+      - entity: sensor.tbsmarthome_thunderstorm_probability_night_4
+        name: Night 4
+    entity: sensor.tbsmarthome_thunderstorm_probability_tonight
+    name: Thunderstorm Probability (Night)
+
+  - type: section
+  - entity: sensor.tbsmarthome_uv_index
+    name: UV Index
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_uv_index_today
+        name: Today
+      - entity: sensor.tbsmarthome_uv_index_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_uv_index_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_uv_index_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_uv_index_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_uv_index_today
+    name: UV Index
+
+  - type: section
+  - entity: sensor.tbsmarthome_wind_gust_speed
+    name: Wind Gust Speed
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_wind_gust_speed_today
+        name: Today
+      - entity: sensor.tbsmarthome_wind_gust_speed_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_wind_gust_speed_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_wind_gust_speed_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_wind_gust_speed_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_wind_gust_speed_today
+    name: Wind Gust Speed (Day)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_wind_gust_speed_tonight
+        name: Tonight
+      - entity: sensor.tbsmarthome_wind_gust_speed_night_1
+        name: Night 1
+      - entity: sensor.tbsmarthome_wind_gust_speed_night_2
+        name: Night 2
+      - entity: sensor.tbsmarthome_wind_gust_speed_night_3
+        name: Night 3
+      - entity: sensor.tbsmarthome_wind_gust_speed_night_4
+        name: Night 4
+    entity: sensor.tbsmarthome_wind_gust_speed_tonight
+    name: Wind Gust Speed (Night)
+
+  - type: section
+  - entity: sensor.tbsmarthome_wind_speed
+    name: Wind Speed
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_wind_speed_today
+        name: Today
+      - entity: sensor.tbsmarthome_wind_speed_day_1
+        name: Day 1
+      - entity: sensor.tbsmarthome_wind_speed_day_2
+        name: Day 2
+      - entity: sensor.tbsmarthome_wind_speed_day_3
+        name: Day 3
+      - entity: sensor.tbsmarthome_wind_speed_day_4
+        name: Day 4
+    entity: sensor.tbsmarthome_wind_speed_today
+    name: Wind Speed (Day)
+  - type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - entity: sensor.tbsmarthome_wind_speed_tonight
+        name: Tonight
+      - entity: sensor.tbsmarthome_wind_speed_night_1
+        name: Night 1
+      - entity: sensor.tbsmarthome_wind_speed_night_2
+        name: Night 2
+      - entity: sensor.tbsmarthome_wind_speed_night_3
+        name: Night 3
+      - entity: sensor.tbsmarthome_wind_speed_night_4
+        name: Night 4
+    entity: sensor.tbsmarthome_wind_speed_tonight
+    name: Wind Speed (Night)
