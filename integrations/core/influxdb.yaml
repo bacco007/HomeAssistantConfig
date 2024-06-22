@@ -90,6 +90,7 @@ influxdb:
       - sensor.weather_wind_bearing
       - sensor.ha_automation_run_history
       - sensor.weather_forecasts
+      - sensor.ha_uptime
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

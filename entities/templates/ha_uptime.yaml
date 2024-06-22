@@ -1,0 +1,18 @@
+---
+sensor:
+  - name: "[Home Assistant] Uptime"
+    unique_id: ha_uptime
+    icon: mdi:clock
+    state: >
+      {%- set last_restart = as_timestamp(states('sensor.ha_uptime_hours')) %}
+      {%- set uptime = now().timestamp() - last_restart %}
+      {%- set days = (uptime / 86400) | float(0) %}
+      {%- set hours = (days * 24) | float(0) %}
+      {%- set minutes = (hours * 60) | float(0) %}
+      {%- if days >= 1.0 %}
+        {{ days | round(2) }} days ago
+      {%- elif hours >= 1.0 %}
+        {{ hours | round(1) }} hours ago
+      {%- else %}
+        {{ minutes | round(0) }} minutes ago
+      {%- endif %}

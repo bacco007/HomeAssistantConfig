@@ -75,6 +75,7 @@ recorder:
       - sensor.weather_forecasts
       - sensor.the_dream_police_memory_utilization
       - sensor.the_dream_police_cpu_utilization
+      - sensor.ha_uptime
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*

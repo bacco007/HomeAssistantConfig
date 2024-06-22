@@ -1,5 +1,6 @@
 ---
 sensor:
+sensor:
   - unique_id: helper_date
     name: "[Helper] Date"
     icon: mdi:calendar-today
@@ -57,15 +58,81 @@ sensor:
         {%- set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
         {%- set timestamp = as_timestamp(datetime) + 2*24*60*60 %}
         {{ timestamp | timestamp_custom('%A') }}
+      year: >
+        {{ now().strftime("%Y")|int(0) }}
+      month: >
+        {{ now().strftime("%m")|int(0) }}
+      day: >
+        {{ now().strftime("%d")|int(0) }}
+      dayofyear: >
+        {{ now().strftime("%j")|int(0) }}
+      daysinmonth: >
+        {%- set month = now().strftime("%m")|int(0) %}
+        {%- if month in [1,3,5,7,8,10,12] %}
+          31
+        {%- elif month in [4,6,9,11] %}
+          30
+        {%- elif month == 2 %}
+          {%- set year = now().year %}
+          {%- if ((year % 4) == 0 and (year % 100) > 0) or (year % 400) == 0 %}
+            29
+          {%- else %}
+            28
+          {%- endif %}
+        {%- endif %}
+      weekofyear: >
+        {{ now().strftime("%W")|int(0) + 1 }}
+      weekdaynumber: >
+        {%- set days = ["6", "0", "1", "2", "3", "4", "5"] %}
+        {%- set day = days[now().strftime('%w')|int(0)] %}
+        {{ day }}
+      weekdayname_en: >
+        {%- set days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+        {%- set day = days[state_attr('sensor.helper_date', 'weekdaynumber')|int(0)] %}
+        {{ day }}
+      monthname_en: >
+        {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
+        {% set month = months[state_attr('sensor.helper_date', 'month')|int(0)-1] %}
+        {{ month }}
+      yyyymmdd: >
+        {{ now().strftime("%Y") + '/' + now().strftime("%m") + '/' + now().strftime("%d") }}
+      yyyyddmm: >
+        {{ now().strftime("%Y") + '/' + now().strftime("%d") + '/' + now().strftime("%m") }}
+      ddmmyyyy: >
+        {{ now().strftime("%d") + '/' + now().strftime("%m") + '/' + now().strftime("%Y") }}
+      utc: >
+        {% set utc_date = states('sensor.date_time_utc').split(',')[0] %}
+        {% set utc_year = utc_date.split('-')[0] %}
+        {% set utc_month = utc_date.split('-')[1] %}
+        {% set utc_day = utc_date.split('-')[2] %}
+        {{ utc_year + "/" + utc_month + "/" + utc_day }}
 
   - unique_id: helper_time
     name: "[Helper] Time"
     icon: mdi:clock-check
     state: >
-      {%- set hour = states('sensor.time').split(':')[0] | int %}
-      {%- set minutes = states('sensor.time').split(':')[1] %}
-      {{ hour }}:{{ minutes }}
+      {{ now().strftime("%H")|string + ':' + now().strftime("%M")|string + ':' +now().strftime("%S")|string }}
     attributes:
+      hour: >
+        {{ now().strftime("%H")|int(0) }}
+      minute: >
+        {{ now().strftime("%M")|int(0) }}
+      second: >
+        {{ now().strftime("%S")|int(0) }}
+      long: >
+        {{ now().strftime("%H")|string + ':' + now().strftime("%M")|string + ':' + now().strftime("%S")|string }}
+      short: >
+        {{ now().strftime("%H")|string + ':' + now().strftime("%M")|string }}
+      internet: >
+        {{ states('sensor.swatch_time') }}
+      utc: >
+        {{ states('sensor.time_utc') }}
+      sec_midnight: >
+        {{ now().strftime("%H")|int(0)*60*60 + now().strftime("%M")|int(0)*60 + now().strftime("%S")|int(0) }}
+      hourmin: >
+        {{ now().strftime("%H")|int(0)*100 + now().strftime("%M")|int(0) }}
+      dst: >
+        {{ now().timetuple().tm_isdst > 0 }}
       time_long: >
         {%- set hour = states('sensor.time').split(':')[0] | int %}
         {%- set minute = states('sensor.time').split(':')[1] | int %}
