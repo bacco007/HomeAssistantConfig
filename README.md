@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.6.4 |
-| No. Integrations | 212 |
+| No. Integrations | 211 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6929 |
-| No. Sensors | 4991 |
+| No. Entities | 6976 |
+| No. Sensors | 5011 |
 | No. Automations | 139 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 115
-Devices | 617
+Devices | 616
 Fans | 1
 Humidifiers | 0
 Images | 9
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 36
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 4991
+Sensors | 5011
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 272
+Switches | 273
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 304
+Update | 329
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -783,7 +783,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.12.1] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.6] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.11] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.12] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -903,7 +903,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.1.2 |  | core |
 | Music Assistant | 2.0.7 |  | d5369777 |
-| Node-RED | 17.0.13 |  | a0d7b954 |
+| Node-RED | 18.0.0 |  | a0d7b954 |
 | OpenThread Border Router | 2.7.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.1 |  | core |
