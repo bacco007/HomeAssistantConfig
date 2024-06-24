@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.6.4 |
 | No. Integrations | 211 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6976 |
+| No. Entities | 6974 |
 | No. Sensors | 5011 |
 | No. Automations | 139 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 36
 Numbers | 39
-Persistent notifications | 5
+Persistent notifications | 6
 Persons | 4
 Remotes | 7
 Scenes | 2
@@ -99,7 +99,7 @@ Switches | 273
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 329
+Update | 330
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -783,7 +783,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.12.1] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.6] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.12] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.13] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -795,7 +795,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.31] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.2] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.30] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.31] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.2] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -816,7 +816,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description |
 | --- | --- | --- |
 | [Apexcharts Card](https://github.com/RomRider/apexcharts-card) |  [v2.0.4] | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
-| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.2] | An advanced calendar card for Home Assistant Lovelace. |
+| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.3] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
@@ -828,7 +828,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.5.1] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.6.0] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
