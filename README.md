@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.6.4 |
 | No. Integrations | 211 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6974 |
-| No. Sensors | 5011 |
+| No. Entities | 5861 |
+| No. Sensors | 3975 |
 | No. Automations | 139 |
 
 <details>
@@ -91,15 +91,15 @@ Remotes | 7
 Scenes | 2
 Scripts | 74
 Selects | 50
-Sensors | 5011
+Sensors | 3975
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 273
+Switches | 195
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 330
+Update | 331
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -785,7 +785,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.6] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.12.13] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
-| [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
+| [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.4] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.5.0] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.3] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
 | [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.4.2] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
@@ -816,7 +816,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description |
 | --- | --- | --- |
 | [Apexcharts Card](https://github.com/RomRider/apexcharts-card) |  [v2.0.4] | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
-| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v9.8.0-beta.3] | An advanced calendar card for Home Assistant Lovelace. |
+| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.0] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
@@ -892,13 +892,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.14.0 |  | db21ed7f |
 | Cloudflared | 5.1.13 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.6.1 |  | 15ef4d2f |
+| ESPHome | 2024.6.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Git Exporter | 1.17.0 |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
-| Home Assistant Stream Deck | 2024.6.1 |  | dc473884 |
+| Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
 | JupyterLab | 0.15.1 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.1.2 |  | core |
