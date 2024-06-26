@@ -245,6 +245,12 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_wrexham_afc
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_matildas
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_laliga_all_teams
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -316,6 +322,8 @@ action:
         - calendar.ical_nascar_truck_series
         - calendar.ical_mlb_all_teams
         - calendar.ical_wrexham_afc
+        - calendar.ical_matildas
+        - calendar.ical_laliga_all_teams
   - variables:
       all_events: >
         {% set ns = namespace(items=[]) -%}

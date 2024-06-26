@@ -16,6 +16,60 @@ cards:
         attribute: visibility
         show_icon: false
         show_background: true
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        ha-card {
+          background: url('https://maps.geoapify.com/v1/staticmap?style=dark-matter-yellow-roads&width=600&height=230&center=lonlat:{{ state_attr('sensor.css', 'longitude') }},{{ state_attr('sensor.css', 'latitude') }}&zoom=2.0&marker=lonlat:{{ state_attr('sensor.css', 'longitude') }},{{ state_attr('sensor.css', 'latitude') }};type:material;color:%23ff3421;icontype:awesome&scaleFactor=2&apiKey=21b7d0c233fc41ea9d6aba82b85f9b21');
+          border: none !important;
+          --vertical-stack-card-gap: 10px;
+          background-size: 105%;
+        }
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.css
+        primary: Tiangong Space Station
+        icon: mdi:space-station
+        fill_container: true
+        multiline_secondary: false
+        layout: vertical
+        tap_action:
+          action: more-info
+        card_mod:
+          style: |
+            ha-card {
+              border: none !important;
+              background: none !important;
+              box-shadow: none !important;
+              margin-left: -275px !important;
+            }
+            :host {
+              height: 120px;
+              --mush-icon-size: 60px;
+              --secondary-text-color: var(--primary-text-color);
+            }
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: template
+            entity: sensor.css
+            content: "Lat: {{state_attr(entity, 'latitude')}}"
+            icon: mdi:map-marker
+          - type: template
+            entity: sensor.css
+            content: "Long: {{state_attr(entity, 'longitude')}}"
+            icon: mdi:map-marker
+          - type: template
+            entity: sensor.css
+            content: "Alt: {{state_attr(entity, 'altitude')|round(2)}}"
+            icon: mdi:arrow-up
+        card_mod:
+          style: |
+            ha-card {
+              --chip-box-shadow: 0px 0px 0px 0px;
+              --chip-background: none;
+            }
+
   - type: custom:bubble-card
     card_type: button
     entity: sensor.css

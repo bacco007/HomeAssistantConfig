@@ -9,11 +9,6 @@ ics_calendar:
       url: https://in-the-sky.org/newscalyear_ical.php?year=2024&maxdiff=7
       include_all_day: true
       download_interval: 21600
-    - name: ical_rugby_australia_autumninternationals
-      include_all_day: true
-      url: https://fixturedownload.com/download/autumn-internationals-2024-australia-GMTStandardTime.ics
-      download_interval: 21600
-      days: 365
     - name: ical_icc_cricket_mens
       include_all_day: true
       url: https://ics.ecal.com/ecal-sub/63afdb7a0b7153000ee61cff/ICC%20Cricket.ics
@@ -72,5 +67,9 @@ ics_calendar:
     - name: ical_matildas
       include_all_day: true
       url: https://ics.fixtur.es/v2/au-women.ics
+      download_interval: 21600
+      days: 365
+    - name: ical_laliga_all_teams
+      include_all_day: true
       download_interval: 21600
       days: 365
