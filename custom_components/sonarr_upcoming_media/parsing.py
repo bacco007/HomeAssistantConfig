@@ -1,8 +1,13 @@
 import time
 from datetime import date, datetime
 from pytz import timezone
+import requests
 
 from .const import DEFAULT_PARSE_DICT
+
+TMDB_BASE_URL = 'http://api.tmdb.org/3/search/tv?api_key=1f7708bb9a218ab891a5d438b1b63992&query={}'
+TMDB_DETAILS_URL = 'http://api.tmdb.org/3/tv/{}?api_key=1f7708bb9a218ab891a5d438b1b63992&append_to_response=videos'
+TMDB_BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w{0}{1}'
 
 def days_until(date, tz):
     from pytz import utc
@@ -60,6 +65,40 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
         else:
             card_item['genres'] = ''
         card_item['summary'] = show.get('overview', '')
+        
+        if 'title' in show['series']:
+            session = requests.Session()
+            try:
+                search_url = TMDB_BASE_URL.format(requests.utils.quote(show['series']['title'].split('(')[0].strip()))
+                tmdb_url = session.get(search_url)
+                tmdb_json = tmdb_url.json()
+
+                if tmdb_json['results']:
+                    tmdb_id = tmdb_json['results'][0]['id']
+                    details_url = TMDB_DETAILS_URL.format(tmdb_id)
+                    details_response = session.get(details_url)
+                    details_json = details_response.json()
+
+                    if 'videos' in details_json and details_json['videos']['results']:
+                        for video in details_json['videos']['results']:
+                            if video['type'] == 'Trailer':
+                                card_item['trailer'] = f'https://www.youtube.com/watch?v={video["key"]}'
+                                break
+                        else:
+                            card_item['trailer'] = ''
+                    else:
+                        card_item['trailer'] = ''
+
+                    if 'poster_path' in tmdb_json['results'][0]:
+                        card_item['poster'] = TMDB_BASE_IMAGE_URL.format('500', tmdb_json['results'][0]['poster_path'])
+                    if 'backdrop_path' in tmdb_json['results'][0]:
+                        card_item['fanart'] = TMDB_BASE_IMAGE_URL.format('780', tmdb_json['results'][0]['backdrop_path'])
+                else:
+                    card_item['trailer'] = ''
+            except:
+                card_item['trailer'] = ''
+                raise TMDBApiNotResponding
+        
         try:
             for img in show['series']['images']:
                 if img['coverType'] == 'poster':
@@ -79,3 +118,7 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
         card_json.append(card_item)
     attributes['data'] = card_json
     return attributes
+
+class TMDBApiNotResponding(Exception):
+    "Raised when the TMDB API is not responding"
+    pass

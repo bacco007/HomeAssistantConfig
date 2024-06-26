@@ -1,26 +1,27 @@
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.const import (
-    CONF_API_KEY, 
-    CONF_HOST, 
-    CONF_PORT, 
+    Platform,
+    CONF_API_KEY,
+    CONF_HOST,
+    CONF_PORT,
     CONF_SSL
     )
 
 from .const import (
-    DOMAIN, 
+    DOMAIN,
     CONF_DAYS,
     CONF_URLBASE,
     CONF_MAX,
-    )
+)
 from .coordinator import SonarrDataCoordinator
 from .helpers import setup_client
 from .sonarr_api import (
     FailedToLogin,
     SonarrCannotBeReached
 )
+from .parsing import TMDBApiNotResponding
 
 PLATFORMS = [
     Platform.SENSOR
@@ -43,6 +44,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         raise ConfigEntryNotReady("Failed to Log-in") from err
     except SonarrCannotBeReached as err:
         raise ConfigEntryNotReady("Sonarr cannot be reached") from err
+    except TMDBApiNotResponding as err:
+        raise ConfigEntryNotReady("TMDB API is not responding") from err
     coordinator = SonarrDataCoordinator(hass, client)
 
     await coordinator.async_config_entry_first_refresh()
