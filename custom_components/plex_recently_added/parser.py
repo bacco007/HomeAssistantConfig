@@ -67,6 +67,7 @@ def parse_data(data, max, base_url, token, identifier, section_key, images_base_
         data_output["genres"] = ", ".join([genre['tag'] for genre in item.get('Genre', [])][:3])
         data_output["rating"] = ('\N{BLACK STAR} ' + str(item.get("rating"))) if int(float(item.get("rating", 0))) > 0 else ''
         data_output['summary'] = item.get('summary', '')
+        data_output['trailer'] = item.get('trailer')
         data_output["poster"] = (f'{images_base_url}?path={thumb}') if thumb else ""
         data_output["fanart"] = (f'{images_base_url}?path={art}') if art else ""
         data_output["deep_link"] = deep_link if identifier else None
@@ -74,5 +75,4 @@ def parse_data(data, max, base_url, token, identifier, section_key, images_base_
         output.append(data_output)
 
     return output
-
 

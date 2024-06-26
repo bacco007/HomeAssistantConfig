@@ -6,7 +6,7 @@ from urllib3.exceptions import InsecureRequestWarning
 from homeassistant.core import HomeAssistant
 from .const import DEFAULT_PARSE_DICT, USER_AGENT, ACCEPTS
 from .parser import parse_data, parse_library
-
+from .tmdb_api import get_tmdb_trailer_url
 
 def check_headers(response):
     if 'text/xml' not in response.headers.get('Content-Type', '') and 'application/xml' not in response.headers.get('Content-Type', ''):
@@ -38,7 +38,7 @@ class PlexApi():
         self._section_libraries = section_libraries
         self._exclude_keywords = exclude_keywords
         self._images_base_url = f'/{name.lower() + "_" if len(name) > 0 else ""}plex_recently_added'
-    
+
     async def update(self):
         info_url = 'http{0}://{1}:{2}'.format(
             self._ssl,
@@ -117,6 +117,11 @@ class PlexApi():
             check_headers(sub_sec)
             root = ElementTree.fromstring(sub_sec.text)
             parsed_libs = parse_library(root)
+            
+            # Fetch trailer URLs for each item
+            for item in parsed_libs:
+                item['trailer'] = await get_tmdb_trailer_url(self._hass, item['title'], library['type'])
+            
             if library["type"] not in data['all']:
                 data['all'][library["type"]] = []
             data['all'][library["type"]] += parsed_libs
@@ -124,14 +129,23 @@ class PlexApi():
 
         data_out = {}
         for k in data.keys():
-            data_out[k] = {'data': [DEFAULT_PARSE_DICT] + parse_data(data[k], self._max, info_url, self._token, identifier, k, self._images_base_url, k == "all")}
+            parsed_data = parse_data(data[k], self._max, info_url, self._token, identifier, k, self._images_base_url, k == "all")
+            
+            # Ensure trailer URLs are correctly set for the "all" sensor
+            if k == "all":
+                for item in parsed_data:
+                    if item.get('trailer') is None:
+                        item_type = 'movie' if item.get('episode') == '' else 'show'
+                        item['trailer'] = await get_tmdb_trailer_url(self._hass, item['title'], item_type)
+            
+            data_out[k] = {'data': [DEFAULT_PARSE_DICT] + parsed_data}
 
         return {
             "data": {**data_out},
             "online": True,
             "libraries": libs
         }
-    
+
 
 class FailedToLogin(Exception):
     "Raised when the Plex user fail to Log-in"
