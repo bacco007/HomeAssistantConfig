@@ -70,6 +70,7 @@ ics_calendar:
       download_interval: 21600
       days: 365
     - name: ical_laliga_all_teams
+      url: https://fixturedownload.com/download/la-liga-2024-UTC.ics
       include_all_day: true
       download_interval: 21600
       days: 365

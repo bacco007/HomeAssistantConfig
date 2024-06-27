@@ -2,11 +2,11 @@
 platform: prometheus_sensor
 url: http://192.168.1.133:9090
 queries:
-  - name: sonarr_episode_unmonitored_total
-    expr: sonarr_episode_unmonitored_total
-    unit_of_measurement: Episodes
-    # device_class: energy
-    state_class: measurement
+  # - name: sonarr_episode_unmonitored_total
+  #   expr: sonarr_episode_unmonitored_total
+  #   unit_of_measurement: Episodes
+  #   # device_class: energy
+  #   state_class: measurement
   - name: adsb_distance_max
     expr: round(readsb_distance_max * 0.000539957, 0.01)
     unit_of_measurement: nm

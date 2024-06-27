@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.6.4 |
-| No. Integrations | 211 |
+| HA Version | 2024.7.0b2 |
+| No. Integrations | 209 |
 | No. Custom Integrations | 85 |
-| No. Entities | 6897 |
-| No. Sensors | 5010 |
+| No. Entities | 5982 |
+| No. Sensors | 4177 |
 | No. Automations | 139 |
 
 <details>
@@ -64,8 +64,8 @@ Alarm control panels | 2
 Areas | 17
 Binary sensors | 361
 Buttons | 161
-Calendars | 76
-Cameras | 5
+Calendars | 61
+Cameras | 6
 Climate | 2
 Covers | 0
 Dates | 0
@@ -74,32 +74,32 @@ Device trackers | 115
 Devices | 609
 Fans | 1
 Humidifiers | 0
-Images | 9
+Images | 10
 Input booleans | 24
 Input buttons | 0
 Input date/times | 0
 Input numbers | 7
 Input selects | 3
 Input texts | 3
-Lights | 13
+Lights | 9
 Locks | 4
 Media players | 36
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 6
 Persons | 4
-Remotes | 7
+Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 51
-Sensors | 5010
+Sensors | 4177
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 276
+Switches | 213
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 331
+Update | 330
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>607 Integrations</summary>
+<details><summary>608 Integrations</summary>
 
 | Name |
 | --- |
@@ -139,6 +139,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [analytics_insights.sensor](https://www.home-assistant.io/components/analytics_insights.sensor) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
 | [androidtv.media_player](https://www.home-assistant.io/components/androidtv.media_player) |
+| [androidtv.remote](https://www.home-assistant.io/components/androidtv.remote) |
 | [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
 | [androidtv_remote.media_player](https://www.home-assistant.io/components/androidtv_remote.media_player) |
 | [androidtv_remote.remote](https://www.home-assistant.io/components/androidtv_remote.remote) |
@@ -272,7 +273,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fully_kiosk](https://www.home-assistant.io/components/fully_kiosk) |
 | [fully_kiosk.binary_sensor](https://www.home-assistant.io/components/fully_kiosk.binary_sensor) |
 | [fully_kiosk.button](https://www.home-assistant.io/components/fully_kiosk.button) |
+| [fully_kiosk.camera](https://www.home-assistant.io/components/fully_kiosk.camera) |
+| [fully_kiosk.image](https://www.home-assistant.io/components/fully_kiosk.image) |
 | [fully_kiosk.media_player](https://www.home-assistant.io/components/fully_kiosk.media_player) |
+| [fully_kiosk.notify](https://www.home-assistant.io/components/fully_kiosk.notify) |
 | [fully_kiosk.number](https://www.home-assistant.io/components/fully_kiosk.number) |
 | [fully_kiosk.sensor](https://www.home-assistant.io/components/fully_kiosk.sensor) |
 | [fully_kiosk.switch](https://www.home-assistant.io/components/fully_kiosk.switch) |
@@ -306,7 +310,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [harmony](https://www.home-assistant.io/components/harmony) |
 | [harmony.remote](https://www.home-assistant.io/components/harmony.remote) |
 | [harmony.select](https://www.home-assistant.io/components/harmony.select) |
-| [harmony.switch](https://www.home-assistant.io/components/harmony.switch) |
 | [hassio](https://www.home-assistant.io/components/hassio) |
 | [hassio.binary_sensor](https://www.home-assistant.io/components/hassio.binary_sensor) |
 | [hassio.sensor](https://www.home-assistant.io/components/hassio.sensor) |
@@ -345,8 +348,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [icloud3](https://www.home-assistant.io/components/icloud3) |
 | [icloud3.device_tracker](https://www.home-assistant.io/components/icloud3.device_tracker) |
 | [icloud3.sensor](https://www.home-assistant.io/components/icloud3.sensor) |
-| [ics_calendar](https://www.home-assistant.io/components/ics_calendar) |
-| [ics_calendar.calendar](https://www.home-assistant.io/components/ics_calendar.calendar) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -389,6 +390,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [matter.fan](https://www.home-assistant.io/components/matter.fan) |
 | [matter.light](https://www.home-assistant.io/components/matter.light) |
 | [matter.lock](https://www.home-assistant.io/components/matter.lock) |
+| [matter.number](https://www.home-assistant.io/components/matter.number) |
 | [matter.sensor](https://www.home-assistant.io/components/matter.sensor) |
 | [matter.switch](https://www.home-assistant.io/components/matter.switch) |
 | [media_extractor](https://www.home-assistant.io/components/media_extractor) |
@@ -470,7 +472,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [plex.sensor](https://www.home-assistant.io/components/plex.sensor) |
 | [plex.update](https://www.home-assistant.io/components/plex.update) |
 | [plex_recently_added](https://www.home-assistant.io/components/plex_recently_added) |
-| [plex_recently_added.sensor](https://www.home-assistant.io/components/plex_recently_added.sensor) |
 | [pocketcasts.sensor](https://www.home-assistant.io/components/pocketcasts.sensor) |
 | [powercalc](https://www.home-assistant.io/components/powercalc) |
 | [powercalc.sensor](https://www.home-assistant.io/components/powercalc.sensor) |
@@ -795,7 +796,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.31] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.34] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.36] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.2] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -892,7 +893,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.14.0 |  | db21ed7f |
 | Cloudflared | 5.1.13 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.6.2 |  | 15ef4d2f |
+| ESPHome | 2024.6.3 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
@@ -957,7 +958,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.6.4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.7.0b2-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
