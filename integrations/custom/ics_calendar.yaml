@@ -74,3 +74,9 @@ ics_calendar:
       include_all_day: true
       download_interval: 21600
       days: 365
+    - name: ical_nbl_all_teams
+      url: https://fixturedownload.com/download/nbl-2024-UTC.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+

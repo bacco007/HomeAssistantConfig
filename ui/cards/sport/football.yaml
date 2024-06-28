@@ -375,7 +375,7 @@ cards:
       - type: custom:decluttering-card
         template: sports_card
         variables:
-          - entity: sensor.upcoming_sport_laliga_all_teams
+          - entity: sensor.upcoming_sport_la_liga_all_teams
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row
