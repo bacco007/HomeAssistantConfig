@@ -59,6 +59,10 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
+          - entity: sensor.yahoofinance_gyg_ax
+      - type: custom:decluttering-card
+        template: mushroom_finance
+        variables:
           - entity: sensor.yahoofinance_ioz_ax
       - type: custom:decluttering-card
         template: mushroom_finance

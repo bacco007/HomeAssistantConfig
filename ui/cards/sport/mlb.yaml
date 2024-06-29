@@ -201,7 +201,12 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_*
+              - sensor.scoreboard_mlb_american_central
+              - sensor.scoreboard_mlb_american_east
+              - sensor.scoreboard_mlb_american_west
+              - sensor.scoreboard_mlb_national_central
+              - sensor.scoreboard_mlb_national_east
+              - sensor.scoreboard_mlb_national_west
             sort_by: entries-
             columns: &mlbcols
               - hidden: true
@@ -275,7 +280,9 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_american_*
+              - sensor.scoreboard_mlb_american_central
+              - sensor.scoreboard_mlb_american_east
+              - sensor.scoreboard_mlb_american_west
             sort_by: entries-
             columns: *mlbcols
       - type: custom:fold-entity-row
@@ -389,7 +396,9 @@ cards:
                     font-size: 13px;
                     }
             entities:
-              include: sensor.scoreboard_mlb_national_*
+              - sensor.scoreboard_mlb_national_central
+              - sensor.scoreboard_mlb_national_east
+              - sensor.scoreboard_mlb_national_west
             sort_by: entries-
             columns: *mlbcols
       - type: custom:fold-entity-row

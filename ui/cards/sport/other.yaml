@@ -10,6 +10,10 @@ cards:
         }
     name: Other Sport
     icon: mdi:run-fast
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_nbl_all_teams
   - type: entities
     entities:
       - type: custom:fold-entity-row
