@@ -47,7 +47,7 @@ jobs:
         run: |
           HA_VERSION=$(<.HA_VERSION)
           echo $HA_VERSION
-          echo "{current_version}={$HA_VERSION}" >> $GITHUB_OUTPUT
+          echo "current_version=$HA_VERSION" >> $GITHUB_OUTPUT
 
   home_assistant:
     name: "🏠 Home Assistant Core ${{ matrix.version }} Configuration Check"
@@ -58,12 +58,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [
-            "${{needs.version_env.outputs.current_version}}",
-            "stable",
-            "beta",
-            "dev",
-          ]
+        version: [ "${{needs.version_env.outputs.current_version}}", "stable", "beta" ]
     steps:
       - name: ⤵️  Check out configuration from GitHub
         uses: actions/checkout@v4.1.7
