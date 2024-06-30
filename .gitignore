@@ -78,6 +78,7 @@ rtsp*
 sonos_playlist.yaml
 icloud3*.log
 persist_notify.log
+calendar*.txt
 
 node-red/*
 !node-red/flows.json
