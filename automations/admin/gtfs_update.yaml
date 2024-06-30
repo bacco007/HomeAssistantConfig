@@ -33,6 +33,11 @@ action:
       url: na
       file: buses_nenw
       clean_feed_info: true
+      api_key_location: not_applicable
+      api_key_name: x
+      check_source_dates: false
+      api_key: x
+
   - service: gtfs2.update_gtfs
     metadata: {}
     data:
@@ -40,6 +45,11 @@ action:
       url: na
       file: nswtrains
       clean_feed_info: true
+      api_key_location: not_applicable
+      api_key_name: x
+      check_source_dates: false
+      api_key: x
+
   - service: gtfs2.update_gtfs
     metadata: {}
     data:
@@ -47,4 +57,9 @@ action:
       url: na
       file: tfnsw
       clean_feed_info: true
+      api_key_location: not_applicable
+      api_key_name: x
+      check_source_dates: false
+      api_key: x
+
 mode: single
