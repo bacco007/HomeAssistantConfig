@@ -1,4 +1,4 @@
 ---
 # https://www.home-assistant.io/docs/automation/
-automation ui: !include /config/automations.yaml
+automation ui: !include ../../automations.yaml
 automation manual: !include_dir_list /config/automations
