@@ -36,6 +36,7 @@ jobs:
   version_env:
     name: Get Installed Version for Testing
     runs-on: ubuntu-latest
+    needs: [yamllint]
     outputs:
       current_version: ${{ steps.currentver.outputs.current_version }}
     steps:

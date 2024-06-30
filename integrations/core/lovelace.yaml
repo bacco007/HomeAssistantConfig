@@ -1,2 +1,2 @@
 ---
-lovelace: !include /config/ui/config.yaml
+lovelace: !include ../../ui/config.yaml
