@@ -90,7 +90,7 @@ sensor:
       kw_value: >
         {{ states(this.entity_id) | float(0) / 1000 }}
       source: >-
-        {% if has_value('sensor.sungrow_sg5kd_active_import_from_to_grid') -%}
+        {% if has_value('sensor.sungrow_sg5kd_active_import_from_grid') -%}
           Sungather (Addon)
         {% else -%}
           Sungather (MQTT)
@@ -165,7 +165,7 @@ sensor:
     icon: mdi:solar-power
     state: >-
       {%- set solar_prod = (states('sensor.solar_production_active')|float(0)) %}
-      {%- set return_to_grid = states('sensor.solar_export_to_grid_active')|float(0) %}
+      {%- set return_to_grid = states('sensor.solar_return_to_grid_active')|float(0) %}
       {%- set solar_consumed = (solar_prod - return_to_grid) | float(0) %}
       {%- if solar_consumed <= 0 %}
         {{ 0 }}

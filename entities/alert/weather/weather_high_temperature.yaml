@@ -1,6 +1,6 @@
 ---
 weather_high_temperature:
-  name: "High Temperature"
+  name: "[Alert, Weather] High Temperature"
   title: "High Temperature Alert"
   message: "Current Temperature: {{ states('sensor.weather_temperature') }}"
   done_message: clear_notification

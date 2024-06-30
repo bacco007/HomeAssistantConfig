@@ -21,7 +21,7 @@ trigger:
     minutes: /15
   - platform: state
     entity_id:
-      - weather.astroweather_31_08133085871397_150_9416770935059
+      - weather.astroweather_backyard
       - weather.forecast_home
       - weather.openweathermap
       - weather.pirateweather
@@ -38,13 +38,14 @@ action:
       type: hourly
     target:
       entity_id:
-        - weather.astroweather_31_08133085871397_150_9416770935059
+        - weather.astroweather_backyard
         - weather.brisbane_st
         - weather.east_tamworth_hourly
         - weather.forecast_home
         - weather.openweathermap
         - weather.pirateweather
         - weather.tbsmarthome
+        - weather.tomorrow_io_tbsmarthome_daily
         - weather.weatherflow_forecast_brisbane_st
     response_variable: hourly
 
@@ -56,8 +57,13 @@ action:
         - weather.brisbane_st
         - weather.east_tamworth
         - weather.forecast_home
+        - weather.openweathermap
         - weather.pirateweather
         - weather.tbsmarthome
+        - weather.tbsmarthome_2
+        - weather.tomorrow_io_tbsmarthome_daily
+        - weather.weather_home_daily
+        - weather.weather_home_hourly
         - weather.weatherflow_forecast_brisbane_st
     response_variable: daily
 
@@ -101,6 +107,10 @@ sensor:
         {%- if daily is defined and daily['weather.forecast_home'] is defined %}
           {{ daily['weather.forecast_home']['forecast'] }}
         {%- endif %}
+      openweathermap_daily: >
+        {%- if daily is defined and daily['weather.openweathermap'] is defined %}
+          {{ daily['weather.openweathermap']['forecast'] }}
+        {%- endif %}
       pirateweather_daily: >
         {%- if daily is defined and daily['weather.pirateweather'] is defined %}
           {{ daily['weather.pirateweather']['forecast'] }}
@@ -109,13 +119,30 @@ sensor:
         {%- if daily is defined and daily['weather.tbsmarthome'] is defined %}
           {{ daily['weather.tbsmarthome']['forecast'] }}
         {%- endif %}
+      tbsmarthome_2_daily: >
+        {%- if daily is defined and daily['weather.tbsmarthome_2'] is defined %}
+          {{ daily['weather.tbsmarthome_2']['forecast'] }}
+        {%- endif %}
+      tomorrow_io_tbsmarthome_daily_daily: >
+        {%- if daily is defined and daily['weather.tomorrow_io_tbsmarthome_daily'] is defined %}
+          {{ daily['weather.tomorrow_io_tbsmarthome_daily']['forecast'] }}
+        {%- endif %}
+      weather_home_daily_daily: >
+        {%- if daily is defined and daily['weather.weather_home_daily'] is defined %}
+          {{ daily['weather.weather_home_daily']['forecast'] }}
+        {%- endif %}
+      weather_home_hourly_daily: >
+        {%- if daily is defined and daily['weather.weather_home_hourly'] is defined %}
+          {{ daily['weather.weather_home_hourly']['forecast'] }}
+        {%- endif %}
       weatherflow_forecast_brisbane_st_daily: >
         {%- if daily is defined and daily['weather.weatherflow_forecast_brisbane_st'] is defined %}
           {{ daily['weather.weatherflow_forecast_brisbane_st']['forecast'] }}
         {%- endif %}
-      astroweather_31_08133085871397_150_9416770935059_hourly: >
-        {%- if hourly is defined and hourly['weather.astroweather_31_08133085871397_150_9416770935059'] is defined %}
-          {{ hourly['weather.astroweather_31_08133085871397_150_9416770935059']['forecast'] }}
+
+      astroweather_backyard_hourly: >
+        {%- if hourly is defined and hourly['weather.astroweather_backyard'] is defined %}
+          {{ hourly['weather.astroweather_backyard']['forecast'] }}
         {%- endif %}
       brisbane_st_hourly: >
         {%- if hourly is defined and hourly['weather.brisbane_st'] is defined %}
@@ -140,6 +167,10 @@ sensor:
       tbsmarthome_hourly: >
         {%- if hourly is defined and hourly['weather.tbsmarthome'] is defined %}
           {{ hourly['weather.tbsmarthome']['forecast'] }}
+        {%- endif %}
+      tomorrow_io_tbsmarthome_daily_hourly: >
+        {%- if hourly is defined and hourly['weather.tomorrow_io_tbsmarthome_daily'] is defined %}
+          {{ hourly['weather.tomorrow_io_tbsmarthome_daily']['forecast'] }}
         {%- endif %}
       weatherflow_forecast_brisbane_st_hourly: >
         {%- if hourly is defined and hourly['weather.weatherflow_forecast_brisbane_st'] is defined %}

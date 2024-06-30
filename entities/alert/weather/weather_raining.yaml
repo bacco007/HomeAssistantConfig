@@ -1,6 +1,6 @@
 ---
 weather_raining:
-  name: "It's raining!"
+  name: "[Alert, Weather] It's raining!"
   title: "It's raining!"
   message: >
     {{ states('sensor.weather_precipitation_type')|capitalize }} - {{ states('sensor.weather_precipitation_today') }}mm

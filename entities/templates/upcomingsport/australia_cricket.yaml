@@ -6,7 +6,7 @@ trigger:
     hours: "/6"
   - platform: calendar
     event: end
-    entity_id: calendar.ical_cricket_australia_men
+    entity_id: calendar.ical_cricket_australia_mens
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -14,10 +14,10 @@ action:
     data:
       end_date_time: "{{now() + timedelta(days=365)}}"
     target:
-      entity_id: calendar.ical_cricket_australia_men
+      entity_id: calendar.ical_cricket_australia_mens
     response_variable: agenda
   - variables:
-      dump: "{{ agenda['calendar.ical_cricket_australia_men'].events }}"
+      dump: "{{ agenda['calendar.ical_cricket_australia_mens'].events }}"
       all_events: "{{dump |sort(attribute='start') | list }}"
       next_5_events: "{{dump |sort(attribute='start') | list }}"
       countnumb: "{{dump | length }}"

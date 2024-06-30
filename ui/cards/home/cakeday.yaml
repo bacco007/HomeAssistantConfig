@@ -53,7 +53,7 @@ cards:
               }
             mushroom-shape-icon$: |
               .shape {
-                background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states('sensor.anniversary_datetracking_my_birthday')))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+                background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states('sensor.anniversary_my_birthday')))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
               }
               .shape:after {
                 content: "";
@@ -97,7 +97,7 @@ cards:
               }
             mushroom-shape-icon$: |
               .shape {
-                background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states('sensor.anniversary_datetracking_my_work_birthday')))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+                background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states('sensor.anniversary_my_work_birthday')))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
               }
               .shape:after {
                 content: "";

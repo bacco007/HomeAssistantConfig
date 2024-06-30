@@ -63,17 +63,11 @@ influxdb:
       - sensor.adsb_fa_feeder
       - weather.east_tamworth_hourly
       - sensor.udm_unifios
-      - sensor.sungrowsolar_runtime
-      - sensor.sungrowsolar_runtime
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
       - sensor.adsb_aircraft_tracked
       - sensor.e_ink_display_data
-      - sensor.lastfm_user_topalbums
-      - sensor.lastfm_user_topartists
-      - sensor.lastfm_user_toptracks
       - sensor.sungrowsolar_alldata
-      - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
       - sensor.unknown_unavailable_none_entities
       - sensor.sonarr_shows
@@ -90,7 +84,6 @@ influxdb:
       - sensor.weather_wind_bearing
       - sensor.ha_automation_run_history
       - sensor.weather_forecasts
-      - sensor.ha_uptime
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

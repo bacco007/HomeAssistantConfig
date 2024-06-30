@@ -84,8 +84,8 @@ cards:
                       - entity: calendar.ical_alm_all_teams
                       - entity: calendar.ical_alw_all_teams
                       - entity: calendar.ical_anaheim_ducks
-                      - entity: calendar.ical_australia_cricket
-                      - entity: calendar.ical_australia_cricket_women
+                      - entity: calendar.ical_australia_cricket_mens
+                      - entity: calendar.ical_australia_cricket_womens
                       - entity: calendar.ical_bayern_munich
                       - entity: calendar.ical_bbl_all_teams
                       - entity: calendar.ical_btcc
@@ -100,7 +100,7 @@ cards:
                       - entity: calendar.ical_igtc
                       - entity: calendar.ical_imsa
                       - entity: calendar.ical_indycar
-                      - entity: calendar.ical_international_cricket_mens
+                      - entity: calendar.ical_icc_cricket_mens
                       - entity: calendar.ical_international_rugby_all_teams
                       - entity: calendar.ical_manchester_united
                       - entity: calendar.ical_manchester_united_women

@@ -1,6 +1,6 @@
 ---
 air_quality:
-  name: "Air Quality"
+  name: "[Alert, Weather] Air Quality"
   title: "Air Quality Alert"
   message: "Air Quality Risk Level: {{ states('sensor.waqi_aqi_risk_level') }}"
   done_message: clear_notification

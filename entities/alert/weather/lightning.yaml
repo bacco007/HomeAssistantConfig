@@ -1,10 +1,10 @@
 ---
 lightning:
-  name: "Lightning"
+  name: "[Alert, Weather] Lightning"
   title: "Lightning Alert"
-  message: "Strikes: {{ states('sensor.lightning_count') }} - Distance: {{ states('sensor.lightning_distance',with_unit=true) }}"
+  message: "Strikes: {{ states('sensor.weather_lightning_count') }} - Distance: {{ states('sensor.weather_lightning_distance',with_unit=true) }}"
   done_message: clear_notification
-  entity_id: binary_sensor.lightning_alert
+  entity_id: binary_sensor.weather_lightning_alert
   state: "on"
   skip_first: true
   repeat: 1440

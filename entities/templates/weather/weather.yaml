@@ -440,8 +440,8 @@ sensor:
     unique_id: weather_precipitation_likely_soon
     icon: mdi:weather-pouring
     state: >
-      {%- set time = states('sensor.weather_precipitation_start') | as_datetime
-          if has_value('sensor.weather_precipitation_start') else none %}
+      {%- set time = states('sensor.weather_next_precipitation_start') | as_datetime
+          if has_value('sensor.weather_next_precipitation_start') else none %}
       {{ is_state('binary_sensor.weather_precipitation_active','off')
           and time != none and time > now() and time - now() < timedelta(hours=2) }}
     attributes:
@@ -451,8 +451,8 @@ sensor:
     unique_id: precipitation_likely_today
     icon: mdi:weather-pouring
     state: >
-      {%- set time = states('sensor.weather_precipitation_start') | as_datetime
-          if has_value('sensor.weather_precipitation_start') else none %}
+      {%- set time = states('sensor.weather_next_precipitation_start') | as_datetime
+          if has_value('sensor.weather_next_precipitation_start') else none %}
       {{ (time != none and time > now() and time - now() < timedelta(hours=12))
             or states('sensor.weather_precipitation_probability') | int(0) >= 40 }}
     attributes:
@@ -626,7 +626,7 @@ sensor:
     state: >
       {{ (state_attr('sensor.weather_forecasts', 'bom_hourly')
         | selectattr('condition', 'in', ['rainy', 'lightning-rainy'])
-        | list | first | default).datetime | default("No Rain")
+        | list | first | default).datetime | default("0")
       }}
     attributes:
       category: weather
@@ -639,13 +639,13 @@ sensor:
       {{ (state_attr('sensor.weather_forecasts', 'bom_hourly')
         | rejectattr('condition', 'in', ['rainy', 'lightning-rainy'])
         | selectattr('datetime', '>', states('sensor.weather_hourly_next_precipitation_start'))
-        | list | first | default).datetime | default("No Rain")
+        | list | first | default).datetime | default("0")
       }}
     attributes:
       category: weather
 
   - name: "[Weather] Precipitation Start (Next 12 Hours)"
-    unique_id: weather_precipitation_start
+    unique_id: weather_next_precipitation_start_next12hrs
     icon: mdi:weather-pouring
     device_class: timestamp
     state: >
@@ -697,7 +697,7 @@ sensor:
       {% if is_state('binary_sensor.connected_blitzortung', 'on')
           and is_number(states('sensor.blitzortung_lightning_counter')) %}
         {{ states('sensor.blitzortung_lightning_counter') | int }}
-      {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+      {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
           and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) %}
         {{ states('sensor.weatherflow_forecast_lightnings_strikes') | int }}
       {% endif %}
@@ -707,14 +707,14 @@ sensor:
         {% if is_state('binary_sensor.connected_blitzortung', 'on')
             and is_number(states('sensor.blitzortung_lightning_counter')) %}
           Blitzortung
-        {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+        {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
             and is_number(states('sensor.weatherflow_forecast_lightnings_strikes')) %}
           WeatherFlow Cloud
         {% endif %}
     availability: >
       {{ (is_state('binary_sensor.connected_blitzortung', 'on')
             and is_number(states('sensor.blitzortung_lightning_counter')))
-          or (is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+          or (is_state('binary_sensor.connected_weatherflow_cloud', 'on')
             and is_number(states('sensor.weatherflow_forecast_lightnings_strikes'))) }}
 
   - name: "[Weather] Lightning Distance"
@@ -727,7 +727,7 @@ sensor:
       {% if is_state('binary_sensor.connected_blitzortung', 'on')
           and is_number(states('sensor.blitzortung_lightning_distance')) %}
         {{ states('sensor.blitzortung_lightning_distance') | int }}
-      {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+      {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
           and is_number(states('sensor.weatherflow_forecast_distance_last_lightning_strike')) %}
         {{ states('sensor.weatherflow_forecast_distance_last_lightning_strike') | int }}
       {% endif %}
@@ -737,14 +737,14 @@ sensor:
         {% if is_state('binary_sensor.connected_blitzortung', 'on')
             and is_number(states('sensor.blitzortung_lightning_distance')) %}
           Blitzortung
-        {% elif is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+        {% elif is_state('binary_sensor.connected_weatherflow_cloud', 'on')
             and is_number(states('sensor.weatherflow_forecast_distance_last_lightning_strike')) %}
           WeatherFlow Cloud
         {% endif %}
     availability: >
       {{ (is_state('binary_sensor.connected_blitzortung', 'on')
             and is_number(states('sensor.blitzortung_lightning_distance')))
-          or (is_state('binary_sensor.weatherflow_cloud_connected', 'on')
+          or (is_state('binary_sensor.connected_weatherflow_cloud', 'on')
             and is_number(states('sensor.weatherflow_forecast_distance_last_lightning_strike'))) }}
 
   - name: "[Weather] Lightning Last Strike"

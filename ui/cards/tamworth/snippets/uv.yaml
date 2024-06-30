@@ -67,7 +67,7 @@ cards:
           width: 3
           color: rgba(255,255,255, 0.8)
           shape: spline
-      - entity: sensor.tempest_st_00056115_uv_index
+      - entity: sensor.weather_uv_index
         name: Home UV Index
         legendgroup: 2
         yaxis: y

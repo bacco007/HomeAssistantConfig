@@ -1,6 +1,6 @@
 ---
 weather_storm_approaching:
-  name: "Storm Approaching"
+  name: "[Alert, Weather] Storm Approaching"
   title: "Storm Approaching"
   message: >
     {%- set dist = states('sensor.weather_nearest_storm_distance')|float('unknown') -%}

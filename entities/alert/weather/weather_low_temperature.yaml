@@ -1,6 +1,6 @@
 ---
 weather_low_temperature:
-  name: "Low Temperature"
+  name: "[Alert, Weather] Low Temperature"
   title: "Low Temperature Alert"
   message: "Current Temperature: {{ states('sensor.weather_temperature') }}"
   done_message: clear_notification

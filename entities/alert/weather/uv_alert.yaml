@@ -1,6 +1,6 @@
 ---
 uv_risk:
-  name: "UV Risk"
+  name: "[Alert, Weather] UV Risk"
   title: "UV Risk Alert"
   message: "UV Risk: {{ states('sensor.uv_risk_today') }}"
   done_message: clear_notification

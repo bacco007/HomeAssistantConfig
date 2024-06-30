@@ -11,9 +11,9 @@ action:
   - service: notify.alert
     data:
       message: >
-        The Home Assistant Log File recently increased {{ states("sensor.log_size_recent_change") }} MB.  Please check whether something may be wrong
+        The Home Assistant Log File recently increased {{ states("ha_logfile_recent_change") }} MB.  Please check whether something may be wrong
       title: >
-        Home Assistant Log Increased {{ states("sensor.log_size_recent_change") }} MB
+        Home Assistant Log Increased {{ states("ha_logfile_recent_change") }} MB
       data:
         push:
           badge: 1
