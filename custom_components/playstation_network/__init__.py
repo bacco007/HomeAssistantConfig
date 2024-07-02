@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import discovery
+from homeassistant.helpers import entity_registry as er
 from psnawp_api.core.psnawp_exceptions import PSNAWPAuthenticationError
 from psnawp_api.psnawp import PSNAWP
 
@@ -47,11 +50,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         PSN_COORDINATOR: coordinator,
         PSN_API: psn,
     }
+
     if entry.unique_id is None:
         hass.config_entries.async_update_entry(entry, unique_id=user.online_id)
     await coordinator.async_config_entry_first_refresh()
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(update_listener))
 
     hass.async_create_task(
         discovery.async_load_platform(
@@ -63,6 +65,49 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
+    @callback
+    def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
+        """Migrate PSN entity entries.
+
+        - Migrates old unique ID's from old sensors and media players to the new unique ID's
+        """
+        if entry.domain == Platform.SENSOR and entry.unique_id == "psn_psn_status":
+            new = f"{coordinator.data.get("username").lower()}_psn_status"
+            return {
+                "new_unique_id": entry.unique_id.replace(
+                    "psn_psn_status", new
+                )
+            }
+
+        if entry.domain == Platform.SENSOR and entry.unique_id == "psn_psn_trophies":
+            new = f"{coordinator.data.get("username").lower()}_psn_trophy_level"
+            return {
+                "new_unique_id": entry.unique_id.replace(
+                    "psn_psn_trophies", new
+                )
+            }
+        if entry.domain == Platform.MEDIA_PLAYER and entry.unique_id == "PS5_console":
+            new = f"{coordinator.data.get('username').lower()}_{coordinator.data.get('platform').get('platform').lower()}_console"
+            return {
+                "new_unique_id": entry.unique_id.replace(
+                    "PS5_console", new
+                )
+            }
+
+        # No migration needed
+        return None
+
+    # Migrate unique ID -- Make the ID actually Unique.
+    # Migrate Device Name -- Make the device name match the psn username
+    # We can remove this logic after a reasonable period of time has passed.
+    if entry.version == 1:
+        await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
+        _migrate_device_identifiers(hass, entry.entry_id, coordinator)
+        hass.config_entries.async_update_entry(entry, version=2)
+
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    entry.async_on_unload(entry.add_update_listener(update_listener))
     return True
 
 
@@ -77,3 +122,22 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Update Listener."""
     await hass.config_entries.async_reload(entry.entry_id)
+
+async def async_migrate_entry(hass: HomeAssistant, self):
+    """Migrate Entry Support"""
+    return True
+
+def _migrate_device_identifiers(
+    hass: HomeAssistant, entry_id: str, coordinator
+) -> None:
+    """Migrate old device identifiers."""
+    dev_reg = dr.async_get(hass)
+    devices: list[dr.DeviceEntry] = dr.async_entries_for_config_entry(dev_reg, entry_id)
+    for device in devices:
+        old_identifier = list(next(iter(device.identifiers)))
+        if old_identifier[1] == "PSN":
+            new_identifier = {(DOMAIN, coordinator.data.get("username"))}
+            _LOGGER.debug(
+                "migrate identifier '%s' to '%s'", device.identifiers, new_identifier
+            )
+            dev_reg.async_update_device(device.id, new_identifiers=new_identifier)

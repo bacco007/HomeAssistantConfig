@@ -25,12 +25,13 @@ class PSNEntity(CoordinatorEntity[PsnCoordinator]):
     @property
     def device_info(self) -> DeviceInfo:
         """Return the device info."""
+        username = "PSN"
+        if len(self.coordinator.data.get("username")) > 0:
+            username = self.coordinator.data.get("username")
+
         return DeviceInfo(
-            identifiers={
-                # Serial numbers are unique identifiers within a specific domain
-                (DOMAIN, "PSN")
-            },
-            name="PSN",
+            identifiers={(DOMAIN, username)},
+            name=username,
             manufacturer="Sony",
             model="Playstation Network",
             configuration_url="https://ca.account.sony.com/api/v1/ssocookie",

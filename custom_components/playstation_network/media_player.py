@@ -36,7 +36,15 @@ async def async_setup_entry(
 ) -> None:
     """Entity Setup"""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][PSN_COORDINATOR]
-    await coordinator.async_config_entry_first_refresh()
+
+    if coordinator.data.get("platform").get("platform") is None:
+        username = coordinator.data.get("username")
+        _LOGGER.warning(
+            "No console found associated with account: %s. -- Skipping creation of media player",
+            username,
+        )
+        return
+
     async_add_entities([MediaPlayer(coordinator)])
 
 
@@ -49,6 +57,7 @@ class MediaPlayer(PSNEntity, MediaPlayerEntity):
         """Initialize PSN MediaPlayer."""
         super().__init__(coordinator)
         self.data = self.coordinator.data
+        self._attr_has_entity_name = True
 
     @property
     def icon(self):
@@ -76,7 +85,7 @@ class MediaPlayer(PSNEntity, MediaPlayerEntity):
 
     @property
     def unique_id(self):
-        return f"{self.data.get('platform').get('platform')}_console"
+        return f"{self.data.get('username').lower()}_{self.data.get('platform').get('platform').lower()}_console"
 
     @property
     def name(self):
