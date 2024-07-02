@@ -28,3 +28,27 @@ scrolling_effect: false
 name: Currently Playing
 icon: mdi:play-box-multiple-outline
 card_layout: large
+styles: |-
+  .bubble-media-player-container {
+    background: none;
+  }
+  ha-card {
+    overflow: hidden;
+    border-radius: 50px !important;
+  }
+  .card-content {
+    background: var(--background-color-2,var(--secondary-background-color));
+  }
+  .card-content::before {
+    content: '';
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-image: url(${hass.states['media_player.currently_playing']?.attributes.entity_picture});
+    background-size: cover;
+    background-position: 50%;
+    filter: blur(20px);
+    top: 0;
+    position: absolute;
+    opacity: 0.5;
+  }
