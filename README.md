@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.7.0b10 |
+| HA Version | 2024.7.0 |
 | No. Integrations | 213 |
-| No. Custom Integrations | 87 |
-| No. Entities | 5752 |
-| No. Sensors | 3681 |
+| No. Custom Integrations | 88 |
+| No. Entities | 5753 |
+| No. Sensors | 3680 |
 | No. Automations | 139 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 121
-Devices | 616
+Devices | 618
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 39
 Numbers | 39
-Persistent notifications | 5
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3681
+Sensors | 3680
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 282
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 337
+Update | 338
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>619 Integrations</summary>
+<details><summary>620 Integrations</summary>
 
 | Name |
 | --- |
@@ -222,6 +222,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [derivative](https://www.home-assistant.io/components/derivative) |
 | [derivative.sensor](https://www.home-assistant.io/components/derivative.sensor) |
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
+| [device_tools](https://www.home-assistant.io/components/device_tools) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
@@ -740,7 +741,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>79 Custom Integrations</summary>
+<details><summary>80 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -761,6 +762,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.4.0] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
 | [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.6.2] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
 | [Default Config Disabler](https://github.com/tronikos/default_config_disabler) |  [v0.0.4] | Disables components from Home Assistant's default_config |[@tronikos](https://github.com/tronikos).|
+| [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.8.3] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.4.2] |  |[@martinarva](https://github.com/martinarva).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.11] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.2] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
@@ -846,7 +848,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.4.9] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.4.10] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.7] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
@@ -906,7 +908,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.14.0 |  | db21ed7f |
 | Cloudflared | 5.1.14 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.6.4 |  | 15ef4d2f |
+| ESPHome | 2024.6.6 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
@@ -915,7 +917,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
 | JupyterLab | 0.15.1 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
-| Matter Server | 6.1.2 |  | core |
+| Matter Server | 6.2.1 |  | core |
 | Music Assistant | 2.0.7 |  | d5369777 |
 | Node-RED | 18.0.2 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.0 |  | core |
@@ -971,7 +973,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.7.0b10-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.7.0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/home-assistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/home-assistant.yaml
