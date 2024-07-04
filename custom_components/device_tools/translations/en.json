@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured",
+            "device_not_found": "Device not found",
+            "device_disabled": "Device is disabled"
+        },
+        "flow_title": "Add new modification",
+        "step": {
+            "user": {
+                "title": "Add new modification",
+                "data": {
+                    "modification_name": "Name of the modification",
+                    "device_id": "Device (leave empty to create new device)"
+                }
+            },
+            "device": {
+                "title": "Create new device",
+                "data": {
+                    "device_name": "Device Name"
+                }
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "device_not_found": "Device not found",
+            "device_disabled": "Device is disabled",
+            "device_already_merged": "Device is already merged",
+            "device_in_use": "Device is in use by another modification"
+        },
+        "step": {
+            "attributes": {
+                "title": "Configure device attributes",
+                "data": {
+                    "manufacturer": "Manufacturer",
+                    "model": "Model",
+                    "via_device_id": "Via device ID",
+                    "sw_version": "Software version",
+                    "hw_version": "Hardware version",
+                    "serial_number": "Serial number"
+                }
+            },
+            "entities": {
+                "title": "Configure device entities",
+                "data": {
+                    "entities": "Entities"
+                }
+            },
+            "merge": {
+                "title": "Merge devices",
+                "data": {
+                    "devices": "Devices to merge"
+                }
+            }
+        }
+    }
+}
