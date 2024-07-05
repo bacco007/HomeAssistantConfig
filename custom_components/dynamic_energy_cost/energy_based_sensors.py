@@ -19,7 +19,7 @@ class BaseEnergyCostSensor(RestoreEntity, SensorEntity):
         self._energy_sensor_id = energy_sensor_id
         self._price_sensor_id = price_sensor_id
         self._state = None
-        self._unit_of_measurement = 'EUR'  # Default to EUR, will update after entity addition
+        self._unit_of_measurement = None  # Default to None, will update after entity addition
         self._interval = interval
         self._last_energy_reading = None
         self._cumulative_energy_kwh = 0
@@ -119,21 +119,28 @@ class BaseEnergyCostSensor(RestoreEntity, SensorEntity):
         self.schedule_next_reset()
 
     def get_currency(self):
-        """Extract the currency from the unit of measurement of the price sensor."""
-        price_entity = self.hass.states.get(self._price_sensor_id)
-        if price_entity and price_entity.attributes.get('unit_of_measurement'):
-            currency = price_entity.attributes['unit_of_measurement'].split('/')[0].strip()
-            _LOGGER.debug(f"Extracted currency '{currency}' from unit of measurement '{price_entity.attributes['unit_of_measurement']}'.")
+        """Get the Home Assistant default currency."""
+        currency = self.hass.config.currency
+        if currency:
+            _LOGGER.debug(f"Using Home Assistant default currency '{currency}'.")
             return currency
         else:
-            _LOGGER.warning(f"Unit of measurement not available or invalid for sensor {self._price_sensor_id}, defaulting to 'EUR'.")
-        return 'EUR'  # Default to EUR if not found
+            _LOGGER.warning("No default currency set in Home Assistant.")
+            return None  # No default currency
 
 
     def calculate_next_reset_time(self):
         current_time = now()
         if self._interval == "daily":
             next_reset = current_time.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+        elif self._interval == "weekly":
+            # Calculate the date of the next Monday
+            days_until_monday = (7 - current_time.weekday()) % 7
+            next_monday = (current_time + timedelta(days=days_until_monday)).replace(hour=0, minute=0, second=0, microsecond=0)
+            # If today is Monday, set to next Monday
+            if days_until_monday == 0:
+                next_monday += timedelta(days=7)
+            next_reset = next_monday
         elif self._interval == "monthly":
             next_month = (current_time.replace(day=1) + timedelta(days=32)).replace(day=1)
             next_reset = next_month.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -201,6 +208,10 @@ class DailyEnergyCostSensor(BaseEnergyCostSensor):
     def __init__(self, hass, energy_sensor_id, price_sensor_id):
         super().__init__(hass, energy_sensor_id, price_sensor_id, "daily")
 
+class WeeklyEnergyCostSensor(BaseEnergyCostSensor):
+    def __init__(self, hass, energy_sensor_id, price_sensor_id):
+        super().__init__(hass, energy_sensor_id, price_sensor_id, "weekly")
+
 class MonthlyEnergyCostSensor(BaseEnergyCostSensor):
     def __init__(self, hass, energy_sensor_id, price_sensor_id):
         super().__init__(hass, energy_sensor_id, price_sensor_id, "monthly")
@@ -214,6 +225,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     price_sensor_id = config_entry.data.get(ELECTRICITY_PRICE_SENSOR)
     sensors = [
         DailyEnergyCostSensor(hass, energy_sensor_id, price_sensor_id),
+        WeeklyEnergyCostSensor(hass, energy_sensor_id, price_sensor_id),
         MonthlyEnergyCostSensor(hass, energy_sensor_id, price_sensor_id),
         YearlyEnergyCostSensor(hass, energy_sensor_id, price_sensor_id)
     ]
