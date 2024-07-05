@@ -7,6 +7,6 @@
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/rany2/ha-open-meteo-solar-forecast/issues",
-  "requirements": ["open_meteo_solar_forecast==0.1.16"],
-  "version": "0.1.14"
+  "requirements": ["open_meteo_solar_forecast==0.1.17"],
+  "version": "0.1.15"
 }
