@@ -2,7 +2,6 @@ from collections.abc import MutableMapping
 import copy
 import logging
 
-from homeassistant.components.recorder import DATA_INSTANCE as RECORDER_INSTANCE
 from homeassistant.components.sensor import (
     CONF_STATE_CLASS,
     PLATFORM_SCHEMA,
@@ -16,6 +15,7 @@ from homeassistant.const import (
     CONF_ICON,
     CONF_NAME,
     CONF_UNIT_OF_MEASUREMENT,
+    MATCH_ALL,
     Platform,
 )
 from homeassistant.core import HomeAssistant
@@ -48,7 +48,6 @@ from .const import (
     DOMAIN,
 )
 from .helpers import value_to_type
-from .recorder_history_prefilter import recorder_prefilter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -106,7 +105,14 @@ async def async_setup_entry(
     config = hass.data.get(DOMAIN).get(config_entry.entry_id)
     unique_id = config_entry.entry_id
 
-    async_add_entities([Variable(hass, config, config_entry, unique_id)])
+    if config.get(CONF_EXCLUDE_FROM_RECORDER, DEFAULT_EXCLUDE_FROM_RECORDER):
+        _LOGGER.debug(
+            f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID, None))}) "
+            "Excluding from Recorder"
+        )
+        async_add_entities([VariableNoRecorder(hass, config, config_entry, unique_id)])
+    else:
+        async_add_entities([Variable(hass, config, config_entry, unique_id)])
 
     return True
 
@@ -122,19 +128,14 @@ class Variable(RestoreSensor):
         unique_id,
     ):
         """Initialize a Sensor Variable."""
-        # _LOGGER.debug(
-        #    f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}"
-        # )
+        # _LOGGER.debug(f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}")
         self._hass = hass
         self._config = config
         self._config_entry = config_entry
         self._attr_has_entity_name = True
         self._variable_id = slugify(config.get(CONF_VARIABLE_ID).lower())
         self._attr_unique_id = unique_id
-        if config.get(CONF_NAME) is not None:
-            self._attr_name = config.get(CONF_NAME)
-        else:
-            self._attr_name = config.get(CONF_VARIABLE_ID)
+        self._attr_name = config.get(CONF_NAME, config.get(CONF_VARIABLE_ID, None))
         registry = er.async_get(self._hass)
         current_entity_id = registry.async_get_entity_id(
             PLATFORM, DOMAIN, self._attr_unique_id
@@ -180,13 +181,7 @@ class Variable(RestoreSensor):
             except ValueError:
                 self._attr_native_value = None
 
-        if self._exclude_from_recorder:
-            self.disable_recorder()
-
-    def disable_recorder(self):
-        if RECORDER_INSTANCE in self._hass.data:
-            _LOGGER.info(f"({self._attr_name}) [disable_recorder] Disabling Recorder")
-            recorder_prefilter.add_filter(self._hass, self.entity_id)
+        # _LOGGER.debug(f"({self._attr_name}) [init] unrecorded_attributes: {self._unrecorded_attributes}")
 
     async def async_added_to_hass(self):
         """Run when entity about to be added."""
@@ -249,14 +244,6 @@ class Variable(RestoreSensor):
                 f"({self._attr_name}) Updated config_updated: "
                 + f"{self._config_entry.data.get(CONF_UPDATED)}"
             )
-
-    async def async_will_remove_from_hass(self) -> None:
-        """Run when entity will be removed from hass."""
-        if RECORDER_INSTANCE in self._hass.data and self._exclude_from_recorder:
-            _LOGGER.debug(
-                f"({self._attr_name}) Removing entity exclusion from recorder: {self.entity_id}"
-            )
-            recorder_prefilter.remove_filter(self._hass, self.entity_id)
 
     @property
     def should_poll(self):
@@ -353,3 +340,7 @@ class Variable(RestoreSensor):
             f"({self._attr_name}) [updated] attributes: {self._attr_extra_state_attributes}"
         )
         self.async_write_ha_state()
+
+
+class VariableNoRecorder(Variable):
+    _unrecorded_attributes = frozenset({MATCH_ALL})

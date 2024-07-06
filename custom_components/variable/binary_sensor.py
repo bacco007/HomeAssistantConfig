@@ -3,7 +3,6 @@ import copy
 import logging
 
 from homeassistant.components.binary_sensor import PLATFORM_SCHEMA, BinarySensorEntity
-from homeassistant.components.recorder import DATA_INSTANCE as RECORDER_INSTANCE
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_FRIENDLY_NAME,
@@ -11,6 +10,7 @@ from homeassistant.const import (
     CONF_DEVICE_CLASS,
     CONF_ICON,
     CONF_NAME,
+    MATCH_ALL,
     STATE_OFF,
     STATE_ON,
     Platform,
@@ -35,10 +35,10 @@ from .const import (
     CONF_VALUE,
     CONF_VARIABLE_ID,
     CONF_YAML_VARIABLE,
+    DEFAULT_EXCLUDE_FROM_RECORDER,
     DEFAULT_REPLACE_ATTRIBUTES,
     DOMAIN,
 )
-from .recorder_history_prefilter import recorder_prefilter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -103,7 +103,14 @@ async def async_setup_entry(
     # _LOGGER.debug(f"[async_setup_entry] config: {config}")
     # _LOGGER.debug(f"[async_setup_entry] unique_id: {unique_id}")
 
-    async_add_entities([Variable(hass, config, config_entry, unique_id)])
+    if config.get(CONF_EXCLUDE_FROM_RECORDER, DEFAULT_EXCLUDE_FROM_RECORDER):
+        _LOGGER.debug(
+            f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID, None))}) "
+            "Excluding from Recorder"
+        )
+        async_add_entities([VariableNoRecorder(hass, config, config_entry, unique_id)])
+    else:
+        async_add_entities([Variable(hass, config, config_entry, unique_id)])
 
     return True
 
@@ -119,9 +126,7 @@ class Variable(BinarySensorEntity, RestoreEntity):
         unique_id,
     ):
         """Initialize a Binary Sensor Variable."""
-        _LOGGER.debug(
-            f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}"
-        )
+        # _LOGGER.debug(f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}")
         if config.get(CONF_VALUE) is None or (
             isinstance(config.get(CONF_VALUE), str)
             and config.get(CONF_VALUE).lower() in ["", "none", "unknown", "unavailable"]
@@ -140,10 +145,7 @@ class Variable(BinarySensorEntity, RestoreEntity):
         self._attr_has_entity_name = True
         self._variable_id = slugify(config.get(CONF_VARIABLE_ID).lower())
         self._attr_unique_id = unique_id
-        if config.get(CONF_NAME) is not None:
-            self._attr_name = config.get(CONF_NAME)
-        else:
-            self._attr_name = config.get(CONF_VARIABLE_ID)
+        self._attr_name = config.get(CONF_NAME, config.get(CONF_VARIABLE_ID, None))
         self._attr_icon = config.get(CONF_ICON)
         self._attr_device_class = config.get(CONF_DEVICE_CLASS)
         self._restore = config.get(CONF_RESTORE)
@@ -173,11 +175,6 @@ class Variable(BinarySensorEntity, RestoreEntity):
         _LOGGER.debug(f"({self._attr_name}) [init] entity_id: {self.entity_id}")
         if self._exclude_from_recorder:
             self.disable_recorder()
-
-    def disable_recorder(self):
-        if RECORDER_INSTANCE in self._hass.data:
-            _LOGGER.info(f"({self._attr_name}) [disable_recorder] Disabling Recorder")
-            recorder_prefilter.add_filter(self._hass, self.entity_id)
 
     async def async_added_to_hass(self):
         """Run when entity about to be added."""
@@ -228,14 +225,6 @@ class Variable(BinarySensorEntity, RestoreEntity):
                 f"({self._attr_name}) Updated config_updated: "
                 + f"{self._config_entry.data.get(CONF_UPDATED)}"
             )
-
-    async def async_will_remove_from_hass(self) -> None:
-        """Run when entity will be removed from hass."""
-        if RECORDER_INSTANCE in self._hass.data and self._exclude_from_recorder:
-            _LOGGER.debug(
-                f"({self._attr_name}) Removing entity exclusion from recorder: {self.entity_id}"
-            )
-            recorder_prefilter.remove_filter(self._hass, self.entity_id)
 
     @property
     def should_poll(self):
@@ -387,3 +376,7 @@ class Variable(BinarySensorEntity, RestoreEntity):
         )
 
         self.async_write_ha_state()
+
+
+class VariableNoRecorder(Variable):
+    _unrecorded_attributes = frozenset({MATCH_ALL})

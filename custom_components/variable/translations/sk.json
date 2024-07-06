@@ -164,7 +164,8 @@
     },
     "abort": {
       "yaml_variable": "Tu nie je možné zmeniť možnosti pre premenné vytvorené pomocou YAML.\n\nAk chcete na správu tejto premennej použiť používateľské rozhranie, budete musieť:\n1. Odstráňte ho z YAML\n2. Reštartujte domáceho asistenta\n3. Manuálne ho znova vytvorte v Home Assistant, Integrácie, + Pridať integráciu.",
-      "yaml_update_error": "Nie je možné aktualizovať premennú snímača YAML"
+      "yaml_update_error": "Nie je možné aktualizovať premennú snímača YAML",
+      "value_changed": "Hodnota zmenená"
     },
     "error": {
       "invalid_value_type": "Zadaná hodnota nie je kompatibilná s vybratou triedou zariadenia: {device_class}. Očakávané {value_type}.",

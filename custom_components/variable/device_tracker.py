@@ -10,7 +10,6 @@ from homeassistant.components.device_tracker import (
     SourceType,
     TrackerEntity,
 )
-from homeassistant.components.recorder import DATA_INSTANCE as RECORDER_INSTANCE
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
@@ -21,6 +20,7 @@ from homeassistant.const import (
     ATTR_LONGITUDE,
     CONF_ICON,
     CONF_NAME,
+    MATCH_ALL,
     Platform,
 )
 from homeassistant.core import HomeAssistant
@@ -44,10 +44,10 @@ from .const import (
     CONF_UPDATED,
     CONF_VARIABLE_ID,
     CONF_YAML_VARIABLE,
+    DEFAULT_EXCLUDE_FROM_RECORDER,
     DEFAULT_REPLACE_ATTRIBUTES,
     DOMAIN,
 )
-from .recorder_history_prefilter import recorder_prefilter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -103,7 +103,14 @@ async def async_setup_entry(
     # _LOGGER.debug(f"[async_setup_entry] config: {config}")
     # _LOGGER.debug(f"[async_setup_entry] unique_id: {unique_id}")
 
-    async_add_entities([Variable(hass, config, config_entry, unique_id)])
+    if config.get(CONF_EXCLUDE_FROM_RECORDER, DEFAULT_EXCLUDE_FROM_RECORDER):
+        _LOGGER.debug(
+            f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID, None))}) "
+            "Excluding from Recorder."
+        )
+        async_add_entities([VariableNoRecorder(hass, config, config_entry, unique_id)])
+    else:
+        async_add_entities([Variable(hass, config, config_entry, unique_id)])
 
     return True
 
@@ -119,20 +126,14 @@ class Variable(RestoreEntity, TrackerEntity):
         unique_id,
     ):
         """Initialize a Device Tracker Variable."""
-        _LOGGER.debug(
-            f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}"
-        )
-
+        # _LOGGER.debug(f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}")
         self._hass = hass
         self._config = config
         self._config_entry = config_entry
         self._attr_has_entity_name = True
         self._variable_id = slugify(config.get(CONF_VARIABLE_ID).lower())
         self._attr_unique_id = unique_id
-        if config.get(CONF_NAME) is not None:
-            self._attr_name = config.get(CONF_NAME)
-        else:
-            self._attr_name = config.get(CONF_VARIABLE_ID)
+        self._attr_name = config.get(CONF_NAME, config.get(CONF_VARIABLE_ID, None))
         self._attr_icon = config.get(CONF_ICON)
         self._restore = config.get(CONF_RESTORE)
         self._force_update = config.get(CONF_FORCE_UPDATE)
@@ -165,13 +166,6 @@ class Variable(RestoreEntity, TrackerEntity):
         self._attr_battery_level = config.get(ATTR_BATTERY_LEVEL)
         self._attr_location_name = config.get(ATTR_LOCATION_NAME)
         self._attr_gps_accuracy = config.get(ATTR_GPS_ACCURACY)
-        if self._exclude_from_recorder:
-            self.disable_recorder()
-
-    def disable_recorder(self):
-        if RECORDER_INSTANCE in self._hass.data:
-            _LOGGER.info(f"({self._attr_name}) [disable_recorder] Disabling Recorder")
-            recorder_prefilter.add_filter(self._hass, self.entity_id)
 
     async def async_added_to_hass(self):
         """Run when entity about to be added."""
@@ -206,14 +200,6 @@ class Variable(RestoreEntity, TrackerEntity):
                 f"({self._attr_name}) Updated config_updated: "
                 + f"{self._config_entry.data.get(CONF_UPDATED)}"
             )
-
-    async def async_will_remove_from_hass(self) -> None:
-        """Run when entity will be removed from hass."""
-        if RECORDER_INSTANCE in self._hass.data and self._exclude_from_recorder:
-            _LOGGER.debug(
-                f"({self._attr_name}) Removing entity exclusion from recorder: {self.entity_id}"
-            )
-            recorder_prefilter.remove_filter(self._hass, self.entity_id)
 
     def _update_attr_settings(self, new_attributes=None, just_pop=False):
         if new_attributes is not None:
@@ -355,3 +341,7 @@ class Variable(RestoreEntity, TrackerEntity):
         if self._attr_location_name is not None:
             attr[ATTR_LOCATION_NAME] = self._attr_location_name
         return attr
+
+
+class VariableNoRecorder(Variable):
+    _unrecorded_attributes = frozenset({MATCH_ALL})
