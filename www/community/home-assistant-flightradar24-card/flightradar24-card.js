@@ -28,6 +28,13 @@ class Flightradar24Card extends HTMLElement {
     this.units = Object.assign({ altitude: 'ft', speed: 'kts', distance: 'km' }, config.units);
     this.radar = Object.assign({ range: this.units.distance === 'km' ? 35 : 25 }, config.radar);
     this.defines = Object.assign({}, config.defines);
+    this.sortFn = this.getSortFn(
+      config.sort ?? [
+        { field: 'id', comparator: 'oneOf', value: '${selectedFlights}', order: 'DESC' },
+        { field: 'altitude', comparator: 'eq', value: 0, order: 'ASC' },
+        { field: 'closest_passing_distance ?? distance_to_tracker', order: 'DESC' }
+      ]
+    );
 
     this.templates = Object.assign(
       {
@@ -166,14 +173,8 @@ class Flightradar24Card extends HTMLElement {
   renderDynamic() {
     const flightsContainer = this.shadowRoot.getElementById('flights');
     if (!flightsContainer) return;
-
-    if (this.radar.hide !== true) {
-      requestAnimationFrame(() => {
-        this.renderRadar();
-      });
-    }
-
     flightsContainer.innerHTML = '';
+
     const filter = this.config.filter
       ? this._selectedFlights && this._selectedFlights.length > 0
         ? [
@@ -188,6 +189,20 @@ class Flightradar24Card extends HTMLElement {
         : this.config.filter
       : undefined;
     const flightsData = filter ? this.applyFilter(this._flightsData, filter) : this._flightsData;
+    flightsData.sort(this.sortFn);
+
+    if (this.radar.hide !== true) {
+      requestAnimationFrame(() => {
+        this.renderRadar(
+          this.radar.filter === true
+            ? flightsData
+            : this.radar.filter && typeof this.radar.filter === 'object'
+            ? this.applyFilter(this._flightsData, this.radar.filter)
+            : this._flightsData
+        );
+      });
+    }
+
     if (flightsData.length === 0) {
       if (this.config.no_flights_message !== '') {
         const noFlightsMessage = document.createElement('div');
@@ -222,6 +237,7 @@ class Flightradar24Card extends HTMLElement {
       const radarRange = this.radar.range;
 
       const scaleFactor = radarWidth / (radarRange * 2); // Adjust based on the radar width
+      const clippingRange = radarRange * 1.15;
 
       const radarCenterX = radarWidth / 2;
       const radarCenterY = radarHeight / 2;
@@ -263,71 +279,78 @@ class Flightradar24Card extends HTMLElement {
                 const end = feature.points[i + 1];
 
                 const startDistance = this.haversine(refLat, refLon, start.lat, start.lon);
-                const startBearing = this.calculateBearing(refLat, refLon, start.lat, start.lon);
                 const endDistance = this.haversine(refLat, refLon, end.lat, end.lon);
-                const endBearing = this.calculateBearing(refLat, refLon, end.lat, end.lon);
 
-                const startX = radarCenterX + Math.cos(((startBearing - 90) * Math.PI) / 180) * startDistance * scaleFactor;
-                const startY = radarCenterY + Math.sin(((startBearing - 90) * Math.PI) / 180) * startDistance * scaleFactor;
-                const endX = radarCenterX + Math.cos(((endBearing - 90) * Math.PI) / 180) * endDistance * scaleFactor;
-                const endY = radarCenterY + Math.sin(((endBearing - 90) * Math.PI) / 180) * endDistance * scaleFactor;
+                if (startDistance <= clippingRange || endDistance <= clippingRange) {
+                  const startBearing = this.calculateBearing(refLat, refLon, start.lat, start.lon);
+                  const endBearing = this.calculateBearing(refLat, refLon, end.lat, end.lon);
 
-                const outlineLine = document.createElement('div');
-                outlineLine.className = 'outline-line';
-                outlineLine.style.width = Math.hypot(endX - startX, endY - startY) + 'px';
-                outlineLine.style.height = '1px';
-                outlineLine.style.top = startY + 'px';
-                outlineLine.style.left = startX + 'px';
-                outlineLine.style.transformOrigin = '0 0';
-                outlineLine.style.transform = `rotate(${Math.atan2(endY - startY, endX - startX) * (180 / Math.PI)}deg)`;
+                  const startX = radarCenterX + Math.cos(((startBearing - 90) * Math.PI) / 180) * startDistance * scaleFactor;
+                  const startY = radarCenterY + Math.sin(((startBearing - 90) * Math.PI) / 180) * startDistance * scaleFactor;
+                  const endX = radarCenterX + Math.cos(((endBearing - 90) * Math.PI) / 180) * endDistance * scaleFactor;
+                  const endY = radarCenterY + Math.sin(((endBearing - 90) * Math.PI) / 180) * endDistance * scaleFactor;
 
-                radarScreen.appendChild(outlineLine);
+                  const outlineLine = document.createElement('div');
+                  outlineLine.className = 'outline-line';
+                  outlineLine.style.width = Math.hypot(endX - startX, endY - startY) + 'px';
+                  outlineLine.style.height = '1px';
+                  outlineLine.style.top = startY + 'px';
+                  outlineLine.style.left = startX + 'px';
+                  outlineLine.style.transformOrigin = '0 0';
+                  outlineLine.style.transform = `rotate(${Math.atan2(endY - startY, endX - startX) * (180 / Math.PI)}deg)`;
+
+                  radarScreen.appendChild(outlineLine);
+                }
               }
             } else {
               const { lat: featLat, lon: featLon } = feature.position;
 
               const distance = this.haversine(refLat, refLon, featLat, featLon);
-              const bearing = this.calculateBearing(refLat, refLon, featLat, featLon);
 
-              const featureX = radarCenterX + Math.cos(((bearing - 90) * Math.PI) / 180) * distance * scaleFactor;
-              const featureY = radarCenterY + Math.sin(((bearing - 90) * Math.PI) / 180) * distance * scaleFactor;
+              if (distance <= clippingRange) {
+                const bearing = this.calculateBearing(refLat, refLon, featLat, featLon);
 
-              if (feature.type === 'runway') {
-                const heading = feature.heading;
-                const lengthFeet = feature.length;
+                const featureX = radarCenterX + Math.cos(((bearing - 90) * Math.PI) / 180) * distance * scaleFactor;
+                const featureY = radarCenterY + Math.sin(((bearing - 90) * Math.PI) / 180) * distance * scaleFactor;
 
-                const lengthUnit = this.units.distance === 'km' ? lengthFeet * 0.0003048 : lengthFeet * 0.00018939;
+                if (feature.type === 'runway') {
+                  const heading = feature.heading;
+                  const lengthFeet = feature.length;
 
-                const runway = document.createElement('div');
-                runway.className = 'runway';
-                runway.style.width = lengthUnit * scaleFactor + 'px';
-                runway.style.height = '1px';
-                runway.style.top = featureY + 'px';
-                runway.style.left = featureX + 'px';
-                runway.style.transform = `rotate(${heading - 90}deg)`;
+                  const lengthUnit = this.units.distance === 'km' ? lengthFeet * 0.0003048 : lengthFeet * 0.00018939;
 
-                radarScreen.appendChild(runway);
-              }
-              if (feature.type === 'location') {
-                const locationDot = document.createElement('div');
-                locationDot.className = 'location-dot';
-                locationDot.title = feature.label ?? 'Location';
-                locationDot.style.top = featureY + 'px';
-                locationDot.style.left = featureX + 'px';
-                radarScreen.appendChild(locationDot);
+                  const runway = document.createElement('div');
+                  runway.className = 'runway';
+                  runway.style.width = lengthUnit * scaleFactor + 'px';
+                  runway.style.height = '1px';
+                  runway.style.top = featureY + 'px';
+                  runway.style.left = featureX + 'px';
+                  runway.style.transformOrigin = '0 50%';
+                  runway.style.transform = `rotate(${heading - 90}deg)`;
 
-                if (feature.label) {
-                  const label = document.createElement('div');
-                  label.className = 'location-label';
-                  label.textContent = feature.label || 'Location';
-                  radarScreen.appendChild(label);
+                  radarScreen.appendChild(runway);
+                }
+                if (feature.type === 'location') {
+                  const locationDot = document.createElement('div');
+                  locationDot.className = 'location-dot';
+                  locationDot.title = feature.label ?? 'Location';
+                  locationDot.style.top = featureY + 'px';
+                  locationDot.style.left = featureX + 'px';
+                  radarScreen.appendChild(locationDot);
 
-                  const labelRect = label.getBoundingClientRect();
-                  const labelWidth = labelRect.width;
-                  const labelHeight = labelRect.height;
+                  if (feature.label) {
+                    const label = document.createElement('div');
+                    label.className = 'location-label';
+                    label.textContent = feature.label || 'Location';
+                    radarScreen.appendChild(label);
 
-                  label.style.top = featureY - labelHeight - 4 + 'px';
-                  label.style.left = featureX - labelWidth / 2 + 'px';
+                    const labelRect = label.getBoundingClientRect();
+                    const labelWidth = labelRect.width;
+                    const labelHeight = labelRect.height;
+
+                    label.style.top = featureY - labelHeight - 4 + 'px';
+                    label.style.left = featureX - labelWidth / 2 + 'px';
+                  }
                 }
               }
             }
@@ -337,7 +360,7 @@ class Flightradar24Card extends HTMLElement {
     }
   }
 
-  renderRadar() {
+  renderRadar(flightsData) {
     const planesContainer = this.shadowRoot.getElementById('planes');
     planesContainer.innerHTML = '';
 
@@ -348,54 +371,57 @@ class Flightradar24Card extends HTMLElement {
       const radarRange = this.radar.range;
 
       const scaleFactor = radarWidth / (radarRange * 2); // Adjust based on the radar width
+      const clippingRange = radarRange * 1.15;
 
       const radarCenterX = radarWidth / 2;
       const radarCenterY = radarHeight / 2;
 
-      this._flightsData
+      flightsData
         .slice()
         .reverse()
         .forEach((flight) => {
-          const plane = document.createElement('div');
-          plane.className = 'plane';
-
           const distance = flight.distance_to_tracker;
 
-          const x = radarCenterX + Math.cos(((flight.heading_from_tracker - 90) * Math.PI) / 180) * distance * scaleFactor;
-          const y = radarCenterY + Math.sin(((flight.heading_from_tracker - 90) * Math.PI) / 180) * distance * scaleFactor;
+          if (distance <= clippingRange) {
+            const plane = document.createElement('div');
+            plane.className = 'plane';
 
-          plane.style.top = y + 'px';
-          plane.style.left = x + 'px';
+            const x = radarCenterX + Math.cos(((flight.heading_from_tracker - 90) * Math.PI) / 180) * distance * scaleFactor;
+            const y = radarCenterY + Math.sin(((flight.heading_from_tracker - 90) * Math.PI) / 180) * distance * scaleFactor;
 
-          const arrow = document.createElement('div');
-          arrow.className = 'arrow';
+            plane.style.top = y + 'px';
+            plane.style.left = x + 'px';
 
-          arrow.style.transform = `rotate(${flight.heading}deg)`; // Rotate arrow based on flight heading
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow';
 
-          plane.appendChild(arrow);
+            arrow.style.transform = `rotate(${flight.heading}deg)`; // Rotate arrow based on flight heading
 
-          const label = document.createElement('div');
-          label.className = 'callsign-label';
-          label.textContent = flight.callsign ?? flight.aircraft_registration ?? 'n/a';
+            plane.appendChild(arrow);
 
-          planesContainer.appendChild(label);
+            const label = document.createElement('div');
+            label.className = 'callsign-label';
+            label.textContent = flight.callsign ?? flight.aircraft_registration ?? 'n/a';
 
-          const labelRect = label.getBoundingClientRect();
-          const labelWidth = labelRect.width + 3;
-          const labelHeight = labelRect.height + 6;
+            planesContainer.appendChild(label);
 
-          label.style.top = y - labelHeight + 'px'; // Offset by the label's height
-          label.style.left = x - labelWidth + 'px'; // Offset by the label's width
+            const labelRect = label.getBoundingClientRect();
+            const labelWidth = labelRect.width + 3;
+            const labelHeight = labelRect.height + 6;
 
-          if (flight.altitude <= 0) {
-            plane.classList.add('plane-small');
-          } else {
-            plane.classList.add('plane-medium');
+            label.style.top = y - labelHeight + 'px'; // Offset by the label's height
+            label.style.left = x - labelWidth + 'px'; // Offset by the label's width
+
+            if (flight.altitude <= 0) {
+              plane.classList.add('plane-small');
+            } else {
+              plane.classList.add('plane-medium');
+            }
+            plane.addEventListener('click', () => this.toggleSelectedFlight(flight));
+            label.addEventListener('click', () => this.toggleSelectedFlight(flight));
+
+            planesContainer.appendChild(plane);
           }
-          plane.addEventListener('click', () => this.toggleSelectedFlight(flight));
-          label.addEventListener('click', () => this.toggleSelectedFlight(flight));
-
-          planesContainer.appendChild(plane);
         });
     }
   }
@@ -411,7 +437,14 @@ class Flightradar24Card extends HTMLElement {
     this.radar.range = newRange;
 
     this.renderRadarScreen();
-    this.renderRadar();
+
+    this.renderRadar(
+      this.radar.filter === true
+        ? this.applyFilter(this._flightsData, this.config.filter)
+        : this.radar.filter && typeof this.radar.filter === 'object'
+        ? this.applyFilter(this._flightsData, this.radar.filter)
+        : this._flightsData
+    );
   }
 
   renderFlight(_flight) {
@@ -819,25 +852,27 @@ class Flightradar24Card extends HTMLElement {
 
     let tagMatch;
     while ((tagMatch = tagRegex.exec(template)) !== null) {
-        let tplMatch;
-        while ((tplMatch = tplRegex.exec(tagMatch[1])) !== null) {
-            tpl[tplMatch[1]] = this.parseTemplate(tplMatch[1], flight, [...trace, templateId]);
-        }
+      let tplMatch;
+      while ((tplMatch = tplRegex.exec(tagMatch[1])) !== null) {
+        tpl[tplMatch[1]] = this.parseTemplate(tplMatch[1], flight, [...trace, templateId]);
+      }
     }
 
     try {
-        const parsedTemplate = new Function('flight', 'tpl', 'units', `return \`${template.replace(/\${(.*?)}/g, (_, expr) => `\${${expr}}`)}\``)(flight, tpl, this.units);
-        return parsedTemplate;
+      const parsedTemplate = new Function('flight', 'tpl', 'units', `return \`${template.replace(/\${(.*?)}/g, (_, expr) => `\${${expr}}`)}\``)(flight, tpl, this.units);
+      return parsedTemplate;
     } catch (e) {
-        console.error('Error when rendering: ' + template, e);
-        return '';
+      console.error('Error when rendering: ' + template, e);
+      return '';
     }
   }
 
   resolvePlaceholders(value, defaultValue) {
     if (typeof value === 'string' && value.startsWith('${') && value.endsWith('}')) {
       const key = value.slice(2, -1);
-      if (key in this.defines) {
+      if (key === 'selectedFlights') {
+        return this._selectedFlights;
+      } else if (key in this.defines) {
         return this.defines[key];
       } else if (key in this.config.toggles) {
         return this.config.toggles[key].default;
@@ -855,9 +890,7 @@ class Flightradar24Card extends HTMLElement {
   }
 
   getLocation() {
-    if (this.config.test) {
-      return this.getTestTracker();
-    } else if (this.config.location_tracker && this.config.location_tracker in this._hass.states) {
+    if (this.config.location_tracker && this.config.location_tracker in this._hass.states) {
       return this._hass.states[this.config.location_tracker].attributes;
     } else if (this.config.location) {
       return { latitude: this.config.location.lat, longitude: this.config.location.lon };
@@ -880,20 +913,16 @@ class Flightradar24Card extends HTMLElement {
   }
 
   fetchFlightsData() {
-    if (this.config.test) {
-      this._flightsData = this.getTestFlightsData();
-    } else {
-      this._timer = clearInterval(this._timer);
-      const entityState = this.hass.states[this.config.flights_entity];
-      if (entityState) {
-        try {
-          this._flightsData = entityState.attributes.flights ? JSON.parse(JSON.stringify(entityState.attributes.flights)) : [];
-        } catch (error) {
-          console.error('Error fetching or parsing flight data:', error);
-        }
-      } else {
-        console.error('Flights entity state is undefined. Check the configuration.');
+    this._timer = clearInterval(this._timer);
+    const entityState = this.hass.states[this.config.flights_entity];
+    if (entityState) {
+      try {
+        this._flightsData = entityState.attributes.flights ? JSON.parse(JSON.stringify(entityState.attributes.flights)) : [];
+      } catch (error) {
+        console.error('Error fetching or parsing flight data:', error);
       }
+    } else {
+      console.error('Flights entity state is undefined. Check the configuration.');
     }
 
     const { moving } = this.calculateFlightData();
@@ -980,20 +1009,6 @@ class Flightradar24Card extends HTMLElement {
           flight.heading_from_tracker_to_closest_passing = Math.round(this.calculateBearing(refLat, refLon, closestPassingLatLon.lat, closestPassingLatLon.lon));
         }
       });
-
-      this._flightsData.sort((a, b) => {
-        if (a.altitude === 0 && b.altitude !== 0) {
-          return 1;
-        }
-        if (a.altitude !== 0 && b.altitude === 0) {
-          return -1;
-        }
-
-        const distanceA = a.closest_passing_distance ?? a.distance_to_tracker;
-        const distanceB = b.closest_passing_distance ?? b.distance_to_tracker;
-
-        return distanceA - distanceB;
-      });
     } else {
       console.error('Tracker state is undefined. Make sure the location tracker entity ID is correct.');
     }
@@ -1075,6 +1090,92 @@ class Flightradar24Card extends HTMLElement {
     return eta;
   }
 
+  parseSortField(obj, field) {
+    return field.split(' ?? ').reduce((acc, cur) => acc ?? obj[cur], undefined);
+  }
+  getSortFn(sortConfig) {
+    return ((a, b) => {
+      for (let criterion of sortConfig) {
+        const { field, comparator, order = 'ASC' } = criterion;
+        const value = this.resolvePlaceholders(criterion.value);
+
+        const fieldA = this.parseSortField(a, field);
+        const fieldB = this.parseSortField(b, field);
+
+        let result = 0;
+
+        switch (comparator) {
+          case 'eq':
+            if (fieldA === value && fieldB !== value) {
+              result = 1;
+            } else if (fieldA !== value && fieldB === value) {
+              result = -1;
+            }
+            break;
+          case 'lt':
+            if (fieldA < value && fieldB >= value) {
+              result = 1;
+            } else if (fieldA >= value && fieldB < value) {
+              result = -1;
+            }
+            break;
+          case 'lte':
+            if (fieldA <= value && fieldB > value) {
+              result = 1;
+            } else if (fieldA > value && fieldB <= value) {
+              result = -1;
+            }
+            break;
+          case 'gt':
+            if (fieldA > value && fieldB <= value) {
+              result = 1;
+            } else if (fieldA <= value && fieldB > value) {
+              result = -1;
+            }
+            break;
+          case 'gte':
+            if (fieldA >= value && fieldB < value) {
+              result = 1;
+            } else if (fieldA < value && fieldB >= value) {
+              result = -1;
+            }
+            break;
+          case 'oneOf':
+            if (value !== undefined) {
+              const isAInValue = value.includes(fieldA);
+              const isBInValue = value.includes(fieldB);
+              if (isAInValue && !isBInValue) {
+                result = 1;
+              } else if (!isAInValue && isBInValue) {
+                result = -1;
+              }
+            }
+            break;
+          case 'containsOneOf':
+            if (value !== undefined) {
+              const isAContainsValue = value.some((val) => fieldA.includes(val));
+              const isBContainsValue = value.some((val) => fieldB.includes(val));
+              if (isAContainsValue && !isBContainsValue) {
+                result = 1;
+              } else if (!isAContainsValue && isBContainsValue) {
+                result = -1;
+              }
+            }
+            break;
+          default:
+            result = fieldA - fieldB;
+            break;
+        }
+
+        if (result !== 0) {
+          return order === 'DESC' ? -result : result;
+        }
+      }
+
+      return 0;
+    }).bind(this);
+  }
+
   attachEventListeners() {
     if (!this._boundEventHandlers) {
       this._boundEventHandlers = {
@@ -1144,103 +1245,6 @@ class Flightradar24Card extends HTMLElement {
     const dx = touch1.clientX - touch2.clientX;
     const dy = touch1.clientY - touch2.clientY;
     return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  getTestTracker() {
-    return {
-      attributes: {
-        latitude: 40.697354, // Model Airplane Field, Queens, NY
-        longitude: -73.868253 // Model Airplane Field, Queens, NY
-      }
-    };
-  }
-  getTestFlightsData() {
-    return [
-      {
-        // Flight approaching and descending but landing before passing the tracker
-        callsign: 'TEST1',
-        aircraft_registration: 'N12345',
-        aircraft_model: 'Boeing 737',
-        latitude: 40.59867, // South East of JFK
-        longitude: -73.66,
-        altitude: 1600,
-        ground_speed: 140,
-        vertical_speed: -500,
-        heading: 305, // Heading northwest towards JFK runway 31R
-        airline_short: 'TestAir',
-        flight_number: 'TA123',
-        airport_origin_city: 'Boston',
-        airport_origin_country_code: 'US',
-        airport_origin_country_name: 'United States',
-        airport_destination_city: 'New York',
-        airport_destination_country_code: 'US',
-        airport_destination_country_name: 'United States',
-        time_scheduled_departure: Math.floor(Date.now() / 1000) - 3600
-      },
-      {
-        // Flight approaching and descending but landing after passing the tracker
-        callsign: 'TEST2',
-        aircraft_registration: 'N67890',
-        aircraft_model: 'Airbus A320',
-        latitude: 40.7684, // North of JFK
-        longitude: -73.8984,
-        altitude: 3000,
-        ground_speed: 200,
-        vertical_speed: -400,
-        heading: 120, // Heading southeast towards JFK
-        airline_short: 'TestAir',
-        flight_number: 'TA456',
-        airport_origin_city: 'Philadelphia',
-        airport_origin_country_code: 'US',
-        airport_origin_country_name: 'United States',
-        airport_destination_city: 'New York',
-        airport_destination_country_code: 'US',
-        airport_destination_country_name: 'United States',
-        time_scheduled_departure: Math.floor(Date.now() / 1000) - 1800
-      },
-      {
-        // Flight leaving the tracker and ascending
-        callsign: 'TEST3',
-        aircraft_registration: 'N54321',
-        aircraft_model: 'Cessna 172',
-        latitude: 40.6413, // JFK Airport
-        longitude: -73.7781,
-        altitude: 1000,
-        ground_speed: 120,
-        vertical_speed: 400,
-        heading: 45, // Heading northeast
-        airline_short: 'TestAir',
-        flight_number: 'TA789',
-        airport_origin_city: 'New York',
-        airport_origin_country_code: 'US',
-        airport_origin_country_name: 'United States',
-        airport_destination_city: 'Boston',
-        airport_destination_country_code: 'US',
-        airport_destination_country_name: 'United States',
-        time_scheduled_departure: Math.floor(Date.now() / 1000) - 900
-      },
-      {
-        // Flight approaching and passing close at high altitude
-        callsign: 'TEST4',
-        aircraft_registration: 'N98765',
-        aircraft_model: 'Gulfstream G550',
-        latitude: 40.7831, // North of NYC
-        longitude: -73.9712,
-        altitude: 35000,
-        ground_speed: 500,
-        vertical_speed: 0,
-        heading: 120, // Heading southeast
-        airline_short: 'TestAir',
-        flight_number: 'TA101',
-        airport_origin_city: 'Miami',
-        airport_origin_country_code: 'US',
-        airport_origin_country_name: 'United States',
-        airport_destination_city: 'Boston',
-        airport_destination_country_code: 'US',
-        airport_destination_country_name: 'United States',
-        time_scheduled_departure: Math.floor(Date.now() / 1000) - 7200
-      }
-    ];
   }
 }
 
