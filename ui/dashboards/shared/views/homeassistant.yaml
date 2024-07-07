@@ -39,7 +39,7 @@ cards:
       - !include /config/ui/cards/homeassistant/graph_entitycount.yaml
       - !include /config/ui/cards/homeassistant/graph_sensorcount.yaml
       - !include /config/ui/cards/homeassistant/graph_dbsize.yaml
-      - !include /config/ui/cards/homeassistant/graph_dbsize_influx.yaml
+      - !include /config/ui/cards/homeassistant/dbsize_influx.yaml
       - !include /config/ui/cards/homeassistant/graph_countyamllines.yaml
       - !include /config/ui/cards/homeassistant/graph_countyamlfiles.yaml
 
