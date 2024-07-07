@@ -1,11 +1,16 @@
 """Constants in AstroWeather component."""
+from homeassistant.const import Platform
 
 # #####################################################
 # Domain and platforms
 # #####################################################
 DOMAIN = "astroweather"
 
-ASTROWEATHER_PLATFORMS = ["binary_sensor", "sensor", "weather"]
+ASTROWEATHER_PLATFORMS = (
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.WEATHER,
+)
 DEVICE_TYPE_WEATHER = "weather"
 UPTONIGHT = "uptonight"
 
@@ -73,9 +78,13 @@ ATTR_WEATHER_CONDITION_PLAIN = "condition_plain"
 ATTR_WEATHER_PRECIPITATION_AMOUNT = "precipitation_amount"
 ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME = "deepsky_forecast_today_dayname"
 ATTR_WEATHER_DEEPSKY_TODAY_PLAIN = "deepsky_forecast_today_plain"
+ATTR_WEATHER_DEEPSKY_TODAY_PRECIP6 = "deepsky_forecast_today_precipitation_amount6"
 ATTR_WEATHER_DEEPSKY_TODAY_DESC = "deepsky_forecast_today_desc"
 ATTR_WEATHER_DEEPSKY_TOMORROW_DAYNAME = "deepsky_forecast_tomorrow_dayname"
 ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN = "deepsky_forecast_tomorrow_plain"
+ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6 = (
+    "deepsky_forecast_tomorrow_precipitation_amount6"
+)
 ATTR_WEATHER_DEEPSKY_TOMORROW_DESC = "deepsky_forecast_tomorrow_desc"
 ATTR_WEATHER_SUN_NEXT_RISING = "sun_next_rising"
 ATTR_WEATHER_SUN_NEXT_SETTING = "sun_next_setting"

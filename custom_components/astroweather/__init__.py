@@ -259,10 +259,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.debug("Forecast updated")
 
-    for platform in ASTROWEATHER_PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
+    # Set up all platforms for this device/entry.
+    await hass.config_entries.async_forward_entry_setups(entry, ASTROWEATHER_PLATFORMS)
 
     if not entry.update_listeners:
         entry.add_update_listener(async_update_options)

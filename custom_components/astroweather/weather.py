@@ -56,9 +56,11 @@ from .const import (
     ATTR_WEATHER_DEEP_SKY_DARKNESS,
     ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME,
     ATTR_WEATHER_DEEPSKY_TODAY_DESC,
+    ATTR_WEATHER_DEEPSKY_TODAY_PRECIP6,
     ATTR_WEATHER_DEEPSKY_TODAY_PLAIN,
     ATTR_WEATHER_DEEPSKY_TOMORROW_DAYNAME,
     ATTR_WEATHER_DEEPSKY_TOMORROW_DESC,
+    ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6,
     ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN,
     ATTR_WEATHER_FOG_AREA_FRACTION,
     ATTR_WEATHER_LIFTED_INDEX,
@@ -303,14 +305,14 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
 
     @property
     def deepsky_forecast_today_dayname(self) -> str:
-        """Return tomorrows todays visibility."""
+        """Return todays dayname."""
         if self._current is not None:
             return self._current.deepsky_forecast_today_dayname
         return None
 
     @property
     def deepsky_forecast_today_plain(self) -> str:
-        """Return tomorrows todays visibility."""
+        """Return todays deepsky visibility."""
         if self._current is not None:
             return self._current.deepsky_forecast_today_plain
         return None
@@ -323,8 +325,15 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def deepsky_forecast_today_precipitation_amount6(self) -> str:
+        """Return todays precipitation amount 6hs."""
+        if self._current is not None:
+            return self._current.deepsky_forecast_today_precipitation_amount6
+        return None
+
+    @property
     def deepsky_forecast_tomorrow_dayname(self) -> str:
-        """Return tomorrows deepsky visibility."""
+        """Return tomorrows dayname."""
         if self._current is not None:
             return self._current.deepsky_forecast_tomorrow_dayname
         return None
@@ -341,6 +350,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         """Return the description of tomorrows deepsky visibility."""
         if self._current is not None:
             return self._current.deepsky_forecast_tomorrow_desc
+        return None
+
+    @property
+    def deepsky_forecast_tomorrow_precipitation_amount6(self) -> str:
+        """Return tomorrows precipitation amount 6hs."""
+        if self._current is not None:
+            return self._current.deepsky_forecast_tomorrow_precipitation_amount6
         return None
 
     @property
@@ -491,9 +507,11 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_DEEP_SKY_DARKNESS: self.deep_sky_darkness,
             ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME: self.deepsky_forecast_today_dayname,
             ATTR_WEATHER_DEEPSKY_TODAY_DESC: self.deepsky_forecast_today_desc,
+            ATTR_WEATHER_DEEPSKY_TODAY_PRECIP6: self.deepsky_forecast_today_precipitation_amount6,
             ATTR_WEATHER_DEEPSKY_TODAY_PLAIN: self.deepsky_forecast_today_plain,
             ATTR_WEATHER_DEEPSKY_TOMORROW_DAYNAME: self.deepsky_forecast_tomorrow_dayname,
             ATTR_WEATHER_DEEPSKY_TOMORROW_DESC: self.deepsky_forecast_tomorrow_desc,
+            ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6: self.deepsky_forecast_tomorrow_precipitation_amount6,
             ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN: self.deepsky_forecast_tomorrow_plain,
             ATTR_WEATHER_FOG_AREA_FRACTION: self.fog_area_fraction,
             ATTR_WEATHER_HUMIDITY: self.humidity,
