@@ -1,0 +1,132 @@
+substitutions:
+  name: btproxy-bedroom
+  haname: btproxy_bedroom
+  friendly_name: Bluetooth Proxy - Bedroom
+  esphome_comment: Bluetooth Proxy
+  ip_address: 192.168.1.231
+  ip_gw: 192.168.1.1
+  ip_netmask: 255.255.255.0  
+  log_level: debug  # Enable levels logging https://esphome.io/components/logger.html
+                    # none, error, warn, info, debug (default), verbose, very_verbose  
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  comment: ${esphome_comment}
+  min_version: 2024.6.0
+  name_add_mac_suffix: true
+  project:
+    name: esphome.bluetooth-proxy
+    version: "24.7.4.1"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: ${ip_address}
+    gateway: ${ip_gw}
+    subnet: ${ip_netmask}
+  ap:
+    ssid: ${name} Fallback"
+    password: !secret ap_password
+
+logger:
+  level: ${log_level}
+  logs:
+    text_sensor: WARN
+
+# Enable Home Assistant API
+api:
+  password: "87K9NZIeNIDuLa1AKPFn178hKK/XKBbBH2NRye86T4w="
+
+captive_portal:
+
+web_server:
+  port: 80
+
+ota:
+  - platform: esphome
+    id: ota_esphome
+  - platform: http_request
+    id: ota_http_request
+
+update:
+  - platform: http_request
+    id: update_http_request
+    name: Firmware
+    source: https://firmware.esphome.io/bluetooth-proxy/esp32-generic/manifest.json
+
+http_request:
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: True # Whether to send scan-request packets to devices to gather more info (like devicename)
+    interval: 320ms # suggested 211ms # default 320ms
+    window:   300ms # suggested 120ms # default 30ms
+
+bluetooth_proxy:
+  active: true
+
+button:
+  - platform: safe_mode
+    id: button_safe_mode
+    name: Safe Mode Boot
+
+  - platform: factory_reset
+    id: factory_reset_btn
+    name: Factory reset
+
+text_sensor:
+  # Expose ESPHome version as sensor.
+  - platform: version
+    name: ${friendly_name} Version
+
+  # Expose WiFi information as sensor.
+  - platform: wifi_info
+    ip_address:
+      id: our_ip_address
+      name: IP
+    ssid:
+      id: network_ssid
+      name: SSID
+      
+  - platform: template
+    name: ${friendly_name} Uptime
+    id: ${haname}_uptime
+    icon: mdi:clock-start
+    entity_category: "diagnostic"      
+
+sensor:
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi RSSI dBm"
+    id: wifisignal
+    unit_of_measurement: "dBm"
+    entity_category: "diagnostic"
+    update_interval: 60s
+    on_value:
+      - component.update: wifisignal_percentage
+
+  - platform: template
+    id: wifisignal_percentage
+    name: "${friendly_name} Wi-Fi Signal Percentage"
+    icon: "mdi:wifi"
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    update_interval: never
+    lambda: |-
+      if (id(wifisignal).state) {
+        if (id(wifisignal).state <= -100 ) {
+          return 0;
+        } else if (id(wifisignal).state >= -50) {
+          return 100;
+        } else {
+          return 2 * (id(wifisignal).state + 100);
+        }
+      } else {
+        return NAN;
+      }    
