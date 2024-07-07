@@ -54,8 +54,7 @@ action:
       name: "[Group] Lights"
       icon: mdi:lamps
       entities: >
-        {{ states.light
-            |map(attribute='entity_id')|list|sort }}
+        {{ states.light|map(attribute='entity_id')|list|sort }}
 
   - service: group.set
     data_template:

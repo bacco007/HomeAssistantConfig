@@ -1,0 +1,38 @@
+---
+alias: "[HIBP] Notify when new breach recorded"
+id: hibp_notify_new_breach
+mode: single
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.hibp_breach_summary
+condition:
+  - condition: template
+    value_template: "{{ trigger.to_state.state - trigger.from_state.state >= 1 }}"
+action:
+  - service: notify.tbsmarthome
+    data_template:
+      message: New Breach on HIBP
+      target: "#tbsmarthome"
+      data:
+        blocks:
+          - type: section
+            text:
+              type: mrkdwn
+              text: "*New Breach on HIBP*"
+          - type: section
+            text:
+              type: mrkdwn
+              text: HIBP has added a new breach on one of your email addresses
+  - service: notify.mobile_app_tbiphone15promax
+    data:
+      message: HIBP has added a new breach on one of your email addresses
+      title: New Breach on HIBP
+      data:
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge

@@ -36,6 +36,7 @@ cards:
           - !include /config/ui/cards/home/solar.yaml
           - !include /config/ui/cards/home/sun_moon.yaml
           - !include /config/ui/cards/home/sleep.yaml
+          - !include /config/ui/cards/home/me.yaml
           # - !include /config/ui/cards/home/news.yaml
       - type: vertical-stack
         cards:

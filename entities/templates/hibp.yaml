@@ -1,0 +1,31 @@
+---
+sensor:
+  - name: "[HIBP] Breach Summary"
+    unique_id: hibp_breach_summary
+    icon: mdi:virus-outline
+    state: |
+      {%- set ns = namespace(items=0) %}
+      {%- for x in expand('group.hibp_breaches') | list %}
+      {%- set val = states(x.entity_id) | int %}
+      {%- set ns.items = (ns.items + val) %}
+      {%- endfor %}
+      {{ns.items}}
+    attributes:
+      category: hibp
+      breaches: >
+        {%- set ns = namespace(output=[]) %}
+        {%- for x in expand('group.hibp_breaches') | list %}
+        {%- set fn = state_attr(x.entity_id, 'friendly_name') | replace('Breaches ','') %}
+        {%- for y in x.attributes %}
+        {%- if 'breach' in y %}
+        {%- set br = state_attr(x.entity_id, y) %}
+        {%- set output_item = {'account': fn, 'breach': br} %}
+        {%- set ns.output = ns.output + [output_item] %}
+        {% endif %}
+        {%- endfor %}
+        {%- endfor %}
+        {{ ns.output }}
+      count: |
+        {{ expand('group.hibp_breaches') | list | count | int(default=0) }}
+      entities: |
+        {{ expand('group.hibp_breaches') | map(attribute='entity_id')  | list | sort }}

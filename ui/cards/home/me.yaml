@@ -1,0 +1,29 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Me
+    icon: far:id-card
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    sub_button:
+      - icon: mdi:arrow-top-right-thick
+        tap_action:
+          action: navigate
+          url_path: null
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.hibp_breach_summary
+    show_state: false
+    show_name: true
+    sub_button:
+      - entity: sensor.hibp_breach_summary
+        show_icon: false
+        show_state: true
+    show_last_changed: false
+    name: Have I Been Pwned Breaches
