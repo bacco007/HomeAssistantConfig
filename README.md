@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.7.1 |
 | No. Integrations | 213 |
 | No. Custom Integrations | 88 |
-| No. Entities | 5665 |
+| No. Entities | 5666 |
 | No. Sensors | 3640 |
 | No. Automations | 140 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 40
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
@@ -772,7 +772,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.9] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.8] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -832,7 +832,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description |
 | --- | --- | --- |
 | [Apexcharts Card](https://github.com/RomRider/apexcharts-card) |  [v2.1.0-de.3] | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
-| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.0] | An advanced calendar card for Home Assistant Lovelace. |
+| [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.1-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
