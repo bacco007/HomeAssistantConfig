@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: "[Playing] Apple TV"
+entity_id: media_player.bedroom_apple_tv
+state: "playing"
+type: time
+start: "{{ today_at() }}"
+end: "{{ now() }}"

@@ -1,0 +1,26 @@
+---
+sensor:
+  - name: "[Battery Monitor] Batteries"
+    unique_id: battery_monitor_batteries
+    icon: mdi:battery-alert
+    state: "{{ states.sensor | selectattr('attributes.device_class', 'eq', 'battery') | map(attribute='entity_id') | list | count }}"
+    unit_of_measurement: batteries
+    state_class: measurement
+    attributes:
+      batteries: "{{ states.sensor | selectattr('attributes.device_class', 'eq', 'battery') | map(attribute='entity_id') | list }}"
+
+  - name: "[Battery Monitor] Flat Batteries"
+    unique_id: battery_monitor_flat_batteries
+    icon: mdi:battery-alert-variant-outline
+    state: >
+      {% set level = 0 %}
+      {% set flat_batteries =
+           states.sensor
+             | rejectattr('state', 'in', ['unavailable', 'unknown', 'none'])
+             | selectattr('attributes.device_class', 'eq', 'battery')
+             | map(attribute='state')
+             | map('int')
+             | select('eq', level)
+             | list
+      %}
+      {{ flat_batteries | count }}

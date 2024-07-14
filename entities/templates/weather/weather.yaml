@@ -8,6 +8,22 @@ binary_sensor:
     attributes:
       category: weather
 
+  - name: "[Weather] Is Fair Weather?"
+    unique_id: weather_is_fair_weather
+    icon: mdi:weather-sunny
+    state: >-
+      {{ (is_state('sensor.weather_current_condition', 'sunny') or
+          is_state('sensor.weather_current_condition', 'partlycloudy')) and
+          states('sensor.sun_angle') | float(0) >= -1 }}
+    availability: >-
+      {{ (is_state('sensor.weather_current_condition', 'sunny') or
+          is_state('sensor.weather_current_condition', 'partlycloudy')) and
+          has_value('sensor.sun_angle') }}
+    attributes:
+      category: weather
+      provider: >-
+        {{ state_attr('sensor.weather_current_condition', 'provider')}}
+
   - name: "[Weather] Precipitation Active"
     unique_id: weather_precipitation_active
     icon: mdi:weather-pouring
@@ -1226,6 +1242,14 @@ sensor:
   #     provider: Weatherflow (Local)
   #   availability: >
   #     {{ is_number(states('sensor.tempest_st_00056115_fog_probability')) }}
+
+  - name: "[Weather] Fair Weather Percentage"
+    unique_id: weather_fair_weather_percentage
+    state: >-
+      {{ min((states('sensor.weather_fair_weather') | float(0) / states('sensor.tbsmarthome_sun_daylight') | float(0) * 100) | round(2), 100) if has_value('sensor.tbsmarthome_sun_daylight') else 0 }}
+    unit_of_measurement: "%"
+    attributes:
+      category: weather
 
   - name: "[Weather] UV Index"
     unique_id: weather_uv_index

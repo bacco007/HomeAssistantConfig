@@ -1,5 +1,21 @@
 ---
 sensor:
+  - name: ha_automation_disabled
+    unique_id: ha_automation_disabled
+    icon: mdi:refresh-auto
+    state: "{{ states.automation | selectattr('state', 'eq', 'off') | list | length }}"
+    unit_of_measurement: entities
+    attributes:
+      automations: "{{ states.automation | selectattr('state', 'eq', 'off') | map(attribute='attributes.friendly_name') | sort | list }}"
+
+  - name: ha_automation_faulty
+    unique_id: ha_automation_faulty
+    icon: mdi:sync-alert
+    state: "{{ states.automation | selectattr('state', 'eq', 'unavailable') | list | length }}"
+    unit_of_measurement: entities
+    attributes:
+      automations: "{{ states.automation | selectattr('state', 'eq', 'unavailable') | map(attribute='attributes.friendly_name') | sort | list }}"
+
   - name: ha_automation_run_history
     unique_id: ha_automation_run_history
     state: >

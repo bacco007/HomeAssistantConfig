@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: "[Playing] Cardoons LG OLED"
+entity_id: media_player.cardoons_oled
+state: "playing"
+type: time
+start: "{{ today_at() }}"
+end: "{{ now() }}"

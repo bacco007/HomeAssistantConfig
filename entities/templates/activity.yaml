@@ -1,0 +1,31 @@
+---
+binary_sensor:
+  - name: "[Activity] Thomas Driving?"
+    unique_id: activity_thomas_driving
+    state: >
+      {{ is_state("input_boolean.activity_thomas_driving", "on") }}
+    attributes:
+      category: activity
+sensor:
+  - name: "[Activity] Thomas Current Activity"
+    unique_id: activity_thomas_type
+    state: "{{ state_attr('sensor.tbiphone15promax_activity', 'Types') | first }}"
+    icon: "{{ state_attr('sensor.tbiphone15promax_activity', 'icon') }}"
+    attributes:
+      category: activity
+
+  - name: "[Activity] Thomas Activity Confidence"
+    unique_id: activity_thomas_confidence
+    state: "{{ state_attr('sensor.tbiphone15promax_activity', 'Confidence') }}"
+    icon: >-
+      {% if is_state_attr('sensor.tbiphone15promax_activity', 'Confidence', 'High') %}
+        mdi:speedometer
+      {% elif is_state_attr('sensor.tbiphone15promax_activity', 'Confidence', 'Medium') %}
+        mdi:speedometer-medium
+      {% elif is_state_attr('sensor.tbiphone15promax_activity', 'Confidence', 'Low') %}
+        mdi:speedometer-slow
+      {% else %}
+        unknown
+      {% endif %}
+    attributes:
+      category: activity

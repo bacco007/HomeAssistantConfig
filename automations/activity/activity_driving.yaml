@@ -1,0 +1,15 @@
+---
+id: "activity_driving"
+alias: "[Activity] Set Driving State"
+inital_state: true
+trigger:
+  - platform: state
+    entity_id: sensor.activity_thomas_current_activity
+    to: "Automotive"
+  - platform: state
+    entity_id: sensor.activity_thomas_current_activity
+    from: "Automotive"
+action:
+  - service: "input_boolean.turn_{{ 'on' if is_state('sensor.activity_thomas_current_activity', 'Automotive') else 'off' }}"
+    entity_id: input_boolean.activity_thomas_driving
+mode: single

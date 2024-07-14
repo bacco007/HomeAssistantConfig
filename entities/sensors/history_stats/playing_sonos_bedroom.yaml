@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: "[Playing] Sonos Bedroom"
+entity_id: media_player.bedroom_symfonisk
+state: "playing"
+type: time
+start: "{{ today_at() }}"
+end: "{{ now() }}"

@@ -43,6 +43,10 @@ cards:
           method: last_triggered
           ignore_case: true
         show_empty: true
+      - entity: sensor.ha_automation_disabled
+        name: Disabled Automations
+      - entity: sensor.ha_automation_faulty
+        name: Faulty Automations
       - type: custom:fold-entity-row
         head:
           type: custom:template-entity-row

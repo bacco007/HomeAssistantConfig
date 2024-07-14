@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: "[Weather] Fair Weather"
+entity_id: binary_sensor.weather_is_fair_weather
+state: "on"
+type: time
+start: "{{ today_at() }}"
+end: "{{ now() }}"

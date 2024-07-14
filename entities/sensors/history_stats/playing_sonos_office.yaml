@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: "[Playing] Sonos Office"
+entity_id: media_player.office_sonos
+state: "playing"
+type: time
+start: "{{ today_at() }}"
+end: "{{ now() }}"
