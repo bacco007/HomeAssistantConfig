@@ -173,8 +173,6 @@ class Variable(BinarySensorEntity, RestoreEntity):
                 ENTITY_ID_FORMAT, self._variable_id, hass=self._hass
             )
         _LOGGER.debug(f"({self._attr_name}) [init] entity_id: {self.entity_id}")
-        if self._exclude_from_recorder:
-            self.disable_recorder()
 
     async def async_added_to_hass(self):
         """Run when entity about to be added."""
