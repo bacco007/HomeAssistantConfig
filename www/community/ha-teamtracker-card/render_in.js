@@ -52,6 +52,10 @@ export function renderIn(c) {
         .bar { display: ${c.barWrapDisplay}; align-items: center; }
         .bar1-label { flex: 0 0 10px; padding: 0 10px 0 0; margin-top: 4px; }
         .bar2-label { flex: 0 0 10px; padding: 0 0 0 10px; text-align: right; margin-top: 4px; }
+        .left-clickable { text-decoration: none; color: inherit; }
+        .right-clickable { text-decoration: none; color: inherit; }
+        .bottom-clickable { text-decoration: none; color: inherit; }
+        .disabled { pointer-events: none; cursor: default; }
     </style>
     <ha-card>
         <div class="card">
@@ -60,6 +64,7 @@ export function renderIn(c) {
             <img class="opponent-bg" src="${c.logoBG[2]}" />
             <div class="card-content">
                 <div class="team">
+                <a class="left-clickable ${!c.url[1] ? 'disabled' : ''}" href="${c.url[1] ? c.url[1] : '#'}" target="_blank">
                     <img class="logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
                     <div class="circle">${c.initials[1]}</div>
                     <div class="name"><span class="rank">${c.rank[1]}</span> ${c.name[1]}</div>
@@ -69,6 +74,7 @@ export function renderIn(c) {
                         <div class="timeouts1"></div>
                         <div class="timeouts1"></div>
                     </div>
+                    </a>
                 </div>
                 <div class="possession1">&bull;</div>
                 <div class="score">${c.score[1]}</div>
@@ -76,6 +82,7 @@ export function renderIn(c) {
                 <div class="score">${c.score[2]}</div>
                 <div class="possession2">&bull;</div>
                 <div class="team">
+                    <a class="right-clickable ${!c.url[2] ? 'disabled' : ''}" href="${c.url[2] ? c.url[2] : '#'}" target="_blank">
                     <img class="logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
                     <div class="circle">${c.initials[2]}</div>
                     <div class="name"><span class="rank">${c.rank[2]}</span> ${c.name[2]}</div>
@@ -85,6 +92,7 @@ export function renderIn(c) {
                         <div class="timeouts2"></div>
                         <div class="timeouts2"></div>
                     </div>
+                    </a>
                 </div>
             </div>
             <div class="play-clock">${c.playClock}</div>
@@ -99,31 +107,42 @@ export function renderIn(c) {
             <div class="outs">${c.in0}</div>
             <div class="in-series-info">${c.seriesSummary}</div>
             <div class="line1"></div>
-            <div class="in-row1">
-                <div class="venue">${c.venue}</div>
-                <div class="down-distance">${c.in1}</div>
-            </div>
-            <div class="in-row2">
-                <div class="location">${c.location}</div>
-                <div class="network">${c.in2}</div>
-            </div>
-            <div class="line2"></div>
-            <div class="last-play">
-                <p>${c.lastPlay}</p>
-            </div>
-            <div class="bar-wrapper">
-                <div class="bar-text">${c.gameBar}</div>
-                <div class="bar">
-                    <div class="bar1-label">${c.barLabel[1]}</div>
-                    <div class="bar-flex">
-                        <div class="bar1-length"></div>
-                        <div class="bar2-length"></div>
-                    </div>
-                    <div class="bar2-label">${c.barLabel[2]}</div>
+            <a class="bottom-clickable ${!c.bottomURL ? 'disabled' : ''}" href="${c.bottomURL ? c.bottomURL : '#'}" target="_blank">
+                <div class="in-row1">
+                    <div class="venue">${c.venue}</div>
+                    <div class="down-distance">${c.in1}</div>
                 </div>
-            </div>
+                <div class="in-row2">
+                    <div class="location">${c.location}</div>
+                    <div class="network">${c.in2}</div>
+                </div>
+                <div class="line2"></div>
+                <div class="last-play">
+                    <p>${c.lastPlay}</p>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar-text">${c.gameBar}</div>
+                    <div class="bar">
+                        <div class="bar1-label">${c.barLabel[1]}</div>
+                        <div class="bar-flex">
+                            <div class="bar1-length"></div>
+                            <div class="bar2-length"></div>
+                        </div>
+                        <div class="bar2-label">${c.barLabel[2]}</div>
+                    </div>
+                </div>
+            </a>
         </div>
     </ha-card>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a.disabled').forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
     `;    // Return the HTML template
     return htmlTemplate;
 }

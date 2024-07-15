@@ -22,6 +22,19 @@ export class TeamTrackerCard extends LitElement {
 
     setConfig(config) {
         this._config = config;
+        this._actionConfig = {
+            entity: this._config.entity,
+//            tap_action: {
+//                action: "more-info",
+//            },
+            dblclick_action: {
+                action: "more-info",
+            },
+//            hold_action: {
+//                action: "more-info",
+//                start_listening: true,
+//            },
+        };
     }
 
     getCardSize() {
@@ -69,6 +82,9 @@ export class TeamTrackerCard extends LitElement {
         o.outlineColor = this._config.outline_color || '#ffffff';
         o.showLeague = this._config.show_league;
         o.homeSide = String(this._config.home_side).toUpperCase();
+        o.teamURL = this._config.team_url;
+        o.opponentURL = this._config.opponent_url;
+        o.bottomURL = this._config.bottom_url;
         o.show_timeouts = true;
         if (this._config.show_timeouts == false) {
             o.show_timeouts = false;
@@ -166,6 +182,23 @@ export class TeamTrackerCard extends LitElement {
             default:
                 return renderStateInvalid(c);
         }
+    }
+
+    firstUpdated() {
+        // Add the double-click event listener to the card
+        this.shadowRoot.querySelector('ha-card').addEventListener('dblclick', () => this._handleDoubleClick());
+    }
+
+    _handleDoubleClick() {
+        const event = new Event('hass-action', {
+            bubbles: true,
+            composed: true,
+        });
+        event.detail = {
+            config: this._actionConfig,
+            action: 'dblclick',
+        };
+        this.dispatchEvent(event);
     }
 
 //
