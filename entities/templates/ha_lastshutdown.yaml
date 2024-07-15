@@ -1,0 +1,11 @@
+---
+trigger:
+  - platform: homeassistant
+    event: shutdown
+sensor:
+  - name: ha_lastshutdown
+    unique_id: 544be906-236b-431c-882f-62de606baa72
+    state: >-
+      {{ now() }}
+    attributes:
+      category: homeassistant

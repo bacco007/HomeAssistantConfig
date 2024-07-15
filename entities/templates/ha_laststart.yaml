@@ -1,0 +1,11 @@
+---
+trigger:
+  - platform: homeassistant
+    event: start
+sensor:
+  - name: ha_laststart
+    unique_id: 90cebf31-b8fb-4ee2-a3c6-8ee241ddd4a0
+    state: >-
+      {{ now() }}
+    attributes:
+      category: homeassistant

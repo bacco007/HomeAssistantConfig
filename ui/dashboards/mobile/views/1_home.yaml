@@ -8,6 +8,7 @@ cards:
   - !include /config/ui/cards/common/header-mobilekiosk.yaml
   - !include /config/ui/cards/common/media_player.yaml
   - !include /config/ui/cards/home/home.yaml
+  - !include /config/ui/cards/home/cameras.yaml
   - !include /config/ui/cards/home/weather.yaml
   - !include /config/ui/cards/home/tamworth.yaml
   - !include /config/ui/cards/home/cakeday.yaml

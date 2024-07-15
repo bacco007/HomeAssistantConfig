@@ -1,0 +1,56 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Cameras
+    icon: mdi:cctv
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - square: false
+    type: grid
+    columns: 2
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: image.front_gate_event_image
+        name: Front Gate
+        show_last_changed: true
+        show_state: false
+        show_attribute: false
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: image.front_house_event_image
+        name: Front House
+        show_last_changed: true
+        show_state: false
+        show_attribute: false
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: image.front_door_event_image
+        name: Front Door
+        show_last_changed: true
+        show_state: false
+        show_attribute: false
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: image.back_door_event_image
+        name: Back Door
+        show_last_changed: true
+        show_state: false
+        show_attribute: false
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: image.inside_garage_event_image
+        name: Inside Garage
+        show_last_changed: true
+        show_state: false
+        show_attribute: false
