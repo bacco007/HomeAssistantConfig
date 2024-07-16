@@ -1,0 +1,12 @@
+{
+  "domain": "xmltv_epg",
+  "name": "XMLTV EPG",
+  "codeowners": [
+    "@shadow578"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/shadow578/homeassistant_xmltv_epg",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/shadow578/homeassistant_xmltv_epg/issues",
+  "version": "2.1.0"
+}

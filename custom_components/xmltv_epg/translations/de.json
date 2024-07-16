@@ -1,0 +1,95 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Konfiguriere die Datenquelle für die XMLTV EPG Integration.",
+                "data": {
+                    "host": "XMLTV Quell-URL"
+                }
+            }
+        },
+        "error": {
+            "connection": "XMLTV Daten konnten nicht abgerufen werden.",
+            "unknown": "Ein unbekannter Fehler ist aufgetreten."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Ändere das Laufzeitverhalten der XMLTV EPG Integration. Änderungen erfordern eventuell ein neuladen der Integration.",
+                "data": {
+                    "update_interval_hours": "Aktualisierungsintervall (Stunden)",
+                    "program_lookahead_minutes": "Vorrausschauzeit für aktuelles Programm (Minuten)",
+                    "enable_upcoming_sensor": "Sensor für bevorstehendes Programm aktivieren"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "program_current": {
+                "name": "{channel_display_name} aktuelles Programm",
+                "state_attributes": {
+                    "start": {
+                        "name": "Startet um"
+                    },
+                    "end": {
+                        "name": "Endet um"
+                    },
+                    "duration": {
+                        "name": "Dauer"
+                    },
+                    "title": {
+                        "name": "Titel"
+                    },
+                    "description": {
+                        "name": "Beschreibung"
+                    },
+                    "episode": {
+                        "name": "Episode"
+                    },
+                    "subtitle": {
+                        "name": "Untertitel"
+                    }
+                }
+            },
+            "program_upcoming": {
+                "name": "{channel_display_name} bevorstehendes Programm",
+                "state_attributes": {
+                    "start": {
+                        "name": "Startet um"
+                    },
+                    "end": {
+                        "name": "Endet um"
+                    },
+                    "duration": {
+                        "name": "Dauer"
+                    },
+                    "title": {
+                        "name": "Titel"
+                    },
+                    "description": {
+                        "name": "Beschreibung"
+                    },
+                    "episode": {
+                        "name": "Episode"
+                    },
+                    "subtitle": {
+                        "name": "Untertitel"
+                    }
+                }
+            },
+            "last_update": {
+                "name": "Letzte Aktualisierung von {generator_name}",
+                "state_attributes": {
+                    "generator_name": {
+                        "name": "Generator-Name"
+                    },
+                    "generator_url": {
+                        "name": "Generator-URL"
+                    }
+                }
+            }
+        }
+    }
+}
