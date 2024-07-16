@@ -7,13 +7,18 @@
       "manufacturer_id": 76
     }
   ],
-  "codeowners": ["@agittins"],
+  "codeowners": [
+    "@agittins"
+  ],
   "config_flow": true,
-  "dependencies": ["bluetooth_adapters", "device_tracker"],
+  "dependencies": [
+    "bluetooth_adapters",
+    "device_tracker"
+  ],
   "documentation": "https://github.com/agittins/bermuda",
   "integration_type": "device",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/agittins/bermuda/issues",
   "requirements": [],
-  "version": "0.0.0"
+  "version": "0.6.8"
 }

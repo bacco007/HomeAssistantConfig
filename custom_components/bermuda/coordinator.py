@@ -4,9 +4,11 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable
 from datetime import datetime
 from datetime import timedelta
+from typing import cast
 
 import voluptuous as vol
 from habluetooth import BluetoothServiceInfoBleak
@@ -19,6 +21,8 @@ from homeassistant.const import EVENT_STATE_CHANGED
 from homeassistant.core import Event
 from homeassistant.core import EventStateChangedData
 from homeassistant.core import HomeAssistant
+from homeassistant.core import ServiceCall
+from homeassistant.core import ServiceResponse
 from homeassistant.core import SupportsResponse
 from homeassistant.core import callback
 from homeassistant.helpers import area_registry
@@ -126,6 +130,15 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         self.sensor_interval = entry.options.get(
             CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
         )
+
+        # match/replacement pairs for redacting addresses
+        self.redactions: dict[str, str] = {}
+        # Any remaining MAC addresses will be replaced with this. We define it here
+        # so we can compile it once.
+        self._redact_generic_re = re.compile(
+            r"(?P<start>[0-9A-Fa-f]{2}):([0-9A-Fa-f]{2}:){4}(?P<end>[0-9A-Fa-f]{2})"
+        )
+        self._redact_generic_sub = r"\g<start>:xx:xx:xx:xx:\g<end>"
 
         self.stamp_last_prune: float = 0  # When we last pruned device list
 
@@ -275,7 +288,13 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             DOMAIN,
             "dump_devices",
             self.service_dump_devices,
-            vol.Schema({vol.Optional("addresses"): cv.string}),
+            vol.Schema(
+                {
+                    vol.Optional("addresses"): cv.string,
+                    vol.Optional("configured_devices"): cv.boolean,
+                    vol.Optional("redact"): cv.boolean,
+                }
+            ),
             SupportsResponse.ONLY,
         )
 
@@ -332,6 +351,32 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             # _LOGGER.debug("Device_tracker confirmed created for %s", address)
         else:
             _LOGGER.warning("Very odd, we got sensor_created for non-tracked device")
+
+    def count_active_devices(self) -> int:
+        """Returns the number of bluetooth devices that have recent timestamps.
+
+        Useful as a general indicator of health"""
+        stamp = MONOTONIC_TIME() - 10  # seconds
+        fresh_count = 0
+        for address, device in self.devices.items():
+            if device.last_seen > stamp:
+                fresh_count += 1
+        return fresh_count
+
+    def count_active_scanners(self) -> int:
+        """Returns count of scanners that have recently sent updates."""
+        stamp = MONOTONIC_TIME() - 10  # seconds
+        fresh_count = 0
+        for scanner in self.scanner_list:
+            last_stamp: float = 0
+            for address, device in self.devices.items():
+                record = device.scanners.get(scanner, None)
+                if record is not None and record.stamp is not None:
+                    if record.stamp > last_stamp:
+                        last_stamp = record.stamp
+            if last_stamp > stamp:
+                fresh_count += 1
+        return fresh_count
 
     def _get_device(self, address: str) -> BermudaDevice | None:
         """Search for a device entry based on mac address"""
@@ -1124,15 +1169,106 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
         return True
 
-    async def service_dump_devices(self, call):  # pylint: disable=unused-argument;
+    async def service_dump_devices(
+        self, call: ServiceCall
+    ) -> ServiceResponse:  # pylint: disable=unused-argument;
         """Return a dump of beacon advertisements by receiver"""
         out = {}
         addresses_input = call.data.get("addresses", "")
+        redact = call.data.get("redact", False)
+        configured_devices = call.data.get("configured_devices", False)
+
+        # Choose filter for device/address selection
+        addresses = []
         if addresses_input != "":
-            addresses = addresses_input.upper().split()
-        else:
-            addresses = []
+            # Specific devices
+            addresses += addresses_input.upper().split()
+        if configured_devices:
+            # configured and scanners
+            addresses += self.scanner_list
+            addresses += self.options.get(CONF_DEVICES, [])
+
+        # lowercase all the addresses for matching
+        addresses = list(map(str.lower, addresses))
+
+        # Build the dict of devices
         for address, device in self.devices.items():
-            if len(addresses) == 0 or address.upper() in addresses:
+            if len(addresses) == 0 or address.lower() in addresses:
                 out[address] = device.to_dict()
+
+        if redact:
+            self.redaction_list_update()
+            out = cast(ServiceResponse, self.redact_data(out))
         return out
+
+    def redaction_list_update(self):
+        """Freshen or create the list of match/replace pairs that we use to
+        redact MAC addresses. This gives a set of helpful address replacements
+        that still allows identifying device entries without disclosing MAC
+        addresses."""
+        i = len(self.redactions)  # not entirely accurate but we don't care.
+
+        # SCANNERS
+        for address in self.scanner_list:
+            if address.upper() not in self.redactions:
+                i += 1
+                self.redactions[address.upper()] = (
+                    f"{address[:2]}::SCANNER_{i}::{address[-2:]}"
+                )
+        # CONFIGURED DEVICES
+        for address in self.options.get(CONF_DEVICES, []):
+            if address.upper() not in self.redactions:
+                i += 1
+                if address.count("_") == 2:
+                    self.redactions[address] = (
+                        f"{address[:4]}::CFG_iBea_{i}::{address[32:]}"
+                    )
+                elif len(address) == 17:
+                    self.redactions[address] = (
+                        f"{address[:2]}::CFG_MAC_{i}::{address[-2:]}"
+                    )
+                else:
+                    # Don't know what it is, but not a mac.
+                    self.redactions[address] = f"CFG_OTHER_{1}_{address}"
+        # EVERYTHING ELSE
+        for address, device in self.devices.items():
+            if address.upper() not in self.redactions:
+                # Only add if they are not already there.
+                i += 1
+                if device.address_type == ADDR_TYPE_PRIVATE_BLE_DEVICE:
+                    self.redactions[address] = f"{address[:2]}::IRK_DEV_{i}"
+                elif address.count("_") == 2:
+                    self.redactions[address] = (
+                        f"{address[:4]}::OTHER_iBea_{i}::{address[32:]}"
+                    )
+                elif len(address) == 17:  # a MAC
+                    self.redactions[address] = (
+                        f"{address[:2]}::OTHER_MAC_{i}::{address[-2:]}"
+                    )
+                else:
+                    # Don't know what it is.
+                    self.redactions[address] = f"OTHER_{1}_{address}"
+
+    def redact_data(self, data):
+        """Wash any collection of data of any MAC addresses.
+
+        Uses the redaction list of substitutions if already created, then
+        washes any remaining mac-like addresses. This routine is recursive,
+        so if you're changing it bear that in mind!"""
+        if len(self.redactions) == 0:
+            # Initialise the list of addresses if not already done.
+            self.redaction_list_update()
+        if isinstance(data, str):
+            # the end of the recursive wormhole, do the actual work:
+            for find, fix in self.redactions.items():
+                data = re.sub(find, fix, data, flags=re.I)
+            # redactions done, now replace any remaining MAC addresses
+            # We are only looking for xx:xx:xx... format.
+            data = self._redact_generic_re.sub(self._redact_generic_sub, data)
+            return data
+        elif isinstance(data, dict):
+            return {self.redact_data(k): self.redact_data(v) for k, v in data.items()}
+        elif isinstance(data, list):
+            return [self.redact_data(v) for v in data]
+        else:
+            return data
