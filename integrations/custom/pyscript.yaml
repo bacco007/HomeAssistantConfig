@@ -34,3 +34,5 @@ pyscript:
       friendly_name: "Hazard Watch"
     getdata_test:
       friendly_name: "Test"
+    getdata_tvguide_fta:
+      friendly_name: "TV Guide - FTA"

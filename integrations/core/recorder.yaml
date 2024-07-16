@@ -181,6 +181,7 @@ recorder:
       - sensor.awtrix_b86b5c*
       - sensor.sportschedule_*
       - sensor.galaxy_tab_s5e*
+      - sensor.tvguide*
     event_types:
       - automation_triggered
       - call_service
