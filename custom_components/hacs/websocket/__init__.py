@@ -1,4 +1,5 @@
 """Register_commands."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -75,7 +76,7 @@ async def hacs_subscribe(
     """Handle websocket subscriptions."""
 
     @callback
-    def forward_messages(data: dict | None = None):
+    def forward_messages(data: dict | None = None) -> None:
         """Forward events to websocket."""
         connection.send_message(websocket_api.event_message(msg["id"], data))
 
@@ -110,7 +111,6 @@ async def hacs_info(
                 "debug": hacs.configuration.debug,
                 "dev": hacs.configuration.dev,
                 "disabled_reason": hacs.system.disabled_reason,
-                "experimental": hacs.configuration.experimental,
                 "has_pending_tasks": hacs.queue.has_pending_tasks,
                 "lovelace_mode": hacs.core.lovelace_mode,
                 "stage": hacs.stage,

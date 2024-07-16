@@ -1,10 +1,1 @@
-
-try {
-  new Function("import('/hacsfiles/frontend/main-ad130be7.js')")();
-} catch (err) {
-  var el = document.createElement('script');
-  el.src = '/hacsfiles/frontend/main-ad130be7.js';
-  el.type = 'module';
-  document.body.appendChild(el);
-}
-  
+!function(){function n(n){var t=document.createElement("script");t.src=n,document.body.appendChild(t)}if(/.*Version\/(?:11|12)(?:\.\d+)*.*Safari\//.test(navigator.userAgent))n("/hacsfiles/frontend/frontend_es5/entrypoint.DDLFZ2tjAPo.js");else try{new Function("import('/hacsfiles/frontend/frontend_latest/entrypoint.GOO7N1XXqCE.js')")()}catch(t){n("/hacsfiles/frontend/frontend_es5/entrypoint.DDLFZ2tjAPo.js")}}()

@@ -1,4 +1,5 @@
 """Class for integrations in HACS."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -45,7 +46,7 @@ class HacsIntegrationRepository(HacsRepository):
             if self.data.first_install:
                 self.pending_restart = False
 
-        if self.pending_restart and self.hacs.configuration.experimental:
+        if self.pending_restart:
             self.logger.debug("%s Creating restart_required issue", self.string)
             async_create_issue(
                 hass=self.hacs.hass,
@@ -59,6 +60,13 @@ class HacsIntegrationRepository(HacsRepository):
                     "name": self.display_name,
                 },
             )
+
+    async def async_post_uninstall(self) -> None:
+        """Run post uninstall steps."""
+        if self.data.config_flow:
+            await self.reload_custom_components()
+        else:
+            self.pending_restart = True
 
     async def validate_repository(self):
         """Validate."""
@@ -142,7 +150,7 @@ class HacsIntegrationRepository(HacsRepository):
         # Set local path
         self.content.path.local = self.localpath
 
-        # Signal entities to refresh
+        # Signal frontend to refresh
         if self.data.installed:
             self.hacs.async_dispatch(
                 HacsDispatchEvent.REPOSITORY,
