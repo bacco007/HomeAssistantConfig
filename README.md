@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.7.2 |
 | No. Integrations | 213 |
 | No. Custom Integrations | 88 |
-| No. Entities | 5525 |
-| No. Sensors | 3583 |
+| No. Entities | 5641 |
+| No. Sensors | 3617 |
 | No. Automations | 141 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 40
 Numbers | 39
-Persistent notifications | 2
+Persistent notifications | 3
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3583
+Sensors | 3617
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 262
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 324
+Update | 325
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -843,7 +843,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.7.0] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.7.1] | Custom brand icons for Home Assistant |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
@@ -918,7 +918,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
-| Matter Server | 6.2.1 |  | core |
+| Matter Server | 6.3.0 |  | core |
 | Music Assistant | 2.0.7 |  | d5369777 |
 | Node-RED | 18.0.4 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.0 |  | core |

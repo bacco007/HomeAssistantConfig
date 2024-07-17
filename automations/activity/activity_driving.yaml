@@ -1,7 +1,7 @@
 ---
 id: "activity_driving"
 alias: "[Activity] Set Driving State"
-inital_state: true
+initial_state: true
 trigger:
   - platform: state
     entity_id: sensor.activity_thomas_current_activity

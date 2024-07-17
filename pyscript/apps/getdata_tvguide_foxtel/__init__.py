@@ -4,15 +4,15 @@ from datetime import datetime, timedelta
 import requests
 
 @service
-def getdata_tvguide_fta():
+def getdata_tvguide_foxtel():
 
     def get_child_as_text(parent: ET.Element, tag: str) -> str:
         """Get child node text as string, or None if not found."""
         node = parent.find(tag)
         return node.text if node is not None else None
 
-    URL = "https://xmltv.net/xml_files/Tamworth.xml"
-    InclChannels = ["20", "22", "23", "24", "30", "31", "32", "33", "34", "35", "50", "51", "52", "53", "60", "62", "64", "75", "66", "78", "80", "85", "83", "84"]
+    URL = 'https://i.mjh.nz/Kayo/epg.xml'
+    InclChannels = ["500", "501", "502", "503", "504", "505", "506", "507", "509", "510", "526", "527", "528", "600", "601", "603", "604", "608", "609", "612"]
 
     r = task.executor(requests.get, URL)
     xml = ET.fromstring(r.content)
@@ -121,14 +121,14 @@ def getdata_tvguide_fta():
                 "day6": p_d6,
                 "day7": p_d7,
             })
-        s_name = "sensor.tvguide_fta_" + c['channel_slug'].replace('-','_')
+        s_name = "sensor.tvguide_foxtel_" + c['channel_slug'].replace('-','_')
         log.error(s_name)
         attributes['slug'] = c['channel_slug']
-        attributes['category'] = "tvguide_fta"
+        attributes['category'] = "tvguide_kayo"
         attributes['channel_name'] = c['channel_name']
         attributes['channel_number'] = c['channel_number']
         attributes["icon"] = "mdi:television"
-        attributes["friendly_name"] = "TV Guide - FTA - " + c['channel_name']
+        attributes["friendly_name"] = "TV Guide - Foxtel - " + c['channel_name']
         attributes['programs'] = pgm
         state.set(s_name, value=c['channel_slug'], new_attributes = attributes)
 

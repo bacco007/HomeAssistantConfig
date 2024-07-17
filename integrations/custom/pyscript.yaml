@@ -36,3 +36,5 @@ pyscript:
       friendly_name: "Test"
     getdata_tvguide_fta:
       friendly_name: "TV Guide - FTA"
+    getdata_tvguide_foxtel:
+      friendly_name: "TV Guide - Foxtel"
