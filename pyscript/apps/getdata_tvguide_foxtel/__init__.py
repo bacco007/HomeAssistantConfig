@@ -11,7 +11,7 @@ def getdata_tvguide_foxtel():
         node = parent.find(tag)
         return node.text if node is not None else None
 
-    URL = 'https://i.mjh.nz/Kayo/epg.xml'
+    URL = 'https://i.mjh.nz/Foxtel/epg.xml'
     InclChannels = ["500", "501", "502", "503", "504", "505", "506", "507", "509", "510", "526", "527", "528", "600", "601", "603", "604", "608", "609", "612"]
 
     r = task.executor(requests.get, URL)
@@ -45,19 +45,9 @@ def getdata_tvguide_foxtel():
                     "channel_name": chname,
                     "channel_number": chno,
                     "chlogo": chlogo,
-                    # "programs": {
-                    #     "today": [],
-                    #     "tomorrow": [],
-                    #     "day3": [],
-                    #     "day4": [],
-                    #     "day5": [],
-                    #     "day6": [],
-                    #     "day7": [],
-                    # }
                 })
                 ids.append(chid)
-                #print(chid, chslug, chname, chno, chlogo)
-                #print(ids)
+
         elif child.tag == "programme":
             start = child.attrib.get("start")
             end = child.attrib.get("stop")
@@ -66,6 +56,7 @@ def getdata_tvguide_foxtel():
                 start = datetime.strptime(start, "%Y%m%d%H%M%S %z")
                 end = datetime.strptime(end, "%Y%m%d%H%M%S %z")
                 d_group = end.strftime("%Y%m%d")
+                d_length = end - start
                 if d_group not in dates:
                     dates.append(d_group)
             except ValueError:
@@ -79,6 +70,7 @@ def getdata_tvguide_foxtel():
                     "d_group": d_group,
                     "start": start.strftime("%H:%M"),
                     "end": end.strftime("%H:%M"),
+                    "length": str(d_length),
                     "channel": channel,
                     "title": title,
                     "category": category,
@@ -112,24 +104,22 @@ def getdata_tvguide_foxtel():
                     p_d6.append(p)
                 if dates.index(p['d_group'])+1 == 7:
                     p_d7.append(p)
-        pgm.append({
-                "today": p_d1,
-                "tomorrow": p_d2,
-                "day3": p_d3,
-                "day4": p_d4,
-                "day5": p_d5,
-                "day6": p_d6,
-                "day7": p_d7,
-            })
         s_name = "sensor.tvguide_foxtel_" + c['channel_slug'].replace('-','_')
         log.error(s_name)
         attributes['slug'] = c['channel_slug']
-        attributes['category'] = "tvguide_kayo"
+        attributes['category'] = "tvguide_foxtel"
         attributes['channel_name'] = c['channel_name']
         attributes['channel_number'] = c['channel_number']
         attributes["icon"] = "mdi:television"
+        attributes["entity_picture"] = "/local/tvlogos/" + c['channel_slug'] + ".png"
         attributes["friendly_name"] = "TV Guide - Foxtel - " + c['channel_name']
-        attributes['programs'] = pgm
+        attributes['programs_today'] = p_d1
+        attributes['programs_tomorrow'] = p_d2
+        attributes['programs_day3'] = p_d3
+        attributes['programs_day4'] = p_d4
+        attributes['programs_day5'] = p_d5
+        attributes['programs_day6'] = p_d6
+        attributes['programs_day7'] = p_d7
         state.set(s_name, value=c['channel_slug'], new_attributes = attributes)
 
 def get_config(name):

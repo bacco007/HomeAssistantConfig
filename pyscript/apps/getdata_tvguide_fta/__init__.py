@@ -2,6 +2,15 @@ import xml.etree.ElementTree as ET
 import re, json
 from datetime import datetime, timedelta
 import requests
+import os
+
+@pyscript_executor
+def read_file(file_name):
+    try:
+        with open(file_name, encoding="utf-8") as file_desc:
+            return file_desc.read(), None
+    except Exception as exc:
+        return None, exc
 
 @service
 def getdata_tvguide_fta():
@@ -14,8 +23,12 @@ def getdata_tvguide_fta():
     URL = "https://xmltv.net/xml_files/Tamworth.xml"
     InclChannels = ["20", "22", "23", "24", "30", "31", "32", "33", "34", "35", "50", "51", "52", "53", "60", "62", "64", "75", "66", "78", "80", "85", "83", "84"]
 
-    r = task.executor(requests.get, URL)
-    xml = ET.fromstring(r.content)
+    log.error(os.getcwd())
+    #r = task.executor(requests.get, URL)
+    r, exception = read_file("/config/xmltv/Tamworth.xml")
+    if exception:
+        raise exception
+    xml = ET.fromstring(r)
     channels = []
     ids = []
     programs = []
@@ -66,6 +79,7 @@ def getdata_tvguide_fta():
                 start = datetime.strptime(start, "%Y%m%d%H%M%S %z")
                 end = datetime.strptime(end, "%Y%m%d%H%M%S %z")
                 d_group = end.strftime("%Y%m%d")
+                d_length = end - start
                 if d_group not in dates:
                     dates.append(d_group)
             except ValueError:
@@ -79,6 +93,7 @@ def getdata_tvguide_fta():
                     "d_group": d_group,
                     "start": start.strftime("%H:%M"),
                     "end": end.strftime("%H:%M"),
+                    "length": str(d_length),
                     "channel": channel,
                     "title": title,
                     "category": category,
@@ -112,24 +127,22 @@ def getdata_tvguide_fta():
                     p_d6.append(p)
                 if dates.index(p['d_group'])+1 == 7:
                     p_d7.append(p)
-        pgm.append({
-                "today": p_d1,
-                "tomorrow": p_d2,
-                "day3": p_d3,
-                "day4": p_d4,
-                "day5": p_d5,
-                "day6": p_d6,
-                "day7": p_d7,
-            })
         s_name = "sensor.tvguide_fta_" + c['channel_slug'].replace('-','_')
         log.error(s_name)
         attributes['slug'] = c['channel_slug']
-        attributes['category'] = "tvguide_fta"
+        attributes['category'] = "tvguide_fta_tamworth"
         attributes['channel_name'] = c['channel_name']
         attributes['channel_number'] = c['channel_number']
-        attributes["icon"] = "mdi:television"
+        attributes["icon"] = "mdi:television-guide"
         attributes["friendly_name"] = "TV Guide - FTA - " + c['channel_name']
-        attributes['programs'] = pgm
+        attributes["entity_picture"] = "/local/tvlogos/" + c['channel_slug'] + ".png"
+        attributes['programs_today'] = p_d1
+        attributes['programs_tomorrow'] = p_d2
+        attributes['programs_day3'] = p_d3
+        attributes['programs_day4'] = p_d4
+        attributes['programs_day5'] = p_d5
+        attributes['programs_day6'] = p_d6
+        attributes['programs_day7'] = p_d7
         state.set(s_name, value=c['channel_slug'], new_attributes = attributes)
 
 def get_config(name):

@@ -1,0 +1,360 @@
+---
+# TV Guide Card
+
+tvguide_card:
+  default:
+    - entity: sensor.upcoming_sport_afl_all_teams
+  card:
+    type: custom:stack-in-card
+    cards:
+      - type: custom:mushroom-template-card
+        primary: "{{state_attr(entity, 'channel_name')}}"
+        secondary: Channel {{state_attr(entity, 'channel_number')}}
+        icon: mdi:television
+        entity: "[[entity]]"
+        icon_color: orange
+        fill_container: true
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            .: |
+              ha-card:before {
+                content: '';
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                right: 5px;
+                background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
+                background-repeat: no-repeat;
+                background-size: auto 100%, cover;
+                background-position: right;
+                filter: opacity(0.75);
+                }
+              ha-card {
+                # background-color: var(--background-color);
+                box-shadow: none;
+              }
+      - type: entities
+        card_mod:
+          style: |
+            ha-card {
+              margin-top: -20px;
+            }
+            #states > * {
+              margin: 0 !important;
+            }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:template-entity-row
+              name: Today
+              icon: mdi:clock
+              state: ""
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                css:
+                  table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                  tbody tr:hover: |-
+                    background-color: rgba(180, 70, 70,0.2) !important;
+                            color:white !important;
+                  th+: "border-bottom: 1px solid rgb(127,127,127);"
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        overflow: auto;
+                        box-shadow: none !important;
+                        font-size: 12px;
+                        }
+                entities:
+                  include: "[[entity]]"
+                columns:
+                  - name: Time
+                    data: programs_today
+                    modify: x.start + ' - ' + x.end
+                    align: center
+                  - name: Length
+                    data: programs_today
+                    modify: x.length
+                    align: center
+                  - name: Program
+                    data: programs_today
+                    modify: |-
+                      if (!x.episode) {
+                        x.title + '<br/>' + x.category
+                      } else {
+                        x.title + '<br/>' + x.category + ' - ' + x.episode
+                      }
+          - type: custom:fold-entity-row
+            head:
+              type: custom:template-entity-row
+              name: Tomorrow
+              icon: mdi:clock
+              state: ""
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                css:
+                  table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                  tbody tr:hover: |-
+                    background-color: rgba(180, 70, 70,0.2) !important;
+                            color:white !important;
+                  th+: "border-bottom: 1px solid rgb(127,127,127);"
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        overflow: auto;
+                        box-shadow: none !important;
+                        font-size: 12px;
+                        }
+                entities:
+                  include: "[[entity]]"
+                columns:
+                  - name: Time
+                    data: programs_tomorrow
+                    modify: x.start + ' - ' + x.end
+                    align: center
+                  - name: Length
+                    data: programs_tomorrow
+                    modify: x.length
+                    align: center
+                  - name: Program
+                    data: programs_tomorrow
+                    modify: |-
+                      if (!x.episode) {
+                        x.title + '<br/>' + x.category
+                      } else {
+                        x.title + '<br/>' + x.category + ' - ' + x.episode
+                      }
+          - type: custom:fold-entity-row
+            head:
+              type: custom:template-entity-row
+              name: Rest of Week
+              icon: mdi:clock
+              state: ""
+            padding: 0
+            entities:
+              - type: custom:fold-entity-row
+                head:
+                  type: custom:template-entity-row
+                  name: Day 3
+                  icon: mdi:clock
+                  state: ""
+                padding: 0
+                entities:
+                  - type: custom:hui-element
+                    card_type: custom:flex-table-card
+                    css:
+                      table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                      tbody tr:hover: |-
+                        background-color: rgba(180, 70, 70,0.2) !important;
+                                color:white !important;
+                      th+: "border-bottom: 1px solid rgb(127,127,127);"
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            overflow: auto;
+                            box-shadow: none !important;
+                            font-size: 12px;
+                            }
+                    entities:
+                      include: "[[entity]]"
+                    columns:
+                      - name: Time
+                        data: programs_day3
+                        modify: x.start + ' - ' + x.end
+                        align: center
+                      - name: Length
+                        data: programs_day3
+                        modify: x.length
+                        align: center
+                      - name: Program
+                        data: programs_day3
+                        modify: |-
+                          if (!x.episode) {
+                            x.title + '<br/>' + x.category
+                          } else {
+                            x.title + '<br/>' + x.category + ' - ' + x.episode
+                          }
+              - type: custom:fold-entity-row
+                head:
+                  type: custom:template-entity-row
+                  name: Day 4
+                  icon: mdi:clock
+                  state: ""
+                padding: 0
+                entities:
+                  - type: custom:hui-element
+                    card_type: custom:flex-table-card
+                    css:
+                      table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                      tbody tr:hover: |-
+                        background-color: rgba(180, 70, 70,0.2) !important;
+                                color:white !important;
+                      th+: "border-bottom: 1px solid rgb(127,127,127);"
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            overflow: auto;
+                            box-shadow: none !important;
+                            font-size: 12px;
+                            }
+                    entities:
+                      include: "[[entity]]"
+                    columns:
+                      - name: Time
+                        data: programs_day4
+                        modify: x.start + ' - ' + x.end
+                        align: center
+                      - name: Length
+                        data: programs_day4
+                        modify: x.length
+                        align: center
+                      - name: Program
+                        data: programs_day4
+                        modify: |-
+                          if (!x.episode) {
+                            x.title + '<br/>' + x.category
+                          } else {
+                            x.title + '<br/>' + x.category + ' - ' + x.episode
+                          }
+              - type: custom:fold-entity-row
+                head:
+                  type: custom:template-entity-row
+                  name: Day 5
+                  icon: mdi:clock
+                  state: ""
+                padding: 0
+                entities:
+                  - type: custom:hui-element
+                    card_type: custom:flex-table-card
+                    css:
+                      table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                      tbody tr:hover: |-
+                        background-color: rgba(180, 70, 70,0.2) !important;
+                                color:white !important;
+                      th+: "border-bottom: 1px solid rgb(127,127,127);"
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            overflow: auto;
+                            box-shadow: none !important;
+                            font-size: 12px;
+                            }
+                    entities:
+                      include: "[[entity]]"
+                    columns:
+                      - name: Time
+                        data: programs_day5
+                        modify: x.start + ' - ' + x.end
+                        align: center
+                      - name: Length
+                        data: programs_day5
+                        modify: x.length
+                        align: center
+                      - name: Program
+                        data: programs_day5
+                        modify: |-
+                          if (!x.episode) {
+                            x.title + '<br/>' + x.category
+                          } else {
+                            x.title + '<br/>' + x.category + ' - ' + x.episode
+                          }
+              - type: custom:fold-entity-row
+                head:
+                  type: custom:template-entity-row
+                  name: Day 6
+                  icon: mdi:clock
+                  state: ""
+                padding: 0
+                entities:
+                  - type: custom:hui-element
+                    card_type: custom:flex-table-card
+                    css:
+                      table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                      tbody tr:hover: |-
+                        background-color: rgba(180, 70, 70,0.2) !important;
+                                color:white !important;
+                      th+: "border-bottom: 1px solid rgb(127,127,127);"
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            overflow: auto;
+                            box-shadow: none !important;
+                            font-size: 12px;
+                            }
+                    entities:
+                      include: "[[entity]]"
+                    columns:
+                      - name: Time
+                        data: programs_day6
+                        modify: x.start + ' - ' + x.end
+                        align: center
+                      - name: Length
+                        data: programs_day6
+                        modify: x.length
+                        align: center
+                      - name: Program
+                        data: programs_day6
+                        modify: |-
+                          if (!x.episode) {
+                            x.title + '<br/>' + x.category
+                          } else {
+                            x.title + '<br/>' + x.category + ' - ' + x.episode
+                          }
+              - type: custom:fold-entity-row
+                head:
+                  type: custom:template-entity-row
+                  name: Day 7
+                  icon: mdi:clock
+                  state: ""
+                padding: 0
+                entities:
+                  - type: custom:hui-element
+                    card_type: custom:flex-table-card
+                    css:
+                      table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                      tbody tr:hover: |-
+                        background-color: rgba(180, 70, 70,0.2) !important;
+                                color:white !important;
+                      th+: "border-bottom: 1px solid rgb(127,127,127);"
+                    card_mod:
+                      style:
+                        .: |
+                          ha-card {
+                            overflow: auto;
+                            box-shadow: none !important;
+                            font-size: 12px;
+                            }
+                    entities:
+                      include: "[[entity]]"
+                    columns:
+                      - name: Time
+                        data: programs_day7
+                        modify: x.start + ' - ' + x.end
+                        align: center
+                      - name: Length
+                        data: programs_day7
+                        modify: x.length
+                        align: center
+                      - name: Program
+                        data: programs_day7
+                        modify: |-
+                          if (!x.episode) {
+                            x.title + '<br/>' + x.category
+                          } else {
+                            x.title + '<br/>' + x.category + ' - ' + x.episode
+                          }

@@ -1,0 +1,328 @@
+---
+theme: geek_light
+icon: mdi:television
+subview: true
+path: tvguide
+title: TV Guide
+type: custom:grid-layout
+layout: !include /config/ui/cards/layout/browser_grid.yaml
+cards:
+  # Header
+  - type: custom:mod-card
+    view_layout:
+      grid-area: header
+    card: !include /config/ui/cards/common/header.yaml
+
+  # Nav Sidebar
+  - !include /config/ui/cards/common/sidebar-menu.yaml
+
+  # Content
+  - type: "custom:layout-card"
+    view_layout:
+      grid-area: content
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 3
+      width: 400
+      max_width: 1000
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: FTA - ABC
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_abc_tv_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_abc_kids_abc_family
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_abc_entertains
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_abc_news
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: FTA - Nine (NBN)
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_nbn_nine_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_nbn_nine_go
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_nbn_nine_life
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_nbn_nine_gem_hd
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: FTA - SBS
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_nitv_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_sbs_food
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_sbs_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_sbs_viceland_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_sbs_world_movies
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_sbs_world_watch
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: FTA - Seven
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_racing_com
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_seven_bravo
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_seven_flix
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_seven_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_seven_mate_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_seven_two
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: FTA - Ten (WIN)
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_ten_hd
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_ten_bold_drama
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_ten_peach_comedy
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_fta_sky_news_regional
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: Foxtel - News
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_cnn_international
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_news
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_sports_news
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_msnbc
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_news
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_news_extra
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_news_uk
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_weather
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: Foxtel - Sports
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_espn
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_espn2
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_cricket
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_footy
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_league
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_sports_503
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_sports_505
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_sports_506
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_fox_sports_more
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_racing_1
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_racing_2
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_foxtel_sky_racing_thoroughbred_central
+
+  # Actions
+  - !include /config/ui/cards/common/actions.yaml
+
+  # Footer
+  - type: custom:mod-card
+    view_layout:
+      grid-area: footer
+    card: !include /config/ui/cards/common/media_player.yaml
+
+  # Popups
+  - !include /config/ui/dashboards/shared/includes/popup.yaml

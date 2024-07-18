@@ -19,5 +19,6 @@ views:
   - !include /config/ui/dashboards/shared/views/sport.yaml
   - !include /config/ui/dashboards/shared/views/tamworth.yaml
   - !include /config/ui/dashboards/shared/views/tv-movies.yaml
+  - !include /config/ui/dashboards/shared/views/tvguide.yaml
   - !include /config/ui/dashboards/shared/views/untappd.yaml
   - !include /config/ui/dashboards/shared/views/weather.yaml

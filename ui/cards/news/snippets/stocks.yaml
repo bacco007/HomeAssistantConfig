@@ -47,10 +47,6 @@ cards:
       - type: custom:decluttering-card
         template: mushroom_finance
         variables:
-          - entity: sensor.yahoofinance_bld_ax
-      - type: custom:decluttering-card
-        template: mushroom_finance
-        variables:
           - entity: sensor.yahoofinance_col_ax
       - type: custom:decluttering-card
         template: mushroom_finance

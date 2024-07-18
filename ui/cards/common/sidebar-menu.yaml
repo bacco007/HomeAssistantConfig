@@ -97,6 +97,13 @@ cards:
               action: navigate
               navigation_path: tamworth
           - type: template
+            icon: mdi:television-guide
+            icon_color: disabled
+            content: ""
+            tap_action:
+              action: navigate
+              navigation_path: tvguide
+          - type: template
             icon: mdi:television
             icon_color: disabled
             content: ""

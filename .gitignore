@@ -79,6 +79,7 @@ sonos_playlist.yaml
 icloud3*.log
 persist_notify.log
 calendar*.txt
+xmltv/*.xml
 
 node-red/*
 !node-red/flows.json
