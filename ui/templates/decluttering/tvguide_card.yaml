@@ -8,8 +8,27 @@ tvguide_card:
     type: custom:stack-in-card
     cards:
       - type: custom:mushroom-template-card
-        primary: "{{state_attr(entity, 'channel_name')}}"
-        secondary: Channel {{state_attr(entity, 'channel_number')}}
+        primary: >
+          {{state_attr(entity, 'channel_name')}} (Channel {{state_attr(entity, 'channel_number')}})
+        secondary: >
+
+          {%- set n = now().strftime("%H:%M") %}
+          {%- set ln = 0 %}
+          {%- for r in state_attr(entity, 'programs_today') %}
+          {%- if n > r['start'] and (n < r['end'] or loop.last) %}
+          {%- set ln = loop.index - 1 %}
+
+          Now: {{ state_attr(entity, 'programs_today')[ln]['title'] }}
+
+          {%- if state_attr(entity, 'programs_today')[ln+1] is not defined %}
+
+          Next: {{ state_attr(entity, 'programs_tomorrow')[0]['title'] }}
+          {%- else %}
+
+          Next: {{ state_attr(entity, 'programs_today')[ln+1]['title'] }}
+          {%- endif %}
+          {%- endif %}
+          {%- endfor %}
         icon: mdi:television
         entity: "[[entity]]"
         icon_color: orange
@@ -20,6 +39,7 @@ tvguide_card:
           action: none
         double_tap_action:
           action: none
+        multiline_secondary: true
         card_mod:
           style:
             .: |
@@ -44,6 +64,9 @@ tvguide_card:
           style: |
             ha-card {
               margin-top: -20px;
+            }
+            #states {
+              margin-bottom: 10px;
             }
             #states > * {
               margin: 0 !important;

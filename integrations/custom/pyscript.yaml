@@ -38,3 +38,5 @@ pyscript:
       friendly_name: "TV Guide - FTA"
     getdata_tvguide_foxtel:
       friendly_name: "TV Guide - Foxtel"
+    download_xmltv:
+      friendly_name: "Download XMLTV"

@@ -2,6 +2,16 @@ import xml.etree.ElementTree as ET
 import re, json
 from datetime import datetime, timedelta
 import requests
+import os
+from dateutil import tz
+
+@pyscript_executor
+def read_file(file_name):
+    try:
+        with open(file_name, encoding="utf-8") as file_desc:
+            return file_desc.read(), None
+    except Exception as exc:
+        return None, exc
 
 @service
 def getdata_tvguide_foxtel():
@@ -11,11 +21,13 @@ def getdata_tvguide_foxtel():
         node = parent.find(tag)
         return node.text if node is not None else None
 
-    URL = 'https://i.mjh.nz/Foxtel/epg.xml'
+    #URL = 'https://i.mjh.nz/Foxtel/epg.xml'
     InclChannels = ["500", "501", "502", "503", "504", "505", "506", "507", "509", "510", "526", "527", "528", "600", "601", "603", "604", "608", "609", "612"]
 
-    r = task.executor(requests.get, URL)
-    xml = ET.fromstring(r.content)
+    r, exception = read_file("/config/xmltv/foxtel.xml")
+    if exception:
+        raise exception
+    xml = ET.fromstring(r)
     channels = []
     ids = []
     programs = []
@@ -27,6 +39,8 @@ def getdata_tvguide_foxtel():
     p_d6 = []
     p_d7 = []
     dates = []
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('Australia/Sydney')
     if xml.tag != "tv":
         log.error("Not XMLTV")
     generator_name = xml.attrib.get("generator-info-name")
@@ -54,9 +68,14 @@ def getdata_tvguide_foxtel():
             channel = child.attrib.get("channel")
             try:
                 start = datetime.strptime(start, "%Y%m%d%H%M%S %z")
+                start = start.astimezone(to_zone)
                 end = datetime.strptime(end, "%Y%m%d%H%M%S %z")
-                d_group = end.strftime("%Y%m%d")
+                end = end.astimezone(to_zone)
                 d_length = end - start
+                d_group = start.strftime("%Y%m%d")
+                if d_group not in dates:
+                    dates.append(d_group)
+                d_group = end.strftime("%Y%m%d")
                 if d_group not in dates:
                     dates.append(d_group)
             except ValueError:
@@ -67,7 +86,7 @@ def getdata_tvguide_foxtel():
             category = get_child_as_text(child, "category")
             if channel in ids:
                 programs.append({
-                    "d_group": d_group,
+                    "d_group": start.strftime("%Y%m%d"),
                     "start": start.strftime("%H:%M"),
                     "end": end.strftime("%H:%M"),
                     "length": str(d_length),
@@ -76,6 +95,17 @@ def getdata_tvguide_foxtel():
                     "category": category,
                     "episode": episode
                 })
+                if start.strftime("%Y%m%d") != end.strftime("%Y%m%d"):
+                    programs.append({
+                        "d_group": end.strftime("%Y%m%d"),
+                        "start": start.strftime("%H:%M"),
+                        "end": end.strftime("%H:%M"),
+                        "length": str(d_length),
+                        "channel": channel,
+                        "title": title,
+                        "category": category,
+                        "episode": episode
+                    })
 
     for c in channels:
         chid = c['channel_id']

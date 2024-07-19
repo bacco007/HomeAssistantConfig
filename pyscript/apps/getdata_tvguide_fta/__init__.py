@@ -3,6 +3,7 @@ import re, json
 from datetime import datetime, timedelta
 import requests
 import os
+from dateutil import tz
 
 @pyscript_executor
 def read_file(file_name):
@@ -20,12 +21,12 @@ def getdata_tvguide_fta():
         node = parent.find(tag)
         return node.text if node is not None else None
 
-    URL = "https://xmltv.net/xml_files/Tamworth.xml"
+    # URL = "https://xmltv.net/xml_files/Tamworth.xml"
     InclChannels = ["20", "22", "23", "24", "30", "31", "32", "33", "34", "35", "50", "51", "52", "53", "60", "62", "64", "75", "66", "78", "80", "85", "83", "84"]
 
     log.error(os.getcwd())
     #r = task.executor(requests.get, URL)
-    r, exception = read_file("/config/xmltv/Tamworth.xml")
+    r, exception = read_file("/config/xmltv/fta_tamworth.xml")
     if exception:
         raise exception
     xml = ET.fromstring(r)
@@ -40,6 +41,8 @@ def getdata_tvguide_fta():
     p_d6 = []
     p_d7 = []
     dates = []
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('Australia/Sydney')
     if xml.tag != "tv":
         log.error("Not XMLTV")
     generator_name = xml.attrib.get("generator-info-name")
@@ -77,7 +80,9 @@ def getdata_tvguide_fta():
             channel = child.attrib.get("channel")
             try:
                 start = datetime.strptime(start, "%Y%m%d%H%M%S %z")
+                start = start.astimezone(to_zone)
                 end = datetime.strptime(end, "%Y%m%d%H%M%S %z")
+                end = end.astimezone(to_zone)
                 d_group = end.strftime("%Y%m%d")
                 d_length = end - start
                 if d_group not in dates:

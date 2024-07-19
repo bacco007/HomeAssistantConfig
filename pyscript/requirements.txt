@@ -1,2 +1,3 @@
 xmltodict
 beautifulsoup4
+aiofiles
