@@ -104,7 +104,43 @@ ics_calendar:
       days: 365
 
     - name: ical_wbbl_all_teams
-      url: https:///ics.ecal.com/ecal-sub/669b5950b9b4860008218b93/Cricket%20Australia.ics
+      url: https://ics.ecal.com/ecal-sub/669b5950b9b4860008218b93/Cricket%20Australia.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_nhl_all_teams
+      url: https://fixturedownload.com/download/nhl-2024-UTC.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_anaheim_ducks
+      url: https://fixturedownload.com/download/nhl-2024-anaheim-ducks-UTC.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_toronto_maple_leafs
+      url: https://fixturedownload.com/download/nhl-2024-toronto-maple-leafs-UTC.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_ligue1_all_teams
+      url: https://fixturedownload.com/download/ligue-1-2024-RomanceStandardTime.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_bundesliga_all_teams
+      url: https://fixturedownload.com/download/bundesliga-2024-UTC.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_seriea_all_teams
+      url: https://fixturedownload.com/download/serie-a-2024-UTC.ics
       include_all_day: true
       download_interval: 21600
       days: 365
