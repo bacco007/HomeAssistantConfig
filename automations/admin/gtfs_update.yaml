@@ -12,20 +12,39 @@ condition:
       - wed
     enabled: true
 action:
-  - service: shell_command.gtfs_get_nenw_buses
-    metadata: {}
-    data: {}
-  - service: shell_command.gtfs_get_trains
-    metadata: {}
-    data: {}
-  - service: shell_command.gtfs_get_tfnsw
-    metadata: {}
-    data: {}
+  - service: pyscript.download_gtfs
+    data:
+      url: https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/newenglandnorthwest
+      filename: buses_nenw.zip
+
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+
+  - service: pyscript.download_gtfs
+    data:
+      url: https://api.transport.nsw.gov.au/v1/gtfs/schedule/nswtrains
+      filename: nswtrains.zip
+
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+
+  - service: pyscript.download_gtfs
+    data:
+      url: https://api.transport.nsw.gov.au/v1/publictransport/timetables/complete/gtfs
+      filename: tfnsw.zip
+
   - delay:
       hours: 0
       minutes: 5
       seconds: 0
       milliseconds: 0
+
   - service: gtfs2.update_gtfs
     metadata: {}
     data:

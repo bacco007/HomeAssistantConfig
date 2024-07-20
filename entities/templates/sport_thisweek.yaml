@@ -238,6 +238,9 @@ trigger:
     entity_id: calendar.ical_bbl_all_teams
   - platform: calendar
     event: end
+    entity_id: calendar.ical_wbbl_all_teams
+  - platform: calendar
+    event: end
     entity_id: calendar.ical_nascar_truck_series
   - platform: calendar
     event: end
@@ -322,6 +325,7 @@ action:
         - calendar.ical_alw_all_teams
         - calendar.ical_premier_league_all_teams
         - calendar.ical_bbl_all_teams
+        - calendar.ical_wbbl_all_teams
         - calendar.ical_nascar_truck_series
         - calendar.ical_mlb_all_teams
         - calendar.ical_wrexham_afc

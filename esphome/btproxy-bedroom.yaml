@@ -55,12 +55,6 @@ ota:
   - platform: http_request
     id: ota_http_request
 
-update:
-  - platform: http_request
-    id: update_http_request
-    name: Firmware
-    source: https://firmware.esphome.io/bluetooth-proxy/esp32-generic/manifest.json
-
 http_request:
 
 esp32_ble_tracker:

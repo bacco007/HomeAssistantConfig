@@ -1,0 +1,29 @@
+---
+alias: "[TVGuide] XMLTV Download"
+description: "[TVGuide] XMLTV Download"
+trigger:
+  # - platform: homeassistant
+  #   event: start
+  - platform: time
+    at: "01:00:00"
+  # - platform: time
+  #   at: "13:00:00"
+condition: []
+action:
+  - service: pyscript.download_xmltv
+    data:
+      url: https://xmltv.net/xml_files/Tamworth.xml
+      statussensor: sensor.tvguide_xmltv_status_fta
+      filename: fta_tamworth.xml
+      sensorname: FTA (Tamworth)
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - service: pyscript.download_xmltv
+    data:
+      url: https://i.mjh.nz/Foxtel/epg.xml
+      statussensor: sensor.tvguide_xmltv_status_foxtel
+      filename: foxtel.xml
+      sensorname: Foxtel

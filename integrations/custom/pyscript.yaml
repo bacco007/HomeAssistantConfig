@@ -40,3 +40,5 @@ pyscript:
       friendly_name: "TV Guide - Foxtel"
     download_xmltv:
       friendly_name: "Download XMLTV"
+    download_gtfs:
+      apikey: !secret tfnsw_gtfs_apikey

@@ -79,4 +79,32 @@ ics_calendar:
       include_all_day: true
       download_interval: 21600
       days: 365
+    - name: ical_indycar
+      url: https://sync.roktcalendar.com/webcal/4e187171-6811-40bb-a40b-9246a122286c
+      include_all_day: true
+      download_interval: 21600
+      days: 365
 
+    - name: ical_nascar_cup_series
+      url: http://www.google.com/calendar/ical/db8c47ne2bt9qbld2mhdabm0u8%40group.calendar.google.com/public/basic.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_nascar_xfinity_series
+      url: http://www.google.com/calendar/ical/po54lfbfrvlkrrhirlame40a6c%40group.calendar.google.com/public/basic.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_bbl_all_teams
+      url: https://ics.ecal.com/ecal-sub/669b58fe6befe300082f1f18/Cricket%20Australia.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365
+
+    - name: ical_wbbl_all_teams
+      url: https:///ics.ecal.com/ecal-sub/669b5950b9b4860008218b93/Cricket%20Australia.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365

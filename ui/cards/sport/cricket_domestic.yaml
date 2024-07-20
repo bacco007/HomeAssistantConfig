@@ -18,6 +18,10 @@ cards:
   - type: custom:decluttering-card
     template: sports_card
     variables:
+      - entity: sensor.upcoming_sport_wbbl_all_teams
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
       - entity: sensor.upcoming_sport_sydney_sixers
   - type: custom:decluttering-card
     template: sports_card

@@ -1,0 +1,21 @@
+---
+alias: "[TVGuide] XMLTV Process"
+description: "[TVGuide] XMLTV Process"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time
+    at: "01:30:00"
+  - platform: time
+    at: "13:30:00"
+condition: []
+action:
+  - service: pyscript.getdata_tvguide_foxtel
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - service: pyscript.getdata_tvguide_fta
+    data: {}
