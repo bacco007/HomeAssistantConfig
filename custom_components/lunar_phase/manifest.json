@@ -1,0 +1,16 @@
+{
+  "domain": "lunar_phase",
+  "name": "Lunar Phase",
+  "codeowners": [
+    "@ngocjohn"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/ngocjohn/lunar-phase",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/ngocjohn/lunar-phase/issues",
+  "requirements": [
+    "ephem==4.1.5"
+  ],
+  "version": "0.1.0"
+}

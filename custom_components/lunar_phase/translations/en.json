@@ -1,0 +1,47 @@
+{
+    "title": "Lunar Phase",
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "unknown": "Unexpected error",
+            "city_not_found": "City not found"
+        },
+        "step": {
+            "location": {
+                "data": {
+                    "city": "City",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                    "region": "Region",
+                    "time_zone": "Timezone"
+                }
+            },
+            "user": {
+                "data": {
+                    "city": "City"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "moon_phase": {
+                "name": "Moon Phase",
+                "state": {
+                    "first_quarter": "First quarter",
+                    "full_moon": "Full moon",
+                    "last_quarter": "Last quarter",
+                    "new_moon": "New moon",
+                    "waning_crescent": "Waning crescent",
+                    "waning_gibbous": "Waning gibbous",
+                    "waxing_crescent": "Waxing crescent",
+                    "waxing_gibbous": "Waxing gibbous"
+                }
+            }
+        }
+    }
+}

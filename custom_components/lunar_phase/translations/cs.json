@@ -1,0 +1,47 @@
+{
+    "title": "Lunar Phase",
+    "config": {
+        "abort": {
+            "already_configured": "Zařízení je již nakonfigurováno"
+        },
+        "error": {
+            "cannot_connect": "Nepodařilo se připojit",
+            "invalid_auth": "Neplatná autentizace",
+            "unknown": "Neočekávaná chyba",
+            "city_not_found": "Město nebylo nalezeno"
+        },
+        "step": {
+            "location": {
+                "data": {
+                    "city": "Město",
+                    "latitude": "Zeměpisná šířka",
+                    "longitude": "Zeměpisná délka",
+                    "region": "Region",
+                    "time_zone": "Časové pásmo"
+                }
+            },
+            "user": {
+                "data": {
+                    "city": "Město"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "moon_phase": {
+                "name": "Fáze měsíce",
+                "state": {
+                    "first_quarter": "První čtvrť",
+                    "full_moon": "Úplněk",
+                    "last_quarter": "Poslední čtvrť",
+                    "new_moon": "Novoluní",
+                    "waning_crescent": "Ubývající srpek",
+                    "waning_gibbous": "Ubývající měsíc",
+                    "waxing_crescent": "Dorůstající srpek",
+                    "waxing_gibbous": "Dorůstající měsíc"
+                }
+            }
+        }
+    }
+}
