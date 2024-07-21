@@ -49,7 +49,12 @@ async def async_setup_entry(
     sensors = [
         MoonPhaseSensor(coordinator, config_entry),
         MoonAgeSensor(
-            coordinator, config_entry, STATE_ATTR_AGE, "Moon Age", "moon_age"
+            coordinator,
+            config_entry,
+            STATE_ATTR_AGE,
+            "Moon Age",
+            "moon_age",
+            "mdi:progress-clock",
         ),
         MoonDistanceSensor(
             coordinator,
@@ -160,6 +165,7 @@ class MoonPhaseSensor(CoordinatorEntity, SensorEntity):
             STATE_ATTR_NEXT_SET: attributes.get(STATE_ATTR_NEXT_SET),
             STATE_ATTR_NEXT_FULL: attributes.get(STATE_ATTR_NEXT_FULL),
             STATE_ATTR_NEXT_NEW: attributes.get(STATE_ATTR_NEXT_NEW),
+            "location": self.coordinator.location,
         }
 
 
@@ -218,6 +224,11 @@ class MoonTimestampSensor(MoonAttributeSensor):
 
     _attr_device_class = SensorDeviceClass.TIMESTAMP
 
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Update sensor with latest data from coordinator."""
+        self.async_write_ha_state()
+
     @property
     def native_value(self):
         """Return the state of the sensor."""
@@ -235,12 +246,37 @@ class MoonDistanceSensor(MoonAttributeSensor):
     _attr_native_unit_of_measurement = UnitOfLength.KILOMETERS
     _attr_state_class = SensorStateClass.MEASUREMENT
 
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Update sensor with latest data from coordinator."""
+        self.async_write_ha_state()
+
+    @property
+    def native_value(self):
+        """Return the state of the sensor."""
+        attributes = self.coordinator.data.get("attributes", {})
+        return attributes.get(self._attribute)
+
 
 class MoonAgeSensor(MoonAttributeSensor):
     """Representation of a Moon Age sensor."""
 
-    _attr_device_class = SensorDeviceClass.DURATION
+    _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfTime.DAYS
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Update sensor with latest data from coordinator."""
+        self.async_write_ha_state()
+
+    @property
+    def native_value(self):
+        """Return the state of the sensor."""
+        attributes = self.coordinator.data.get("attributes", {})
+        value_in_days = attributes.get(self._attribute)
+        if value_in_days is not None:
+            return round(value_in_days, 2)
+        return None
 
 
 class MoonIlluminationFractionSensor(MoonAttributeSensor):
@@ -248,3 +284,14 @@ class MoonIlluminationFractionSensor(MoonAttributeSensor):
 
     _attr_native_unit_of_measurement = PERCENTAGE
     _attr_state_class = SensorStateClass.MEASUREMENT
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Update sensor with latest data from coordinator."""
+        self.async_write_ha_state()
+
+    @property
+    def native_value(self):
+        """Return the state of the sensor."""
+        attributes = self.coordinator.data.get("attributes", {})
+        return attributes.get(self._attribute)

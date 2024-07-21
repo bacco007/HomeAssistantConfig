@@ -16,6 +16,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+import homeassistant.util.dt as dt_util
 
 from .const import (
     CONF_CITY,
@@ -60,7 +61,8 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the coordinator."""
         self.location = location_obj(config_entry)
-        self.date = datetime.datetime.now()  # Ensure date is in UTC
+        self.today = dt_util.now().date()
+        self.date = datetime.datetime.now()
         self.moon_ephem = ephem.Moon()
         self.observer = ephem.Observer()
         self.observer.lat = str(self.location.latitude)
@@ -92,12 +94,15 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
             )
         except UpdateFailed:
             _LOGGER.error("Error fetching moon phase data")
-
-        return {"moon_phase": moon_phase, "attributes": attributes}
+        _LOGGER.debug("attributes: %s", attributes)
+        return {
+            "moon_phase": moon_phase,
+            "attributes": attributes,
+        }
 
     def get_moon_phase(self):
         """Return the current moon phase."""
-        return moon.phase(self.date)
+        return moon.phase(self.today)
 
     def get_moon_phase_name(self):
         """Return the name of the current moon phase."""
