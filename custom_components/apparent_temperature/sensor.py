@@ -103,6 +103,7 @@ class ApparentTemperatureSensor(SensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_should_poll = False
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self, unique_id: str | None, name: str | None, sources: list[str]
@@ -331,7 +332,7 @@ class ApparentTemperatureSensor(SensorEntity):
             wind = 0
 
         e_value = humd * 0.06105 * math.exp((17.27 * temp) / (237.7 + temp))
-        self._attr_native_value = round(temp + 0.348 * e_value - 0.7 * wind - 4.25, 3)
+        self._attr_native_value = temp + 0.348 * e_value - 0.7 * wind - 4.25
         _LOGGER.debug(
             "New sensor state is %s %s",
             self._attr_native_value,
