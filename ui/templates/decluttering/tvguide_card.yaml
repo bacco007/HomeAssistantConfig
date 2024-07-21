@@ -27,7 +27,7 @@ tvguide_card:
           Next: {{ state_attr(entity, 'programs_next24hrs')[ln+1]['title'] }}
           {% endif %}
           {% endfor %}
-        #icon: mdi:television-guide
+        # icon: mdi:television-guide
         entity: "[[entity]]"
         fill_container: true
         tap_action:
@@ -62,6 +62,19 @@ tvguide_card:
               }
       - type: custom:mushroom-chips-card
         alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
         chips:
           - type: template
             tap_action:
@@ -129,9 +142,100 @@ tvguide_card:
               style:
                 .: |
                   ha-card {
-                    background-color: rgb(80, 110, 172) !important;
+                    background-color: rgba(80, 110, 172, 0.4) !important;
                     box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 5px !important;
                   }
+          - type: template
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: TV Guide - Next Next 24hrs
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        card_mod:
+                          style:
+                            .: |
+                              ha-card {
+                                overflow: auto;
+                                box-shadow: none !important;
+                                font-size: 12px;
+                                }
+                        entities:
+                          include: "[[entity]]"
+                        columns:
+                          - name: Time
+                            data: programs_next24hrs
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+
+                              if(now <= end && now >= start) {
+                                '<div style="color: rgba(0,202,139,1);  font-weight: bold;">' + String(start.getHours()).padStart(2,'0') + ":" +
+                                String(start.getMinutes()).padStart(2,'0') + ' - ' +
+                                String(end.getHours()).padStart(2,'0') + ":" +
+                                String(end.getMinutes()).padStart(2,'0') + "<br/>" + x.length + "</div>"
+                              }
+                              else {
+                                String(start.getHours()).padStart(2,'0') + ":" +
+                                String(start.getMinutes()).padStart(2,'0') + ' - ' +
+                                String(end.getHours()).padStart(2,'0') + ":" +
+                                String(end.getMinutes()).padStart(2,'0') + "<br/>" + x.length
+                              };
+                            align: center
+                          - name: Program
+                            data: programs_next24hrs
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+
+                              if(now <= end && now >= start) {
+                                if (!x.subtitle) {
+                                  '<div style="color: rgba(0,202,139,1); font-weight: bold;">' + x.title + '<br/>' + x.details + '<details><summary>Details</summary><p>' + x.description + '</p></details>' + "</div>"
+                                } else {
+                                  '<div style="color: rgba(0,202,139,1); font-weight: bold;">' + x.title + ', ' + x.subtitle + '<br/>' + x.details + '<details><summary>Details</summary><p>' + x.description + '</p></details>' + "</div>"
+                                }
+                              }
+                              else {
+                                if (!x.subtitle) {
+                                  x.title + '<br/>' + x.details + '<details><summary>Details</summary><p>' + x.description + '</p></details>'
+                                } else {
+                                  x.title + ', ' + x.subtitle + '<br/>' + x.details + '<details><summary>Details</summary><p>' + x.description + '</p></details>'
+                                }
+                              };
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:update
+            content: Next 24hrs
+            card_mod: *style
           - type: template
             tap_action:
               action: fire-dom-event
@@ -196,6 +300,19 @@ tvguide_card:
             content: Tomorrow
             card_mod: *style
       - type: custom:mushroom-chips-card
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
         alignment: center
         chips:
           - type: template
@@ -265,8 +382,13 @@ tvguide_card:
               style:
                 .: |
                   ha-card {
-                    background-color: #626569 !important;
+                    background-color: rgba(98, 101, 105, 0.5) !important;
                     box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 5px !important;
                   }
           - type: template
             tap_action:

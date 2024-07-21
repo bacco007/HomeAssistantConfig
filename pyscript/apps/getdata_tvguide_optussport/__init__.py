@@ -14,18 +14,20 @@ def read_file(file_name):
         return None, exc
 
 @service
-def getdata_tvguide_foxtel(file):
+def getdata_tvguide_optussport():
 
     def get_child_as_text(parent: ET.Element, tag: str) -> str:
         """Get child node text as string, or None if not found."""
         node = parent.find(tag)
         return node.text if node is not None else None
 
-    r, exception = read_file(file)
+    r, exception = read_file("/config/xmltv/optus_sport.xml")
     if exception:
         raise exception
     xml = ET.fromstring(r)
 
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('Australia/Sydney')
     channels = []
     ids = []
     programs = []
@@ -41,28 +43,26 @@ def getdata_tvguide_foxtel(file):
     attributes = {}
     dates = []
     now = datetime.now()
-    time = now + timedelta(hours=-3)
+    time = now + timedelta(hours=-6)
     time24 = now + timedelta(days=1)
+
     if xml.tag != "tv":
         log.error("Not XMLTV")
-    generator_name = xml.attrib.get("generator-info-name")
-    generator_url = xml.attrib.get("generator-info-url")
+
     for child in xml:
         if child.tag == "channel":
             chid = child.attrib.get("id")
-            chname = child.find("display-name").text.replace("Northern NSW","").replace("Sydney","").replace("Northern, Tamworth/Taree/Port Macquarie","").replace('NSW','').replace('  ',' ').strip(' ')
-            chno = child.find("lcn").text
+            chname = child.find("display-name").text
+            # chno = child.find("lcn").text
             chlogo = child.find("icon").get("src")
-            chslug = re.sub(r'\W+', '-', chname).strip('-').lower().replace("9","nine-").replace("7","seven-").replace("10","ten-").replace('--','-').strip('-')
-            if chno in InclChannels:
-                channels.append({
-                    "channel_id": chid,
-                    "channel_slug": chslug,
-                    "channel_name": chname,
-                    "channel_number": chno,
-                    "chlogo": chlogo,
-                })
-                ids.append(chid)
+            chslug = re.sub(r'\W+', '-', chname).strip('-').lower()
+            channels.append({
+                "channel_id": chid,
+                "channel_slug": chslug,
+                "channel_name": chname,
+                "chlogo": chlogo,
+            })
+            ids.append(chid)
 
         elif child.tag == "programme":
             start = child.attrib.get("start")
@@ -73,8 +73,8 @@ def getdata_tvguide_foxtel(file):
                 start = start.astimezone(to_zone)
                 end = datetime.strptime(end, "%Y%m%d%H%M%S %z")
                 end = end.astimezone(to_zone)
-                d_length = end - start
                 d_group = start.strftime("%Y%m%d")
+                d_length = end - start
                 if d_group not in dates:
                     dates.append(d_group)
                 d_group = end.strftime("%Y%m%d")
@@ -84,30 +84,45 @@ def getdata_tvguide_foxtel(file):
                 print("Error")
             title = get_child_as_text(child, "title")
             description = get_child_as_text(child, "desc")
+            subtitle = get_child_as_text(child, "sub-title")
             episode = get_child_as_text(child, "episode-num")
-            category = get_child_as_text(child, "category")
-            if channel in ids:
-                programs.append({
-                    "d_group": start.strftime("%Y%m%d"),
-                    "start": start.strftime("%H:%M"),
-                    "end": end.strftime("%H:%M"),
+            if (category := child.find('category')) is not None:
+                c = child.findall("category")
+                category = ""
+                for a in c:
+                    category = ", ".join(filter(None, (category, a.text)))
+            else:
+                category = None
+            country = get_child_as_text(child, "country")
+            if (rating := child.find('rating')) is not None:
+                rating = child.find("rating").find("value").text
+            else:
+                rating = None
+            details = ' - '.join(filter(None, (episode, rating, country, category)))
+            if time < start.replace(tzinfo=None) < time24:
+                p_n24.append({
+                    "start": start.isoformat(),
+                    "end": end.isoformat(),
                     "length": str(d_length),
                     "channel": channel,
                     "title": title,
-                    "category": category,
+                    "subtitle": subtitle,
+                    "description": description,
+                    "details": details,
                     "episode": episode
                 })
-                if start.strftime("%Y%m%d") != end.strftime("%Y%m%d"):
-                    programs.append({
-                        "d_group": end.strftime("%Y%m%d"),
-                        "start": start.strftime("%H:%M"),
-                        "end": end.strftime("%H:%M"),
-                        "length": str(d_length),
-                        "channel": channel,
-                        "title": title,
-                        "category": category,
-                        "episode": episode
-                    })
+            programs.append({
+                "d_group": d_group,
+                "start": start.isoformat(),
+                "end": end.isoformat(),
+                "length": str(d_length),
+                "channel": channel,
+                "title": title,
+                "subtitle": subtitle,
+                "description": description,
+                "details": details,
+                "episode": episode
+            })
 
     for c in channels:
         chid = c['channel_id']
@@ -118,33 +133,45 @@ def getdata_tvguide_foxtel(file):
         p_d5 = []
         p_d6 = []
         p_d7 = []
-        pgm = []
+        pr_n24 = []
         attributes = {}
+        for p in p_n24:
+            if p['channel'] == chid:
+                    pr_n24.append(p)
         for p in programs:
             if p['channel'] == chid:
                 if dates.index(p['d_group'])+1 == 1:
+                    p.pop('d_group')
                     p_d1.append(p)
-                if dates.index(p['d_group'])+1 == 2:
+                elif dates.index(p['d_group'])+1 == 2:
+                    p.pop('d_group')
                     p_d2.append(p)
-                if dates.index(p['d_group'])+1 == 3:
+                elif dates.index(p['d_group'])+1 == 3:
+                    p.pop('d_group')
                     p_d3.append(p)
-                if dates.index(p['d_group'])+1 == 4:
+                elif dates.index(p['d_group'])+1 == 4:
+                    p.pop('d_group')
                     p_d4.append(p)
-                if dates.index(p['d_group'])+1 == 5:
+                elif dates.index(p['d_group'])+1 == 5:
+                    p.pop('d_group')
                     p_d5.append(p)
-                if dates.index(p['d_group'])+1 == 6:
+                elif dates.index(p['d_group'])+1 == 6:
+                    p.pop('d_group')
                     p_d6.append(p)
-                if dates.index(p['d_group'])+1 == 7:
+                elif dates.index(p['d_group'])+1 == 7:
+                    p.pop('d_group')
                     p_d7.append(p)
-        s_name = "sensor.tvguide_foxtel_" + c['channel_slug'].replace('-','_')
-        log.error(s_name)
+
+        s_name = "sensor.tvguide_optussport_" + c['channel_slug'].replace('-','_')
+        # log.error(s_name)
         attributes['slug'] = c['channel_slug']
-        attributes['category'] = "tvguide_foxtel"
+        attributes['channel_group'] = 'Optus Sport'
         attributes['channel_name'] = c['channel_name']
-        attributes['channel_number'] = c['channel_number']
-        attributes["icon"] = "mdi:television"
-        attributes["entity_picture"] = "/local/tvlogos/" + c['channel_slug'] + ".png"
-        attributes["friendly_name"] = "TV Guide - Foxtel - " + c['channel_name']
+        # attributes['channel_number'] = c['channel_number']
+        attributes["icon"] = "mdi:television-guide"
+        attributes["entity_picture"] = "/local/tvlogos/optus-sport.png"
+        attributes["friendly_name"] = "TV Guide - Optus Sport - " + c['channel_name']
+        attributes['programs_next24hrs'] = pr_n24
         attributes['programs_today'] = p_d1
         attributes['programs_tomorrow'] = p_d2
         attributes['programs_day3'] = p_d3

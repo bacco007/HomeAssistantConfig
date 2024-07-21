@@ -36,6 +36,8 @@ pyscript:
       friendly_name: "Test"
     process_tvguide:
       friendly_name: "TV Guide"
+    getdata_tvguide_optussport:
+      friendly_name: "Optus Sport"
     download_xmltv:
       friendly_name: "Download XMLTV"
     download_gtfs:

@@ -88,7 +88,7 @@ def process_tvguide(file):
                 d_length = end - start
                 if d_group not in dates:
                     dates.append(d_group)
-                d_group = end.strftime("%Y%m%d")
+                d_group = start.strftime("%Y%m%d")
                 if d_group not in dates:
                     dates.append(d_group)
             except ValueError:

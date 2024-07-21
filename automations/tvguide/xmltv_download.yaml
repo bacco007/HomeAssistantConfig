@@ -12,17 +12,6 @@ condition: []
 action:
   - service: pyscript.download_xmltv
     data:
-      url: https://xmltv.net/xml_files/Tamworth.xml
-      statussensor: sensor.tvguide_xmltv_status_fta
-      filename: fta_tamworth.xml
-      sensorname: FTA (Tamworth)
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 30
-      milliseconds: 0
-  - service: pyscript.download_xmltv
-    data:
       url: https://i.mjh.nz/Optus/epg.xml
       statussensor: sensor.tvguide_xmltv_status_optussport
       filename: optus_sport.xml
