@@ -23,7 +23,7 @@ action:
       milliseconds: 0
   - service: pyscript.download_xmltv
     data:
-      url: https://i.mjh.nz/Foxtel/epg.xml
-      statussensor: sensor.tvguide_xmltv_status_foxtel
-      filename: foxtel.xml
-      sensorname: Foxtel
+      url: https://i.mjh.nz/Optus/epg.xml
+      statussensor: sensor.tvguide_xmltv_status_optussport
+      filename: optus_sport.xml
+      sensorname: Optus Sport

@@ -34,10 +34,8 @@ pyscript:
       friendly_name: "Hazard Watch"
     getdata_test:
       friendly_name: "Test"
-    getdata_tvguide_fta:
-      friendly_name: "TV Guide - FTA"
-    getdata_tvguide_foxtel:
-      friendly_name: "TV Guide - Foxtel"
+    process_tvguide:
+      friendly_name: "TV Guide"
     download_xmltv:
       friendly_name: "Download XMLTV"
     download_gtfs:

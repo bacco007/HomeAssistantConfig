@@ -1,21 +1,21 @@
 ---
-alias: "[TVGuide] XMLTV Process"
-description: "[TVGuide] XMLTV Process"
+id: 07a2a553-83e0-487a-a751-e59a0f13a167
+alias: "[TVGuide] XMLTV Process Webgrab+"
+description: "[TVGuide] Process Webgrab+"
 trigger:
   - platform: homeassistant
     event: start
-  - platform: time
-    at: "01:30:00"
-  - platform: time
-    at: "13:30:00"
+  - platform: time_pattern
+    hours: /2
 condition: []
 action:
-  - service: pyscript.getdata_tvguide_foxtel
+  - service: shell_command.xmltv_getfromwebgrabplus
     data: {}
   - delay:
       hours: 0
       minutes: 0
       seconds: 10
       milliseconds: 0
-  - service: pyscript.getdata_tvguide_fta
-    data: {}
+  - service: pyscript.process_tvguide
+    data:
+      file: /config/xmltv/webgrabplus.xml

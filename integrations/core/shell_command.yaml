@@ -8,3 +8,4 @@ shell_command:
   gtfs_get_nenw_buses: !secret tfnsw_gtfs_bus_curl
   gtfs_get_trains: !secret tfnsw_gtfs_train_curl
   gtfs_get_tfnsw: !secret tfnsw_gtfs_tfnsw_curl
+  xmltv_getfromwebgrabplus: !secret command_getxmltv

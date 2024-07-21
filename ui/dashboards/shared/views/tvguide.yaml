@@ -45,19 +45,19 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_abc_tv_hd
+                  - entity: sensor.tvguide_abc_tv_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_abc_kids_abc_family
+                  - entity: sensor.tvguide_abc_kids_abc_family
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_abc_entertains
+                  - entity: sensor.tvguide_abc_entertains
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_abc_news
+                  - entity: sensor.tvguide_abc_news
       - type: vertical-stack
         cards:
           - type: custom:bubble-card
@@ -77,19 +77,19 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_nbn_nine_hd
+                  - entity: sensor.tvguide_nine_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_nbn_nine_go
+                  - entity: sensor.tvguide_nine_go
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_nbn_nine_life
+                  - entity: sensor.tvguide_nine_life
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_nbn_nine_gem_hd
+                  - entity: sensor.tvguide_nine_gem
       - type: vertical-stack
         cards:
           - type: custom:bubble-card
@@ -109,27 +109,27 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_nitv_hd
+                  - entity: sensor.tvguide_nitv_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_sbs_food
+                  - entity: sensor.tvguide_sbs_food
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_sbs_hd
+                  - entity: sensor.tvguide_sbs_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_sbs_viceland_hd
+                  - entity: sensor.tvguide_sbs_viceland_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_sbs_world_movies
+                  - entity: sensor.tvguide_sbs_world_movies
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_sbs_world_watch
+                  - entity: sensor.tvguide_sbs_world_watch
       - type: vertical-stack
         cards:
           - type: custom:bubble-card
@@ -149,27 +149,27 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_racing_com
+                  - entity: sensor.tvguide_racing_com
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_seven_bravo
+                  - entity: sensor.tvguide_seven_bravo
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_seven_flix
+                  - entity: sensor.tvguide_seven_flix
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_seven_hd
+                  - entity: sensor.tvguide_seven_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_seven_mate_hd
+                  - entity: sensor.tvguide_seven_mate_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_seven_two
+                  - entity: sensor.tvguide_seven_two
       - type: vertical-stack
         cards:
           - type: custom:bubble-card
@@ -189,19 +189,19 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_ten_hd
+                  - entity: sensor.tvguide_ten_hd
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_ten_bold_drama
+                  - entity: sensor.tvguide_ten_bold_drama
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_ten_peach_comedy
+                  - entity: sensor.tvguide_ten_peach_comedy
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_fta_sky_news_regional
+                  - entity: sensor.tvguide_sky_news_regional
       - type: vertical-stack
         cards:
           - type: custom:bubble-card
@@ -221,35 +221,35 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_cnn_international
+                  - entity: sensor.tvguide_cnn_international
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_news
+                  - entity: sensor.tvguide_fox_news
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_sports_news
+                  - entity: sensor.tvguide_fox_sports_news
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_msnbc
+                  - entity: sensor.tvguide_msnbc
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_news
+                  - entity: sensor.tvguide_sky_news
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_news_extra
+                  - entity: sensor.tvguide_sky_news_election
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_news_uk
+                  - entity: sensor.tvguide_sky_news_uk
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_weather
+                  - entity: sensor.tvguide_sky_weather
       - type: vertical-stack
         cards:
           - type: custom:bubble-card
@@ -269,52 +269,119 @@ cards:
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_espn
+                  - entity: sensor.tvguide_espn
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_espn2
+                  - entity: sensor.tvguide_espn2
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_cricket
+                  - entity: sensor.tvguide_fox_cricket
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_footy
+                  - entity: sensor.tvguide_fox_footy
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_league
+                  - entity: sensor.tvguide_fox_league
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_sports_503
+                  - entity: sensor.tvguide_fox_sports_503
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_sports_505
+                  - entity: sensor.tvguide_fox_sports_505
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_sports_506
+                  - entity: sensor.tvguide_fox_sports_506
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_fox_sports_more
+                  - entity: sensor.tvguide_fox_sports_more
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_racing_1
+                  - entity: sensor.tvguide_fox_sports_508
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_racing_2
+                  - entity: sensor.tvguide_fox_sports_uhd_1
               - type: custom:decluttering-card
                 template: tvguide_card
                 variables:
-                  - entity: sensor.tvguide_foxtel_sky_racing_thoroughbred_central
-
+                  - entity: sensor.tvguide_sky_racing
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_sky_racing_2
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_sky_racing_thoroughbred_central
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+            styles: |-
+              .bubble-line {
+                background: var(--ha-card-background);
+                opacity: 1;
+                }
+            name: UK Television
+            icon: mdi:television-guide
+            card_layout: normal
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_bbc_one
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_bbc_two
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_bbc_three
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_bbc_four
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_channel_4
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_e4
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_channel_5
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_itv
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_itv2
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_itv3
+              - type: custom:decluttering-card
+                template: tvguide_card
+                variables:
+                  - entity: sensor.tvguide_itv4
   # Actions
   - !include /config/ui/cards/common/actions.yaml
 
