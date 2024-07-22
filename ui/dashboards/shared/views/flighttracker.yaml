@@ -17,35 +17,33 @@ cards:
   - !include /config/ui/cards/common/sidebar-menu.yaml
 
   # Content
-  - type: vertical-stack
+  - type: "custom:layout-card"
     view_layout:
       grid-area: content
+    layout_type: custom:masonry-layout
+    layout:
+      max_cols: 4
+      width: 500
+      max_width: 1000
     cards:
-      - type: "custom:layout-card"
-        layout_type: custom:masonry-layout
-        layout:
-          max_cols: 4
-          width: 500
-          max_width: 1000
-        cards:
-          - !include /config/ui/cards/flighttracker/trackedaircraft.yaml
-          - !include /config/ui/cards/flighttracker/docker.yaml
-          - !include /config/ui/cards/flighttracker/adsb_stats.yaml
-          - !include /config/ui/cards/flighttracker/flightaware.yaml
-          - !include /config/ui/cards/flighttracker/flightradar24.yaml
-          - !include /config/ui/cards/flighttracker/adsbfi.yaml
-          - !include /config/ui/cards/flighttracker/adsblol.yaml
-          - !include /config/ui/cards/flighttracker/airplanes_live.yaml
-          - !include /config/ui/cards/flighttracker/adsb_exchange.yaml
-          - !include /config/ui/cards/flighttracker/planefinder.yaml
-          - !include /config/ui/cards/flighttracker/radarplane.yaml
-          - !include /config/ui/cards/flighttracker/radarbox.yaml
-          - !include /config/ui/cards/flighttracker/flights_tracked.yaml
-          - !include /config/ui/cards/flighttracker/distance.yaml
-      - type: vertical-stack
-        cards:
-          - !include /config/ui/cards/flighttracker/flights_tracked_week.yaml
-          - !include /config/ui/cards/flighttracker/flights_tracked_year.yaml
+      - !include /config/ui/cards/flighttracker/trackedaircraft.yaml
+      - !include /config/ui/cards/flighttracker/docker.yaml
+      - !include /config/ui/cards/flighttracker/adsb_stats.yaml
+      - !include /config/ui/cards/flighttracker/flightaware.yaml
+      - !include /config/ui/cards/flighttracker/flightradar24.yaml
+      - !include /config/ui/cards/flighttracker/adsbfi.yaml
+      - !include /config/ui/cards/flighttracker/adsblol.yaml
+      - !include /config/ui/cards/flighttracker/airplanes_live.yaml
+      - !include /config/ui/cards/flighttracker/adsb_exchange.yaml
+      - !include /config/ui/cards/flighttracker/planefinder.yaml
+      - !include /config/ui/cards/flighttracker/radarplane.yaml
+      - !include /config/ui/cards/flighttracker/radarbox.yaml
+      - !include /config/ui/cards/flighttracker/flights_tracked.yaml
+      - !include /config/ui/cards/flighttracker/distance.yaml
+  - type: vertical-stack
+    cards:
+      - !include /config/ui/cards/flighttracker/flights_tracked_week.yaml
+      - !include /config/ui/cards/flighttracker/flights_tracked_year.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

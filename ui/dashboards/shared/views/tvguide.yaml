@@ -17,25 +17,41 @@ cards:
   - !include /config/ui/cards/common/sidebar-menu.yaml
 
   # Content
-  - type: "custom:layout-card"
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: content
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 3
-      width: 400
-      max_width: 1000
-    cards:
-      - !include /config/ui/cards/tvguides/fta_abc.yaml
-      - !include /config/ui/cards/tvguides/fta_nine.yaml
-      - !include /config/ui/cards/tvguides/fta_sbs.yaml
-      - !include /config/ui/cards/tvguides/fta_seven.yaml
-      - !include /config/ui/cards/tvguides/fta_ten.yaml
-      - !include /config/ui/cards/tvguides/foxtel_sports.yaml
-      - !include /config/ui/cards/tvguides/optus_sport.yaml
-      - !include /config/ui/cards/tvguides/foxtel_news.yaml
-      - !include /config/ui/cards/tvguides/uk.yaml
-      - !include /config/ui/cards/tvguides/us.yaml
+    states:
+      "(min-width: 1024px)":
+        type: "custom:layout-card"
+        view_layout:
+          grid-area: content
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 3
+          width: 400
+          max_width: 1000
+        cards: &cards
+          - !include /config/ui/cards/tvguides/fta_abc.yaml
+          - !include /config/ui/cards/tvguides/fta_nine.yaml
+          - !include /config/ui/cards/tvguides/fta_sbs.yaml
+          - !include /config/ui/cards/tvguides/fta_seven.yaml
+          - !include /config/ui/cards/tvguides/fta_ten.yaml
+          - !include /config/ui/cards/tvguides/foxtel_sports.yaml
+          - !include /config/ui/cards/tvguides/optus_sport.yaml
+          - !include /config/ui/cards/tvguides/foxtel_news.yaml
+          - !include /config/ui/cards/tvguides/uk.yaml
+          - !include /config/ui/cards/tvguides/us.yaml
+      "all":
+        type: "custom:layout-card"
+        view_layout:
+          grid-area: content
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 2
+          width: 400
+          max_width: 1000
+        cards: *cards
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

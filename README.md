@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.7.3 |
 | No. Integrations | 213 |
 | No. Custom Integrations | 90 |
-| No. Entities | 5720 |
-| No. Sensors | 3672 |
+| No. Entities | 5536 |
+| No. Sensors | 3584 |
 | No. Automations | 143 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 362
-Buttons | 232
+Buttons | 195
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 40
 Numbers | 39
-Persistent notifications | 4
+Persistent notifications | 2
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 52
-Sensors | 3672
+Sensors | 3584
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 263
+Switches | 200
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 327
+Update | 328
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -746,7 +746,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting) |  [v1.22.0] | Adaptive Lighting custom component for Home Assistant |[@basnijholt](https://github.com/basnijholt), [@RubenKelevra](https://github.com/RubenKelevra), [@th3w1zard1](https://github.com/th3w1zard1), [@protyposis](https://github.com/protyposis).|
 | [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.1.1] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
-| [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.0.0] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
+| [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.1.0] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.50.4] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
@@ -770,7 +770,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.8] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.9] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -782,7 +782,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
-| [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.1.0] | :moon: Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
+| [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.1.1] | :moon: Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
@@ -909,7 +909,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.15.0 |  | db21ed7f |
 | Cloudflared | 5.1.15 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.7.0 |  | 15ef4d2f |
+| ESPHome | 2024.7.1 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
 | Get HACS | 1.2.0 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
@@ -920,7 +920,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.3.1 |  | core |
-| Music Assistant | 2.0.7 |  | d5369777 |
+| Music Assistant Server | 2.1.0 |  | d5369777 |
 | Node-RED | 18.0.4 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |

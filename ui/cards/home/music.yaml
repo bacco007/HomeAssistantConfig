@@ -18,12 +18,6 @@ cards:
         state_not: "off"
     card:
       type: tile
-      card_mod:
-        style: |
-          ha-card {
-            background-color: var(--card-background-color);
-            box-shadow: none;
-          }
       entity: media_player.currently_playing
       show_entity_picture: false
       icon: mdi:speaker-multiple
@@ -40,247 +34,375 @@ cards:
         - type: custom:service-call
           entries:
             - type: button
-              service: script.sonos_favourites_abc_news
-              style:
-                background-image: url('/local/radioicons/abc_news.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','ABC News') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'ABC News') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_abc_news
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/abc_news.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','ABC News') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'ABC News') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_abc_sport
-              style:
-                background-image: url('/local/radioicons/ABC_Sport.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','ABC Sport') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'ABC Sport') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_abc_sport
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/ABC_Sport.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','ABC Sport') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'ABC Sport') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_cnn_international
-              style:
-                background-image: url('/local/radioicons/CNN_International.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','CNN International') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'CNN International') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_cnn_international
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/CNN_International.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','CNN International') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'CNN International') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_double_j_sydney_nsw
-              style:
-                background-image: url('/local/radioicons/Double_J_Sydney_NSW.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Double J (Sydney, NSW)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Double J (Sydney, NSW)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_double_j_sydney_nsw
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/Double_J_Sydney_NSW.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Double J (Sydney, NSW)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Double J (Sydney, NSW)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_gold_104_3
-              style:
-                background-image: url('/local/radioicons/GOLD_104_3.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','GOLD 104.3') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'GOLD 104.3') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_gold_104_3
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/GOLD_104_3.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','GOLD 104.3') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'GOLD 104.3') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_nova_96_9
-              style:
-                background-image: url('/local/radioicons/Nova_96_9.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Nova 96.9') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Nova 96.9') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+              tap_action:
+                service: script.sonos_favourites_nova_96_9
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/Nova_96_9.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Nova 96.9') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Nova 96.9') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
         - type: custom:service-call
           entries:
             - type: button
-              service: script.sonos_favourites_radio_hauraki_99_0_rock_music
-              style:
-                background-image: url('/local/radioicons/Radio_Hauraki_99_0_Rock_Music.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Radio Hauraki 99.0 (Rock Music)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Radio Hauraki 99.0 (Rock Music)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_radio_hauraki_99_0_rock_music
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/Radio_Hauraki_99_0_Rock_Music.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Radio Hauraki 99.0 (Rock Music)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Radio Hauraki 99.0 (Rock Music)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_radio_x
-              style:
-                background-image: url('/local/radioicons/Radio_X.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Radio X London') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Radio X London') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_radio_x
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/Radio_X.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Radio X London') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Radio X London') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_triple_j_new_south_wales
-              style:
-                background-image: url('/local/radioicons/triple_j_New_South_Wales.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','triple j (New South Wales)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'triple j (New South Wales)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_triple_j_new_south_wales
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/triple_j_New_South_Wales.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','triple j (New South Wales)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'triple j (New South Wales)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_triple_j_hottest
-              style:
-                background-image: url('/local/radioicons/triple_j_hottest.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Triple J Hottest') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Triple J Hottest') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_triple_j_hottest
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/triple_j_hottest.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Triple J Hottest') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Triple J Hottest') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_triple_m_104_9_sydney
-              style:
-                background-image: url('/local/radioicons/triple_m_104_9_Sydney.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Triple M 104.9 Sydney') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Triple M 104.9 Sydney') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_triple_m_104_9_sydney
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/triple_m_104_9_Sydney.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Triple M 104.9 Sydney') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Triple M 104.9 Sydney') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_triple_m_105_1_melbourne
-              style:
-                background-image: url('/local/radioicons/Triple_M_105_1_Melbourne.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Triple M 105.1 Melbourne') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Triple M 105.1 Melbourne') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_triple_m_105_1_melbourne
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/Triple_M_105_1_Melbourne.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Triple M 105.1 Melbourne') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Triple M 105.1 Melbourne') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_virgin_radio_uk
-              style:
-                background-image: url('/local/radioicons/Virgin_Radio_UK.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Virgin Radio UK') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Virgin Radio UK') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_virgin_radio_uk
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/Virgin_Radio_UK.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','Virgin Radio UK') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'Virgin Radio UK') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
         - type: custom:service-call
           entries:
             - type: button
-              service: script.sonos_favourites_bbc_radio_1
-              style:
-                background-image: url('/local/radioicons/BBC_Radio_1.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 1') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 1') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_bbc_radio_1
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_Radio_1.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 1') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 1') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_bbc_radio_2
-              style:
-                background-image: url('/local/radioicons/BBC_Radio_2.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 2') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 2') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_bbc_radio_2
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_Radio_2.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 2') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 2') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_bbc_radio_4_extra_comedy
-              style:
-                background-image: url('/local/radioicons/BBC_Radio_4_Extra_Comedy.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 4 Extra (Comedy)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 4 Extra (Comedy)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_bbc_radio_4_extra_comedy
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_Radio_4_Extra_Comedy.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 4 Extra (Comedy)') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 4 Extra (Comedy)') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_bbc_radio_5_live
-              style:
-                background-image: url('/local/radioicons/BBC_Radio_5_live.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 5 live') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 5 live') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_bbc_radio_5_live
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_Radio_5_live.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 5 live') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 5 live') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_bbc_radio_5_live_sports_extra
-              style:
-                background-image: url('/local/radioicons/BBC_Radio_5_live_sports_extra.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 5 live sports extra') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 5 live sports extra') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_bbc_radio_5_live_sports_extra
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_Radio_5_live_sports_extra.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 5 live sports extra') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 5 live sports extra') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_bbc_radio_6_music
-              style:
-                background-image: url('/local/radioicons/BBC_Radio_6_Music.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 6 Music') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 6 Music') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
-
+              tap_action:
+                service: script.sonos_favourites_bbc_radio_6_music
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_Radio_6_Music.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC Radio 6 Music') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC Radio 6 Music') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
             - type: button
-              service: script.sonos_favourites_bbc_world_service_news
-              style:
-                background-image: url('/local/radioicons/BBC_World_Service_News.png')
-                background-size: contain
-                background-repeat: no-repeat
-                background-position: center
-                mix-blend-mode: >
-                  {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC World Service News') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
-                opacity: >
-                  {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC World Service News') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+              tap_action:
+                service: script.sonos_favourites_bbc_world_service_news
+                action: call-service
+                target:
+                  entity_id: media_player.currently_playing
+              styles: |-
+                :host {
+                  background-image: url('/local/radioicons/BBC_World_Service_News.png');
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  mix-blend-mode: {{ 'normal' if is_state_attr('media_player.office_sonos', 'media_channel','BBC World Service News') and is_state('media_player.office_sonos','playing') else 'luminosity' }}
+                ;
+                  opacity: {{ 1 if is_state_attr('media_player.office_sonos', 'media_channel', 'BBC World Service News') and is_state('media_player.office_sonos', 'playing') else 0.2 }}
+                ;
+                }
+              entity_id: media_player.currently_playing
+      card_mod:
+        style: |
+          ha-card {
+            background-color: var(--card-background-color);
+            box-shadow: none;
+          }
 
   - square: false
     type: grid

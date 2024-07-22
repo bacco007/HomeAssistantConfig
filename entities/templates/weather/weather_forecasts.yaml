@@ -62,8 +62,6 @@ action:
         - weather.tbsmarthome
         - weather.tbsmarthome_2
         - weather.tomorrow_io_tbsmarthome_daily
-        - weather.weather_home_daily
-        - weather.weather_home_hourly
         - weather.weatherflow_forecast_brisbane_st
     response_variable: daily
 
@@ -126,14 +124,6 @@ sensor:
       tomorrow_io_tbsmarthome_daily_daily: >
         {%- if daily is defined and daily['weather.tomorrow_io_tbsmarthome_daily'] is defined %}
           {{ daily['weather.tomorrow_io_tbsmarthome_daily']['forecast'] }}
-        {%- endif %}
-      weather_home_daily_daily: >
-        {%- if daily is defined and daily['weather.weather_home_daily'] is defined %}
-          {{ daily['weather.weather_home_daily']['forecast'] }}
-        {%- endif %}
-      weather_home_hourly_daily: >
-        {%- if daily is defined and daily['weather.weather_home_hourly'] is defined %}
-          {{ daily['weather.weather_home_hourly']['forecast'] }}
         {%- endif %}
       weatherflow_forecast_brisbane_st_daily: >
         {%- if daily is defined and daily['weather.weatherflow_forecast_brisbane_st'] is defined %}
