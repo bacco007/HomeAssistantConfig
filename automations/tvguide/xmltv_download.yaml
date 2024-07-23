@@ -2,13 +2,18 @@
 alias: "[TVGuide] XMLTV Download"
 description: "[TVGuide] XMLTV Download"
 trigger:
-  # - platform: homeassistant
-  #   event: start
+  - platform: homeassistant
+    event: start
   - platform: time
     at: "01:00:00"
-  # - platform: time
-  #   at: "13:00:00"
-condition: []
+condition:
+  - condition: state
+    entity_id: input_boolean.ha_startup_pending
+    state: "off"
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
 action:
   - service: pyscript.download_xmltv
     data:

@@ -7,7 +7,14 @@ trigger:
     event: start
   - platform: time_pattern
     hours: "/3"
-condition: []
+condition:
+  - condition: state
+    entity_id: input_boolean.ha_startup_pending
+    state: "off"
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
 action:
   - service: pyscript.getdata_untappd_project52
 mode: single

@@ -1,0 +1,27 @@
+---
+type: grid
+columns: 1
+square: false
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    name: International
+    icon: mdi:television-guide
+    card_layout: normal
+  - type: custom:tabbed-card
+    options: []
+    styles:
+      --mdc-theme-primary: var(--text-color)
+      --mdc-tab-text-label-color-default: var(--disabled-text-color)
+    tabs:
+      - attributes:
+          label: UK
+        card: !include /config/ui/cards/tvguides/uk.yaml
+      - attributes:
+          label: US
+        card: !include /config/ui/cards/tvguides/us.yaml

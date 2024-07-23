@@ -17,41 +17,26 @@ cards:
   - !include /config/ui/cards/common/sidebar-menu.yaml
 
   # Content
-  - type: custom:state-switch
-    entity: mediaquery
+  - type: vertical-stack
     view_layout:
       grid-area: content
-    states:
-      "(min-width: 1024px)":
-        type: "custom:layout-card"
-        view_layout:
-          grid-area: content
+    cards:
+      - type: "custom:layout-card"
         layout_type: custom:masonry-layout
         layout:
           max_cols: 3
-          width: 400
+          width: 500
           max_width: 1000
-        cards: &cards
-          - !include /config/ui/cards/tvguides/fta_abc.yaml
-          - !include /config/ui/cards/tvguides/fta_nine.yaml
-          - !include /config/ui/cards/tvguides/fta_sbs.yaml
-          - !include /config/ui/cards/tvguides/fta_seven.yaml
-          - !include /config/ui/cards/tvguides/fta_ten.yaml
-          - !include /config/ui/cards/tvguides/foxtel_sports.yaml
-          - !include /config/ui/cards/tvguides/optus_sport.yaml
-          - !include /config/ui/cards/tvguides/foxtel_news.yaml
-          - !include /config/ui/cards/tvguides/uk.yaml
-          - !include /config/ui/cards/tvguides/us.yaml
-      "all":
-        type: "custom:layout-card"
-        view_layout:
-          grid-area: content
-        layout_type: custom:masonry-layout
-        layout:
-          max_cols: 2
-          width: 400
-          max_width: 1000
-        cards: *cards
+          min_height: 1
+          #reflow: true
+        cards:
+          - !include /config/ui/cards/tvguides/group_fta.yaml
+          - type: custom:layout-break
+          - !include /config/ui/cards/tvguides/group_subscription.yaml
+          - type: custom:layout-break
+          - !include /config/ui/cards/tvguides/group_international.yaml
+          - type: custom:layout-break
+          - !include /config/ui/cards/tvguides/settings_controls.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

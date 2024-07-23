@@ -1,16 +1,16 @@
 ---
 type: vertical-stack
 cards:
-  - type: custom:bubble-card
-    card_type: separator
-    styles: |-
-      .bubble-line {
-        background: var(--ha-card-background);
-        opacity: 1;
-        }
-    name: US Television
-    icon: mdi:television-guide
-    card_layout: normal
+  # - type: custom:bubble-card
+  #   card_type: separator
+  #   styles: |-
+  #     .bubble-line {
+  #       background: var(--ha-card-background);
+  #       opacity: 1;
+  #       }
+  #   name: US Television
+  #   icon: mdi:television-guide
+  #   card_layout: normal
   - type: grid
     columns: 2
     square: false

@@ -38,7 +38,7 @@ cards:
                 box-shadow: none;
               }
         entities:
-          - entity: sensor.influxdb_size_homeassistant
+          - entity: sensor.influxdbsize_homeassistant
             connectgaps: true
             show_value: true
             filters:
