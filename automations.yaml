@@ -1,1 +1,53 @@
----
+- id: '1721833394515'
+  alias: '[Presense] Switch Off when no-one home'
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.thomas_baxter
+    zone: zone.home
+    event: leave
+  condition: []
+  action:
+  - service: light.turn_off
+    metadata: {}
+    data:
+      transition: 20
+    target:
+      device_id:
+      - 126e91428c97177372f5ef7398eb537e
+      - 6623c3d12a6637f37fab2c6e24c41afc
+  - service: media_player.media_stop
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - 8fbcca75df7f6f0eb5cd1cae9194d2d2
+      - 8975bd002481c313a15a4822793e8c2c
+      - 74e08bc2098b8b7eacd3efdba5af32f3
+      - 68de45dcbb7f4a3ea545c62e767c7c8b
+      - e9807b5053586998a2e2bb4654f96988
+  mode: single
+- id: '1721833716485'
+  alias: '[Presence] Lights On when arrive home at night'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.time_of_day_night
+    to: 'on'
+  - platform: zone
+    entity_id: person.thomas_baxter
+    zone: zone.home
+    event: enter
+  condition: []
+  action:
+  - service: light.turn_on
+    metadata: {}
+    data:
+      transition: 20
+      brightness_pct: 35
+    target:
+      device_id:
+      - 126e91428c97177372f5ef7398eb537e
+      - 6623c3d12a6637f37fab2c6e24c41afc
+  mode: single

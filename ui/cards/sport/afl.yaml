@@ -11,259 +11,960 @@ cards:
     name: Aussie Rules
     icon: mdi:football-australian
 
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:decluttering-card
-      template: sports_card
-      variables:
-        - entity: sensor.upcoming_sport_afl_all_teams
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
     cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_afl_all_teams
+      - type: custom:mushroom-chips-card
+        alignment: center
         card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 12px;
-                }
-        entities:
-          include: sensor.sportschedule_afl
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br/>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: right
-            modify: |-
-              if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
-                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:20px;vertical-align:middle;"></div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
-          - name: Away Team
-            data: events
-            align: left
-            modify: |-
-              if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
-                '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Time
-            data: events
-            align: center
-            modify: x.status.type.description
-          - name: Venue
-            data: events
-            modify: "x.competitions[0].venue.fullName "
-
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:mushroom-template-card
-      primary: AFL Standings
-      icon: mdi:football-australian
-      secondary: >
-        {%- for x in state_attr('sensor.scoreboard_afl', 'entries') -%}
-        {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
-        {%- if rank == 1.0 -%}
-        {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
-        {%- endif -%}
-        {%- endfor -%}
-      card_mod:
-        style:
-          .: |
-            ha-card {
-              # background-color: var(--background-color);
-              box-shadow: none;
+          style: |
+            mushroom-template-chip {
+              width: 100%;
             }
-    cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:nth-child(8): "border-bottom: 2px solid rgb(255,215,0) !important;"
-          tbody tr+: "user-select: text"
-          tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Calendar
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        entities:
+                          include: sensor.upcoming_sport_afl_all_teams
+                        sort_by: next_5_events
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          th.left:nth-child(1): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th.left:nth-child(2): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        columns:
+                          - name: test
+                            data: next_5_events
+                            modify: x.start
+                            hidden: true
+                          - name: " "
+                            data: next_5_events
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+                              if(now <= end && now >= start) {
+                                '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                              } else { "" };
+                          - name: Start
+                            data: next_5_events
+                            modify: |-
+                              if(x.start == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.start);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: End
+                            data: next_5_events
+                            modify: |-
+                              if(x.end == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.end);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: Event
+                            data: next_5_events
+                            modify: x.summary + '<br/><i>' + x.location + '</i>'
+                        card_mod:
+                          style: |
+                            ha-card {
+                              background: none;
+                              border: 0;
+                              box-shadow: none;
+                              overflow: auto;
+                              padding-top: 5px;
+                              font-size: 12px;
+                            }
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: Standings
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Standings
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:nth-child(8): "border-bottom: 2px solid rgb(255,215,0) !important;"
+                          tbody tr+: "user-select: text"
+                          tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                          tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        card_mod:
+                          style:
+                            .: |
+                              ha-card {
+                                overflow: auto;
+                                box-shadow: none !important;
+                                font-size: 13px;
+                                }
+                        entities:
+                          include: sensor.scoreboard_afl
+                        sort_by: entries
+                        columns:
+                          - name: "#"
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'rank').displayValue
+                            align: center
+                          - name: Team
+                            data: entries
+                            modify: |-
+                              if (typeof x.team.logos !== 'undefined')
+                                '<div><img src="' + x.team.logos[0].href + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+                              else
+                                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.team.displayName + '</div>'
+                          - name: Pl
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
+                            align: center
+                          - name: W
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'wins').displayValue
+                            align: center
+                          - name: D
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'ties').displayValue
+                            align: center
+                          - name: L
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'losses').displayValue
+                            align: center
+                          - name: "%"
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'percentage').value
+                            align: center
+                          - name: Pts
+                            data: entries
+                            modify: x.stats.find(y=>y.name == 'points').value
+                            align: center
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Results / Upcoming
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                          tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        card_mod:
+                          style:
+                            .: |
+                              ha-card {
+                                overflow: auto;
+                                box-shadow: none !important;
+                                font-size: 12px;
+                                }
+                        entities:
+                          include: sensor.sportschedule_afl
+                        sort_by: entries
+                        columns:
+                          - name: Date
+                            data: events
+                            modify: |-
+                              if(x.date == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.date);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                "<br/>@ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                            align: center
+                          - name: Home Team
+                            data: events
+                            align: right
+                            modify: |-
+                              if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
+                                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:20px;vertical-align:middle;"></div>'
+                              else
+                                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
+                          - name: Match
+                            data: events
+                            align: center
+                            modify: |-
+                              if (x.status.type.description == 'Scheduled')
+                                ' VS '
+                              else
+                                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
+                          - name: Away Team
+                            data: events
+                            align: left
+                            modify: |-
+                              if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
+                                '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
+                              else
+                                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
+                          - name: Time
+                            data: events
+                            align: center
+                            modify: x.status.type.description
+                          - name: Venue
+                            data: events
+                            modify: "x.competitions[0].venue.fullName "
+      - type: custom:mushroom-chips-card
+        alignment: center
         card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 13px;
-                }
-        entities:
-          include: sensor.scoreboard_afl
-        sort_by: entries
-        columns:
-          - name: "#"
-            data: entries
-            modify: x.stats.find(y=>y.name == 'rank').displayValue
-            align: center
-          - name: Team
-            data: entries
-            modify: |-
-              if (typeof x.team.logos !== 'undefined')
-                '<div><img src="' + x.team.logos[0].href + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.team.displayName + '</div>'
-          - name: Pl
-            data: entries
-            modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
-            align: center
-          - name: W
-            data: entries
-            modify: x.stats.find(y=>y.name == 'wins').displayValue
-            align: center
-          - name: D
-            data: entries
-            modify: x.stats.find(y=>y.name == 'ties').displayValue
-            align: center
-          - name: L
-            data: entries
-            modify: x.stats.find(y=>y.name == 'losses').displayValue
-            align: center
-          - name: "%"
-            data: entries
-            modify: x.stats.find(y=>y.name == 'percentage').value
-            align: center
-          - name: Pts
-            data: entries
-            modify: x.stats.find(y=>y.name == 'points').value
-            align: center
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {% for x in state_attr('sensor.scoreboard_afl', 'entries') %}
+              {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+              {%- if rank == 1.0 -%}
+              Top Ranked Team: {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+              {%- endif -%}
+              {% endfor %}
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgba(39, 179, 118, 0.5) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
 
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:decluttering-card
-      template: sports_card
-      variables:
-        - entity: sensor.upcoming_sport_sydney_swans
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
     cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): >-
-            min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39,
-            179, 118,0.2); color: white;
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_sydney_swans
+      - type: custom:mushroom-chips-card
+        alignment: center
         card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 12px;
-                }
-        entities:
-          include: sensor.sportschedule_afl_swans
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br/>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/afl/500/' +
-              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() + ".png"
-              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.competitions[0].status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score.displayValue + " - " + x.competitions[0].competitors[1].score.displayValue
-          - name: Away Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/afl/500/' +
-              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() + ".png"
-              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Status
-            data: events
-            align: center
-            modify: x.competitions[0].status.type.description
-          - name: Details
-            data: events
-            modify: >-
-              x.season.displayName + ' ' + x.seasonType.name + '<br/>Venue: ' +
-              x.competitions[0].venue.fullName
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Calendar
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        entities:
+                          include: sensor.upcoming_sport_sydney_swans
+                        sort_by: next_5_events
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          th.left:nth-child(1): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th.left:nth-child(2): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        columns:
+                          - name: test
+                            data: next_5_events
+                            modify: x.start
+                            hidden: true
+                          - name: " "
+                            data: next_5_events
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+                              if(now <= end && now >= start) {
+                                '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                              } else { "" };
+                          - name: Start
+                            data: next_5_events
+                            modify: |-
+                              if(x.start == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.start);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: End
+                            data: next_5_events
+                            modify: |-
+                              if(x.end == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.end);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: Event
+                            data: next_5_events
+                            modify: x.summary + '<br/><i>' + x.location + '</i>'
+                        card_mod:
+                          style: |
+                            ha-card {
+                              background: none;
+                              border: 0;
+                              box-shadow: none;
+                              overflow: auto;
+                              padding-top: 5px;
+                              font-size: 12px;
+                            }
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Results / Upcoming
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+                          tbody tr td:nth-child(3): >-
+                            min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39,
+                            179, 118,0.2); color: white;
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        card_mod:
+                          style:
+                            .: |
+                              ha-card {
+                                overflow: auto;
+                                box-shadow: none !important;
+                                font-size: 12px;
+                                }
+                        entities:
+                          include: sensor.sportschedule_afl_swans
+                        sort_by: entries
+                        columns:
+                          - name: Date
+                            data: events
+                            modify: |-
+                              if(x.date == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.date);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                "<br/>@ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                            align: center
+                          - name: Home Team
+                            data: events
+                            align: left
+                            modify: >-
+                              '<div><img src="https://a.espncdn.com/i/teamlogos/afl/500/' +
+                              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() + ".png"
+                              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
+                              x.competitions[0].competitors[0].team.displayName + '</div>'
+                          - name: Match
+                            data: events
+                            align: center
+                            modify: |-
+                              if (x.competitions[0].status.type.description == 'Scheduled')
+                                ' VS '
+                              else
+                                x.competitions[0].competitors[0].score.displayValue + " - " + x.competitions[0].competitors[1].score.displayValue
+                          - name: Away Team
+                            data: events
+                            align: left
+                            modify: >-
+                              '<div><img src="https://a.espncdn.com/i/teamlogos/afl/500/' +
+                              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() + ".png"
+                              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
+                              x.competitions[0].competitors[1].team.displayName + '</div>'
+                          - name: Status
+                            data: events
+                            align: center
+                            modify: x.competitions[0].status.type.description
+                          - name: Details
+                            data: events
+                            modify: >-
+                              x.season.displayName + ' ' + x.seasonType.name + '<br/>Venue: ' +
+                              x.competitions[0].venue.fullName
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_aflw_all_teams
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_sydney_swans_aflw
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_sydney_swans_vfl
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_aflw_all_teams
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Calendar
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        entities:
+                          include: sensor.upcoming_sport_aflw_all_teams
+                        sort_by: next_5_events
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          th.left:nth-child(1): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th.left:nth-child(2): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        columns:
+                          - name: test
+                            data: next_5_events
+                            modify: x.start
+                            hidden: true
+                          - name: " "
+                            data: next_5_events
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+                              if(now <= end && now >= start) {
+                                '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                              } else { "" };
+                          - name: Start
+                            data: next_5_events
+                            modify: |-
+                              if(x.start == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.start);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: End
+                            data: next_5_events
+                            modify: |-
+                              if(x.end == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.end);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: Event
+                            data: next_5_events
+                            modify: x.summary + '<br/><i>' + x.location + '</i>'
+                        card_mod:
+                          style: |
+                            ha-card {
+                              background: none;
+                              border: 0;
+                              box-shadow: none;
+                              overflow: auto;
+                              padding-top: 5px;
+                              font-size: 12px;
+                            }
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_sydney_swans_aflw
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Calendar
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        entities:
+                          include: sensor.upcoming_sport_sydney_swans_aflw
+                        sort_by: next_5_events
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          th.left:nth-child(1): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th.left:nth-child(2): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        columns:
+                          - name: test
+                            data: next_5_events
+                            modify: x.start
+                            hidden: true
+                          - name: " "
+                            data: next_5_events
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+                              if(now <= end && now >= start) {
+                                '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                              } else { "" };
+                          - name: Start
+                            data: next_5_events
+                            modify: |-
+                              if(x.start == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.start);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: End
+                            data: next_5_events
+                            modify: |-
+                              if(x.end == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.end);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: Event
+                            data: next_5_events
+                            modify: x.summary + '<br/><i>' + x.location + '</i>'
+                        card_mod:
+                          style: |
+                            ha-card {
+                              background: none;
+                              border: 0;
+                              box-shadow: none;
+                              overflow: auto;
+                              padding-top: 5px;
+                              font-size: 12px;
+                            }
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_sydney_swans_vfl
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Calendar
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: custom:flex-table-card
+                        entities:
+                          include: sensor.upcoming_sport_sydney_swans_vfl
+                        sort_by: next_5_events
+                        css:
+                          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+                          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+                          th.left:nth-child(1): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th.left:nth-child(2): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+                          th+: "border-bottom: 1px solid rgb(127,127,127);"
+                        columns:
+                          - name: test
+                            data: next_5_events
+                            modify: x.start
+                            hidden: true
+                          - name: " "
+                            data: next_5_events
+                            modify: |-
+                              var start = new Date(x.start);
+                              var end = new Date(x.end);
+                              var now = Date.now();
+                              if(now <= end && now >= start) {
+                                '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                              } else { "" };
+                          - name: Start
+                            data: next_5_events
+                            modify: |-
+                              if(x.start == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.start);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: End
+                            data: next_5_events
+                            modify: |-
+                              if(x.end == 0)
+                              {"-"}
+                              else {
+                                var date = new Date(x.end);
+                                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                                " @ "+
+                                String(date.getHours()).padStart(2,'0')+":"+
+                                String(date.getMinutes()).padStart(2,'0')
+                              }
+                          - name: Event
+                            data: next_5_events
+                            modify: x.summary + '<br/><i>' + x.location + '</i>'
+                        card_mod:
+                          style: |
+                            ha-card {
+                              background: none;
+                              border: 0;
+                              box-shadow: none;
+                              overflow: auto;
+                              padding-top: 5px;
+                              font-size: 12px;
+                            }
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none

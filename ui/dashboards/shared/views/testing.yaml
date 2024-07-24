@@ -1,0 +1,373 @@
+---
+theme: geek_light
+icon: mdi:test-tube
+subview: true
+path: testing
+title: Testing
+type: custom:grid-layout
+layout:
+  grid-template-rows: auto
+  grid-template-columns: 16px auto 16px
+  grid-template-areas: |
+    ". cc ."
+    ".  . ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    "(max-width: 800px)":
+      grid-template-columns: 8px auto 8px
+      grid-template-rows: auto
+cards:
+  - type: "custom:layout-card"
+    layout_type: "custom:grid-layout"
+    layout:
+      grid-template-columns: auto
+      grid-template-rows: min-content min-content 1fr
+      grid-column-gap: 16px
+      margin: -1px
+    view_layout:
+      grid-area: cc
+
+    cards:
+      # [Header] Summary
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            "(min-width: 1024px)":
+              grid-template-columns: auto max-content
+            "(min-width: 800px)":
+              grid-template-columns: auto max-content
+            "(max-width: 799.99px)":
+              grid-template-columns: calc(100vw - 16px)
+          margin: 0
+
+        cards:
+          - !include /config/ui/cards/common/header.yaml
+
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: 0
+            view_layout:
+              place-self: center auto
+            cards:
+              - type: "custom:swipe-card"
+                parameters:
+                  enabled: true
+                  centeredSlides: false
+                  speed: 420
+                  slidesPerView: 2
+                  width: 480
+                  spaceBetween: 10
+                  breakpoints:
+                    800:
+                      enabled: false
+                      slidesPerView: 3
+                      width: 360
+                    1024:
+                      enabled: false
+                      slidesPerView: auto
+                      width: 600
+                # card_mod:
+                #   style:
+                #     .: |
+                #       @media screen and (max-width: 799.99px) {
+                #         .swiper-slide {width: auto !important;}
+                #       }
+                #       @media screen and (min-width: 1024px) {
+                #         .swiper-slide {width: auto !important;}
+                #       }
+                #     mushroom-entity-card: &mushroom-ha-card
+                #       $: |
+                #         ha-card {
+                #           -webkit-transition: all 500ms linear; /* For Safari 3.0 to 6.0 */
+                #           transition: all 500ms linear; /* For modern browsers */
+                #         }
+                #         ha-card:hover {
+                #           background-color: #2b3c54;
+                #           border-radius: 0.75rem;
+                #         }
+                #         @media screen and (max-width: 799.99px), @media screen and (min-width: 1024px) {
+                #           ha-card, mushroom-card, mushroom-state-item, mushroom-state-info {width: fit-content;}
+                #         }
+                #     mushroom-template-card: *mushroom-ha-card
+                #     mushroom-entity-card:nth-child(3)$ha-state-icon$: |
+                #       ha-icon:hover {
+                #         animation: spin 1s linear infinite;
+                #       }
+                #       @keyframes spin {
+                #           from {transform:rotate(0deg);}
+                #           to {transform:rotate(360deg);}
+                #       }
+                cards:
+                  - type: custom:bubble-card
+                    card_type: button
+                    button_type: name
+                    name: Test
+                    icon: mdi:lightbulb-fluorescent-tube-outline
+
+                  - type: custom:bubble-card
+                    card_type: button
+                    button_type: name
+                    name: Test
+                    icon: mdi:lightbulb-fluorescent-tube-outline
+
+                  - type: custom:bubble-card
+                    card_type: button
+                    button_type: name
+                    name: Test
+                    icon: mdi:lightbulb-fluorescent-tube-outline
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          #   grid-template-columns: 95vw
+          #   place-content: center
+          #   margin: -1px
+          #   padding: 16px 0
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            "(min-width: 1024px)":
+              grid-template-columns: auto max-content
+            "(min-width: 800px)":
+              grid-template-columns: auto max-content
+            "(max-width: 799.99px)":
+              grid-template-columns: calc(100vw - 16px)
+        cards:
+          - !include /config/ui/cards/tvguides/group_fta.yaml
+          - !include /config/ui/cards/tvguides/group_subscription.yaml
+          - !include /config/ui/cards/tvguides/group_international.yaml
+          - !include /config/ui/cards/tvguides/settings_controls.yaml
+          - type: custom:swipe-card
+            card_mod:
+              style:
+                .: |
+                  :host {
+                    --swiper-theme-color: #ffffff !important;
+                    --swiper-pagination-color: #ffffff !important;
+                  }
+                  .swiper-container {
+                    padding-bottom: 25px !important;
+                  }
+                  .swiper-container-horizontal > .swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
+                    bottom: 0 !important;
+                  }
+                  .swiper-pagination-bullet {
+                    background: #ffffff !important;
+                    transition: all 0.3s ease-in-out !important;
+                  }
+                  .swiper-pagination-bullet-active {
+                    width: 18px !important;
+                    border-radius: 1rem !important;
+                  }
+                  .swiper-slide {
+                    transition: filter 2s,
+                    transform !important;
+                  }
+                  .swiper-slide, .swiper-slide-prev, .swiper-slide-next {
+                    filter: blur(1px) brightness(0.5);
+                  }
+                  .swiper-slide-active {
+                    filter: none;
+                  }
+            parameters:
+              loop: false
+              speed: 600
+              centeredSlides: true
+              slidesPerView: auto
+              grabCursor: false
+              followFinger: false
+              pagination:
+                type: bullets
+                clickable: true
+              effect: coverflow
+              coverflowEffect:
+                rotate: 10
+                stretch: 120
+                depth: 200
+                modifier: 1
+                slideShadows: true
+                scale: 1
+            cards:
+              - &movie
+                type: custom:button-card
+                entity: sensor.upcoming_movie_01
+                show_icon: false
+                show_state: false
+                show_label: false
+                styles:
+                  card:
+                    - width: 400px
+                    - aspect-ratio: 2
+                    - background-image: |
+                        [[[ return `url("${entity.attributes.fanart_url}")`; ]]]
+                    - background-size: cover
+                    - background-repeat: no-repeat
+              - <<: *movie
+                entity: sensor.upcoming_movie_02
+              - <<: *movie
+                entity: sensor.upcoming_movie_03
+              - <<: *movie
+                entity: sensor.upcoming_movie_04
+              - <<: *movie
+                entity: sensor.upcoming_movie_05
+              - <<: *movie
+                entity: sensor.upcoming_movie_06
+              - <<: *movie
+                entity: sensor.upcoming_movie_07
+
+          # - !include kodi-recently-added.yaml
+          # - !include kodi-upcoming-movies.yaml
+
+          # - type: custom:stack-in-card
+          #   card_mod:
+          #     style: |
+          #       ha-card::before {
+          #         transform: translate3d(0,0,0);
+          #         -webkit-transform: translate3d(0,0,0);
+          #         content: "";
+          #         position: absolute;
+          #         height: 100%;
+          #         width: 100%;
+          #         background: url( '{{ state_attr('media_player.currently_playing', "entity_picture") }}' ) center no-repeat;
+          #         filter: blur(150px) saturate(400%);
+          #         background-size: 100% 100%;
+          #       }
+          #       ha-card {
+          #         position: fixed;
+          #         bottom: 4px;
+          #         width: -webkit-fill-available !important;
+          #         margin-right: 1rem;
+          #         transform: translate3d(0,0,0);
+          #         -webkit-transform: translate3d(0,0,0);
+          #         --ha-card-border-width: 0;
+          #         background: url( '{{ state_attr("media_player.currently_playing", "entity_picture") }}' ), linear-gradient(to left, transparent, black 70%);
+          #         background-size: 50% auto, cover;
+          #         background-position: right;
+          #         background-repeat: no-repeat;
+          #         background-blend-mode: saturation;
+          #         transition-delay: 250ms;
+          #         animation: slide-opacity 1000ms ease-in-out both;
+          #         box-shadow: 0px 9px 20px 5px rgba(var(--album-art-color),.2);
+          #         opacity: 0;
+          #         height: 118px !important;
+          #         --ha-card-border-width: 0;
+          #         --rgb-state-media-player: var(--album-art-color);
+          #       }
+          #       :host {
+          #         --album-art-color: {{ states('sensor.vibrant_color') }}
+          #       }
+          #       @keyframes slide-opacity {
+          #         0% {
+          #           transform: translateX(50%);
+          #           opacity: 0;
+          #         }
+          #         100% {
+          #           transform: translateX(0%);
+          #           opacity: 1;
+          #         }
+          #       }
+          #   cards:
+          #     - type: custom:mushroom-media-player-card
+          #       entity: media_player.currently_playing
+          #       icon: mdi:play
+          #       use_media_info: true
+          #       use_media_artwork: false
+          #       show_volume_level: false
+          #       fill_container: false
+          #       collapsible_controls: false
+          #       media_controls:
+          #         - play_pause_stop
+          #         - previous
+          #         - next
+          #         - on_off
+          #       volume_controls:
+          #         - volume_buttons
+          #         - volume_set
+          #       card_mod:
+          #         style: |
+          #           mushroom-shape-icon {
+          #             display: flex;
+          #             {% set media_type = state_attr(config.entity, 'media_content_type') %}
+          #             {% if media_type == 'tvshow' %}
+          #               --card-mod-icon: mdi:television-classic;
+          #               animation: flicker 1s linear infinite alternate;
+          #             {% elif media_type == 'movie' %}
+          #               --card-mod-icon: mdi:movie-roll;
+          #               animation: spin 2s linear infinite reverse;
+          #             {% elif media_type == 'music' %}
+          #               --card-mod-icon: mdi:kodi;
+          #               animation: beat 1.3s ease-out infinite both;
+          #             {% elif media_type == 'playlist' %}
+          #               --card-mod-icon: mdi:kodi;
+          #               animation: beat 1.3s ease-out infinite both;
+          #             {% else %}
+          #               --card-mod-icon: mdi:play;
+          #             {% endif %}
+          #             {{ 'animation: none;' if not is_state(config.entity, 'playing') }}
+          #           }
+          #           @keyframes flicker {
+          #             0%, 31.98%, 32.98%, 34.98%, 36.98%, 39.98%, 67.98%, 68.98%, 95.98%, 96.98%, 97.98%, 98.98%, 100% { --icon-color: rgba(var(--album-art-color), 1); }
+          #             32%, 33%, 35%, 36%, 37%, 40%, 68%, 69%, 96%, 97%, 98%, 99% { --icon-color: rgba(var(--album-art-color), 0.6); }
+          #           }
+          #           @keyframes beat {
+          #             0%, 60% { --icon-symbol-size: 21px; }
+          #             5%, 17%, 57% { --icon-symbol-size: 22px; }
+          #             10%, 20%, 51% { --icon-symbol-size: 23px; }
+          #             25%, 45% { --icon-symbol-size: 24px; }
+          #             30%, 39% { --icon-symbol-size: 25px; }
+          #             33% { --icon-symbol-size: 26px; }
+          #           }
+          #           .actions {
+          #             --rgb-primary-text-color: var(--album-art-color);
+          #             --primary-text-color: rgb(var(--album-art-color));
+          #             width: 40% !important;
+          #           }
+
+          #   # STICKY MENU
+
+          - type: custom:stack-in-card
+            # view_layout:
+            #   show:
+            #     mediaquery: '(max-width: 800px)'
+            card_mod:
+              style:
+                .: |
+                  :host {
+                    position: fixed !important;
+                    bottom: 0px;
+                    z-index: 4;
+                  }
+                  @keyframes position {
+                    0% {
+                      bottom: -100px;
+                      opacity: 0;
+                    }
+                    100% {
+                      bottom: 0px;
+                      opacity: 1;
+                    }
+                  }
+                  ha-card {
+                    border-radius: 0;
+                    background-color: #0000004d !important;
+                    backdrop-filter: blur(50px) brightness(1.6);
+                    -webkit-backdrop-filter: blur(50px) brightness(1.6);
+                    -moz-backdrop-filter: blur(50px) brightness(1.6);
+                    -o-backdrop-filter: blur(50px) brightness(1.6);
+                    -ms-backdrop-filter: blur(50px) brightness(1.6);
+                    box-shadow: none !important;
+                    animation: position 500ms linear both;
+                    animation-delay: 1000ms;
+                    padding: 12px 8px 22px;
+                    width: calc(98vw - 32px);
+                    margin-bottom: -2px;
+                  }
+            cards:
+              - !include /config/ui/cards/common/media_player.yaml

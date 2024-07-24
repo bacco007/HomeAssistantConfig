@@ -22,3 +22,4 @@ views:
   - !include /config/ui/dashboards/shared/views/tvguide.yaml
   - !include /config/ui/dashboards/shared/views/untappd.yaml
   - !include /config/ui/dashboards/shared/views/weather.yaml
+  - !include /config/ui/dashboards/shared/views/testing.yaml
