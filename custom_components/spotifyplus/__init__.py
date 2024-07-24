@@ -117,6 +117,9 @@ SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_CONTEXT:str = 'player_media_play_context'
 SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACK_FAVORITES:str = 'player_media_play_track_favorites'
 SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACKS:str = 'player_media_play_tracks'
 SERVICE_SPOTIFY_PLAYER_RESOLVE_DEVICE_ID:str = 'player_resolve_device_id'
+SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE:str = 'player_set_repeat_mode'
+SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE:str = 'player_set_shuffle_mode'
+SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL:str = 'player_set_volume_level'
 SERVICE_SPOTIFY_PLAYER_TRANSFER_PLAYBACK:str = 'player_transfer_playback'
 SERVICE_SPOTIFY_PLAYLIST_CHANGE:str = 'playlist_change'
 SERVICE_SPOTIFY_PLAYLIST_COVER_IMAGE_ADD:str = 'playlist_cover_image_add'
@@ -390,8 +393,8 @@ SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_CONTEXT_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("context_uri"): cv.string,
         vol.Optional("offset_uri"): cv.string,
-        vol.Optional("offset_position", default=0): vol.All(vol.Range(min=0,max=500)),
-        vol.Optional("position_ms", default=0): vol.All(vol.Range(min=0,max=999999999)),
+        vol.Optional("offset_position", default=-1): vol.All(vol.Range(min=-1,max=500)),
+        vol.Optional("position_ms", default=-1): vol.All(vol.Range(min=-1,max=999999999)),
         vol.Optional("device_id"): cv.string,
     }
 )
@@ -409,7 +412,7 @@ SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACKS_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("uris"): cv.string,
-        vol.Optional("position_ms", default=0): vol.All(vol.Range(min=0,max=999999999)),
+        vol.Optional("position_ms", default=-1): vol.All(vol.Range(min=-1,max=999999999)),
         vol.Optional("device_id"): cv.string,
     }
 )
@@ -420,6 +423,33 @@ SERVICE_SPOTIFY_PLAYER_RESOLVE_DEVICE_ID_SCHEMA = vol.Schema(
         vol.Required("device_value"): cv.string,
         vol.Optional("verify_user_context"): cv.boolean,
         vol.Optional("verify_timeout", default=5.0): vol.All(vol.Range(min=0,max=10.0)),
+    }
+)
+
+SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("state"): cv.string,
+        vol.Optional("device_id"): cv.string,
+        vol.Optional("delay", default=0.50): vol.All(vol.Range(min=0,max=10.0)),
+    }
+)
+
+SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("state"): cv.boolean,
+        vol.Optional("device_id"): cv.string,
+        vol.Optional("delay", default=0.50): vol.All(vol.Range(min=0,max=10.0)),
+    }
+)
+
+SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("volume_level", default=0): vol.All(vol.Range(min=0,max=100)),
+        vol.Optional("device_id"): cv.string,
+        vol.Optional("delay", default=0.50): vol.All(vol.Range(min=0,max=10.0)),
     }
 )
 
@@ -809,6 +839,33 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     device_id = service.data.get("device_id")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     await hass.async_add_executor_job(entity.service_spotify_player_media_play_tracks, uris, position_ms, device_id)
+
+                elif service.service == SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE:
+
+                    # set player repeat mode.
+                    state = service.data.get("state")
+                    device_id = service.data.get("device_id")
+                    delay = service.data.get("delay")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    await hass.async_add_executor_job(entity.service_spotify_player_set_repeat_mode, state, device_id, delay)
+
+                elif service.service == SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE:
+
+                    # set player shuffle mode.
+                    state = service.data.get("state")
+                    device_id = service.data.get("device_id")
+                    delay = service.data.get("delay")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    await hass.async_add_executor_job(entity.service_spotify_player_set_shuffle_mode, state, device_id, delay)
+
+                elif service.service == SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL:
+
+                    # set player shuffle mode.
+                    volume_level = service.data.get("volume_level")
+                    device_id = service.data.get("device_id")
+                    delay = service.data.get("delay")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    await hass.async_add_executor_job(entity.service_spotify_player_set_volume_level, volume_level, device_id, delay)
 
                 elif service.service == SERVICE_SPOTIFY_PLAYER_TRANSFER_PLAYBACK:
 
@@ -1680,6 +1737,33 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             supports_response=SupportsResponse.ONLY,
         )
 
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE, SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE,
+            service_handle_spotify_command,
+            schema=SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE_SCHEMA,
+            supports_response=SupportsResponse.NONE,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE, SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE,
+            service_handle_spotify_command,
+            schema=SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE_SCHEMA,
+            supports_response=SupportsResponse.NONE,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL, SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL,
+            service_handle_spotify_command,
+            schema=SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL_SCHEMA,
+            supports_response=SupportsResponse.NONE,
+        )
+
         _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_PLAYER_TRANSFER_PLAYBACK, SERVICE_SPOTIFY_PLAYER_TRANSFER_PLAYBACK_SCHEMA)
         hass.services.async_register(
             DOMAIN,
@@ -1958,14 +2042,14 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
         # -----------------------------------------------------------------------------------
         # Define DataUpdateCoordinator function.
         # -----------------------------------------------------------------------------------
-        async def _update_devices() -> list[dict[str, Any]]:
+        async def _update_devices() -> SpotifyConnectDevices:
             """
             DataUpdateCoordinator update method that will retrieve the list of Spotify Connect 
             devices that are available.  This method will be executed by the DataUpdateCoordinator
             every 5 minutes to refresh the device list.
             
             Returns:
-                A list of Spotify Device class instances.
+                A `SpotifyConnectDevices` instance.
             """
             
             shouldUpdate:bool = True
@@ -1996,12 +2080,9 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
                         True
                     )
                 
-                # get the device list.
-                devices:list[Device] = scDevices.GetDeviceList()
-                
                 # trace.
-                _logsi.LogDictionary(SILevel.Verbose, "'%s': Component DataUpdateCoordinator update results" % entry.title, devices, prettyPrint=True)
-                return devices
+                _logsi.LogDictionary(SILevel.Verbose, "'%s': Component DataUpdateCoordinator update results" % entry.title, scDevices.ToDictionary(), prettyPrint=True)
+                return scDevices
 
             except Exception as ex:
                 
@@ -2128,7 +2209,7 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
         _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry Spotify UserProfile object" % entry.title, spotifyClient.UserProfile)
 
         # define a data update coordinator that will poll for updated device entries every 5 minutes.
-        device_coordinator:DataUpdateCoordinator[list[Device]] = DataUpdateCoordinator(
+        device_coordinator:DataUpdateCoordinator[SpotifyConnectDevices] = DataUpdateCoordinator(
             hass,
             _LOGGER,
             name=f"{entry.title} Devices",

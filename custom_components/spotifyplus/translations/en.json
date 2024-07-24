@@ -13,7 +13,12 @@
       "authorize_url_timeout": "Timeout generating authorize URL.",
       "missing_configuration": "The Spotify integration is not configured. Please follow the documentation.",
       "no_url_available": "[%key:common::config_flow::abort::oauth2_no_url_available%]",
-      "reauth_account_mismatch": "The Spotify account authenticated with, does not match the account needed re-authentication."
+      "reauth_account_mismatch": "Spotify account authenticated with does not match the account needing re-authentication for the SpotifyPlus integration; please check the System Log for further information.",
+      "invalid_access_token": "OAuth access token is invalid for the SpotifyPlus integration; please check the System Log for further information.",
+      "oauth_error": "OAuth error occurred while processing SpotifyPlus OAuth Application Credentials; please check the System Log for further information.",
+      "oauth_timeout": "OAuth timeout error occurred while processing SpotifyPlus OAuth Application Credentials.  This usually indicates a temporary condition; please check the System Log for further information.",
+      "oauth_unauthorized": "OAuth Application Credentials are unauthorized for use by the SpotifyPlus integration; please check the System Log for further information.",
+      "oauth_failed": "OAuth request failed while processing SpotifyPlus OAuth Application Credentials; please check the System Log for further information."
     },
     "create_entry": { "default": "Successfully authenticated with Spotify." }
   },
@@ -728,6 +733,72 @@
         "verify_timeout": {
           "name": "Verify Timeout",
           "description": "Time delay (in seconds) to wait AFTER issuing the final Connect command (if necessary). This delay will give the spotify web api time to process the device list change before another command is issued.  Default is 5.0; value range is 0 - 10."
+        }
+      }
+    },
+    "player_set_repeat_mode": {
+      "name": "Player Set Repeat Mode",
+      "description": "Set repeat mode for the specified Spotify Connect device.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+        },
+        "state": {
+          "name": "State",
+          "description": "The repeat mode state to set; `track` will repeat the current track; `context` will repeat the current context; `off` will turn repeat off.  Default is 'off'."
+        },
+        "device_id": {
+          "name": "Device ID",
+          "description": "The id or name of the Spotify Connect Player device this command is targeting.  If not supplied, the user's currently active device is the target.  If no device is active (or an '*' is specified), then the SpotifyPlus default device is activated."
+        },
+        "delay": {
+          "name": "Delay",
+          "description": "Time delay (in seconds) to wait AFTER issuing the command to the player.  This delay will give the spotify web api time to process the change before another command is issued.  Default is 0.50; value range is 0 - 10."
+        }
+      }
+    },
+    "player_set_shuffle_mode": {
+      "name": "Player Set Shuffle Mode",
+      "description": "Set shuffle mode for the specified Spotify Connect device.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+        },
+        "state": {
+          "name": "Shuffle State?",
+          "description": "True to set player shuffle mode to on; otherwise, False for no shuffle."
+        },
+        "device_id": {
+          "name": "Device ID",
+          "description": "The id or name of the Spotify Connect Player device this command is targeting.  If not supplied, the user's currently active device is the target.  If no device is active (or an '*' is specified), then the SpotifyPlus default device is activated."
+        },
+        "delay": {
+          "name": "Delay",
+          "description": "Time delay (in seconds) to wait AFTER issuing the command to the player.  This delay will give the spotify web api time to process the change before another command is issued.  Default is 0.50; value range is 0 - 10."
+        }
+      }
+    },
+    "player_set_volume_level": {
+      "name": "Player Set Volume Level",
+      "description": "Set volume level for the specified Spotify Connect device.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+        },
+        "volume_level": {
+          "name": "Volume Level",
+          "description": "The volume level to set, expressed as a percentage value (e.g. 25).  Must be a value from 0 (muted) to 100 (max volume) inclusive."
+        },
+        "device_id": {
+          "name": "Device ID",
+          "description": "The id or name of the Spotify Connect Player device this command is targeting.  If not supplied, the user's currently active device is the target.  If no device is active (or an '*' is specified), then the SpotifyPlus default device is activated."
+        },
+        "delay": {
+          "name": "Delay",
+          "description": "Time delay (in seconds) to wait AFTER issuing the command to the player.  This delay will give the spotify web api time to process the change before another command is issued.  Default is 0.50; value range is 0 - 10."
         }
       }
     },
