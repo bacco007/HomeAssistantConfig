@@ -227,6 +227,7 @@ class MoonTimestampSensor(MoonAttributeSensor):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Update sensor with latest data from coordinator."""
+
         self.async_write_ha_state()
 
     @property

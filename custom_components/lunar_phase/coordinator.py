@@ -75,6 +75,7 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             update_method=self._async_update_data,
             update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL),
+            always_update=True,
         )
 
     async def _async_update_data(self):
@@ -82,7 +83,7 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
         attributes = {}
         try:
             moon_phase = self.get_moon_phase_name()
-            attributes[STATE_ATTR_AGE] = self.get_moon_age()
+            attributes[STATE_ATTR_AGE] = self.get_days_from_previous_new_moon()
             attributes[STATE_ATTR_NEXT_NEW] = self.get_next_new_moon()
             attributes[STATE_ATTR_NEXT_FULL] = self.get_next_full_moon()
             attributes[STATE_ATTR_NEXT_RISE] = self.get_moon_rise()
@@ -94,7 +95,7 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
             )
         except UpdateFailed:
             _LOGGER.error("Error fetching moon phase data")
-        _LOGGER.debug("attributes: %s", attributes)
+        # _LOGGER.debug("attributes: %s", attributes)
         return {
             "moon_phase": moon_phase,
             "attributes": attributes,
@@ -102,7 +103,8 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
 
     def get_moon_phase(self):
         """Return the current moon phase."""
-        return moon.phase(self.today)
+        today = dt_util.now()
+        return moon.phase(today)
 
     def get_moon_phase_name(self):
         """Return the name of the current moon phase."""
@@ -132,24 +134,20 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
     def get_moon_rise(self):
         """Return the moon rise time."""
         try:
-            rise_time = moon.moonrise(self.location, self.date)
-            if rise_time is not None:
-                return rise_time.isoformat()
-            return None
+            rise_time = moon.moonrise(self.location, self.date).isoformat()
         except ValueError as e:
-            _LOGGER.warning(f"Could not calculate moon rise time: {e}")
+            _LOGGER.warning("Could not calculate moon set time: %s", e)
             return None
+        return rise_time
 
     def get_moon_set(self):
         """Return the moon set time."""
         try:
-            set_time = moon.moonset(self.location, self.date)
-            if set_time is not None:
-                return set_time.isoformat()
-            return None
+            set_time = moon.moonset(self.location, self.date).isoformat()
         except ValueError as e:
-            _LOGGER.warning(f"Could not calculate moon set time: {e}")
+            _LOGGER.warning("Could not calculate moon set time: %s", e)
             return None
+        return set_time
 
     def get_next_new_moon(self):
         """Return the next new moon date."""
@@ -181,3 +179,20 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
     def get_moon_illumination_fraction(self):
         """Return the fraction of the moon that is illuminated."""
         return self.moon_ephem.phase
+
+    def get_previous_new_moon(self):
+        """Return the previous new moon date."""
+        return ephem.previous_new_moon(self.date)
+
+    def get_days_from_previous_new_moon(self):
+        """Return the number of days since the previous new moon."""
+        today = datetime.datetime.now().replace(tzinfo=datetime.UTC)
+        previous_new_moon = (
+            self.get_previous_new_moon().datetime().replace(tzinfo=datetime.UTC)
+        )
+        # Calculate the difference as a timedelta
+        delta = today - previous_new_moon
+
+        # Convert the difference to days including the fractional part
+
+        return delta.total_seconds() / 86400
