@@ -1,0 +1,28 @@
+---
+id: a9b997b8-84ac-4332-bf06-19957c0d4d19
+alias: "[Presence] Arrive Home > Lights On (Night)"
+description: ""
+trigger:
+  - platform: zone
+    entity_id: person.thomas_baxter
+    zone: zone.home
+    event: enter
+condition:
+  - condition: or
+    conditions:
+      - condition: sun
+        after: sunset
+        after_offset: "-00:15:00"
+      - condition: sun
+        before: sunrise
+action:
+  - service: light.turn_on
+    metadata: {}
+    data:
+      transition: 20
+      brightness_pct: 35
+    target:
+      device_id:
+        - 126e91428c97177372f5ef7398eb537e
+        - 6623c3d12a6637f37fab2c6e24c41afc
+mode: single

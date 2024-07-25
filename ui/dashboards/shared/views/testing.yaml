@@ -130,97 +130,21 @@ cards:
           #   place-content: center
           #   margin: -1px
           #   padding: 16px 0
-          grid-template-columns: auto max-content
+          grid-template-columns: repeat(auto-fill, minmax(max(300px, calc((100% - (calc(calc(3 - 1) * 10px))) / 4)), 1fr))
           grid-template-rows: auto
+          grid-gap: 10px
           mediaquery:
             "(min-width: 1024px)":
-              grid-template-columns: auto max-content
+              grid-template-columns: repeat(auto-fill, minmax(max(300px, calc((100% - (calc(calc(2 - 1) * 10px))) / 4)), 1fr))
             "(min-width: 800px)":
-              grid-template-columns: auto max-content
+              grid-template-columns: repeat(auto-fill, minmax(max(300px, calc((100% - (calc(calc(2 - 1) * 10px))) / 4)), 1fr))
             "(max-width: 799.99px)":
-              grid-template-columns: calc(100vw - 16px)
+              ggrid-template-columns: repeat(auto-fill, minmax(max(300px, calc((100% - (calc(calc(1 - 1) * 10px))) / 4)), 1fr))
         cards:
           - !include /config/ui/cards/tvguides/group_fta.yaml
           - !include /config/ui/cards/tvguides/group_subscription.yaml
           - !include /config/ui/cards/tvguides/group_international.yaml
           - !include /config/ui/cards/tvguides/settings_controls.yaml
-          - type: custom:swipe-card
-            card_mod:
-              style:
-                .: |
-                  :host {
-                    --swiper-theme-color: #ffffff !important;
-                    --swiper-pagination-color: #ffffff !important;
-                  }
-                  .swiper-container {
-                    padding-bottom: 25px !important;
-                  }
-                  .swiper-container-horizontal > .swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
-                    bottom: 0 !important;
-                  }
-                  .swiper-pagination-bullet {
-                    background: #ffffff !important;
-                    transition: all 0.3s ease-in-out !important;
-                  }
-                  .swiper-pagination-bullet-active {
-                    width: 18px !important;
-                    border-radius: 1rem !important;
-                  }
-                  .swiper-slide {
-                    transition: filter 2s,
-                    transform !important;
-                  }
-                  .swiper-slide, .swiper-slide-prev, .swiper-slide-next {
-                    filter: blur(1px) brightness(0.5);
-                  }
-                  .swiper-slide-active {
-                    filter: none;
-                  }
-            parameters:
-              loop: false
-              speed: 600
-              centeredSlides: true
-              slidesPerView: auto
-              grabCursor: false
-              followFinger: false
-              pagination:
-                type: bullets
-                clickable: true
-              effect: coverflow
-              coverflowEffect:
-                rotate: 10
-                stretch: 120
-                depth: 200
-                modifier: 1
-                slideShadows: true
-                scale: 1
-            cards:
-              - &movie
-                type: custom:button-card
-                entity: sensor.upcoming_movie_01
-                show_icon: false
-                show_state: false
-                show_label: false
-                styles:
-                  card:
-                    - width: 400px
-                    - aspect-ratio: 2
-                    - background-image: |
-                        [[[ return `url("${entity.attributes.fanart_url}")`; ]]]
-                    - background-size: cover
-                    - background-repeat: no-repeat
-              - <<: *movie
-                entity: sensor.upcoming_movie_02
-              - <<: *movie
-                entity: sensor.upcoming_movie_03
-              - <<: *movie
-                entity: sensor.upcoming_movie_04
-              - <<: *movie
-                entity: sensor.upcoming_movie_05
-              - <<: *movie
-                entity: sensor.upcoming_movie_06
-              - <<: *movie
-                entity: sensor.upcoming_movie_07
 
           # - !include kodi-recently-added.yaml
           # - !include kodi-upcoming-movies.yaml

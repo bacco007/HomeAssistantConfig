@@ -7,14 +7,14 @@ trigger:
     event: start
   - platform: time_pattern
     hours: /2
-condition:
-  - condition: state
-    entity_id: input_boolean.ha_startup_pending
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
+# condition:
+#   - condition: state
+#     entity_id: input_boolean.ha_startup_pending
+#     state: "off"
+#     for:
+#       hours: 0
+#       minutes: 0
+#       seconds: 30
 action:
   - service: shell_command.xmltv_getfromwebgrabplus
     data: {}
