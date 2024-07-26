@@ -1,0 +1,26 @@
+---
+- name: allsportdb
+  resource_template: "https://api.allsportdb.com/v3/calendar?dateFrom={{now().strftime('%Y-%m-%d')|string}}&dateTo={{(now() + timedelta( days = 31 )).strftime('%Y-%m-%d')|string}}&dateToday={{now().strftime('%Y-%m-%d')|string}}"
+  scan_interval: 21600
+  log_response: true
+  timeout: 60
+  headers:
+    accept: "application/json"
+    Authorization: !secret allsportdb_apikey
+  button:
+    - unique_id: allsportdb_refresh
+      name: Refresh
+  sensor:
+    - unique_id: allsportdb
+      name: AllSportDB
+      # select: "#content > div.date-modified"
+      value_template: "{{now()}}"
+      on_error:
+        log: warning
+        value: last
+      attributes:
+        - name: data
+          value_template: "{{value_json}}"
+          on_error:
+            log: warning
+            value: last

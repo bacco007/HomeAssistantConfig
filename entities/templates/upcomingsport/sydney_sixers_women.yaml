@@ -26,7 +26,7 @@ sensor:
   - name: "[Upcoming Sport] Sydney Sixers (Women)"
     unique_id: upcoming_sport_sydney_sixers_women
     icon: "mdi:cricket"
-    picture: /local/sportlogos/sydney_sixers_women.png
+    picture: /local/sportlogos/sydney_sixers.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

@@ -464,6 +464,7 @@ action:
                 |rejectattr('entity_id','search','this_week')
                 |rejectattr('entity_id','search','next_24_hours')
                 |rejectattr('attributes.remaining_events','==',0)
+                |selectattr("attributes.nextevent_timeto", 'defined')
                 |selectattr('attributes.nextevent_timeto','<=',7)
                 |map(attribute='entity_id')|list|sort }}
 
@@ -478,12 +479,22 @@ action:
 
   - service: group.set
     data:
-      object_id: automations_sonos_playlists
-      name: "[Group] Automations, Sonos Playlists"
+      object_id: automations_sonos_favourites
+      name: "[Group] Automations, Sonos Favourites"
       icon: si:sonos
       entities: >
         {{ states
-            |selectattr('entity_id','search','automation.sonos_playlist_*')
+            |selectattr('entity_id','search','automation.sonos_favourites*')
+            |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: script_sonos_playlists
+      name: "[Group] Scripts, Sonos Playlists"
+      icon: si:sonos
+      entities: >
+        {{ states
+            |selectattr('entity_id','search','script.sonos_favourites*')
             |map(attribute='entity_id')|list|sort }}
 
   - service: group.set

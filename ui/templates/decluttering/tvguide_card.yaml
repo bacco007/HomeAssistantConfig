@@ -58,7 +58,7 @@ tvguide_card:
                 }
               ha-card {
                 # background-color: var(--background-color);
-                box-shadow: none;
+                box-shadow: none !important;
               }
       - type: custom:mushroom-chips-card
         alignment: center

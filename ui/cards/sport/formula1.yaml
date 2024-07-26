@@ -8,140 +8,383 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-    name: Formula 1
+    name: Formula 1 / 2 / 3
     icon: si:f1
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_formula_1
-  - type: entities
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Next Race
-          icon: si:f1
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:formulaone-card
-            card_type: countdown
-            date_locale: au
-            f1_font: true
-            title: null
-            show_carnumber: false
-            show_raceinfo: true
-            location_clickable: true
-            image_clickable: true
-            hide_tracklayout: false
-            hide_racedatetimes: false
-            style: |
-              ha-card {
-                background-color: none;
-                box-shadow: none;
-              }
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Last Race
-          icon: si:f1
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:formulaone-card
-            card_type: last_result
-            ddate_locale: au
-            f1_font: true
-            show_raceinfo: true
-            hide_tracklayout: false
-            location_clickable: true
-            image_clickable: true
-            show_carnumber: true
-            style: |
-              ha-card {
-                background-color: none;
-                box-shadow: none;
-              }
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Remaining Schedule
-          icon: si:f1
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:formulaone-card
-            card_type: schedule
-            date_locale: au
-            previous_race: hide
-            location_clickable: true
-            f1_font: true
-            title: null
-            show_raceinfo: true
-            style: |
-              ha-card {
-                background-color: none;
-                box-shadow: none;
-              }
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Constructors Standings
-          icon: si:f1
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:formulaone-card
-            card_type: constructor_standings
-            standings:
-              show_teamlogo: true
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Driver Standings
-          icon: si:f1
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:formulaone-card
-            card_type: driver_standings
-            f1_font: true
-            standings:
-              show_flag: true
-              show_team: true
-              show_teamlogo: true
-            show_carnumber: true
-            style: |
-              ha-card {
-                background-color: none;
-                box-shadow: none;
-              }
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Results
-          icon: si:f1
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:formulaone-card
-            card_type: results
-            date_locale: au
-            location_clickable: true
-            f1_font: true
-            style: |
-              ha-card {
-                background-color: none;
-                box-shadow: none;
-              }
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          box-shadow: none !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_formula_1
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/f1_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:flag-checkered
+            content: Next Race
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Next Race
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: vertical-stack
+                        cards:
+                          - type: custom:formulaone-card
+                            card_type: countdown
+                            date_locale: au
+                            f1_font: true
+                            title: null
+                            show_carnumber: false
+                            show_raceinfo: true
+                            location_clickable: true
+                            image_clickable: true
+                            hide_tracklayout: false
+                            hide_racedatetimes: false
+                            style: |
+                              ha-card {
+                                background-color: none;
+                                box-shadow: none;
+                              }
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_formula_2
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:flag-checkered
+            content: Last Race
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Last Race
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: vertical-stack
+                        cards:
+                          - type: custom:formulaone-card
+                            card_type: last_result
+                            date_locale: au
+                            f1_font: true
+                            title: null
+                            show_carnumber: false
+                            show_raceinfo: true
+                            location_clickable: true
+                            image_clickable: true
+                            hide_tracklayout: false
+                            hide_racedatetimes: false
+                            style: |
+                              ha-card {
+                                background-color: none;
+                                box-shadow: none;
+                              }
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_formula_3
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:go-kart-track
+            content: Results
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Next Race
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: vertical-stack
+                        cards:
+                          - type: custom:formulaone-card
+                            card_type: results
+                            date_locale: au
+                            location_clickable: true
+                            f1_font: true
+                            style: |
+                              ha-card {
+                                background-color: none;
+                                box-shadow: none;
+                              }
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:racing-helmet
+            content: Drivers Standings
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Next Race
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: vertical-stack
+                        cards:
+                          - type: custom:formulaone-card
+                            card_type: driver_standings
+                            f1_font: true
+                            standings:
+                              show_flag: true
+                              show_team: true
+                              show_teamlogo: true
+                            show_carnumber: true
+                            style: |
+                              ha-card {
+                                background-color: none;
+                                box-shadow: none;
+                              }
+
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:car-brake-abs
+            content: Constructors Standings
+            card_mod: *style
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                hide_header: false
+                data:
+                  title: Constructors Standings
+                  content:
+                    type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      margin: 0
+                      grid-template-columns: 1fr
+                      grid-template-rows: 1fr
+                      grid-template-areas: |
+                        "col1"
+                    cards:
+                      - type: custom:hui-element
+                        view_layout:
+                          grid-area: col1
+                        card_type: vertical-stack
+                        cards:
+                          - type: custom:formulaone-card
+                            card_type: constructor_standings
+                            standings:
+                              show_teamlogo: true
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          box-shadow: none !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_formula_2
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/f2_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          box-shadow: none !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_formula_3
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/f3_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none

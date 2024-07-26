@@ -6,7 +6,7 @@ trigger:
     hours: "/6"
   - platform: calendar
     event: end
-    entity_id: calendar.ical_sydney_swans_vfl
+    entity_id: calendar.ical_super_rugby_all_teams
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -14,19 +14,19 @@ action:
     data:
       end_date_time: "{{now() + timedelta(days=365)}}"
     target:
-      entity_id: calendar.ical_sydney_swans_vfl
+      entity_id: calendar.ical_super_rugby_all_teams
     response_variable: agenda
   - variables:
-      dump: "{{ agenda['calendar.ical_sydney_swans_vfl'].events }}"
+      dump: "{{ agenda['calendar.ical_super_rugby_all_teams'].events }}"
       all_events: "{{dump |sort(attribute='start') | list }}"
       next_5_events: "{{dump |sort(attribute='start') | list }}"
       countnumb: "{{dump | length }}"
       lastevent: "{{dump[-1] }}"
 sensor:
-  - name: "[Upcoming Sport] Sydney Swans (VFL)"
-    unique_id: upcoming_sport_sydney_swans_vfl
-    icon: "mdi:football-australian"
-    picture: /local/sportlogos/sydney_swans.png
+  - name: "[Upcoming Sport] Super Rugby (All Teams)"
+    unique_id: upcoming_sport_super_rugby_all_teams
+    icon: "mdi:football"
+    picture: /local/sportlogos/super_rugby_all_teams.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

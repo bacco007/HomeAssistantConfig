@@ -42,7 +42,7 @@ logger:
 
 # Enable Home Assistant API
 api:
-  password: "87K9NZIeNIDuLa1AKPFn178hKK/XKBbBH2NRye86T4w="
+  password: ""
 
 captive_portal:
 

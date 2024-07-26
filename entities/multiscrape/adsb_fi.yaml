@@ -6,7 +6,7 @@
     - unique_id: adsb_fi_daily_stats
       name: ADSB.fi - Daily Stats
       value_template: Connected
-      icon: mdi:plane
+      icon: mdi:airplane
       attributes:
         - name: beast_connected_seconds
           value_template: "{{ value_json.beast[0].connTime }}"
