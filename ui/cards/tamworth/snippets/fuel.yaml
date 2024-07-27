@@ -10,6 +10,298 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.fuel_prices_dsl
+    name: Diesel
+    show_state: false
+    sub_button:
+      - name: Max
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: max
+      - name: Min
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: min
+      - name: Avg
+        show_background: true
+        show_icon: false
+        show_attribute: false
+        show_state: true
+        show_name: true
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.fuel_prices_pdsl
+    name: Premium Diesel
+    show_state: false
+    sub_button:
+      - name: Max
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: max
+      - name: Min
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: min
+      - name: Avg
+        show_background: true
+        show_icon: false
+        show_attribute: false
+        show_state: true
+        show_name: true
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.fuel_prices_e10
+    name: Unleaded E10
+    show_state: false
+    sub_button:
+      - name: Max
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: max
+      - name: Min
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: min
+      - name: Avg
+        show_background: true
+        show_icon: false
+        show_attribute: false
+        show_state: true
+        show_name: true
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.fuel_prices_u91
+    name: Unleaded 91
+    show_state: false
+    sub_button:
+      - name: Max
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: max
+      - name: Min
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: min
+      - name: Avg
+        show_background: true
+        show_icon: false
+        show_attribute: false
+        show_state: true
+        show_name: true
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.fuel_prices_u95
+    name: Unleaded 95
+    show_state: false
+    sub_button:
+      - name: Max
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: max
+      - name: Min
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: min
+      - name: Avg
+        show_background: true
+        show_icon: false
+        show_attribute: false
+        show_state: true
+        show_name: true
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.fuel_prices_u98
+    name: Unleaded 98
+    show_state: false
+    sub_button:
+      - name: Max
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: max
+      - name: Min
+        show_background: false
+        show_icon: false
+        show_attribute: true
+        show_state: false
+        show_name: true
+        attribute: min
+      - name: Avg
+        show_background: true
+        show_icon: false
+        show_attribute: false
+        show_state: true
+        show_name: true
+  - type: custom:yet-another-expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    child-padding: 0.5em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: Petrol Price Detail
+      icon: mdi:gas-station
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: custom:auto-entities
+        filter:
+          template: |
+            {%- set list_of_lists = [
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.DSL", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.DIESEL", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.E10", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.PDSL", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.PremDSL", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.U91", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.U95", 'defined')| map(attribute='entity_id') | list,
+                expand(integration_entities('fuel_prices')) | selectattr("attributes.U98", 'defined')| map(attribute='entity_id') | list,
+            ] -%}
+
+            {%- set ns = namespace(flattened_list=[]) -%}
+            {%- for list in list_of_lists -%}
+              {%- set ns.flattened_list = ns.flattened_list + list -%}
+            {%- endfor %}
+            {{ ns.flattened_list | unique | list | sort }}
+        sort:
+          method: attribute
+          attribute: name
+          reverse: false
+        card:
+          type: custom:flex-table-card
+          css:
+            table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+            tbody tr:hover: >-
+              background-color: rgba(180, 70, 70,0.2) !important; color:white
+              !important;
+            tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+            th+: "border-bottom: 1px solid rgb(127,127,127);"
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  overflow: auto;
+                  box-shadow: none !important;
+                  font-size: 12px;
+                  }
+          columns:
+            - name: Name
+              data: name,brand,address
+              multi_delimiter: ","
+              modify: >
+                x.split(",")[0] + " (" + x.split(",")[1] + ")<br/>" +
+                x.split(",")[2]
+            - data: available_fuels
+              name: Diesel
+              align: center
+              modify: |
+                if(x.DSL != null)
+                  {x.DSL}
+                else if (x.DIESEL != null)
+                  {x.DIESEL}
+                else {
+                    '<div style="color:red;">' + "-" + '</div>';
+                }
+            - data: available_fuels
+              name: Prem Diesel
+              align: center
+              modify: |
+                if(x.PDSL != null )
+                  {x.PDSL}
+                else if (x.PremDSL != null)
+                  {x.PremDSL}
+                  else {
+                    '<div style="color:red;">' + "-" + '</div>';
+                }
+            - data: available_fuels
+              name: E10
+              align: center
+              modify: |
+                if(x.E10 != null )
+                  {x.E10}
+                  else {
+                    '<div style="color:red;">' + "-" + '</div>';
+                }
+            - data: available_fuels
+              name: ULP91
+              align: center
+              modify: |
+                if(x.U91 != null )
+                  {x.U91}
+                  else {
+                    '<div style="color:red;">' + "-" + '</div>';
+                }
+            - data: available_fuels
+              name: ULP95
+              align: center
+              modify: |
+                if(x.U95 != null )
+                  {x.U95}
+                  else {
+                    '<div style="color:red;">' + "-" + '</div>';
+                }
+            - data: available_fuels
+              name: ULP98
+              align: center
+              modify: |
+                if(x.U98 != null )
+                  {x.U98}
+                  else {
+                    '<div style="color:red;">' + "-" + '</div>';
+                }
+
   - type: entities
     show_header_toggle: false
     state_color: true

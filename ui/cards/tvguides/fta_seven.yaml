@@ -18,19 +18,11 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_racing_com
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_seven_bravo
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_seven_flix
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_seven_hd
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_seven_two
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
@@ -38,4 +30,12 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_seven_two
+          - entity: sensor.tvguide_seven_flix
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_seven_bravo
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_racing_com

@@ -18,14 +18,6 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_nitv_hd
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_sbs_food
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_sbs_hd
       - type: custom:decluttering-card
         template: tvguide_card
@@ -39,3 +31,11 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_sbs_world_watch
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_nitv_hd
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_sbs_food
