@@ -1,0 +1,20 @@
+# Find Fuel Locations service
+find_fuel_station:
+  fields:
+    location:
+      required: true
+      selector:
+        location:
+          radius: true
+find_fuels:
+  fields:
+    location:
+      required: true
+      selector:
+        location:
+          radius: true
+    type:
+      required: true
+      selector:
+        text:
+          multiline: false
