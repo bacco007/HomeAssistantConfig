@@ -13,6 +13,7 @@ from croniter import croniter
 
 from homeassistant.core import Context
 from homeassistant.helpers import sun
+from homeassistant.util import dt as dt_util
 
 from .const import LOGGER_PATH
 from .eval import AstEval, EvalFunc, EvalFuncVar
@@ -20,6 +21,7 @@ from .event import Event
 from .function import Function
 from .mqtt import Mqtt
 from .state import STATE_VIRTUAL_ATTRS, State
+from .webhook import Webhook
 
 _LOGGER = logging.getLogger(LOGGER_PATH + ".trigger")
 
@@ -221,13 +223,22 @@ class TrigTime:
         time_trigger=None,
         event_trigger=None,
         mqtt_trigger=None,
+        webhook_trigger=None,
+        webhook_local_only=True,
+        webhook_methods=None,
         timeout=None,
         state_hold=None,
         state_hold_false=None,
         __test_handshake__=None,
     ):
         """Wait for zero or more triggers, until an optional timeout."""
-        if state_trigger is None and time_trigger is None and event_trigger is None and mqtt_trigger is None:
+        if (
+            state_trigger is None
+            and time_trigger is None
+            and event_trigger is None
+            and mqtt_trigger is None
+            and webhook_trigger is None
+        ):
             if timeout is not None:
                 await asyncio.sleep(timeout)
                 return {"trigger_type": "timeout"}
@@ -237,6 +248,7 @@ class TrigTime:
         state_trig_eval = None
         event_trig_expr = None
         mqtt_trig_expr = None
+        webhook_trig_expr = None
         exc = None
         notify_q = asyncio.Queue(0)
 
@@ -348,6 +360,26 @@ class TrigTime:
                         State.notify_del(state_trig_ident, notify_q)
                     raise exc
             await Mqtt.notify_add(mqtt_trigger[0], notify_q)
+        if webhook_trigger is not None:
+            if isinstance(webhook_trigger, str):
+                webhook_trigger = [webhook_trigger]
+            if len(webhook_trigger) > 1:
+                webhook_trig_expr = AstEval(
+                    f"{ast_ctx.name} webhook_trigger",
+                    ast_ctx.get_global_ctx(),
+                    logger_name=ast_ctx.get_logger_name(),
+                )
+                Function.install_ast_funcs(webhook_trig_expr)
+                webhook_trig_expr.parse(webhook_trigger[1], mode="eval")
+                exc = webhook_trig_expr.get_exception_obj()
+                if exc is not None:
+                    if len(state_trig_ident) > 0:
+                        State.notify_del(state_trig_ident, notify_q)
+                    raise exc
+            if webhook_methods is None:
+                webhook_methods = {"POST", "PUT"}
+            Webhook.notify_add(webhook_trigger[0], webhook_local_only, webhook_methods, notify_q)
+
         time0 = time.monotonic()
 
         if __test_handshake__:
@@ -368,7 +400,7 @@ class TrigTime:
             if startup_time is None:
                 startup_time = now
             if time_trigger is not None:
-                time_next = cls.timer_trigger_next(time_trigger, now, startup_time)
+                time_next, time_next_adj = await cls.timer_trigger_next(time_trigger, now, startup_time)
                 _LOGGER.debug(
                     "trigger %s wait_until time_next = %s, now = %s",
                     ast_ctx.name,
@@ -376,7 +408,7 @@ class TrigTime:
                     now,
                 )
                 if time_next is not None:
-                    this_timeout = (time_next - now).total_seconds()
+                    this_timeout = (time_next_adj - now).total_seconds()
             if timeout is not None:
                 time_left = time0 + timeout - time.monotonic()
                 if time_left <= 0:
@@ -393,7 +425,12 @@ class TrigTime:
                     state_trig_timeout = True
                     time_next = now + dt.timedelta(seconds=this_timeout)
             if this_timeout is None:
-                if state_trigger is None and event_trigger is None and mqtt_trigger is None:
+                if (
+                    state_trigger is None
+                    and event_trigger is None
+                    and mqtt_trigger is None
+                    and webhook_trigger is None
+                ):
                     _LOGGER.debug(
                         "trigger %s wait_until no next time - returning with none",
                         ast_ctx.name,
@@ -526,6 +563,17 @@ class TrigTime:
                 if mqtt_trig_ok:
                     ret = notify_info
                     break
+            elif notify_type == "webhook":
+                if webhook_trig_expr is None:
+                    ret = notify_info
+                    break
+                webhook_trig_ok = await webhook_trig_expr.eval(notify_info)
+                exc = webhook_trig_expr.get_exception_obj()
+                if exc is not None:
+                    break
+                if webhook_trig_ok:
+                    ret = notify_info
+                    break
             else:
                 _LOGGER.error(
                     "trigger %s wait_until got unexpected queue message %s",
@@ -539,6 +587,8 @@ class TrigTime:
             Event.notify_del(event_trigger[0], notify_q)
         if mqtt_trigger is not None:
             Mqtt.notify_del(mqtt_trigger[0], notify_q)
+        if webhook_trigger is not None:
+            Webhook.notify_del(webhook_trigger[0], notify_q)
         if exc:
             raise exc
         return ret
@@ -555,7 +605,7 @@ class TrigTime:
         return await cls.hass.async_add_executor_job(functools.partial(func, **kwargs), *args)
 
     @classmethod
-    def parse_date_time(cls, date_time_str, day_offset, now, startup_time):
+    async def parse_date_time(cls, date_time_str, day_offset, now, startup_time):
         """Parse a date time string, returning datetime."""
         year = now.year
         month = now.month
@@ -620,10 +670,14 @@ class TrigTime:
                 location = location[0]
             try:
                 if dt_str.startswith("sunrise"):
-                    time_sun = location.sunrise(dt.date(year, month, day))
+                    time_sun = await cls.hass.async_add_executor_job(
+                        location.sunrise, dt.date(year, month, day)
+                    )
                     dt_str = dt_str[7:]
                 else:
-                    time_sun = location.sunset(dt.date(year, month, day))
+                    time_sun = await cls.hass.async_add_executor_job(
+                        location.sunset, dt.date(year, month, day)
+                    )
                     dt_str = dt_str[6:]
             except Exception:
                 _LOGGER.warning("'%s' not defined at this latitude", dt_str)
@@ -656,7 +710,7 @@ class TrigTime:
         return now
 
     @classmethod
-    def timer_active_check(cls, time_spec, now, startup_time):
+    async def timer_active_check(cls, time_spec, now, startup_time):
         """Check if the given time matches the time specification."""
         results = {"+": [], "-": []}
         for entry in time_spec if isinstance(time_spec, list) else [time_spec]:
@@ -683,8 +737,8 @@ class TrigTime:
                     _LOGGER.error("Invalid range expression: %s", exc)
                     return False
 
-                start = cls.parse_date_time(dt_start.strip(), 0, now, startup_time)
-                end = cls.parse_date_time(dt_end.strip(), 0, start, startup_time)
+                start = await cls.parse_date_time(dt_start.strip(), 0, now, startup_time)
+                end = await cls.parse_date_time(dt_end.strip(), 0, start, startup_time)
 
                 if start <= end:
                     this_match = start <= now <= end
@@ -705,9 +759,10 @@ class TrigTime:
         return result
 
     @classmethod
-    def timer_trigger_next(cls, time_spec, now, startup_time):
+    async def timer_trigger_next(cls, time_spec, now, startup_time):
         """Return the next trigger time based on the given time and time specification."""
         next_time = None
+        next_time_adj = None
         if not isinstance(time_spec, list):
             time_spec = [time_spec]
         for spec in time_spec:
@@ -719,25 +774,48 @@ class TrigTime:
                     _LOGGER.error("Invalid cron expression: %s", cron_match)
                     continue
 
-                val = croniter(cron_match.group("cron_expr"), now, dt.datetime).get_next()
+                #
+                # Handling DST changes is tricky; all times in pyscript are naive (no timezone).  This is the
+                # one part of the code where we do check timezones, in case now and next_time bracket a DST
+                # change.  We return next_time as the local time of the next trigger according to the cron
+                # spec, and next_time_adj is potentially adjusted so that (next_time_adj - now) is the correct
+                # timedelta to wait (eg: if cron is a daily trigger at 6am, next_time will always be 6am
+                # tomorrow, and next_time_adj will also by 6am, except on the day of a DST change, when it
+                # will be 5am or 7am, such that (next_time_adj - now) is 23 hours or 25 hours.
+                #
+                # We might have to fetch multiple croniter times, in case (next_time_adj - now) is non-positive
+                # after a DST change.
+                #
+                # Also, datetime doesn't correctly subtract datetimes in different timezones, so we need to compute
+                # the different in UTC.  See https://blog.ganssle.io/articles/2018/02/aware-datetime-arithmetic.html.
+                #
+                cron_iter = croniter(cron_match.group("cron_expr"), now, dt.datetime)
+                delta = None
+                while delta is None or delta.total_seconds() <= 0:
+                    val = cron_iter.get_next()
+                    delta = dt_util.as_local(val).astimezone(dt_util.UTC) - dt_util.as_local(now).astimezone(
+                        dt_util.UTC
+                    )
+
                 if next_time is None or val < next_time:
                     next_time = val
+                    next_time_adj = now + delta
 
             elif len(match1) == 3:
-                this_t = cls.parse_date_time(match1[1].strip(), 0, now, startup_time)
+                this_t = await cls.parse_date_time(match1[1].strip(), 0, now, startup_time)
                 day_offset = (now - this_t).days + 1
                 if day_offset != 0 and this_t != startup_time:
                     #
                     # Try a day offset (won't make a difference if spec has full date)
                     #
-                    this_t = cls.parse_date_time(match1[1].strip(), day_offset, now, startup_time)
+                    this_t = await cls.parse_date_time(match1[1].strip(), day_offset, now, startup_time)
                 startup = now == this_t and now == startup_time
                 if (now < this_t or startup) and (next_time is None or this_t < next_time):
-                    next_time = this_t
+                    next_time_adj = next_time = this_t
 
             elif len(match2) == 5:
                 start_str, period_str = match2[1].strip(), match2[2].strip()
-                start = cls.parse_date_time(start_str, 0, now, startup_time)
+                start = await cls.parse_date_time(start_str, 0, now, startup_time)
                 period = parse_time_offset(period_str)
                 if period <= 0:
                     _LOGGER.error("Invalid non-positive period %s in period(): %s", period, time_spec)
@@ -746,33 +824,33 @@ class TrigTime:
                 if match2[3] is None:
                     startup = now == start and now == startup_time
                     if (now < start or startup) and (next_time is None or start < next_time):
-                        next_time = start
+                        next_time_adj = next_time = start
                     if now >= start and not startup:
                         secs = period * (1.0 + math.floor((now - start).total_seconds() / period))
                         this_t = start + dt.timedelta(seconds=secs)
                         if now < this_t and (next_time is None or this_t < next_time):
-                            next_time = this_t
+                            next_time_adj = next_time = this_t
                     continue
                 end_str = match2[3].strip()
-                end = cls.parse_date_time(end_str, 0, now, startup_time)
+                end = await cls.parse_date_time(end_str, 0, now, startup_time)
                 end_offset = 1 if end < start else 0
                 for day in [-1, 0, 1]:
-                    start = cls.parse_date_time(start_str, day, now, startup_time)
-                    end = cls.parse_date_time(end_str, day + end_offset, now, startup_time)
+                    start = await cls.parse_date_time(start_str, day, now, startup_time)
+                    end = await cls.parse_date_time(end_str, day + end_offset, now, startup_time)
                     if now < start or (now == start and now == startup_time):
                         if next_time is None or start < next_time:
-                            next_time = start
+                            next_time_adj = next_time = start
                         break
                     secs = period * (1.0 + math.floor((now - start).total_seconds() / period))
                     this_t = start + dt.timedelta(seconds=secs)
                     if start <= this_t <= end:
                         if next_time is None or this_t < next_time:
-                            next_time = this_t
+                            next_time_adj = next_time = this_t
                         break
 
             else:
                 _LOGGER.warning("Can't parse %s in time_trigger check", spec)
-        return next_time
+        return next_time, next_time_adj
 
 
 class TrigInfo:
@@ -801,6 +879,10 @@ class TrigInfo:
         self.event_trigger_kwargs = trig_cfg.get("event_trigger", {}).get("kwargs", {})
         self.mqtt_trigger = trig_cfg.get("mqtt_trigger", {}).get("args", None)
         self.mqtt_trigger_kwargs = trig_cfg.get("mqtt_trigger", {}).get("kwargs", {})
+        self.webhook_trigger = trig_cfg.get("webhook_trigger", {}).get("args", None)
+        self.webhook_trigger_kwargs = trig_cfg.get("webhook_trigger", {}).get("kwargs", {})
+        self.webhook_local_only = self.webhook_trigger_kwargs.get("local_only", True)
+        self.webhook_methods = self.webhook_trigger_kwargs.get("methods", {"POST", "PUT"})
         self.state_active = trig_cfg.get("state_active", {}).get("args", None)
         self.time_active = trig_cfg.get("time_active", {}).get("args", None)
         self.time_active_hold_off = trig_cfg.get("time_active", {}).get("kwargs", {}).get("hold_off", None)
@@ -817,6 +899,7 @@ class TrigInfo:
         self.state_trig_ident_any = set()
         self.event_trig_expr = None
         self.mqtt_trig_expr = None
+        self.webhook_trig_expr = None
         self.have_trigger = False
         self.setup_ok = False
         self.run_on_startup = False
@@ -908,6 +991,21 @@ class TrigInfo:
                     return
             self.have_trigger = True
 
+        if self.webhook_trigger is not None:
+            if len(self.webhook_trigger) == 2:
+                self.webhook_trig_expr = AstEval(
+                    f"{self.name} @webhook_trigger()",
+                    self.global_ctx,
+                    logger_name=self.name,
+                )
+                Function.install_ast_funcs(self.webhook_trig_expr)
+                self.webhook_trig_expr.parse(self.webhook_trigger[1], mode="eval")
+                exc = self.webhook_trig_expr.get_exception_long()
+                if exc is not None:
+                    self.webhook_trig_expr.get_logger().error(exc)
+                    return
+            self.have_trigger = True
+
         self.setup_ok = True
 
     def stop(self):
@@ -920,6 +1018,8 @@ class TrigInfo:
                 Event.notify_del(self.event_trigger[0], self.notify_q)
             if self.mqtt_trigger is not None:
                 Mqtt.notify_del(self.mqtt_trigger[0], self.notify_q)
+            if self.webhook_trigger is not None:
+                Webhook.notify_del(self.webhook_trigger[0], self.notify_q)
             if self.task:
                 Function.reaper_cancel(self.task)
                 self.task = None
@@ -970,6 +1070,11 @@ class TrigInfo:
             if self.mqtt_trigger is not None:
                 _LOGGER.debug("trigger %s adding mqtt_trigger %s", self.name, self.mqtt_trigger[0])
                 await Mqtt.notify_add(self.mqtt_trigger[0], self.notify_q)
+            if self.webhook_trigger is not None:
+                _LOGGER.debug("trigger %s adding webhook_trigger %s", self.name, self.webhook_trigger[0])
+                Webhook.notify_add(
+                    self.webhook_trigger[0], self.webhook_local_only, self.webhook_methods, self.notify_q
+                )
 
             last_trig_time = None
             last_state_trig_time = None
@@ -1007,7 +1112,9 @@ class TrigInfo:
                     check_state_expr_on_start = False
                 else:
                     if self.time_trigger:
-                        time_next = TrigTime.timer_trigger_next(self.time_trigger, now, startup_time)
+                        time_next, time_next_adj = await TrigTime.timer_trigger_next(
+                            self.time_trigger, now, startup_time
+                        )
                         _LOGGER.debug(
                             "trigger %s time_next = %s, now = %s",
                             self.name,
@@ -1015,7 +1122,7 @@ class TrigInfo:
                             now,
                         )
                         if time_next is not None:
-                            timeout = (time_next - now).total_seconds()
+                            timeout = (time_next_adj - now).total_seconds()
                     if state_trig_waiting:
                         time_left = last_state_trig_time + self.state_hold - time.monotonic()
                         if timeout is None or time_left < timeout:
@@ -1155,6 +1262,11 @@ class TrigInfo:
                     user_kwargs = self.mqtt_trigger_kwargs.get("kwargs", {})
                     if self.mqtt_trig_expr:
                         trig_ok = await self.mqtt_trig_expr.eval(notify_info)
+                elif notify_type == "webhook":
+                    func_args = notify_info
+                    user_kwargs = self.webhook_trigger_kwargs.get("kwargs", {})
+                    if self.webhook_trig_expr:
+                        trig_ok = await self.webhook_trig_expr.eval(notify_info)
 
                 else:
                     user_kwargs = self.time_trigger_kwargs.get("kwargs", {})
@@ -1171,7 +1283,7 @@ class TrigInfo:
                         self.active_expr.get_logger().error(exc)
                         trig_ok = False
                 if trig_ok and self.time_active:
-                    trig_ok = TrigTime.timer_active_check(self.time_active, now, startup_time)
+                    trig_ok = await TrigTime.timer_active_check(self.time_active, now, startup_time)
 
                 if not trig_ok:
                     _LOGGER.debug(
@@ -1210,6 +1322,8 @@ class TrigInfo:
                 Event.notify_del(self.event_trigger[0], self.notify_q)
             if self.mqtt_trigger is not None:
                 Mqtt.notify_del(self.mqtt_trigger[0], self.notify_q)
+            if self.webhook_trigger is not None:
+                Webhook.notify_del(self.webhook_trigger[0], self.notify_q)
             return
 
     def call_action(self, notify_type, func_args, run_task=True):
