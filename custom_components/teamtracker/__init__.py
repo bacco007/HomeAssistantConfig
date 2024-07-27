@@ -14,9 +14,10 @@ from async_timeout import timeout
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_registry import (
+from homeassistant.helpers.entity_registry import ( # pylint: disable=reimported
     async_entries_for_config_entry,
     async_get,
+    async_get as async_get_entity_registry,
 )
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -41,6 +42,7 @@ from .const import (
     PLATFORMS,
     DEFAULT_REFRESH_RATE,
     RAPID_REFRESH_RATE,
+    SERVICE_NAME_CALL_API,
     URL_HEAD,
     URL_TAIL,
     USER_AGENT,
@@ -55,6 +57,51 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Load the saved entities."""
+
+
+    async def get_entry_id_from_entity_id(hass: HomeAssistant, entity_id: str):
+        """Retrieve entry_id from entity_id."""
+        # Get the entity registry
+        entity_registry = async_get_entity_registry(hass)
+
+        # Find the entry associated with the given entity_id
+        entry = entity_registry.async_get(entity_id)
+
+        if entry:
+            return entry.config_entry_id
+
+        return None
+
+
+    async def async_call_api_service(call):
+        """Handle the service action call."""
+
+        sport_path = call.data.get(CONF_SPORT_PATH, "football")
+        league_path = call.data.get(CONF_LEAGUE_PATH, "nfl")
+        team_id = call.data.get(CONF_TEAM_ID, "cle")
+        conference_id = call.data.get(CONF_CONFERENCE_ID, "")
+        entity_ids = call.data.get("entity_id", "none")
+
+        for entity_id in entity_ids:
+            entry_id = await get_entry_id_from_entity_id(hass, entity_id)
+
+            if entry_id: # Set up from UI, use entry_id as index
+                sensor_coordinator = hass.data[DOMAIN][entry_id][COORDINATOR]
+                sensor_coordinator.update_team_info(sport_path, league_path, team_id, conference_id)
+                await sensor_coordinator.async_refresh()
+            else: # Set up from YAML, use sensor_name (from entity_name) as index
+                sensor_name = entity_id.split('.')[-1]
+                if sensor_name in hass.data[DOMAIN] and COORDINATOR in hass.data[DOMAIN][sensor_name]:
+                    sensor_coordinator = hass.data[DOMAIN][sensor_name][COORDINATOR]
+                    sensor_coordinator.update_team_info(sport_path, league_path, team_id, conference_id)
+                    await sensor_coordinator.async_refresh()
+                else: # YAML had duplicate names so it doesn't match the entity_name
+                    _LOGGER.info(
+                        "%s: [service=call_api] No entry_id found (likely because of non-unique sensor names in YAML) for entity_id: %s",
+                        sensor_name, 
+                        entity_id,
+                    )
+
     # Print startup message
 
     sensor_name = entry.data[CONF_NAME]
@@ -70,6 +117,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.async_on_unload(entry.add_update_listener(update_options_listener))
 
     if entry.unique_id is not None:
+        _LOGGER.info(
+            "%s: async_setup_entry() - entry.unique_id is not None: %s",
+            sensor_name, 
+            entry.unique_id,
+        )
         hass.config_entries.async_update_entry(entry, unique_id=None)
 
         ent_reg = async_get(hass)
@@ -84,11 +136,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Fetch initial data so we have data when entities subscribe
     await coordinator.async_refresh()
 
+    # For UI, use entry_id as index
     hass.data[DOMAIN][entry.entry_id] = {
         COORDINATOR: coordinator,
     }
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+#
+#  Register services for sensor
+#
+    hass.services.async_register(DOMAIN, SERVICE_NAME_CALL_API, async_call_api_service,)
+
     return True
 
 
@@ -157,6 +215,15 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, config, entry: ConfigEntry=None):
         """Initialize."""
         self.name = config[CONF_NAME]
+        self.league_id = config[CONF_LEAGUE_ID]
+        self.league_path = config[CONF_LEAGUE_PATH]
+        self.sport_path = config[CONF_SPORT_PATH]
+        self.team_id = config[CONF_TEAM_ID]
+        self.conference_id = ""
+        if CONF_CONFERENCE_ID in config.keys():
+            if len(config[CONF_CONFERENCE_ID]) > 0:
+                self.conference_id = config[CONF_CONFERENCE_ID]
+
         self.config = config
         self.hass = hass
         self.entry = entry #None if setup from YAML
@@ -166,6 +233,45 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
             "%s: Using default refresh rate (%s)", self.name, self.update_interval
         )
 
+
+    #
+    #  Return the language to use for the API
+    #
+    def get_lang(self):
+        """Return language to use for API."""
+
+        try:
+            lang = self.hass.config.language
+        except:
+            lang, _ = locale.getlocale()
+            lang = lang or "en_US"
+
+        # Override language if is set in the configuration or options
+
+        if CONF_API_LANGUAGE in self.config.keys():
+            lang = self.config[CONF_API_LANGUAGE].lower()
+        if self.entry and self.entry.options and CONF_API_LANGUAGE in self.entry.options and len(self.entry.options[CONF_API_LANGUAGE])>=2:
+                lang = self.entry.options[CONF_API_LANGUAGE].lower()
+
+        return lang
+
+
+    #
+    #  Set team info from service call
+    #
+    def update_team_info(self, sport_path, league_path, team_id, conference_id=""):
+        """update team information when call_api service is called."""
+
+        self.sport_path = sport_path
+        self.league_path = league_path
+        self.team_id = team_id
+        self.conference_id = conference_id
+
+        lang = self.get_lang()
+        key = sport_path + ":" + league_path + ":" + conference_id + ":" + lang
+
+        if key in TeamTrackerDataUpdateCoordinator.data_cache:
+            del TeamTrackerDataUpdateCoordinator.data_cache[key]
 
 
     #
@@ -200,23 +306,12 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
     async def async_update_game_data(self, config, hass) -> dict:
         """Update game data from data_cache or the API (if expired)"""
 
-        sensor_name = config[CONF_NAME]
-        sport_path = config[CONF_SPORT_PATH]
-        league_path = config[CONF_LEAGUE_PATH]
-        conference_id = config[CONF_CONFERENCE_ID]
+        sensor_name = self.name
+        sport_path = self.sport_path
+        league_path = self.league_path
+        conference_id = self.conference_id
 
-        try:
-            lang = hass.config.language
-        except:
-            lang, _ = locale.getlocale()
-            lang = lang or "en_US"
-
-        # Override language if is set in the configuration or options
-
-        if CONF_API_LANGUAGE in config.keys():
-            lang = config[CONF_API_LANGUAGE].lower()
-        if self.entry and self.entry.options and CONF_API_LANGUAGE in self.entry.options and len(self.entry.options[CONF_API_LANGUAGE])>=2:
-                lang = self.entry.options[CONF_API_LANGUAGE].lower()
+        lang = self.get_lang()
 
         key = sport_path + ":" + league_path + ":" + conference_id + ":" + lang
 
@@ -274,13 +369,13 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
         """Query API for status."""
 
         headers = {"User-Agent": USER_AGENT, "Accept": "application/ld+json"}
-        sensor_name = config[CONF_NAME]
+        sensor_name = self.name
 
         data = None
         file_override = False
 
-        sport_path = config[CONF_SPORT_PATH]
-        league_path = config[CONF_LEAGUE_PATH]
+        sport_path = self.sport_path
+        league_path = self.league_path
 
         url_parms = "?lang=" + lang[:2] + "&limit=" + str(API_LIMIT)
 
@@ -289,12 +384,11 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
             d2 = (date.today() + timedelta(days=5)).strftime("%Y%m%d")
             url_parms = url_parms + "&dates=" + d1 + "-" + d2
 
-        if CONF_CONFERENCE_ID in config.keys():
-            if len(config[CONF_CONFERENCE_ID]) > 0:
-                url_parms = url_parms + "&groups=" + config[CONF_CONFERENCE_ID]
-                if config[CONF_CONFERENCE_ID] == "9999":
-                    file_override = True
-        team_id = config[CONF_TEAM_ID].upper()
+        if self.conference_id:
+            url_parms = url_parms + "&groups=" + self.conference_id
+            if self.conference_id == "9999":
+                file_override = True
+        team_id = self.team_id.upper()
         url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
 
         if file_override:
@@ -341,11 +435,10 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
             )
             if num_events == 0:
                 url_parms = "?lang=" + lang[:2]
-                if CONF_CONFERENCE_ID in config.keys():
-                    if len(config[CONF_CONFERENCE_ID]) > 0:
-                        url_parms = url_parms + "&groups=" + config[CONF_CONFERENCE_ID]
-                        if config[CONF_CONFERENCE_ID] == "9999":
-                            file_override = True
+                if self.conference_id:
+                    url_parms = url_parms + "&groups=" + self.conference_id
+                    if self.conference_id == "9999":
+                        file_override = True
 
                 url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
 
@@ -386,11 +479,10 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
 
             if num_events == 0:
                 url_parms = ""
-                if CONF_CONFERENCE_ID in config.keys():
-                    if len(config[CONF_CONFERENCE_ID]) > 0:
-                        url_parms = url_parms + "?groups=" + config[CONF_CONFERENCE_ID]
-                        if config[CONF_CONFERENCE_ID] == "9999":
-                            file_override = True
+                if self.conference_id:
+                    url_parms = url_parms + "?groups=" + self.conference_id
+                    if self.conference_id == "9999":
+                        file_override = True
 
                 url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
 
@@ -414,12 +506,12 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
         """Return values based on the data passed into method"""
 
         values = {}
-        sensor_name = config[CONF_NAME]
+        sensor_name = self.name
 
-        league_id = config[CONF_LEAGUE_ID].upper()
-        sport_path = config[CONF_SPORT_PATH]
+        league_id = self.league_id.upper()
+        sport_path = self.sport_path
 
-        team_id = config[CONF_TEAM_ID].upper()
+        team_id = self.team_id.upper()
 
         values = await async_clear_values()
         values["sport"] = sport_path

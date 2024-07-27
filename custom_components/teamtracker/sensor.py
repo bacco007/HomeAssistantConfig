@@ -112,12 +112,6 @@ async def async_setup_platform(
 
     if DOMAIN not in hass.data.keys():
         hass.data.setdefault(DOMAIN, {})
-#        config.entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
-#        config.data = config
-#    else:
-#        config.entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
-#        config.data = config
-    entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
 
     # Setup the data coordinator
     coordinator = TeamTrackerDataUpdateCoordinator(
@@ -128,7 +122,8 @@ async def async_setup_platform(
     # Fetch initial data so we have data when entities subscribe
     await coordinator.async_refresh()
 
-    hass.data[DOMAIN][entry_id] = {
+    # For YAML, use sensor name for index.  Assumes sensor_name = entity_name
+    hass.data[DOMAIN][sensor_name] = {
         COORDINATOR: coordinator,
     }
     async_add_entities([TeamTrackerScoresSensor(hass, None, config)], True)
@@ -162,22 +157,22 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, config: ConfigType) -> None:
         """Initialize the sensor."""
 
-        if entry is not None:  # GUI setup
+        if entry is not None:  # GUI setup, use entry_id as index
             entry_id = entry.entry_id
             sensor_coordinator = hass.data[DOMAIN][entry_id][COORDINATOR]
             super().__init__(sensor_coordinator)
             sport_path = entry.data.get(CONF_SPORT_PATH, DEFAULT_SPORT_PATH)
             sensor_name = entry.data[CONF_NAME]
             
-        else:  # YAML setup
+        else:  # YAML setup, use sensor_name as index (assumes sensor_name = entity_id)
+            sensor_name = config[CONF_NAME]
             entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
-            sensor_coordinator = hass.data[DOMAIN][entry_id][COORDINATOR]
+            sensor_coordinator = hass.data[DOMAIN][sensor_name][COORDINATOR]
             super().__init__(sensor_coordinator)
             try:
                 sport_path = config[CONF_SPORT_PATH]
             except:
                 sport_path = DEFAULT_SPORT_PATH
-            sensor_name = config[CONF_NAME]
 
         if sport_path == DEFAULT_SPORT_PATH:
             _LOGGER.debug(
