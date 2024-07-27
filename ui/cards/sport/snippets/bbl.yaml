@@ -1,0 +1,112 @@
+---
+type: custom:stack-in-card
+card_mod:
+  style:
+    .: |
+      ha-card {
+      padding-bottom: 10px !important;
+      }
+cards:
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_bbl_all_teams
+  - type: custom:mushroom-chips-card
+    alignment: center
+    card_mod:
+      style: |
+        mushroom-template-chip {
+          width: 100%;
+        }
+        div.chip-container {
+          justify-content: space-evenly;
+          flex-wrap: nowrap;
+        }
+        ha-card {
+          margin: 0px 10px 2px 10px;
+          --chip-spacing: 5px !important;
+        }
+    chips:
+      - type: template
+        icon: mdi:calendar-alert
+        content: Calendar
+        card_mod: &style
+          style:
+            .: |
+              ha-card {
+                background-color: rgb(80, 110, 172) !important;
+                box-shadow: none !important;
+                justify-content: center;
+                height: 30px !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                border-radius: 10px !important;
+              }
+        tap_action: !include /config/ui/cards/sport/snippets/cricket/bbl_calendar.yaml
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - type: template
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        icon: mdi:list-box-outline
+        content: Standings
+        card_mod: *style
+        tap_action: !include /config/ui/cards/sport/snippets/cricket/bbl_standings.yaml
+
+      # - type: template
+      #   hold_action:
+      #     action: none
+      #   double_tap_action:
+      #     action: none
+      #   icon: mdi:ticket
+      #   content: Recent Results
+      #   card_mod: *style
+      #   tap_action: !include /config/ui/cards/sport/snippets/afl/afl_recentresults.yaml
+
+  - type: custom:mushroom-chips-card
+    alignment: center
+    card_mod:
+      style: |
+        mushroom-template-chip {
+          width: 100%;
+        }
+        div.chip-container {
+          justify-content: space-evenly;
+          flex-wrap: nowrap;
+        }
+        ha-card {
+          margin: 0px 10px 2px 10px;
+          --chip-spacing: 5px !important;
+        }
+    chips:
+      - type: template
+        icon: mdi:trophy-award
+        content: |
+          {% for x in state_attr('sensor.scoreboard_bbl', 'entries') %}
+          {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+          {%- if rank == 1.0 -%}
+          {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
+          {%- endif -%}
+          {% endfor %}
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background-color: rgba(39, 179, 118, 0.5) !important;
+                box-shadow: none !important;
+                justify-content: center;
+                height: 30px !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                border-radius: 10px !important;
+              }
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none

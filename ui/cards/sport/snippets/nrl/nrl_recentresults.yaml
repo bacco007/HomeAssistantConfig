@@ -1,0 +1,83 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Results / Upcoming
+    content:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        margin: 0
+        grid-template-columns: 1fr
+        grid-template-rows: 1fr
+        grid-template-areas: |
+          "col1"
+      cards:
+        - type: custom:hui-element
+          view_layout:
+            grid-area: col1
+          card_type: custom:flex-table-card
+          css:
+            table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+            tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+            tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
+            tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
+            th+: "border-bottom: 1px solid rgb(127,127,127);"
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  overflow: auto;
+                  box-shadow: none !important;
+                  font-size: 12px;
+                  }
+          entities:
+            include: sensor.sportschedule_nrl
+          sort_by: entries
+          columns:
+            - name: Date
+              data: events
+              modify: |-
+                if(x.date == 0)
+                {"-"}
+                else {
+                  var date = new Date(x.date);
+                  date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                  "<br/>@ "+
+                  String(date.getHours()).padStart(2,'0')+":"+
+                  String(date.getMinutes()).padStart(2,'0')
+                }
+              align: center
+            - name: Home Team
+              data: events
+              align: right
+              modify: |-
+                if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
+                  '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:20px;vertical-align:middle;"></div>'
+                else
+                  '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
+            - name: Match
+              data: events
+              align: center
+              modify: |-
+                if (x.status.type.description == 'Scheduled')
+                  ' VS '
+                else
+                  x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
+            - name: Away Team
+              data: events
+              align: left
+              modify: |-
+                if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
+                  '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
+                else
+                  '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
+            - name: Time
+              data: events
+              align: center
+              modify: x.status.type.description
+            - name: Venue
+              data: events
+              modify: "x.competitions[0].venue.fullName "

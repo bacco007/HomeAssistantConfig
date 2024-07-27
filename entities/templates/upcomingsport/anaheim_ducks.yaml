@@ -26,7 +26,7 @@ sensor:
   - name: "[Upcoming Sport] Anaheim Ducks"
     unique_id: upcoming_sport_anaheim_ducks
     icon: mdi:hockey-puck
-    picture: /local/sportlogos/anaheim_ducks.svg
+    picture: /local/sportlogos/anaheim_ducks.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

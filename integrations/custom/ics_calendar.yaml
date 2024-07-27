@@ -150,3 +150,9 @@ ics_calendar:
       include_all_day: true
       download_interval: 21600
       days: 365
+
+    - name: ical_wsl_all_teams
+      url: https://fixturedownload.com/download/wsl-2023-UTC.ics
+      include_all_day: true
+      download_interval: 21600
+      days: 365

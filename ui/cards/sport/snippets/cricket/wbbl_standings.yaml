@@ -1,0 +1,83 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Standings
+    content:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        margin: 0
+        grid-template-columns: 1fr
+        grid-template-rows: 1fr
+        grid-template-areas: |
+          "col1"
+      cards:
+        - type: custom:hui-element
+          view_layout:
+            grid-area: col1
+          card_type: custom:flex-table-card
+          css:
+            table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+            tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+            tbody tr+: "user-select: text"
+            tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+            tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+            tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+            th+: "border-bottom: 1px solid rgb(127,127,127);"
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  overflow: auto;
+                  box-shadow: none !important;
+                  font-size: 13px;
+                  }
+          entities:
+            include: sensor.scoreboard_wbbl
+          sort_by: entries+
+          columns:
+            - hidden: true
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'R').value
+            - name: Team
+              data: entries
+              modify: >-
+                '<div><img src="' + x.team.logos[0].href + '" style="height:
+                20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+            - name: M
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
+              align: center
+            - name: W
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+              align: center
+            - name: L
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+              align: center
+            - name: T
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
+              align: center
+            - name: NR
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
+              align: center
+            - name: NRR
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'NRR').displayValue
+              align: center
+            # - name: FOR
+            #   data: entries
+            #   modify: x.stats.find(y=>y.abbreviation == 'FOR').displayValue
+            # - name: AGAINST
+            #   data: entries
+            #   modify: x.stats.find(y=>y.abbreviation == 'Against').displayValue
+            - name: PT
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
+              align: center

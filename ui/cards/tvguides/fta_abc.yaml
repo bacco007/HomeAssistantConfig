@@ -14,7 +14,6 @@ cards:
   - type: grid
     columns: 2
     square: false
-    
     cards:
       - type: custom:decluttering-card
         template: tvguide_card

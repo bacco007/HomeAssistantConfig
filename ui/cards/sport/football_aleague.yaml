@@ -10,22 +10,38 @@ cards:
         }
     name: Football - A-League (Australia)
     icon: mdi:soccer
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_alm_all_teams
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_sydney_fc
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_alw_all_teams
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_sydney_fc_women
+  - type: custom:tabbed-card
+    options: []
+    styles:
+      --mdc-theme-primary: var(--text-color)
+      --mdc-tab-text-label-color-default: var(--disabled-text-color)
+    tabs:
+      - attributes:
+          label: ALM
+        card:
+          type: vertical-stack
+          cards:
+            - type: custom:decluttering-card
+              template: sports_card
+              variables:
+                - entity: sensor.upcoming_sport_alm_all_teams
+            - type: custom:decluttering-card
+              template: sports_card
+              variables:
+                - entity: sensor.upcoming_sport_sydney_fc
+      - attributes:
+          label: ALW
+        card:
+          type: vertical-stack
+          cards:
+            - type: custom:decluttering-card
+              template: sports_card
+              variables:
+                - entity: sensor.upcoming_sport_alw_all_teams
+            - type: custom:decluttering-card
+              template: sports_card
+              variables:
+                - entity: sensor.upcoming_sport_sydney_fc_women
   - type: entities
     entities:
       - type: custom:fold-entity-row

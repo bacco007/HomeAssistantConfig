@@ -26,7 +26,7 @@ sensor:
   - name: "[Upcoming Sport] Sydney FC (Women)"
     unique_id: upcoming_sport_sydney_fc_women
     icon: "mdi:soccer"
-    picture: /local/sportlogos/sydney_fc_women.png
+    picture: /local/sportlogos/sydney_fc.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

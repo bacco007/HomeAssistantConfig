@@ -2,14 +2,11 @@
 type: vertical-stack
 cards:
   - type: custom:bubble-card
-    card_type: separator
+    card_type: pop-up
+    hash: "#tvguide-settings"
+    button_type: name
     name: TV Guide Settings and Controls
-    icon: mdi:television-guide
-    styles: |-
-      .bubble-line {
-        background: var(--ha-card-background);
-        opacity: 1;
-        }
+    icon: mdi:cog-outline
   - type: entities
     show_header_toggle: false
     state_color: true
@@ -21,7 +18,7 @@ cards:
     entities:
       # - entity: input_boolean.alerts_weather
       #   name: Alert Notifications
-      - type: section
+      # - type: section
       - type: custom:auto-entities
         filter:
           include:

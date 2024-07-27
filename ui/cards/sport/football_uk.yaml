@@ -1,0 +1,39 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    name: Football - UK
+    icon: mdi:soccer
+
+  - type: custom:tabbed-card
+    options: []
+    styles:
+      --mdc-theme-primary: var(--text-color)
+      --mdc-tab-text-label-color-default: var(--disabled-text-color)
+    tabs:
+      - attributes:
+          label: EPL
+        card:
+          type: vertical-stack
+          cards:
+            - !include /config/ui/cards/sport/snippets/football_pl.yaml
+            - !include /config/ui/cards/sport/snippets/football_manu.yaml
+      - attributes:
+          label: WSL (UK)
+        card:
+          type: vertical-stack
+          cards:
+            - !include /config/ui/cards/sport/snippets/football_wsl.yaml
+            - !include /config/ui/cards/sport/snippets/football_manu_women.yaml
+      - attributes:
+          label: Other
+        card:
+          type: vertical-stack
+          cards:
+            - !include /config/ui/cards/sport/snippets/football_wrexhamafc.yaml

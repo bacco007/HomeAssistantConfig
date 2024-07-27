@@ -55,7 +55,7 @@ cards:
                     box-shadow: none !important;
                     border-radius: 10px !important;
                   }
-            tap_action: !include /config/ui/cards/sport/snippets/cricket_international_calendar.yaml
+            tap_action: !include /config/ui/cards/sport/snippets/cricket/international_calendar.yaml
             hold_action:
               action: none
             double_tap_action:
@@ -105,7 +105,7 @@ cards:
                     box-shadow: none !important;
                     border-radius: 10px !important;
                   }
-            tap_action: !include /config/ui/cards/sport/snippets/cricket_australia_mens_calendar.yaml
+            tap_action: !include /config/ui/cards/sport/snippets/cricket/australia_mens_calendar.yaml
             hold_action:
               action: none
             double_tap_action:
@@ -155,7 +155,7 @@ cards:
                     box-shadow: none !important;
                     border-radius: 10px !important;
                   }
-            tap_action: !include /config/ui/cards/sport/snippets/cricket_australia_womens_calendar.yaml
+            tap_action: !include /config/ui/cards/sport/snippets/cricket/australia_womens_calendar.yaml
             hold_action:
               action: none
             double_tap_action:

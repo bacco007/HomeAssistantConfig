@@ -1,0 +1,89 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Standings
+    content:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        margin: 0
+        grid-template-columns: 1fr
+        grid-template-rows: 1fr
+        grid-template-areas: |
+          "col1"
+      cards:
+        - type: custom:hui-element
+          view_layout:
+            grid-area: col1
+          card_type: custom:flex-table-card
+          css:
+            table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+            tbody tr:nth-child(3): "border-bottom: 2px solid rgb(255,215,0) !important;"
+            tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
+            tbody tr:nth-child(5): "border-bottom: 2px solid rgb(255,215,0) !important;"
+            tbody tr:nth-child(6): "border-bottom: 2px solid rgb(255,215,0) !important;"
+            tbody tr:nth-child(15): "border-bottom: 2px solid rgb(255,0,0) !important;"
+            tbody tr:nth-child(16): "border-bottom: 2px solid rgb(255,0,0) !important;"
+            tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+            tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
+            tbody tr td:nth-child(2)+: "min-width: 1fr; width: 1fr; white-space: nowrap;"
+            th+: "border-bottom: 1px solid rgb(127,127,127);"
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  overflow: auto;
+                  box-shadow: none !important;
+                  font-size: 13px;
+                  }
+          entities:
+            include: sensor.scoreboard_lig1
+          sort_by: entries
+          columns:
+            - name: "#"
+              data: entries
+              modify: x.stats.find(y=>y.name == 'rank').displayValue
+              align: center
+            - name: Team
+              data: entries
+              modify: |-
+                if (typeof x.team.logos !== 'undefined')
+                  '<div><img src="' + x.team.logos[0].href + '" style="height:20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+                else
+                  '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.team.displayName + '</div>'
+            - name: Pl
+              data: entries
+              modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
+              align: center
+            - name: W
+              data: entries
+              modify: x.stats.find(y=>y.name == 'wins').displayValue
+              align: center
+            - name: D
+              data: entries
+              modify: x.stats.find(y=>y.name == 'ties').displayValue
+              align: center
+            - name: L
+              data: entries
+              modify: x.stats.find(y=>y.name == 'losses').displayValue
+              align: center
+            - name: GD
+              data: entries
+              modify: |-
+                {
+                  x.stats.find(y=>y.name == 'pointsFor').displayValue +
+                  ":" +
+                  x.stats.find(y=>y.name == 'pointsAgainst').displayValue + "<sub> (" + x.stats.find(y=>y.abbreviation == 'GD').displayValue + ")</sub>"
+                }
+              align: center
+            - name: Pts
+              data: entries
+              modify: x.stats.find(y=>y.name == 'points').displayValue
+              align: center
+            - name: Overall
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'Total').displayValue
+              align: center

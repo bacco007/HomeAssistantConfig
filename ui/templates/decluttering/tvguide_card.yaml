@@ -50,7 +50,7 @@ tvguide_card:
                 height: 100%;
                 width: 100%;
                 left: 5px;
-                background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
+                background: url( {{ state_attr(config.entity, 'entity_picture') + '?v=' + (now().timestamp()|int|string) }} ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
                 background-repeat: no-repeat;
                 background-size: auto 100%, cover;
                 background-position: left;

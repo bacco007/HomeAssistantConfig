@@ -21,6 +21,22 @@ cards:
     view_layout:
       grid-area: content
     cards:
+      - type: custom:bubble-card
+        card_type: separator
+        styles: |-
+          .bubble-line {
+            background: var(--ha-card-background);
+            opacity: 1;
+            }
+        name: TV Guide
+        icon: mdi:television-guide
+        card_layout: large
+        sub_button:
+          - icon: mdi:cog
+            tap_action:
+              action: navigate
+              navigation_path: "#tvguide-settings"
+
       - type: "custom:layout-card"
         layout_type: custom:masonry-layout
         layout:
@@ -28,15 +44,13 @@ cards:
           width: 500
           max_width: 1000
           min_height: 1
-          #reflow: true
+          # reflow: true
         cards:
           - !include /config/ui/cards/tvguides/group_fta.yaml
           - type: custom:layout-break
           - !include /config/ui/cards/tvguides/group_subscription.yaml
           - type: custom:layout-break
           - !include /config/ui/cards/tvguides/group_international.yaml
-          - type: custom:layout-break
-          - !include /config/ui/cards/tvguides/settings_controls.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml
@@ -49,3 +63,4 @@ cards:
 
   # Popups
   - !include /config/ui/dashboards/shared/includes/popup.yaml
+  - !include /config/ui/cards/tvguides/settings_controls.yaml

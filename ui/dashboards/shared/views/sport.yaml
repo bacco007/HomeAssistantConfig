@@ -21,6 +21,16 @@ cards:
     view_layout:
       grid-area: content
     cards:
+      - type: custom:bubble-card
+        card_type: separator
+        styles: |-
+          .bubble-line {
+            background: var(--ha-card-background);
+            opacity: 1;
+            }
+        name: Sport
+        icon: mdi:football-australian
+        card_layout: large-2-rows
       - !include /config/ui/cards/sport/planner.yaml
       - type: "custom:layout-card"
         layout_type: custom:masonry-layout
@@ -32,7 +42,9 @@ cards:
           - !include /config/ui/cards/sport/afl.yaml
           - !include /config/ui/cards/sport/cricket_international.yaml
           - !include /config/ui/cards/sport/cricket_domestic.yaml
-          - !include /config/ui/cards/sport/football.yaml
+          - !include /config/ui/cards/sport/football_international.yaml
+          - !include /config/ui/cards/sport/football_uk.yaml
+          - !include /config/ui/cards/sport/football_europe.yaml
           - !include /config/ui/cards/sport/football_aleague.yaml
           - !include /config/ui/cards/sport/football_mls.yaml
           - !include /config/ui/cards/sport/formula1.yaml

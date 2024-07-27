@@ -26,7 +26,7 @@ sensor:
   - name: "[Upcoming Sport] Newcastle Knights"
     unique_id: upcoming_sport_newcastle_knights
     icon: "mdi:football"
-    picture: /local/sportlogos/newcastle_knights.svg
+    picture: /local/sportlogos/newcastle_knights.png
     state: >
       {%- if countnumb == 0 %}
         Nothing Scheduled

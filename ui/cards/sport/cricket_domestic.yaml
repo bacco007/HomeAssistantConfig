@@ -11,250 +11,93 @@ cards:
     name: Cricket - Domestic
     icon: mdi:cricket
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_bbl_all_teams
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_wbbl_all_teams
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_sydney_sixers
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_sydney_sixers_women
-  - type: entities
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Big Bash
-          icon: mdi:cricket
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_bbl', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
-            {%- if rank == 1.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PT")|map(attribute="displayValue")|first}} Pts
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css:
-              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
-              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_bbl
-            sort_by: entries+
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'R').value
-              - name: Team
-                data: entries
-                modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: M
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
-                align: center
-              - name: W
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
-                align: center
-              - name: L
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-                align: center
-              - name: T
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
-                align: center
-              - name: NR
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
-                align: center
-              - name: NRR
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'NRR').displayValue
-                align: center
-              # - name: FOR
-              #   data: entries
-              #   modify: x.stats.find(y=>y.abbreviation == 'FOR').displayValue
-              # - name: AGAINST
-              #   data: entries
-              #   modify: x.stats.find(y=>y.abbreviation == 'Against').displayValue
-              - name: PT
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
-                align: center
+  - type: custom:tabbed-card
+    options: []
+    styles:
+      --mdc-theme-primary: var(--text-color)
+      --mdc-tab-text-label-color-default: var(--disabled-text-color)
+    tabs:
+      - attributes:
+          label: BBL
+        card:
+          type: vertical-stack
+          cards:
+            - !include /config/ui/cards/sport/snippets/bbl.yaml
+            - !include /config/ui/cards/sport/snippets/bbl_sydneysixers.yaml
+      - attributes:
+          label: WBBL
+        card:
+          type: vertical-stack
+          cards:
+            - !include /config/ui/cards/sport/snippets/wbbl.yaml
+            - !include /config/ui/cards/sport/snippets/bbl_sydneysixers.yaml
 
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Big Bash Womens
-          icon: mdi:cricket
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_bblw', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
-            {%- if rank == 1.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PT")|map(attribute="displayValue")|first}} Pts
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css:
-              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-              tbody tr:nth-child(4): "border-bottom: 2px solid rgb(255,215,0) !important;"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr td:nth-child(8): "background-color: rgba(39, 179, 118,0.2); color: white;"
-              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_bblw
-            sort_by: entries+
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'R').value
-              - name: Team
-                data: entries
-                modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: M
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
-                align: center
-              - name: W
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
-                align: center
-              - name: L
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-                align: center
-              - name: T
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
-                align: center
-              - name: NR
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
-                align: center
-              - name: NRR
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'NRR').displayValue
-                align: center
-              # - name: FOR
-              #   data: entries
-              #   modify: x.stats.find(y=>y.abbreviation == 'FOR').displayValue
-              # - name: AGAINST
-              #   data: entries
-              #   modify: x.stats.find(y=>y.abbreviation == 'Against').displayValue
-              - name: PT
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
-                align: center
-
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Sheffield Shield
-          icon: mdi:cricket
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_sheffshield', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
-            {%- if rank == 1.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PT")|map(attribute="displayValue")|first}} Pts
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css:
-              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-              tbody tr:nth-child(2): "border-bottom: 2px solid rgb(255,215,0) !important;"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr td:nth-child(7): "background-color: rgba(39, 179, 118,0.2); color: white;"
-              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_sheffshield
-            sort_by: entries+
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'R').value
-              - name: Team
-                data: entries
-                modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: M
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
-                align: center
-              - name: W
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
-                align: center
-              - name: L
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-                align: center
-              - name: T
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
-                align: center
-              - name: NR
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
-                align: center
-              - name: PT
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
-                align: center
+  # - type: custom:fold-entity-row
+  #   head:
+  #     type: custom:template-entity-row
+  #     name: Sheffield Shield
+  #     icon: mdi:cricket
+  #     state: ""
+  #     secondary: >
+  #       {%- for x in state_attr('sensor.scoreboard_sheffshield', 'entries') -%}
+  #       {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
+  #       {%- if rank == 1.0 -%}
+  #       {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PT")|map(attribute="displayValue")|first}} Pts
+  #       {%- endif -%}
+  #       {%- endfor -%}
+  #   padding: 0
+  #   entities:
+  #     - type: custom:hui-element
+  #       card_type: custom:flex-table-card
+  #       css:
+  #         table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+  #         tbody tr:nth-child(2): "border-bottom: 2px solid rgb(255,215,0) !important;"
+  #         tbody tr+: "user-select: text"
+  #         tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+  #         tbody tr td:nth-child(7): "background-color: rgba(39, 179, 118,0.2); color: white;"
+  #         tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+  #         th+: "border-bottom: 1px solid rgb(127,127,127);"
+  #       card_mod:
+  #         style:
+  #           .: |
+  #             ha-card {
+  #               overflow: auto;
+  #               box-shadow: none !important;
+  #               font-size: 13px;
+  #               }
+  #       entities:
+  #         include: sensor.scoreboard_sheffshield
+  #       sort_by: entries+
+  #       columns:
+  #         - hidden: true
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'R').value
+  #         - name: Team
+  #           data: entries
+  #           modify: >-
+  #             '<div><img src="' + x.team.logos[0].href + '" style="height:
+  #             20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+  #         - name: M
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'M').displayValue
+  #           align: center
+  #         - name: W
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
+  #           align: center
+  #         - name: L
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
+  #           align: center
+  #         - name: T
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'T').displayValue
+  #           align: center
+  #         - name: NR
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'N/R').displayValue
+  #           align: center
+  #         - name: PT
+  #           data: entries
+  #           modify: x.stats.find(y=>y.abbreviation == 'PT').displayValue
+  #           align: center

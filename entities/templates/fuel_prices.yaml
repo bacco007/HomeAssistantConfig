@@ -1,0 +1,211 @@
+---
+sensor:
+  - name: fuel_prices_dsl
+    unique_id: fuel_prices_dsl
+    unit_of_measurement: c/L
+    state_class: measurement
+    icon: mdi:gas-station
+    state: >
+      {%- set list_of_lists = [
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.DSL", 'defined')| map(attribute='attributes.DSL') | list,
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.DIESEL", 'defined')| map(attribute='attributes.DIESEL') | list
+      ] -%}
+
+      {%- set ns = namespace(flattened_list=[]) -%}
+      {%- for list in list_of_lists -%}
+        {%- set ns.flattened_list = ns.flattened_list + list -%}
+      {%- endfor %}
+      {{ ns.flattened_list | average | round(2) }}
+    availability: >
+      {%- set list_of_lists = [
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.DSL", 'defined')| map(attribute='attributes.DSL') | list,
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.DIESEL", 'defined')| map(attribute='attributes.DIESEL') | list
+      ] -%}
+
+      {%- set ns = namespace(flattened_list=[]) -%}
+      {%- for list in list_of_lists -%}
+        {%- set ns.flattened_list = ns.flattened_list + list -%}
+      {%- endfor %}
+      {{ ns.flattened_list | count > 1 }}
+    attributes:
+      category: fuel_prices
+      min: >
+        {%- set list_of_lists = [
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.DSL", 'defined')| map(attribute='attributes.DSL') | list,
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.DIESEL", 'defined')| map(attribute='attributes.DIESEL') | list
+        ] -%}
+
+        {%- set ns = namespace(flattened_list=[]) -%}
+        {%- for list in list_of_lists -%}
+          {%- set ns.flattened_list = ns.flattened_list + list -%}
+        {%- endfor %}
+        {{ ns.flattened_list | min }}
+      max: >
+        {%- set list_of_lists = [
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.DSL", 'defined')| map(attribute='attributes.DSL') | list,
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.DIESEL", 'defined')| map(attribute='attributes.DIESEL') | list
+        ] -%}
+
+        {%- set ns = namespace(flattened_list=[]) -%}
+        {%- for list in list_of_lists -%}
+          {%- set ns.flattened_list = ns.flattened_list + list -%}
+        {%- endfor %}
+        {{ ns.flattened_list | max }}
+      sensors: >
+        {%- set list_of_lists = [
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.DSL", 'defined')| map(attribute='entity_id') | list,
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.DIESEL", 'defined')| map(attribute='entity_id') | list
+        ] -%}
+
+        {%- set ns = namespace(flattened_list=[]) -%}
+        {%- for list in list_of_lists -%}
+          {%- set ns.flattened_list = ns.flattened_list + list -%}
+        {%- endfor %}
+        {{ ns.flattened_list | list | sort }}
+
+  - name: fuel_prices_e10
+    unique_id: fuel_prices_e10
+    unit_of_measurement: c/L
+    state_class: measurement
+    icon: mdi:gas-station
+    state: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.E10", 'defined')| map(attribute='attributes.E10') | average | round(2) }}
+    availability: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.E10", 'defined')| map(attribute='attributes.E10') | list | count > 0 }}
+    attributes:
+      category: fuel_prices
+      min: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.E10", 'defined')| map(attribute='attributes.E10') | min | round(2) }}
+      max: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.E10", 'defined')| map(attribute='attributes.E10') | max | round(2) }}
+      sensors: >
+        {{expand(integration_entities('fuel_prices'))
+          |selectattr("attributes.E10", 'defined')
+          |map(attribute='entity_id')
+          |list|sort }}
+
+  - name: fuel_prices_PDSL
+    unique_id: fuel_prices_PDSL
+    unit_of_measurement: c/L
+    state_class: measurement
+    icon: mdi:gas-station
+    state: >
+      {%- set list_of_lists = [
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.PDSL", 'defined')| map(attribute='attributes.PDSL') | list,
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.PremDSL", 'defined')| map(attribute='attributes.PremDSL') | list
+      ] -%}
+
+      {%- set ns = namespace(flattened_list=[]) -%}
+      {%- for list in list_of_lists -%}
+        {%- set ns.flattened_list = ns.flattened_list + list -%}
+      {%- endfor %}
+      {{ ns.flattened_list | average | round(2) }}
+    availability: >
+      {%- set list_of_lists = [
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.PDSL", 'defined')| map(attribute='attributes.PDSL') | list,
+          expand(integration_entities('fuel_prices')) | selectattr("attributes.PremDSL", 'defined')| map(attribute='attributes.PremDSL') | list
+      ] -%}
+
+      {%- set ns = namespace(flattened_list=[]) -%}
+      {%- for list in list_of_lists -%}
+        {%- set ns.flattened_list = ns.flattened_list + list -%}
+      {%- endfor %}
+      {{ ns.flattened_list | count > 1 }}
+    attributes:
+      category: fuel_prices
+      min: >
+        {%- set list_of_lists = [
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.PDSL", 'defined')| map(attribute='attributes.PDSL') | list,
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.PremDSL", 'defined')| map(attribute='attributes.PremDSL') | list
+        ] -%}
+
+        {%- set ns = namespace(flattened_list=[]) -%}
+        {%- for list in list_of_lists -%}
+          {%- set ns.flattened_list = ns.flattened_list + list -%}
+        {%- endfor %}
+        {{ ns.flattened_list | min }}
+      max: >
+        {%- set list_of_lists = [
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.PDSL", 'defined')| map(attribute='attributes.PDSL') | list,
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.PremDSL", 'defined')| map(attribute='attributes.PremDSL') | list
+        ] -%}
+
+        {%- set ns = namespace(flattened_list=[]) -%}
+        {%- for list in list_of_lists -%}
+          {%- set ns.flattened_list = ns.flattened_list + list -%}
+        {%- endfor %}
+        {{ ns.flattened_list | max }}
+      sensors: >
+        {%- set list_of_lists = [
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.PDSL", 'defined')| map(attribute='entity_id') | list,
+            expand(integration_entities('fuel_prices')) | selectattr("attributes.PremDSL", 'defined')| map(attribute='entity_id') | list
+        ] -%}
+
+        {%- set ns = namespace(flattened_list=[]) -%}
+        {%- for list in list_of_lists -%}
+          {%- set ns.flattened_list = ns.flattened_list + list -%}
+        {%- endfor %}
+        {{ ns.flattened_list | list | sort }}
+
+  - name: fuel_prices_u91
+    unique_id: fuel_prices_u91
+    unit_of_measurement: c/L
+    state_class: measurement
+    icon: mdi:gas-station
+    state: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U91", 'defined')| map(attribute='attributes.U91') | average | round(2) }}
+    availability: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U91", 'defined')| map(attribute='attributes.U91') | list | count > 0 }}
+    attributes:
+      category: fuel_prices
+      min: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U91", 'defined')| map(attribute='attributes.U91') | min | round(2) }}
+      max: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U91", 'defined')| map(attribute='attributes.U91') | max | round(2) }}
+      sensors: >
+        {{expand(integration_entities('fuel_prices'))
+          |selectattr("attributes.U91", 'defined')
+          |map(attribute='entity_id')
+          |list|sort }}
+
+  - name: fuel_prices_u95
+    unique_id: fuel_prices_u95
+    unit_of_measurement: c/L
+    state_class: measurement
+    icon: mdi:gas-station
+    state: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U95", 'defined')| map(attribute='attributes.U95') | average | round(2) }}
+    availability: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U95", 'defined')| map(attribute='attributes.U95') | list | count > 0 }}
+    attributes:
+      category: fuel_prices
+      min: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U95", 'defined')| map(attribute='attributes.U95') | min | round(2) }}
+      max: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U95", 'defined')| map(attribute='attributes.U95') | max | round(2) }}
+      sensors: >
+        {{expand(integration_entities('fuel_prices'))
+          |selectattr("attributes.U95", 'defined')
+          |map(attribute='entity_id')
+          |list|sort }}
+
+  - name: fuel_prices_u98
+    unique_id: fuel_prices_u98
+    unit_of_measurement: c/L
+    state_class: measurement
+    icon: mdi:gas-station
+    state: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U98", 'defined')| map(attribute='attributes.U98') | average | round(2) }}
+    availability: >
+      {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U98", 'defined')| map(attribute='attributes.U98') | list | count > 0 }}
+    attributes:
+      category: fuel_prices
+      min: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U98", 'defined')| map(attribute='attributes.U98') | min | round(2) }}
+      max: >
+        {{ expand(integration_entities('fuel_prices')) | selectattr("attributes.U98", 'defined')| map(attribute='attributes.U98') | max | round(2) }}
+      sensors: >
+        {{expand(integration_entities('fuel_prices'))
+          |selectattr("attributes.U98", 'defined')
+          |map(attribute='entity_id')
+          |list|sort }}

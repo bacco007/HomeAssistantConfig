@@ -8,7 +8,7 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-    name: Formula 1 / 2 / 3
+    name: Motorsport - Formula 1 / 2 / 3
     icon: si:f1
 
   - type: custom:stack-in-card
