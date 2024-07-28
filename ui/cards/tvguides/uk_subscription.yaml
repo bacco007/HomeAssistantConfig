@@ -1,0 +1,172 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:tabbed-card
+    options: []
+    styles:
+      --mdc-theme-primary: var(--text-color)
+      --mdc-tab-text-label-color-default: var(--disabled-text-color)
+    tabs:
+      - attributes:
+          label: Eurosport
+        card:
+          type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_1
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_2
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_3
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_4
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_5
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_6
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_seven
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_8
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_eurosport_nine
+
+      - attributes:
+          label: Sky Sports
+        card:
+          type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_action
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_arena
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_box_office_hd
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_cricket
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_f1
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_football
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_golf
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_main_event
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_mix
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_news
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_premier_league
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_racing
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_sky_sports_tennis
+
+      - attributes:
+          label: TNT Sports
+        card:
+          type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_1
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_2
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_3
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_4
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_5
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_6
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_seven
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_8
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_nine
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_ten
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_box_office
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_box_office_2
+            - type: custom:decluttering-card
+              template: tvguide_card
+              variables:
+                - entity: sensor.tvguide_tnt_sports_ultimate

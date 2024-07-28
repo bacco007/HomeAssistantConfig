@@ -8,7 +8,7 @@ trigger:
     zone: zone.home
     event: enter
 condition:
-  - condition: or
+  - condition: and
     conditions:
       - condition: sun
         before: sunset

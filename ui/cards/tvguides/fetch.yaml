@@ -1,16 +1,6 @@
 ---
 type: vertical-stack
 cards:
-  # - type: custom:bubble-card
-  #   card_type: separator
-  #   styles: |-
-  #     .bubble-line {
-  #       background: var(--ha-card-background);
-  #       opacity: 1;
-  #       }
-  #   name: FTA - Ten (WIN)
-  #   icon: mdi:television-guide
-  #   card_layout: normal
   - type: grid
     columns: 2
     square: false
@@ -18,28 +8,32 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_ten_hd
+          - entity: sensor.tvguide_al_jazeera_english
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_ten_bold_drama
+          - entity: sensor.tvguide_bbc_news
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_ten_peach_comedy
+          - entity: sensor.tvguide_bein_sports_1
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_sky_news_regional
+          - entity: sensor.tvguide_bein_sports_2
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_nickelodeon
+          - entity: sensor.tvguide_bein_sports_3
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_gold
+          - entity: sensor.tvguide_euronews
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_you_tv
+          - entity: sensor.tvguide_france_24
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_gb_news

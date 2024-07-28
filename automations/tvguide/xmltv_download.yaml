@@ -4,17 +4,13 @@ description: "[TVGuide] XMLTV Download"
 trigger:
   - platform: homeassistant
     event: start
-  - platform: time
-    at: "01:00:00"
-condition:
-  - condition: state
-    entity_id: input_boolean.ha_startup_pending
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
+    id: startup
+  - platform: time_pattern
+    hours: /2
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 300
   - service: pyscript.download_xmltv
     data:
       url: https://i.mjh.nz/Optus/epg.xml

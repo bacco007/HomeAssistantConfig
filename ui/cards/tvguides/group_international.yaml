@@ -20,8 +20,17 @@ cards:
       --mdc-tab-text-label-color-default: var(--disabled-text-color)
     tabs:
       - attributes:
-          label: UK
+          label: UK FTA
         card: !include /config/ui/cards/tvguides/uk.yaml
       - attributes:
-          label: US
+          label: UK Radio
+        card: !include /config/ui/cards/tvguides/uk_radio.yaml
+      - attributes:
+          label: UK Subscription
+        card: !include /config/ui/cards/tvguides/uk_subscription.yaml
+      - attributes:
+          label: US FTA
         card: !include /config/ui/cards/tvguides/us.yaml
+      - attributes:
+          label: US Subscription
+        card: !include /config/ui/cards/tvguides/us_subscription.yaml

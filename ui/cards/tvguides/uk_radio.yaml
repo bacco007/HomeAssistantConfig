@@ -1,0 +1,101 @@
+---
+type: vertical-stack
+cards:
+  # - type: custom:bubble-card
+  #   card_type: separator
+  #   styles: |-
+  #     .bubble-line {
+  #       background: var(--ha-card-background);
+  #       opacity: 1;
+  #       }
+  #   name: UK Television
+  #   icon: mdi:television-guide
+  #   card_layout: normal
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_absolute_radio
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_absolute_radio_80s
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_absolute_radio_classic_rock
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_absolute_radio_nine_0s
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_1
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_1xtra
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_2
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_3
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_4_extra
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_4_fm
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_4_lw
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_5_live
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_5_sports_extra
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_radio_6_music
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bbc_world_service
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_capital_fm
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_radio_x
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_talksport
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_talksport_2
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_times_radio
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_virgin_radio

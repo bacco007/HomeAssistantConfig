@@ -1,0 +1,88 @@
+---
+id: ha_autogroup_tvguide
+alias: "[HA] Autogroup - TV Guide"
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: homeassistant
+    id: startup
+    event: start
+
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
+
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+
+  - platform: time_pattern
+    hours: "/1"
+
+action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
+
+  - service: group.set
+    data:
+      object_id: tvguide_fta
+      entities: >
+        {{ states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'FTA')
+            | map(attribute='entity_id') | list | sort }}
+
+  - service: group.set
+    data:
+      object_id: tvguide_foxtel_news
+      entities: >
+        {{ states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'Foxtel News')
+            | map(attribute='entity_id') | list | sort }}
+
+  - service: group.set
+    data:
+      object_id: tvguide_foxtel_sport
+      entities: >
+        {{ states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'Foxtel Sport')
+            | map(attribute='entity_id') | list | sort }}
+
+  - service: group.set
+    data:
+      object_id: tvguide_uk
+      entities: >
+        {{ states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'UK')
+            | map(attribute='entity_id') | list | sort }}
+
+
+  - service: group.set
+    data:
+      object_id: tvguide_uk_radio
+      entities: >
+        {{ states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'UK Radio')
+            | map(attribute='entity_id') | list | sort }}
+
+  - service: group.set
+    data:
+      object_id: tvguide_us
+      entities: >
+        {{ states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'US')
+            | map(attribute='entity_id') | list | sort }}

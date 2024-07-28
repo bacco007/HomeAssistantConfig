@@ -5,17 +5,13 @@ description: "[TVGuide] Process Webgrab+"
 trigger:
   - platform: homeassistant
     event: start
+    id: startup
   - platform: time_pattern
     hours: /2
-# condition:
-#   - condition: state
-#     entity_id: input_boolean.ha_startup_pending
-#     state: "off"
-#     for:
-#       hours: 0
-#       minutes: 0
-#       seconds: 30
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 300
   - service: shell_command.xmltv_getfromwebgrabplus
     data: {}
   - delay:

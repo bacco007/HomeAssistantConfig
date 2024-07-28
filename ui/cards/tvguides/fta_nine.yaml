@@ -31,3 +31,11 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_nine_gem
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_nine_rush
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_extra

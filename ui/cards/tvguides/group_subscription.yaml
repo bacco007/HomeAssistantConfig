@@ -26,5 +26,8 @@ cards:
           label: Foxtel (News)
         card: !include /config/ui/cards/tvguides/foxtel_news.yaml
       - attributes:
+          label: Fetch
+        card: !include /config/ui/cards/tvguides/fetch.yaml
+      - attributes:
           label: Optus Sport
         card: !include /config/ui/cards/tvguides/optus_sport.yaml
