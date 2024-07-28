@@ -4,155 +4,155 @@ ics_calendar:
     - name: Astronomy Calendar
       url: https://cantonbecker.com/astronomy-calendar/astrocal.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 720
     - name: Astronomical Events
       url: https://in-the-sky.org/newscalyear_ical.php?year=2024&maxdiff=7
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
     - name: ical_icc_cricket_mens
       include_all_day: true
       url: https://ics.ecal.com/ecal-sub/63afdb7a0b7153000ee61cff/ICC%20Cricket.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_cricket_australia_mens
       include_all_day: true
-      url: https://ics.ecal.com/ecal-sub/662d9a0ef79861000822b80d/ICC%20Cricket.ics
-      download_interval: 21600
+      url: https://ics.ecal.com/ecal-sub/66a5e4432ce6930008f003d8/Cricket%20Australia.ics
+      download_interval: 360
       days: 365
     - name: ical_cricket_australia_womens
       include_all_day: true
-      url: https://ics.ecal.com/ecal-sub/662d9a552570170008678e2f/ICC%20Cricket.ics
-      download_interval: 21600
+      url: https://ics.ecal.com/ecal-sub/66a5e4292ce6930008f003d5/Cricket%20Australia.ics
+      download_interval: 360
       days: 365
     - name: ical_nfl_all_teams
       include_all_day: true
       url: https://fixturedownload.com/download/nfl-2024-UTC.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_nextspaceflight
       include_all_day: true
       url: https://calendar.google.com/calendar/ical/nextspaceflight.com_l328q9n2alm03mdukb05504c44%40group.calendar.google.com/public/basic.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_aflw_all_teams
       include_all_day: true
       url: https://fixturedownload.com/download/aflw-2024-UTC.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_sydney_swans_aflw
       include_all_day: true
       url: https://fixturedownload.com/download/aflw-2024-sydney-swans-UTC.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_manchester_united_women
       include_all_day: true
       url: https://www.manutd.com/en/Manchester_United_en_Women.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_manchester_united
       include_all_day: true
       url: https://www.manutd.com/en/Manchester_United.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_premier_league_all_teams
       include_all_day: true
       url: https://fixturedownload.com/download/epl-2024-GMTStandardTime.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_australia_rugby
       include_all_day: true
       url: https://c.caltrics.com/9fb0a677-6c05-489c-9231-655b6f0b2695
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_matildas
       include_all_day: true
       url: https://ics.fixtur.es/v2/au-women.ics
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_laliga_all_teams
       url: https://fixturedownload.com/download/la-liga-2024-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_nbl_all_teams
       url: https://fixturedownload.com/download/nbl-2024-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
     - name: ical_indycar
       url: https://sync.roktcalendar.com/webcal/4e187171-6811-40bb-a40b-9246a122286c
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_nascar_cup_series
       url: http://www.google.com/calendar/ical/db8c47ne2bt9qbld2mhdabm0u8%40group.calendar.google.com/public/basic.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_nascar_xfinity_series
       url: http://www.google.com/calendar/ical/po54lfbfrvlkrrhirlame40a6c%40group.calendar.google.com/public/basic.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_bbl_all_teams
       url: https://ics.ecal.com/ecal-sub/669b58fe6befe300082f1f18/Cricket%20Australia.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_wbbl_all_teams
       url: https://ics.ecal.com/ecal-sub/669b5950b9b4860008218b93/Cricket%20Australia.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_nhl_all_teams
       url: https://fixturedownload.com/download/nhl-2024-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_anaheim_ducks
       url: https://fixturedownload.com/download/nhl-2024-anaheim-ducks-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_toronto_maple_leafs
       url: https://fixturedownload.com/download/nhl-2024-toronto-maple-leafs-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_ligue1_all_teams
       url: https://fixturedownload.com/download/ligue-1-2024-RomanceStandardTime.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_bundesliga_all_teams
       url: https://fixturedownload.com/download/bundesliga-2024-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_seriea_all_teams
       url: https://fixturedownload.com/download/serie-a-2024-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_super_rugby_all_teams
       url: https://fixturedownload.com/download/super-rugby-pacific-2024-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365
 
     - name: ical_wsl_all_teams
       url: https://fixturedownload.com/download/wsl-2023-UTC.ics
       include_all_day: true
-      download_interval: 21600
+      download_interval: 360
       days: 365

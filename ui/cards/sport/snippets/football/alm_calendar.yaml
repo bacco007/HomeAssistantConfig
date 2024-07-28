@@ -1,0 +1,81 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Calendar
+    content:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        margin: 0
+        grid-template-columns: 1fr
+        grid-template-rows: 1fr
+        grid-template-areas: |
+          "col1"
+      cards:
+        - type: custom:hui-element
+          view_layout:
+            grid-area: col1
+          card_type: custom:flex-table-card
+          entities:
+            include: sensor.upcoming_sport_alm_all_teams
+          sort_by: next_5_events
+          css:
+            table+: "padding: 0px; width: 100%; border-collapse: collapse;"
+            tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
+            th.left:nth-child(1): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+            th.left:nth-child(2): "min-width: 1fr; width: 1fr; white-space: nowrap;"
+            th+: "border-bottom: 1px solid rgb(127,127,127);"
+          columns:
+            - name: test
+              data: next_5_events
+              modify: x.start
+              hidden: true
+            - name: " "
+              data: next_5_events
+              modify: |-
+                var start = new Date(x.start);
+                var end = new Date(x.end);
+                var now = Date.now();
+                if(now <= end && now >= start) {
+                  '<ha-icon icon="mdi:calendar-check" style="color: rgba(0,202,139,1)">'
+                } else { "" };
+            - name: Start
+              data: next_5_events
+              modify: |-
+                if(x.start == 0)
+                {"-"}
+                else {
+                  var date = new Date(x.start);
+                  date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                  " @ "+
+                  String(date.getHours()).padStart(2,'0')+":"+
+                  String(date.getMinutes()).padStart(2,'0')
+                }
+            - name: End
+              data: next_5_events
+              modify: |-
+                if(x.end == 0)
+                {"-"}
+                else {
+                  var date = new Date(x.end);
+                  date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
+                  " @ "+
+                  String(date.getHours()).padStart(2,'0')+":"+
+                  String(date.getMinutes()).padStart(2,'0')
+                }
+            - name: Event
+              data: next_5_events
+              modify: x.summary + '<br/><i>' + x.location + '</i>'
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+                overflow: auto;
+                padding-top: 5px;
+                font-size: 12px;
+              }
