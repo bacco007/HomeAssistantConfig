@@ -156,3 +156,9 @@ ics_calendar:
       include_all_day: true
       download_interval: 360
       days: 365
+
+    - name: ical_new_england_patriots
+      url: https://www.patriots.com/api/addToCalendar/ag/d?text=
+      include_all_day: true
+      download_interval: 360
+      days: 365
