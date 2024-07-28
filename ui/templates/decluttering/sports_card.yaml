@@ -50,8 +50,9 @@ sports_card:
                 left: 5px;
                 background: url( {{ state_attr(config.entity, 'entity_picture') + '?v=' + (now().timestamp()|int|string) }} ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
                 background-repeat: no-repeat;
-                background-size: auto 100%, cover;
-                background-position: left;
+                background-size: auto calc(100% - 10px);, cover;
+                background-position: left 15px center;
+                background-origin: content-box;
                 filter: opacity(0.75);
                 box-shadow: none !important;
                 }
