@@ -1,16 +1,6 @@
 ---
 type: vertical-stack
 cards:
-  # - type: custom:bubble-card
-  #   card_type: separator
-  #   styles: |-
-  #     .bubble-line {
-  #       background: var(--ha-card-background);
-  #       opacity: 1;
-  #       }
-  #   name: US Television
-  #   icon: mdi:television-guide
-  #   card_layout: normal
   - type: grid
     columns: 2
     square: false
@@ -19,10 +9,6 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_c_span
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_c_span_2
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
@@ -39,14 +25,6 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_espn2
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_espn_news
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_espn_u
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
@@ -78,10 +56,6 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_msg_plus
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_nasa_public_educational_channel
       - type: custom:decluttering-card
         template: tvguide_card
@@ -110,10 +84,6 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_nfl_redzone
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_nhl_network
       - type: custom:decluttering-card
         template: tvguide_card
@@ -127,10 +97,6 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_usa_network
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_yes_2_overflow
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
