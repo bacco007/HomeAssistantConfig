@@ -9,24 +9,12 @@ bubble_header:
     card_type: separator
     name: "[[name]]"
     icon: "mdi:[[icon]]"
-    sub_button:
-      - icon: mdi:arrow-top-right-thick
-        tap_action:
-          action: navigate
-          navigation_path: "[[navpath]]"
-    styles: |-
-      ha-icon {
-        color: #6eaadc !important;
-        filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-        }
-      h4.bubble-name {
-        font: var(--primary-font-family) !important;
-        font-size: 15px !important;
-        font-weight: var(--card-primary-font-weight);
-        color: "#6eaadc" !important;
-        #filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-        }
+    card_layout: large
+    styles: |
+      .bubble-name {
+        font-weight: 700;
+      }
       .bubble-line {
-        background: var(--background-color);
-        opacity: 0.75;
-        }
+        background-color: var(--background-color-2, var(--secondary-background-color));
+        opacity: 1;
+      }
