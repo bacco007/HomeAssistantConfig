@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.7.3 |
 | No. Integrations | 215 |
 | No. Custom Integrations | 91 |
-| No. Entities | 5901 |
-| No. Sensors | 3841 |
+| No. Entities | 5842 |
+| No. Sensors | 3814 |
 | No. Automations | 146 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 362
-Buttons | 234
+Buttons | 219
 Calendars | 86
 Cameras | 6
 Climate | 2
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 40
 Numbers | 39
-Persistent notifications | 5
+Persistent notifications | 6
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 53
-Sensors | 3841
+Sensors | 3814
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 264
+Switches | 249
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 329
+Update | 332
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -780,8 +780,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.5.5a] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.5.5a] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.5.6] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.5.6] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v4.2.0] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.3] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -850,7 +850,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.7.2] | Custom brand icons for Home Assistant |
-| [Custom Features For Home Assistant Tile Card And More!](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.3] | Home Assistant custom features for tile cards and more. Call almost any action using buttons, sliders, selectors, and spinboxes |
+| [Custom Features For Home Assistant Tile Card And More!](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.4] | Home Assistant custom features for tile cards and more. Call almost any action using buttons, sliders, selectors, and spinboxes |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |

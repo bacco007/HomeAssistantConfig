@@ -12,10 +12,6 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_cbs_sports_network
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_cnn
       - type: custom:decluttering-card
         template: tvguide_card
@@ -56,15 +52,7 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_nasa_public_educational_channel
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_nba_tv
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_nbc_sports_network
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
