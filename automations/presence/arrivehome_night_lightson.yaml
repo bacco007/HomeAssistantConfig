@@ -11,8 +11,8 @@ condition:
   - condition: and
     conditions:
       - condition: sun
-        before: sunset
-        before_offset: "-00:15:00"
+        after: sunset
+        after_offset: "-00:15:00"
       - condition: sun
         before: sunrise
 action:

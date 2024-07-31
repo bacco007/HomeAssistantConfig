@@ -32,6 +32,11 @@ cards:
         icon: mdi:television-guide
         card_layout: large
         sub_button:
+          - icon: mdi:play
+            entity: automation.tvguide_xmltv_process_webgrab
+            show_attribute: true
+            attribute: last_triggered
+            show_background: false
           - icon: mdi:cog
             tap_action:
               action: navigate
