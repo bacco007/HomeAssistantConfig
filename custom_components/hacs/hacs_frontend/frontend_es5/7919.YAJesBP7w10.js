@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkhacs_frontend=self.webpackChunkhacs_frontend||[]).push([[7919],{7919:function(n,e,s){s.r(e)}}]);
