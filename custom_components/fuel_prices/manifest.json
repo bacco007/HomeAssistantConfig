@@ -11,9 +11,9 @@
   "issue_tracker": "https://github.com/pantherale0/ha-fuelprices/issues",
   "requirements": [
     "these-united-states==1.1.0.21",
-    "pyfuelprices==2.6.3"
+    "pyfuelprices==2.6.4"
   ],
   "ssdp": [],
-  "version": "2024.7.1",
+  "version": "2024.7.2",
   "zeroconf": []
 }
