@@ -15,68 +15,45 @@ cards:
     columns: 2
     type: grid
     cards:
-      - type: custom:mushroom-template-card
-        multiline_secondary: true
-        primary: WAN Uptime
-        secondary: "{{ state_attr(entity, 'uptime_formatted') }}"
-        icon: mdi:check-network
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
         entity: sensor.unifi_system_wan
-        icon_color: |-
-          {% set status = states(entity) %}
-          {% if status == 'ok' %}
-            #49D000
-          {% else %}
-            #CD1015
-          {% endif %}
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                #background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
-      - type: custom:mushroom-template-card
-        multiline_secondary: true
-        primary: WWW Uptime
-        secondary: "{{ state_attr(entity, 'uptime_formatted') }}"
+        name: WAN Uptime
+        show_state: false
+        scrolling_effect: false
+        card_layout: normal
         icon: mdi:check-network
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
+        show_attribute: true
+        attribute: uptime_formatted
+        styles: |-
+          .bubble-button-card-container {
+            background-color: rgba(${state = 'ok' ? "0, 153, 102" : "204, 0, 51" },0.5) !important;,0.5) !important;
+          }
+          .bubble-icon {
+            color: rgb(${state = 'ok' ? "0, 153, 102" : "204, 0, 51" }) !important;
+            opacity: 1 !important;
+          }
+
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
         entity: sensor.unifi_system_www
-        icon_color: |-
-          {% set status = states(entity) %}
-          {% if status == 'ok' %}
-            #49D000
-          {% else %}
-            #CD1015
-          {% endif %}
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                #background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
-              }
+        name: WWW Uptime
+        show_state: false
+        scrolling_effect: false
+        card_layout: normal
+        icon: mdi:check-network
+        show_attribute: true
+        attribute: uptime_formatted
+        styles: |-
+          .bubble-button-card-container {
+            background-color: rgba(${state = 'ok' ? "0, 153, 102" : "204, 0, 51" },0.5) !important;,0.5) !important;
+          }
+          .bubble-icon {
+            color: rgb(${state = 'ok' ? "0, 153, 102" : "204, 0, 51" }) !important;
+            opacity: 1 !important;
+          }
   - square: false
     columns: 3
     type: grid
@@ -159,8 +136,8 @@ cards:
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
+                padding-top: 2px !important;
+                padding-bottom: 2px !important;
               }
       - type: custom:mushroom-template-card
         multiline_secondary: true
@@ -212,6 +189,6 @@ cards:
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
+                padding-top: 2px !important;
+                padding-bottom: 2px !important;
               }

@@ -162,3 +162,27 @@ ics_calendar:
       include_all_day: true
       download_interval: 360
       days: 365
+
+    - name: ical_alm_all_teams
+      url: https://ics.ecal.com/ecal-sub/66ac962b261b1300086f35fd/A-Leagues.ics
+      include_all_day: true
+      download_interval: 360
+      days: 365
+
+    - name: ical_alw_all_teams
+      url: https://ics.ecal.com/ecal-sub/66ac9696500f160008e713fe/A-Leagues.ics
+      include_all_day: true
+      download_interval: 360
+      days: 365
+
+    - name: ical_sydney_fc
+      url: https://ics.ecal.com/ecal-sub/66ac96d69a216f0008c29b36/A-Leagues.ics
+      include_all_day: true
+      download_interval: 360
+      days: 365
+
+    - name: ical_sydney_fc_women
+      url: https://ics.ecal.com/ecal-sub/66ac96eea35d6a0009b8605c/A-Leagues.ics
+      include_all_day: true
+      download_interval: 360
+      days: 365

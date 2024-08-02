@@ -1,0 +1,60 @@
+---
+bubble_entity_graph:
+  default:
+    - title: ""
+    - entity: sun.sun
+    - colour: "#FFFFFF"
+    - hours_to_show: 24
+    - points_per_hour: 6
+    - line_width: 3
+  card:
+    type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          # background-color: var(--background-color);
+          box-shadow: none !important;
+        }
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: "[[entity]]"
+        name: "[[title]]"
+        show_state: true
+        scrolling_effect: false
+        card_layout: normal
+        icon: mdi:download-network
+        show_attribute: true
+        styles: |-
+          .bubble-button-card-container {
+            background-color: rgba(212, 142, 36 ,0.5) !important;
+          }
+          .bubble-icon {
+            color: rgb(212, 142, 36) !important;
+            opacity: 1 !important;
+          }
+      - type: custom:mini-graph-card
+        entities:
+          - entity: "[[entity]]"
+            name: "[[title]]"
+            color: "[[colour]]"
+        height: 50
+        hours_to_show: "[[hours_to_show]]"
+        line_width: "[[line_width]]"
+        points_per_hour: "[[points_per_hour]]"
+        animate: true
+        show:
+          name: false
+          icon: false
+          state: false
+          legend: false
+          fill: fade
+        card_mod:
+          style: |
+            ha-card {
+              # background-color: var(--background-color) !important;
+              border-radius: 5px;
+              box-shadow: none;
+              padding-top: 5px !important;
+            }

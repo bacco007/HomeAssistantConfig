@@ -53,35 +53,47 @@ cards:
         attribute: target
     show_icon: true
   - type: custom:mushroom-template-card
-    secondary: >-
+    primary: >-
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}}
       ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})
-
+    secondary: >-
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
-      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} % -
-      ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}} /
-      {{state_attr('sensor.untappd_recent_beers',
-      'data')[0]['beer_rating']|round(2)}})
-    icon: mdi:beer-outline
-    entity: sensor.untappd_recent_beers
+      {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} %
+
+      Rating: {{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}} (Me) /
+      {{state_attr('sensor.untappd_recent_beers','data')[0]['beer_rating']|round(2)}} (Avg)
+    entity: sensor.untappd_last_check_in_bacco007
     fill_container: true
-    multiline_secondary: true
     tap_action:
       action: none
     hold_action:
       action: none
     double_tap_action:
       action: none
-    picture: |
-      {{state_attr('sensor.untappd_last_check_in_bacco007', 'entity_picture') }}
+    multiline_secondary: true
+    icon: ""
     card_mod:
       style:
+        mushroom-state-info$: |
+          .container {
+            text-align: right;
+          }
         .: |
+          ha-card:before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 5px;
+            background: url( {{ state_attr(config.entity, 'entity_picture') }} ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
+            background-repeat: no-repeat;
+            background-size: auto calc(100% - 10px);, cover;
+            background-position: left 15px center;
+            background-origin: content-box;
+            filter: opacity(0.75);
+            box-shadow: none !important;
+            }
           ha-card {
-            --icon-size: 40px;
-            --icon-symbol-size: 30px;
-            --card-secondary-font-size: 12px;
-            --card-primary-font-size: 14px;
-            padding-top: 5px !important;
-            padding-bottom: 5px !important;
+            # background-color: var(--background-color);
+            box-shadow: none;
           }

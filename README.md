@@ -48,9 +48,9 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.8.0b0 |
-| No. Integrations | 214 |
+| No. Integrations | 212 |
 | No. Custom Integrations | 91 |
-| No. Entities | 5575 |
+| No. Entities | 5581 |
 | No. Sensors | 3676 |
 | No. Automations | 146 |
 
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>624 Integrations</summary>
+<details><summary>618 Integrations</summary>
 
 | Name |
 | --- |
@@ -500,13 +500,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [qbittorrent](https://www.home-assistant.io/components/qbittorrent) |
-| [qbittorrent.sensor](https://www.home-assistant.io/components/qbittorrent.sensor) |
-| [qbittorrent.switch](https://www.home-assistant.io/components/qbittorrent.switch) |
 | [qbittorrent_alt](https://www.home-assistant.io/components/qbittorrent_alt) |
-| [qbittorrent_alt.button](https://www.home-assistant.io/components/qbittorrent_alt.button) |
-| [qbittorrent_alt.number](https://www.home-assistant.io/components/qbittorrent_alt.number) |
-| [qbittorrent_alt.sensor](https://www.home-assistant.io/components/qbittorrent_alt.sensor) |
-| [qbittorrent_alt.switch](https://www.home-assistant.io/components/qbittorrent_alt.switch) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
 | [radarr.binary_sensor](https://www.home-assistant.io/components/radarr.binary_sensor) |
 | [radarr.calendar](https://www.home-assistant.io/components/radarr.calendar) |
@@ -777,7 +771,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.8] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.4.9] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v1.34.0] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -856,8 +850,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v1.6.4] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.4.11] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v1.6.5] | Expander card for HomeAssistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.4.12] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.8] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
