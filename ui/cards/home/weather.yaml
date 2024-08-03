@@ -161,7 +161,7 @@ cards:
           }
           .bubble-icon {
             color: rgba(${state < 51 ? "0, 153, 102" : state < 101 ? "255, 222, 51" : state < 151 ? "255, 153, 51" : state < 201 ? "204, 0, 51" : state < 301 ? "102, 0, 153" : state> 301 ? "126, 0, 35" : "192,192,192" },1) !important;
-            opacity: 0.75 !important;
+            opacity: 1 !important;
           }
         sub_button:
           - entity: sensor.waqi_air_quality_index

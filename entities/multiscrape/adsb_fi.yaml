@@ -2,6 +2,11 @@
 - name: adsb.fi stats
   resource: https://api.adsb.fi/v1/myip
   scan_interval: 60
+  verify_ssl: false
+  log_response: true
+  timeout: 60
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
   sensor:
     - unique_id: adsb_fi_daily_stats
       name: ADSB.fi - Daily Stats

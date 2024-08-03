@@ -195,10 +195,7 @@ cards:
       - type: custom:mushroom-template-card
         primary: Top Track (This Week)
         secondary: |-
-          {{ state_attr('sensor.lastfm_user_weeklytrackchart',
-          'track')[0].artist.name }} - {{
-          state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name
-          }}
+          {{ state_attr('sensor.lastfm_user_weeklytrackchart','track')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }}
         icon: fab:lastfm
         icon_color: red
         card_mod:
@@ -210,15 +207,11 @@ cards:
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
               }
       - type: custom:mushroom-template-card
         primary: Top Track (This Month)
         secondary: >-
-          {{ state_attr('sensor.lastfm_user_monthlytrackchart',
-          'track')[0].artist.name }} - {{
-          state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }}
+          {{ state_attr('sensor.lastfm_user_monthlytrackchart','track')[0].artist.name }} - {{state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }}
         icon: fab:lastfm
         icon_color: red
         card_mod:
@@ -230,8 +223,6 @@ cards:
                 --icon-symbol-size: 30px;
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
               }
     columns: 2
   - type: custom:decluttering-card

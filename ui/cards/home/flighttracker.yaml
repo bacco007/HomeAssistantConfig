@@ -22,16 +22,24 @@ cards:
     columns: 2
     square: false
     cards:
-      - type: custom:bubble-card
-        card_type: button
-        entity: sensor.flighttracker_aircraft_total
-        button_type: state
-        name: Current (ADS-B)
-      - type: custom:bubble-card
-        card_type: button
-        entity: sensor.flightradar24_current_in_area
-        button_type: state
-        name: Current (FR24)
+      - type: custom:decluttering-card
+        template: bubble_entity_graph
+        variables:
+          - entity: sensor.flighttracker_aircraft_total
+          - colour_hex: "#7b55d5"
+          - colour_rgb: 123, 85, 213
+          - title: Current (ADS-B)
+          - icon: mdi:airplane-alert
+          - line_width: 3
+      - type: custom:decluttering-card
+        template: bubble_entity_graph
+        variables:
+          - entity: sensor.flightradar24_current_flights_in_area
+          - colour_hex: "#7b55d5"
+          - colour_rgb: 123, 85, 213
+          - title: Current (FR24)
+          - icon: mdi:airplane-alert
+          - line_width: 3
   - type: custom:bubble-card
     card_type: button
     entity: sensor.flights_above_hourly

@@ -1,0 +1,10 @@
+---
+flightradar24_connected:
+  name: "Flightradar24 Connected"
+  entity_id: binary_sensor.connected_flightradar24
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: flightradar24_connected

@@ -1,0 +1,9 @@
+---
+sensor:
+  - name: "FlightRadar24 Current Flights In Area"
+    unique_id: flightradar24_current_flights_in_area
+    icon: mdi:airplane
+    unit_of_measurement: "aircraft"
+    state: "{{ states('sensor.flightradar24_current_in_area') | int(0) }}"
+    availability: >
+      {{ is_number(states('sensor.flightradar24_current_in_area')) }}

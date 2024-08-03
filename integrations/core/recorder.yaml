@@ -182,6 +182,9 @@ recorder:
       - sensor.sportschedule_*
       - sensor.galaxy_tab_s5e*
       - sensor.tvguide*
+      - sensor.*unfiltered_distance*
+      - sensor.*nearest_rssi
+      - sensor.*distance_to_*
     event_types:
       - automation_triggered
       - call_service
@@ -222,3 +225,4 @@ recorder:
       - sensor.unifi_gateway_wan_uptimeavail
       - sensor.unifi_networkstats_connected_devices
       - sensor.unifi_networkstats_switchap
+      - sensor.flightradar24_current_flights_in_area

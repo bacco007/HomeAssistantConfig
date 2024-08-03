@@ -32,6 +32,10 @@ cards:
         attribute: days
         icon: mdi:leaf
     styles: |-
+      .bubble-icon {
+        color: ${hass.states['sensor.binday_recycling'].attributes.days >= 7 ? '#155628' : '#DBBC09'} !important;
+        opacity: 1 !important;
+      }
       .bubble-sub-button-1 {
           background-color: ${hass.states['sensor.binday_recycling'].attributes.days >= 7 ? 'transparent' : '#DBBC09'} !important;
       }

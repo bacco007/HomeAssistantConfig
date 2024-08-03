@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.8.0b0 |
-| No. Integrations | 212 |
+| HA Version | 2024.8.0b1 |
+| No. Integrations | 214 |
 | No. Custom Integrations | 91 |
-| No. Entities | 5581 |
-| No. Sensors | 3676 |
+| No. Entities | 5711 |
+| No. Sensors | 3715 |
 | No. Automations | 146 |
 
 <details>
@@ -62,16 +62,16 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 362
+Binary sensors | 426
 Buttons | 164
-Calendars | 86
+Calendars | 87
 Cameras | 6
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 115
-Devices | 627
+Devices | 662
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 40
 Numbers | 39
-Persistent notifications | 2
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 55
-Sensors | 3676
+Sensors | 3715
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 169
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 334
+Update | 357
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>618 Integrations</summary>
+<details><summary>624 Integrations</summary>
 
 | Name |
 | --- |
@@ -500,7 +500,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [qbittorrent](https://www.home-assistant.io/components/qbittorrent) |
+| [qbittorrent.sensor](https://www.home-assistant.io/components/qbittorrent.sensor) |
+| [qbittorrent.switch](https://www.home-assistant.io/components/qbittorrent.switch) |
 | [qbittorrent_alt](https://www.home-assistant.io/components/qbittorrent_alt) |
+| [qbittorrent_alt.button](https://www.home-assistant.io/components/qbittorrent_alt.button) |
+| [qbittorrent_alt.number](https://www.home-assistant.io/components/qbittorrent_alt.number) |
+| [qbittorrent_alt.sensor](https://www.home-assistant.io/components/qbittorrent_alt.sensor) |
+| [qbittorrent_alt.switch](https://www.home-assistant.io/components/qbittorrent_alt.switch) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
 | [radarr.binary_sensor](https://www.home-assistant.io/components/radarr.binary_sensor) |
 | [radarr.calendar](https://www.home-assistant.io/components/radarr.calendar) |
@@ -787,7 +793,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
-| [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [vpre-7.1.0] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.6.2] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
@@ -799,7 +805,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.4.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.13.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.14.0-beta.1] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.4] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -908,7 +914,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.16.0 |  | db21ed7f |
-| Cloudflared | 5.1.15 |  | 9074a9fa |
+| Cloudflared | 5.1.16 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
 | ESPHome | 2024.7.3 |  | 15ef4d2f |
 | eufy-security-ws | 1.8.0-2 |  | 402f1039 |
@@ -925,10 +931,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Node-RED | 18.0.4 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
-| Samba share | 12.3.1 |  | core |
+| Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.39.0-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.39.1-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
 </details>
@@ -976,7 +982,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.8.0b0-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.8.0b1-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
