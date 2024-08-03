@@ -235,10 +235,11 @@ cards:
               }
     columns: 2
   - type: custom:decluttering-card
-    template: mushroom_entity_graph_small
+    template: bubble_entity_graph
     variables:
       - entity: sensor.lastfm_user_playcount
-      - colour: lime
+      - colour_hex: "#32CD32"
+      - colour_rgb: 50,205,50
       - title: Last.FM Listen Count
       - line_width: 2
       - hours_to_show: 168

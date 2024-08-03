@@ -66,7 +66,6 @@ action:
             | selectattr('attributes.channel_group', 'eq', 'UK')
             | map(attribute='entity_id') | list | sort }}
 
-
   - service: group.set
     data:
       object_id: tvguide_uk_radio

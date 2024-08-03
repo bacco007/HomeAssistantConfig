@@ -59,26 +59,29 @@ cards:
     type: grid
     cards:
       - type: custom:decluttering-card
-        template: mushroom_entity_graph_small
+        template: bubble_entity_graph
         variables:
           - entity: sensor.speedtest_download
-          - colour: "#D48E24"
+          - colour_hex: "#D48E24"
+          - colour_rgb: 212, 142, 36
           - title: Download
           - icon: mdi:download-network
           - line_width: 3
       - type: custom:decluttering-card
-        template: mushroom_entity_graph_small
+        template: bubble_entity_graph
         variables:
           - entity: sensor.speedtest_upload
-          - colour: "#006FFF"
+          - colour_hex: "#006FFF"
+          - colour_rgb: 0, 111, 255
           - title: Upload
           - icon: mdi:upload-network
           - line_width: 3
       - type: custom:decluttering-card
-        template: mushroom_entity_graph_small
+        template: bubble_entity_graph
         variables:
           - entity: sensor.speedtest_ping
-          - colour: "#7b55d5"
+          - colour_hex: "#7b55d5"
+          - colour_rgb: 123, 85, 213
           - title: Ping
           - icon: mdi:web
           - line_width: 3

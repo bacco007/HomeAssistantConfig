@@ -44,8 +44,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -75,8 +73,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
     - type: custom:mushroom-template-card
@@ -93,8 +89,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
     - type: custom:mushroom-template-card
@@ -114,8 +108,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -144,8 +136,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -177,8 +167,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -212,8 +200,6 @@ card:
                 --icon-symbol-size: 20px;
                 --card-secondary-font-size: 12px;
                 --card-primary-font-size: 14px;
-                padding-top: 5px !important;
-                padding-bottom: 5px !important;
                 box-shadow: none !important;
               }
             mushroom-shape-icon$: |
@@ -239,8 +225,6 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }
     - type: custom:mushroom-template-card
@@ -273,7 +257,5 @@ card:
               --icon-symbol-size: 20px;
               --card-secondary-font-size: 12px;
               --card-primary-font-size: 14px;
-              padding-top: 5px !important;
-              padding-bottom: 5px !important;
               box-shadow: none !important;
             }

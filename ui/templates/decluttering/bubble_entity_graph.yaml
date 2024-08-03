@@ -3,7 +3,8 @@ bubble_entity_graph:
   default:
     - title: ""
     - entity: sun.sun
-    - colour: "#FFFFFF"
+    - colour_hex: "#FFFFFF"
+    - colour_rgb: "0,0,0"
     - hours_to_show: 24
     - points_per_hour: 6
     - line_width: 3
@@ -28,17 +29,17 @@ bubble_entity_graph:
         show_attribute: true
         styles: |-
           .bubble-button-card-container {
-            background-color: rgba(212, 142, 36 ,0.5) !important;
+            background-color: rgba([[colour_rgb]] ,0.5) !important;
           }
           .bubble-icon {
-            color: rgb(212, 142, 36) !important;
+            color: rgb([[colour_rgb]]) !important;
             opacity: 1 !important;
           }
       - type: custom:mini-graph-card
         entities:
           - entity: "[[entity]]"
             name: "[[title]]"
-            color: "[[colour]]"
+            color: "[[colour_hex]]"
         height: 50
         hours_to_show: "[[hours_to_show]]"
         line_width: "[[line_width]]"

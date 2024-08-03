@@ -1301,3 +1301,43 @@ sensor:
             and is_number(states('sensor.pirateweather_uv_index'))
           or is_state('binary_sensor.connected_openuv', 'on')
             and is_number(states('sensor.current_uv_index')) }}
+
+  - name: "[Weather] UV Index (Cloud Effect)"
+    unique_id: weather_uv_index_cloud_effect
+    icon: mdi:weather-sunny-alert
+    state_class: measurement
+    unit_of_measurement: UVi
+    state: >
+      {% set cc = states('sensor.weather_cloud_cover') | float / 100 %}
+      {% set uv = states('sensor.weather_uv_index') | float %}
+      {% if cc < 0.2 %}
+      {{uv}}
+      {% elif cc >= 0.2 and cc < 0.7 %}
+      {{uv * 0.89}}
+      {% elif cc >= 0.7 and cc < 0.9 %}
+      {{uv * 0.73}}
+      {% elif cc >= 0.9 %}
+      {{uv * 0.31}}
+      {% else %}
+        {{uv}}
+      {% endif %}
+    attributes:
+      category: weather
+      cloud_cover: >
+        {{ states('sensor.weather_cloud_cover') | float / 100 }}
+      uv_index: >
+        {{ states('sensor.weather_uv_index') | float }}
+      risk: >
+        {% set level = states(this.entity_id)|int(0) %}
+        {% if is_number(level) %}
+          {% if level < 3 %} Low
+          {% elif level < 5 %} Moderate
+          {% elif level < 7 %} Moderate High
+          {% elif level < 9 %} High
+          {% else %} Very High
+          {% endif %}
+        {% endif %}
+      provider: >
+        {{ state_attr('sensor.weather_uv_index', 'state_attr') }}
+    availability: >
+      {{ is_number(states('sensor.weather_uv_index')) }}
