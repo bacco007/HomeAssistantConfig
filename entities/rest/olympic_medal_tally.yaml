@@ -1,0 +1,12 @@
+---
+resource: https://api.olympics.kevle.xyz/medals?country=aus
+method: GET
+scan_interval: 120
+sensor:
+  name: olympic_medal_tally
+  unique_id: olympic_medal_tally
+  value_template: >
+    {{ value_json.results.medals.total }}
+  json_attributes:
+    - last_updated
+    - results

@@ -16,8 +16,8 @@ class InvalidAuth(exceptions.HomeAssistantError):
     """Error to indicate there is invalid auth."""
 
 DATA_SCHEMA = vol.Schema({
-    vol.Required(CONF_API_KEY, description={LABEL_API_KEY}): str,
     vol.Required(CONF_ACCOUNT_ID, description={LABEL_ACCOUNT_ID}): str,
+    vol.Required(CONF_API_KEY, description={LABEL_API_KEY}): str
 })
 
 async def validate_credentials(hass, data):
@@ -31,11 +31,14 @@ async def validate_credentials(hass, data):
 
     try:
         async with aiohttp.ClientSession() as session:
-            with async_timeout.timeout(TIMEOUT):
+            async with async_timeout.timeout(TIMEOUT):
                 async with session.get(URL, headers=headers) as response:
-                    if response.status != 200:
+                    if response.status == 200:
+                        return True
+                    elif response.status == 401:
                         raise InvalidAuth
-                    return True
+                    else:
+                        raise CannotConnect
     except aiohttp.ClientError:
         raise CannotConnect
     except async_timeout.TimeoutError:

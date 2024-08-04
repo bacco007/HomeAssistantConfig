@@ -8,5 +8,5 @@
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor/issues",
   "requirements": ["aiohttp", "async_timeout"],
-  "version": "0.0.1"
+  "version": "2.1.7"
 }

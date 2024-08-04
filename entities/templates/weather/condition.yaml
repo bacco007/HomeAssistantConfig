@@ -4,13 +4,13 @@ sensor:
     unique_id: weather_current_condition
     icon: mdi:weather-partly-snowy-rainy
     state: >
-      {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+      {% if is_state('binary_sensor.ha_connected_integration_weatherflow_cloud','on')
           and has_value('weather.weatherflow_forecast_brisbane_st') %}
         {%- set condition = states('weather.weatherflow_forecast_brisbane_st') %}
-      {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+      {%- elif is_state('binary_sensor.ha_connected_integration_bureau_of_meteorology', 'on')
           and has_value('weather.east_tamworth') %}
         {%- set condition = states('weather.east_tamworth') %}
-      {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+      {%- elif is_state('binary_sensor.ha_connected_integration_pirateweather', 'on')
           and has_value('weather.pirateweather') %}
         {%- set condition = states('weather.pirateweather') %}
       {%- endif %}
@@ -31,19 +31,19 @@ sensor:
     attributes:
       category: weather
       provider: >
-        {% if is_state('binary_sensor.connected_weatherflow_cloud','on')
+        {% if is_state('binary_sensor.ha_connected_integration_weatherflow_cloud','on')
           and has_value('weather.weatherflow_forecast_brisbane_st') %} Weatherflow (Cloud)
-        {%- elif is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+        {%- elif is_state('binary_sensor.ha_connected_integration_bureau_of_meteorology', 'on')
           and has_value('weather.east_tamworth') %} Bureau of Meteorology
-        {%- elif is_state('binary_sensor.connected_pirateweather', 'on')
+        {%- elif is_state('binary_sensor.ha_connected_integration_pirateweather', 'on')
           and has_value('weather.pirateweather') %} Pirate Weather
         {%- endif %}
     availability: >
-      {{ is_state('binary_sensor.connected_weatherflow_cloud','on')
+      {{ is_state('binary_sensor.ha_connected_integration_weatherflow_cloud','on')
             and has_value('weather.weatherflow_forecast_brisbane_st')
-          or is_state('binary_sensor.connected_bureau_of_meteorology', 'on')
+          or is_state('binary_sensor.ha_connected_integration_bureau_of_meteorology', 'on')
             and has_value('weather.east_tamworth')
-          or is_state('binary_sensor.connected_pirateweather', 'on')
+          or is_state('binary_sensor.ha_connected_integration_pirateweather', 'on')
             and has_value('weather.pirateweather') }}
 
   - name: "[Weather] Condition Today"

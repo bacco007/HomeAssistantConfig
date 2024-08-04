@@ -3,13 +3,13 @@
      "step":{
         "user":{
            "data":{
-              "api_key":"API-key",
-              "account_id":"Account-ID"
+              "account_id":"Account ID",
+              "api_key":"API Token"
            }
         }
      },
      "error":{
-        "cannot_connect":"Kan geen verbinding maken met de API, controleer je API-key en internetverbinding.",
+        "cannot_connect":"Kan geen verbinding maken met de API, controleer je API Token en internetverbinding.",
         "invalid_auth":"Ongeldige authenticatie, controleer je gegevens.",
         "unknown":"Onbekende fout, controleer je logs."
      },

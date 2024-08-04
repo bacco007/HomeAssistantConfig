@@ -67,7 +67,7 @@ cards:
           margin: 0 !important;
         }
     entities:
-      - entity: binary_sensor.connected_adguard
+      - entity: binary_sensor.ha_connected_integration_adguard
         name: AdGuard Home Connected
         secondary_info: last-changed
       - type: section

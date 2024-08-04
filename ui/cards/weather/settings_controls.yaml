@@ -92,12 +92,12 @@ cards:
           icon: mdi:weather-partly-snowy-rainy
           state: ""
         entities:
-          - entity: binary_sensor.connected_bureau_of_meteorology
-          - entity: binary_sensor.connected_pirateweather
-          - entity: binary_sensor.connected_openuv
-          - entity: binary_sensor.connected_waqi
-          - entity: binary_sensor.connected_weatherflow_cloud
-          - entity: binary_sensor.connected_weatherflow_local
+          - entity: binary_sensor.ha_connected_integration_bureau_of_meteorology
+          - entity: binary_sensor.ha_connected_integration_pirateweather
+          - entity: binary_sensor.ha_connected_integration_openuv
+          - entity: binary_sensor.ha_connected_integration_waqi
+          - entity: binary_sensor.ha_connected_integration_weatherflow_cloud
+          - entity: binary_sensor.ha_connected_integration_weatherflow_local
       - type: custom:fold-entity-row
         card_mod:
           style: |

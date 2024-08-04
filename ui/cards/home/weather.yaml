@@ -182,7 +182,6 @@ cards:
         show_icon: true
         scrolling_effect: false
         show_state: false
-        card_layout: normal
         styles: |-
           .bubble-button-card-container {
             background-color: rgba(${state < 2.6 ? "85, 139, 47" : state < 5.6 ? "249, 168, 37" : state < 7.6 ? "239, 108, 0" : state < 10.6 ? "135, 28, 28" : state < 15.1 ? "106, 27, 154" : "192,192,192" },0.2) !important;
@@ -192,11 +191,20 @@ cards:
           }
         sub_button:
           - entity: sensor.weather_uv_index
-            show_name: false
+            show_name: true
             show_icon: false
             show_attribute: true
             show_state: true
             show_background: false
+            name: Std
+          - entity: sensor.weather_uv_index_cloud_effect
+            show_name: true
+            show_icon: false
+            show_attribute: true
+            show_state: true
+            show_background: false
+            name: Cld
+
       - type: custom:bubble-card
         card_type: button
         button_type: state

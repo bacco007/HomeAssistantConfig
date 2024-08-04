@@ -186,3 +186,9 @@ ics_calendar:
       include_all_day: true
       download_interval: 360
       days: 365
+
+    - name: ical_new_york_yankees
+      url: webcal://ics.ecal.com/ecal-sub/66aee6a0b2d9990008f53154/MLB%20.ics
+      include_all_day: true
+      download_interval: 360
+      days: 365

@@ -4,6 +4,5 @@ entity_id: counter.logs_critical_counter
 name: statistics_logs_critical_counter_hourly
 unique_id: statistics_logs_critical_counter_hourly
 state_characteristic: change
-sampling_size: 36000
 max_age:
   minutes: 60

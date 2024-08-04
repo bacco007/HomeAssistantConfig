@@ -1,0 +1,46 @@
+---
+sensor:
+  - name: "[Olympics] Medal Count - Gold"
+    unique_id: olympics_medalcount_gold
+    icon: mdi:podium-gold
+    state_class: measurement
+    unit_of_measurement: "Medals"
+    state: >
+      {{ state_attr('sensor.olympic_medal_tally', 'results')[0]['medals']['gold'] }}
+    attributes:
+      category: olympics_medalcount
+  - name: "[Olympics] Medal Count - Silver"
+    unique_id: olympics_medalcount_silver
+    icon: mdi:podium-silver
+    state_class: measurement
+    unit_of_measurement: "Medals"
+    state: >
+      {{ state_attr('sensor.olympic_medal_tally', 'results')[0]['medals']['silver'] }}
+    attributes:
+      category: olympics_medalcount
+  - name: "[Olympics] Medal Count - Bronze"
+    unique_id: olympics_medalcount_bronze
+    icon: mdi:podium-bronze
+    state_class: measurement
+    unit_of_measurement: "Medals"
+    state: >
+      {{ state_attr('sensor.olympic_medal_tally', 'results')[0]['medals']['bronze'] }}
+    attributes:
+      category: olympics_medalcount
+  - name: "[Olympics] Medal Count - Total"
+    unique_id: olympics_medalcount_total
+    icon: mdi:medal
+    state_class: measurement
+    unit_of_measurement: "Medals"
+    state: >
+      {{ state_attr('sensor.olympic_medal_tally', 'results')[0]['medals']['total'] }}
+    attributes:
+      category: olympics_medalcount
+  - name: "[Olympics] Medal Count - Ranking"
+    unique_id: olympics_medalcount_ranking
+    icon: mdi:arrow-right-drop-circle
+    state_class: measurement
+    state: >
+      {{ state_attr('sensor.olympic_medal_tally', 'results')[0]['rank'] }}
+    attributes:
+      category: olympics_medalcount

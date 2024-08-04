@@ -89,8 +89,6 @@ cards:
             --icon-symbol-size: 25px;
             #--card-secondary-font-size: 10px;
             #--card-primary-font-size: 12px;
-            padding-top: 5px !important;
-            padding-bottom: 5px !important;
           }
     entity: sensor.dst_dates_local
     primary: Daylight Saving

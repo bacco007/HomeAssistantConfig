@@ -3,13 +3,13 @@
         "step": {
             "user": {
                 "data": {
-                    "api_key": "API Key",
-                    "account_id": "ID de cuenta"
+                    "account_id": "ID de cuenta",
+                    "api_key": "API Token"
                 }
             }
         },
         "error": {
-            "cannot_connect": "No se puede conectar al servicio, por favor verifica tu clave API y la conexión a internet.",
+            "cannot_connect": "No se puede conectar al servicio, por favor verifica tu Token de la API y la conexión a internet.",
             "invalid_auth": "Autenticación inválida, por favor verifica tus credenciales.",
             "unknown": "Error desconocido, por favor revisa los registros."
         },

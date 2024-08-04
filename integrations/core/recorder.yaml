@@ -185,6 +185,8 @@ recorder:
       - sensor.*unfiltered_distance*
       - sensor.*nearest_rssi
       - sensor.*distance_to_*
+      - sensor.*_distance
+      - sensor.*_nearest_scanner
     event_types:
       - automation_triggered
       - call_service

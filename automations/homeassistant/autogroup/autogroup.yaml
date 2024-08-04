@@ -175,7 +175,7 @@ action:
       icon: mdi:connection
       entities: >
         {{ states
-            |selectattr('entity_id','search','binary_sensor.connected_*')
+            |selectattr('entity_id','search','binary_sensor.ha_connected_integration_*')
             |map(attribute='entity_id')|list|sort }}
 
   - service: group.set

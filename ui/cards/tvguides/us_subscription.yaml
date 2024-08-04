@@ -16,11 +16,11 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_espn
+          - entity: sensor.tvguide_espn_us
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_espn2
+          - entity: sensor.tvguide_espn2_us
       - type: custom:decluttering-card
         template: tvguide_card
         variables:

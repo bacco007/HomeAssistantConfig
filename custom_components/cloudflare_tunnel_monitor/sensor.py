@@ -16,7 +16,6 @@ URL = "https://api.cloudflare.com/client/v4/accounts/{}/cfd_tunnel?is_deleted=fa
 TIMEOUT = 10
 RETRY_DELAY = 20
 MAX_RETRIES = 5
-session = aiohttp.ClientSession()
 
 def create_headers(api_key):
     """Create headers for API requests."""
@@ -31,31 +30,36 @@ async def fetch_tunnels(api_key, account_id, hass, entry_id, retries=0):
     url = URL.format(account_id)
     
     _LOGGER.debug(f"Attempt {retries + 1} to fetch tunnels from URL: {url}")
-    async with aiohttp.ClientSession() as session:
-        try:
-            with async_timeout.timeout(TIMEOUT):
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with async_timeout.timeout(TIMEOUT):
                 async with session.get(url, headers=headers) as response:
                     _LOGGER.debug(f"Response status: {response.status}")
                     if response.status == 200:
                         json_response = await response.json()
                         _LOGGER.debug(f"Received data: {json_response}")
                         return json_response['result']
+                    elif response.status == 401:
+                        raise UpdateFailed("Unauthorized access - check your API key")
                     else:
-                        _LOGGER.error(f"Error fetching Cloudflare tunnels: {response.status}, {response.reason}")
-                        if response.status == 504:
-                            raise UpdateFailed("Gateway timeout error")
-                        else:
-                            raise UpdateFailed("Error fetching Cloudflare tunnels")
-        except Exception as err:
-            _LOGGER.error(f"Error fetching data: {err}")
-            if retries < MAX_RETRIES:
-                _LOGGER.info(f"Retrying in {RETRY_DELAY} seconds...")
-                await asyncio.sleep(RETRY_DELAY)
-                return await fetch_tunnels(api_key, account_id, hass, retries + 1)
-            else:
-                _LOGGER.error("Maximum number of retries reached, scheduling integration reload")
-                await schedule_integration_reload(hass, entry_id)
-            raise UpdateFailed("Maximum retries reached, integration reload scheduled")
+                        raise UpdateFailed(f"Error fetching Cloudflare tunnels: {response.status}, {response.reason}")
+    except aiohttp.ClientError as err:
+        _LOGGER.error(f"Client error fetching data: {err}")
+        raise UpdateFailed("Client error occurred while fetching data") from err
+    except async_timeout.TimeoutError:
+        _LOGGER.error("Timeout error fetching data")
+        raise UpdateFailed("Timeout error occurred while fetching data")
+    except Exception as err:
+        _LOGGER.error(f"Unexpected error fetching data: {err}")
+        if retries < MAX_RETRIES:
+            _LOGGER.info(f"Retrying in {RETRY_DELAY} seconds...")
+            await asyncio.sleep(RETRY_DELAY)
+            return await fetch_tunnels(api_key, account_id, hass, entry_id, retries + 1)
+        else:
+            _LOGGER.error("Maximum number of retries reached, scheduling integration reload")
+            await schedule_integration_reload(hass, entry_id)
+        raise UpdateFailed("Maximum retries reached, integration reload scheduled")
 
 class CloudflareTunnelsDevice(Entity):
     """Representation of the Cloudflare Tunnels device."""
@@ -177,7 +181,7 @@ class CloudflareTunnelManager:
                 _LOGGER.info(f"Removing sensor for tunnel: {sensor_id}")
                 try:
                     sensor = self._sensors.pop(sensor_id)
-                    await self._hass.async_create_task(sensor.async_remove())
+                    await sensor.async_remove()
                 except Exception as e:
                     _LOGGER.error(f"Error removing sensor for tunnel {sensor_id}: {e}")
 
@@ -186,7 +190,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api_key = config_entry.data["api_key"]
     account_id = config_entry.data["account_id"]
     device = CloudflareTunnelsDevice(account_id, DOMAIN)
-    global session
 
     async def async_update_data():
         """Fetch data from API endpoint and detect changes in tunnels."""
@@ -237,9 +240,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     hass.bus.async_listen_once("homeassistant_stop", async_shutdown)
 
 async def async_shutdown(event):
-    """Close aiohttp global session."""
-    if session:
-        await session.close()
+    """Close aiohttp session when Home Assistant stops."""
     _LOGGER.debug("Cloudflare Tunnel Monitor - aiohttp session closed")
 
 async def schedule_integration_reload(hass, entry_id):
