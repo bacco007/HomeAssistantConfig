@@ -9,247 +9,1123 @@ trigger:
   - platform: state
     entity_id: sensor.time
 binary_sensor:
-  - name: "[HA Connected Integration] MQTT"
-    unique_id: ha_connected_integrationmqtt
-    icon: mdi:sort-clock-descending
-    picture: https://brands.home-assistant.io/mqtt/icon.png
+  # {%- for attr in states.sensor.start_time.attributes | sort %}
+  # {%- if attr in ('accuweather', 'adaptive_lighting', 'adguard', 'adsb_lol', 'airvisual', 'airvisual_pro', 'alert',
+  #     'analytics', 'androidtv', 'androidtv_remote', 'anniversaries', 'api', 'apple_tv',
+  #     'astroweather', 'aurora', 'awtrix', 'backup', 'bayesian', 'bermuda',
+  #     'ble_monitor', 'blitzortung', 'browser_mod', 'bureau_of_meteorology', 'cert_expiry', 'cloudflare_tunnel_monitor',
+  #     'co2signal', 'cupertino', 'custom_templates', 'daily', 'default_config_disabler', 'device_automation',
+  #     'device_tools', 'doomsday_clock', 'dynamic_energy_cost', 'dyson_local', 'eufy_security', 'fastdotcom',
+  #     'feedparser', 'flightradar24', 'fontawesome', 'forecast_solar', 'fuel_prices', 'fully_kiosk',
+  #     'garbage_collection', 'gdacs', 'geo_location', 'github', 'google', 'google_fit', 'google_home', 'google_translate',
+  #     'gtfs2', 'hacs', 'harmony', 'hassio', 'haveibeenpwned', 'hdhomerun', 'here_travel_time',
+  #     'holidays', 'iaquk', 'ibeacon', 'ical', 'ics_calendar', 'illuminance', 'iss', 'lastfm', 'light', 'lunar_phase',
+  #     'mastodon_profile_stats', 'matter', 'media_extractor', 'media_source', 'met', 'monitor_docker', 'multiscrape', 'myjdownloader',
+  #     'network_scanner', 'nodered', 'nsw_air_quality', 'nsw_fuel_station', 'nsw_rural_fire_service_feed',
+  #     'nsw_rural_fire_service_fire_danger',  'open_meteo', 'open_meteo_solar_forecast', 'opennem', 'openuv', 'openweathermap',
+  #     'pirateweather', 'playstation_network', 'plex', 'plex_recently_added', 'pocketcasts', 'powercalc', 'private_ble_device',
+  #     'prometheus_query', 'prometheus_sensor', 'proxmoxve', 'pyscript', 'python_script', 'qbittorrent', 'qbittorrent_alt',
+  #     'radarr', 'radarr_upcoming_media', 'radio_browser', 'readme', 'sabnzbd',
+  #     'satellitetracker', 'season', 'select', 'sensibo',
+  #     'simpleicons', 'slack', 'smartthinq_sensors', 'solcast_solar', 'sonarr', 'sonarr_upcoming_media', 'sonos', 'speedtestdotnet',
+  #     'spook', 'spotify', 'spotifyplus', 'sql_json', 'start_time', 'sun2', 'swatch_time', 'synology_dsm',
+  #     'tautulli', 'teamtracker', 'temperature_feels_like', 'thermal_comfort', 'tomorrowio',
+  #     'tuya', 'unifi', 'universal', 'untappd', 'uptime', 'uptime_kuma', 'usgs_earthquakes_feed', 'waqi', 'watchman',
+  #     'waternsw', 'weatherflow', 'weatherflow_cloud', 'weatherflow_forecast', 'webostv',
+  #     'withings', 'workday', 'worlds_air_quality_index', 'yahoofinance', 'youtube') %}
+
+  # {%- if integration_entities(attr) | list | count > 0 %}
+
+  #   - name: "[HA Connected Integration] {{attr}}"
+  #     unique_id: ha_connected_integration_{{attr}}
+  #     icon: "{% raw %}{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}{% endraw %}"
+  #     picture: https://brands.home-assistant.io/{{attr}}/icon.png
+  #     device_class: connectivity
+  #     state: "{% raw %}{{ integration_entities('{% endraw %}{{attr}}{% raw %}')|select('has_value')|list|count > 0 }}{% endraw %}"
+  #     attributes:
+  #       category: homeassistant_connectivity
+
+  # {%- endif %}
+  # {%- endif %}
+  # {%- endfor %}
+
+  - name: "[HA Connected Integration] accuweather"
+    unique_id: ha_connected_integration_accuweather
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/accuweather/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('mqtt')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('accuweather')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Uptime Kuma"
-    unique_id: ha_connected_integrationuptime_kuma
-    icon: mdi:sort-clock-descending
-    picture: https://brands.home-assistant.io/uptime_kuma/icon.png
+
+  - name: "[HA Connected Integration] adaptive_lighting"
+    unique_id: ha_connected_integration_adaptive_lighting
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/adaptive_lighting/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('uptime_kuma')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('adaptive_lighting')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] OpenUV"
-    unique_id: ha_connected_integrationopenuv
-    icon: mdi:weather-sunny-alert
-    picture: https://brands.home-assistant.io/openuv/icon.png
+
+  - name: "[HA Connected Integration] adguard"
+    unique_id: ha_connected_integration_adguard
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/adguard/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('openuv')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('adguard')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] GDACS"
-    unique_id: ha_connected_integrationgdacs
-    icon: mdi:home-flood
+
+  - name: "[HA Connected Integration] adsb_lol"
+    unique_id: ha_connected_integration_adsb_lol
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/adsb_lol/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('adsb_lol')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] airvisual"
+    unique_id: ha_connected_integration_airvisual
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/airvisual/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('airvisual')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] alert"
+    unique_id: ha_connected_integration_alert
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/alert/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('alert')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] androidtv"
+    unique_id: ha_connected_integration_androidtv
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/androidtv/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('androidtv')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] androidtv_remote"
+    unique_id: ha_connected_integration_androidtv_remote
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/androidtv_remote/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('androidtv_remote')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] anniversaries"
+    unique_id: ha_connected_integration_anniversaries
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/anniversaries/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('anniversaries')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] apple_tv"
+    unique_id: ha_connected_integration_apple_tv
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/apple_tv/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('apple_tv')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] astroweather"
+    unique_id: ha_connected_integration_astroweather
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/astroweather/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('astroweather')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] aurora"
+    unique_id: ha_connected_integration_aurora
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/aurora/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('aurora')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] bermuda"
+    unique_id: ha_connected_integration_bermuda
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/bermuda/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('bermuda')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] blitzortung"
+    unique_id: ha_connected_integration_blitzortung
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/blitzortung/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('blitzortung')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] bureau_of_meteorology"
+    unique_id: ha_connected_integration_bureau_of_meteorology
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/bureau_of_meteorology/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('bureau_of_meteorology')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] cert_expiry"
+    unique_id: ha_connected_integration_cert_expiry
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/cert_expiry/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('cert_expiry')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] cloudflare_tunnel_monitor"
+    unique_id: ha_connected_integration_cloudflare_tunnel_monitor
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/cloudflare_tunnel_monitor/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('cloudflare_tunnel_monitor')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] co2signal"
+    unique_id: ha_connected_integration_co2signal
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/co2signal/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('co2signal')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] daily"
+    unique_id: ha_connected_integration_daily
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/daily/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('daily')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] doomsday_clock"
+    unique_id: ha_connected_integration_doomsday_clock
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/doomsday_clock/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('doomsday_clock')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] dynamic_energy_cost"
+    unique_id: ha_connected_integration_dynamic_energy_cost
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/dynamic_energy_cost/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('dynamic_energy_cost')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] dyson_local"
+    unique_id: ha_connected_integration_dyson_local
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/dyson_local/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('dyson_local')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] eufy_security"
+    unique_id: ha_connected_integration_eufy_security
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/eufy_security/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('eufy_security')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] fastdotcom"
+    unique_id: ha_connected_integration_fastdotcom
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/fastdotcom/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('fastdotcom')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] feedparser"
+    unique_id: ha_connected_integration_feedparser
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/feedparser/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('feedparser')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] flightradar24"
+    unique_id: ha_connected_integration_flightradar24
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/flightradar24/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('flightradar24')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] forecast_solar"
+    unique_id: ha_connected_integration_forecast_solar
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/forecast_solar/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('forecast_solar')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] fully_kiosk"
+    unique_id: ha_connected_integration_fully_kiosk
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/fully_kiosk/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('fully_kiosk')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] garbage_collection"
+    unique_id: ha_connected_integration_garbage_collection
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/garbage_collection/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('garbage_collection')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] gdacs"
+    unique_id: ha_connected_integration_gdacs
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
     picture: https://brands.home-assistant.io/gdacs/icon.png
     device_class: connectivity
     state: "{{ integration_entities('gdacs')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] NSW RFS"
-    unique_id: ha_connected_integrationnswrfs
-    icon: mdi:fire-alert
+
+  - name: "[HA Connected Integration] github"
+    unique_id: ha_connected_integration_github
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/github/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('github')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] google"
+    unique_id: ha_connected_integration_google
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/google/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('google')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] google_fit"
+    unique_id: ha_connected_integration_google_fit
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/google_fit/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('google_fit')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] google_home"
+    unique_id: ha_connected_integration_google_home
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/google_home/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('google_home')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] gtfs2"
+    unique_id: ha_connected_integration_gtfs2
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/gtfs2/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('gtfs2')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] hacs"
+    unique_id: ha_connected_integration_hacs
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/hacs/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('hacs')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] harmony"
+    unique_id: ha_connected_integration_harmony
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/harmony/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('harmony')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] hassio"
+    unique_id: ha_connected_integration_hassio
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/hassio/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('hassio')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] haveibeenpwned"
+    unique_id: ha_connected_integration_haveibeenpwned
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/haveibeenpwned/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('haveibeenpwned')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] hdhomerun"
+    unique_id: ha_connected_integration_hdhomerun
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/hdhomerun/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('hdhomerun')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] here_travel_time"
+    unique_id: ha_connected_integration_here_travel_time
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/here_travel_time/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('here_travel_time')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] holidays"
+    unique_id: ha_connected_integration_holidays
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/holidays/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('holidays')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] iaquk"
+    unique_id: ha_connected_integration_iaquk
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/iaquk/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('iaquk')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] ibeacon"
+    unique_id: ha_connected_integration_ibeacon
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/ibeacon/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('ibeacon')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] ical"
+    unique_id: ha_connected_integration_ical
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/ical/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] ics_calendar"
+    unique_id: ha_connected_integration_ics_calendar
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/ics_calendar/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('ics_calendar')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] illuminance"
+    unique_id: ha_connected_integration_illuminance
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/illuminance/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('illuminance')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] iss"
+    unique_id: ha_connected_integration_iss
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/iss/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('iss')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] lastfm"
+    unique_id: ha_connected_integration_lastfm
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/lastfm/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('lastfm')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] lunar_phase"
+    unique_id: ha_connected_integration_lunar_phase
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/lunar_phase/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('lunar_phase')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] mastodon_profile_stats"
+    unique_id: ha_connected_integration_mastodon_profile_stats
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/mastodon_profile_stats/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('mastodon_profile_stats')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] matter"
+    unique_id: ha_connected_integration_matter
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/matter/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('matter')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] met"
+    unique_id: ha_connected_integration_met
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/met/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('met')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] multiscrape"
+    unique_id: ha_connected_integration_multiscrape
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/multiscrape/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('multiscrape')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] myjdownloader"
+    unique_id: ha_connected_integration_myjdownloader
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/myjdownloader/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('myjdownloader')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] network_scanner"
+    unique_id: ha_connected_integration_network_scanner
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/network_scanner/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('network_scanner')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] nodered"
+    unique_id: ha_connected_integration_nodered
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/nodered/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('nodered')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] nsw_air_quality"
+    unique_id: ha_connected_integration_nsw_air_quality
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/nsw_air_quality/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('nsw_air_quality')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] nsw_fuel_station"
+    unique_id: ha_connected_integration_nsw_fuel_station
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/nsw_fuel_station/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('nsw_fuel_station')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] nsw_rural_fire_service_fire_danger"
+    unique_id: ha_connected_integration_nsw_rural_fire_service_fire_danger
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
     picture: https://brands.home-assistant.io/nsw_rural_fire_service_fire_danger/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('nsw_rural_fire_service_feed')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('nsw_rural_fire_service_fire_danger')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] WAQI"
-    unique_id: ha_connected_integrationwaqi
-    icon: mdi:smog
-    picture: https://brands.home-assistant.io/waqi/icon.png
+
+  - name: "[HA Connected Integration] open_meteo"
+    unique_id: ha_connected_integration_open_meteo
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/open_meteo/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('waqi')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('open_meteo')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Weatherflow Local"
-    unique_id: weatherflow_local_connected
-    icon: mdi:weather-lightning-rainy
-    picture: https://brands.home-assistant.io/weatherflow/icon.png
+
+  - name: "[HA Connected Integration] open_meteo_solar_forecast"
+    unique_id: ha_connected_integration_open_meteo_solar_forecast
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/open_meteo_solar_forecast/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('open_meteo_solar_forecast')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Weatherflow Cloud"
-    unique_id: weatherflow_cloud_connected
-    icon: mdi:weather-lightning-rainy
-    picture: https://brands.home-assistant.io/weatherflow/icon.png
+
+  - name: "[HA Connected Integration] opennem"
+    unique_id: ha_connected_integration_opennem
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/opennem/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('weatherflow_forecast')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('opennem')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Bureau of Meterology"
-    unique_id: bureau_of_meteorology_connected
-    icon: mdi:weather-lightning-rainy
-    picture: https://brands.home-assistant.io/bureau_of_meteorology/icon.png
+
+  - name: "[HA Connected Integration] openuv"
+    unique_id: ha_connected_integration_openuv
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/openuv/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('bureau_of_meteorology')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('openuv')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Sungather"
-    unique_id: ha_connected_integrationsungather
-    icon: mdi:solar-power-variant-outline
+
+  - name: "[HA Connected Integration] openweathermap"
+    unique_id: ha_connected_integration_openweathermap
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/openweathermap/icon.png
     device_class: connectivity
-    state: "{{ 'True' if is_state('binary_sensor.sungather_running', 'on') else 'False' }}"
+    state: "{{ integration_entities('openweathermap')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] PirateWeather"
-    unique_id: ha_connected_integrationpirateweather
-    icon: mdi:weather-sunny-alert
+
+  - name: "[HA Connected Integration] pirateweather"
+    unique_id: ha_connected_integration_pirateweather
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
     picture: https://brands.home-assistant.io/pirateweather/icon.png
     device_class: connectivity
     state: "{{ integration_entities('pirateweather')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Eufy Security"
-    unique_id: ha_connected_integrationeufysecurity
-    icon: mdi:cctv-off
+
+  - name: "[HA Connected Integration] playstation_network"
+    unique_id: ha_connected_integration_playstation_network
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/playstation_network/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/eufy_security/icon.png
-    state: "{{ integration_entities('eufy_security')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('playstation_network')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Bureau of Meteorology"
-    unique_id: ha_connected_integrationbureauofmeteorology
-    icon: mdi:weather-lightning-rainy
+
+  - name: "[HA Connected Integration] plex"
+    unique_id: ha_connected_integration_plex
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/plex/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/bureau_of_meteorology/icon.png
-    state: "{{ integration_entities('bureau_of_meteorology')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('plex')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] AdGuard"
-    unique_id: ha_connected_integrationadguard
-    icon: mdi:shield-account
+
+  - name: "[HA Connected Integration] plex_recently_added"
+    unique_id: ha_connected_integration_plex_recently_added
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/plex_recently_added/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/adguard/icon.png
-    state: "{{ integration_entities('adguard')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('plex_recently_added')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Solcast Solar"
-    unique_id: ha_connected_integrationsolcast_solar
-    icon: mdi:solar-power-variant
+
+  - name: "[HA Connected Integration] pocketcasts"
+    unique_id: ha_connected_integration_pocketcasts
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/pocketcasts/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/solcast_solar/icon.png
-    state: "{{ integration_entities('solcast_solar')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('pocketcasts')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Forecast Solar"
-    unique_id: ha_connected_integrationforecast_solar
-    icon: mdi:solar-power-variant
+
+  - name: "[HA Connected Integration] powercalc"
+    unique_id: ha_connected_integration_powercalc
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/powercalc/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/forecast_solar/icon.png
-    state: "{{ integration_entities('forecast_solar')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('powercalc')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] LG SmartThinq"
-    unique_id: ha_connected_integrationlg_smartthinq
-    icon: si:lg
+
+  - name: "[HA Connected Integration] private_ble_device"
+    unique_id: ha_connected_integration_private_ble_device
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/private_ble_device/icon.png
     device_class: connectivity
+    state: "{{ integration_entities('private_ble_device')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] prometheus_query"
+    unique_id: ha_connected_integration_prometheus_query
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/prometheus_query/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('prometheus_query')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] prometheus_sensor"
+    unique_id: ha_connected_integration_prometheus_sensor
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/prometheus_sensor/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('prometheus_sensor')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] proxmoxve"
+    unique_id: ha_connected_integration_proxmoxve
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/proxmoxve/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('proxmoxve')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] qbittorrent"
+    unique_id: ha_connected_integration_qbittorrent
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/qbittorrent/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('qbittorrent')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] qbittorrent_alt"
+    unique_id: ha_connected_integration_qbittorrent_alt
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/qbittorrent_alt/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('qbittorrent_alt')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] radarr"
+    unique_id: ha_connected_integration_radarr
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/radarr/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('radarr')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] radarr_upcoming_media"
+    unique_id: ha_connected_integration_radarr_upcoming_media
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/radarr_upcoming_media/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('radarr_upcoming_media')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] sabnzbd"
+    unique_id: ha_connected_integration_sabnzbd
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sabnzbd/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('sabnzbd')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] satellitetracker"
+    unique_id: ha_connected_integration_satellitetracker
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/satellitetracker/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('satellitetracker')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] season"
+    unique_id: ha_connected_integration_season
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/season/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('season')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] sensibo"
+    unique_id: ha_connected_integration_sensibo
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sensibo/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('sensibo')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] smartthinq_sensors"
+    unique_id: ha_connected_integration_smartthinq_sensors
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
     picture: https://brands.home-assistant.io/smartthinq_sensors/icon.png
+    device_class: connectivity
     state: "{{ integration_entities('smartthinq_sensors')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Synology"
-    unique_id: ha_connected_integrationsynology_dsm
-    icon: mdi:nas
+
+  - name: "[HA Connected Integration] solcast_solar"
+    unique_id: ha_connected_integration_solcast_solar
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/solcast_solar/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/synology_dsm/icon.png
-    state: "{{ integration_entities('synology_dsm')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('solcast_solar')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Spotify"
-    unique_id: ha_connected_integrationspotify
-    icon: mdi:spotify
+
+  - name: "[HA Connected Integration] sonarr"
+    unique_id: ha_connected_integration_sonarr
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sonarr/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/spotify/icon.png
-    state: "{{ integration_entities('spotify')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('sonarr')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Apple TV"
-    unique_id: ha_connected_integrationapple_tv
-    icon: mdi:apple
+
+  - name: "[HA Connected Integration] sonarr_upcoming_media"
+    unique_id: ha_connected_integration_sonarr_upcoming_media
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sonarr_upcoming_media/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/apple_tv/icon.png
-    state: "{{ integration_entities('apple_tv')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('sonarr_upcoming_media')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] HDHomeRun"
-    unique_id: ha_connected_integrationhdhomerun
-    icon: mdi:television-box
+
+  - name: "[HA Connected Integration] sonos"
+    unique_id: ha_connected_integration_sonos
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sonos/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/hdhomerun/icon.png
-    state: "{{ integration_entities('hdhomerun')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('sonos')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Unifi"
-    unique_id: ha_connected_integrationunifi
-    icon: mdi:wifi
-    device_class: connectivity
-    picture: https://brands.home-assistant.io/unifi/icon.png
-    state: "{{ integration_entities('unifi')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Speedtest"
-    unique_id: ha_connected_integrationspeedtest
-    icon: mdi:speedtest
-    device_class: connectivity
+
+  - name: "[HA Connected Integration] speedtestdotnet"
+    unique_id: ha_connected_integration_speedtestdotnet
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
     picture: https://brands.home-assistant.io/speedtestdotnet/icon.png
+    device_class: connectivity
     state: "{{ integration_entities('speedtestdotnet')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
-  - name: "[HA Connected Integration] iCal"
-    unique_id: ha_connected_integrationical
-    icon: mdi:calendar
+
+  - name: "[HA Connected Integration] spook"
+    unique_id: ha_connected_integration_spook
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/spook/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/ical/icon.png
-    state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-  - name: "[HA Connected Integration] iCloud 3"
-    unique_id: ha_connected_integrationicloud3
-    icon: mdi:apple-icloud
-    device_class: connectivity
-    picture: https://brands.home-assistant.io/icloud3/icon.png
-    state: "{{ integration_entities('icloud3')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-  - name: "[HA Connected Integration] Cloudflare Tunnel Monitor"
-    unique_id: ha_connected_integrationcloudflare_tunnel_monitor
-    icon: si:cloudflare
-    device_class: connectivity
-    picture: https://brands.home-assistant.io/cloudflare_tunnel_monitor/icon.png
-    state: "{{ integration_entities('cloudflare_tunnel_monitor')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('spook')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
 
-  - name: "[HA Connected Integration] CO2 Signal"
-    unique_id: ha_connected_integrationco2_signal
-    icon: mdi:smog
+  - name: "[HA Connected Integration] spotify"
+    unique_id: ha_connected_integration_spotify
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/spotify/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/co2_signal/icon.png
-    state: "{{ integration_entities('co2_signal')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('spotify')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
 
-  - name: "[HA Connected Integration] Blitzortung"
-    unique_id: ha_connected_integrationblitzortung
-    icon: mdi:flash-alert
+  - name: "[HA Connected Integration] spotifyplus"
+    unique_id: ha_connected_integration_spotifyplus
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/spotifyplus/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/blitzortung/icon.png
-    state: "{{ integration_entities('blitzortung')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('spotifyplus')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
 
-  - name: "[HA Connected Integration] Fuel Prices"
-    unique_id: ha_connected_integrationfuel_prices
-    icon: mdi:gas-station
+  - name: "[HA Connected Integration] sql_json"
+    unique_id: ha_connected_integration_sql_json
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sql_json/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/fuel_prices/icon.png
-    state: "{{ integration_entities('fuel_prices')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('sql_json')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
 
-  - name: "[HA Connected Integration] Flightradar24"
-    unique_id: ha_connected_integrationflightradar24
-    icon: mdi:airplane-alert
+  - name: "[HA Connected Integration] start_time"
+    unique_id: ha_connected_integration_start_time
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/start_time/icon.png
     device_class: connectivity
-    picture: https://brands.home-assistant.io/flightradar24/icon.png
-    state: "{{ integration_entities('flightradar24')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('start_time')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] sun2"
+    unique_id: ha_connected_integration_sun2
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/sun2/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('sun2')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] swatch_time"
+    unique_id: ha_connected_integration_swatch_time
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/swatch_time/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('swatch_time')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] synology_dsm"
+    unique_id: ha_connected_integration_synology_dsm
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/synology_dsm/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('synology_dsm')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] tautulli"
+    unique_id: ha_connected_integration_tautulli
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/tautulli/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('tautulli')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] teamtracker"
+    unique_id: ha_connected_integration_teamtracker
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/teamtracker/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('teamtracker')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] temperature_feels_like"
+    unique_id: ha_connected_integration_temperature_feels_like
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/temperature_feels_like/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('temperature_feels_like')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] thermal_comfort"
+    unique_id: ha_connected_integration_thermal_comfort
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/thermal_comfort/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('thermal_comfort')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] tomorrowio"
+    unique_id: ha_connected_integration_tomorrowio
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/tomorrowio/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('tomorrowio')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] tuya"
+    unique_id: ha_connected_integration_tuya
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/tuya/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('tuya')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] unifi"
+    unique_id: ha_connected_integration_unifi
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/unifi/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('unifi')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] universal"
+    unique_id: ha_connected_integration_universal
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/universal/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('universal')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] untappd"
+    unique_id: ha_connected_integration_untappd
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/untappd/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('untappd')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] uptime"
+    unique_id: ha_connected_integration_uptime
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/uptime/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('uptime')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] uptime_kuma"
+    unique_id: ha_connected_integration_uptime_kuma
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/uptime_kuma/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('uptime_kuma')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] waqi"
+    unique_id: ha_connected_integration_waqi
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/waqi/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('waqi')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] watchman"
+    unique_id: ha_connected_integration_watchman
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/watchman/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('watchman')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] waternsw"
+    unique_id: ha_connected_integration_waternsw
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/waternsw/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('waternsw')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] weatherflow"
+    unique_id: ha_connected_integration_weatherflow
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/weatherflow/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] weatherflow_cloud"
+    unique_id: ha_connected_integration_weatherflow_cloud
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/weatherflow_cloud/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('weatherflow_cloud')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] weatherflow_forecast"
+    unique_id: ha_connected_integration_weatherflow_forecast
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/weatherflow_forecast/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('weatherflow_forecast')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] webostv"
+    unique_id: ha_connected_integration_webostv
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/webostv/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('webostv')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] withings"
+    unique_id: ha_connected_integration_withings
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/withings/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('withings')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] workday"
+    unique_id: ha_connected_integration_workday
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/workday/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('workday')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] worlds_air_quality_index"
+    unique_id: ha_connected_integration_worlds_air_quality_index
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/worlds_air_quality_index/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('worlds_air_quality_index')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] yahoofinance"
+    unique_id: ha_connected_integration_yahoofinance
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/yahoofinance/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('yahoofinance')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+
+  - name: "[HA Connected Integration] youtube"
+    unique_id: ha_connected_integration_youtube
+    icon: "{{ iif(states(this.entity_id) == 'on','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/youtube/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('youtube')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
 

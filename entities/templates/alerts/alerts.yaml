@@ -40,6 +40,27 @@ binary_sensor:
     attributes:
       category: homeassistant_connectivity
 
+  - name: "alerts_ha_connected_integration"
+    unique_id: alerts_ha_connected_integration
+    icon: mdi:sync-alert
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{states
+          |selectattr('entity_id','search','binary_sensor.ha_connected_integration_*')
+          |selectattr('state','eq','off')
+          |map(attribute='entity_id')
+          |list | count > 0
+          and is_state('input_boolean.alerts_ha','on')  }}
+    attributes:
+      category: homeassistant_connectivity
+      impacted_integrations: >
+        {{states
+            |selectattr('entity_id','search','binary_sensor.ha_connected_integration_*')
+            |selectattr('state','eq','off')
+            |map(attribute='entity_id')
+            |list|sort|replace('binary_sensor.ha_connected_integration_','') }}
+
   - name: "alerts_connect_weatherflow_cloud"
     unique_id: alerts_connect_weatherflow_cloud
     icon: mdi:weather-lightning-rainy
