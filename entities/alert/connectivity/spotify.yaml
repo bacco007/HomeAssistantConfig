@@ -1,7 +1,7 @@
 ---
 spotify_connected:
   name: "Spotify Connected"
-  entity_id: binary_sensor.connected_spotify
+  entity_id: binary_sensor.ha_connected_integration_spotify
   state: "on"
   notifiers: log
   skip_first: false

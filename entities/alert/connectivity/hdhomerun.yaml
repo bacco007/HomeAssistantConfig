@@ -1,7 +1,7 @@
 ---
 hdhomerun_connected:
   name: "HDHomerun Connected"
-  entity_id: binary_sensor.connected_hdhomerun
+  entity_id: binary_sensor.ha_connected_integration_hdhomerun
   state: "on"
   notifiers: log
   skip_first: false

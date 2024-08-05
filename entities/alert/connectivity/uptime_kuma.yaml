@@ -1,7 +1,7 @@
 ---
 uptime_kuma_connected:
   name: "Uptime Kuma Connected"
-  entity_id: binary_sensor.connected_uptime_kuma
+  entity_id: binary_sensor.ha_connected_integration_uptime_kuma
   state: "on"
   notifiers: log
   skip_first: false

@@ -11,4 +11,6 @@ binary_sensor:
         {{ states.calendar
             | selectattr('attributes.start_time', 'eq', null)
             | map(attribute='name') | list | sort }}
-    availability: "{{ is_state('binary_sensor.connected_ical', 'on') }}"
+    availability: >
+      {{ is_state('binary_sensor.ha_connected_integration_ical', 'on')
+        or is_state('binary_sensor.ha_connected_integration_ics_calendar', 'on') }}

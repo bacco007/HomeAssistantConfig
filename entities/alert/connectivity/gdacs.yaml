@@ -1,7 +1,7 @@
 ---
 gdacs_connected:
   name: "GDACS Connected"
-  entity_id: binary_sensor.connected_gdacs
+  entity_id: binary_sensor.ha_connected_integration_gdacs
   state: "on"
   notifiers: log
   skip_first: false

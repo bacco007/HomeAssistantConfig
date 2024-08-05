@@ -6,7 +6,7 @@ sensor:
   name: olympic_medal_tally
   unique_id: olympic_medal_tally
   value_template: >
-    {{ value_json.results.medals.total }}
+    {{ value_json.results[0]['medals']['total'] }}
   json_attributes:
     - last_updated
     - results

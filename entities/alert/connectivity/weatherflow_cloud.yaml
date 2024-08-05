@@ -1,7 +1,7 @@
 ---
 weatherflow_cloud:
   name: "Weatherflow (Cloud) Connected"
-  entity_id: binary_sensor.alerts_connect_weatherflow_cloud
+  entity_id: binary_sensor.alerts_ha_connected_integration_weatherflow_cloud
   state: "on"
   notifiers:
     - log

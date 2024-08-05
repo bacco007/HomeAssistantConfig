@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.8.0b1 |
 | No. Integrations | 213 |
 | No. Custom Integrations | 91 |
-| No. Entities | 5619 |
-| No. Sensors | 3637 |
+| No. Entities | 5627 |
+| No. Sensors | 3643 |
 | No. Automations | 147 |
 
 <details>
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 491
+Binary sensors | 492
 Buttons | 160
 Calendars | 83
 Cameras | 6
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 33
 Numbers | 37
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 55
-Sensors | 3637
+Sensors | 3643
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -791,7 +791,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
-| [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [vpre-7.1.0] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.6.2] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
@@ -873,7 +873,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.0] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.1] | Build a beautiful Home Assistant dashboard easily |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |

@@ -1,7 +1,7 @@
 ---
 openuv_connected:
   name: "OpenUV Connected"
-  entity_id: binary_sensor.connected_openuv
+  entity_id: binary_sensor.ha_connected_integration_openuv
   state: "on"
   notifiers: log
   skip_first: false

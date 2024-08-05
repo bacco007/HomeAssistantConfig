@@ -1,7 +1,7 @@
 ---
 bureau_of_meteorology_connected:
   name: "Bureau of Meteorology Connected"
-  entity_id: binary_sensor.connected_bureau_of_meteorology
+  entity_id: binary_sensor.ha_connected_integration_bureau_of_meteorology
   state: "on"
   notifiers: log
   skip_first: false

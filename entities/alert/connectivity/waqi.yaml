@@ -1,7 +1,7 @@
 ---
 waqi_connected:
   name: "WAQI Connected"
-  entity_id: binary_sensor.connected_waqi
+  entity_id: binary_sensor.ha_connected_integration_waqi
   state: "on"
   notifiers: log
   skip_first: false

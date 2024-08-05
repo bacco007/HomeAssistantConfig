@@ -1,7 +1,7 @@
 ---
 eufy_security_connected:
   name: "Eufy Security Connected"
-  entity_id: binary_sensor.connected_eufy_security
+  entity_id: binary_sensor.ha_connected_integration_eufy_security
   state: "on"
   notifiers: log
   skip_first: false

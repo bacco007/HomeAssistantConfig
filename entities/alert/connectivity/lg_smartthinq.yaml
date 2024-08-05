@@ -1,7 +1,7 @@
 ---
 lg_smartthinq_connected:
   name: "LG SmartThinq Connected"
-  entity_id: binary_sensor.connected_lg_smartthinq
+  entity_id: binary_sensor.ha_connected_integration_lg_smartthinq
   state: "on"
   notifiers: log
   skip_first: false

@@ -1,7 +1,7 @@
 ---
 blitzortung_connected:
   name: "Blitzortung Connected"
-  entity_id: binary_sensor.connected_blitzortung
+  entity_id: binary_sensor.ha_connected_integration_blitzortung
   state: "on"
   notifiers: log
   skip_first: false

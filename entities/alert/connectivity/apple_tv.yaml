@@ -1,7 +1,7 @@
 ---
 apple_tv_connected:
   name: "Apple TV Connected"
-  entity_id: binary_sensor.connected_apple_tv
+  entity_id: binary_sensor.ha_connected_integration_apple_tv
   state: "on"
   notifiers: log
   skip_first: false

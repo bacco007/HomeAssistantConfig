@@ -1,7 +1,7 @@
 ---
 pirateweather_connected:
   name: "Pirate Weather Connected"
-  entity_id: binary_sensor.connected_pirateweather
+  entity_id: binary_sensor.ha_connected_integration_pirateweather
   state: "on"
   notifiers: log
   skip_first: false
