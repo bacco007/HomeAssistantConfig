@@ -7,7 +7,10 @@ from typing import Any
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import (
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
 from psnawp_api.core.psnawp_exceptions import PSNAWPAuthenticationError
 
 from .const import DEVICE_SCAN_INTERVAL, DOMAIN
@@ -59,7 +62,9 @@ class PsnCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 == "availableToPlay"
             )
             self.data["platform"] = (
-                self.data["presence"].get("basicPresence").get("primaryPlatformInfo")
+                self.data["presence"]
+                .get("basicPresence")
+                .get("primaryPlatformInfo")
             )
             try:
                 self.data["title_metadata"] = (
@@ -71,7 +76,9 @@ class PsnCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 self.data["title_metadata"] = {}
 
             # self.data["friends"] = await self.client.available_to_play()
-            self.data["trophy_summary"] = await self.hass.async_add_executor_job(
+            self.data[
+                "trophy_summary"
+            ] = await self.hass.async_add_executor_job(
                 lambda: self.client.trophy_summary()
             )
 
@@ -83,7 +90,9 @@ class PsnCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 title = await self.hass.async_add_executor_job(
                     lambda: self.api.game_title(title_id, "me")
                 )
-                self.data["title_details"] = await self.hass.async_add_executor_job(
+                self.data[
+                    "title_details"
+                ] = await self.hass.async_add_executor_job(
                     lambda: title.get_details()
                 )
 
@@ -97,7 +106,7 @@ class PsnCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 )
 
                 titles_with_stats = await self.hass.async_add_executor_job(
-                    lambda: self.client.title_stats(limit=5)
+                    lambda: self.client.title_stats(limit=3, page_size=3)
                 )
                 await self.hass.async_add_executor_job(
                     lambda: self.get_titles(titles_with_stats)

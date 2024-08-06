@@ -66,6 +66,7 @@ def get_status_attr(coordinator_data: any) -> dict[str, str]:
                 "silver": 0,
                 "bronze": 0,
             },
+            "trophy_progress": 0,
         }
 
         title = coordinator_data.get("title_details")[0]
@@ -83,6 +84,7 @@ def get_status_attr(coordinator_data: any) -> dict[str, str]:
         attrs["star_rating"] = title.get("starRating").get("score")
         attrs["trophies"] = title_trophies.defined_trophies
         attrs["earned_trophies"] = title_trophies.earned_trophies
+        attrs["trophy_progress"] = title_trophies.progress
 
         for t in coordinator_data["recent_titles"]:
             if t.title_id == coordinator_data.get("title_metadata").get("npTitleId"):
