@@ -1,5 +1,4 @@
 from collections.abc import Callable, Coroutine
-from dataclasses import dataclass
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -18,15 +17,11 @@ from .const import DOMAIN
 from .coordinator import QBittorrentDataCoordinator
 
 
-@dataclass
-class QBittorrentMixin:
+class QBittorrentNumberEntityDescription(
+    NumberEntityDescription, frozen_or_thawed=True
+):
     value_fn: Callable[[QBittorrentDataCoordinator], StateType]
     set_value_fn: Callable[[QBittorrentDataCoordinator, float], Coroutine]
-
-
-@dataclass
-class QBittorrentNumberEntityDescription(NumberEntityDescription, QBittorrentMixin):
-    pass
 
 
 NUMBER_TYPES: tuple[QBittorrentNumberEntityDescription, ...] = (
@@ -42,9 +37,8 @@ NUMBER_TYPES: tuple[QBittorrentNumberEntityDescription, ...] = (
             "dl_rate_limit"
         ]
         / 1024,
-        set_value_fn=lambda coordinator, value: coordinator.client.transfer.set_download_limit(
-            value * 1024
-        ),
+        set_value_fn=lambda coordinator,
+        value: coordinator.client.transfer.set_download_limit(value * 1024),
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
     ),
@@ -60,9 +54,8 @@ NUMBER_TYPES: tuple[QBittorrentNumberEntityDescription, ...] = (
             "up_rate_limit"
         ]
         / 1024,
-        set_value_fn=lambda coordinator, value: coordinator.client.transfer.set_download_limit(
-            value * 1024
-        ),
+        set_value_fn=lambda coordinator,
+        value: coordinator.client.transfer.set_download_limit(value * 1024),
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
     ),
@@ -132,7 +125,7 @@ NUMBER_TYPES: tuple[QBittorrentNumberEntityDescription, ...] = (
         key="port",
         name="Listening Port",
         icon="mdi:network-outline",
-        native_min_value=65535,
+        native_min_value=0,
         native_max_value=65535,
         mode=NumberMode.BOX,
         value_fn=lambda coordinator: coordinator.data["preferences"]["listen_port"],

@@ -1,7 +1,7 @@
 from os import path
 
 from aiohttp.client_exceptions import ClientConnectorError
-from aioqbt.exc import LoginError
+from aioqbt.exc import APIError, LoginError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_NAME,
@@ -29,34 +29,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def service_torrent_info(call: ServiceCall) -> ServiceResponse:
         torrent_hash = call.data.get("hash", "all")
-        if torrent_hash != "" and torrent_hash != "all":
+        if torrent_hash not in ("", "all"):
             torrent = await coordinator.client.torrents.info(hashes=[torrent_hash])
             return get_torrent_info(torrent)
-        else:
-            torrents = await coordinator.client.torrents.info(
-                filter=call.data.get("filter", None)
-            )
-            response = {"torrents": [get_torrent_info(torrent) for torrent in torrents]}
-            return response
+        torrents = await coordinator.client.torrents.info(
+            filter=call.data.get("filter", None)
+        )
+        return {"torrents": [get_torrent_info(torrent) for torrent in torrents]}
 
-    async def service_pause_torrents(call: ServiceCall):
+    async def service_pause_torrents(call: ServiceCall) -> None:
         await coordinator.client.torrents.pause(hashes=call.data.get("hash", "all"))
 
-    async def service_resume_torrents(call: ServiceCall):
+    async def service_resume_torrents(call: ServiceCall) -> None:
         await coordinator.client.torrents.resume(hashes=call.data.get("hash", "all"))
 
     hass.data.setdefault(DOMAIN, {})
     try:
         client = await setup_client(
-            path.join(entry.data[CONF_URL], "api/v2"),
+            path.join(entry.data[CONF_URL], "api/v2"),  # noqa: PTH118
             entry.data[CONF_USERNAME],
             entry.data[CONF_PASSWORD],
             entry.data[CONF_VERIFY_SSL],
         )
-        print(client.closed)
     except LoginError as err:
         raise ConfigEntryAuthFailed("Invalid credentials") from err
-    except ClientConnectorError as err:
+    except (ClientConnectorError, APIError) as err:
         raise ConfigEntryNotReady("Failed to connect") from err
 
     coordinator = QBittorrentDataCoordinator(

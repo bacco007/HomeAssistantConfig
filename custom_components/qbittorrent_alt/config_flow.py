@@ -1,5 +1,5 @@
 from os import path
-from typing import Any, Optional
+from typing import Any
 
 import voluptuous as vol
 from aiohttp.client_exceptions import ClientConnectorError
@@ -30,7 +30,7 @@ USER_DATA_SCHEMA = vol.Schema(
 
 class QbittorrentConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_user(
-        self, user_input: Optional[dict[str, Any]] = None
+        self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         errors = {}
         if user_input is not None:

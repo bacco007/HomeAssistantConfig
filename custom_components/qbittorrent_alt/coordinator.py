@@ -2,12 +2,13 @@ import logging
 from datetime import timedelta
 from typing import Any
 
+from aiohttp import ClientResponseError
 from aioqbt.client import APIClient
-from aioqbt.exc import LoginError
+from aioqbt.exc import APIError, LoginError
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN
 
@@ -23,6 +24,7 @@ class QBittorrentDataCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Initialize coordinator."""
         self.client = client
         self.device_info = device_info
+        self.skiped_update = False
         super().__init__(
             hass,
             _LOGGER,
@@ -33,6 +35,19 @@ class QBittorrentDataCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _async_update_data(self) -> dict[str, Any]:
         try:
             main_data = await self.client.sync.maindata()
+            if self.data and (
+                main_data.server_state["dl_info_data"]
+                < self.data["sync"].server_state["dl_info_data"]
+                or main_data.server_state["up_info_data"]
+                < self.data["sync"].server_state["up_info_data"]
+            ):
+                # qbittorrent restarted, skipping first update
+                if self.skiped_update:
+                    # already skipped
+                    self.skiped_update = False
+                else:
+                    main_data = self.data["sync"]
+                    self.skiped_update = True
             downloading = 0
             seeding = 0
             paused = 0
@@ -69,3 +84,5 @@ class QBittorrentDataCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             }
         except LoginError as exc:
             raise ConfigEntryAuthFailed("Invalid authentication") from exc
+        except (APIError, ClientResponseError) as exc:
+            raise UpdateFailed from exc

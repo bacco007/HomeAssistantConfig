@@ -1,7 +1,6 @@
 """Support for monitoring the qBittorrent API."""
 
 from collections.abc import Callable
-from dataclasses import dataclass
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -27,14 +26,10 @@ from .coordinator import QBittorrentDataCoordinator
 from .helpers import get_qbittorrent_state
 
 
-@dataclass
-class QBittorrentMixin:
+class QBittorrentSensorEntityDescription(
+    SensorEntityDescription, frozen_or_thawed=True
+):
     value_fn: Callable[[QBittorrentDataCoordinator], StateType]
-
-
-@dataclass
-class QBittorrentSensorEntityDescription(SensorEntityDescription, QBittorrentMixin):
-    pass
 
 
 SENSOR_TYPES: tuple[QBittorrentSensorEntityDescription, ...] = (

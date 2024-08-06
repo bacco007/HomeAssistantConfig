@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import QBittorrentDataCoordinator
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.typing import StateType
 
 
 async def async_setup_entry(
@@ -39,10 +43,10 @@ class QBittorrentAlternativeSpeedSwitch(
     def is_on(self) -> StateType:
         return self.coordinator.data["sync"].server_state["use_alt_speed_limits"]
 
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs) -> None:
         await self.coordinator.client.transfer.set_speed_limits_mode(1)
         await self.coordinator.async_request_refresh()
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         await self.coordinator.client.transfer.set_speed_limits_mode(0)
         await self.coordinator.async_request_refresh()

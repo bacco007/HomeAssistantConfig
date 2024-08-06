@@ -1,5 +1,4 @@
 from collections.abc import Callable, Coroutine
-from dataclasses import dataclass
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -11,14 +10,10 @@ from .const import DOMAIN
 from .coordinator import QBittorrentDataCoordinator
 
 
-@dataclass
-class QBittorrentMixin:
+class QBittorrentButtonEntityDescription(
+    ButtonEntityDescription, frozen_or_thawed=True
+):
     press_fn: Callable[[QBittorrentDataCoordinator], Coroutine]
-
-
-@dataclass
-class QBittorrentButtonEntityDescription(ButtonEntityDescription, QBittorrentMixin):
-    pass
 
 
 BUTTON_TYPES: tuple[QBittorrentButtonEntityDescription, ...] = (

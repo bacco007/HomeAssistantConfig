@@ -3,6 +3,7 @@ import ssl
 from aiohttp import ClientConnectorError, ClientSession, CookieJar
 from aioqbt.api.types import TorrentInfo
 from aioqbt.client import APIClient, create_client
+from aioqbt.exc import APIError
 from homeassistant.const import STATE_IDLE
 
 from .coordinator import QBittorrentDataCoordinator
@@ -26,13 +27,15 @@ async def setup_client(
             ssl=ssl_context,
             http=client_session,
         )
-        # pylint: disable-next=protected-access
-        client._http_owner = True  # Let aioqbt manage the ClientSession
+        client._http_owner = True  # Let aioqbt manage the ClientSession  # noqa: SLF001
         await client.app.version()
+    except (ClientConnectorError, APIError) as err:
+        await (
+            client_session.close()
+        )  # Manuel close ClientSession when client setup fails
+        raise err from err
+    else:
         return client
-    except ClientConnectorError as err:
-        await client_session.close()  # Manuel close ClientSession when client setup fails
-        raise err
 
 
 def get_qbittorrent_state(coordinator: QBittorrentDataCoordinator) -> str:
