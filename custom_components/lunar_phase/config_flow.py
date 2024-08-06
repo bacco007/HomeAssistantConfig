@@ -2,19 +2,13 @@
 
 from __future__ import annotations
 
-import os
-import sys
-
-# Add the path to the vendored astral package
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "libs"))
-
 import logging
 from typing import Any
 
-import voluptuous as vol
-
 from astral import LocationInfo
 from astral.geocoder import database, lookup
+import voluptuous as vol
+
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import (
     CONF_LATITUDE,
@@ -77,7 +71,12 @@ async def create_location(hass: HomeAssistant, data: dict[str, Any]) -> Location
     longitude = data.get(CONF_LONGITUDE)
     timezone = data.get(CONF_TIME_ZONE)
 
-    return LocationInfo(city, region, timezone, latitude, longitude)
+    try:
+        location = LocationInfo(city, region, timezone, latitude, longitude)
+        _LOGGER.debug("Location: %s", location)
+    except Exception:
+        _LOGGER.exception("Unexpected exception: %s", Exception)
+    return location
 
 
 class ConfigFlow(ConfigFlow, domain=DOMAIN):

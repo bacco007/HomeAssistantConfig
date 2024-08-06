@@ -1,14 +1,13 @@
 {
-    "title": "Lunar Phase",
     "config": {
         "abort": {
             "already_configured": "Device is already configured"
         },
         "error": {
             "cannot_connect": "Failed to connect",
+            "city_not_found": "City not found",
             "invalid_auth": "Invalid authentication",
-            "unknown": "Unexpected error",
-            "city_not_found": "City not found"
+            "unknown": "Unexpected error"
         },
         "step": {
             "location": {
@@ -41,7 +40,16 @@
                     "waxing_crescent": "Waxing crescent",
                     "waxing_gibbous": "Waxing gibbous"
                 }
+            },
+            "next_phase": {
+                "state": {
+                    "first_quarter": "First quarter",
+                    "full_moon": "Full moon",
+                    "last_quarter": "Last quarter",
+                    "new_moon": "New moon"
+                }
             }
         }
-    }
+    },
+    "title": "Lunar Phase"
 }

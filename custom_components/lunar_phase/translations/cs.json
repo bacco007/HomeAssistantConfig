@@ -41,6 +41,14 @@
                     "waxing_crescent": "Dorůstající srpek",
                     "waxing_gibbous": "Dorůstající měsíc"
                 }
+            },
+            "next_phase": {
+                "state": {
+                    "first_quarter": "První čtvrť",
+                    "full_moon": "Úplněk",
+                    "last_quarter": "Poslední čtvrť",
+                    "new_moon": "Novoluní"
+                }
             }
         }
     }

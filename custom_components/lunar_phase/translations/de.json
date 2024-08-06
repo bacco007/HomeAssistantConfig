@@ -1,0 +1,55 @@
+{
+    "title": "Lunar Phase",
+    "config": {
+        "abort": {
+            "already_configured": "Gerät ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_auth": "Ungültige Authentifizierung ",
+            "unknown": "Unbekannter Fehler",
+            "city_not_found": "Stadt nicht gefunden"
+        },
+        "step": {
+            "location": {
+                "data": {
+                    "city": "Stadt",
+                    "latitude": "Breitengrad",
+                    "longitude": "Längengrad",
+                    "region": "Region",
+                    "time_zone": "Zeitzone"
+                }
+            },
+            "user": {
+                "data": {
+                    "city": "Stadt"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "moon_phase": {
+                "name": "Mondphase",
+                "state": {
+                    "first_quarter": "Zunehmender Mond",
+                    "full_moon": "Vollmond",
+                    "last_quarter": "Zunehmender Dreiviertelmond",
+                    "new_moon": "Neumond",
+                    "waning_crescent": "Abnehmender Sichelmond",
+                    "waning_gibbous": "Abnehmender Dreiviertelmond",
+                    "waxing_crescent": "Zunehmender Sichelmond",
+                    "waxing_gibbous": "Zunehmender Dreiviertelmond"
+                }
+            },
+            "next_phase": {
+                "state": {
+                    "first_quarter": "Zunehmender Mond",
+                    "full_moon": "Vollmond",
+                    "last_quarter": "Zunehmender Dreiviertelmond",
+                    "new_moon": "Neumond"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,55 @@
+{
+	"title": "Lunar Phase",
+	"config": {
+		"abort": {
+			"already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+		},
+		"error": {
+			"cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+			"invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+			"unknown": "[%key:common::config_flow::error::unknown%]",
+			"city_not_found": "City not found"
+		},
+		"step": {
+			"location": {
+				"data": {
+					"city": "City",
+					"latitude": "Latitude",
+					"longitude": "Longitude",
+					"region": "Region",
+					"time_zone": "Timezone"
+				}
+			},
+			"user": {
+				"data": {
+					"city": "City"
+				}
+			}
+		}
+	},
+	"entity": {
+		"sensor": {
+			"moon_phase": {
+				"name": "Moon Phase",
+				"state": {
+					"first_quarter": "First quarter",
+					"full_moon": "Full moon",
+					"last_quarter": "Last quarter",
+					"new_moon": "New moon",
+					"waning_crescent": "Waning crescent",
+					"waning_gibbous": "Waning gibbous",
+					"waxing_crescent": "Waxing crescent",
+					"waxing_gibbous": "Waxing gibbous"
+				}
+			},
+			"next_phase": {
+				"state": {
+					"first_quarter": "First quarter",
+					"full_moon": "Full moon",
+					"last_quarter": "Last quarter",
+					"new_moon": "New moon"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,55 @@
+{
+    "title": "Lunar Phase",
+    "config": {
+        "abort": {
+            "already_configured": "Perangkat sudah dikonfigurasi"
+        },
+        "error": {
+            "cannot_connect": "Gagal terhubung",
+            "invalid_auth": "Otentikasi tidak valid",
+            "unknown": "Terjadi kesalahan yang tidak jelas",
+            "city_not_found": "Kota tidak ditemukan"
+        },
+        "step": {
+            "location": {
+                "data": {
+                    "city": "Kota",
+                    "latitude": "Garis Lintang",
+                    "longitude": "Garis bujur",
+                    "region": "Wilayah",
+                    "time_zone": "Zona waktu"
+                }
+            },
+            "user": {
+                "data": {
+                    "city": "Kota"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "moon_phase": {
+                "name": "Fase Bulan",
+                "state": {
+                    "first_quarter": "Bulan Paruh awal",
+                    "full_moon": "Bulan Purnama",
+                    "last_quarter": "Bulan Paruh akhir",
+                    "new_moon": "Bulan Baru",
+                    "waning_crescent": "Bulan Sabit akhir",
+                    "waning_gibbous": "Bulan Cembung akhir",
+                    "waxing_crescent": "Bulan Sabit awal",
+                    "waxing_gibbous": "Bulan Cembung awal"
+                }
+            },
+            "next_phase": {
+                "state": {
+                    "first_quarter": "Bulan Paruh awal",
+                    "full_moon": "Bulan Purnama",
+                    "last_quarter": "Bulan Paruh akhir",
+                    "new_moon": "Bulan Baru"
+                }
+            }
+        }
+    }
+}
