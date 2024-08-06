@@ -32,14 +32,14 @@ cards:
           - attribute: arrival
             format: relative
       - type: section
-      - entity: sensor.tfnsw_tamworth_to_central
+      - entity: sensor.xplorer_tamworth_to_central
         type: custom:multiple-entity-row
         name: Train Tamworth to Central
         show_state: false
         entities:
           - attribute: arrival
             format: relative
-      - entity: sensor.tfnsw_central_to_tamworth
+      - entity: sensor.xplorer_central_to_tamworth
         type: custom:multiple-entity-row
         name: Train Central to Tamworth
         show_state: false

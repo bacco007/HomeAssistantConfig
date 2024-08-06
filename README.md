@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.8.0b1 |
-| No. Integrations | 213 |
+| HA Version | 2024.8.0b3 |
+| No. Integrations | 214 |
 | No. Custom Integrations | 91 |
-| No. Entities | 5627 |
-| No. Sensors | 3643 |
+| No. Entities | 5959 |
+| No. Sensors | 3795 |
 | No. Automations | 147 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 492
-Buttons | 160
+Buttons | 235
 Calendars | 83
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 661
+Devices | 657
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 33
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 74
 Selects | 55
-Sensors | 3643
+Sensors | 3795
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 163
+Switches | 265
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 307
+Update | 308
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>622 Integrations</summary>
+<details><summary>625 Integrations</summary>
 
 | Name |
 | --- |
@@ -412,6 +412,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mobile_app.notify](https://www.home-assistant.io/components/mobile_app.notify) |
 | [mobile_app.sensor](https://www.home-assistant.io/components/mobile_app.sensor) |
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
+| [monitor_docker.button](https://www.home-assistant.io/components/monitor_docker.button) |
+| [monitor_docker.sensor](https://www.home-assistant.io/components/monitor_docker.sensor) |
+| [monitor_docker.switch](https://www.home-assistant.io/components/monitor_docker.switch) |
 | [moon](https://www.home-assistant.io/components/moon) |
 | [moon.sensor](https://www.home-assistant.io/components/moon.sensor) |
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
@@ -764,7 +767,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates) |  [v1.4.0] | This integration adds possibility to use new functions in Home Assistant Jinja2 templating engine. |[@PiotrMachowski](https://github.com/PiotrMachowski).|
 | [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.6.2] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
 | [Default Config Disabler](https://github.com/tronikos/default_config_disabler) |  [v0.0.4] | Disables components from Home Assistant's default_config |[@tronikos](https://github.com/tronikos).|
-| [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.8.3] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
+| [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.9.0] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.5.0] |  |[@martinarva](https://github.com/martinarva).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.11] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.2] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
@@ -787,7 +790,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
-| [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.1.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
+| [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.0] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
@@ -801,13 +804,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.14.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
-| [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.4.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
+| [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.13.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.4.4] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
-| [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.3] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
+| [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.5] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
 | [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.4.2] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.11] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
@@ -815,7 +818,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.0.31] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.0.1] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.45] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.47] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.2] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -850,7 +853,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.7.2] | Custom brand icons for Home Assistant |
-| [Custom Features For Home Assistant Tile Card And More!](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.4] | Home Assistant custom features for tile cards and more. Call almost any action using buttons, sliders, selectors, and spinboxes |
+| [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.5] | Home Assistant custom features for tile cards and more. Call almost any action using buttons, sliders, selectors, and spinboxes |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
@@ -862,7 +865,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.2] | Present the data of Formula One in a pretty way |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  | Heatmap custom card for Home Assistant |
 | [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card) |  [v1.1.0] | Sun Card successor: Visualize the position of the Sun over the horizon. |
-| [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.0.2] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
+| [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.1.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.1.0] | 🙈 Hides the Home Assistant header and/or sidebar |
@@ -873,7 +876,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.1] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.2] | Build a beautiful Home Assistant dashboard easily |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -924,7 +927,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
-| Matter Server | 6.3.1 |  | core |
+| Matter Server | 6.4.0 |  | core |
 | Music Assistant Server | 2.1.1 |  | d5369777 |
 | Node-RED | 18.0.4 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.0 |  | core |
@@ -980,7 +983,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.8.0b1-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.8.0b3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml

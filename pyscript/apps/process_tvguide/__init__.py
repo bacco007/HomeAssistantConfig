@@ -118,7 +118,8 @@ def process_tvguide(file):
                     "channel": channel,
                     "title": title,
                     "subtitle": subtitle,
-                    "description": description,
+                    # "description": description,
+                    "description": "none",
                     "details": details,
                     "episode": episode
                 })
@@ -130,7 +131,8 @@ def process_tvguide(file):
                 "channel": channel,
                 "title": title,
                 "subtitle": subtitle,
-                "description": description,
+                # "description": description,
+                "description": "none",
                 "details": details,
                 "episode": episode
             })

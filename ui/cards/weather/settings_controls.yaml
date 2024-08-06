@@ -97,7 +97,7 @@ cards:
           - entity: binary_sensor.ha_connected_integration_openuv
           - entity: binary_sensor.ha_connected_integration_waqi
           - entity: binary_sensor.ha_connected_integration_weatherflow_cloud
-          - entity: binary_sensor.ha_connected_integration_weatherflow_local
+          - entity: binary_sensor.ha_connected_integration_weatherflow
       - type: custom:fold-entity-row
         card_mod:
           style: |
