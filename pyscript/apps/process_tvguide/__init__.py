@@ -67,7 +67,10 @@ def process_tvguide(file):
             channel_name = channel_name.split("_")
             chgroup = channel_name[0]
             chname = channel_name[1]
-            chslug = re.sub(r'\W+', '-', chname).strip('-').lower().replace("9","nine-").replace("7","seven-").replace("10","ten-").replace('--','-').strip('-')
+            if chgroup == "FTA":
+                chslug = re.sub(r'\W+', '-', chname).strip('-').lower().replace("9","nine-").replace("7","seven-").replace("10","ten-").replace('--','-').strip('-')
+            else:
+                chslug = re.sub(r'\W+', '-', chname).strip('-').lower()
             channels.append({
                 "channel_id": chid,
                 "channel_slug": chslug,
@@ -118,7 +121,7 @@ def process_tvguide(file):
                     "channel": channel,
                     "title": title,
                     "subtitle": subtitle,
-                    # "description": description,
+                    #"description": description,
                     "description": "none",
                     "details": details,
                     "episode": episode
@@ -131,7 +134,7 @@ def process_tvguide(file):
                 "channel": channel,
                 "title": title,
                 "subtitle": subtitle,
-                # "description": description,
+                #"description": description,
                 "description": "none",
                 "details": details,
                 "episode": episode
@@ -182,7 +185,10 @@ def process_tvguide(file):
         attributes['channel_name'] = c['channel_name']
         attributes['channel_group'] = c['channel_group']
         attributes["icon"] = "mdi:television-guide"
-        attributes["entity_picture"] = "/local/tvlogos/" + c['channel_slug'] + ".png"
+        if c['channel_group'] == "Optus":
+            attributes["entity_picture"] = "/local/tvlogos/optus-sport.png"
+        else:
+            attributes["entity_picture"] = "/local/tvlogos/" + c['channel_slug'] + ".png"
         attributes["friendly_name"] = "TV Guide - " + c['channel_group'] + " - " + c['channel_name']
         attributes['programs_next24hrs'] = pr_n24
         attributes['programs_today'] = p_d1
