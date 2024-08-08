@@ -73,7 +73,7 @@ action:
         {{ states
             | selectattr('attributes.category', 'defined')
             | selectattr('attributes.category', 'eq', 'tvguide')
-            | selectattr('attributes.channel_group', 'eq', 'UK Radio')
+            | selectattr('attributes.channel_group', 'eq', 'UKRadio')
             | map(attribute='entity_id') | list | sort }}
 
   - service: group.set

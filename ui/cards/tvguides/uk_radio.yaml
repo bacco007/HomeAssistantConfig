@@ -22,23 +22,7 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
-          - entity: sensor.tvguide_absolute_radio_80s
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_absolute_radio_classic_rock
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_absolute_radio_nine_0s
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
           - entity: sensor.tvguide_bbc_radio_1
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_1xtra
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
@@ -82,19 +66,15 @@ cards:
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
+          - entity: sensor.tvguide_heart
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
           - entity: sensor.tvguide_radio_x
       - type: custom:decluttering-card
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_talksport
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_talksport_2
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_times_radio
       - type: custom:decluttering-card
         template: tvguide_card
         variables:

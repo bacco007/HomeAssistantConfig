@@ -47,3 +47,11 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_sky_weather
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_cnbc
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_bloomberg_television

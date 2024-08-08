@@ -1,0 +1,14 @@
+---
+alias: "[HA DB] Remove Orphaned Entities"
+id: ha_db_remove_orphaned_entities
+mode: single
+trigger:
+  - platform: time
+    at: "02:30:00"
+condition: []
+action:
+  - action: script.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.db_remove_orphaned_entities

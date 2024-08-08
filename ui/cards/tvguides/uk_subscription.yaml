@@ -143,7 +143,7 @@ cards:
       #   template: tvguide_card
       #   variables:
       #     - entity: sensor.tvguide_tnt_sports_box_office_2
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_tnt_sports_ultimate
+      # - type: custom:decluttering-card
+      #   template: tvguide_card
+      #   variables:
+      #     - entity: sensor.tvguide_tnt_sports_ultimate

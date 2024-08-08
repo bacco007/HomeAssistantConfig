@@ -121,8 +121,8 @@ def process_tvguide(file):
                     "channel": channel,
                     "title": title,
                     "subtitle": subtitle,
-                    #"description": description,
-                    "description": "none",
+                    "description": description,
+                    #"description": "none",
                     "details": details,
                     "episode": episode
                 })
@@ -134,8 +134,8 @@ def process_tvguide(file):
                 "channel": channel,
                 "title": title,
                 "subtitle": subtitle,
-                #"description": description,
-                "description": "none",
+                "description": description,
+                #"description": "none",
                 "details": details,
                 "episode": episode
             })
@@ -191,13 +191,14 @@ def process_tvguide(file):
             attributes["entity_picture"] = "/local/tvlogos/" + c['channel_slug'] + ".png"
         attributes["friendly_name"] = "TV Guide - " + c['channel_group'] + " - " + c['channel_name']
         attributes['programs_next24hrs'] = pr_n24
-        attributes['programs_today'] = p_d1
-        attributes['programs_tomorrow'] = p_d2
-        attributes['programs_day3'] = p_d3
-        attributes['programs_day4'] = p_d4
-        attributes['programs_day5'] = p_d5
-        attributes['programs_day6'] = p_d6
-        attributes['programs_day7'] = p_d7
+        attributes['last_process'] = datetime.now()
+        # attributes['programs_today'] = p_d1
+        # attributes['programs_tomorrow'] = p_d2
+        # attributes['programs_day3'] = p_d3
+        # attributes['programs_day4'] = p_d4
+        # attributes['programs_day5'] = p_d5
+        # attributes['programs_day6'] = p_d6
+        # attributes['programs_day7'] = p_d7
         state.set(s_name, value=c['channel_slug'], new_attributes = attributes)
 
 def get_config(name):
