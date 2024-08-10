@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import traceback
 from dataclasses import dataclass
+from enum import Enum
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -33,7 +34,6 @@ from .const import DOMAIN, ATTR_ENTRY_TYPE, ATTRIBUTION
 from .coordinator import SolcastUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-
 
 SENSORS: dict[str, SensorEntityDescription] = {
     "total_kwh_forecast_today": SensorEntityDescription(
@@ -91,11 +91,11 @@ SENSORS: dict[str, SensorEntityDescription] = {
         icon="mdi:solar-power",
         suggested_display_precision=0,
     ),
-    "forecast_custom_hour": SensorEntityDescription(
-        key="forecast_custom_hour",
+    "forecast_custom_hours": SensorEntityDescription(
+        key="forecast_custom_hours",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        translation_key="forecast_custom_hour",
+        translation_key="forecast_custom_hours",
         name="Forecast Custom Hours",
         icon="mdi:solar-power",
         suggested_display_precision=0,
@@ -211,19 +211,21 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "power_now_30m": SensorEntityDescription(
         key="power_now_30m",
-        translation_key="power_now_30m",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        #name="Power Next 30 Mins",
+        translation_key="power_now_30m",
+        #name="Power in 30 Minutes",
         suggested_display_precision=0,
+        state_class= SensorStateClass.MEASUREMENT,
     ),
     "power_now_1hr": SensorEntityDescription(
         key="power_now_1hr",
-        translation_key="power_now_1hr",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        #name="Power Next Hour",
+        translation_key="power_now_1hr",
+        #name="Power in 1 Hour",
         suggested_display_precision=0,
+        state_class= SensorStateClass.MEASUREMENT,
     ),
     #"weather_description": SensorEntityDescription(
         #key="weather_description",
@@ -232,6 +234,25 @@ SENSORS: dict[str, SensorEntityDescription] = {
     #),
 }
 
+class SensorUpdatePolicy(Enum):
+    DEFAULT = 0
+    EVERY_TIME_INTERVAL = 1
+
+def getSensorUpdatePolicy(key) -> SensorUpdatePolicy:
+    match key:
+        case (
+            "forecast_this_hour" |
+            "forecast_next_hour" |
+            "forecast_custom_hours" |
+            "forecast_remaining_today" |
+            "get_remaining_today" |
+            "power_now" |
+            "power_now_30m" |
+            "power_now_1hr"
+            ):
+            return SensorUpdatePolicy.EVERY_TIME_INTERVAL
+        case _:
+            return SensorUpdatePolicy.DEFAULT
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -284,11 +305,12 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
 
         #doesnt work :()
-        if entity_description.key == "forecast_custom_hour":
-            self._attr_translation_placeholders = {"forecast_custom_hour": f"{coordinator.solcast._customhoursensor}"}
+        if entity_description.key == "forecast_custom_hours":
+            self._attr_translation_placeholders = {"forecast_custom_hours": f"{coordinator.solcast._customhoursensor}"}
 
         self.entity_description = entity_description
         self.coordinator = coordinator
+        self.update_policy = getSensorUpdatePolicy(entity_description.key)
         self._attr_unique_id = f"{entity_description.key}"
 
         self._attributes = {}
@@ -298,7 +320,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             self._sensor_data = coordinator.get_sensor_value(entity_description.key)
         except Exception as ex:
             _LOGGER.error(
-                f"SOLCAST - unable to get sensor value {ex} %s", traceback.format_exc()
+                f"Unable to get sensor value {ex} %s", traceback.format_exc()
             )
             self._sensor_data = None
 
@@ -327,7 +349,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             )
         except Exception as ex:
             _LOGGER.error(
-                f"SOLCAST - unable to get sensor value {ex} %s", traceback.format_exc()
+                f"Unable to get sensor value {ex} %s", traceback.format_exc()
             )
             return None
 
@@ -344,13 +366,22 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+
+        # these sensors will pick-up the change on the next interval update (5mins)
+        if self.update_policy == SensorUpdatePolicy.EVERY_TIME_INTERVAL and self.coordinator._dataUpdated:
+            return
+
+        # these sensors update when the date changed or when there is new data
+        if self.update_policy == SensorUpdatePolicy.DEFAULT and not (self.coordinator._dateChanged or self.coordinator._dataUpdated) :
+           return
+
         try:
             self._sensor_data = self.coordinator.get_sensor_value(
                 self.entity_description.key
             )
         except Exception as ex:
             _LOGGER.error(
-                f"SOLCAST - unable to get sensor value {ex} %s", traceback.format_exc()
+                f"Unable to get sensor value {ex} %s", traceback.format_exc()
             )
             self._sensor_data = None
 
@@ -394,7 +425,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             self._sensor_data = coordinator.get_site_sensor_value(self.rooftop_id, key)
         except Exception as ex:
             _LOGGER.error(
-                f"SOLCAST - unable to get sensor value {ex} %s", traceback.format_exc()
+                f"Unable to get sensor value {ex} %s", traceback.format_exc()
             )
             self._sensor_data = None
 
@@ -435,7 +466,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             )
         except Exception as ex:
             _LOGGER.error(
-                f"SOLCAST - unable to get sensor value {ex} %s", traceback.format_exc()
+                f"Unable to get sensor value {ex} %s", traceback.format_exc()
             )
             return None
 
@@ -466,7 +497,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             )
         except Exception as ex:
             _LOGGER.error(
-                f"SOLCAST - unable to get sensor value {ex} %s", traceback.format_exc()
+                f"Unable to get sensor value {ex} %s", traceback.format_exc()
             )
             self._sensor_data = None
         self.async_write_ha_state()

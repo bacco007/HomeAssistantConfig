@@ -60,6 +60,17 @@
                     "customhoursensor": "Next X Hour Sensor"
                 },
                 "description": "Custom sensor for total energy for the next X hours"
+            },
+            "attributes": {
+                "data": {
+                    "attr_brk_estimate10": "Enable estimate 10 breakdown",
+                    "attr_brk_estimate": "Enable estimate 50 breakdown",
+                    "attr_brk_estimate90": "Enable estimate 90 breakdown",
+                    "attr_brk_site": "Enable site breakdown",
+                    "attr_brk_halfhourly": "Enable forecast half-hourly detail",
+                    "attr_brk_hourly": "Enable forecast hourly detail"
+                },
+                "description": "Select the sensor attributes that will be available"
             }
         },
         "error": {
@@ -72,7 +83,8 @@
             "options": {
                 "configure_api": "Solcast API key",
                 "configure_dampening": "Configure Dampening",
-                "configure_customsensor": "Configure Custom Hour Sensor"
+                "configure_customsensor": "Configure Custom Hour Sensor",
+                "configure_attributes": "Configure Available Attributes"
             }
         }
     },
@@ -122,7 +134,7 @@
                 "fields": {
                     "hard_limit": {
                         "name": "Limit value in Watts",
-                        "description": "Set the max value in watts that the inverter can produce."
+                        "description": "Set the max value in Watts that the inverter can produce."
                     }
                 }
             },
@@ -133,15 +145,15 @@
     },
     "entity": {
         "sensor": {
-            "power_now_30m": {"name": "Power Next 30 Mins"},
-            "power_now_1hr": {"name": "Power Next Hour"},
+            "power_now_30m": {"name": "Power in 30 Minutes"},
+            "power_now_1hr": {"name": "Power in 1 Hour"},
             "total_kwh_forecast_today": {"name": "Forecast Today"},
             "peak_w_today": {"name": "Peak Forecast Today"},
             "peak_w_time_today": {"name": "Peak Time Today"},
             "forecast_this_hour": {"name": "Forecast This Hour"},
             "get_remaining_today": {"name": "Forecast Remaining Today"},
             "forecast_next_hour": {"name": "Forecast Next Hour"},
-            "forecast_custom_hour": {"name": "Forecast Next {forecast_custom_hour} Hours"},
+            "forecast_custom_hours": {"name": "Forecast Next X Hours"},
             "total_kwh_forecast_tomorrow": {"name": "Forecast Tomorrow"},
             "peak_w_tomorrow": {"name": "Peak Forecast Tomorrow"},
             "peak_w_time_tomorrow": {"name": "Peak Time Tomorrow"},

@@ -54,6 +54,23 @@
                     "damp23": "23:00"
                 },
                 "description": "Modifier le coefficient d'amortissement horaire"
+            },
+            "customsensor": {
+                "data": {
+                    "customhoursensor": "Capteur X heures suivant"
+                },
+                "description": "Capteur personnalisé pour l'énergie totale pour les X prochaines heures"
+            },
+            "attributes": {
+                "data": {
+                    "attr_brk_estimate10": "Activer la répartition de l'estimation 10",
+                    "attr_brk_estimate": "Activer la répartition de l'estimation 50",
+                    "attr_brk_estimate90": "Activer la répartition de l'estimation 90",
+                    "attr_brk_site": "Activer la répartition du site",
+                    "attr_brk_halfhourly": "Activer les détails des prévisions demi-horaires",
+                    "attr_brk_hourly": "Activer les détails horaires des prévisions"
+                },
+                "description": "Sélectionnez les attributs du capteur qui seront disponibles"
             }
         },
         "error": {
@@ -112,8 +129,8 @@
     },
     "entity": {
         "sensor": {
-            "power_now_30m": {"name": "Production des 30 prochaines minutes"},
-            "power_now_1hr": {"name": "Production de la prochaines heure"},
+            "power_now_30m": {"name": "Puissance en 30 minutes"},
+            "power_now_1hr": {"name": "Puissance en 1 heure"},
             "total_kwh_forecast_today": {"name": "Prévisions pour aujourd'hui"},
             "peak_w_today": {"name": "Prévisions du pic aujourd'hui"},
             "peak_w_time_today": {"name": "Heure du pic aujourd'hui"},
@@ -131,7 +148,7 @@
             "total_kwh_forecast_d5": {"name": "Prévision jour 5"},
             "total_kwh_forecast_d6": {"name": "Prévision jour 6"},
             "total_kwh_forecast_d7": {"name": "Prévision jour 7"},
-            "power_now": {"name": "Production maintenant"}
+            "power_now": {"name": "Puissance maintenant"}
         }
     }
 }

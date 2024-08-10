@@ -60,6 +60,17 @@
                     "customhoursensor": "Ďalší X-hodinový senzor"
                 },
                 "description": "Vlastný senzor pre celkovú energiu na ďalších X hodín"
+            },
+            "attributes": {
+                "data": {
+                    "attr_brk_estimate10": "Povoliť rozdelenie odhadu 10",
+                    "attr_brk_estimate": "Povoliť rozdelenie odhadu 50",
+                    "attr_brk_estimate90": "Povoliť rozdelenie odhadu 90",
+                    "attr_brk_site": "Povoliť rozdelenie stránok",
+                    "attr_brk_halfhourly": "Povoliť polhodinové podrobnosti predpovede",
+                    "attr_brk_hourly": "Povoliť hodinové podrobnosti prognózy"
+                },
+                "description": "Vyberte atribúty senzora, ktoré budú k dispozícii"
             }
         },
         "error": {
@@ -71,7 +82,9 @@
         "solcast_config_action": {
             "options": {
                 "configure_api": "Solcast API kľúč",
-                "configure_dampening": "Konfigurácia tlmenia"
+                "configure_dampening": "Konfigurácia tlmenia",
+                "configure_customsensor": "Konfigurácia vlastného snímača hodín",
+                "configure_attributes": "Konfigurácia dostupných atribútov"
             }
         }
     },
@@ -118,8 +131,8 @@
     },
     "entity": {
         "sensor": {
-            "power_now_30m": {"name": "Výkon ďalších 30 min"},
-            "power_now_1hr": {"name": "Výkon ďalšiu hodinu"},
+            "power_now_30m": {"name": "Výkon za 30 minút"},
+            "power_now_1hr": {"name": "Výkon za 1 hodinu"},
             "total_kwh_forecast_today": {"name": "Predpoveď dnes"},
             "peak_w_today": {"name": "Predpoveď špičky dnes"},
             "peak_w_time_today": {"name": "Čas špičky dnes"},

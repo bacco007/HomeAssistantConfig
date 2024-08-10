@@ -1,4 +1,4 @@
-"""Config flow for Solcast Solar integration."""
+"""Config flow for Solcast Solar integration"""
 from __future__ import annotations
 from typing import Any
 
@@ -13,13 +13,13 @@ from homeassistant.helpers.selector import (
     SelectSelectorMode,
 )
 from homeassistant import config_entries
-from .const import DOMAIN, CONFIG_OPTIONS, CUSTOM_HOUR_SENSOR
+from .const import DOMAIN, TITLE, CONFIG_OPTIONS, CUSTOM_HOUR_SENSOR, BRK_ESTIMATE, BRK_ESTIMATE10, BRK_ESTIMATE90, BRK_SITE, BRK_HALFHOURLY, BRK_HOURLY
 
 @config_entries.HANDLERS.register(DOMAIN)
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Solcast Solar."""
+    """Handle the config flow."""
 
-    VERSION = 6 #v5 started in 4.0.8, #6 started 4.0.15
+    VERSION = 8 #v5 started in 4.0.8, #6 started 4.0.15, #7 started in 4.0.16, #8 started in 4.0.39
 
     @staticmethod
     @callback
@@ -38,7 +38,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         
         if user_input is not None:
             return self.async_create_entry(
-                title= "Solcast Solar", 
+                title= TITLE, 
                 data = {},
                 options={
                     CONF_API_KEY: user_input[CONF_API_KEY],
@@ -67,6 +67,12 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     "damp22":1.0,
                     "damp23":1.0,
                     "customhoursensor":1,
+                    BRK_ESTIMATE: True,
+                    BRK_ESTIMATE10: True,
+                    BRK_ESTIMATE90: True,
+                    BRK_SITE: True,
+                    BRK_HALFHOURLY: True,
+                    BRK_HOURLY: True,
                 },
             )
 
@@ -81,10 +87,10 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
 
 
 class SolcastSolarOptionFlowHandler(OptionsFlow):
-    """Handle options."""
+    """Handle options"""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
+        """Initialize options flow"""
         self.config_entry = config_entry
         self.options = dict(config_entry.options)
 
@@ -99,6 +105,8 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                     return await self.async_step_api()
                 elif nextAction == "configure_customsensor":
                     return await self.async_step_customsensor()
+                elif nextAction == "configure_attributes":
+                    return await self.async_step_attributes()
                 else:
                     errors["base"] = "incorrect_options_action"
 
@@ -119,7 +127,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
         )
 
     async def async_step_api(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        """Manage the options."""
+        """Manage the options"""
         if user_input is not None:
             allConfigData = {**self.config_entry.options}
             k = user_input["api_key"].replace(" ","").strip()
@@ -128,10 +136,10 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
 
             self.hass.config_entries.async_update_entry(
                 self.config_entry,
-                title="Solcast Solar",
+                title=TITLE,
                 options=allConfigData,
             )
-            return self.async_create_entry(title="Solcast Solar", data=None)
+            return self.async_create_entry(title=TITLE, data=None)
 
         return self.async_show_form(
             step_id="api",
@@ -146,7 +154,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
         )
 
     async def async_step_dampen(self, user_input: dict[str, Any] | None = None) -> FlowResult: #user_input=None):
-        """Manage the hourly factor options."""
+        """Manage the hourly factor options"""
 
         errors = {}
 
@@ -230,11 +238,11 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
 
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
-                    title="Solcast Solar",
+                    title=TITLE,
                     options=allConfigData,
                 )
                 
-                return self.async_create_entry(title="Solcast Solar", data=None)
+                return self.async_create_entry(title=TITLE, data=None)
             except Exception as e:
                 errors["base"] = "unknown"
 
@@ -296,7 +304,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
         )
 
     async def async_step_customsensor(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        """Manage the custom x hour sensor option."""
+        """Manage the custom X hour sensor option"""
 
         errors = {}
 
@@ -311,11 +319,11 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
 
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
-                    title="Solcast Solar",
+                    title=TITLE,
                     options=allConfigData,
                 )
                 
-                return self.async_create_entry(title="Solcast Solar", data=None)
+                return self.async_create_entry(title=TITLE, data=None)
             except Exception as e:
                 errors["base"] = "unknown"
 
@@ -325,6 +333,60 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                 {
                     vol.Required(CUSTOM_HOUR_SENSOR, description={"suggested_value": customhoursensor}):
                             vol.All(vol.Coerce(int), vol.Range(min=1,max=144)),
+                }
+            ),
+            errors=errors,
+        )
+    
+    async def async_step_attributes(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Manage the attributes present"""
+
+        errors = {}
+
+        estimateBreakdown = self.config_entry.options[BRK_ESTIMATE]
+        estimateBreakdown10 = self.config_entry.options[BRK_ESTIMATE10]
+        estimateBreakdown90 = self.config_entry.options[BRK_ESTIMATE90]
+        siteBreakdown = self.config_entry.options[BRK_SITE]
+        halfHourly = self.config_entry.options[BRK_HALFHOURLY]
+        hourly = self.config_entry.options[BRK_HOURLY]
+        
+        if user_input is not None:
+            try:
+                estimateBreakdown = user_input[BRK_ESTIMATE]
+                estimateBreakdown10 = user_input[BRK_ESTIMATE10]
+                estimateBreakdown90 = user_input[BRK_ESTIMATE90]
+                siteBreakdown = user_input[BRK_SITE]
+                halfHourly = user_input[BRK_HALFHOURLY]
+                hourly = user_input[BRK_HOURLY]
+
+                allConfigData = {**self.config_entry.options}
+                allConfigData[BRK_ESTIMATE] = estimateBreakdown
+                allConfigData[BRK_ESTIMATE10] = estimateBreakdown10
+                allConfigData[BRK_ESTIMATE90] = estimateBreakdown90
+                allConfigData[BRK_SITE] = siteBreakdown
+                allConfigData[BRK_HALFHOURLY] = halfHourly
+                allConfigData[BRK_HOURLY] = hourly
+
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    title=TITLE,
+                    options=allConfigData,
+                )
+                
+                return self.async_create_entry(title=TITLE, data=None)
+            except Exception as e:
+                errors["base"] = "unknown"
+
+        return self.async_show_form(
+            step_id="attributes",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(BRK_ESTIMATE10, description={"suggested_value": estimateBreakdown10}): bool,
+                    vol.Required(BRK_ESTIMATE, description={"suggested_value": estimateBreakdown}): bool,
+                    vol.Required(BRK_ESTIMATE90, description={"suggested_value": estimateBreakdown90}): bool,
+                    vol.Required(BRK_SITE, description={"suggested_value": siteBreakdown}): bool,
+                    vol.Required(BRK_HALFHOURLY, description={"suggested_value": halfHourly}): bool,
+                    vol.Required(BRK_HOURLY, description={"suggested_value": hourly}): bool,
                 }
             ),
             errors=errors,

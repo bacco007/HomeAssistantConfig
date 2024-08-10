@@ -5,7 +5,8 @@
     "http"
   ],
   "codeowners": [
-    "@BJReplay"
+    "@BJReplay",
+    "@autoSteve"
   ],
   "config_flow": true,
   "dependencies": [
@@ -19,8 +20,9 @@
   "issue_tracker": "https://github.com/BJReplay/ha-solcast-solar/issues",
   "requirements": [
     "aiohttp>=3.8.5",
+    "aiofiles>=24.1.0",
     "datetime>=4.3",
     "isodate>=0.6.1"
   ],
-  "version": "v4.0.31"
+  "version": "v4.1.0"
 }
