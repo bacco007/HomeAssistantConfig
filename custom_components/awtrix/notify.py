@@ -50,11 +50,11 @@ class AwtrixNotificationService(BaseNotificationService):
         # """Service to send a message."""
         service_data = None
         if not message:
-            service_data = {"payload_template": "",
+            service_data = {"payload": "",
                         "topic": topic + "/notify/dismiss"}
         else:
             payload = json.dumps(msg)
-            service_data = {"payload_template": payload,
+            service_data = {"payload": payload,
                             "topic": topic + "/notify"}
 
         return await self.hass.services.async_call(
