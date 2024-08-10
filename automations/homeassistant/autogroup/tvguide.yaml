@@ -58,6 +58,20 @@ action:
 
   - service: group.set
     data:
+      object_id: tvguide_optus_sport
+      entities: |
+        {% set l1 =  states
+            |selectattr('entity_id','search','sensor.tvguide_optussport*')
+            |map(attribute='entity_id')|list|sort %}
+        {% set l2 = states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'Optus')
+            | map(attribute='entity_id') | list | sort %}
+        {{ l1 + l2 | sort }}
+
+  - service: group.set
+    data:
       object_id: tvguide_uk
       entities: >
         {{ states
@@ -65,6 +79,30 @@ action:
             | selectattr('attributes.category', 'eq', 'tvguide')
             | selectattr('attributes.channel_group', 'eq', 'UK')
             | map(attribute='entity_id') | list | sort }}
+
+  - service: group.set
+    data:
+      object_id: tvguide_uk_sport
+      entities: |
+        {% set l1 =  states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'UK')
+            |selectattr('entity_id','search','sensor.tvguide_eurosport*')
+            | map(attribute='entity_id') | list | sort %}
+        {% set l2 = states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'UK')
+            |selectattr('entity_id','search','sensor.tvguide_sky_sports*')
+            | map(attribute='entity_id') | list | sort %}
+        {% set l3 = states
+            | selectattr('attributes.category', 'defined')
+            | selectattr('attributes.category', 'eq', 'tvguide')
+            | selectattr('attributes.channel_group', 'eq', 'UK')
+            |selectattr('entity_id','search','sensor.tvguide_tnt*')
+            | map(attribute='entity_id') | list | sort %}
+        {{ l1 + l2 + l3 | sort }}
 
   - service: group.set
     data:

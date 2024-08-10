@@ -17,16 +17,26 @@ tvguide_card:
         primary: >
           {{state_attr(entity, 'channel_name')}}
         secondary: >
+          {%- set ns = namespace(l1="", l2="") %}
           {% for r in state_attr(entity, 'programs_next24hrs') %}
-
-          {% if as_datetime(r['start']) < now() < as_datetime(r['end']) %}
-          {%- set ln = loop.index - 1 %}
-
-          Now: {{ state_attr(entity, 'programs_next24hrs')[ln]['title'] }}
-
-          Next: {{ state_attr(entity, 'programs_next24hrs')[ln+1]['title'] }}
+            {% if as_datetime(r['start']) < now() < as_datetime(r['end']) %}
+              {%- set ln = loop.index - 1 %}
+              {%- set ns.l1 = "Now: " + state_attr(entity, 'programs_next24hrs')[ln]['title'] %}
+              {% if not loop.last %}
+                {%- set ns.l2 = "Next: " + state_attr(entity, 'programs_next24hrs')[ln+1]['title'] %}
+              {% else %}
+                {%- set l2 = "Next: Nothing Recorded" %}
+              {% endif %}
+            {% endif %}
+          {% if not ns.l1 %}
+            {%- set ns.l1 = "Next: " + state_attr(entity, 'programs_next24hrs')[0]['title'] + " @ " + as_timestamp(state_attr(entity, 'programs_next24hrs')[0]['start'])| timestamp_custom('%H:%M') %}
+            {%- set ns.l2 = "Then: " + state_attr(entity, 'programs_next24hrs')[1]['title'] + " @ " + as_timestamp(state_attr(entity, 'programs_next24hrs')[1]['start'])| timestamp_custom('%H:%M') %}
           {% endif %}
           {% endfor %}
+
+          {{ns.l1}}
+
+          {{ns.l2}}
         # icon: mdi:television-guide
         entity: "[[entity]]"
         fill_container: true

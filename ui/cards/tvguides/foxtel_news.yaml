@@ -11,47 +11,28 @@ cards:
   #   name: Foxtel - News
   #   icon: mdi:television-guide
   #   card_layout: normal
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_cnn_international
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_fox_news
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_fox_sports_news
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_msnbc
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_sky_news
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_sky_news_election
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_sky_news_uk
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_sky_weather
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_cnbc
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bloomberg_television
+  - type: custom:auto-entities
+    sort:
+      method: attribute
+      attribute: sortorder
+    card_param: cards
+    filter:
+      template: >-
+        {% for s in expand(states.group.tvguide_foxtel_news)|map(attribute='entity_id')|list|sort -%}
+        {% if state_attr(s, 'programs_next24hrs') -%}
+          {{
+            {
+              "type": "custom:decluttering-card",
+              "template": "tvguide_card",
+              "variables": [{
+                  "entity": s,
+              }]
+            }
+          }},
+        {%- endif %}
+        {%- endfor %}
+    show_empty: false
+    card:
+      type: grid
+      columns: 2
+      square: false

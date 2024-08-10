@@ -9,18 +9,26 @@ trigger:
   - platform: time_pattern
     hours: /2
 action:
-  - if: "{{ trigger.id == 'startup' }}"
+  - if:
+      - condition: template
+        value_template: "{{ trigger.id == 'startup' }}"
     then:
       - delay: 300
-  - service: shell_command.xmltv_getfromwebgrabplus
+  - action: shell_command.xmltv_getfromwebgrabplus
     data: {}
   - delay:
       hours: 0
       minutes: 0
       seconds: 10
       milliseconds: 0
-  - service: pyscript.process_tvguide
+  - action: pyscript.process_tvguide
     data:
       file: /config/xmltv/webgrabplus.xml
-  - service: pyscript.getdata_tvguide_optussport
+  - action: pyscript.getdata_tvguide_optussport
     data: {}
+  - action: automation.trigger
+    metadata: {}
+    data:
+      skip_condition: true
+    target:
+      entity_id: automation.ha_autogroup_tv_guide

@@ -43,3 +43,7 @@ cards:
         template: tvguide_card
         variables:
           - entity: sensor.tvguide_you_tv
+      - type: custom:decluttering-card
+        template: tvguide_card
+        variables:
+          - entity: sensor.tvguide_gecko
