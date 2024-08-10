@@ -1,0 +1,30 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Alerts
+    icon: mdi:home-alert-outline
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: binary_sensor.ha_connected_integration_offline_integrations
+        state: "on"
+    card:
+      type: custom:bubble-card
+      card_type: button
+      button_type: state
+      entity: binary_sensor.ha_connected_integration_offline_integrations
+      name: Offline Integrations
+      sub_button:
+        - entity: binary_sensor.ha_connected_integration_offline_integrations
+          show_attribute: true
+          attribute: count
+          show_icon: false
+      icon: mdi:api-off
+      show_state: false

@@ -1,0 +1,26 @@
+---
+haintegrations_offline:
+  name: "[HA] Integrations Offline"
+  title: "HA] Integrations Offline"
+  message: >
+    These Home Assistant Integrations are offline:
+    {{ state_attr('binary_sensor.ha_connected_integration_offline_integrations', 'integrations')|list }}
+  done_message: clear_notification
+  entity_id: binary_sensor.ha_connected_integration_offline_integrations
+  state: "on"
+  repeat: 360
+  notifiers: alert
+  data:
+    tag: haintegrations_offline
+    notification_id: haintegrations_offline
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_haintegrations_offline
