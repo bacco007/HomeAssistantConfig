@@ -42,6 +42,16 @@
         },
         "title": "Maak een dagelijkse energieverbruik sensor"
       },
+      "domain_group": {
+        "data": {
+          "name": "Naam",
+          "create_energy_sensor": "Creëer energie sensoren",
+          "create_utility_meters": "Creëer utiliteit meters",
+          "domain": "Entiteit domein",
+          "exclude_entities": "Entiteiten uitsluiten"
+        },
+        "title": "Maak een domein gebaseerde groepssensor"
+      },
       "fixed": {
         "data": {
           "power": "Vermogen",
@@ -120,6 +130,14 @@
         },
         "description": "Selecteer het model. Zie de [lijst]({supported_models_link}) van ondersteunde apparaten voor meer informatie",
         "title": "Model configuratie"
+      },
+      "menu_group": {
+        "menu_options": {
+          "group": "Standaard groep",
+          "domain_group": "Domein gebaseerde groep"
+        },
+        "title": "Kies het type groep",
+        "description": "Selecteer het type groepssensor dat je wilt aanmaken. Kies een domein gebaseerde groep als u alle entiteiten van een specifiek domein wilt groeperen of een sensor opsomming wilt maken van al uw energie sensoren."
       },
       "multi_switch": {
         "data": {
