@@ -120,4 +120,3 @@ cards:
   - !include /config/ui/cards/tamworth/livetraffic/incidentslga.yaml
   - !include /config/ui/cards/tamworth/livetraffic/majorevents.yaml
   - !include /config/ui/cards/tamworth/livetraffic/roadwork.yaml
-
