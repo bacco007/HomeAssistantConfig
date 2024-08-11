@@ -11,98 +11,65 @@ cards:
     name: NHL
     icon: mdi:hockey-puck
 
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:decluttering-card
-      template: sports_card
-      variables:
-        - entity: sensor.upcoming_sport_nhl_all_teams
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
     cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: >-
-            background-color: rgba(180, 70, 70,0.2) !important; color:white
-            !important;
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): >-
-            min-width: 1fr;width: 1fr; white-space: nowrap; background-color:
-            rgba(39, 179, 118,0.2); color: white;
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_nhl_all_teams
+      - type: custom:mushroom-chips-card
+        alignment: center
         card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 13px;
-                }
-        entities:
-          include: sensor.sportschedule_nhl
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/nhl/500/' +
-              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() +
-              ".png" + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.competitions[0].status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
-          - name: Away Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/nhl/500/' +
-              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() +
-              ".png" + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Status
-            data: events
-            align: center
-            modify: x.competitions[0].status.type.description
-          - name: Venue
-            data: events
-            modify: >-
-              x.competitions[0].venue.fullName + " (" +
-              x.competitions[0].venue.address.city + ")"
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/icehockey/nhl_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
 
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_anaheim_ducks
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_toronto_maple_leafs
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/icehockey/nhl_recentresults.yaml
+
   - type: entities
     entities:
       - type: custom:fold-entity-row
@@ -367,3 +334,101 @@ cards:
               include: sensor.scoreboard_nhl_west_pacific
             sort_by: entries-
             columns: *nhlcols
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_anaheim_ducks
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/icehockey/nhl_ducks_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_toronto_maple_leafs
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/icehockey/nhl_toronto_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
