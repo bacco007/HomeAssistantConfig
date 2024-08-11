@@ -1,0 +1,11 @@
+---
+weatherflow_forecast:
+  name: "Weatherflow Forecast Connected"
+  entity_id: binary_sensor.ha_connected_integration_weatherflow_forecast
+  state: "on"
+  notifiers:
+    - log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: weatherflow_forecast_connected

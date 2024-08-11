@@ -1,7 +1,7 @@
 ---
 speedtest_connected:
   name: "Speedtest Connected"
-  entity_id: binary_sensor.ha_connected_integration_speedtest
+  entity_id: binary_sensor.ha_connected_integration_speedtestdotnet
   state: "on"
   notifiers: log
   skip_first: false

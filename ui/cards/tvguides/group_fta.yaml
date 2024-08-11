@@ -13,24 +13,8 @@ cards:
     name: Free-to-Air
     icon: mdi:television-guide
     card_layout: normal
-  - type: custom:tabbed-card
-    options: []
-    styles:
-      --mdc-theme-primary: var(--text-color)
-      --mdc-tab-text-label-color-default: var(--disabled-text-color)
-    tabs:
-      - attributes:
-          label: ABC
-        card: !include /config/ui/cards/tvguides/fta_abc.yaml
-      - attributes:
-          label: SBS
-        card: !include /config/ui/cards/tvguides/fta_sbs.yaml
-      - attributes:
-          label: Seven
-        card: !include /config/ui/cards/tvguides/fta_seven.yaml
-      - attributes:
-          label: Nine
-        card: !include /config/ui/cards/tvguides/fta_nine.yaml
-      - attributes:
-          label: Ten
-        card: !include /config/ui/cards/tvguides/fta_ten.yaml
+  - !include /config/ui/cards/tvguides/fta_abc.yaml
+  - !include /config/ui/cards/tvguides/fta_sbs.yaml
+  - !include /config/ui/cards/tvguides/fta_seven.yaml
+  - !include /config/ui/cards/tvguides/fta_nine.yaml
+  - !include /config/ui/cards/tvguides/fta_ten.yaml

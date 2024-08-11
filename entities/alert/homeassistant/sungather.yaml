@@ -6,7 +6,7 @@ sungather:
   done_message: clear_notification
   entity_id: binary_sensor.alerts_sungather
   state: "on"
-  repeat: 1440
+  repeat: 60
   notifiers: alert
   data:
     tag: sungather

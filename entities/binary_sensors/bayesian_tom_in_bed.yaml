@@ -10,12 +10,12 @@ observations:
     prob_given_false: 0.6
     platform: state
     to_state: home
-  - entity_id: sensor.tbiphone13pro_battery_state
+  - entity_id: sensor.tbiphone15promax_battery_state_2
     prob_given_true: 0.60 # 60% chance i'm asleep if phone is charging
     prob_given_false: 0.4 # 10% chance i'm in bed if not charging
     platform: "state"
     to_state: "Charging"
-  - entity_id: sensor.tbiphone13pro_battery_state
+  - entity_id: sensor.tbiphone15promax_battery_state_2
     prob_given_true: 0.70 # 60% chance i'm asleep if phone is charging
     prob_given_false: 0.1 # 10% chance i'm in bed if not charging
     platform: "state"

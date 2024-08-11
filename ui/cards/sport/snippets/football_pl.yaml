@@ -88,7 +88,7 @@ cards:
         content: |
           {%- for x in state_attr('sensor.scoreboard_epl', 'entries') -%}
           {%- set rank = x['stats']|selectattr("name", "eq", "rank")|map(attribute="value")|first -%}
-          {%- if rank == 1.0 -%}
+          {%- if rank == 1.0 and loop.first -%}
           {{x['team']['displayName']}}, {{x['stats']|selectattr("name", "eq", "points")|map(attribute="displayValue")|first}} Pts
           {%- endif -%}
           {%- endfor -%}

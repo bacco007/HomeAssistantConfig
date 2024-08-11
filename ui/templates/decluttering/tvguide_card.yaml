@@ -21,16 +21,24 @@ tvguide_card:
           {% for r in state_attr(entity, 'programs_next24hrs') %}
             {% if as_datetime(r['start']) < now() < as_datetime(r['end']) %}
               {%- set ln = loop.index - 1 %}
-              {%- set ns.l1 = "Now: " + state_attr(entity, 'programs_next24hrs')[ln]['title'] %}
+              {%- set details = [ state_attr(entity, 'programs_next24hrs')[ln]['title'] ] %}
+              {%- set ns.l1 = "Now: " + details | join(', ') %}
               {% if not loop.last %}
-                {%- set ns.l2 = "Next: " + state_attr(entity, 'programs_next24hrs')[ln+1]['title'] %}
+                {%- set details = [ state_attr(entity, 'programs_next24hrs')[ln+1]['title'] ] %}
+                {%- set ns.l2 = "Next: " + details | join(', ') %}
               {% else %}
                 {%- set l2 = "Next: Nothing Recorded" %}
               {% endif %}
             {% endif %}
           {% if not ns.l1 %}
-            {%- set ns.l1 = "Next: " + state_attr(entity, 'programs_next24hrs')[0]['title'] + " @ " + as_timestamp(state_attr(entity, 'programs_next24hrs')[0]['start'])| timestamp_custom('%H:%M') %}
-            {%- set ns.l2 = "Then: " + state_attr(entity, 'programs_next24hrs')[1]['title'] + " @ " + as_timestamp(state_attr(entity, 'programs_next24hrs')[1]['start'])| timestamp_custom('%H:%M') %}
+            {%- set details = [ state_attr(entity, 'programs_next24hrs')[0]['title'], state_attr(entity, 'programs_next24hrs')[0]['subtitle'] ] %}
+            {%- set ns.l1 = "Next: " + details | join(', ') + " @ " + as_timestamp(state_attr(entity, 'programs_next24hrs')[0]['start'])| timestamp_custom('%H:%M') %}
+            {%- if state_attr(entity, 'programs_next24hrs')[1] %}
+              {%- set details = [ state_attr(entity, 'programs_next24hrs')[1]['title'], state_attr(entity, 'programs_next24hrs')[1]['subtitle'] ] %}
+              {%- set ns.l2 = "Then: " + details | join(', ') + " @ " + as_timestamp(state_attr(entity, 'programs_next24hrs')[1]['start'])| timestamp_custom('%H:%M') %}
+            {%- else %}
+              {%- set ns.l2 = "Then: Nothing Recorded" %}
+            {% endif %}
           {% endif %}
           {% endfor %}
 
@@ -52,6 +60,12 @@ tvguide_card:
             mushroom-state-info$: |
               .container {
                 text-align: right;
+                width: 80% !important;
+                margin-left: auto;
+                margin-right: 0;
+              }
+              .secondary {
+                font-size: 80% !important;
               }
             .: |
               ha-card:before {

@@ -11,7 +11,11 @@ backup_alert:
   done_message: clear_notification
   entity_id: binary_sensor.alerts_backup
   state: "on"
-  repeat: 1440
+  skip_first: true
+  repeat:
+    - 15
+    - 30
+    - 60
   notifiers: alert
   data:
     tag: backup_alert

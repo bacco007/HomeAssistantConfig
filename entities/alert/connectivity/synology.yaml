@@ -1,7 +1,7 @@
 ---
 synology_connected:
   name: "Synology Connected"
-  entity_id: binary_sensor.ha_connected_integration_synology
+  entity_id: binary_sensor.ha_connected_integration_synology_dsm
   state: "on"
   notifiers: log
   skip_first: false

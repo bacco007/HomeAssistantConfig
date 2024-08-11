@@ -10,404 +10,381 @@ cards:
         }
     name: NFL
     icon: mdi:football
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_nfl_all_teams
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:decluttering-card
-      template: sports_card
-      variables:
-        - entity: sensor.upcoming_sport_new_england_patriots
-    cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): >-
-            min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39,
-            179, 118,0.2); color: white;
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 13px;
-                }
-        entities:
-          include: sensor.sportschedule_nfl_patriots
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/nfl/500/' +
-              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() + ".png"
-              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.competitions[0].status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
-          - name: Away Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/nfl/500/' +
-              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() + ".png"
-              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Status
-            data: events
-            align: center
-            modify: x.competitions[0].status.type.description
-          - name: Venue
-            data: events
-            modify: >-
-              x.season.displayName + ' ' + x.seasonType.name + "<br> Venue: " +
-              x.competitions[0].venue.fullName + " (" +
-              x.competitions[0].venue.address.city + ")"
 
-  - type: entities
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Overall Standings
-          icon: mdi:football
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: &nflcss
-              table+: "padding-left: 2px; padding-right: 2px"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: green!important; color:white!important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_nfl_all_teams
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgb(80, 110, 172) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_*
-            sort_by: entries-
-            columns: &nflcols
-              - hidden: true
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
-              - name: C
-                data: entries
-                modify: >-
-                  if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
-                  'undefined' ){x.stats.find(y=>y.abbreviation ==
-                  'CLINCH').displayValue}else{'-'}
-              - name: Team
-                data: entries
-                modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: GP
-                data: entries
-                modify: >-
-                  x.stats.find(y=>y.abbreviation == 'L').value +
-                  x.stats.find(y=>y.abbreviation == 'W').value +
-                  x.stats.find(y=>y.abbreviation == 'T').value
-              - name: W
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'W').value
-              - name: L
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L').value
-              - name: T
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'T').value
-              - name: PCT
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
-              - name: HOME
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'HOME').displayValue
-              - name: AWAY
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'AWAY').displayValue
-              - name: DIV
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'DIV').displayValue
-              - name: CONF
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'CONF').displayValue
-              - name: PF
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'PF').displayValue
-              - name: PA
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'PA').displayValue
-              - name: DIFF
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'DIFF').displayValue
-              - name: STRK
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'STRK').displayValue
-      - type: section
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American Football Conference
-          icon: mdi:football-helmet
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_recentresults.yaml
+
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: AFC East Standings
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgb(80, 110, 172) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_afc_*
-            sort_by: entries-
-            columns: *nflcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American Football Conference, East Division
-          icon: mdi:football-helmet
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nfl_afc_east', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_afce_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: AFC North Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_afcn_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: AFC South Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_afcs_standings.yaml
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nfl_afc_east', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgba(39, 179, 118, 0.5) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_afc_east
-            sort_by: entries-
-            columns: *nflcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American Football Conference, North Division
-          icon: mdi:football-helmet
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nfl_afc_north', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nfl_afc_north', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nfl_afc_south', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: NFC East Standings
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgb(80, 110, 172) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_afc_north
-            sort_by: entries-
-            columns: *nflcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American Football Conference, South Division
-          icon: mdi:football-helmet
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nfl_afc_south', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_nfce_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: NFC North Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_nfcn_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: NFC South Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/nfl_nfcs_standings.yaml
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nfl_nfc_east', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgba(39, 179, 118, 0.5) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_afc_south
-            sort_by: entries-
-            columns: *nflcols
-      - type: section
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National Football Conference
-          icon: mdi:football-helmet
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nfl_nfc_north', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nfl_nfc_south', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_new_england_patriots
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgb(80, 110, 172) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_nfc_*
-            sort_by: entries-
-            columns: *nflcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National Football Conference, East Division
-          icon: mdi:football-helmet
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nfl_nfc_east', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_nfc_east
-            sort_by: entries-
-            columns: *nflcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National Football Conference, North Division
-          icon: mdi:football-helmet
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nfl_nfc_north', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_nfc_north
-            sort_by: entries-
-            columns: *nflcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National Football Conference, South Division
-          icon: mdi:football-helmet
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nfl_nfc_south', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nflcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nfl_nfc_south
-            sort_by: entries-
-            columns: *nflcols
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/patriots_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/nfl/patriots_recentresults.yaml

@@ -28,6 +28,12 @@ cards:
       - attributes:
           label: UK Subscription
         card: !include /config/ui/cards/tvguides/uk_subscription.yaml
+  - type: custom:tabbed-card
+    options: []
+    styles:
+      --mdc-theme-primary: var(--text-color)
+      --mdc-tab-text-label-color-default: var(--disabled-text-color)
+    tabs:
       - attributes:
           label: US FTA
         card: !include /config/ui/cards/tvguides/us.yaml

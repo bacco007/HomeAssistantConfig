@@ -37,7 +37,7 @@ action:
         {%- set ignored = state_attr('group.ignored_unavailable_entities', 'entity_id') %}
         {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
         {%- set entities = states
-            |rejectattr('domain','in',['button', 'conversation', 'device_tracker', 'event', 'group', 'image', 'input_button', 'input_text', 'remote', 'tts', 'scene', 'stt'])
+            |rejectattr('domain','in',['button', 'conversation', 'device_tracker', 'event', 'group', 'image', 'input_button', 'input_text', 'remote', 'tts', 'scene', 'stt', 'media_player'])
             |selectattr('state','in',['unavailable','unknown','none'])
             |rejectattr('entity_id','in',state_attr('group.ignored_unavailable_entities','entity_id'))
             |rejectattr('entity_id','search','rssfeed_')
@@ -48,6 +48,10 @@ action:
             |rejectattr('entity_id','search','gosungrow')
             |rejectattr('entity_id','search','z2m')
             |rejectattr('entity_id','search','zigbee2mqtt')
+            |rejectattr('entity_id','search','local_stop_zone')
+            |rejectattr('entity_id','search','in_radius_zone')
+            |rejectattr('entity_id','search','sensor.weather_')
+            |rejectattr('entity_id','search','upcoming_sport')
             |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('gdacs'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('github'))|map(attribute='entity_id')|list)
@@ -78,6 +82,9 @@ action:
             |rejectattr('entity_id','in',expand(integration_entities('gtfs2'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('openweathermap'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('withings'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('hdhomerun'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('flightradar24'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('bermuda'))|map(attribute='entity_id')|list)
             |rejectattr('last_changed','ge',ignore_ts) %}
         {% set entities =  entities | rejectattr('entity_id', 'in', ignored) if ignored != none else entities %}
         {{ entities | map(attribute='entity_id') | list | sort }}

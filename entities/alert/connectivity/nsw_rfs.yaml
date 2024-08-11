@@ -1,7 +1,7 @@
 ---
 nsw_rfs_connected:
   name: "NSW RFS Connected"
-  entity_id: binary_sensor.ha_connected_integration_nsw_rfs
+  entity_id: binary_sensor.ha_connected_integration_nsw_rural_fire_service_fire_danger
   state: "on"
   notifiers: log
   skip_first: false

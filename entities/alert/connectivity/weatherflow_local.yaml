@@ -1,7 +1,7 @@
 ---
 weatherflow_local:
   name: "Weatherflow (Local) Connected"
-  entity_id: binary_sensor.alerts_ha_connected_integration_weatherflow_local
+  entity_id: binary_sensor.ha_connected_integration_weatherflow
   state: "on"
   notifiers:
     - log

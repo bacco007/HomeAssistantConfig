@@ -2,14 +2,11 @@
 type: vertical-stack
 cards:
   - type: custom:bubble-card
-    card_type: separator
+    card_type: pop-up
+    hash: "#homeassistant-settings"
+    button_type: name
     name: Home Assistant Settings and Controls
-    icon: mdi:home-assistant
-    styles: |-
-      .bubble-line {
-        background: var(--ha-card-background);
-        opacity: 1;
-        }
+    icon: mdi:cog-outline
   - type: entities
     show_header_toggle: false
     state_color: true

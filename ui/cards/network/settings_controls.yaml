@@ -66,8 +66,8 @@ cards:
             - domain: binary_sensor
               attributes:
                 category: network_alert
-            - entity_id: binary_sensor.alerts_connect_adguard
-            - entity_id: binary_sensor.alerts_connect_unifi
+            # - entity_id: binary_sensor.alerts_connect_adguard
+            # - entity_id: binary_sensor.alerts_connect_unifi
         sort:
           method: name
           ignore_case: true
@@ -95,6 +95,6 @@ cards:
           icon: mdi:weather-partly-snowy-rainy
           state: ""
         entities:
-          - entity: binary_sensor.connected_adguard
-          - entity: binary_sensor.connected_uptime_kuma
-          - entity: binary_sensor.connected_unifi
+          - entity: binary_sensor.ha_connected_integration_adguard
+          - entity: binary_sensor.ha_connected_integration_uptime_kuma
+          - entity: binary_sensor.ha_connected_integration_unifi

@@ -39,11 +39,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -68,11 +68,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
     - type: custom:mushroom-template-card
@@ -84,11 +84,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
     - type: custom:mushroom-template-card
@@ -103,11 +103,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -131,11 +131,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -162,11 +162,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
           mushroom-shape-icon$: |
@@ -195,11 +195,11 @@ card:
           style:
             .: |
               ha-card {
-                border-radius: 8px;
-                --icon-size: 40px;
-                --icon-symbol-size: 20px;
-                --card-secondary-font-size: 12px;
-                --card-primary-font-size: 14px;
+                border-radius: 60px;
+                --icon-size: 35px;
+                --icon-symbol-size: 16px;
+                --card-secondary-font-size: 85%;
+                --card-primary-font-size: 95%;
                 box-shadow: none !important;
               }
             mushroom-shape-icon$: |
@@ -220,11 +220,11 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
     - type: custom:mushroom-template-card
@@ -252,10 +252,10 @@ card:
         style:
           .: |
             ha-card {
-              border-radius: 8px;
-              --icon-size: 40px;
-              --icon-symbol-size: 20px;
-              --card-secondary-font-size: 12px;
-              --card-primary-font-size: 14px;
+              border-radius: 60px;
+              --icon-size: 35px;
+              --icon-symbol-size: 16px;
+              --card-secondary-font-size: 85%;
+              --card-primary-font-size: 95%;
               box-shadow: none !important;
             }

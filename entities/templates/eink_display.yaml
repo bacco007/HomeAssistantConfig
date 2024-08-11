@@ -59,4 +59,4 @@ sensor:
       forecast_day6: >
         {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].temperature  | int}}°C
       solar_yield_today: >
-        {{ states('sensor.sungrowsolar_daily_power_yields')}}
+        {{ states('sensor.solar_generation_daily')}}

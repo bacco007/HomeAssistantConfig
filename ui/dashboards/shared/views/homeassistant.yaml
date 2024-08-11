@@ -17,31 +17,50 @@ cards:
   - !include /config/ui/cards/common/sidebar-menu.yaml
 
   # Content
-  - type: "custom:layout-card"
+  - type: vertical-stack
     view_layout:
       grid-area: content
-    layout_type: custom:masonry-layout
-    layout:
-      max_cols: 4
-      width: 500
-      max_width: 1000
     cards:
-      - !include /config/ui/cards/homeassistant/uptime.yaml
-      - !include /config/ui/cards/homeassistant/homeassistant.yaml
-      - !include /config/ui/cards/homeassistant/settings_controls.yaml
-      - !include /config/ui/cards/homeassistant/updates.yaml
-      - !include /config/ui/cards/homeassistant/addons.yaml
-      - !include /config/ui/cards/homeassistant/ha_versions.yaml
-      - !include /config/ui/cards/homeassistant/nabucasa.yaml
-      - !include /config/ui/cards/homeassistant/inputs_helpers.yaml
-      - !include /config/ui/cards/homeassistant/automation_history.yaml
-      - !include /config/ui/cards/homeassistant/snapshots.yaml
-      - !include /config/ui/cards/homeassistant/graph_entitycount.yaml
-      - !include /config/ui/cards/homeassistant/graph_sensorcount.yaml
-      - !include /config/ui/cards/homeassistant/graph_dbsize.yaml
-      - !include /config/ui/cards/homeassistant/dbsize_influx.yaml
-      - !include /config/ui/cards/homeassistant/graph_countyamllines.yaml
-      - !include /config/ui/cards/homeassistant/graph_countyamlfiles.yaml
+      - type: custom:bubble-card
+        card_type: separator
+        styles: |-
+          .bubble-line {
+            background: var(--ha-card-background);
+            opacity: 1;
+            }
+        name: Home Assistant
+        icon: mdi:home-assistant
+        card_layout: large
+        sub_button:
+          - icon: mdi:cog
+            tap_action:
+              action: navigate
+              navigation_path: "#homeassistant-settings"
+      - type: "custom:layout-card"
+        view_layout:
+          grid-area: content
+        layout_type: custom:masonry-layout
+        layout:
+          max_cols: 4
+          width: 500
+          max_width: 1000
+        cards:
+          - !include /config/ui/cards/homeassistant/uptime.yaml
+          - !include /config/ui/cards/homeassistant/logfile.yaml
+          - !include /config/ui/cards/homeassistant/homeassistant.yaml
+          - !include /config/ui/cards/homeassistant/updates.yaml
+          - !include /config/ui/cards/homeassistant/addons.yaml
+          - !include /config/ui/cards/homeassistant/ha_versions.yaml
+          - !include /config/ui/cards/homeassistant/nabucasa.yaml
+          - !include /config/ui/cards/homeassistant/inputs_helpers.yaml
+          - !include /config/ui/cards/homeassistant/automation_history.yaml
+          - !include /config/ui/cards/homeassistant/snapshots.yaml
+          - !include /config/ui/cards/homeassistant/graph_entitycount.yaml
+          - !include /config/ui/cards/homeassistant/graph_sensorcount.yaml
+          - !include /config/ui/cards/homeassistant/graph_dbsize.yaml
+          - !include /config/ui/cards/homeassistant/dbsize_influx.yaml
+          - !include /config/ui/cards/homeassistant/graph_countyamllines.yaml
+          - !include /config/ui/cards/homeassistant/graph_countyamlfiles.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml
@@ -54,3 +73,4 @@ cards:
 
   # Popups
   - !include /config/ui/dashboards/shared/includes/popup.yaml
+  - !include /config/ui/cards/homeassistant/settings_controls.yaml

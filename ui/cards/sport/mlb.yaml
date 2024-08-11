@@ -11,483 +11,369 @@ cards:
     name: Major League Baseball
     icon: si:mlb
 
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:decluttering-card
-      template: sports_card
-      variables:
-        - entity: sensor.upcoming_sport_mlb_all_teams
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
     cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): "min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39, 179, 118,0.2); color: white;"
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_mlb_all_teams
+      - type: custom:mushroom-chips-card
+        alignment: center
         card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 12px;
-                }
-        entities:
-          include: sensor.sportschedule_mlb
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: right
-            modify: |-
-              if (typeof x.competitions[0].competitors[0].team.logo !== 'undefined')
-                '<div>' + x.competitions[0].competitors[0].team.displayName +'&nbsp<img src="' + x.competitions[0].competitors[0].team.logo + '" style="height:25px;vertical-align:middle;"></div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score + " - " + x.competitions[0].competitors[1].score
-          - name: Away Team
-            data: events
-            align: left
-            modify: |-
-              if (typeof x.competitions[0].competitors[1].team.logo !== 'undefined')
-                '<div><img src="' + x.competitions[0].competitors[1].team.logo + '" style="height:25px;vertical-align:middle;">&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-              else
-                '<div><span style="display: inline-block;width: 20px;"></span>&nbsp;' + x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Time
-            data: events
-            align: center
-            modify: x.status.type.description
-          - name: Venue
-            data: events
-            modify: >-
-              x.competitions[0].venue.fullName + " (" +
-              x.competitions[0].venue.address.city + ")"
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
 
-  - type: custom:yet-another-expander-card
-    gap: 0.6em
-    padding: 0
-    clear: false
-    title: Expander
-    overlay-margin: 0em
-    child-padding: 0.5em
-    button-background: transparent
-    title-card:
-      type: custom:decluttering-card
-      template: sports_card
-      variables:
-        - entity: sensor.upcoming_sport_new_york_yankees
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_recentresults.yaml
+
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: AL, Central Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_alc_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: AL, East Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_ale_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: AL, West Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_alw_standings.yaml
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_mlb_american_central', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgba(39, 179, 118, 0.5) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_mlb_american_east', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_mlb_american_west', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: NL, Central Standings
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_nlc_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: NL, East Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_nle_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: NL, West Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/mlb_nlw_standings.yaml
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_mlb_national_central', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgba(39, 179, 118, 0.5) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_mlb_national_east', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_mlb_national_west', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
     cards:
-      - type: custom:flex-table-card
-        css:
-          table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-          tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-          tbody tr td:nth-child(1): "min-width: 1fr;width: 1fr; white-space: nowrap;"
-          tbody tr td:nth-child(3): >-
-            min-width: 1fr;width: 1fr; white-space: nowrap; background-color: rgba(39,
-            179, 118,0.2); color: white;
-          th+: "border-bottom: 1px solid rgb(127,127,127);"
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_new_york_yankees
+      - type: custom:mushroom-chips-card
+        alignment: center
         card_mod:
-          style:
-            .: |
-              ha-card {
-                overflow: auto;
-                box-shadow: none !important;
-                font-size: 13px;
-                }
-        entities:
-          include: sensor.sportschedule_mlb_yankees
-        sort_by: entries
-        columns:
-          - name: Date
-            data: events
-            modify: |-
-              if(x.date == 0)
-              {"-"}
-              else {
-                var date = new Date(x.date);
-                date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'}) +
-                "<br>@ "+
-                String(date.getHours()).padStart(2,'0')+":"+
-                String(date.getMinutes()).padStart(2,'0')
-              }
-            align: center
-          - name: Home Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/mlb/500/' +
-              x.competitions[0].competitors[0].team.abbreviation.toLowerCase() + ".png"
-              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[0].team.displayName + '</div>'
-          - name: Match
-            data: events
-            align: center
-            modify: |-
-              if (x.competitions[0].status.type.description == 'Scheduled')
-                ' VS '
-              else
-                x.competitions[0].competitors[0].score.displayValue + " - " + x.competitions[0].competitors[1].score.displayValue
-          - name: Away Team
-            data: events
-            align: left
-            modify: >-
-              '<div><img src="https://a.espncdn.com/i/teamlogos/mlb/500/' +
-              x.competitions[0].competitors[1].team.abbreviation.toLowerCase() + ".png"
-              + '" style="height:20px;vertical-align:middle;">&nbsp;' +
-              x.competitions[0].competitors[1].team.displayName + '</div>'
-          - name: Status
-            data: events
-            align: center
-            modify: x.competitions[0].status.type.description
-          - name: Venue
-            data: events
-            modify: >-
-              x.season.displayName + ' ' + x.seasonType.name + "<br> Venue: " +
-              x.competitions[0].venue.fullName + " (" +
-              x.competitions[0].venue.address.city + ")"
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
+              style:
+                .: |
+                  ha-card {
+                    background-color: rgb(80, 110, 172) !important;
+                    box-shadow: none !important;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/yankees_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
 
-  - type: entities
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Overall
-          icon: si:mlb
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: &mlbcss
-              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              - sensor.scoreboard_mlb_american_central
-              - sensor.scoreboard_mlb_american_east
-              - sensor.scoreboard_mlb_american_west
-              - sensor.scoreboard_mlb_national_central
-              - sensor.scoreboard_mlb_national_east
-              - sensor.scoreboard_mlb_national_west
-            sort_by: entries-
-            columns: &mlbcols
-              - hidden: true
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value
-              - name: C
-                data: entries
-                modify: >-
-                  if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
-                  'undefined' ){x.stats.find(y=>y.abbreviation ==
-                  'CLINCH').displayValue}else{'-'}
-              - name: Team
-                data: entries
-                modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: GP
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'GP').displayValue
-              - name: W
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
-              - name: L
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-              - name: PCT
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
-              - name: GB
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'GB').displayValue
-              - name: HOME
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'Home').displayValue
-              - name: AWAY
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'AWAY').displayValue
-              - name: RS
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'RS').displayValue
-              - name: RA
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'RA').displayValue
-              - name: DIFF
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'DIFF').displayValue
-              - name: L10
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'L10').displayValue
-              - name: STRK
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
-      - type: section
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American League
-          icon: si:mlb
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              - sensor.scoreboard_mlb_american_central
-              - sensor.scoreboard_mlb_american_east
-              - sensor.scoreboard_mlb_american_west
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American League, Central
-          icon: si:mlb
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_mlb_american_central', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_american_central
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American League, East
-          icon: si:mlb
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_mlb_american_east', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_american_east
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: American League, West
-          icon: si:mlb
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_mlb_american_west', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_american_west
-            sort_by: entries-
-            columns: *mlbcols
-      - type: section
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National League
-          icon: si:mlb
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              - sensor.scoreboard_mlb_national_central
-              - sensor.scoreboard_mlb_national_east
-              - sensor.scoreboard_mlb_national_west
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National League, Central
-          icon: si:mlb
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_mlb_national_central', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_national_central
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National League, East
-          icon: si:mlb
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_mlb_national_east', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_national_east
-            sort_by: entries-
-            columns: *mlbcols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: National League, West
-          icon: si:mlb
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_mlb_national_west', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("name", "eq", "divisionGamesBehind")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *mlbcss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_mlb_national_west
-            sort_by: entries-
-            columns: *mlbcols
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:ticket
+            content: Recent Results
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/baseball/yankees_recentresults.yaml

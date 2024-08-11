@@ -61,5 +61,7 @@ cards:
           icon: mdi:solar-power-variant-outline
           state: ""
         entities:
-          - entity: binary_sensor.connected_forecast_solar
-          - entity: binary_sensor.connected_solcast_solar
+          - entity: binary_sensor.ha_connected_integration_forecast_solar
+          - entity: binary_sensor.ha_connected_integration_solcast_solar
+          - entity: binary_sensor.ha_connected_integration_open_meteo_solar_forecast
+          - entity: binary_sensor.ha_connected_integration_opennem

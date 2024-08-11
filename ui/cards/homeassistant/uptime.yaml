@@ -23,25 +23,53 @@ cards:
         columns: 2
         type: grid
         cards:
-          - type: custom:mushroom-entity-card
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
             entity: sensor.ha_uptime_hours
-            name: HA Uptime
-            secondary_info: name
-            primary_info: state
-            fill_container: true
-          - type: custom:mushroom-entity-card
+            icon: mdi:update
+            name: Up Since
+            show_state: true
+            show_last_changed: false
+            show_name: true
+            show_icon: true
+            scrolling_effect: false
+            card_layout: normal
+            styles: |-
+              .bubble-button-card-container {
+                background-color: rgba(134, 148, 231 ,0.5) !important;
+              }
+              .bubble-icon {
+                color: rgba(134, 148, 231 ,1) !important;
+                opacity: 1 !important;
+              }
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
             entity: sensor.ha_restart_time
             icon: mdi:home-assistant
-            fill_container: true
             name: Last Restart Time
-            secondary_info: name
-            primary_info: state
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.start_time
-          - colour: "#8694E7"
-          - title: Start Time (seconds)
-          - hours_to_show: 168
-          - points_per_hour: 1
-          - icon: mdi:timer
+            show_state: true
+            show_last_changed: false
+            show_name: true
+            show_icon: true
+            scrolling_effect: false
+            card_layout: normal
+            styles: |-
+              .bubble-button-card-container {
+                background-color: rgba(134, 148, 231 ,0.5) !important;
+              }
+              .bubble-icon {
+                color: rgba(134, 148, 231 ,1) !important;
+                opacity: 1 !important;
+              }
+          - type: custom:decluttering-card
+            template: bubble_entity_graph
+            variables:
+              - entity: sensor.start_time
+              - colour_hex: "#8694E7"
+              - colour_rgb: 134, 148, 231
+              - title: Start Time (seconds)
+              - hours_to_show: 168
+              - points_per_hour: 1
+              - icon: mdi:timer

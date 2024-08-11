@@ -11,6 +11,13 @@ cards:
     name: Sports Planner
     icon: mdi:calendar-star
   - type: custom:week-planner-card
+    card_mod:
+      style: |
+        .event.past {
+          opacity: .3;
+        }
+    noCardBackground: true
+    compact: true
     calendars:
       - entity: calendar.ical_anaheim_ducks
         color: "#b5985a"

@@ -10,315 +10,300 @@ cards:
         }
     name: NBA
     icon: si:nba
-  - type: custom:decluttering-card
-    template: sports_card
-    variables:
-      - entity: sensor.upcoming_sport_nba_all_teams
-  - type: entities
-    entities:
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Overall
-          icon: si:nba
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: &nbacss
-              table+: "padding: 0px; width: 100%; border-collapse: collapse;"
-              tbody tr+: "user-select: text"
-              tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
-              tbody tr:hover: "background-color: rgba(180, 70, 70,0.2) !important; color:white !important;"
-              th+: "border-bottom: 1px solid rgb(127,127,127);"
-            card_mod:
+  - type: custom:stack-in-card
+    card_mod:
+      style:
+        .: |
+          ha-card {
+          padding-bottom: 10px !important;
+          }
+    cards:
+      - type: custom:decluttering-card
+        template: sports_card
+        variables:
+          - entity: sensor.upcoming_sport_nba_all_teams
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:calendar-alert
+            content: Calendar
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgb(80, 110, 172) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_*
-            sort_by: entries-
-            columns: &nbacols
-              - hidden: true
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PCT').value
-              - name: C
-                data: entries
-                modify: >-
-                  if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
-                  'undefined' ){x.stats.find(y=>y.abbreviation ==
-                  'CLINCH').displayValue}else{'-'}
-              - name: Team
-                data: entries
-                modify: >-
-                  '<div><img src="' + x.team.logos[0].href + '" style="height:
-                  20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
-              - name: W
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'W').displayValue
-              - name: L
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L').displayValue
-              - name: GB
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'GB').displayValue
-              - name: HOME
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'HOME').displayValue
-              - name: AWAY
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'AWAY').displayValue
-              - name: DIV
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'DIV').displayValue
-              - name: CONF
-                data: entries
-                modify: x.stats.find(y=>y.shortDisplayName == 'CONF').displayValue
-              - name: PPG
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'PPG').displayValue
-              - name: OPP PPG
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'OPP PPG').displayValue
-              - name: DIFF
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'DIFF').displayValue
-              - name: STRK
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'STRK').displayValue
-              - name: L10
-                data: entries
-                modify: x.stats.find(y=>y.abbreviation == 'L10').displayValue
-      - type: section
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Eastern Conference
-          icon: si:nba
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_calendar.yaml
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: EC, Atlantic Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_eca_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: EC, Central Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_ecc_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: EC, Southeast Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_ecs_standings.yaml
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nba_eastern_atlantic', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0 -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgba(39, 179, 118, 0.5) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_eastern_*
-            sort_by: entries-
-            columns: *nbacols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Eastern Conference, Atlantic Division
-          icon: si:nba
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nba_eastern_atlantic', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nba_eastern_central', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nba_eastern_southeast', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: WC, Northwest Standings
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgb(80, 110, 172) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_eastern_atlantic
-            sort_by: entries-
-            columns: *nbacols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Eastern Conference, Central Division
-          icon: si:nba
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nba_eastern_central', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    border-radius: 10px !important;
+                  }
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_wcn_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: WC, Pacific Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_wcp_standings.yaml
+          - type: template
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            icon: mdi:list-box-outline
+            content: WC, Southwest Standings
+            card_mod: *style
+            tap_action: !include /config/ui/cards/sport/snippets/basketball/nba_wcs_standings.yaml
+      - type: custom:mushroom-chips-card
+        alignment: center
+        card_mod:
+          style: |
+            mushroom-template-chip {
+              width: 100%;
+            }
+            div.chip-container {
+              justify-content: space-evenly;
+              flex-wrap: nowrap;
+            }
+            ha-card {
+              margin: 0px 10px 2px 10px;
+              --chip-spacing: 5px !important;
+            }
+        chips:
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nba_western_northwest', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: &style
               style:
                 .: |
                   ha-card {
-                    overflow: auto;
+                    background-color: rgba(39, 179, 118, 0.5) !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_eastern_central
-            sort_by: entries-
-            columns: *nbacols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Eastern Conference, Southeast Division
-          icon: si:nba
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nba_eastern_southeast', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
+                    justify-content: center;
+                    height: 30px !important;
+                    border: 0 !important;
                     box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_eastern_southeast
-            sort_by: entries-
-            columns: *nbacols
-      - type: section
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Western Conference
-          icon: si:nba
-          state: ""
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_western_*
-            sort_by: entries-
-            columns: *nbacols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Western Conference, Northwest Division
-          icon: si:nba
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nba_western_northwest', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_western_northwest
-            sort_by: entries-
-            columns: *nbacols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Western Conference, Pacific Division
-          icon: si:nba
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nba_western_pacific', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_western_pacific
-            sort_by: entries-
-            columns: *nbacols
-      - type: custom:fold-entity-row
-        head:
-          type: custom:template-entity-row
-          name: Western Conference, Southwest Division
-          icon: si:nba
-          state: ""
-          secondary: >
-            {%- for x in state_attr('sensor.scoreboard_nba_western_southwest', 'entries') -%}
-            {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
-            {%- if rank == 0.0 -%}
-            {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}} PCT
-            {%- endif -%}
-            {%- endfor -%}
-        padding: 0
-        entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            css: *nbacss
-            card_mod:
-              style:
-                .: |
-                  ha-card {
-                    overflow: auto;
-                    box-shadow: none !important;
-                    font-size: 13px;
-                    }
-            entities:
-              include: sensor.scoreboard_nba_western_southwest
-            sort_by: entries-
-            columns: *nbacols
+                    border-radius: 10px !important;
+                  }
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nba_western_pacific', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: template
+            icon: mdi:trophy-award
+            content: |
+              {%- for x in state_attr('sensor.scoreboard_nba_western_southwest', 'entries') -%}
+              {%- set rank = x['stats']|selectattr("abbreviation", "eq", "GB")|map(attribute="value")|first -%}
+              {%- if rank == 0.0  and loop.first -%}
+              {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
+              {%- endif -%}
+              {%- endfor -%}
+            card_mod: *style
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none

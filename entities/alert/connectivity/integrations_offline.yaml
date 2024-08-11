@@ -1,14 +1,18 @@
 ---
 haintegrations_offline:
   name: "[HA] Integrations Offline"
-  title: "HA] Integrations Offline"
+  title: "[HA] Integrations Offline"
   message: >
     These Home Assistant Integrations are offline:
     {{ state_attr('binary_sensor.ha_connected_integration_offline_integrations', 'integrations')|list }}
   done_message: clear_notification
   entity_id: binary_sensor.ha_connected_integration_offline_integrations
   state: "on"
-  repeat: 360
+  repeat:
+    - 120
+    - 240
+    - 360
+  skip_first: true
   notifiers: alert
   data:
     tag: haintegrations_offline

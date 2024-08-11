@@ -1,0 +1,95 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Standings
+    content:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        margin: 0
+        grid-template-columns: 1fr
+        grid-template-rows: 1fr
+        grid-template-areas: |
+          "col1"
+      cards:
+        - type: custom:hui-element
+          view_layout:
+            grid-area: col1
+          card_type: custom:flex-table-card
+          css: &nflcss
+            table+: "padding-left: 2px; padding-right: 2px"
+            tbody tr+: "user-select: text"
+            tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+            tbody tr:hover: "background-color: green!important; color:white!important;"
+            th+: "border-bottom: 1px solid rgb(127,127,127);"
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  overflow: auto;
+                  box-shadow: none !important;
+                  font-size: 13px;
+                  }
+          entities:
+            include: sensor.scoreboard_nfl_afc_south
+          sort_by: entries-
+          columns: &nflcols
+            - hidden: true
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
+            - name: C
+              data: entries
+              modify: >-
+                if(typeof x.stats.find(y=>y.abbreviation == 'CLINCH') !==
+                'undefined' ){x.stats.find(y=>y.abbreviation ==
+                'CLINCH').displayValue}else{'-'}
+            - name: Team
+              data: entries
+              modify: >-
+                '<div><img src="' + x.team.logos[0].href + '" style="height:
+                20px;vertical-align:middle;">&nbsp;' + x.team.displayName + '</div>'
+            - name: GP
+              data: entries
+              modify: >-
+                x.stats.find(y=>y.abbreviation == 'L').value +
+                x.stats.find(y=>y.abbreviation == 'W').value +
+                x.stats.find(y=>y.abbreviation == 'T').value
+            - name: W
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'W').value
+            - name: L
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'L').value
+            - name: T
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'T').value
+            - name: PCT
+              data: entries
+              modify: x.stats.find(y=>y.abbreviation == 'PCT').value.toFixed(2)
+            - name: HOME
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'HOME').displayValue
+            - name: AWAY
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'AWAY').displayValue
+            - name: DIV
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'DIV').displayValue
+            - name: CONF
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'CONF').displayValue
+            - name: PF
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'PF').displayValue
+            - name: PA
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'PA').displayValue
+            - name: DIFF
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'DIFF').displayValue
+            - name: STRK
+              data: entries
+              modify: x.stats.find(y=>y.shortDisplayName == 'STRK').displayValue

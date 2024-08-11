@@ -1,7 +1,7 @@
 ---
 co2_signal_connected:
   name: "CO2 Signal Connected"
-  entity_id: binary_sensor.ha_connected_integration_co2_signal
+  entity_id: binary_sensor.ha_connected_integration_co2signal
   state: "on"
   notifiers: log
   skip_first: false

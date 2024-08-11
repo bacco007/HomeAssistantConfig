@@ -114,16 +114,16 @@ binary_sensor:
   #   attributes:
   #     category: homeassistant_connectivity
 
-  # - name: "alerts_sungather"
-  #   unique_id: alerts_sungather
-  #   icon: mdi:solar-power-variant-outline
-  #   device_class: problem
-  #   delay_on: 300
-  #   state: >
-  #     {{ is_state('binary_sensor.sungather_running','off')
-  #         and is_state('input_boolean.alerts_ha','on') }}
-  #   attributes:
-  #     category: homeassistant_connectivity
+  - name: "alerts_sungather"
+    unique_id: alerts_sungather
+    icon: mdi:solar-power-variant-outline
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.sungather_running','off')
+          and is_state('input_boolean.alerts_ha','on') }}
+    attributes:
+      category: homeassistant
 
   # - name: "alerts_connect_adguard"
   #   unique_id: alerts_connect_adguard
@@ -328,16 +328,16 @@ binary_sensor:
   #   attributes:
   #     category: homeassistant_connectivity
 
-  # - name: "alerts_cloudflare_tunnel"
-  #   unique_id: alerts_cloudflare_tunnel
-  #   icon: si:cloudflare
-  #   device_class: problem
-  #   delay_on: 120
-  #   state: >
-  #     {{ is_state('binary_sensor.cloudflare_tunnel_status','on')
-  #         and is_state('input_boolean.alerts_ha','on')  }}
-  #   attributes:
-  #     category: homeassistant_connectivity
+  - name: "alerts_cloudflare_tunnel"
+    unique_id: alerts_cloudflare_tunnel
+    icon: si:cloudflare
+    device_class: problem
+    delay_on: 120
+    state: >
+      {{ is_state('binary_sensor.cloudflare_tunnel_status','on')
+          and is_state('input_boolean.alerts_ha','on')  }}
+    attributes:
+      category: homeassistant
 
   # - name: "alerts_co2_signal"
   #   unique_id: alerts_co2_signal
