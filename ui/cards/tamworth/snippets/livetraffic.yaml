@@ -17,8 +17,8 @@ cards:
         show_last_changed: false
         show_state: true
       - tap_action:
-          action: url
-          url_path: http://www.livetraffic.com
+          action: navigation
+          navigation_path: http://www.livetraffic.com
         icon: mdi:menu
         show_background: false
   - type: custom:bubble-card
@@ -113,10 +113,91 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
-  - !include /config/ui/cards/tamworth/livetraffic/alpine.yaml
-  - !include /config/ui/cards/tamworth/livetraffic/fire.yaml
-  - !include /config/ui/cards/tamworth/livetraffic/flood.yaml
-  - !include /config/ui/cards/tamworth/livetraffic/incidents.yaml
-  - !include /config/ui/cards/tamworth/livetraffic/incidentslga.yaml
-  - !include /config/ui/cards/tamworth/livetraffic/majorevents.yaml
-  - !include /config/ui/cards/tamworth/livetraffic/roadwork.yaml
+  - square: false
+    type: grid
+    columns: 2
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:snowflake-alert
+        name: Alpine
+        entity: sensor.getdata_livetrafficnsw_alpine
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-alpine"
+        styles: &style |-
+          .bubble-button-card-container {
+            background-color: rgba(${state > 0 ? "255,120,50" : "transparent" },0.35) !important;
+          }
+          .bubble-icon {
+            color: rgba(${state > 0 ? "255, 120, 50"  : "white" },1) !important;
+            opacity: 1 !important;
+          }
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:fire-alert
+        name: Fire
+        entity: sensor.getdata_livetrafficnsw_fire
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-fire"
+        styles: *style
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:home-flood
+        name: Flood
+        entity: sensor.getdata_livetrafficnsw_flood
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-flood"
+        styles: *style
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:road-variant
+        name: Incidents
+        entity: sensor.getdata_livetrafficnsw_incidents
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-incidents"
+        styles: *style
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:road-variant
+        name: Incidents LGA
+        entity: sensor.getdata_livetrafficnsw_incidentslga
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-incidentslga"
+        styles: *style
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:party-popper
+        name: Major Events
+        entity: sensor.getdata_livetrafficnsw_majorevents
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-majorevents"
+        styles: *style
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:dump-truck
+        name: Roadwork
+        entity: sensor.getdata_livetrafficnsw_roadwork
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#livetraffic-roadwork"
+        styles: *style

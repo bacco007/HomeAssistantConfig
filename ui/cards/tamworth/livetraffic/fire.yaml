@@ -1,32 +1,12 @@
 ---
-type: custom:yet-another-expander-card
-gap: 0.6em
-padding: 0
-clear: false
-title: Expander
-overlay-margin: 0em
-child-padding: 0.5em
-button-background: transparent
-title-card:
-  type: custom:mushroom-template-card
-  primary: Fire
-  icon: mdi:fire-alert
-  secondary: >
-    {{states('sensor.getdata_livetrafficnsw_fire')}} Incidents
-  icon_color: >
-    {% if states('sensor.getdata_livetrafficnsw_fire') != "0" %} red {% endif %}
-  card_mod:
-    style:
-      .: |
-        ha-card {
-          #background-color: var(--background-color);
-          box-shadow: none !important;
-          --icon-size: 40px;
-          --icon-symbol-size: 30px;
-          padding-top: 5px !important;
-          padding-bottom: 5px !important;
-        }
+type: vertical-stack
 cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#livetraffic-fire"
+    button_type: name
+    name: Fire
+    icon: mdi:fire-alert
   - type: custom:flex-table-card
     entities:
       include: sensor.getdata_livetrafficnsw_fire

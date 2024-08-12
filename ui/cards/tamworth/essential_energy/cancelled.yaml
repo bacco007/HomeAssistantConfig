@@ -1,32 +1,13 @@
 ---
-type: custom:yet-another-expander-card
-gap: 0.6em
-padding: 0
-clear: false
-title: Expander
-overlay-margin: 0em
-child-padding: 0.5em
-button-background: transparent
-title-card:
-  type: custom:mushroom-template-card
-  primary: Cancelled Outages
-  icon: mdi:alert
-  secondary: >
-    {{states('sensor.essential_energy_outages_cancelled')}} Incidents
-  icon_color: >
-    {% if states('sensor.essential_energy_outages_cancelled') != "0" %} green {% endif %}
-  card_mod:
-    style:
-      .: |
-        ha-card {
-          #background-color: var(--background-color);
-          box-shadow: none !important;
-          --icon-size: 40px;
-          --icon-symbol-size: 30px;
-          padding-top: 5px !important;
-          padding-bottom: 5px !important;
-        }
+type: vertical-stack
 cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#ee-cancelledoutages"
+    button_type: name
+    name: Cancelled Outages
+    icon: mdi:alert
+
   - type: custom:flex-table-card
     entities:
       include: sensor.essential_energy_outages_cancelled

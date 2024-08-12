@@ -1,32 +1,13 @@
 ---
-type: custom:yet-another-expander-card
-gap: 0.6em
-padding: 0
-clear: false
-title: Expander
-overlay-margin: 0em
-child-padding: 0.5em
-button-background: transparent
-title-card:
-  type: custom:mushroom-template-card
-  primary: Future Outages
-  icon: mdi:alert
-  secondary: >
-    {{states('sensor.essential_energy_outages_future')}} Incidents
-  icon_color: >
-    {% if states('sensor.essential_energy_outages_future') != "0" %} yellow {% endif %}
-  card_mod:
-    style:
-      .: |
-        ha-card {
-          #background-color: var(--background-color);
-          box-shadow: none !important;
-          --icon-size: 40px;
-          --icon-symbol-size: 30px;
-          padding-top: 5px !important;
-          padding-bottom: 5px !important;
-        }
+type: vertical-stack
 cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#ee-futureoutages"
+    button_type: name
+    name: Future Outages
+    icon: mdi:alert
+
   - type: custom:hui-element
     card_type: custom:flex-table-card
     entities:

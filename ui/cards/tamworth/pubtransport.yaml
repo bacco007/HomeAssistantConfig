@@ -22,30 +22,46 @@ cards:
         name: Bus 430
         show_state: false
         entities:
-          - attribute: arrival
-            format: relative
+          - attribute: origin_stop_departure_time
+            name: Departure
+            format: time
+          - attribute: destination_stop_arrival_time
+            name: Arrival
+            format: time
       - entity: sensor.bus_431
         type: custom:multiple-entity-row
         name: Bus 431
         show_state: false
         entities:
-          - attribute: arrival
-            format: relative
+          - attribute: origin_stop_departure_time
+            name: Departure
+            format: time
+          - attribute: destination_stop_arrival_time
+            name: Arrival
+            format: time
       - type: section
       - entity: sensor.xplorer_tamworth_to_central
         type: custom:multiple-entity-row
         name: Train Tamworth to Central
         show_state: false
         entities:
+          - attribute: next_departures
+            name: Departure
+            format: time
           - attribute: arrival
-            format: relative
+            name: Arrival
+            format: time
       - entity: sensor.xplorer_central_to_tamworth
         type: custom:multiple-entity-row
         name: Train Central to Tamworth
         show_state: false
         entities:
+          - attribute: next_departures
+            name: Departure
+            format: time
           - attribute: arrival
-            format: relative
+            name: Arrival
+            format: time
       - type: section
       - type: custom:fold-entity-row
         head:

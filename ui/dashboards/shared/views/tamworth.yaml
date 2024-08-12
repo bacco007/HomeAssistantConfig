@@ -48,3 +48,13 @@ cards:
 
   # Popups
   - !include /config/ui/dashboards/shared/includes/popup.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/alpine.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/fire.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/flood.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/incidents.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/incidentslga.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/majorevents.yaml
+  - !include /config/ui/cards/tamworth/livetraffic/roadwork.yaml
+  - !include /config/ui/cards/tamworth/essential_energy/current.yaml
+  - !include /config/ui/cards/tamworth/essential_energy/future.yaml
+  - !include /config/ui/cards/tamworth/essential_energy/cancelled.yaml

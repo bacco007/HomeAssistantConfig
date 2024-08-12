@@ -114,6 +114,83 @@ cards:
       dragmode: false
     config:
       scrollZoom: false
-  - !include ../essential_energy/current.yaml
-  - !include ../essential_energy/future.yaml
-  - !include ../essential_energy/cancelled.yaml
+
+  - square: false
+    type: grid
+    columns: 3
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:alert
+        name: Current
+        entity: sensor.essential_energy_outages_near_me
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#ee-currentoutages"
+        styles: |-
+          .bubble-button-card-container {
+            background-color: rgba(${hass.states[entity].attributes.count_current > 0 ? "244, 67, 54" : "transparent" },0.35) !important;
+          }
+          .bubble-icon {
+            color: rgba(${hass.states[entity].attributes.count_current > 0 ? "244, 67, 54"  : "white" },1) !important;
+            opacity: 1 !important;
+          }
+          .bubble-state::after {
+            content: " Incidents";
+            margin-left: 4px;
+          }
+        show_attribute: true
+        show_state: false
+        attribute: count_current
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:alert
+        name: Future
+        entity: sensor.essential_energy_outages_near_me
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#ee-futureoutages"
+        styles: |-
+          .bubble-button-card-container {
+            background-color: rgba(${hass.states[entity].attributes.count_future > 0 ? "255, 152, 0" : "transparent" },0.35) !important;
+          }
+          .bubble-icon {
+            color: rgba(${hass.states[entity].attributes.count_future > 0 ? "255, 152, 0"  : "white" },1) !important;
+            opacity: 1 !important;
+          }
+          .bubble-state::after {
+            content: " Incidents";
+            margin-left: 4px;
+          }
+        show_attribute: true
+        show_state: false
+        attribute: count_future
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        icon: mdi:alert
+        name: Future
+        entity: sensor.essential_energy_outages_near_me
+        button_action:
+          tap_action:
+            action: navigate
+            navigation_path: "#ee-cancelledoutages"
+        styles: |-
+          .bubble-button-card-container {
+            background-color: rgba(${hass.states[entity].attributes.count_cancelled > 0 ? "139, 195, 74" : "transparent" },0.35) !important;
+          }
+          .bubble-icon {
+            color: rgba(${hass.states[entity].attributes.count_cancelled > 0 ? "139, 195, 74"  : "white" },1) !important;
+            opacity: 1 !important;
+          }
+          .bubble-state::after {
+            content: " Incidents";
+            margin-left: 4px;
+          }
+        show_attribute: true
+        show_state: false
+        attribute: count_cancelled
