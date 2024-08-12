@@ -1,0 +1,57 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Choose your provider",
+                "description": "Select the provider you want to use."
+            },
+            "localai": {
+                "title": "Connect to your LocalAI server",
+                "description": "Provide the IP address and port of your LocalAI server.",
+                "data": {
+                    "localai_ip": "IP address",
+                    "localai_port": "Port",
+                    "localai_https": "HTTPS"
+                }
+            },
+            "ollama": {
+                "title": "Connect to your Ollama server",
+                "description": "Provide the IP address and port of your Ollama server.",
+                "data": {
+                    "ollama_ip": "IP address",
+                    "ollama_port": "Port",
+                    "ollama_https": "HTTPS"
+                }
+            },
+            "openai": {
+                "title": "Add OpenAI API key",
+                "description": "Provide a valid OpenAI API key.",
+                "data": {
+                    "openai_api_key": "Your API key"
+                }
+            },
+            "anthropic": {
+                "title": "Add Anthropic API key",
+                "description": "Provide a valid Anthropic API key.",
+                "data": {
+                    "anthropic_api_key": "Your API key"
+                }
+            },
+            "google": {
+                "title": "Add Google API key",
+                "description": "Provide a valid Google Gemini API key.",
+                "data": {
+                    "google_api_key": "Your API key"
+                }
+            }
+        },
+        "error": {
+            "handshake_failed": "Could not connect to the server. Check you API key or IP and port",
+            "empty_api_key": "Invalid API key"
+        },
+        "abort": {
+            "already_configured": "This provider is already configured. Delete the existing configuration to reconfigure",
+            "unknown_provider": "Unknown provider"
+        }
+    }
+}

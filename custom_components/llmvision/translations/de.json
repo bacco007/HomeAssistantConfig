@@ -1,0 +1,55 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Wählen Sie Ihren Provider",
+                "description": "Wählen Sie den Anbieter den verwenden möchten."
+            },
+            "localai": {
+                "title": "Verbinden Sie sich mit Ihrem LocalAI-Server",
+                "description": "Geben Sie die IP-Adresse und den Port Ihres LocalAI-Servers an.",
+                "data": {
+                    "localai_ip": "IP-Adresse",
+                    "localai_port": "Port"
+                }
+            },
+            "ollama": {
+                "title": "Verbinden Sie sich mit Ihrem Ollama-Server",
+                "description": "Geben Sie die IP-Adresse und den Port Ihres Ollama-Servers an.",
+                "data": {
+                    "localai_ip": "IP-Addresse",
+                    "localai_port": "Port"
+                }
+            },
+            "openai": {
+                "title": "Fügen Sie den OpenAI-API-Schlüssel hinzu",
+                "description": "Geben Sie einen gültigen OpenAI-API-Schlüssel an.",
+                "data": {
+                    "api_key": "Ihr API-Schlüssel"
+                }
+            },
+            "anthropic": {
+                "title": "Fügen Sie den Anthropic-API-Schlüssel hinzu",
+                "description": "Geben Sie einen gültigen Anthropic-API-Schlüssel an.",
+                "data": {
+                    "api_key": "Ihr API-Schlüssel"
+                }
+            },
+            "google": {
+                "title": "Fügen Sie den Google Gemini-API-Schlüssel hinzu",
+                "description": "Geben Sie einen gültigen Google Gemini-API-Schlüssel an.",
+                "data": {
+                    "api_key": "Ihr API-Schlüssel"
+                }
+            }
+        },
+        "error": {
+            "handshake_failed": "Verbindung zum Server konnte nicht hergestellt werden. Überprüfen Sie Ihren API-Schlüssel oder die IP und den Port",
+            "empty_api_key": "Ungültiger API-Key"
+        },
+        "abort": {
+            "already_configured": "Anbieter ist bereits konfiguriert. Löschen Sie die vorhandene Konfiguration, um eine neue hinzuzufügen.",
+            "unknown_provider": "Unbekannter Anbieter"
+        }
+    }
+}

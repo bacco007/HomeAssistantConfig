@@ -1,0 +1,6 @@
+{
+    "services": {
+        "image_analyzer": "mdi:cube-scan",
+        "video_analyzer": "mdi:cube-scan"
+    }
+}
