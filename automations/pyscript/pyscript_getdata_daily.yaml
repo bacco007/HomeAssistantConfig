@@ -2,19 +2,29 @@
 id: "pyscript_getdata_untappd"
 alias: "[PyScript] GetData: Untappd"
 description: "[PyScript] GetData: Untappd"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
+    id: startup
     event: start
+
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
+
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+
   - platform: time_pattern
     hours: "/3"
-condition:
-  - condition: state
-    entity_id: input_boolean.ha_startup_pending
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
+
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
+
   - service: pyscript.getdata_untappd_project52
-mode: single

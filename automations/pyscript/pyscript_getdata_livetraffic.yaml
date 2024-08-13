@@ -2,57 +2,73 @@
 id: "pyscript_getdata_livetraffic"
 alias: "PyScript, GetData: Live Traffic"
 description: "PyScript, GetData: Live Traffic"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
+    id: startup
     event: start
-  - platform: time_pattern
-    hours: "/1"
-condition:
-  - condition: state
+
+  - platform: state
     entity_id: input_boolean.ha_startup_pending
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
-mode: single
+    to: "off"
+
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+
+  - platform: time_pattern
+    minutes: "/30"
+
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_majorevents
       dataseturl: https://www.livetraffic.com/traffic/hazards/majorevent.json
       friendly_name: Live Traffic NSW - Major Events
       icon: mdi:party-popper
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_incidentslga
       dataseturl: https://www.livetraffic.com/traffic/hazards/regional/lga-incidents.json
       friendly_name: Live Traffic NSW - Incidents (LGA)
       icon: mdi:road-variant
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_roadwork
       dataseturl: https://www.livetraffic.com/traffic/hazards/roadwork.json
       friendly_name: Live Traffic NSW - Roadwork
       icon: mdi:dump-truck
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_incidents
       dataseturl: https://www.livetraffic.com/traffic/hazards/incident.json
       friendly_name: Live Traffic NSW - Incidents
       icon: mdi:road-variant
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_flood
       dataseturl: https://www.livetraffic.com/traffic/hazards/flood.json
       friendly_name: Live Traffic NSW - Flood
       icon: mdi:home-flood
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_alpine
       dataseturl: https://www.livetraffic.com/traffic/hazards/alpine.json
       friendly_name: Live Traffic NSW - Alpine
       icon: mdi:snowflake-alert
+
   - service: pyscript.getdata_livetrafficnsw
     data:
       entity_id: sensor.getdata_livetrafficnsw_fire

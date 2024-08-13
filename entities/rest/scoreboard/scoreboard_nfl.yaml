@@ -1,5 +1,5 @@
 ---
-resource: https://site.web.api.espn.com/apis/v2/sports/football/nfl/standings?type=0&level=4
+resource: https://site.web.api.espn.com/apis/v2/sports/football/nfl/standings?type=2&level=4
 sensor:
   name: scoreboard_nfl
   value_template: "{{ now() }}"

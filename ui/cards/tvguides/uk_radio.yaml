@@ -11,71 +11,28 @@ cards:
   #   name: UK Television
   #   icon: mdi:television-guide
   #   card_layout: normal
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_absolute_radio
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_1
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_2
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_3
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_4_extra
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_4_fm
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_4_lw
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_5_live
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_5_sports_extra
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_radio_6_music
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_bbc_world_service
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_capital_fm
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_heart
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_radio_x
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_talksport
-      - type: custom:decluttering-card
-        template: tvguide_card
-        variables:
-          - entity: sensor.tvguide_virgin_radio
+  - type: custom:auto-entities
+    sort:
+      method: attribute
+      attribute: sortorder
+    card_param: cards
+    filter:
+      template: >-
+        {% for s in expand(states.group.tvguide_uk_radio)|map(attribute='entity_id')|list|sort -%}
+        {% if state_attr(s, 'programs_next24hrs') -%}
+          {{
+            {
+              "type": "custom:decluttering-card",
+              "template": "tvguide_card",
+              "variables": [{
+                  "entity": s,
+              }]
+            }
+          }},
+        {%- endif %}
+        {%- endfor %}
+    show_empty: false
+    card:
+      type: grid
+      columns: 2
+      square: false

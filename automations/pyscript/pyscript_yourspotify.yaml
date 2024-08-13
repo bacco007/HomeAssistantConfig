@@ -2,20 +2,30 @@
 id: "pyscript_getdata_yourspotify"
 alias: "PyScript, GetData: Your Spotify"
 description: "PyScript, GetData: Your Spotify"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
+    id: startup
     event: start
-  - platform: time_pattern
-    minutes: "5"
-condition:
-  - condition: state
+
+  - platform: state
     entity_id: input_boolean.ha_startup_pending
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
-mode: single
+    to: "off"
+
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+
+  - platform: time_pattern
+    minutes: "/5"
+
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
+
   - service: pyscript.getdata_yourspotify
     data: {}

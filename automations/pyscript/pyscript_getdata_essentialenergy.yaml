@@ -2,33 +2,45 @@
 id: "pyscript_getdata_essentialenergy"
 alias: "PyScript, GetData: Essential Energy Outages"
 description: "PyScript, GetData: Essential Energy Outages"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
+    id: startup
     event: start
-  - platform: time_pattern
-    hours: "/1"
-condition:
-  - condition: state
+
+  - platform: state
     entity_id: input_boolean.ha_startup_pending
-    state: "off"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
-mode: single
+    to: "off"
+
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+
+  - platform: time_pattern
+    minutes: "/15"
+
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
+
   - service: pyscript.getdata_essentialenergyoutages
     data:
       entity_id: sensor.essential_energy_outages_current
       dataseturl: https://www.essentialenergy.com.au/Assets/kmz/current.kml
       friendly_name: "[Essential Energy] Outages, Current"
       icon: mdi:alert-circle
+
   - service: pyscript.getdata_essentialenergyoutages
     data:
       entity_id: sensor.essential_energy_outages_future
       dataseturl: https://www.essentialenergy.com.au/Assets/kmz/future.kml
       friendly_name: "[Essential Energy] Outages, Future"
       icon: mdi:alert-box
+
   - service: pyscript.getdata_essentialenergyoutages
     data:
       entity_id: sensor.essential_energy_outages_cancelled
