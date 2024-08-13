@@ -772,6 +772,7 @@ class SolcastApi:
                     if math.copysign(1.0, self.fc_moment['all'][_data_field][i]) < 0: self.fc_moment['all'][_data_field][i] = 0.0 # Suppress negative values
                     k = int(math.floor(j/1800))
                     if k+1 <= len(y)-1 and y[k] == 0 and y[k+1] == 0: self.fc_moment['all'][_data_field][i] = 0.0 # Suppress spline bounce
+                self.fc_moment['all'][_data_field] = ([0]*3) + self.fc_moment['all'][_data_field] # Shift right by fifteen minutes because 30-minute averages, padding
             else: # The list slice was not found, so zero the moments
                 self.fc_moment['all'][_data_field] = [0] * (len(self._spline_period) * 6)
         if self.options.attr_brk_site:
@@ -788,6 +789,7 @@ class SolcastApi:
                             if math.copysign(1.0, self.fc_moment[site['resource_id']][_data_field][i]) < 0: self.fc_moment[site['resource_id']][_data_field][i] = 0.0 # Suppress negative values
                             k = int(math.floor(j/1800))
                             if k+1 <= len(y)-1 and y[k] == 0 and y[k+1] == 0: self.fc_moment[site['resource_id']][_data_field][i] = 0.0 # Suppress spline bounce
+                        self.fc_moment[site['resource_id']][_data_field] = ([0]*3) + self.fc_moment[site['resource_id']][_data_field] # Shift right by fifteen minutes because 30-minute averages, padding
                     else: # The list slice was not found, so zero the moments
                         self.fc_moment[site['resource_id']][_data_field] = [0] * (len(self._spline_period) * 6)
 
@@ -819,6 +821,7 @@ class SolcastApi:
                     k = int(math.floor(j/1800))
                     if math.copysign(1.0, self.fc_remaining['all'][_data_field][i]) < 0: self.fc_remaining['all'][_data_field][i] = 0.0 # Suppress negative values
                     if k+1 <= len(y)-1 and y[k] == y[k+1] and self.fc_remaining['all'][_data_field][i] > round(y[k],4): self.fc_remaining['all'][_data_field][i] = y[k] # Suppress spline bounce
+                self.fc_remaining['all'][_data_field] = ([self.fc_remaining['all'][_data_field][0]]*3) + self.fc_remaining['all'][_data_field] # Shift right by fifteen minutes because 30-minute averages, padding
             else: # The list slice was not found, so zero the remainings
                 self.fc_remaining['all'][_data_field] = [0] * (len(self._spline_period) * 6)
         if self.options.attr_brk_site:
@@ -835,6 +838,7 @@ class SolcastApi:
                             k = int(math.floor(j/1800))
                             if math.copysign(1.0, self.fc_remaining[site['resource_id']][_data_field][i]) < 0: self.fc_remaining[site['resource_id']][_data_field][i] = 0.0 # Suppress negative values
                             if k+1 <= len(y)-1 and y[k] == y[k+1] and self.fc_remaining[site['resource_id']][_data_field][i] > round(y[k],4): self.fc_remaining[site['resource_id']][_data_field][i] = y[k] # Suppress spline bounce
+                        self.fc_remaining[site['resource_id']][_data_field] = ([self.fc_remaining[site['resource_id']][_data_field][0]]*3) + self.fc_remaining[site['resource_id']][_data_field] # Shift right by fifteen minutes because 30-minute averages, padding
                     else: # The list slice was not found, so zero the remainings
                         self.fc_remaining[site['resource_id']][_data_field] = [0] * (len(self._spline_period) * 6)
 
@@ -966,6 +970,11 @@ class SolcastApi:
                 result = await self.http_data_call(self.get_api_usage_cache_filename(site['apikey']), site['resource_id'], site['apikey'], dopast)
                 if not result:
                     failure = True
+                    if len(self.sites) > sitesAttempted:
+                        _LOGGER.warning('Forecast update for site %s failed, so not getting remaining sites', site['resource_id'])
+                    else:
+                        _LOGGER.warning('Forecast update for the last site queued failed (%s), so not getting remaining sites - API use count will look odd', site['resource_id'])
+                    break
 
             if sitesAttempted > 0 and not failure:
                 self._data["last_updated"] = dt.now(timezone.utc).isoformat()
@@ -1111,7 +1120,7 @@ class SolcastApi:
             url=f"{self.options.host}/rooftop_sites/{site}/{path}"
             _LOGGER.debug(f"Fetch data url: {url}")
 
-            async with async_timeout.timeout(600):
+            async with async_timeout.timeout(1800):
                 apiCacheFileName = self.configDir + '/' + cachedname + "_" + site + ".json"
                 if self.apiCacheEnabled and file_exists(apiCacheFileName):
                     status = 404
@@ -1121,7 +1130,7 @@ class SolcastApi:
                         _LOGGER.debug(f"Got cached file data for site {site}")
                 else:
                     if self._api_used[apikey] < self._api_limit[apikey]:
-                        tries = 5
+                        tries = 10
                         counter = 0
                         backoff = 30 # On every retry the back-off increases by (at least) thirty seconds more than the previous back-off
                         while True:
@@ -1186,7 +1195,7 @@ class SolcastApi:
         except ClientConnectionError as e:
             _LOGGER.error("Connection error in fetch_data(): %s", str(e))
         except asyncio.TimeoutError:
-            _LOGGER.error("Connection error in fetch_data(): Timed out connectng to Solcast API server")
+            _LOGGER.error("Connection error in fetch_data(): Timed out connecting to Solcast API server")
         except Exception as e:
             _LOGGER.error("Exception in fetch_data(): %s", traceback.format_exc())
 
@@ -1285,10 +1294,10 @@ class SolcastApi:
     def calcForecastStartIndex(self):
         midnight_utc = self.get_day_start_utc()
         # Search in reverse (less to iterate) and find the interval just before midnight
-        # Not stop at midnight as some sensors might need the previous interval
+        # (Doesn't stop at midnight because some sensors may need the previous interval)
         for idx in range(len(self._data_forecasts)-1, -1, -1):
             if self._data_forecasts[idx]["period_start"] < midnight_utc: break
-        _LOGGER.debug("Calc forecast start index midnight utc: %s, idx %s, len %s", midnight_utc, idx, len(self._data_forecasts))
+        _LOGGER.debug("Calc forecast start index midnight: %s UTC, idx %s, len %s", midnight_utc.strftime('%Y-%m-%d %H:%M:%S'), idx, len(self._data_forecasts))
         return idx
 
 
