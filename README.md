@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.8.1 |
 | No. Integrations | 213 |
 | No. Custom Integrations | 92 |
-| No. Entities | 5873 |
-| No. Sensors | 3806 |
+| No. Entities | 5872 |
+| No. Sensors | 3810 |
 | No. Automations | 148 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 475
-Buttons | 236
+Binary sensors | 489
+Buttons | 198
 Calendars | 82
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 657
+Devices | 671
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 37
-Persistent notifications | 3
+Persistent notifications | 2
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 75
 Selects | 55
-Sensors | 3806
+Sensors | 3810
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 239
+Switches | 256
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>624 Integrations</summary>
+<details><summary>625 Integrations</summary>
 
 | Name |
 | --- |
@@ -310,6 +310,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [gtfs2](https://www.home-assistant.io/components/gtfs2) |
 | [gtfs2.sensor](https://www.home-assistant.io/components/gtfs2.sensor) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
+| [hacs.switch](https://www.home-assistant.io/components/hacs.switch) |
 | [hacs.update](https://www.home-assistant.io/components/hacs.update) |
 | [hardware](https://www.home-assistant.io/components/hardware) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
@@ -815,13 +816,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.11] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
-| [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.1.1] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
+| [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.1.2] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.47] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
-| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.2] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.2] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
@@ -844,7 +845,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.2.0] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.2.1] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -876,7 +877,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.2] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.3] | Build a beautiful Home Assistant dashboard easily |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -928,7 +929,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.4.1 |  | core |
-| Music Assistant Server | 2.1.3 |  | d5369777 |
+| Music Assistant Server | 2.1.4 |  | d5369777 |
 | Node-RED | 18.0.5 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.1 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
