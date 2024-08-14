@@ -15,12 +15,13 @@ from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import Platform, __version__ as HAVERSION
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
 from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.start import async_at_start
 from homeassistant.loader import async_get_integration
 
 from .base import HacsBase
-from .const import DOMAIN, MINIMUM_HA_VERSION, STARTUP
+from .const import DOMAIN, HACS_SYSTEM_ID, MINIMUM_HA_VERSION, STARTUP
 from .data_client import HacsDataClient
 from .enums import HacsDisabledReason, HacsStage, LovelaceMode
 from .frontend import async_register_frontend
@@ -29,7 +30,7 @@ from .utils.queue_manager import QueueManager
 from .utils.version import version_left_higher_or_equal_then_right
 from .websocket import async_register_websocket_commands
 
-PLATFORMS = [Platform.UPDATE]
+PLATFORMS = [Platform.SWITCH, Platform.UPDATE]
 
 
 async def _async_initialize_integration(
@@ -168,6 +169,11 @@ async def _async_initialize_integration(
         hacs.enable_hacs()
 
     await async_try_startup()
+
+    # Remove old (v0-v1) sensor if it exists, can be removed in v3
+    er = async_get_entity_registry(hass)
+    if old_sensor := er.async_get_entity_id("sensor", DOMAIN, HACS_SYSTEM_ID):
+        er.async_remove(old_sensor)
 
     # Mischief managed!
     return True

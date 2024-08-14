@@ -387,7 +387,9 @@ class HacsRepository:
     @property
     def display_available_version(self) -> str:
         """Return display_authors"""
-        if self.data.last_version is not None:
+        if self.data.show_beta and self.data.prerelease is not None:
+            available = self.data.prerelease
+        elif self.data.last_version is not None:
             available = self.data.last_version
         else:
             if self.data.last_commit is not None:
@@ -1103,15 +1105,28 @@ class HacsRepository:
         # Get releases.
         if not skip_releases:
             try:
-                releases = await self.get_releases(
-                    prerelease=self.data.show_beta,
-                    returnlimit=self.hacs.configuration.release_limit,
-                )
+                releases = await self.get_releases(prerelease=True, returnlimit=30)
                 if releases:
+                    self.data.prerelease = None
+                    for release in releases:
+                        if release.draft:
+                            continue
+                        elif release.prerelease:
+                            if self.data.prerelease is None:
+                                self.data.prerelease = release.tag_name
+                        else:
+                            self.data.last_version = release.tag_name
+                            break
+
                     self.data.releases = True
-                    self.releases.objects = releases
-                    self.data.published_tags = [x.tag_name for x in self.releases.objects]
-                    self.data.last_version = next(iter(self.data.published_tags))
+
+                    filtered_releases = [
+                        release
+                        for release in releases
+                        if not release.draft and (self.data.show_beta or not release.prerelease)
+                    ]
+                    self.releases.objects = filtered_releases
+                    self.data.published_tags = [x.tag_name for x in filtered_releases]
 
             except HacsException:
                 self.data.releases = False
@@ -1434,23 +1449,11 @@ class HacsRepository:
                 {"repository": self.data.full_name, "progress": False},
             )
 
-    async def async_get_releases(self, *, first: int = 30) -> list[dict[str, Any]]:
+    async def async_get_releases(self, *, first: int = 30) -> list[GitHubReleaseModel]:
         """Get the last x releases of a repository."""
-        owner, name = self.data.full_name.split("/")
         response = await self.hacs.async_github_api_method(
-            method=self.hacs.githubapi.graphql,
-            query=GET_REPOSITORY_RELEASES,
-            variables={
-                "owner": owner,
-                "name": name,
-                "first": first,
-            },
+            method=self.hacs.githubapi.repos.releases.list,
+            repository=self.data.full_name,
+            kwargs={"per_page": 30},
         )
-        return (
-            []
-            if response is None
-            else response.data.get("data", {})
-            .get("repository", {})
-            .get("releases", {})
-            .get("nodes", [])
-        )
+        return response.data
