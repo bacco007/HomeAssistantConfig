@@ -1,0 +1,19 @@
+---
+trigger:
+  - platform: time_pattern
+    hours: /2
+
+action:
+  - service: homeassistant.list_orphaned_database_entities
+    response_variable: orphaned
+
+sensor:
+  - name: "[HA] Orphaned Database Entities"
+    unique_id: ha_orphaned_database_entities
+    state: >
+      {{ orphaned.count }}
+    unit_of_measurement: entities
+    icon: mdi:arrow-collapse
+    attributes:
+      orphans: >
+        {{ orphaned.entities }}
