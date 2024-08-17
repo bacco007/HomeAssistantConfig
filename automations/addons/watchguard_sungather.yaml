@@ -3,34 +3,41 @@ id: "1710400217767"
 alias: "[Addon Watchguard] Sungather"
 description: ""
 trigger:
-  - platform: template
-    value_template: '{{ states(''sensor.sun_state_day'') == "Day" }}'
   - platform: homeassistant
     event: start
+  - platform: time_pattern
+    minutes: /15
 condition:
-  - condition: or
+  - condition: and
     conditions:
       - condition: state
-        entity_id: sensor.sungrow_sg5kd_daily_generation
-        state: unavailable
-        for:
-          hours: 0
-          minutes: 5
-          seconds: 0
-      - condition: template
-        value_template: "{{ (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_daily_generation'].last_updated))/60 > 240 }}"
+        entity_id: sensor.sun_state_day
+        state: Day
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: sensor.sungrow_sg5kd_daily_generation
+            state: unavailable
+            for:
+              hours: 0
+              minutes: 5
+              seconds: 0
+          - condition: template
+            value_template: >-
+              {{ (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_daily_generation'].last_updated))/60 > 240 }}
 action:
-  - service: hassio.addon_restart
+  - action: hassio.addon_restart
     data:
       addon: 7b536ee6_sungather
-  - service: notify.alert
+  - action: notify.alert
     data:
       title: Sungather Restarted
-      message: Solar data hasn't been updated in 5 minutes, Sungather has been restarted
+      message: >-
+        Solar data hasn't been updated in 5 minutes, Sungather has been
+        restarted
       data:
         tag: watchguard_sungather
         notification_id: watchguard_sungather
         push:
           badge: 1
           sound: none
-mode: single

@@ -13,12 +13,6 @@ trigger:
     entity_id: input_boolean.ha_startup_pending
     to: "off"
 
-  - platform: event
-    event_type: call_service
-    event_data:
-      domain: group
-      service: reload
-
   - platform: time_pattern
     minutes: "/15"
 

@@ -2,13 +2,24 @@
 id: "influx2entity_365daychaffeydam"
 alias: "InfluxDB to Entity: 365 Day Chaffey Dam"
 description: "InfluxDB to Entity: 365 Day Chaffey Dam"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
+    id: startup
     event: start
+
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
+
   - platform: time_pattern
     hours: "/1"
-condition: []
+
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
   - service: pyscript.influxdb2_query_to_entity
     data:
       query: >-
@@ -60,4 +71,4 @@ action:
       unit_of_measurement: "%"
       friendly_name: Split Rock Dam - 365 Day - Percent
       icon: "mdi:water"
-mode: single
+

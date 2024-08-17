@@ -2,13 +2,24 @@
 id: "influx2entity_lastfmplaycount365day"
 alias: "InfluxDB to Entity: 365 Day LastFM Playcount"
 description: "InfluxDB to Entity: 365 Day LastFM Playcount"
+mode: single
+max_exceeded: silent
 trigger:
   - platform: homeassistant
+    id: startup
     event: start
+
+  - platform: state
+    entity_id: input_boolean.ha_startup_pending
+    to: "off"
+
   - platform: time_pattern
     hours: "/1"
-condition: []
+
 action:
+  - if: "{{ trigger.id == 'startup' }}"
+    then:
+      - delay: 240
   - service: pyscript.influxdb2_query_to_entity
     data:
       query: >-
