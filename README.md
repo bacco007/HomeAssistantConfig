@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.8.2 |
 | No. Integrations | 212 |
 | No. Custom Integrations | 92 |
-| No. Entities | 6105 |
-| No. Sensors | 3873 |
+| No. Entities | 6113 |
+| No. Sensors | 3876 |
 | No. Automations | 148 |
 
 <details>
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 489
+Binary sensors | 492
 Buttons | 241
 Calendars | 82
 Cameras | 6
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 672
+Devices | 676
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -83,7 +83,7 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 38
+Media players | 39
 Numbers | 37
 Persistent notifications | 3
 Persons | 4
@@ -91,7 +91,7 @@ Remotes | 8
 Scenes | 2
 Scripts | 75
 Selects | 55
-Sensors | 3873
+Sensors | 3876
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 299
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 316
+Update | 318
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -760,7 +760,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Default Config Disabler](https://github.com/tronikos/default_config_disabler) |  [v0.0.4] | Disables components from Home Assistant's default_config |[@tronikos](https://github.com/tronikos).|
 | [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.9.0] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.5.0] |  |[@martinarva](https://github.com/martinarva).|
-| [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.3.11] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
+| [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.0] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.2] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
 | [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.15.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
@@ -795,7 +795,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.15] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.14.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.6] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.14.2] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
@@ -810,7 +810,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.1.3] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.48] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.50] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
