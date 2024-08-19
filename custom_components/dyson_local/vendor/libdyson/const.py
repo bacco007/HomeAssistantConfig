@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 DEVICE_TYPE_360_EYE = "N223"
 DEVICE_TYPE_360_HEURIST = "276"
+DEVICE_TYPE_360_VIS_NAV = "277"
 DEVICE_TYPE_PURE_COOL_LINK_DESK = "469"  # DP01? DP02? This one's a bit older, and scraping the Dyson website is unclear
 DEVICE_TYPE_PURE_COOL_DESK = "520"  # AM06? This one's also a bit older, and also hard to scrape off the Dyson website
 DEVICE_TYPE_PURE_COOL_LINK = "475"  # TP02
@@ -21,6 +22,7 @@ DEVICE_TYPE_PURIFIER_BIG_QUIET = "664"  # BP02, BP03, and BP04
 DEVICE_TYPE_NAMES = {
     DEVICE_TYPE_360_EYE: "360 Eye robot vacuum",
     DEVICE_TYPE_360_HEURIST: "360 Heurist robot vacuum",
+    DEVICE_TYPE_360_VIS_NAV: "360 Vis Nav robot vacuum",
     DEVICE_TYPE_PURE_COOL: "Pure Cool",
     DEVICE_TYPE_PURIFIER_COOL_K: "Purifier Cool",
     DEVICE_TYPE_PURIFIER_COOL_E: "Purifier Cool",
@@ -111,6 +113,7 @@ class VacuumState(Enum):
     MAPPING_NEEDS_CHARGE = "MAPPING_NEEDS_CHARGE"
     MAPPING_PAUSED = "MAPPING_PAUSED"
     MAPPING_RUNNING = "MAPPING_RUNNING"
+    MACHINE_OFF = "MACHINE_OFF"
 
 
 class VacuumEyePowerMode(Enum):
@@ -126,6 +129,15 @@ class VacuumHeuristPowerMode(Enum):
     QUIET = "1"
     HIGH = "2"
     MAX = "3"
+
+
+class VacuumVisNavPowerMode(Enum):
+    """Dyson 360 Heurist power mode."""
+
+    AUTO = "1"
+    QUICK = "2"
+    QUIET = "3"
+    BOOST = "4"
 
 
 class CleaningType(Enum):

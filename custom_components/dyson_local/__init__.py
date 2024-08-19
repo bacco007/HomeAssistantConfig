@@ -9,6 +9,7 @@ from typing import List, Optional
 from .vendor.libdyson import (
     Dyson360Eye,
     Dyson360Heurist,
+    Dyson360VisNav,
     DysonPureHotCool,
     DysonPureHotCoolLink,
     DysonPurifierHumidifyCool,
@@ -94,11 +95,8 @@ async def async_setup_account(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DATA_ACCOUNT: account,
         DATA_DEVICES: devices,
     }
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
 
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
@@ -113,7 +111,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.data[CONF_DEVICE_TYPE],
     )
 
-    if not isinstance(device, Dyson360Eye) and not isinstance(device, Dyson360Heurist):
+    if (not isinstance(device, Dyson360Eye)
+            and not isinstance(device, Dyson360Heurist)
+            and not isinstance(device, Dyson360VisNav)):
         # Set up coordinator
         async def async_update_data():
             """Poll environmental data from the device."""
@@ -132,12 +132,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     else:
         coordinator = None
 
-    async def _async_forward_entry_setup():
-        for component in _async_get_platforms(device):
-            hass.async_create_task(
-                hass.config_entries.async_forward_entry_setup(entry, component)
-            )
-
     def setup_entry(host: str, is_discovery: bool = True) -> bool:
         try:
             device.connect(host)
@@ -153,7 +147,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN][DATA_DEVICES][entry.entry_id] = device
         hass.data[DOMAIN][DATA_COORDINATORS][entry.entry_id] = coordinator
         asyncio.run_coroutine_threadsafe(
-            _async_forward_entry_setup(), hass.loop
+            hass.config_entries.async_forward_entry_setups(entry, _async_get_platforms(device)), hass.loop
         ).result()
 
     host = entry.data.get(CONF_HOST)
@@ -203,7 +197,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 @callback
 def _async_get_platforms(device: DysonDevice) -> List[str]:
-    if isinstance(device, Dyson360Eye) or isinstance(device, Dyson360Heurist):
+    if (isinstance(device, Dyson360Eye)
+            or isinstance(device, Dyson360Heurist)
+            or isinstance(device, Dyson360VisNav)):
         return ["binary_sensor", "sensor", "vacuum"]
     platforms = ["fan", "select", "sensor", "switch"]
     if isinstance(device, DysonPureHotCool):

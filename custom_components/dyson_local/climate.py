@@ -46,6 +46,8 @@ async def async_setup_entry(
 class DysonClimateEntity(DysonEntity, ClimateEntity):
     """Dyson climate entity base class."""
 
+    _enable_turn_on_off_backwards_compatibility = False
+
     @property
     def hvac_mode(self) -> str:
         """Return hvac operation."""
@@ -75,6 +77,12 @@ class DysonClimateEntity(DysonEntity, ClimateEntity):
     def supported_features(self) -> int:
         """Return the list of supported features."""
         return SUPPORT_FLAGS
+
+    def turn_on(self) -> None:
+        self._device.turn_on()
+
+    def turn_off(self) -> None:
+        self._device.turn_off()
 
     @property
     def temperature_unit(self) -> str:
