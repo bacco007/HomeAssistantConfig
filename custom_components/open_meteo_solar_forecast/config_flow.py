@@ -5,11 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-from homeassistant.config_entries import (
-    ConfigEntry,
-    ConfigFlow,
-    OptionsFlow,
-)
+from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
 from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
@@ -17,10 +13,12 @@ from homeassistant.helpers import config_validation as cv
 from .const import (
     CONF_AZIMUTH,
     CONF_BASE_URL,
+    CONF_DAMPING_EVENING,
+    CONF_DAMPING_MORNING,
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
-    CONF_MODULES_POWER,
     CONF_INVERTER_POWER,
+    CONF_MODULES_POWER,
     DOMAIN,
 )
 
@@ -58,6 +56,8 @@ class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
                     CONF_API_KEY: user_input[CONF_API_KEY],
                     CONF_AZIMUTH: user_input[CONF_AZIMUTH],
                     CONF_BASE_URL: user_input[CONF_BASE_URL],
+                    CONF_DAMPING_MORNING: user_input[CONF_DAMPING_MORNING],
+                    CONF_DAMPING_EVENING: user_input[CONF_DAMPING_EVENING],
                     CONF_DECLINATION: user_input[CONF_DECLINATION],
                     CONF_MODULES_POWER: user_input[CONF_MODULES_POWER],
                     CONF_INVERTER_POWER: user_input[CONF_INVERTER_POWER],
@@ -94,6 +94,8 @@ class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_INVERTER_POWER, default=0): vol.All(
                         vol.Coerce(int), vol.Range(min=0)
                     ),
+                    vol.Optional(CONF_DAMPING_MORNING, default=0.0): vol.Coerce(float),
+                    vol.Optional(CONF_DAMPING_EVENING, default=0.0): vol.Coerce(float),
                     vol.Optional(CONF_EFFICIENCY_FACTOR, default=1.0): vol.All(
                         vol.Coerce(float), vol.Range(min=0)
                     ),
@@ -147,6 +149,18 @@ class OpenMeteoSolarForecastOptionFlowHandler(OptionsFlow):
                         CONF_MODULES_POWER,
                         default=self.config_entry.options[CONF_MODULES_POWER],
                     ): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                    vol.Optional(
+                        CONF_DAMPING_MORNING,
+                        default=self.config_entry.options.get(
+                            CONF_DAMPING_MORNING, 0.0
+                        ),
+                    ): vol.Coerce(float),
+                    vol.Optional(
+                        CONF_DAMPING_EVENING,
+                        default=self.config_entry.options.get(
+                            CONF_DAMPING_EVENING, 0.0
+                        ),
+                    ): vol.Coerce(float),
                     vol.Required(
                         CONF_INVERTER_POWER,
                         default=self.config_entry.options.get(CONF_INVERTER_POWER, 0),

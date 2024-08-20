@@ -4,17 +4,19 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-from open_meteo_solar_forecast import Estimate, OpenMeteoSolarForecast
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
+from open_meteo_solar_forecast import Estimate, OpenMeteoSolarForecast
+
 from .const import (
     CONF_AZIMUTH,
     CONF_BASE_URL,
+    CONF_DAMPING_EVENING,
+    CONF_DAMPING_MORNING,
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
     CONF_INVERTER_POWER,
@@ -52,6 +54,8 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             dc_kwp=(entry.options[CONF_MODULES_POWER] / 1000),
             declination=entry.options[CONF_DECLINATION],
             efficiency_factor=entry.options[CONF_EFFICIENCY_FACTOR],
+            damping_morning=entry.options.get(CONF_DAMPING_MORNING, 0.0),
+            damping_evening=entry.options.get(CONF_DAMPING_EVENING, 0.0),
         )
 
         update_interval = timedelta(minutes=30)

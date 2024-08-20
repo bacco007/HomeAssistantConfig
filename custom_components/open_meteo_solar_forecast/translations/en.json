@@ -5,6 +5,8 @@
         "data": {
           "api_key": "API key",
           "azimuth": "Azimuth (360 degrees, 0 = North, 90 = East, 180 = South, 270 = West)",
+          "damping_morning": "Damping factor: adjusts the results in the morning",
+          "damping_evening": "Damping factor: adjusts the results in the evening",
           "declination": "Declination (0 = Horizontal, 90 = Vertical)",
           "latitude": "Latitude",
           "longitude": "Longitude",
@@ -87,6 +89,8 @@
         "data": {
           "api_key": "API key",
           "azimuth": "Azimuth (360 degrees, 0 = North, 90 = East, 180 = South, 270 = West)",
+          "damping_morning": "Damping factor: adjusts the results in the morning",
+          "damping_evening": "Damping factor: adjusts the results in the evening",
           "declination": "Declination (0 = Horizontal, 90 = Vertical)",
           "inverter_size": "Inverter size (Watt)",
           "efficiency_factor": "DC efficiency factor (0.0-1.0, 0.0 = 100% loss, 1.0 = no loss)",

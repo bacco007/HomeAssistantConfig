@@ -6,6 +6,8 @@
         "data": {
           "api_key": "[%key:common::config_flow::data::api_key%]",
           "azimuth": "Azimuth (360 degrees, 0 = North, 90 = East, 180 = South, 270 = West)",
+          "damping_morning": "Damping factor: adjusts the results in the morning",
+          "damping_evening": "Damping factor: adjusts the results in the evening",
           "declination": "Declination (0 = Horizontal, 90 = Vertical)",
           "latitude": "[%key:common::config_flow::data::latitude%]",
           "longitude": "[%key:common::config_flow::data::longitude%]",
@@ -27,6 +29,8 @@
         "data": {
           "api_key": "[%key:common::config_flow::data::api_key%]",
           "azimuth": "[%key:component::solar_forecast::config::step::user::data::azimuth%]",
+          "damping_morning": "[%key:component::solar_forecast::config::step::user::data::damping_morning%]",
+          "damping_evening": "[%key:component::solar_forecast::config::step::user::data::damping_evening%]",
           "declination": "[%key:component::solar_forecast::config::step::user::data::declination%]",
           "efficiency_factor": "[%key:component::solar_forecast::config::step::user::data::efficiency_factor%]",
           "modules_power": "[%key:component::solar_forecast::config::step::user::data::modules_power%]",
