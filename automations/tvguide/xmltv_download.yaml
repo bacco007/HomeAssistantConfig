@@ -1,6 +1,8 @@
 ---
 alias: "[TVGuide] XMLTV Download"
 description: "[TVGuide] XMLTV Download"
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     event: start

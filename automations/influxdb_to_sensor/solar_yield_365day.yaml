@@ -2,8 +2,8 @@
 id: "influx2entity_solar365dayyield"
 alias: "InfluxDB to Entity: 365 Day Solar Yield"
 description: "InfluxDB to Entity: 365 Day Solar Yield"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

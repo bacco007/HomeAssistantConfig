@@ -2,6 +2,8 @@
 id: 07a2a553-83e0-487a-a751-e59a0f13a167
 alias: "[TVGuide] XMLTV Process Webgrab+"
 description: "[TVGuide] Process Webgrab+"
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     event: start

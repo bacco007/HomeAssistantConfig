@@ -2,8 +2,8 @@
 id: "pyscript_getdata_untappd"
 alias: "[PyScript] GetData: Untappd"
 description: "[PyScript] GetData: Untappd"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

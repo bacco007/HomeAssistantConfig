@@ -2,8 +2,8 @@
 id: "influx2entity_lastfmplaycount365day"
 alias: "InfluxDB to Entity: 365 Day LastFM Playcount"
 description: "InfluxDB to Entity: 365 Day LastFM Playcount"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

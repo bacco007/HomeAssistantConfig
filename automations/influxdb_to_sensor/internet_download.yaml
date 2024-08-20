@@ -2,8 +2,8 @@
 id: "influx2entity_internetstats365day"
 alias: "InfluxDB to Entity: 365 Day Internet Stats"
 description: "InfluxDB to Entity: 365 Day Internet Stats"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

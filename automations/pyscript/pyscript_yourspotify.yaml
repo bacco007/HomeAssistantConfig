@@ -2,8 +2,8 @@
 id: "pyscript_getdata_yourspotify"
 alias: "PyScript, GetData: Your Spotify"
 description: "PyScript, GetData: Your Spotify"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

@@ -2,8 +2,8 @@
 id: "pyscript_getdata_livetraffic"
 alias: "PyScript, GetData: Live Traffic"
 description: "PyScript, GetData: Live Traffic"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

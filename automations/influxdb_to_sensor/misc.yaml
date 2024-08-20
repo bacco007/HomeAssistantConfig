@@ -2,8 +2,8 @@
 id: "influx2entity_misc"
 alias: "InfluxDB to Entity: Misc"
 description: "InfluxDB to Entity: Misc"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup

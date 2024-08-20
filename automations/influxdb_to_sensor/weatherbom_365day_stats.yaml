@@ -2,8 +2,8 @@
 id: "influx2entity_yearlybomstats"
 alias: "InfluxDB to Entity: Yearly BOM Stats"
 description: "InfluxDB to Entity: Yearly BOM Stats"
-mode: single
-max_exceeded: silent
+mode: restart
+max_exceeded: warning
 trigger:
   - platform: homeassistant
     id: startup
