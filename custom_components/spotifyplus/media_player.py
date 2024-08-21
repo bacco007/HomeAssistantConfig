@@ -1326,7 +1326,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 currentTransportState:str = sonosTransportInfo.get('current_transport_state','')
                 if currentTransportState == 'PLAYING':
                     playerState._IsPlaying = True
-                elif currentTransportState == 'PAUSED_PLAYBACK':
+                elif currentTransportState in ['PAUSED_PLAYBACK','STOPPED']:
                     playerState.Actions._Pausing = True
                     
                 # only update the following PlayState attributes from SoCo if they are NOT set.
@@ -4499,20 +4499,51 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                         refreshDeviceList=False, 
                         activateDevice=True)
 
+                    # at this point the Sonos device should be set to the SPOTIFY_CONNECT music source.
+                    # note that we have to issue a transport play command to actually transfer control to the
+                    # Sonos device though; just connecting to the device will not transfer control!
+                    # we will issue the play command below, based on the current Sonos transport state.
+
                     # refresh sonos music source property value, as it will change after device activation.
                     sonosMusicSource = sonosDevice.music_source
                     _logsi.LogVerbose("'%s': Sonos device '%s' ('%s') music source (after activation): '%s'" % (self.name, sonosDevice.ip_address, sonosDevice.player_name, sonosMusicSource))
-                
+
+                # get current Sonos transport status.
+                sonosTransportInfo:dict = sonosDevice.get_current_transport_info()
+                currentTransportState:str = sonosTransportInfo.get('current_transport_state', None)
+                currentTransportStatus:str = sonosTransportInfo.get('current_transport_status', None)
+                _logsi.LogVerbose("'%s': Sonos device '%s' ('%s') current_transport_state (before activation transfer): '%s' (Status=%s)" % (self.name, sonosDevice.ip_address, sonosDevice.player_name, currentTransportState, currentTransportStatus))
+
                 # was the Sonos device music source set to Spotify Connect?
                 if sonosMusicSource == 'SPOTIFY_CONNECT':
                    
                     _logsi.LogVerbose("'%s': Sonos device music source is currently set to SPOTIFY_CONNECT" % (self.name))
 
-                    # source device is not playing anything, so just issue a play command to the Sonos device
-                    # to let it choose what to play.
-                    _logsi.LogVerbose("'%s': Issuing command to Sonos device '%s' ('%s'): PLAY" % (self.name, sonosDevice.ip_address, sonosDevice.player_name))
+                    # issue a transport play command to actually transfer control to the Sonos device.
+                    _logsi.LogVerbose("'%s': Issuing transport command to transfer Sonos device '%s' ('%s'): PLAY" % (self.name, sonosDevice.ip_address, sonosDevice.player_name))
                     sonosDevice.play()
                     
+                    # give SoCo api time to process the change.
+                    if delay > 0:
+                        _logsi.LogVerbose(TRACE_MSG_DELAY_DEVICE_SONOS % delay)
+                        time.sleep(delay)
+
+                    # get current Sonos transport status.
+                    sonosTransportInfo:dict = sonosDevice.get_current_transport_info()
+                    currentTransportState:str = sonosTransportInfo.get('current_transport_state', None)
+                    currentTransportStatus:str = sonosTransportInfo.get('current_transport_status', None)
+                    _logsi.LogVerbose("'%s': Sonos device '%s' ('%s') current_transport_state (after activation transfer): '%s' (Status=%s)" % (self.name, sonosDevice.ip_address, sonosDevice.player_name, currentTransportState, currentTransportStatus))
+
+                    # stop / start play as requested.
+                    if currentTransportState == 'PLAYING':
+                        if play == False:
+                            _logsi.LogVerbose("'%s': Issuing command to Sonos device '%s' ('%s'): PAUSE" % (self.name, sonosDevice.ip_address, sonosDevice.player_name))
+                            sonosDevice.pause()
+                    elif currentTransportState in ['PAUSED_PLAYBACK','STOPPED','TRANSITIONING']:
+                        if play == True:
+                            _logsi.LogVerbose("'%s': Issuing command to Sonos device '%s' ('%s'): PLAY" % (self.name, sonosDevice.ip_address, sonosDevice.player_name))
+                            sonosDevice.play()
+                                        
                     # give SoCo api time to process the change.
                     if delay > 0:
                         _logsi.LogVerbose(TRACE_MSG_DELAY_DEVICE_SONOS % delay)
@@ -4981,9 +5012,10 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
 
 
-    def service_spotify_remove_album_favorites(self, 
-                                               ids:str=None, 
-                                               ) -> None:
+    def service_spotify_remove_album_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
         """
         Remove one or more albums from the current user's 'Your Library'.
         
@@ -5021,9 +5053,133 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
 
 
-    def service_spotify_remove_track_favorites(self, 
-                                               ids:str=None, 
-                                               ) -> None:
+    def service_spotify_remove_audiobook_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
+        """
+        Remove one or more audiobooks from the current user's 'Your Library'.
+        
+        Args:
+            ids (str):  
+                A comma-separated list of the Spotify IDs for the audiobooks.  
+                Maximum: 50 IDs.  
+                Example: `3PFyizE2tGCSRLusl2Qizf,7iHfbu1YPACw6oZPAFJtqe`
+                If null, the currently playing audiobook uri id value is used.
+        """
+        apiMethodName:str = 'service_spotify_remove_audiobook_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("ids", ids)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Remove Audiobook Favorites Service", apiMethodParms)
+                           
+            # remove items from Spotify audiobook favorites.
+            _logsi.LogVerbose("Removing items(s) from Spotify Audiobook Favorites")
+            self.data.spotifyClient.RemoveAudiobookFavorites(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_remove_episode_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
+        """
+        Remove one or more episodes from the current user's 'Your Library'.
+        
+        Args:
+            ids (str):  
+                A comma-separated list of the Spotify IDs for the episodes.  
+                Maximum: 50 IDs.  
+                Example: `3F97boSWlXi8OzuhWClZHQ,1hPX5WJY6ja6yopgVPBqm4`
+                If null, the currently playing episode uri id value is used.
+        """
+        apiMethodName:str = 'service_spotify_remove_episode_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("ids", ids)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Remove Episode Favorites Service", apiMethodParms)
+                           
+            # remove items from Spotify episode favorites.
+            _logsi.LogVerbose("Removing items(s) from Spotify Episode Favorites")
+            self.data.spotifyClient.RemoveEpisodeFavorites(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_remove_show_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
+        """
+        Remove one or more shows from the current user's 'Your Library'.
+        
+        Args:
+            ids (str):  
+                A comma-separated list of the Spotify IDs for the shows.  
+                Maximum: 50 IDs.  
+                Example: `6kAsbP8pxwaU2kPibKTuHE,4rOoJ6Egrf8K2IrywzwOMk`
+                If null, the currently playing show uri id value is used.
+        """
+        apiMethodName:str = 'service_spotify_remove_show_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("ids", ids)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Remove Show Favorites Service", apiMethodParms)
+                           
+            # remove items from Spotify show favorites.
+            _logsi.LogVerbose("Removing items(s) from Spotify Show Favorites")
+            self.data.spotifyClient.RemoveShowFavorites(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_remove_track_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
         """
         Remove one or more tracks from the current user's 'Your Library'.
         
@@ -5061,9 +5217,10 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
 
 
-    def service_spotify_save_album_favorites(self, 
-                                             ids:str=None, 
-                                             ) -> None:
+    def service_spotify_save_album_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
         """
         Save one or more albums to the current user's 'Your Library'.
         
@@ -5101,9 +5258,133 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
 
 
-    def service_spotify_save_track_favorites(self, 
-                                             ids:str=None, 
-                                             ) -> None:
+    def service_spotify_save_audiobook_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
+        """
+        Save one or more audiobook to the current user's 'Your Library'.
+        
+        Args:
+            ids (str):  
+                A comma-separated list of the Spotify IDs for the audiobooks.  
+                Maximum: 50 IDs.  
+                Example: `3PFyizE2tGCSRLusl2Qizf,7iHfbu1YPACw6oZPAFJtqe`
+                If null, the currently playing audiobook uri id value is used.
+        """
+        apiMethodName:str = 'service_spotify_save_audiobook_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("ids", ids)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Save Audiobook Favorites Service", apiMethodParms)
+                           
+            # save items to Spotify audiobook favorites.
+            _logsi.LogVerbose("Saving items(s) to Spotify Audiobook Favorites")
+            self.data.spotifyClient.SaveAudiobookFavorites(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_save_episode_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
+        """
+        Save one or more episodes to the current user's 'Your Library'.
+        
+        Args:
+            ids (str):  
+                A comma-separated list of the Spotify IDs for the episode.  
+                Maximum: 50 IDs.  
+                Example: `3F97boSWlXi8OzuhWClZHQ,1hPX5WJY6ja6yopgVPBqm4`
+                If null, the currently playing episode uri id value is used.
+        """
+        apiMethodName:str = 'service_spotify_save_episode_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("ids", ids)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Save Episode Favorites Service", apiMethodParms)
+                           
+            # save items to Spotify episode favorites.
+            _logsi.LogVerbose("Saving items(s) to Spotify Episode Favorites")
+            self.data.spotifyClient.SaveEpisodeFavorites(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_save_show_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
+        """
+        Save one or more show to the current user's 'Your Library'.
+        
+        Args:
+            ids (str):  
+                A comma-separated list of the Spotify IDs for the shows.  
+                Maximum: 50 IDs.  
+                Example: `6kAsbP8pxwaU2kPibKTuHE,4rOoJ6Egrf8K2IrywzwOMk`
+                If null, the currently playing show uri id value is used.
+        """
+        apiMethodName:str = 'service_spotify_save_show_favorites'
+        apiMethodParms:SIMethodParmListContext = None
+
+        try:
+
+            # trace.
+            apiMethodParms = _logsi.EnterMethodParmList(SILevel.Debug, apiMethodName)
+            apiMethodParms.AppendKeyValue("ids", ids)
+            _logsi.LogMethodParmList(SILevel.Verbose, "Spotify Save Show Favorites Service", apiMethodParms)
+                           
+            # save items to Spotify show favorites.
+            _logsi.LogVerbose("Saving items(s) to Spotify Show Favorites")
+            self.data.spotifyClient.SaveShowFavorites(ids)
+
+        # the following exceptions have already been logged, so we just need to
+        # pass them back to HA for display in the log (or service UI).
+        except SpotifyApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        except SpotifyWebApiError as ex:
+            raise HomeAssistantError(ex.Message)
+        
+        finally:
+        
+            # trace.
+            _logsi.LeaveMethod(SILevel.Debug, apiMethodName)
+
+
+    def service_spotify_save_track_favorites(
+            self, 
+            ids:str=None, 
+            ) -> None:
         """
         Save one or more tracks to the current user's 'Your Library'.
         
@@ -6020,12 +6301,13 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 
             # create Spotify Zeroconf API connection object for the device.
             zconn:ZeroconfConnect = ZeroconfConnect(
-                hostIpv4Address, 
-                hostIpPort, 
-                cpath, 
-                version, 
-                useSSL, 
-                self.data.spotifyClient.TokenStorageDir,
+                hostIpAddress=hostIpv4Address, 
+                hostIpPort=hostIpPort, 
+                cpath=cpath, 
+                version=version, 
+                useSSL=useSSL, 
+                tokenStorageDir=self.data.spotifyClient.TokenStorageDir,
+                tokenStorageFile=self.data.spotifyClient.TokenStorageFile,
                 tokenAuthInBrowser=False)
             
             # are we verifying if the device id is already in the Spotify Connect device list?
@@ -6137,12 +6419,13 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 
             # create Spotify Zeroconf API connection object for the device.
             zconn:ZeroconfConnect = ZeroconfConnect(
-                hostIpv4Address, 
-                hostIpPort, 
-                cpath, 
-                version, 
-                useSSL,
-                self.data.spotifyClient.TokenStorageDir,
+                hostIpAddress=hostIpv4Address, 
+                hostIpPort=hostIpPort, 
+                cpath=cpath, 
+                version=version, 
+                useSSL=useSSL,
+                tokenStorageDir=self.data.spotifyClient.TokenStorageDir,
+                tokenStorageFile=self.data.spotifyClient.TokenStorageFile,
                 tokenAuthInBrowser=False)
             
             # disconnect the device from Spotify Connect.
@@ -6220,12 +6503,13 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 
             # create Spotify Zeroconf API connection object for the device.
             zconn:ZeroconfConnect = ZeroconfConnect(
-                hostIpv4Address, 
-                hostIpPort, 
-                cpath, 
-                version, 
-                useSSL,
-                self.data.spotifyClient.TokenStorageDir,
+                hostIpAddress=hostIpv4Address, 
+                hostIpPort=hostIpPort, 
+                cpath=cpath, 
+                version=version, 
+                useSSL=useSSL,
+                tokenStorageDir=self.data.spotifyClient.TokenStorageDir,
+                tokenStorageFile=self.data.spotifyClient.TokenStorageFile,
                 tokenAuthInBrowser=False)
 
             # get Spotify Connect device information.
