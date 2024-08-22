@@ -243,25 +243,25 @@ sensor:
             and is_number(states('sensor.weather_temperature_today_minimum')))
           or is_number(states('sensor.tamworth_airport_min_temp')) }}
 
-    - name: "[Weather] Forecast High Temperature Time"
-      unique_id: weather_forecast_high_temperature_time
-      icon: mdi:thermometer-high
-      device_class: timestamp
-      state: "{{ states('sensor.pirateweather_daytime_high_temperature_time_0d') | as_datetime }}"
-      availability: "{{ has_value('sensor.pirateweather_daytime_high_temperature_time_0d') }}"
-      attributes:
-        category: weather
-        provider: Pirate Weather
+  - name: "[Weather] Forecast High Temperature Time"
+    unique_id: weather_forecast_high_temperature_time
+    icon: mdi:thermometer-high
+    device_class: timestamp
+    state: "{{ states('sensor.pirateweather_daytime_high_temperature_time_0d') | as_datetime }}"
+    availability: "{{ has_value('sensor.pirateweather_daytime_high_temperature_time_0d') }}"
+    attributes:
+      category: weather
+      provider: Pirate Weather
 
-    - name: "[Weather] Forecast Low Temperature Time"
-      unique_id: weather_forecast_low_temperature_time
-      icon: mdi:thermometer-low
-      device_class: timestamp
-      state: "{{ states('sensor.pirateweather_daily_low_temperature_time_0d') | as_datetime }}"
-      availability: "{{ has_value('sensor.pirateweather_daily_low_temperature_time_0d') }}"
-      attributes:
-        category: weather
-        provider: Pirate Weather
+  - name: "[Weather] Forecast Low Temperature Time"
+    unique_id: weather_forecast_low_temperature_time
+    icon: mdi:thermometer-low
+    device_class: timestamp
+    state: "{{ states('sensor.pirateweather_daily_low_temperature_time_0d') | as_datetime }}"
+    availability: "{{ has_value('sensor.pirateweather_daily_low_temperature_time_0d') }}"
+    attributes:
+      category: weather
+      provider: Pirate Weather
 
   - name: "[Weather] Temperature Range"
     unique_id: weather_temperature_range
