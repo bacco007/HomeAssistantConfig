@@ -48,9 +48,9 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.8.2 |
-| No. Integrations | 213 |
+| No. Integrations | 214 |
 | No. Custom Integrations | 92 |
-| No. Entities | 6106 |
+| No. Entities | 6108 |
 | No. Sensors | 3873 |
 | No. Automations | 148 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 39
 Numbers | 37
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>625 Integrations</summary>
+<details><summary>627 Integrations</summary>
 
 | Name |
 | --- |
@@ -292,6 +292,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
 | [gdacs.geo_location](https://www.home-assistant.io/components/gdacs.geo_location) |
 | [gdacs.sensor](https://www.home-assistant.io/components/gdacs.sensor) |
+| [geo_json_events](https://www.home-assistant.io/components/geo_json_events) |
+| [geo_json_events.geo_location](https://www.home-assistant.io/components/geo_json_events.geo_location) |
 | [geo_location](https://www.home-assistant.io/components/geo_location) |
 | [github](https://www.home-assistant.io/components/github) |
 | [github.sensor](https://www.home-assistant.io/components/github.sensor) |
@@ -804,7 +806,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.16] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.14.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.5.8] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.14.2] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
@@ -819,7 +821,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Solar](https://github.com/BJReplay/ha-solcast-solar) |  [v4.1.3] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.53] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.54] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -929,7 +931,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.4.1 |  | core |
-| Music Assistant Server | 2.2.1 |  | d5369777 |
+| Music Assistant Server | 2.2.2 |  | d5369777 |
 | Node-RED | 18.0.5 |  | a0d7b954 |
 | OpenThread Border Router | 2.9.1 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
