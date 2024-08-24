@@ -1,27 +1,27 @@
-- id: '1722733318654'
-  alias: '[Olympics] Notify on Medal Win'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - sensor.olympics_medal_count_total
-  condition:
-  - condition: template
-    value_template: '{{ trigger.from_state.state|int(0) < trigger.to_state.state|int(0)
-      }}'
-  action:
-  - data:
-      title: Olympics - Another Medal!
-      data:
-        push:
-          badge: 1
-          interruption-level: time-sensitive
-        presentation_options:
-        - alert
-        - badge
-      message: "Another Medal! Bringing our total to {{states('sensor.olympics_medal_count_total')
-        }}, ranked {{states('sensor.olympics_medal_count_ranking') }}  \n\U0001F947
-        {{states('sensor.olympics_medal_count_gold') }}  \U0001F948 {{states('sensor.olympics_medal_count_silver')
-        }}  \U0001F949 {{states('sensor.olympics_medal_count_bronze') }}"
-    action: notify.alert
-  mode: single
+# - id: '1722733318654'
+#   alias: '[Olympics] Notify on Medal Win'
+#   description: ''
+#   trigger:
+#   - platform: state
+#     entity_id:
+#     - sensor.olympics_medal_count_total
+#   condition:
+#   - condition: template
+#     value_template: '{{ trigger.from_state.state|int(0) < trigger.to_state.state|int(0)
+#       }}'
+#   action:
+#   - data:
+#       title: Olympics - Another Medal!
+#       data:
+#         push:
+#           badge: 1
+#           interruption-level: time-sensitive
+#         presentation_options:
+#         - alert
+#         - badge
+#       message: "Another Medal! Bringing our total to {{states('sensor.olympics_medal_count_total')
+#         }}, ranked {{states('sensor.olympics_medal_count_ranking') }}  \n\U0001F947
+#         {{states('sensor.olympics_medal_count_gold') }}  \U0001F948 {{states('sensor.olympics_medal_count_silver')
+#         }}  \U0001F949 {{states('sensor.olympics_medal_count_bronze') }}"
+#     action: notify.alert
+#   mode: single

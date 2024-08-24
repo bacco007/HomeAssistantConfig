@@ -135,13 +135,13 @@ cards:
           - entity: sensor.tbsh3_monitordocker_fr24_network_total_down
             icon: "mdi:download"
             name: "Network Total - Down"
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card
@@ -213,13 +213,13 @@ cards:
           tooltip:
             enabled: false
 
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card

@@ -10,13 +10,13 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card
@@ -62,13 +62,13 @@ cards:
             data: json
             align: center
             modify: x.count
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card
@@ -114,13 +114,13 @@ cards:
             data: json
             align: center
             modify: x.count
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card
@@ -174,13 +174,13 @@ cards:
             data: json
             align: center
             modify: x.count
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card
@@ -226,13 +226,13 @@ cards:
             data: json
             align: center
             modify: x.count
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
+
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card

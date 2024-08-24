@@ -1,0 +1,52 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Earthquakes
+    icon: mdi:pulse
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: custom:expander-card
+    gap: 0.6em
+    padding: 0
+    clear: false
+    title: Expander
+    overlay-margin: 0em
+    button-background: transparent
+    title-card:
+      type: custom:mushroom-template-card
+      primary: USGS Earthquakes
+      icon: mdi:pulse
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              #background-color: var(--background-color);
+              box-shadow: none !important;
+              --icon-size: 40px;
+              --icon-symbol-size: 30px;
+              padding-top: 5px !important;
+              padding-bottom: 5px !important;
+            }
+    cards:
+      - type: markdown
+        card_mod:
+          style: |-
+            ha-card {
+              border: none;
+              box-shadow: none;
+            }
+        content: >-
+          {% for state in states.geo_location %}
+            {% if state.attributes.source=="usgs_earthquakes_feed" %}
+          **{{ state.attributes.place }}**
+
+          Magnitude {{ state.attributes.magnitude }}
+
+          Alert Duration: {{time_since(state.attributes.time)}} ago
+
+          {% endif %} {% endfor %}

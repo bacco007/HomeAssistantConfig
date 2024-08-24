@@ -137,13 +137,12 @@ cards:
             else {
              '<div style="color:red;">' + "-" + '</div>'
             }
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card

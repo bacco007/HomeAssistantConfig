@@ -257,7 +257,7 @@ cards:
         - white-space: normal
         - text-align: left
         - height: 100%
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
@@ -312,13 +312,12 @@ cards:
             suffix: " sec"
           - name: Quality
             data: quality
-  - type: custom:yet-another-expander-card
+  - type: custom:expander-card
     gap: 0.6em
     padding: 0
     clear: false
     title: Expander
     overlay-margin: 0em
-    child-padding: 0.5em
     button-background: transparent
     title-card:
       type: custom:mushroom-template-card
