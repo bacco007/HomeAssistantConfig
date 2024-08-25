@@ -1,4 +1,4 @@
-import { LitElement } from "https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js";
+import { LitElement, css } from "https://cdn.jsdelivr.net/gh/lit/dist@3/all/lit-all.min.js";
 import { Translator } from "./localize/translator.js";
 import { VERSION } from "./const.js";
 import { renderBye } from './render_bye.js';
@@ -9,6 +9,7 @@ import { renderPost } from './render_post.js';
 import { renderPre } from './render_pre.js';
 import { initCardData, setCardFormat, setDefaults, setStartInfo } from './set_defaults.js';
 import { setSportData } from './set_sports.js';
+import { cardStyles } from './styles.js';
 
 
 export class TeamTrackerCard extends LitElement {
@@ -18,6 +19,12 @@ export class TeamTrackerCard extends LitElement {
             hass: {},
             _config: {},
         };
+    }
+
+    static get styles() {
+        return css`
+            ${cardStyles}
+        `;
     }
 
     setConfig(config) {
@@ -205,10 +212,10 @@ export class TeamTrackerCard extends LitElement {
 // Trigger the UI Card Editor from Card Picker
 //    Uncomment to enable visual editor
 //
-    //  static getConfigElement() {
-    //    // Create and return an editor element
-    //    return document.createElement("my-custom-card-editor");
-    //  }
+    static getConfigElement() {
+    // Create and return an editor element
+        return document.createElement("teamtracker-card-editor");
+    }
     //
     //  static getStubConfig() {
     //    // Return a minimal configuration that will result in a working card configuration

@@ -1,10 +1,10 @@
 import { VERSION } from "./const.js";
-import { MyCustomCardEditor } from "./card_editor.js";
+import { TeamtrackerCardEditor } from "./card_editor.js";
 import { TeamTrackerCard } from "./teamtracker_card.js";
 
 
 customElements.define("teamtracker-card", TeamTrackerCard);
-customElements.define("my-custom-card-editor", MyCustomCardEditor);
+customElements.define("teamtracker-card-editor", TeamtrackerCardEditor);
 
 console.info("%c TEAMTRACKER-CARD %s IS INSTALLED",
     "color: blue; font-weight: bold",
