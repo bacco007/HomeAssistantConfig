@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.8.3 |
 | No. Integrations | 214 |
 | No. Custom Integrations | 92 |
-| No. Entities | 6057 |
-| No. Sensors | 3848 |
+| No. Entities | 5874 |
+| No. Sensors | 3765 |
 | No. Automations | 148 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 491
-Buttons | 227
+Buttons | 189
 Calendars | 82
 Cameras | 6
 Climate | 2
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 75
 Selects | 55
-Sensors | 3848
+Sensors | 3765
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 285
+Switches | 220
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -826,7 +826,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
-| [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.2] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
+| [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.3] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.7] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
@@ -919,8 +919,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.18.0 |  | db21ed7f |
 | Cloudflared | 5.1.19 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.8.0 |  | 15ef4d2f |
-| eufy-security-ws | 1.8.0-2 |  | 402f1039 |
+| ESPHome | 2024.8.1 |  | 15ef4d2f |
+| eufy-security-ws | 1.9.0 |  | 402f1039 |
 | Get HACS | 1.3.0 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
@@ -932,7 +932,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Matter Server | 6.4.1 |  | core |
 | Music Assistant Server | 2.2.2 |  | d5369777 |
 | Node-RED | 18.0.5 |  | a0d7b954 |
-| OpenThread Border Router | 2.9.1 |  | core |
+| OpenThread Border Router | 2.10.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
