@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.8.3 |
-| No. Integrations | 214 |
+| HA Version | 2024.9.0b0 |
+| No. Integrations | 213 |
 | No. Custom Integrations | 92 |
-| No. Entities | 5874 |
-| No. Sensors | 3765 |
+| No. Entities | 6120 |
+| No. Sensors | 3876 |
 | No. Automations | 148 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 491
-Buttons | 189
+Buttons | 240
 Calendars | 82
 Cameras | 6
 Climate | 2
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 37
-Persistent notifications | 5
+Persistent notifications | 3
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 75
 Selects | 55
-Sensors | 3765
+Sensors | 3876
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 220
+Switches | 298
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 309
+Update | 313
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>627 Integrations</summary>
+<details><summary>622 Integrations</summary>
 
 | Name |
 | --- |
@@ -443,7 +443,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [nodered.binary_sensor](https://www.home-assistant.io/components/nodered.binary_sensor) |
 | [nodered.sensor](https://www.home-assistant.io/components/nodered.sensor) |
-| [nodered.switch](https://www.home-assistant.io/components/nodered.switch) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [nsw_air_quality.sensor](https://www.home-assistant.io/components/nsw_air_quality.sensor) |
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
@@ -478,9 +477,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pirateweather.sensor](https://www.home-assistant.io/components/pirateweather.sensor) |
 | [pirateweather.weather](https://www.home-assistant.io/components/pirateweather.weather) |
 | [playstation_network](https://www.home-assistant.io/components/playstation_network) |
-| [playstation_network.media_player](https://www.home-assistant.io/components/playstation_network.media_player) |
-| [playstation_network.notify](https://www.home-assistant.io/components/playstation_network.notify) |
-| [playstation_network.sensor](https://www.home-assistant.io/components/playstation_network.sensor) |
 | [plex](https://www.home-assistant.io/components/plex) |
 | [plex.button](https://www.home-assistant.io/components/plex.button) |
 | [plex.media_player](https://www.home-assistant.io/components/plex.media_player) |
@@ -559,7 +555,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [smartthinq_sensors.button](https://www.home-assistant.io/components/smartthinq_sensors.button) |
 | [smartthinq_sensors.climate](https://www.home-assistant.io/components/smartthinq_sensors.climate) |
 | [smartthinq_sensors.fan](https://www.home-assistant.io/components/smartthinq_sensors.fan) |
-| [smartthinq_sensors.humidifier](https://www.home-assistant.io/components/smartthinq_sensors.humidifier) |
 | [smartthinq_sensors.light](https://www.home-assistant.io/components/smartthinq_sensors.light) |
 | [smartthinq_sensors.select](https://www.home-assistant.io/components/smartthinq_sensors.select) |
 | [smartthinq_sensors.sensor](https://www.home-assistant.io/components/smartthinq_sensors.sensor) |
@@ -788,7 +783,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.5.7] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.5.7] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v4.2.0] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
-| [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.4.3] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.5.0] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.1.0] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
@@ -825,7 +820,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
-| [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.5] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
+| [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.9] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.3] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
@@ -878,7 +873,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.4] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.5] | Build a beautiful Home Assistant dashboard easily |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.4] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -985,7 +980,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.8.3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.9.0b0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
