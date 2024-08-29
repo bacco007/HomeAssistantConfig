@@ -19,7 +19,6 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -39,9 +38,11 @@ class SwatchTimeSensor(SensorEntity):
     def __init__(self, entry_id: str) -> None:
         """Initialize Swatch Time sensor."""
         self._attr_device_info = DeviceInfo(
-            name=DEFAULT_NAME,
-            identifiers={(DOMAIN, entry_id)},
-            entry_type=DeviceEntryType.SERVICE,
+            name         = DEFAULT_NAME,
+            manufacturer = "Swatch",
+            hw_version   = "1998.10.23",
+            identifiers  = {(DOMAIN, entry_id)},
+            entry_type   = DeviceEntryType.SERVICE,
         )
 
         self._update_internal_state(dt_util.utcnow())
