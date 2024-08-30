@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.9.0b0 |
+| HA Version | 2024.9.0b1 |
 | No. Integrations | 213 |
 | No. Custom Integrations | 92 |
-| No. Entities | 6120 |
-| No. Sensors | 3876 |
+| No. Entities | 6121 |
+| No. Sensors | 3882 |
 | No. Automations | 148 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 37
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 75
 Selects | 55
-Sensors | 3876
+Sensors | 3882
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 298
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 313
+Update | 314
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -790,7 +790,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.0] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Mastodon Profile Stats](https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats) |  [v1.0.11] | A Home Assistant integration to provide stats of Mastodon user profiles |[@andrew-codechimp](https://github.com/andrew-codechimp).|
-| [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.0] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.1] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v7.1.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.8.1] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
@@ -846,7 +846,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.8.3] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.8.4] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
@@ -856,7 +856,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.0.1] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v3.4.12] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.0.0] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.8] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
@@ -980,7 +980,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.9.0b0-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.9.0b1-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
