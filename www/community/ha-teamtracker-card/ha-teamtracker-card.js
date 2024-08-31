@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.3";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.4";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -1791,7 +1791,7 @@ const $d573fc5554189e19$export$3486a10f30cf1ee4 = {
 const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
     "common": {
         "api_error": "API Error",
-        "no_upcoming_games": "Geen aankomende wedstrijden door %s",
+        "no_upcoming_games": "Geen aankomende wedstrijden tot %s",
         "finalTerm": "%s - Finale",
         "byeTerm": "BYE",
         "tourney2": "Finale",
@@ -1818,9 +1818,9 @@ const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
     "baseball": {
         "startTerm": "Eerste Worp",
         "overUnder": "O/U: %s",
-        "gameStat1": "Ballen %s",
-        "gameStat2": "Slagen %s",
-        "gameStat3": "%s Outs",
+        "gameStat1": "Wijd %s",
+        "gameStat2": "Slag %s",
+        "gameStat3": "%s Uit",
         "gameBar": "Winstwaarschijnlijkheid",
         "teamBarLabel": "%s%",
         "oppoBarLabel": "%s%"
