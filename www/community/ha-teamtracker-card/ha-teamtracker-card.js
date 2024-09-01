@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.4";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.5";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -886,6 +886,156 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
     }
 }
 
+
+
+const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
+    "common": {
+        "api_error": "API Error",
+        "no_upcoming_games": "Keine anstehenden Spiele bis %s",
+        "finalTerm": "%s - Endergebnis",
+        "byeTerm": "BYE",
+        "tourney2": "Finale",
+        "tourney4": "Halbfinale",
+        "tourney8": "Viertelfinale",
+        "tourney16": "Achtelfinale",
+        "tourney32": "Sechzehntelfinale",
+        "tourney64": "Vorrunde",
+        "tourney128": "Vorrunde",
+        "tourney256": "Vorrunde",
+        "today": "Heute",
+        "tomorrow": "Morgen"
+    },
+    "australian-football": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "baseball": {
+        "startTerm": "First Pitch",
+        "overUnder": "O/U: %s",
+        "gameStat1": "Balls %s",
+        "gameStat2": "Strikes %s",
+        "gameStat3": "%s Outs",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "basketball": {
+        "startTerm": "Tipoff",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "cricket": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "football": {
+        "startTerm": "Kickoff",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "golf": {
+        "startTerm": "Round Starts",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Shots (Thru)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "hockey": {
+        "startTerm": "Puck Drop",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Torsch\xfcsse",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "mma": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "racing": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Runden",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "soccer": {
+        "startTerm": "Ansto\xdf",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Torsch\xfcsse",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "tennis": {
+        "startTerm": "First Serve",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "%s",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "volleyball": {
+        "startTerm": "Aufschlag",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "%s Score",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "default": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    }
+};
 
 
 const $9bf8d9821f43b5a3$export$84584c2a98eb6753 = {
@@ -2331,6 +2481,7 @@ const $125926858f90b59c$export$b2bcf639de11a4af = {
 
 
 var $cfd70fadc94c42c5$var$languages = {
+    de: (0, $044e49bbd03ccfb1$export$2fa162a495d26869),
     en: (0, $9bf8d9821f43b5a3$export$84584c2a98eb6753),
     en_US: (0, $738479ced03534bd$export$25dc44e90bc68e13),
     es: (0, $fa59b11c3970eda2$export$ca5e4045a55e76d2),
