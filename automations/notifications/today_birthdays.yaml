@@ -1,0 +1,32 @@
+---
+alias: "[Notifications] Today's Birthdays"
+id: notifications_todaysbirthdays
+mode: single
+trigger:
+  - platform: time
+    at: "07:00"
+    variables:
+      ann_list: "{{ expand(integration_entities('anniversaries')) | selectattr('state', 'eq', '0') | list }}"
+condition:
+  - alias: Check if list of Anniversaries with state 0 has any items in it
+    condition: template
+    value_template: "{{ ann_list | count > 0 }}"
+action:
+  - action: notify.alert
+    data:
+      title: "This Week's Birthdays"
+      message: >
+        {%- for l in ann_list %}
+          {{state_attr(l.entity_id, 'friendly_name')}}
+        {%- endfor %}
+      data:
+        tag: today_birthday
+        notification_id: today_birthday
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge
+        group: alerts
