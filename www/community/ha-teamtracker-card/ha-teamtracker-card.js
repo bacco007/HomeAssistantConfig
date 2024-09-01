@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.5";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.6";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -1032,6 +1032,156 @@ const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
         "gameStat2": "%s",
         "gameStat3": "",
         "gameBar": "Gewinnchance",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    }
+};
+
+
+const $e5e336768a089693$export$c3da0dad1b44eea9 = {
+    "common": {
+        "api_error": "\u03A3\u03C6\u03AC\u03BB\u03BC\u03B1 API",
+        "no_upcoming_games": "\u0394\u03B5\u03BD \u03C5\u03C0\u03AC\u03C1\u03C7\u03BF\u03C5\u03BD \u03C0\u03C1\u03BF\u03C3\u03B5\u03C7\u03B5\u03AF\u03C2 \u03B1\u03B3\u03CE\u03BD\u03B5\u03C2 \u03AD\u03C9\u03C2 %s",
+        "finalTerm": "%s - \u03A4\u03B5\u03BB\u03B9\u03BA\u03CC\u03C2",
+        "byeTerm": "\u0391\u039D\u0391\u03A0\u0391\u03A5\u03A3\u0397",
+        "tourney2": "\u03A4\u03B5\u03BB\u03B9\u03BA\u03CC\u03C2",
+        "tourney4": "\u0397\u03BC\u03B9\u03C4\u03B5\u03BB\u03B9\u03BA\u03BF\u03AF",
+        "tourney8": "\u03A0\u03C1\u03BF\u03B7\u03BC\u03B9\u03C4\u03B5\u03BB\u03B9\u03BA\u03BF\u03AF",
+        "tourney16": "\u03A6\u03AC\u03C3\u03B7 \u03C4\u03C9\u03BD 16",
+        "tourney32": "\u03A6\u03AC\u03C3\u03B7 \u03C4\u03C9\u03BD 32",
+        "tourney64": "\u03A6\u03AC\u03C3\u03B7 \u03C4\u03C9\u03BD 64",
+        "tourney128": "\u03A0\u03C1\u03CE\u03B9\u03BC\u03B5\u03C2 \u03A6\u03AC\u03C3\u03B5\u03B9\u03C2",
+        "tourney256": "\u03A0\u03C1\u03CE\u03B9\u03BC\u03B5\u03C2 \u03A6\u03AC\u03C3\u03B5\u03B9\u03C2",
+        "today": "\u03A3\u03AE\u03BC\u03B5\u03C1\u03B1",
+        "tomorrow": "\u0391\u03CD\u03C1\u03B9\u03BF"
+    },
+    "australian-football": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "baseball": {
+        "startTerm": "\u03A0\u03C1\u03CE\u03C4\u03B7 \u03A1\u03AF\u03C8\u03B7",
+        "overUnder": "O/U: %s",
+        "gameStat1": "\u039C\u03C0\u03AC\u03BB\u03B5\u03C2 %s",
+        "gameStat2": "\u03A7\u03C4\u03C5\u03C0\u03AE\u03BC\u03B1\u03C4\u03B1 %s",
+        "gameStat3": "%s \u0386\u03BF\u03C5\u03C4",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "basketball": {
+        "startTerm": "\u03A4\u03B6\u03AC\u03BC\u03C0\u03BF\u03BB",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "cricket": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "football": {
+        "startTerm": "\u03A3\u03AD\u03BD\u03C4\u03C1\u03B1",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "golf": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7 \u0393\u03CD\u03C1\u03BF\u03C5",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A7\u03C4\u03C5\u03C0\u03AE\u03BC\u03B1\u03C4\u03B1 (\u039C\u03AD\u03C7\u03C1\u03B9)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "hockey": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7 \u03A0\u03B1\u03B9\u03C7\u03BD\u03B9\u03B4\u03B9\u03BF\u03CD",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A3\u03BF\u03C5\u03C4 \u03C3\u03C4\u03BF \u03A4\u03AD\u03C1\u03BC\u03B1",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "mma": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "racing": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u0393\u03CD\u03C1\u03BF\u03B9",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "soccer": {
+        "startTerm": "\u03A3\u03AD\u03BD\u03C4\u03C1\u03B1",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A3\u03BF\u03C5\u03C4 (\u03A3\u03C4\u03BF\u03BD \u03A3\u03C4\u03CC\u03C7\u03BF)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "tennis": {
+        "startTerm": "\u03A0\u03C1\u03CE\u03C4\u03BF \u03A3\u03B5\u03C1\u03B2\u03AF\u03C2",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "%s",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "volleyball": {
+        "startTerm": "\u03A0\u03C1\u03CE\u03C4\u03BF \u03A3\u03B5\u03C1\u03B2\u03AF\u03C2",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A3\u03BA\u03BF\u03C1 %s",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "default": {
+        "startTerm": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "\u03A0\u03B9\u03B8\u03B1\u03BD\u03CC\u03C4\u03B7\u03C4\u03B1 \u039D\u03AF\u03BA\u03B7\u03C2",
         "teamBarLabel": "%s%",
         "oppoBarLabel": "%s%"
     }
@@ -2480,8 +2630,156 @@ const $125926858f90b59c$export$b2bcf639de11a4af = {
 };
 
 
+const $f594c62d0c6e32a5$export$65540e5f7f6e7dce = {
+    "common": {
+        "api_error": "API Error",
+        "no_upcoming_games": "Inga kommande matcher %s",
+        "finalTerm": "%s - Final",
+        "byeTerm": "BYE",
+        "tourney2": "Final",
+        "tourney4": "Semifinaler",
+        "tourney8": "Kvartsfinaler",
+        "tourney16": "\xc5ttondelsfinal",
+        "tourney32": "Sextondelsfinal",
+        "today": "Idag",
+        "tomorrow": "Imorgon"
+    },
+    "australian-football": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "baseball": {
+        "startTerm": "F\xf6rsta pitch",
+        "overUnder": "O/U: %s",
+        "gameStat1": "Bollar %s",
+        "gameStat2": "Strikes %s",
+        "gameStat3": "%s Outs",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "basketball": {
+        "startTerm": "Avkast",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "cricket": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "football": {
+        "startTerm": "Avspark",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "golf": {
+        "startTerm": "Omg\xe5ngen startar",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Shots (Thru)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "hockey": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Skott p\xe5 m\xe5l",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "mma": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
+    "racing": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Varv",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "soccer": {
+        "startTerm": "Avspark",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Skott (p\xe5 m\xe5l)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "tennis": {
+        "startTerm": "F\xf6rsta serve",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "%s",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "volleyball": {
+        "startTerm": "F\xf6rsta serve",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "%s Score",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "default": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Vinstsannolikhet",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    }
+};
+
+
 var $cfd70fadc94c42c5$var$languages = {
     de: (0, $044e49bbd03ccfb1$export$2fa162a495d26869),
+    el: (0, $e5e336768a089693$export$c3da0dad1b44eea9),
     en: (0, $9bf8d9821f43b5a3$export$84584c2a98eb6753),
     en_US: (0, $738479ced03534bd$export$25dc44e90bc68e13),
     es: (0, $fa59b11c3970eda2$export$ca5e4045a55e76d2),
@@ -2491,7 +2789,8 @@ var $cfd70fadc94c42c5$var$languages = {
     it: (0, $d573fc5554189e19$export$3486a10f30cf1ee4),
     pt_BR: (0, $60a4d35e5022a9df$export$9dc8766c8c230075),
     sk: (0, $06041e2b1c26c877$export$d608fa5b5bfd2021),
-    sk_SK: (0, $125926858f90b59c$export$b2bcf639de11a4af)
+    sk_SK: (0, $125926858f90b59c$export$b2bcf639de11a4af),
+    sv: (0, $f594c62d0c6e32a5$export$65540e5f7f6e7dce)
 };
 class $cfd70fadc94c42c5$export$9850010f89e291bb {
     constructor(lang = "en"){
@@ -2668,11 +2967,11 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
-                        <img class="logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
-                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo left-logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
+                        <div class="name left-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
-                        <div class="record">${c.record[1]}</div>
+                        <div class="record left-record">${c.record[1]}</div>
                         <div class="timeouts-wrapper" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--timeouts-display": `${c.timeoutsDisplay}`
     })}>
@@ -2712,11 +3011,11 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
     })}>&bull;</div>
                 <div class="team">
                     <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
-                        <img class="logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
-                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo right-logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
+                        <div class="name right-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
-                        <div class="record">${c.record[2]}</div>
+                        <div class="record right-record">${c.record[2]}</div>
                         <div class="timeouts-wrapper" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--timeouts-display": `${c.timeoutsDisplay}`
     })}>
@@ -2862,11 +3161,11 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
-                        <img class="logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
-                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo left-logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
+                        <div class="name left-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": c.rankDisplay
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
-                        <div class="record">${c.record[1]}</div>
+                        <div class="record left-record">${c.record[1]}</div>
                     </a>
                 </div>
                 <div class="score" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
@@ -2880,11 +3179,11 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
     })}>${c.score[2]}</div>
                 <div class="team">
                     <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
-                        <img class="logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
-                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo right-logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
+                        <div class="name right-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": c.rankDisplay
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
-                        <div class="record">${c.record[2]}</div>
+                        <div class="record right-record">${c.record[2]}</div>
                     </a>
                 </div>
             </div>
@@ -2923,11 +3222,11 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
-                        <img class="logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
-                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo left-logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
+                        <div class="name left-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
-                        <div class="record">${c.record[1]}</div>
+                        <div class="record left-record">${c.record[1]}</div>
                     </a>
                 </div>
                 <div class="gamewrapper">
@@ -2937,11 +3236,11 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
                 </div>
                 <div class="team">
                     <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
-                        <img class="logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
-                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo right-logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
+                        <div class="name right-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
-                        <div class="record">${c.record[2]}</div>
+                        <div class="record right-record">${c.record[2]}</div>
                     </a>
                 </div>
             </div>
