@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.6";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.7";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -2967,11 +2967,12 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
-                        <img class="logo left-logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
-                        <div class="name left-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo" src="${c.logo[1]}" 
+                            onerror="this.onerror=null; this.src='${c.logoAlternate[1]}'; this.onerror=function() { this.src='${c.logoError[1]}'; };" />
+                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
-                        <div class="record left-record">${c.record[1]}</div>
+                        <div class="record">${c.record[1]}</div>
                         <div class="timeouts-wrapper" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--timeouts-display": `${c.timeoutsDisplay}`
     })}>
@@ -3011,11 +3012,12 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
     })}>&bull;</div>
                 <div class="team">
                     <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
-                        <img class="logo right-logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
-                        <div class="name right-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo" src="${c.logo[2]}" 
+                            onerror="this.onerror=null; this.src='${c.logoAlternate[2]}'; this.onerror=function() { this.src='${c.logoError[2]}'; };" />
+                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
-                        <div class="record right-record">${c.record[2]}</div>
+                        <div class="record">${c.record[2]}</div>
                         <div class="timeouts-wrapper" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--timeouts-display": `${c.timeoutsDisplay}`
     })}>
@@ -3161,11 +3163,12 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
-                        <img class="logo left-logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
-                        <div class="name left-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo" src="${c.logo[1]}" 
+                            onerror="this.onerror=null; this.src='${c.logoAlternate[1]}'; this.onerror=function() { this.src='${c.logoError[1]}'; };" />
+                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": c.rankDisplay
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
-                        <div class="record left-record">${c.record[1]}</div>
+                        <div class="record">${c.record[1]}</div>
                     </a>
                 </div>
                 <div class="score" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
@@ -3179,11 +3182,12 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
     })}>${c.score[2]}</div>
                 <div class="team">
                     <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
-                        <img class="logo right-logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
-                        <div class="name right-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo" src="${c.logo[2]}" 
+                            onerror="this.onerror=null; this.src='${c.logoAlternate[2]}'; this.onerror=function() { this.src='${c.logoError[2]}'; };" />
+                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": c.rankDisplay
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
-                        <div class="record right-record">${c.record[2]}</div>
+                        <div class="record">${c.record[2]}</div>
                     </a>
                 </div>
             </div>
@@ -3222,11 +3226,12 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
-                        <img class="logo left-logo" src="${c.logo[1]}" onerror="this.onerror=null; this.src='${c.logoError[1]}';" />
-                        <div class="name left-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo" src="${c.logo[1]}" 
+                            onerror="this.onerror=null; this.src='${c.logoAlternate[1]}'; this.onerror=function() { this.src='${c.logoError[1]}'; };" />
+                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
-                        <div class="record left-record">${c.record[1]}</div>
+                        <div class="record">${c.record[1]}</div>
                     </a>
                 </div>
                 <div class="gamewrapper">
@@ -3236,11 +3241,12 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
                 </div>
                 <div class="team">
                     <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
-                        <img class="logo right-logo" src="${c.logo[2]}" onerror="this.onerror=null; this.src='${c.logoError[2]}';" />
-                        <div class="name right-name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+                        <img class="logo" src="${c.logo[2]}" 
+                            onerror="this.onerror=null; this.src='${c.logoAlternate[2]}'; this.onerror=function() { this.src='${c.logoError[2]}'; };" />
+                        <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
         "--rank-display": `${c.rankDisplay}`
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
-                        <div class="record right-record">${c.record[2]}</div>
+                        <div class="record">${c.record[2]}</div>
                     </a>
                 </div>
             </div>
@@ -3282,6 +3288,7 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
 function $84bc952fd23869d6$export$554552fb00f06e66(c) {
     c.logoBG = [];
     c.logo = [];
+    c.logoAlternate = [];
     c.logoError = [];
     c.name = [];
     c.url = [];
@@ -3324,6 +3331,8 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     if (o.showLeague) c.title = c.title || stateObj.attributes.league;
     // Set Scoreboard data
     c.logo[team] = stateObj.attributes.team_logo;
+    c.logoAlternate[team] = stateObj.attributes.team_logo;
+    if (c.logo[team] && o.darkMode) c.logo[team] = c.logo[team].replace("/500/", "/500-dark/");
     c.logoError[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoBG[team] = stateObj.attributes.team_logo;
     c.name[team] = stateObj.attributes.team_name;
@@ -3333,6 +3342,8 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     c.record[team] = stateObj.attributes.team_record;
     c.winner[team] = stateObj.attributes.team_winner || false;
     c.logo[oppo] = stateObj.attributes.opponent_logo;
+    c.logoAlternate[oppo] = stateObj.attributes.opponent_logo;
+    if (c.logo[oppo] && o.darkMode) c.logo[oppo] = c.logo[oppo].replace("/500/", "/500-dark/");
     c.logoError[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoBG[oppo] = stateObj.attributes.opponent_logo;
     c.name[oppo] = stateObj.attributes.opponent_name;
@@ -3541,6 +3552,8 @@ function $8d10daf0cda71373$export$d4f0019d7c6b6a3d(t, stateObj, c, team, oppo) {
     c.timeoutsDisplay = "none";
     c.logo[team] = (0, $4fcaa3c95ba349ea$export$6df7962ea75d9a39) + stateObj.attributes.team_id + ".png";
     c.logo[oppo] = (0, $4fcaa3c95ba349ea$export$6df7962ea75d9a39) + stateObj.attributes.opponent_id + ".png";
+    c.logoAlternate[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
+    c.logoAlternate[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
 }
 function $8d10daf0cda71373$export$5a6583dd53975e58(t, stateObj, c, team, oppo) {
     c.barLength[team] = stateObj.attributes.team_shots_on_target;
@@ -3555,6 +3568,8 @@ function $8d10daf0cda71373$export$b95402321280aab2(t, stateObj, c, team, oppo) {
     c.barDisplay = "none";
     c.logo[team] = (0, $4fcaa3c95ba349ea$export$7e154a1de2266268) + stateObj.attributes.team_id + ".png";
     c.logo[oppo] = (0, $4fcaa3c95ba349ea$export$7e154a1de2266268) + stateObj.attributes.opponent_id + ".png";
+    c.logoAlternate[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
+    c.logoAlternate[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
 }
 function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
     c.title = c.title || stateObj.attributes.event_name;
@@ -3581,6 +3596,8 @@ function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
     //    }
     c.logo[team] = (0, $4fcaa3c95ba349ea$export$c8a00e33d990d0fa) + stateObj.attributes.team_id + ".png";
     c.logo[oppo] = (0, $4fcaa3c95ba349ea$export$c8a00e33d990d0fa) + stateObj.attributes.opponent_id + ".png";
+    c.logoAlternate[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
+    c.logoAlternate[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
 }
 function $8d10daf0cda71373$export$215e00a8cdeadf2(t, stateObj, c, team, oppo) {
     c.barLength[team] = stateObj.attributes.team_total_shots;
@@ -3617,6 +3634,8 @@ function $8d10daf0cda71373$export$b80102c1df210e4f(t, stateObj, c, team, oppo) {
     c.timeoutsOp[oppo][3] = stateObj.attributes.opponent_sets_won >= 3 ? 1 : 0.2;
     c.logo[team] = (0, $4fcaa3c95ba349ea$export$54565cc34e8d24d2) + stateObj.attributes.team_id + ".png";
     c.logo[oppo] = (0, $4fcaa3c95ba349ea$export$54565cc34e8d24d2) + stateObj.attributes.opponent_id + ".png";
+    c.logoAlternate[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
+    c.logoAlternate[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.title = c.title || stateObj.attributes.event_name;
     c.timeoutsDisplay = "inline";
 }
@@ -3768,6 +3787,7 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         o.show_rank = true;
         if (this._config.show_rank == false) o.show_rank = false;
         o.debug = this._config.debug;
+        o.darkMode = this.hass.themes.darkMode;
         //
         //  Set sport, team, and oppo 
         //
