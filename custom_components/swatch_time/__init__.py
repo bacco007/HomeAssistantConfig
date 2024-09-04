@@ -1,10 +1,9 @@
 """The Swatch Time component."""
 
 import voluptuous as vol
-
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const          import Platform
-from homeassistant.core           import DOMAIN as HOMEASSISTANT_DOMAIN, HomeAssistant
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN
@@ -20,8 +19,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     if DOMAIN in config:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}, data=config
-            )
+                DOMAIN,
+                context={"source": SOURCE_IMPORT},
+                data=config,
+            ),
         )
     return True
 
