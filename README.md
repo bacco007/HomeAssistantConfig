@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.9.0 |
 | No. Integrations | 214 |
 | No. Custom Integrations | 92 |
-| No. Entities | 6078 |
-| No. Sensors | 3866 |
+| No. Entities | 6082 |
+| No. Sensors | 3868 |
 | No. Automations | 149 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 8
 Scenes | 2
 Scripts | 75
 Selects | 55
-Sensors | 3866
+Sensors | 3868
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -861,7 +861,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.0.1] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.0.2] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.0.3] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.8] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
@@ -894,7 +894,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swipe Card](https://github.com/bramkragten/swipe-card) |  [v5.0.0] | Card that allows you to swipe throught multiple cards for Home Assistant Lovelace |
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
-| [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.7] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
+| [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.8] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.4.4] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
@@ -930,7 +930,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.4.2 |  | core |
-| Music Assistant Server | 2.2.2 |  | d5369777 |
+| Music Assistant Server | 2.2.3 |  | d5369777 |
 | Node-RED | 18.0.5 |  | a0d7b954 |
 | OpenThread Border Router | 2.10.0 |  | core |
 | phpMyAdmin | 0.9.1 |  | a0d7b954 |
