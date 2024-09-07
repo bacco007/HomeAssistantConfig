@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.7";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.8";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -2090,18 +2090,18 @@ const $d573fc5554189e19$export$3486a10f30cf1ee4 = {
 
 const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
     "common": {
-        "api_error": "API Error",
-        "no_upcoming_games": "Geen aankomende wedstrijden tot %s",
-        "finalTerm": "%s - Finale",
-        "byeTerm": "BYE",
+        "api_error": "API Fout",
+        "no_upcoming_games": "Geen aanstaande wedstrijden t/m %s",
+        "finalTerm": "Einduitslag - %s",
+        "byeTerm": "D\xe1\xe1\xe1g!",
         "tourney2": "Finale",
-        "tourney4": "Halve Finales",
-        "tourney8": "Kwart Finales",
-        "tourney16": "Achtste Finales",
-        "tourney32": "Zestiende Finales",
-        "tourney64": "Tweeendertigste Finale",
-        "tourney128": "Voorrondes",
-        "tourney256": "Voorrondes",
+        "tourney4": "Halve Finale",
+        "tourney8": "Kwart Finale",
+        "tourney16": "Achtste Finale",
+        "tourney32": "Zestiende Finale",
+        "tourney64": "Twee\xebndertigste Finale",
+        "tourney128": "Voorronde",
+        "tourney256": "Voorronde",
         "today": "Vandaag",
         "tomorrow": "Morgen"
     },
@@ -2118,8 +2118,8 @@ const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
     "baseball": {
         "startTerm": "Eerste Worp",
         "overUnder": "O/U: %s",
-        "gameStat1": "Wijd %s",
-        "gameStat2": "Slag %s",
+        "gameStat1": "%s Wijd",
+        "gameStat2": "%s Slag",
         "gameStat3": "%s Uit",
         "gameBar": "Winstwaarschijnlijkheid",
         "teamBarLabel": "%s%",
