@@ -1,0 +1,228 @@
+{
+  "config": {
+    "step": {
+      "user": {
+		"menu_options": {
+          "start_end": "Criar horário nas paragens de início/fim",
+          "local_stops": "Partida programada nas paragens na sua proximidade",
+		  "source": "Configurar uma nova fonte de dados",
+		  "remove": "Remover uma fonte de dados existente, por exemplo, para liberar espaço"
+        },
+        "description": "Selecione a sua escolha [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+	  "start_end": {
+        "data": {
+          "file": "Selecionar fonte"
+        },
+        "description": "Selecione das fontes existentes na sua pasta gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+	  "local_stops": {
+        "data": {
+          "file": "Selecionar fonte",
+		  "device_tracker_id": "Objeto/Pessoa a usar para lat/lon",
+		  "name": "Nome do sensor"
+        },
+        "description": "Selecione das fontes existentes na sua pasta gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/2c.-Acquire-local-stops-&-departures)"
+      },	  
+      "source": {
+        "data": {
+          "file": "Novo nome da fonte de dados",
+          "url": "URL externa para o ficheiro de dados gtfs (zip)",
+          "api_key": "Chave API, se necessário",
+          "api_key_name": "Nome da chave API",
+          "api_key_location": "A localização onde a chave é aplicada",
+		  "extract_from": "Extrair dados de:"
+        },
+        "description": "NOTA: com um novo url/zip, isso pode demorar um pouco, \n dependendo do tamanho do ficheiro e do desempenho do sistema [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      },
+      "agency": {
+        "data": {
+          "agency": "Selecione o prestador de serviços (ou TODOS)"
+        },
+		"description": "Selecione uma das opções abaixo [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },		  
+      "route_type": {
+        "data": {
+          "route_type": "Tipo de transporte"
+        },
+		"description": "Selecione uma das opções abaixo [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },	  
+      "route": {
+        "data": {
+          "route": "Nome da rota",
+          "direction": "Direção principal/inicial do veículo"
+        },
+		"description": "Selecione uma das opções abaixo [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
+      "stops": {
+        "data": {
+          "origin": "Paragem de origem",
+          "destination": "Paragem de destino",
+          "name": "Nome da rota",
+          "include_tomorrow": "Incluir amanhã"
+        },
+		"description": "Selecione uma das opções abaixo [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },
+	  "stops_train": {
+        "data": {
+          "origin": "Introduza a cidade de partida",
+          "destination": "Introduza a cidade de chegada",
+          "name": "Nome da rota",
+          "refresh_interval": "Intervalo de atualização em minutos",
+          "include_tomorrow": "Incluir amanhã"
+        },
+		"description": "Selecione uma das opções abaixo [(docu)](https://github.com/vingerha/gtfs2/wiki/2b.-Setup-route-for-trains)"
+      },
+	  "remove": {
+        "data": {
+          "file": "Selecione a fonte a remover"
+        },
+        "description": "Selecione das fontes existentes na sua pasta gtfs2 [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
+      }	
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "stop_incorrect": "Paragem de início e/ou de fim incorreta, possivelmente sem transporte 'hoje' ou não na mesma direção, verifique os logs",
+      "generic_failure": "Falha geral, verifique os logs",
+      "no_data_file": "Problema de recolha de dados: URL incorreta ou nome do ficheiro não está na pasta correta",
+	  "stop_limit_reached": "Mais de 15 paragens encontradas para este raio. \n Risco de impacto no desempenho do sistema. \n Por favor, selecione um raio menor",
+	  "no_zip_file": "Problema de recolha de dados: Ficheiro ZIP não está na pasta correta"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "files_deleted": "Fonte de dados eliminada, isto pode afetar as rotas existentes",
+      "stop_incorrect": "Paragem de início e/ou de fim incorreta, \n possivelmente sem transporte 'hoje' ou não na mesma direção, \n por favor, verifique os logs",
+	  "no_data_file": "Problema de recolha de dados: URL incorreta ou nome do ficheiro não está na pasta correta",
+	  "no_stops": "Problema de recolha de dados: provavelmente sem paragens para a rota selecionada",
+	  "no_zip_file": "Problema de recolha de dados: Ficheiro ZIP não existe na pasta correta, note que é sensível a maiúsculas",
+	  "stop_limit_reached": "Mais de 15 paragens encontradas para este raio. \n Risco de impacto no desempenho do sistema. \n Por favor, selecione um raio menor",
+	  "extracting": "(Ainda) a extrair dados, isso vai demorar [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Personalize a forma como a integração funciona [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
+        "data": {
+          "refresh_interval": "Intervalo de atualização de dados (em minutos)",
+		  "offset": "Desvio em minutos",
+		  "real_time": "Configurar integração em tempo real? \n (necessita de dados da mesma fonte)",
+		  "local_stop_refresh_interval": "Intervalo de atualização de dados (em minutos)",
+          "timerange": "Verificação de partidas no futuro a partir de 'agora' (em minutos: entre 15 e 120)",
+		  "check_source_dates": "experimental: evitar usar uma nova zip/fonte contendo informações desatualizadas",
+		  "radius": "Raio para procurar paragens (em metros entre 50 e 500)"
+        }
+      },
+	  "real_time": {
+        "description": "Forneça a URL para a API em tempo real [(docu)](https://github.com/vingerha/gtfs2/wiki/3.-Configuring-options)",
+        "data": {
+          "trip_update_url": "URL para os dados da viagem",
+		  "vehicle_position_url": "URL para a posição do veículo",
+		  "alerts_url": "URL para alertas",
+		  "api_key": "Chave API, se necessário",
+		  "api_key_name": "Nome da chave API",
+          "api_key_location": "A localização onde a chave é aplicada",
+		  "accept": "Adicionar Accept:application/x-protobuf ao cabeçalho"
+        }
+      }
+    },
+	"abort": {
+	  "stop_limit_reached": "Mais de 15 paragens encontradas para este raio. \n Risco de impacto no desempenho do sistema. \n Por favor, selecione um raio menor"
+    }
+  },
+  "selector": {
+    "extract_from": {
+      "options": {
+        "zip": "ZIP: espera um ficheiro na pasta gtfs2 com o nome abaixo, sem a extensão .zip",
+        "url": "URL: usa o seu URL abaixo, deixe 'na' se usar zip"
+      }
+    },
+	"direction": {
+      "options": {
+        "0": "Ida",
+        "1": "Volta"
+      }
+    },
+	"route_type": {
+      "options": {
+		"99": "Todos exceto comboios, entre as paragens selecionadas (próxima tela)",
+		"2": "Apenas comboios, entre cidades inseridas manualmente (próxima tela)"
+      }
+    },
+  "api_key_location": {
+    "options": {
+      "not_applicable": "nenhuma chave usada (padrão)",
+      "header": "header: construir a chamada com cabeçalho/chave",
+      "query_string": "query-string: para construir a chamada com query/chave"
+    }
+  },
+  "services": {
+    "update_gtfs": {
+      "name": "Atualizar/criar uma fonte de dados GTFS2",
+      "description": "Através de um link ou colocando um Zip na pasta gtfs2",
+      "fields": {
+        "extract_from": {
+          "name": "Indicar a origem para usar zip ou url",
+          "description": "zip (local) ou url"
+        },
+        "file": {
+          "name": "Nome do serviço de transporte, sem .zip",
+          "description": "Se usar o mesmo nome de um existente, o existente será sobrescrito"
+        },
+        "url": {
+          "name": "URL",
+          "description": "forneça o caminho completo para o ficheiro zip"
+        },
+        "clean_feed_info": {
+          "name": "Remover feed-info",
+          "description": "Remove o ficheiro feed_info.txt do zip (usar caso o conteúdo do ficheiro esteja incorreto)"
+        }
+      }
+    },
+    "update_gtfs_rt_local": {
+      "name": "Recolhe dados GTFS em tempo real",
+      "description": "Pode ser usado para Viagem, Localização de Veículos ou Alertas",
+      "fields": {
+        "name": {
+          "name": "Nome do fornecedor",
+          "description": "Recomenda-se fortemente usar o mesmo que para dados estáticos"
+        },
+        "url": {
+          "name": "URL",
+          "description": "Forneça o caminho completo para os dados em tempo real"
+        },
+        "api_key": {
+          "name": "chave_api",
+          "description": "forneça a chave API se necessário"
+        },
+        "api_key_name": {
+          "name": "nome_chave_api",
+          "description": "Nome da chave API, padrão é api_key"
+        },
+        "api_key_location": {
+          "name": "localização_chave_api",
+          "description": "Selecione a localização da chave"
+        },
+        "accept": {
+          "name": "Aceitar",
+          "description": "Adicionar application/protobuf ao cabeçalho"
+        },
+        "debug_output": {
+          "name": "output_debug",
+          "description": "Guardar em ficheiro local num formato legível"
+        }
+      }
+    },
+    "update_gtfs_local_stops": {
+      "name": "Atualizar paragens GTFS locais",
+      "description": "ex: para uma 'pessoa' em movimento, a ser definido para cada pessoa/zona",
+      "fields": {
+        "entity_id": {
+          "name": "Entidade que está ligada às paragens locais",
+          "description": "A entidade para a qual configura as paragens locais"
+        }
+      }
+    }
+  }}}
