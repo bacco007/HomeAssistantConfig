@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.8";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.9";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -2834,10 +2834,12 @@ function $6af844b6602814f2$export$eac7a64041e7dd4f(c) {
     const htmlTemplate = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
     <ha-card>
         <div class="card">
-            <img class="team-bg" src="${c.logoBG[team]}" />
+            <img class="team-bg" src="${c.logoBG[team]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[team]}';" />
             <div class="card-content">
                 <div class="team">
-                    <img src="${c.logo[team]}" />
+                    <img class="logo" src="${c.logo[team]}" 
+                        onerror="this.onerror=null; this.src='${c.logoAlternate[team]}'; this.onerror=function() { this.src='${c.logoError[team]}'; };" />
                     <div class="name">${c.name[team]}</div>
                 </div>
                 <div class="bye">${c.byeTerm}</div>
@@ -2962,8 +2964,10 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
-            <img class="team-bg" src="${c.logoBG[1]}" />
-            <img class="opponent-bg" src="${c.logoBG[2]}" />
+            <img class="team-bg" src="${c.logoBG[1]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[1]}';" />
+            <img class="opponent-bg" src="${c.logoBG[2]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[2]}';" />
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
@@ -3158,8 +3162,10 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
-            <img class="team-bg" src="${c.logoBG[1]}" />
-            <img class="opponent-bg" src="${c.logoBG[2]}" />
+            <img class="team-bg" src="${c.logoBG[1]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[1]}';" />
+            <img class="opponent-bg" src="${c.logoBG[2]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[2]}';" />
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
@@ -3221,8 +3227,10 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
-            <img class="team-bg" src="${c.logoBG[1]}" />
-            <img class="opponent-bg" src="${c.logoBG[2]}" />
+            <img class="team-bg" src="${c.logoBG[1]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[1]}';" />
+            <img class="opponent-bg" src="${c.logoBG[2]}"
+                onerror="this.onerror=null; this.src='${c.logoBGAlternate[2]}';" />
             <div class="card-content">
                 <div class="team">
                     <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
@@ -3287,6 +3295,7 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
 
 function $84bc952fd23869d6$export$554552fb00f06e66(c) {
     c.logoBG = [];
+    c.logoBGAlternate = [];
     c.logo = [];
     c.logoAlternate = [];
     c.logoError = [];
@@ -3335,6 +3344,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     if (c.logo[team] && o.darkMode) c.logo[team] = c.logo[team].replace("/500/", "/500-dark/");
     c.logoError[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoBG[team] = stateObj.attributes.team_logo;
+    c.logoBGAlternate[team] = stateObj.attributes.team_logo;
     c.name[team] = stateObj.attributes.team_name;
     if (o.teamURL == "more-info") c.url[team] = null;
     else c.url[team] = o.teamURL || stateObj.attributes.team_url;
@@ -3346,6 +3356,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     if (c.logo[oppo] && o.darkMode) c.logo[oppo] = c.logo[oppo].replace("/500/", "/500-dark/");
     c.logoError[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoBG[oppo] = stateObj.attributes.opponent_logo;
+    c.logoBGAlternate[oppo] = stateObj.attributes.opponent_logo;
     c.name[oppo] = stateObj.attributes.opponent_name;
     if (o.opponentURL == "more-info") c.url[oppo] = null;
     else c.url[oppo] = o.opponentURL || stateObj.attributes.opponent_url;
@@ -3355,8 +3366,12 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     c.playClock = stateObj.attributes.clock;
     if (o.showLeague) {
         c.logoBG[team] = stateObj.attributes.league_logo;
+        c.logoBGAlternate[team] = stateObj.attributes.league_logo;
         c.logoBG[oppo] = stateObj.attributes.league_logo;
+        c.logoBGAlternate[oppo] = stateObj.attributes.league_logo;
     }
+    if (c.logoBG[team] && o.darkMode) c.logoBG[team] = c.logoBG[team].replace("/500/", "/500-dark/");
+    if (c.logoBG[oppo] && o.darkMode) c.logoBG[oppo] = c.logoBG[oppo].replace("/500/", "/500-dark/");
     c.score[team] = stateObj.attributes.team_score;
     c.score[oppo] = stateObj.attributes.opponent_score;
     c.scoreOp[1] = .6;
