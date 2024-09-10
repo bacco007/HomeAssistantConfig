@@ -1,4 +1,7 @@
 """Selector to allow users to select the pv_ data field to use for calcualtions."""
+
+# pylint: disable=C0304, E0401, W0212
+
 import logging
 
 from enum import IntEnum
@@ -25,14 +28,11 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class PVEstimateMode(IntEnum):
-    """
-    Enumeration of pv forecasts kinds.
+    """Enumeration of pv forecast estimates.
 
-    Possible values are:
-    ESTIMATE - Default forecasts
-    ESTIMATE10 = Forecasts 10 - cloudier than expected scenario
-    ESTIMATE90 = Forecasts 90 - less cloudy than expected scenario
-    
+    ESTIMATE: Use default forecasts
+    ESTIMATE10: Use forecasts 10 - cloudier than expected scenario
+    ESTIMATE90: Use forecasts 90 - less cloudy than expected scenario
     """
 
     ESTIMATE = 0
@@ -45,10 +45,6 @@ _MODE_TO_OPTION: dict[PVEstimateMode, str] = {
     PVEstimateMode.ESTIMATE10: "estimate10",
     PVEstimateMode.ESTIMATE90: "estimate90",
 }
-
-# _OPTION_TO_MODE: dict[str, PVEstimateMode] = {
-#     value: key for key, value in _MODE_TO_OPTION.items()
-# }
 
 ESTIMATE_MODE = SelectEntityDescription(
     key="estimate_mode",
@@ -63,12 +59,12 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-
+    """Set up the entry."""
     coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     try:
         est_mode = coordinator.solcast.options.key_estimate
-    except (ValueError):
+    except ValueError:
         _LOGGER.debug("Could not read estimate mode", exc_info=True)
     else:
         entity = EstimateModeEntity(
@@ -84,7 +80,7 @@ async def async_setup_entry(
 class EstimateModeEntity(SelectEntity):
     """Entity representing the solcast estimate field to use for calculations."""
 
-    _attr_attribution = ATTRIBUTION 
+    _attr_attribution = ATTRIBUTION
     _attr_should_poll = False
     _attr_has_entity_name = True
 
@@ -96,25 +92,21 @@ class EstimateModeEntity(SelectEntity):
         current_option: str,
         entry: ConfigEntry,
     ) -> None:
-        """Initialize the sensor."""
+        """Initialise the sensor."""
 
         self.coordinator = coordinator
-        self._entry = entry
-
         self.entity_description = entity_description
+
+        self._entry = entry
         self._attr_unique_id = f"{entity_description.key}"
-    
         self._attr_options = supported_options
         self._attr_current_option = current_option
-
         self._attr_entity_category = EntityCategory.CONFIG
-
         self._attributes = {}
         self._attr_extra_state_attributes = {}
-
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "Solcast PV Forecast", 
+            ATTR_NAME: "Solcast PV Forecast",
             ATTR_MANUFACTURER: "BJReplay",
             ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,

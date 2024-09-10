@@ -1,5 +1,7 @@
 """Support for Solcast PV forecast sensors."""
 
+# pylint: disable=C0304, E0401, W0718
+
 from __future__ import annotations
 
 import logging
@@ -235,10 +237,12 @@ SENSORS: dict[str, SensorEntityDescription] = {
 }
 
 class SensorUpdatePolicy(Enum):
+    """Sensor update policy"""
     DEFAULT = 0
     EVERY_TIME_INTERVAL = 1
 
-def getSensorUpdatePolicy(key) -> SensorUpdatePolicy:
+def get_sensor_update_policy(key) -> SensorUpdatePolicy:
+    """Get the sensor update policy"""
     match key:
         case (
             "forecast_this_hour" |
@@ -264,11 +268,11 @@ async def async_setup_entry(
     coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
     entities = []
 
-    for sensor_types in SENSORS:
+    for sensor_types, _ in SENSORS.items():
         sen = SolcastSensor(coordinator, SENSORS[sensor_types], entry)
         entities.append(sen)
 
-    for site in coordinator.solcast._sites:
+    for site in coordinator.get_solcast_sites():
         k = RooftopSensorEntityDescription(
                 key=site["resource_id"],
                 name=site["name"],
@@ -306,11 +310,11 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
 
         #doesnt work :()
         if entity_description.key == "forecast_custom_hours":
-            self._attr_translation_placeholders = {"forecast_custom_hours": f"{coordinator.solcast._customhoursensor}"}
+            self._attr_translation_placeholders = {"forecast_custom_hours": f"{coordinator.solcast.custom_hour_sensor}"}
 
         self.entity_description = entity_description
         self.coordinator = coordinator
-        self.update_policy = getSensorUpdatePolicy(entity_description.key)
+        self.update_policy = get_sensor_update_policy(entity_description.key)
         self._attr_unique_id = f"{entity_description.key}"
 
         self._attributes = {}
@@ -318,10 +322,8 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
 
         try:
             self._sensor_data = coordinator.get_sensor_value(entity_description.key)
-        except Exception as ex:
-            _LOGGER.error(
-                f"Unable to get sensor value {ex} %s", traceback.format_exc()
-            )
+        except Exception as e:
+            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             self._sensor_data = None
 
         if self._sensor_data is None:
@@ -344,13 +346,9 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state extra attributes of the sensor."""
         try:
-            return self.coordinator.get_sensor_extra_attributes(
-                self.entity_description.key
-            )
-        except Exception as ex:
-            _LOGGER.error(
-                f"Unable to get sensor value {ex} %s", traceback.format_exc()
-            )
+            return self.coordinator.get_sensor_extra_attributes(self.entity_description.key)
+        except Exception as e:
+            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             return None
 
     @property
@@ -365,24 +363,23 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
 
     @callback
     def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
+        """Handle updated data from the coordinator.
 
-        # these sensors will pick-up the change on the next interval update (5mins)
-        if self.update_policy == SensorUpdatePolicy.EVERY_TIME_INTERVAL and self.coordinator._dataUpdated:
+        Some sensors are updated periodically every five minutes (those with an update_policy of
+        SensorUpdatePolicy.EVERY_TIME_INTERVAL), while the remaining sensors update after each
+        forecast update or when the date changes.
+        """
+
+        if self.update_policy == SensorUpdatePolicy.EVERY_TIME_INTERVAL and self.coordinator.get_data_updated():
             return
 
-        # these sensors update when the date changed or when there is new data
-        if self.update_policy == SensorUpdatePolicy.DEFAULT and not (self.coordinator._dateChanged or self.coordinator._dataUpdated) :
-           return
+        if self.update_policy == SensorUpdatePolicy.DEFAULT and not (self.coordinator.get_date_changed() or self.coordinator.get_data_updated()) :
+            return
 
         try:
-            self._sensor_data = self.coordinator.get_sensor_value(
-                self.entity_description.key
-            )
-        except Exception as ex:
-            _LOGGER.error(
-                f"Unable to get sensor value {ex} %s", traceback.format_exc()
-            )
+            self._sensor_data = self.coordinator.get_sensor_value(self.entity_description.key)
+        except Exception as e:
+            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             self._sensor_data = None
 
         if self._sensor_data is None:
@@ -394,10 +391,17 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
 
 @dataclass
 class RooftopSensorEntityDescription(SensorEntityDescription):
+    """Representation of a rooftop entity description."""
+    key: str | None = None
+    name: str | None = None
+    icon: str | None = None
+    device_class: SensorDeviceClass = SensorDeviceClass.ENERGY
+    native_unit_of_measurement: UnitOfEnergy = UnitOfEnergy.KILO_WATT_HOUR
+    suggested_display_precision: int = 2
     rooftop_id: str | None = None
 
 class RooftopSensor(CoordinatorEntity, SensorEntity):
-    """Representation of a Solcast Sensor device."""
+    """Representation of a rooftop sensor device."""
 
     _attr_attribution = ATTRIBUTION
 
@@ -423,15 +427,13 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
 
         try:
             self._sensor_data = coordinator.get_site_sensor_value(self.rooftop_id, key)
-        except Exception as ex:
-            _LOGGER.error(
-                f"Unable to get sensor value {ex} %s", traceback.format_exc()
-            )
+        except Exception as e:
+            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             self._sensor_data = None
 
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "Solcast PV Forecast", #entry.title,
+            ATTR_NAME: "Solcast PV Forecast",
             ATTR_MANUFACTURER: "BJReplay",
             ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
@@ -460,14 +462,9 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state extra attributes of the sensor."""
         try:
-            return self.coordinator.get_site_sensor_extra_attributes(
-                self.rooftop_id,
-                self.key,
-            )
-        except Exception as ex:
-            _LOGGER.error(
-                f"Unable to get sensor value {ex} %s", traceback.format_exc()
-            )
+            return self.coordinator.get_site_sensor_extra_attributes(self.rooftop_id, self.key )
+        except Exception as e:
+            _LOGGER.error("Unable to get sensor attributes: %s: %s", e, traceback.format_exc())
             return None
 
     @property
@@ -481,23 +478,16 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         return False
 
     async def async_added_to_hass(self) -> None:
-        """When entity is added to hass."""
+        """Called when an entity is added to hass."""
         await super().async_added_to_hass()
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self._handle_coordinator_update)
-        )
+        self.async_on_remove(self.coordinator.async_add_listener(self._handle_coordinator_update))
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         try:
-            self._sensor_data = self.coordinator.get_site_sensor_value(
-                self.rooftop_id,
-                self.key,
-            )
-        except Exception as ex:
-            _LOGGER.error(
-                f"Unable to get sensor value {ex} %s", traceback.format_exc()
-            )
+            self._sensor_data = self.coordinator.get_site_sensor_value(self.rooftop_id, self.key)
+        except Exception as e:
+            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             self._sensor_data = None
         self.async_write_ha_state()
