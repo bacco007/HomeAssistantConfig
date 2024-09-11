@@ -2,6 +2,7 @@
 
 import logging
 from typing import Any, Dict, Optional
+from urllib.parse import quote
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -19,21 +20,20 @@ from homeassistant.helpers.selector import selector
 
 from . import (
     CONF_ACCEPT_HEADER,
+    CONF_ADV_CONNECT_OPTS,
     CONF_CONNECTION_TIMEOUT,
     CONF_DAYS,
     CONF_DOWNLOAD_INTERVAL,
     CONF_INCLUDE_ALL_DAY,
     CONF_OFFSET_HOURS,
     CONF_PARSER,
+    CONF_REQUIRES_AUTH,
+    CONF_SET_TIMEOUT,
     CONF_USER_AGENT,
 )
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-
-CONF_REQUIRES_AUTH = "requires_auth"
-CONF_ADV_CONNECT_OPTS = "advanced_connection_options"
-CONF_SET_TIMEOUT = "set_connection_timeout"
 
 CALENDAR_NAME_SCHEMA = vol.Schema(
     {
@@ -80,7 +80,7 @@ ADVANCED_CONNECT_OPTS_SCHEMA = vol.Schema(
 )
 
 TIMEOUT_OPTS_SCHEMA = vol.Schema(
-    {vol.Optional(CONF_CONNECTION_TIMEOUT, default=None): cv.positive_int}
+    {vol.Optional(CONF_CONNECTION_TIMEOUT, default=None): cv.positive_float}
 )
 
 
@@ -148,7 +148,7 @@ class ICSCalendarConfigFlow(ConfigFlow, domain=DOMAIN):
         """Calendar Options step for ConfigFlow."""
         errors = {}
         if user_input is not None:
-            if user_input[CONF_EXCLUDE] != user_input[CONF_INCLUDE]:
+            if user_input[CONF_EXCLUDE] == user_input[CONF_INCLUDE]:
                 errors[CONF_EXCLUDE] = "exclude_include_cannot_be_the_same"
             if user_input[CONF_DOWNLOAD_INTERVAL] < 15:
                 _LOGGER.error("download_interval_too_small error")
@@ -175,6 +175,9 @@ class ICSCalendarConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_URL] = "empty_url"
 
             if not errors:
+                user_input[CONF_URL] = quote(
+                    user_input[CONF_URL], safe=":/?&="
+                )
                 self.data.update(user_input)
                 if user_input.get(CONF_REQUIRES_AUTH, False):
                     return await self.async_step_auth_opts()
