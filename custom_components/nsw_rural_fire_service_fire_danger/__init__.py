@@ -1,12 +1,13 @@
-# NSW Rural Fire Service Fire Danger.
+"""NSW Rural Fire Service Fire Danger."""
+
 import logging
 
-import voluptuous as vol
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
+import voluptuous as vol
 
 from .config_flow import configured_instances
 from .const import (

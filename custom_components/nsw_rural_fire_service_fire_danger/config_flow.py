@@ -1,14 +1,15 @@
 """Config flow to configure the NSW Rural Fire Service Fire Danger integration."""
+
 from __future__ import annotations
 
 from typing import Any
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 
 from .const import (
     CONF_CONVERT_NO_RATING,

@@ -1,4 +1,5 @@
 """NSW Rural Fire Service - Fire Danger - Consts."""
+
 from datetime import timedelta
 from typing import Final
 
@@ -70,7 +71,8 @@ JSON_SENSOR_ATTRIBUTES: Final = {
 }
 
 BINARY_SENSOR_TYPES_STANDARD: Final = ["fire_ban_today", "fire_ban_tomorrow"]
-BINARY_SENSOR_TYPES_EXTENDED: Final = BINARY_SENSOR_TYPES_STANDARD + [
+BINARY_SENSOR_TYPES_EXTENDED: Final = [
+    *BINARY_SENSOR_TYPES_STANDARD,
     "fire_ban_day3",
     "fire_ban_day4",
 ]
@@ -80,7 +82,8 @@ BINARY_SENSOR_TYPES: Final = {
 }
 
 SENSOR_TYPES_STANDARD: Final = ["danger_level_today", "danger_level_tomorrow"]
-SENSOR_TYPES_EXTENDED: Final = SENSOR_TYPES_STANDARD + [
+SENSOR_TYPES_EXTENDED: Final = [
+    *SENSOR_TYPES_STANDARD,
     "danger_level_day3",
     "danger_level_day4",
 ]

@@ -1,4 +1,5 @@
 """NSW Rural Fire Service - Fire Danger - Binary Sensor."""
+
 from __future__ import annotations
 
 import logging

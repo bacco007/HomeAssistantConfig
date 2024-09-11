@@ -1,8 +1,9 @@
 """NSW Rural Fire Service - Fire Danger - Entity."""
+
 from __future__ import annotations
 
-import logging
 from abc import abstractmethod
+import logging
 from typing import Any
 
 from homeassistant.core import callback
@@ -62,7 +63,9 @@ class NswFireServiceFireDangerEntity(CoordinatorEntity[dict[str, Any]]):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         if self.coordinator.data:
-            _LOGGER.debug(f"Updating state and attributes from {self.coordinator.data}")
+            _LOGGER.debug(
+                "Updating state and attributes from %s", self.coordinator.data
+            )
             self._update_state(self.coordinator.data.get(self._sensor_type, None))
             self._attr_extra_state_attributes.update(self.coordinator.data)
             # Remove the attribute equal to sensor's state.

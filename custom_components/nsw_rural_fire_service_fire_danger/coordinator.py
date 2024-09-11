@@ -1,17 +1,18 @@
-# NSW Rural Fire Service Fire Danger - Data Coordinators.
-import logging
+"""NSW Rural Fire Service Fire Danger - Data Coordinators."""
+
 from abc import abstractmethod
 from datetime import timedelta
+import logging
+from pyexpat import ExpatError
 from typing import Any
 
-import xmltodict
 from homeassistant.components.rest import RestData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL, MAJOR_VERSION, MINOR_VERSION
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.json import json_loads
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from pyexpat import ExpatError
+from homeassistant.util.json import json_loads
+import xmltodict
 
 from .const import (
     CONF_CONVERT_NO_RATING,
@@ -49,7 +50,7 @@ class NswRfsFireDangerFeedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # 1. If version >= 2023.5: 10 arguments
         # 2. If version == 2023.4: 9 arguments
         # 3. If version <= 2023.3: 8 arguments
-        if MAJOR_VERSION >= 2024 or (MAJOR_VERSION >= 2023 and MINOR_VERSION >= 5):
+        if MAJOR_VERSION >= 2024 or (MAJOR_VERSION >= 2023 and MINOR_VERSION >= 5):  # noqa: PLR2004
             from homeassistant.components.rest.const import DEFAULT_SSL_CIPHER_LIST
 
             self._rest = RestData(
@@ -64,7 +65,7 @@ class NswRfsFireDangerFeedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 DEFAULT_VERIFY_SSL,
                 DEFAULT_SSL_CIPHER_LIST,
             )
-        elif MAJOR_VERSION == 2023 and MINOR_VERSION == 4:
+        elif MAJOR_VERSION == 2023 and MINOR_VERSION == 4:  # noqa: PLR2004
             self._rest = RestData(
                 hass,
                 DEFAULT_METHOD,
@@ -139,8 +140,9 @@ class NswRfsFireDangerStandardFeedCoordinator(NswRfsFireDangerFeedCoordinator):
                 if keys
                 else obj[key]
             )
+        return None
 
-    async def _parse_data(self, value) -> dict[str, str]:
+    async def _parse_data(self, value) -> dict[str, str]:  # noqa: C901
         """Parse data and extract relevant information."""
         attributes = {}
         if value:
@@ -167,9 +169,9 @@ class NswRfsFireDangerStandardFeedCoordinator(NswRfsFireDangerFeedCoordinator):
                                             text_value = conversion(
                                                 text_value, self._convert_no_rating
                                             )
-                                        attributes[
-                                            XML_SENSOR_ATTRIBUTES[key][0]
-                                        ] = text_value
+                                        attributes[XML_SENSOR_ATTRIBUTES[key][0]] = (
+                                            text_value
+                                        )
                                 break
             except ExpatError as ex:
                 _LOGGER.warning("Unable to parse feed data: %s", ex)
@@ -183,7 +185,7 @@ class NswRfsFireDangerExtendedFeedCoordinator(NswRfsFireDangerFeedCoordinator):
         """Return the data feed type that this coordinator supports."""
         return "extended"
 
-    async def _parse_data(self, value) -> dict[str, str]:
+    async def _parse_data(self, value) -> dict[str, str]:  # noqa: C901
         """Parse data and extract relevant information."""
         attributes = {}
         if value:

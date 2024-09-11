@@ -1,4 +1,5 @@
 """NSW Rural Fire Service - Fire Danger - Sensor."""
+
 import logging
 
 from homeassistant.components.sensor import SensorEntity
