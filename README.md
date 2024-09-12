@@ -48,11 +48,11 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.9.1 |
-| No. Integrations | 215 |
+| No. Integrations | 214 |
 | No. Custom Integrations | 91 |
-| No. Entities | 5758 |
-| No. Sensors | 3725 |
-| No. Automations | 149 |
+| No. Entities | 6082 |
+| No. Sensors | 3862 |
+| No. Automations | 150 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 491
-Buttons | 160
+Buttons | 235
 Calendars | 82
 Cameras | 6
 Climate | 2
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 8
 Scenes | 2
-Scripts | 75
+Scripts | 76
 Selects | 55
-Sensors | 3725
+Sensors | 3862
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 191
+Switches | 293
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>630 Integrations</summary>
+<details><summary>628 Integrations</summary>
 
 | Name |
 | --- |
@@ -391,8 +391,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mastodon](https://www.home-assistant.io/components/mastodon) |
 | [mastodon.notify](https://www.home-assistant.io/components/mastodon.notify) |
 | [mastodon.sensor](https://www.home-assistant.io/components/mastodon.sensor) |
-| [mastodon_profile_stats](https://www.home-assistant.io/components/mastodon_profile_stats) |
-| [mastodon_profile_stats.sensor](https://www.home-assistant.io/components/mastodon_profile_stats.sensor) |
 | [matter](https://www.home-assistant.io/components/matter) |
 | [matter.binary_sensor](https://www.home-assistant.io/components/matter.binary_sensor) |
 | [matter.climate](https://www.home-assistant.io/components/matter.climate) |
@@ -790,7 +788,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.6.7] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.5.9] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.5.9] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
-| [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v4.2.0] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
+| [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.0.2] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.5.0] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.9] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
@@ -804,7 +802,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.5] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.1.0] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
-| [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.18] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
+| [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.20] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.16] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.15.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
@@ -917,7 +915,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
-| Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
+| Advanced SSH & Web Terminal | 19.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.18.0 |  | db21ed7f |
 | Cloudflared | 5.1.19 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
@@ -931,7 +929,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
-| Matter Server | 6.4.2 |  | core |
+| Matter Server | 6.5.0 |  | core |
 | Music Assistant Server | 2.2.3 |  | d5369777 |
 | Node-RED | 18.0.5 |  | a0d7b954 |
 | OpenThread Border Router | 2.10.0 |  | core |
