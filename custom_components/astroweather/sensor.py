@@ -499,17 +499,31 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
 
         if (
             self._sensor == UPTONIGHT
-            and self.coordinator.data[SENSOR_NAME].uptonight is not None
         ):
             dso_list = []
-            for dso in self.coordinator.data[SENSOR_NAME].uptonight_list:
-                obj = {
-                    "name": dso.target_name,
-                    "type": dso.type,
-                    "constellation": dso.constellation,
-                    "foto": dso.foto,
-                }
-                dso_list.append(obj)
-                # dso_list.insert(0, obj)
-            return {"objects": dso_list}
+            if self.coordinator.data[SENSOR_NAME].uptonight is not None:
+                for dso in self.coordinator.data[SENSOR_NAME].uptonight_list:
+                    obj = {
+                        "name": dso.target_name,
+                        "type": dso.type,
+                        "constellation": dso.constellation,
+                        "foto": dso.foto,
+                    }
+                    dso_list.append(obj)
+
+            bodies_list = []
+            if self.coordinator.data[SENSOR_NAME].uptonight_bodies is not None:
+                for body in self.coordinator.data[SENSOR_NAME].uptonight_bodies_list:
+                    obj = {
+                        "name": body.target_name,
+                        "max_altitude": body.max_altitude,
+                        "azimuth": body.azimuth,
+                        "max_altitude_time": body.max_altitude_time,
+                        "foto": body.foto,
+                    }
+                    bodies_list.append(obj)
+
+            return {"objects": dso_list,
+                    "bodies": bodies_list}
+
         return None

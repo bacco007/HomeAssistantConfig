@@ -557,7 +557,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         for forecast in self.fcst_coordinator.data:
             forecasts.append(
                 {
-                    ATTR_FORECAST_TIME: forecast.forecast_time,
+                    ATTR_FORECAST_TIME: forecast.forecast_time.isoformat(),
                     ATTR_FORECAST_CALM: forecast.calm_percentage,
                     ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH: forecast.cloud_area_fraction_high_percentage,
                     ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW: forecast.cloud_area_fraction_low_percentage,
