@@ -63,6 +63,15 @@
         },
 		"description": "Sélectionnez parmi les options [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },
+      "stops_retry": {
+        "data": {
+          "origin": "Arrêt d'origine",
+          "destination": "Arrêt de destination",
+          "name": "Nom de la ligne",
+          "include_tomorrow": "Inclure le lendemain?"
+        },
+		"description": "Échoué, svp re-essayer avec d'autre arrêt(s) [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },	  
 	  "stops_train": {
         "data": {
           "origin": "Ville de départ",

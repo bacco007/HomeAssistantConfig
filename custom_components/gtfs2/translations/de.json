@@ -63,6 +63,15 @@
         },
         "description": "Wählen Sie aus den Optionen unten [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },
+      "stops_retry": {
+        "data": {
+          "origin": "Origin Stop",
+          "destination": "Zielhaltestelle",
+          "name": "Name der Route",
+          "include_tomorrow": "Inklusive morgen"
+        },
+        "description": "Kein Trip gefunden, bitte Haltestelle(n) ändern [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },	  
       "stops_train": {
         "data": {
           "origin": "Wählen sie die Stadt ihrer Abfahrt",

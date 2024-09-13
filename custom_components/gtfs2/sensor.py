@@ -131,7 +131,7 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
     def _update_attrs(self):  # noqa: C901 PLR0911
         _LOGGER.debug("SENSOR update attr data: %s", self.coordinator.data)
         if self.coordinator.data["extracting"]:  
-            _LOGGER.warning("Extracting datasource")
+            _LOGGER.warning("Extracting datasource: %s ,for sensor: %s", self.coordinator.data["file"], self._name)
             self._attr_native_value = None
             return
         self._pygtfs = self.coordinator.data["schedule"]
@@ -510,7 +510,7 @@ class GTFSLocalStopSensor(CoordinatorEntity, SensorEntity):
         self._state: str | None = None
         # if no data or extracting, stop
         if self.coordinator.data["extracting"]:  
-            _LOGGER.warning("Extracting datasource")
+            _LOGGER.warning("Extracting datasource: %s ,for sensor: %s", self.coordinator.data["file"], self._name)
             self._attr_native_value = None
             return
         

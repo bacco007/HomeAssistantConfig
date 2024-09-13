@@ -28,6 +28,9 @@
         "data": {
           "file": "New datasource name",
           "url": "external url to gtfs data (zip) file",
+          "api_key": "API key, if required",
+          "api_key_name": "API key name",
+          "api_key_location": "the location where the key is applied",
 		  "extract_from": "Extract data from:"
         },
         "description": "NOTE: with a new url/zip, this may take quite a bit of time, \n depending on file-size and system performance [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source)"
@@ -60,6 +63,15 @@
         },
 		"description": "Select from the options below [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
       },
+      "stops_retry": {
+        "data": {
+          "origin": "Origin Stop",
+          "destination": "Destination Stop",
+          "name": "Name of the route",
+          "include_tomorrow": "Include tomorrow"
+        },
+		"description": "No trip found between selected stops, try again [(docu)](https://github.com/vingerha/gtfs2/wiki/2.-Setup-a-new-route)"
+      },	  
 	  "stops_train": {
         "data": {
           "origin": "Enter the city of departure",
@@ -108,6 +120,7 @@
 		  "real_time": "Setup Realtime integration? \n (needs data from the same source)",
 		  "local_stop_refresh_interval": "Data refresh interval (in minutes)",
           "timerange": "Checking for departures in future from 'now' (in minutes: between 15 and 120)",
+		  "check_source_dates": "experimental: avoid using new zip/source contain having no current information",
 		  "radius": "Radius to search for stops (in meters between 50 and 500)"
         }
       },
@@ -118,7 +131,7 @@
 		  "vehicle_position_url": "URL to vehicle position",
 		  "alerts_url": "URL to alerts",
 		  "api_key": "API key, if required",
-		  "api_key_name": "API key name, default api_key",
+		  "api_key_name": "API key name",
           "api_key_location": "the location where the key is applied",
 		  "accept": "Add Accept:application/x-protobuf to the header"
         }

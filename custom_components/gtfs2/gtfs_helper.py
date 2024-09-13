@@ -42,7 +42,7 @@ _LOGGER = logging.getLogger(__name__)
 def get_next_departure(self):
     _LOGGER.debug("Get next departure with data: %s", self._data)
     if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):
-        _LOGGER.warning("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
+        _LOGGER.debug("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
         return {}
 
     """Get next departures from data."""
@@ -396,7 +396,7 @@ def get_gtfs(hass, path, data, update=False):
     check_source_dates = data.get("check_source_dates", False)
     journal = os.path.join(gtfs_dir, filename + ".sqlite-journal")
     if check_extracting(hass, gtfs_dir,filename) and not update :
-        _LOGGER.warning("Cannot use this datasource as still unpacking: %s", filename)
+        _LOGGER.debug("Cannot use this datasource as still unpacking: %s", filename)
         return "extracting"
     if update and data["extract_from"] == "url" and os.path.exists(os.path.join(gtfs_dir, file)):
         remove_datasource(hass, path, filename, True)

@@ -79,7 +79,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
         }           
 
         if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):    
-            _LOGGER.warning("Cannot update this sensor as still unpacking: %s", self._data["file"])
+            _LOGGER.debug("Cannot update this sensor as still unpacking: %s", self._data["file"])
             previous_data["extracting"] = True
             return previous_data
         
@@ -221,8 +221,7 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
         self._data["gtfs_updated_at"] = dt_util.utcnow().isoformat() 
         
         if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):    
-            _LOGGER.warning("Cannot update this sensor as still unpacking: %s", self._data["file"])
-            previous_data={}
+            _LOGGER.debug("Cannot update this sensor as still unpacking: %s", self._data["file"])
             previous_data["extracting"] = True
             return previous_data
         try:    
