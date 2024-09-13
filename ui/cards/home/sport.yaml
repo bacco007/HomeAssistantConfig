@@ -48,42 +48,42 @@ cards:
     show_attribute: false
     scrolling_effect: false
     show_state: false
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.paralympics_medal_count_total
-    name: Paralympics Medal Count
-    sub_button:
-      - entity: sensor.paralympics_medal_count_gold
-        name: Gold
-        show_state: true
-        show_name: true
-      - entity: sensor.paralympics_medal_count_silver
-        name: Silver
-        show_state: true
-        show_name: true
-      - entity: sensor.paralympics_medal_count_bronze
-        name: Bronze
-        show_state: true
-        show_name: true
-      - entity: sensor.paralympics_medal_count_ranking
-        name: Rank
-        show_state: true
-        show_name: true
-    card_layout: large-2-rows
-    styles: |
-      .bubble-sub-button-1 {
-          background-color: #DBBC09 !important;
-      }
-      .bubble-sub-button-2 {
-          background-color: #C0C0C0 !important;
-      }
-      .bubble-sub-button-3 {
-          background-color: #CD7F32 !important;
-      }
-      .bubble-sub-button-4 {
-          background-color: red !important;
-      }
+  # - type: custom:bubble-card
+  #   card_type: button
+  #   button_type: state
+  #   entity: sensor.paralympics_medal_count_total
+  #   name: Paralympics Medal Count
+  #   sub_button:
+  #     - entity: sensor.paralympics_medal_count_gold
+  #       name: Gold
+  #       show_state: true
+  #       show_name: true
+  #     - entity: sensor.paralympics_medal_count_silver
+  #       name: Silver
+  #       show_state: true
+  #       show_name: true
+  #     - entity: sensor.paralympics_medal_count_bronze
+  #       name: Bronze
+  #       show_state: true
+  #       show_name: true
+  #     - entity: sensor.paralympics_medal_count_ranking
+  #       name: Rank
+  #       show_state: true
+  #       show_name: true
+  #   card_layout: large-2-rows
+  #   styles: |
+  #     .bubble-sub-button-1 {
+  #         background-color: #DBBC09 !important;
+  #     }
+  #     .bubble-sub-button-2 {
+  #         background-color: #C0C0C0 !important;
+  #     }
+  #     .bubble-sub-button-3 {
+  #         background-color: #CD7F32 !important;
+  #     }
+  #     .bubble-sub-button-4 {
+  #         background-color: red !important;
+  #     }
 # type: custom:stack-in-card
 # mode: vertical
 # keep:
