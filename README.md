@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.9.1 |
 | No. Integrations | 214 |
 | No. Custom Integrations | 91 |
-| No. Entities | 6082 |
+| No. Entities | 6083 |
 | No. Sensors | 3862 |
 | No. Automations | 150 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 37
 Numbers | 37
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
@@ -99,7 +99,7 @@ Switches | 293
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 313
+Update | 314
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -915,7 +915,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
-| Advanced SSH & Web Terminal | 19.0.0 |  | a0d7b954 |
+| Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.18.0 |  | db21ed7f |
 | Cloudflared | 5.1.19 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
@@ -929,7 +929,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
 | JupyterLab | 0.15.2 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
-| Matter Server | 6.5.0 |  | core |
+| Matter Server | 6.5.1 |  | core |
 | Music Assistant Server | 2.2.3 |  | d5369777 |
 | Node-RED | 18.0.5 |  | a0d7b954 |
 | OpenThread Border Router | 2.10.0 |  | core |
