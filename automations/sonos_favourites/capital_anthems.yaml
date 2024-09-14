@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Capital Anthems"
+description: Play Capital Anthems on Sonos
+id: sonos_favourites_play_capital_anthems
+trigger:
+  - platform: webhook
+    webhook_id: sonos_capital_anthems
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_capital_anthems
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Capital Anthems"

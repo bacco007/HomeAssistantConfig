@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Radio X 00s"
+description: Play Radio X 00s on Sonos
+id: sonos_favourites_play_radio_x_00s
+trigger:
+  - platform: webhook
+    webhook_id: sonos_radio_x_00s
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_radio_x_00s
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Radio X 00s"

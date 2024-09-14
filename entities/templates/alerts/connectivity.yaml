@@ -619,16 +619,16 @@ binary_sensor:
       entity_count: >
         "{{ integration_entities('lunar_phase')|select('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] mastodon_profile_stats"
-    unique_id: ha_connected_integration_mastodon_profile_stats
+  - name: "[HA Connected Integration] mastodon"
+    unique_id: ha_connected_integration_mastodon
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/mastodon_profile_stats/icon.png
+    picture: https://brands.home-assistant.io/mastodon/icon.png
     device_class: connectivity
-    state: "{{ integration_entities('mastodon_profile_stats')|select('has_value')|list|count > 0 }}"
+    state: "{{ integration_entities('mastodon')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant_connectivity
       entity_count: >
-        "{{ integration_entities('mastodon_profile_stats')|select('has_value')|list|count }}"
+        "{{ integration_entities('mastodon')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] matter"
     unique_id: ha_connected_integration_matter

@@ -113,6 +113,18 @@ cards:
               card_mod: *style
               tap_action:
                 action: toggle
+              entity: script.sonos_favourites_capital_anthems
+              picture: /local/radioicons/capital_anthems.png
+            - type: template
+              card_mod: *style
+              tap_action:
+                action: toggle
+              entity: script.sonos_favourites_capital_london
+              picture: /local/radioicons/capital_london.png
+            - type: template
+              card_mod: *style
+              tap_action:
+                action: toggle
               entity: script.sonos_favourites_cnn_international
               picture: /local/radioicons/cnn_international.png
             - type: template
@@ -145,6 +157,24 @@ cards:
                 action: toggle
               entity: script.sonos_favourites_radio_x
               picture: /local/radioicons/radio_x.png
+            - type: template
+              card_mod: *style
+              tap_action:
+                action: toggle
+              entity: script.sonos_favourites_radio_x_00s
+              picture: /local/radioicons/radio_x_00s.png
+            - type: template
+              card_mod: *style
+              tap_action:
+                action: toggle
+              entity: script.sonos_favourites_radio_x_90s
+              picture: /local/radioicons/radio_x_90s.png
+            - type: template
+              card_mod: *style
+              tap_action:
+                action: toggle
+              entity: script.sonos_favourites_radio_x_chilled
+              picture: /local/radioicons/radio_x_chilled.png
             - type: template
               card_mod: *style
               tap_action:
