@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.9";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.11";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -971,7 +971,7 @@ const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
         "gameStat1": "%s",
         "gameStat2": "%s",
         "gameStat3": "",
-        "gameBar": "Torsch\xfcsse",
+        "gameBar": "Sch\xfcsse (auf Tor)",
         "teamBarLabel": "%s",
         "oppoBarLabel": "%s"
     },
@@ -1001,12 +1001,12 @@ const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
         "gameStat1": "%s",
         "gameStat2": "%s",
         "gameStat3": "",
-        "gameBar": "Torsch\xfcsse",
+        "gameBar": "Sch\xfcsse (auf Tor)",
         "teamBarLabel": "%s",
         "oppoBarLabel": "%s"
     },
     "tennis": {
-        "startTerm": "First Serve",
+        "startTerm": "Aufschlag",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
