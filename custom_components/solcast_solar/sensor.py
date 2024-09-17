@@ -46,7 +46,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         name="Forecast Today",
         icon="mdi:solar-power",
         suggested_display_precision=2,
-        state_class= SensorStateClass.TOTAL,
+        state_class=SensorStateClass.TOTAL,
     ),
     "peak_w_today": SensorEntityDescription(
         key="peak_w_today",
@@ -56,7 +56,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         name="Peak Forecast Today",
         icon="mdi:solar-power",
         suggested_display_precision=0,
-        state_class= SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     "peak_w_time_today": SensorEntityDescription(
         key="peak_w_time_today",
@@ -209,7 +209,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         translation_key="power_now",
         name="Power Now",
         suggested_display_precision=0,
-        state_class= SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     "power_now_30m": SensorEntityDescription(
         key="power_now_30m",
@@ -218,7 +218,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         translation_key="power_now_30m",
         #name="Power in 30 Minutes",
         suggested_display_precision=0,
-        state_class= SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     "power_now_1hr": SensorEntityDescription(
         key="power_now_1hr",
@@ -227,7 +227,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         translation_key="power_now_1hr",
         #name="Power in 1 Hour",
         suggested_display_precision=0,
-        state_class= SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     #"weather_description": SensorEntityDescription(
         #key="weather_description",
