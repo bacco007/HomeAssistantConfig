@@ -63,6 +63,13 @@
                     "steady": "Steady"
                 }
             },
+            "precipitation_type": {
+                "state": {
+                    "no_rain": "Dry",
+                    "rain": "Rain",
+                    "heavy_rain": "Heavy rain/Hail"
+                }
+            },
             "beaufort": {
                 "state": {
                     "calm": "Calm",

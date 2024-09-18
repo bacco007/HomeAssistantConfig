@@ -63,6 +63,13 @@
                     "steady": "Stabil"
                 }
             },
+            "precipitation_type": {
+                "state": {
+                    "no_rain": "Tørt",
+                    "rain": "Regn",
+                    "heavy_rain": "Kraftig regn/Hagl"
+                }
+            },
             "beaufort": {
                 "state": {
                     "calm": "Stille",

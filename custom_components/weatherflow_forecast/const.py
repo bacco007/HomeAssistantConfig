@@ -35,8 +35,7 @@ MODEL = "Rest API"
 PRECIPITATION_TYPE_DESCRIPTION = [
     "No Precipitation",
     "Rain",
-    "Hail",
-    "Rain + Hail",
+    "Heavy Rain/Hail",
 ]
 
 TIMESTAMP_SENSORS = [

@@ -296,6 +296,12 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     WeatherFlowSensorEntityDescription(
+        key="precip_type_text",
+        name="Precipitation Description",
+        translation_key="precipitation_type",
+        icon="mdi:format-list-bulleted-type",
+    ),
+    WeatherFlowSensorEntityDescription(
         key="pressure_trend",
         name="Pressure Trend",
         translation_key="pressure_trend",
