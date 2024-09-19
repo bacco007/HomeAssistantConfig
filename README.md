@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.9.2 |
 | No. Integrations | 214 |
 | No. Custom Integrations | 91 |
-| No. Entities | 6055 |
-| No. Sensors | 3846 |
+| No. Entities | 6001 |
+| No. Sensors | 3823 |
 | No. Automations | 153 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 491
-Buttons | 235
+Buttons | 222
 Calendars | 82
 Cameras | 6
 Climate | 2
@@ -91,11 +91,11 @@ Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 3846
+Sensors | 3823
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 293
+Switches | 280
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -761,7 +761,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
 | [Bermuda Ble Trilateration](https://github.com/agittins/bermuda) |  [v0.6.8] | Bermuda Bluetooth/BLE Triangulation / Trilateration for HomeAssistant |[@agittins](https://github.com/agittins).|
-| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.5] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
+| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.6] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.1] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.3] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.7.1] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
@@ -865,7 +865,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.8] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
-| [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.4] | Present the data of Formula One in a pretty way |
+| [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.5] | Present the data of Formula One in a pretty way |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  | Heatmap custom card for Home Assistant |
 | [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card) |  [v1.1.0] | Sun Card successor: Visualize the position of the Sun over the horizon. |
 | [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.1.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
@@ -887,7 +887,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.2] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.11.3] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -919,7 +919,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.20.2 |  | db21ed7f |
 | Cloudflared | 5.1.20 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.8.3 |  | 15ef4d2f |
+| ESPHome | 2024.9.0 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.0 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
