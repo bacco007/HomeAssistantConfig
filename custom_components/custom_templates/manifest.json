@@ -6,5 +6,5 @@
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates/issues",
   "requirements": [],
-  "version": "v1.4.0"
+  "version": "v1.4.1"
 }

@@ -11,7 +11,7 @@ class AllTranslations(TranslatableTemplate):
         super().__init__(hass, available_languages)
 
     def __call__(self, language: str | None = None) -> dict[str, str]:
-        language = self.validate_language(language)
+        language = self._validate_language(language)
         translations = {}
         translations.update(async_get_cached_translations(self._hass, language, "state"))
         translations.update(async_get_cached_translations(self._hass, language, "entity"))

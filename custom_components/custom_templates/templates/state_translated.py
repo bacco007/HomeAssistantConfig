@@ -13,7 +13,7 @@ class StateTranslated(TranslatableTemplate):
         super().__init__(hass, available_languages)
 
     def __call__(self, entity_id: str, language: str | None = None) -> str:
-        language = self.validate_language(language)
+        language = self._validate_language(language)
         state = _get_state_if_valid(self._hass, entity_id)
         if state is None:
             return STATE_UNKNOWN

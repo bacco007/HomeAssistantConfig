@@ -1,8 +1,7 @@
 from homeassistant.const import STATE_UNKNOWN
-from homeassistant.core import HomeAssistant, valid_entity_id
-from homeassistant.exceptions import TemplateError
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
-from homeassistant.helpers.template import _get_state_if_valid, _RESERVED_NAMES
+from homeassistant.helpers.template import _get_state_if_valid
 
 from .translatable_template import TranslatableTemplate
 from .utils import async_translate_state_attribute
@@ -14,7 +13,7 @@ class StateAttrTranslated(TranslatableTemplate):
         super().__init__(hass, available_languages)
 
     def __call__(self, entity_id: str, attribute: str, language: str | None = None) -> str:
-        language = self.validate_language(language)
+        language = self._validate_language(language)
         state = _get_state_if_valid(self._hass, entity_id)
         if state is None:
             return STATE_UNKNOWN

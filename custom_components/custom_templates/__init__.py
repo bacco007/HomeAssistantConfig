@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Callable
+from jinja2 import pass_context
 
 from homeassistant.const import EVENT_COMPONENT_LOADED
 from homeassistant.core import Event, HomeAssistant
@@ -51,7 +52,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     state_attr_translated_template = StateAttrTranslated(hass, languages)
     translated_template = Translated(hass, languages)
     all_translations_template = AllTranslations(hass, languages)
-    eval_template = EvalTemplate(hass)
+    eval_template = pass_context(EvalTemplate(hass))
     is_available_template = IsAvailable(hass)
     dict_merge_template = DictMerge(hass)
 
