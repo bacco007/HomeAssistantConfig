@@ -263,6 +263,12 @@ trigger:
   - platform: calendar
     event: end
     entity_id: calendar.ical_wsl_all_teams
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_uefa_champions_league
+  - platform: calendar
+    event: end
+    entity_id: calendar.ical_uefa_europa_league
   - platform: event
     event_type: event_template_reloaded
 action:
@@ -340,6 +346,8 @@ action:
         - calendar.ical_nbl_all_teams
         - calendar.ical_super_rugby_all_teams
         - calendar.ical_wsl_all_teams
+        - calendar.ical_uefa_champions_league
+        - calendar.ical_uefa_europa_league
   - variables:
       all_events: >
         {% set ns = namespace(items=[]) -%}

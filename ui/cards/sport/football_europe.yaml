@@ -47,3 +47,5 @@ cards:
           type: vertical-stack
           cards:
             - !include /config/ui/cards/sport/snippets/football_laliga.yaml
+  - !include /config/ui/cards/sport/snippets/football_uefa_champions.yaml
+  - !include /config/ui/cards/sport/snippets/football_uefa_europa.yaml

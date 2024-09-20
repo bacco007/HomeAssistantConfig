@@ -1,0 +1,49 @@
+---
+type: custom:stack-in-card
+card_mod:
+  style:
+    .: |
+      ha-card {
+      padding-bottom: 10px !important;
+      }
+cards:
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_uefa_champions_league
+  - type: custom:mushroom-chips-card
+    alignment: center
+    card_mod:
+      style: |
+        mushroom-template-chip {
+          width: 100%;
+        }
+        div.chip-container {
+          justify-content: space-evenly;
+          flex-wrap: nowrap;
+        }
+        ha-card {
+          margin: 0px 10px 2px 10px;
+          --chip-spacing: 5px !important;
+        }
+    chips:
+      - type: template
+        icon: mdi:calendar-alert
+        content: Calendar
+        card_mod: &style
+          style:
+            .: |
+              ha-card {
+                background-color: rgb(80, 110, 172) !important;
+                box-shadow: none !important;
+                justify-content: center;
+                height: 30px !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                border-radius: 10px !important;
+              }
+        tap_action: !include /config/ui/cards/sport/snippets/football/uefa_champions_calendar.yaml
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
