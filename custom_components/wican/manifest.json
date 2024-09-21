@@ -1,0 +1,10 @@
+{
+    "domain": "wican",
+    "name": "WiCan",
+    "dependencies": ["http"],
+    "codeowners": ["@jay-oswald"],
+    "version": "0.1.2",
+    "integration_type": "hub",
+    "config_flow": true,
+    "iot_class": "local_polling"
+}

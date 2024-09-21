@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Config for WiCan Integration",
+                "description": "Enter the IP Address for your WiCan. Please make sure your protocol is also set to auto_pid",
+                "data": {
+                    "ip": "WiCan IP"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Config for WiCan Integration",
+                "description": "Please make sure you are using a static IP address for your WiCan, we do not support dynamic IP addresses yet.",
+                "data": {
+                    "ip": "IP Address"
+                }
+            }
+        }
+    }
+}
