@@ -49,9 +49,9 @@ _Stats as at 05:00, unknown_
 | ---|--- |
 | HA Version | 2024.9.2 |
 | No. Integrations | 214 |
-| No. Custom Integrations | 91 |
-| No. Entities | 5810 |
-| No. Sensors | 3740 |
+| No. Custom Integrations | 92 |
+| No. Entities | 5888 |
+| No. Sensors | 3776 |
 | No. Automations | 153 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 491
-Buttons | 184
+Binary sensors | 495
+Buttons | 200
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 672
+Devices | 675
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -83,7 +83,7 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 37
+Media players | 38
 Numbers | 37
 Persistent notifications | 3
 Persons | 4
@@ -91,15 +91,15 @@ Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 3740
+Sensors | 3776
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 215
+Switches | 228
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 302
+Update | 308
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -749,7 +749,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>83 Custom Integrations</summary>
+<details><summary>84 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -833,6 +833,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.3] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.10] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
+| [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.1.2] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.1.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.10] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
