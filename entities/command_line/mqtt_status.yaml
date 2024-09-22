@@ -2,7 +2,7 @@
 binary_sensor:
   name: MQTT Status (Command Line)
   unique_id: mqtt_status_cl
-  command: /bin/bash -c "(echo > /dev/tcp/192.168.1.135/1883) > /dev/null 2>&1 && echo open || echo closed"
+  command: /bin/bash -c "(echo > /dev/tcp/192.168.1.133/1883) > /dev/null 2>&1 && echo open || echo closed"
   payload_off: "closed"
   payload_on: "open"
   scan_interval: 300

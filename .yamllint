@@ -1,13 +1,9 @@
 ---
 ignore: |
-  appdaemon/
   custom_components/
   www/
   themes/
   handy-code/
-  dwains-dashboard/
-  dwains-dashboard-v2/
-  packages/dwains-theme/
   .github/workflows/
   lovelace/
   fake_secrets.yaml
@@ -20,7 +16,6 @@ ignore: |
   notebooks/
   blueprints/
   zigbee2mqtt/
-  .shortumations/
   storage-lovelace-ui.yaml
   scripts.yaml
 rules:

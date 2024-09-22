@@ -1,0 +1,13 @@
+---
+sensor:
+  name: ha_config
+  unique_id: ha_config
+  command: !secret hass_api_config_curl
+  value_template: >
+    {{ value_json.version }}
+  json_attributes:
+    - components
+    - unit_system
+    - config_dir
+    - config_source
+    - version

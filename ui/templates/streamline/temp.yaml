@@ -1,0 +1,9 @@
+---
+my_first_template: # This is the name of a template
+  default:
+    - icon: fire
+  card:
+    type: custom:bubble-card
+    name: "[[name]]"
+    icon: "mdi:[[icon]]"
+    entity: "[[entity]]"

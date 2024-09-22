@@ -1,7 +1,8 @@
 ---
 title: "tbSH-Kiosk"
-button_card_templates: !include_dir_merge_named ../../templates/button
-decluttering_templates: !include_dir_merge_named ../../templates/decluttering
-apexcharts_card_templates: !include_dir_merge_named ../../templates/apexcharts
+button_card_templates: !include_dir_merge_named /config/ui/templates/button
+decluttering_templates: !include_dir_merge_named /config/ui/templates/decluttering
+apexcharts_card_templates: !include_dir_merge_named /config/ui/templates/apexcharts
+streamline_templates: !include_dir_merge_named /config/ui/templates/streamline
 views:
   - !include /config/ui/dashboards/kiosk/views/1_home.yaml
