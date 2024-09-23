@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.11";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.12";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -1826,7 +1826,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "oppoBarLabel": "%s%"
     },
     "basketball": {
-        "startTerm": "Astuce",
+        "startTerm": "Engagement",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
@@ -1846,7 +1846,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "oppoBarLabel": "%s%"
     },
     "football": {
-        "startTerm": "D\xe9marrer",
+        "startTerm": "Engagement",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
@@ -1866,7 +1866,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "oppoBarLabel": "%s"
     },
     "hockey": {
-        "startTerm": "Lancer de rondelle",
+        "startTerm": "Mise en jeu",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
@@ -1876,7 +1876,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "oppoBarLabel": "%s"
     },
     "mma": {
-        "startTerm": "Commencer",
+        "startTerm": "D\xe9but du combat",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
@@ -1886,7 +1886,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "oppoBarLabel": "%s%"
     },
     "racing": {
-        "startTerm": "Commencer",
+        "startTerm": "D\xe9part de la course",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
@@ -1896,7 +1896,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "oppoBarLabel": "%s"
     },
     "soccer": {
-        "startTerm": "D\xe9marrer",
+        "startTerm": "Coup d'envoi",
         "overUnder": "O/U: %s",
         "gameStat1": "%s",
         "gameStat2": "%s",
