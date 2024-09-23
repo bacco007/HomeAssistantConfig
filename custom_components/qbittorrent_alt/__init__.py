@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from os import path
+from typing import TYPE_CHECKING
 
 from aiohttp.client_exceptions import ClientConnectorError
 from aioqbt.exc import APIError, LoginError
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_NAME,
     CONF_PASSWORD,
@@ -23,15 +25,20 @@ from .const import DOMAIN, PLATFORMS
 from .coordinator import QBittorrentDataCoordinator
 from .helpers import get_torrent_info, setup_client
 
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+type QBittorrentConfigEntry = ConfigEntry[QBittorrentDataCoordinator]
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: QBittorrentConfigEntry) -> bool:
     """Set up qBittorrent from a config entry."""
 
     async def service_torrent_info(call: ServiceCall) -> ServiceResponse:
         torrent_hash = call.data.get("hash", "all")
         if torrent_hash not in ("", "all"):
             torrent = await coordinator.client.torrents.info(hashes=[torrent_hash])
-            return get_torrent_info(torrent)
+            return get_torrent_info(torrent[0])
         torrents = await coordinator.client.torrents.info(
             filter=call.data.get("filter", None)
         )
@@ -43,12 +50,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def service_resume_torrents(call: ServiceCall) -> None:
         await coordinator.client.torrents.resume(hashes=call.data.get("hash", "all"))
 
-    hass.data.setdefault(DOMAIN, {})
     try:
         client = await setup_client(
             path.join(entry.data[CONF_URL], "api/v2"),  # noqa: PTH118
-            entry.data[CONF_USERNAME],
-            entry.data[CONF_PASSWORD],
+            entry.data.get(CONF_USERNAME),
+            entry.data.get(CONF_PASSWORD),
             entry.data[CONF_VERIFY_SSL],
         )
     except LoginError as err:
@@ -67,7 +73,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     await coordinator.async_config_entry_first_refresh()
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
+    entry.runtime_data = coordinator
     hass.services.async_register(
         DOMAIN,
         "torrent_info",
@@ -80,10 +86,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, entry: QBittorrentConfigEntry
+) -> bool:
     """Unload qBittorrent config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        del hass.data[DOMAIN][entry.entry_id]
-        if not hass.data[DOMAIN]:
-            del hass.data[DOMAIN]
+        del entry.runtime_data
     return unload_ok

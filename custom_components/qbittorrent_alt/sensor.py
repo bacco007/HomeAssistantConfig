@@ -1,6 +1,8 @@
 """Support for monitoring the qBittorrent API."""
 
-from collections.abc import Callable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -8,7 +10,6 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     STATE_IDLE,
     EntityCategory,
@@ -16,14 +17,19 @@ from homeassistant.const import (
     UnitOfInformation,
     UnitOfTime,
 )
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
 from .coordinator import QBittorrentDataCoordinator
 from .helpers import get_qbittorrent_state
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.typing import StateType
+
+    from . import QBittorrentConfigEntry
 
 
 class QBittorrentSensorEntityDescription(
@@ -204,10 +210,10 @@ SENSOR_TYPES: tuple[QBittorrentSensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: QBittorrentConfigEntry,
     async_add_entites: AddEntitiesCallback,
 ) -> None:
-    coordinator: QBittorrentDataCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = config_entry.runtime_data
     entities = [
         QBittorrentSensor(description, coordinator, config_entry)
         for description in SENSOR_TYPES
@@ -222,7 +228,7 @@ class QBittorrentSensor(CoordinatorEntity[QBittorrentDataCoordinator], SensorEnt
         self,
         description: QBittorrentSensorEntityDescription,
         coordinator: QBittorrentDataCoordinator,
-        config_entry: ConfigEntry,
+        config_entry: QBittorrentConfigEntry,
     ) -> None:
         super().__init__(coordinator)
         self.entity_description = description

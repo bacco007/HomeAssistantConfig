@@ -13,7 +13,8 @@
     },
     "error": {
       "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication"
+      "invalid_auth": "Invalid authentication",
+      "missing_password": "Specify both username and password, or neither of them"
     },
     "abort": {
       "already_configured": "Service is already configured"

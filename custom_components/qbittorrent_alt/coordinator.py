@@ -1,16 +1,20 @@
+from __future__ import annotations
+
 import logging
 from datetime import timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from aiohttp import ClientResponseError
-from aioqbt.client import APIClient
 from aioqbt.exc import APIError, LoginError
-from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN
+
+if TYPE_CHECKING:
+    from aioqbt.client import APIClient
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity import DeviceInfo
 
 _LOGGER = logging.getLogger(__name__)
 

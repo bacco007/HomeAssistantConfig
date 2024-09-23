@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 import ssl
+from typing import TYPE_CHECKING
 
 from aiohttp import ClientConnectorError, ClientSession, CookieJar
-from aioqbt.api.types import TorrentInfo
 from aioqbt.client import APIClient, create_client
 from aioqbt.exc import APIError
 from homeassistant.const import STATE_IDLE
 
-from .coordinator import QBittorrentDataCoordinator
+if TYPE_CHECKING:
+    from aioqbt.api.types import TorrentInfo
+
+    from .coordinator import QBittorrentDataCoordinator
 
 
 async def setup_client(
@@ -30,9 +35,8 @@ async def setup_client(
         client._http_owner = True  # Let aioqbt manage the ClientSession  # noqa: SLF001
         await client.app.version()
     except (ClientConnectorError, APIError) as err:
-        await (
-            client_session.close()
-        )  # Manuel close ClientSession when client setup fails
+        # Manuel close ClientSession when client setup fails
+        await client_session.close()
         raise err from err
     else:
         return client
