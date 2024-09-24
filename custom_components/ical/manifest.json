@@ -7,7 +7,7 @@
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://www.home-assistant.io/integrations/ical",
+  "documentation": "https://github.com/tybritten/ical-sensor-homeassistant",
   "homekit": {},
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/tybritten/ical-sensor-homeassistant/issues",
@@ -15,6 +15,6 @@
     "icalendar==5.0.7"
   ],
   "ssdp": [],
-  "version": "1.6.7",
+  "version": "1.7.0",
   "zeroconf": []
 }

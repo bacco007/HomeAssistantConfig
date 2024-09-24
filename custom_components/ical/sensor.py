@@ -1,12 +1,12 @@
 """Creating sensors for upcoming events."""
 
-
 from datetime import datetime, timedelta
 import logging
 
-
 from homeassistant.const import CONF_NAME
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import Entity, generate_entity_id
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_MAX_EVENTS, DOMAIN, ICON
 
@@ -14,30 +14,16 @@ _LOGGER = logging.getLogger(__name__)
 
 
 # async def async_setup_entry(hass, config, add_entities, discovery_info=None):
-async def async_setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_platform(
+    hass: HomeAssistant, config, add_entities, discovery_info=None
+):
     """Set up this integration with config flow."""
     return True
-    """Set up the iCal Sensor."""
-    name = config.get(CONF_NAME)
-    max_events = config.get(CONF_MAX_EVENTS)
-
-    ical_events = hass.data[DOMAIN][name]
-    _LOGGER.debug(f"Data: {ical_events}")
-    await ical_events.update()
-
-    if ical_events.calendar is None:
-        _LOGGER.error("Unable to fetch iCal")
-        return False
-
-    sensors = []
-    for eventnumber in range(max_events):
-        sensors.append(ICalSensor(hass, ical_events, DOMAIN + " " + name, eventnumber))
-
-    add_entities(sensors)
 
 
-
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry, async_add_entities: AddEntitiesCallback
+) -> None:
     """Set up the iCal Sensor."""
     config = config_entry.data
     name = config.get(CONF_NAME)
@@ -58,21 +44,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 # pylint: disable=too-few-public-methods
 class ICalSensor(Entity):
-    """
-    Implementation of a iCal sensor.
+    """Implementation of a iCal sensor.
 
     Represents the Nth upcoming event.
     May have a name like 'sensor.mycalander_event_0' for the first
     upcoming event.
     """
 
-    def __init__(self, hass, ical_events, sensor_name, event_number):
-        """
-        Initialize the sensor.
+    def __init__(
+        self, hass: HomeAssistant, ical_events, sensor_name, event_number
+    ) -> None:
+        """Initialize the sensor.
 
         sensor_name is typically the name of the calendar.
         eventnumber indicates which upcoming event this is, starting at zero
         """
+        super().__init__()
         self._event_number = event_number
         self._hass = hass
         self.ical_events = ical_events
@@ -81,7 +68,6 @@ class ICalSensor(Entity):
             f"{sensor_name} event {self._event_number}",
             hass=self._hass,
         )
-        # self._name = sensor_name + " event " + str(self._event_number)
         self._event_attributes = {
             "summary": None,
             "description": None,
@@ -94,9 +80,9 @@ class ICalSensor(Entity):
         self._is_available = None
 
     @property
-    def entity_id(self):
-        """Return the entity_id of the sensor."""
-        return self._entity_id
+    def unique_id(self) -> str:
+        """Return the unique ID of the sensor."""
+        return f"{DOMAIN}_{self.ical_events.name.lower()}_event_{self._event_number}"
 
     @property
     def name(self):

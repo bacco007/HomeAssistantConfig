@@ -9,13 +9,13 @@ from dateutil.rrule import rruleset, rrulestr
 from dateutil.tz import gettz, tzutc
 import icalendar
 import voluptuous as vol
-from homeassistant.components.calendar import CalendarEvent
 
+from homeassistant.components.calendar import CalendarEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, CONF_URL, CONF_VERIFY_SSL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.util import Throttle, dt
+from homeassistant.util import Throttle, dt as dt_util
 
 from .const import CONF_DAYS, CONF_MAX_EVENTS, DOMAIN
 
@@ -32,7 +32,7 @@ PLATFORMS = ["sensor", "calendar"]
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=120)
 
 
-def setup(hass, config):
+def setup(hass: HomeAssistant, config):
     """Set up this integration with config flow."""
     return True
 
@@ -49,10 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN] = {}
     hass.data[DOMAIN][config.get(CONF_NAME)] = ICalEvents(hass=hass, config=config)
 
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 
@@ -78,7 +75,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 class ICalEvents:
     """Get a list of events."""
 
-    def __init__(self, hass, config):
+    def __init__(self, hass: HomeAssistant, config):
         """Set up a calendar object."""
         self.hass = hass
         self.name = config.get(CONF_NAME)
@@ -90,7 +87,7 @@ class ICalEvents:
         self.event = None
         self.all_day = False
 
-    async def async_get_events(self, hass, start_date, end_date):
+    async def async_get_events(self, hass: HomeAssistant, start_date, end_date):
         """Get list of upcoming events."""
         _LOGGER.debug("Running ICalEvents async_get_events")
         events = []
@@ -109,7 +106,13 @@ class ICalEvents:
                     _LOGGER.debug("... and it has")
                     # strongly type class fix
                     events.append(
-                        CalendarEvent(event["start"], event["end"], event["summary"], event["description"], event["location"])
+                        CalendarEvent(
+                            event["start"],
+                            event["end"],
+                            event["summary"],
+                            event["description"],
+                            event["location"],
+                        )
                     )
                     # events.append(event)
         return events
@@ -133,17 +136,17 @@ class ICalEvents:
             # Some calendars are for some reason filled with NULL-bytes.
             # They break the parsing, so we get rid of them
             event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))
-            start_of_events = dt.start_of_local_day()
-            end_of_events = dt.start_of_local_day() + timedelta(days=self.days)
+            start_of_events = dt_util.start_of_local_day()
+            end_of_events = dt_util.start_of_local_day() + timedelta(days=self.days)
 
-            self.calendar = self._ical_parser(
+            self.calendar = await self._ical_parser(
                 event_list, start_of_events, end_of_events
             )
 
         if len(self.calendar) > 0:
             found_next_event = False
             for event in self.calendar:
-                if event["end"] > dt.now() and not found_next_event:
+                if event["end"] > dt_util.now() and not found_next_event:
                     _LOGGER.debug(
                         "Event %s it the first event with end in the future: %s",
                         event["summary"],
@@ -152,7 +155,7 @@ class ICalEvents:
                     self.event = event
                     found_next_event = True
 
-    def _ical_parser(self, calendar, from_date, to_date):
+    async def _ical_parser(self, calendar, from_date, to_date):
         """Return a sorted list of events from a icalendar object."""
 
         events = []
@@ -181,30 +184,34 @@ class ICalEvents:
                     _LOGGER.debug("UNTIL in rrule: %s", str(rrule["UNTIL"]))
                     # Ensure that UNTIL is tz-aware and in UTC
                     # (Not all icalendar implements this correctly)
-                    until = self._ical_date_fixer(rrule["UNTIL"], "UTC")
+                    until = await self._ical_date_fixer(rrule["UNTIL"], "UTC")
                     rrule["UNTIL"] = [until]
                 else:
                     _LOGGER.debug("No UNTIL in rrule")
 
                 _LOGGER.debug("DTSTART in rrule: %s", str(event["DTSTART"].dt))
-                dtstart = self._ical_date_fixer(
-                    event["DTSTART"].dt, dt.DEFAULT_TIME_ZONE
+                dtstart = await self._ical_date_fixer(
+                    event["DTSTART"].dt, dt_util.DEFAULT_TIME_ZONE
                 )
 
                 if "DTEND" not in event:
                     _LOGGER.debug("Event found without end datetime")
                     if self.all_day:
                         # if it's an all day event with no endtime listed, we'll assume it ends at 23:59:59
-                        _LOGGER.debug(f"Event {event['SUMMARY']} is flagged as all day, with a start time of {start}.")
+                        _LOGGER.debug(
+                            f"Event {event['SUMMARY']} is flagged as all day, with a start time of {dtstart}."
+                        )
                         dtend = dtstart + timedelta(days=1, seconds=-1)
                         _LOGGER.debug(f"Setting the end time to {dtend}")
                     else:
-                        _LOGGER.debug(f"Event {event['SUMMARY']} doesn't have an end but isn't flagged as all day.")
+                        _LOGGER.debug(
+                            f"Event {event['SUMMARY']} doesn't have an end but isn't flagged as all day."
+                        )
                         dtend = dtstart
                 else:
                     _LOGGER.debug("DTEND in event")
-                    dtend = self._ical_date_fixer(
-                        event["DTEND"].dt, dt.DEFAULT_TIME_ZONE
+                    dtend = await self._ical_date_fixer(
+                        event["DTEND"].dt, dt_util.DEFAULT_TIME_ZONE
                     )
 
                 # So hopefully we now have a proper dtstart we can use to create the start-times according to the rrule
@@ -329,8 +336,8 @@ class ICalEvents:
                     pass
 
                 _LOGGER.debug("DTSTART in event: {}".format(event["DTSTART"].dt))
-                dtstart = self._ical_date_fixer(
-                    event["DTSTART"].dt, dt.DEFAULT_TIME_ZONE
+                dtstart = await self._ical_date_fixer(
+                    event["DTSTART"].dt, dt_util.DEFAULT_TIME_ZONE
                 )
 
                 start = dtstart
@@ -339,16 +346,20 @@ class ICalEvents:
                     _LOGGER.debug("Event found without end datetime")
                     if self.all_day:
                         # if it's an all day event with no endtime listed, we'll assume it ends at 23:59:59
-                        _LOGGER.debug(f"Event {event['SUMMARY']} is flagged as all day, with a start time of {start}.")
+                        _LOGGER.debug(
+                            f"Event {event['SUMMARY']} is flagged as all day, with a start time of {start}."
+                        )
                         dtend = dtstart + timedelta(days=1, seconds=-1)
                         _LOGGER.debug(f"Setting the end time to {dtend}")
                     else:
-                        _LOGGER.debug(f"Event {event['SUMMARY']} doesn't have an end but isn't flagged as all day.")
+                        _LOGGER.debug(
+                            f"Event {event['SUMMARY']} doesn't have an end but isn't flagged as all day."
+                        )
                         dtend = dtstart
                 else:
                     _LOGGER.debug("DTEND in event")
-                    dtend = self._ical_date_fixer(
-                        event["DTEND"].dt, dt.DEFAULT_TIME_ZONE
+                    dtend = await self._ical_date_fixer(
+                        event["DTEND"].dt, dt_util.DEFAULT_TIME_ZONE
                     )
                 end = dtend
 
@@ -356,8 +367,7 @@ class ICalEvents:
                 if event_dict:
                     events.append(event_dict)
 
-        sorted_events = sorted(events, key=lambda k: k["start"])
-        return sorted_events
+        return sorted(events, key=lambda k: k["start"])
 
     def _ical_event_dict(self, start, end, from_date, event):
         """Ensure that events are within the start and end."""
@@ -379,13 +389,13 @@ class ICalEvents:
             "Start: %s Tzinfo: %s Default: %s StartAs %s",
             str(start),
             str(start.tzinfo),
-            dt.DEFAULT_TIME_ZONE,
-            start.astimezone(dt.DEFAULT_TIME_ZONE),
+            dt_util.DEFAULT_TIME_ZONE,
+            start.astimezone(dt_util.DEFAULT_TIME_ZONE),
         )
         event_dict = {
             "summary": event.get("SUMMARY", "Unknown"),
-            "start": start.astimezone(dt.DEFAULT_TIME_ZONE),
-            "end": end.astimezone(dt.DEFAULT_TIME_ZONE),
+            "start": start.astimezone(dt_util.DEFAULT_TIME_ZONE),
+            "end": end.astimezone(dt_util.DEFAULT_TIME_ZONE),
             "location": event.get("LOCATION"),
             "description": event.get("DESCRIPTION"),
             "all_day": self.all_day,
@@ -393,7 +403,7 @@ class ICalEvents:
         _LOGGER.debug("Event to add: %s", str(event_dict))
         return event_dict
 
-    def _ical_date_fixer(self, indate, timezone="UTC"):
+    async def _ical_date_fixer(self, indate, timezone="UTC"):
         """Convert something that looks kind of like a date or datetime to a timezone-aware datetime-object."""
         self.all_day = False
 
@@ -407,24 +417,34 @@ class ICalEvents:
         if not isinstance(indate, datetime):
             try:
                 self.all_day = True
-                indate = datetime(indate.year, indate.month, indate.day, 0, 0, 0)
+                indate = await self.hass.async_add_executor_job(
+                    datetime, indate.year, indate.month, indate.day, 0, 0, 0
+                )
             except Exception as e:
                 _LOGGER.error("Unable to parse indate: %s", str(e))
+
+        indate_replaced = await self.hass.async_add_executor_job(
+            self._date_replace, indate, timezone
+        )
+
+        _LOGGER.debug("Out date: %s", str(indate_replaced))
+        return indate_replaced
+
+    def _date_replace(self, indate: datetime, timezone):
+        """Replace tzinfo in a datetime object."""
 
         # Indate can be TZ naive
         if indate.tzinfo is None or indate.tzinfo.utcoffset(indate) is None:
             # _LOGGER.debug("TZ-Naive indate: %s Adding TZ %s", str(indate), str(gettz(str(timezone))))
             # tz = pytz.timezone(str(timezone))
             # indate = tz.localize(indate)
-            indate = indate.replace(tzinfo=gettz(str(timezone)))
-        # Rrules dont play well with pytz
+            return indate.replace(tzinfo=gettz(str(timezone)))
+        # Rules dont play well with pytz
         # _LOGGER.debug("Tzinfo 1: %s", str(indate.tzinfo))
         if not str(indate.tzinfo).startswith("tzfile"):
             # _LOGGER.debug("Pytz indate: %s. replacing with tz %s", str(indate), str(gettz(str(indate.tzinfo))))
-            indate = indate.replace(tzinfo=gettz(str(indate.tzinfo)))
+            return indate.replace(tzinfo=gettz(str(indate.tzinfo)))
         if str(indate.tzinfo).endswith("/UTC"):
-            indate = indate.replace(tzinfo=tzutc)
+            return indate.replace(tzinfo=tzutc)
         # _LOGGER.debug("Tzinfo 2: %s", str(indate.tzinfo))
-
-        _LOGGER.debug("Out date: %s", str(indate))
-        return indate
+        return None
