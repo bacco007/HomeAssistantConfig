@@ -82,7 +82,7 @@ class ICalSensor(Entity):
     @property
     def unique_id(self) -> str:
         """Return the unique ID of the sensor."""
-        return f"{DOMAIN}_{self.ical_events.name.lower()}_event_{self._event_number}"
+        return f"{self.ical_events.name.lower()}_event_{self._event_number}"
 
     @property
     def name(self):
