@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.9.2 |
 | No. Integrations | 215 |
 | No. Custom Integrations | 92 |
-| No. Entities | 6005 |
+| No. Entities | 6004 |
 | No. Sensors | 3827 |
 | No. Automations | 153 |
 
@@ -777,8 +777,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.4] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
-| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.18.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
-| [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.2] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
+| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.19.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
+| [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.7.2] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
@@ -787,7 +787,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.1] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
-| [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.0] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
+| [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.1] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.5.9] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.5.9] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.0.3] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
@@ -858,7 +858,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.9.1] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.9.2] | Custom brand icons for Home Assistant |
 | [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.10] | Home Assistant custom features for tile cards and more. Call any action using buttons, sliders, selectors, and spinboxes |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
