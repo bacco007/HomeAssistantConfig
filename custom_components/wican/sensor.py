@@ -95,6 +95,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if not coordinator.ecu_online:
         async_add_entities(entities)
 
+    if coordinator.data['pid'] == False:
+        async_add_entities(entities)
+
     for key in coordinator.data['pid']:
         entities.append(WiCanPid(coordinator, {
             "key": key,
@@ -108,7 +111,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 def device_info(coordinator):
     return {
         "identifiers": {(DOMAIN, coordinator.data['status']['device_id'])},
-        "name": "WiCan",
+        "name": "WiCAN",
         "manufacturer": "MeatPi",
         "model": coordinator.data['status']['hw_version'],
         "configuration_url": "http://" + coordinator.data['status']['sta_ip'],
@@ -196,7 +199,7 @@ class WiCanCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name="WiCan Coordinator",
+            name="WiCAN Coordinator",
             update_interval = timedelta(seconds=30)
         )
 
@@ -245,7 +248,7 @@ class WiCanBool(WiCanSensorBase, BinarySensorEntity):
 
     @property
     def state(self):
-        return self._attr_is_on
+        return "on" if self._attr_is_on else "off"
     
 class WiCanPid(CoordinatorEntity):
     data = {}
@@ -287,6 +290,10 @@ class WiCanPid(CoordinatorEntity):
             return_attrs[key] = self.coordinator.data['pid'][attributes[key]]
         
         return return_attrs
+
+    @property
+    def native_unit_of_measurement(self):
+        return self.get_data('unit')
 
     @property
     def device_class(self):

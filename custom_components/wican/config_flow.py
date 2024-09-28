@@ -23,15 +23,15 @@ class WiCanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 info = await wican.test()
 
                 if info:
-                    return self.async_create_entry(title="WiCan", data=user_input)
+                    return self.async_create_entry(title="WiCAN", data=user_input)
                 else:
                     errors[CONF_IP_ADDRESS] = "Failed validation, double check the IP, as well as check if you have protocol set to auto_pid"
             except ConnectionError:
                 _LOGGER.exception("Connection Error")
-                errors[CONF_IP_ADDRESS] = "WiCan Connection error, are you sure the IP is correct?"
+                errors[CONF_IP_ADDRESS] = "WiCAN Connection error, are you sure the IP is correct?"
             except Exception:
                 _LOGGER.exception("Unexpected exception")
-                errors[CONF_IP_ADDRESS] = "WiCan not validated, unknown error"
+                errors[CONF_IP_ADDRESS] = "WiCAN not validated, unknown error"
                 
         return self.async_show_form(
             step_id="user", data_schema=DATA_SCHEMA, errors=errors

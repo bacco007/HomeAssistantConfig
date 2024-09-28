@@ -33,25 +33,20 @@ class WiCan:
 
     async def get_pid(self):
         try:
-            result = await self.call("/autopid_data")
+            pid_data = await self.call("/autopid_data")
+            pid_meta = await self.call("/load_car_config")
         except:
-            _LOGGER.warning("AUTO PID FAILED")
-
-        return {
-            "SOC": {
-                "value": 80.5,
-                "class": "battery",
-                "unit": "%"
-            },
-            "aux_volts": {
-                "value": 12.8,
-                "class": "voltage",
-                "unit": "V",
-            }
-        }
-
-        if(not result.status == 200):
             return False
-        
-        return result.data
+
+        if "error" in pid_data.data:
+            return False
+
+        result = {};
+        for key in pid_meta.data:
+            if not key in pid_data.data:
+                return False
+            result[key] = pid_meta.data[key]
+            result[key]["value"] = pid_data.data[key]
+
+        return result
 
