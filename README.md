@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.9.2 |
 | No. Integrations | 215 |
 | No. Custom Integrations | 92 |
-| No. Entities | 5948 |
+| No. Entities | 5985 |
 | No. Sensors | 3804 |
 | No. Automations | 153 |
 
