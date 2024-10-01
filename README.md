@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.9.2 |
+| HA Version | 2024.10.0b6 |
 | No. Integrations | 215 |
 | No. Custom Integrations | 92 |
-| No. Entities | 5952 |
-| No. Sensors | 3804 |
+| No. Entities | 6125 |
+| No. Sensors | 3900 |
 | No. Automations | 153 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 495
-Buttons | 201
+Buttons | 239
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 677
+Devices | 676
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -83,23 +83,23 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 39
+Media players | 38
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 3804
+Sensors | 3900
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 256
+Switches | 292
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 309
+Update | 308
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>630 Integrations</summary>
+<details><summary>628 Integrations</summary>
 
 | Name |
 | --- |
@@ -203,7 +203,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
-| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -393,6 +392,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mastodon.sensor](https://www.home-assistant.io/components/mastodon.sensor) |
 | [matter](https://www.home-assistant.io/components/matter) |
 | [matter.binary_sensor](https://www.home-assistant.io/components/matter.binary_sensor) |
+| [matter.button](https://www.home-assistant.io/components/matter.button) |
 | [matter.climate](https://www.home-assistant.io/components/matter.climate) |
 | [matter.cover](https://www.home-assistant.io/components/matter.cover) |
 | [matter.event](https://www.home-assistant.io/components/matter.event) |
@@ -404,6 +404,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [matter.sensor](https://www.home-assistant.io/components/matter.sensor) |
 | [matter.switch](https://www.home-assistant.io/components/matter.switch) |
 | [matter.update](https://www.home-assistant.io/components/matter.update) |
+| [matter.valve](https://www.home-assistant.io/components/matter.valve) |
 | [media_extractor](https://www.home-assistant.io/components/media_extractor) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
 | [media_source](https://www.home-assistant.io/components/media_source) |
@@ -478,10 +479,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pirateweather](https://www.home-assistant.io/components/pirateweather) |
 | [pirateweather.sensor](https://www.home-assistant.io/components/pirateweather.sensor) |
 | [pirateweather.weather](https://www.home-assistant.io/components/pirateweather.weather) |
-| [playstation_network](https://www.home-assistant.io/components/playstation_network) |
-| [playstation_network.media_player](https://www.home-assistant.io/components/playstation_network.media_player) |
-| [playstation_network.notify](https://www.home-assistant.io/components/playstation_network.notify) |
-| [playstation_network.sensor](https://www.home-assistant.io/components/playstation_network.sensor) |
 | [plex](https://www.home-assistant.io/components/plex) |
 | [plex.button](https://www.home-assistant.io/components/plex.button) |
 | [plex.media_player](https://www.home-assistant.io/components/plex.media_player) |
@@ -689,6 +686,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [utility_meter.sensor](https://www.home-assistant.io/components/utility_meter.sensor) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
+| [valve](https://www.home-assistant.io/components/valve) |
 | [version](https://www.home-assistant.io/components/version) |
 | [version.binary_sensor](https://www.home-assistant.io/components/version.binary_sensor) |
 | [version.sensor](https://www.home-assistant.io/components/version.sensor) |
@@ -858,12 +856,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
-| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.9.2] | Custom brand icons for Home Assistant |
+| [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.9.3] | Custom brand icons for Home Assistant |
 | [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.10] | Home Assistant custom features for tile cards and more. Call any action using buttons, sliders, selectors, and spinboxes |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.0.1] | Expander card for HomeAssistant |
+| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.2.0] | Expander card for HomeAssistant |
 | [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.0.5] | Apple TV, Amazon Fire TV, Fire streaming stick, Chromecast, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.8] | Custom card to use with Flightradar24 integration for Home Assistant |
@@ -874,7 +872,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.2.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
-| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.1.1] | 🙈 Hides the Home Assistant header and/or sidebar |
+| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.2.0] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v1.0.0] | Material Symbols for Home Assistant is collection of 18620 Google Material Symbols files for use within Home Assistant. |
@@ -886,7 +884,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.4] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.2.4] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.3.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
@@ -894,14 +892,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
-| [Streamline Card](https://github.com/brunosabot/streamline-card) |  [v0.0.11] | Streamline your Lovelace configuration with with a card template system. |
+| [Streamline Card](https://github.com/brunosabot/streamline-card) |  [v0.0.13] | Streamline your Lovelace configuration with with a card template system. |
 | [Swipe Card](https://github.com/bramkragten/swipe-card) |  [v5.0.0] | Card that allows you to swipe throught multiple cards for Home Assistant Lovelace |
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.12] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
-| [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.4.4] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
+| [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.5.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
 | [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.7.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
@@ -910,7 +908,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description |
 | --- | --- | --- |
-| [Bubble](https://github.com/Clooos/Bubble) |  [v1.0] | A dark minimalist theme with a mobile first approach for Home Assistant |
+| [Bubble](https://github.com/Clooos/Bubble) |  [v1.1] | A dark minimalist theme with a mobile first approach for Home Assistant |
 | [Metrology   Metro + Fluent + Windows Themes   By Mmak.Es](https://github.com/Madelena/Metrology-for-Hass) |  [v.1.9.1] | 🎨 Give your Home Assistant a modern and clean facelift. 🟥🟧🟩🟦🟪 24 Variations with 2 Styles + 6 Colors (Magenta Red / Orange / Green / Blue / Purple) + 🌞 Light and 🌚 Dark modes included. Based on Metro and Fluent UI Design Systems from Microsoft Windows. |
 | [Noctis](https://github.com/aFFekopp/noctis) |  [v3.1] | 🐵 Dark Blue Theme for Home Assistant |
 </details>
@@ -923,21 +921,21 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.20.2 |  | db21ed7f |
 | Cloudflared | 5.1.20 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.9.0 |  | 15ef4d2f |
-| eufy-security-ws | 1.9.0 |  | 402f1039 |
+| ESPHome | 2024.9.1 |  | 15ef4d2f |
+| eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
 | GoSungrow | 3.0.7 |  | ba22da74 |
 | Home Assistant Git Exporter | 1.17.0 |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
-| Home Assistant Stream Deck | 2024.6.3 |  | dc473884 |
-| JupyterLab | 0.15.2 |  | a0d7b954 |
+| Home Assistant Stream Deck | 2024.7.5 |  | dc473884 |
+| JupyterLab | 0.15.3 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.5.1 |  | core |
-| Music Assistant Server | 2.2.5 |  | d5369777 |
-| Node-RED | 18.0.5 |  | a0d7b954 |
-| OpenThread Border Router | 2.10.0 |  | core |
-| phpMyAdmin | 0.9.1 |  | a0d7b954 |
+| Music Assistant Server | 2.2.6 |  | d5369777 |
+| Node-RED | 18.1.1 |  | a0d7b954 |
+| OpenThread Border Router | 2.11.0 |  | core |
+| phpMyAdmin | 0.9.2 |  | a0d7b954 |
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
@@ -989,7 +987,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.9.2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.10.0b6-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
