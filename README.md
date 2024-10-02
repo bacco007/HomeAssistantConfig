@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.10.0b6 |
-| No. Integrations | 215 |
-| No. Custom Integrations | 92 |
-| No. Entities | 6125 |
-| No. Sensors | 3900 |
+| HA Version | 2024.10.0b9 |
+| No. Integrations | 217 |
+| No. Custom Integrations | 93 |
+| No. Entities | 6236 |
+| No. Sensors | 4005 |
 | No. Automations | 153 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 676
+Devices | 679
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -83,7 +83,7 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 38
+Media players | 39
 Numbers | 37
 Persistent notifications | 3
 Persons | 4
@@ -91,7 +91,7 @@ Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 3900
+Sensors | 4005
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 292
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 308
+Update | 309
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>628 Integrations</summary>
+<details><summary>635 Integrations</summary>
 
 | Name |
 | --- |
@@ -203,6 +203,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
+| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -479,6 +480,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pirateweather](https://www.home-assistant.io/components/pirateweather) |
 | [pirateweather.sensor](https://www.home-assistant.io/components/pirateweather.sensor) |
 | [pirateweather.weather](https://www.home-assistant.io/components/pirateweather.weather) |
+| [playstation_network](https://www.home-assistant.io/components/playstation_network) |
+| [playstation_network.media_player](https://www.home-assistant.io/components/playstation_network.media_player) |
+| [playstation_network.notify](https://www.home-assistant.io/components/playstation_network.notify) |
+| [playstation_network.sensor](https://www.home-assistant.io/components/playstation_network.sensor) |
 | [plex](https://www.home-assistant.io/components/plex) |
 | [plex.button](https://www.home-assistant.io/components/plex.button) |
 | [plex.media_player](https://www.home-assistant.io/components/plex.media_player) |
@@ -725,6 +730,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worldclock.sensor](https://www.home-assistant.io/components/worldclock.sensor) |
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
+| [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
+| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -749,7 +756,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>84 Custom Integrations</summary>
+<details><summary>85 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -775,7 +782,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.4] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
-| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.20.1] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
+| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.20.2] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.7.2] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
@@ -833,6 +840,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.3] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.10] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
+| [Whats Up Docker Updates Monitor](https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor) |  [v0.5] | Basic integration for What's up Docker API |[@pveiga90](https://github.com/pveiga90).|
 | [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.2.0] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.1.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
@@ -888,7 +896,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.13.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.14.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -921,7 +929,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.20.2 |  | db21ed7f |
 | Cloudflared | 5.1.20 |  | 9074a9fa |
 | DbStats | 0.5.8 |  | 8bce8ef4 |
-| ESPHome | 2024.9.1 |  | 15ef4d2f |
+| ESPHome | 2024.9.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
@@ -935,11 +943,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Music Assistant Server | 2.2.6 |  | d5369777 |
 | Node-RED | 18.1.1 |  | a0d7b954 |
 | OpenThread Border Router | 2.11.0 |  | core |
-| phpMyAdmin | 0.9.2 |  | a0d7b954 |
+| phpMyAdmin | 0.10.0 |  | a0d7b954 |
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.40.1-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.40.2-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
 </details>
@@ -987,7 +995,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.10.0b6-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.10.0b9-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
