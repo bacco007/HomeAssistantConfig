@@ -1,0 +1,11 @@
+{
+  "domain": "wud_getupdates",
+  "name": "Whats up Docker Updates Monitor",
+  "codeowners": ["@pveiga90"],
+  "config_flow": true,
+  "documentation": "https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor/blob/main/README.md",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor/issues",
+  "requirements": [],
+  "version": "0.5"
+}
