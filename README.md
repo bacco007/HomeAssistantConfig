@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.10.1 |
-| No. Integrations | 216 |
+| No. Integrations | 217 |
 | No. Custom Integrations | 93 |
-| No. Entities | 6257 |
-| No. Sensors | 4019 |
+| No. Entities | 6272 |
+| No. Sensors | 4031 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 39
 Numbers | 37
-Persistent notifications | 3
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 4019
+Sensors | 4031
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>626 Integrations</summary>
+<details><summary>635 Integrations</summary>
 
 | Name |
 | --- |
@@ -277,6 +277,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fuel_prices](https://www.home-assistant.io/components/fuel_prices) |
 | [fuel_prices.sensor](https://www.home-assistant.io/components/fuel_prices.sensor) |
 | [fully_kiosk](https://www.home-assistant.io/components/fully_kiosk) |
+| [fully_kiosk.binary_sensor](https://www.home-assistant.io/components/fully_kiosk.binary_sensor) |
+| [fully_kiosk.button](https://www.home-assistant.io/components/fully_kiosk.button) |
+| [fully_kiosk.camera](https://www.home-assistant.io/components/fully_kiosk.camera) |
+| [fully_kiosk.image](https://www.home-assistant.io/components/fully_kiosk.image) |
+| [fully_kiosk.media_player](https://www.home-assistant.io/components/fully_kiosk.media_player) |
+| [fully_kiosk.notify](https://www.home-assistant.io/components/fully_kiosk.notify) |
+| [fully_kiosk.number](https://www.home-assistant.io/components/fully_kiosk.number) |
+| [fully_kiosk.sensor](https://www.home-assistant.io/components/fully_kiosk.sensor) |
+| [fully_kiosk.switch](https://www.home-assistant.io/components/fully_kiosk.switch) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [garbage_collection.calendar](https://www.home-assistant.io/components/garbage_collection.calendar) |
 | [garbage_collection.sensor](https://www.home-assistant.io/components/garbage_collection.sensor) |
@@ -755,11 +764,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.1.1] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
 | [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.1.0] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
-| [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.60.0] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
+| [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.61.0] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
 | [Bermuda Ble Trilateration](https://github.com/agittins/bermuda) |  [v0.6.8] | Bermuda Bluetooth/BLE Triangulation / Trilateration for HomeAssistant |[@agittins](https://github.com/agittins).|
-| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.6] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
+| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.7] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.1] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.3] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.7.1] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
@@ -815,7 +824,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.4.2] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.11] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.1] | Use Simple Icons in Home Assistant ||
-| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.39.2] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
+| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.40.0] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.1.7] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
@@ -824,7 +833,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.11] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
-| [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.3] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
+| [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.4] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.2] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.7] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
@@ -917,7 +926,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
-| Browserless Chromium | 2.20.2 |  | db21ed7f |
+| Browserless Chromium | 2.21.1 |  | db21ed7f |
 | Cloudflared | 5.1.21 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
 | ESPHome | 2024.9.2 |  | 15ef4d2f |
