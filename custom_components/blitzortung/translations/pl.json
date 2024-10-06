@@ -9,7 +9,9 @@
       }
     },
     "error": {},
-    "abort": {}
+    "abort": {
+      "already_configured": "Usługa jest już skonfigurowana"
+    }
   },
   "options": {
     "step": {
@@ -22,6 +24,42 @@
           "max_tracked_lightnings": "Maksymalna ilość śledzonych błyskawic",
           "latitude": "Szerokość geograficzna",
           "longitude": "Długość geograficzna"
+        }
+      }
+    }
+  },
+  "entity": {
+    "geo_location": {
+      "lightning_strike": {
+        "state_attributes": {
+          "external_id": {
+            "name": "Zewnętrzny identyfikator"
+          },
+          "publication_date": {
+            "name": "Data publikacji"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "azimuth": {
+        "state_attributes": {
+          "lat": {
+            "name": "Szerokość geograficzna"
+          },
+          "lon": {
+            "name": "Długość geograficzna"
+          }
+        }
+      },
+      "distance": {
+        "state_attributes": {
+          "lat": {
+            "name": "Szerokość geograficzna"
+          },
+          "lon": {
+            "name": "Długość geograficzna"
+          }
         }
       }
     }
