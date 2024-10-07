@@ -1,17 +1,19 @@
-"""The Average Sensor.
+"""
+The Average Sensor.
 
 For more details about this sensor, please refer to the documentation at
 https://github.com/Limych/ha-average/
 """
+
 from datetime import timedelta
 from typing import Final
 
-# Base component constants
 from homeassistant.const import Platform
 
+# Base component constants
 NAME: Final = "Average Sensor"
 DOMAIN: Final = "average"
-VERSION: Final = "2.3.4"
+VERSION: Final = "2.4.0"
 ISSUE_URL: Final = "https://github.com/Limych/ha-average/issues"
 
 STARTUP_MESSAGE: Final = f"""
@@ -24,7 +26,7 @@ If you have ANY issues with this you need to open an issue here:
 -------------------------------------------------------------------
 """
 
-PLATFORMS = [
+PLATFORMS: Final = [
     Platform.SENSOR,
 ]
 
@@ -49,6 +51,7 @@ ATTR_AVAILABLE_SOURCES: Final = "available_sources"
 ATTR_COUNT: Final = "count"
 ATTR_MIN_VALUE: Final = "min_value"
 ATTR_MAX_VALUE: Final = "max_value"
+ATTR_TRENDING_TOWARDS: Final = "trending_towards"
 #
 ATTR_TO_PROPERTY: Final = [
     ATTR_START,
@@ -59,6 +62,7 @@ ATTR_TO_PROPERTY: Final = [
     ATTR_COUNT,
     ATTR_MAX_VALUE,
     ATTR_MIN_VALUE,
+    ATTR_TRENDING_TOWARDS,
 ]
 
 
