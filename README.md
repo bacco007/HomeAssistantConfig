@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.10.1 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 93 |
-| No. Entities | 6272 |
+| No. Entities | 6277 |
 | No. Sensors | 4031 |
 | No. Automations | 153 |
 
@@ -765,7 +765,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
 | [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.1.0] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.61.0] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
-| [Average Sensor](https://github.com/Limych/ha-average) |  [v2.3.4] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
+| [Average Sensor](https://github.com/Limych/ha-average) |  [v2.4.0] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
 | [Bermuda Ble Trilateration](https://github.com/agittins/bermuda) |  [v0.6.8] | Bermuda Bluetooth/BLE Triangulation / Trilateration for HomeAssistant |[@agittins](https://github.com/agittins).|
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.7] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
