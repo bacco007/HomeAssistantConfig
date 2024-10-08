@@ -1,19 +1,22 @@
 """Sensor platform to calculate IAQ UK index."""
 
-from collections.abc import Mapping
 import logging
-from typing import Any, Final, Optional
+from collections.abc import Mapping
+from typing import Any, Final
 
 from homeassistant.components.sensor import (
     ENTITY_ID_FORMAT,
+    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
 from homeassistant.const import CONF_NAME, CONF_SENSORS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import async_generate_entity_id
-from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
+from . import IaqukController
 from .const import (
     DOMAIN,
     ICON_DEFAULT,
@@ -26,23 +29,21 @@ from .const import (
     LEVEL_GOOD,
     LEVEL_INADEQUATE,
     LEVEL_POOR,
+    SENSOR_INDEX,
+    SENSOR_LEVEL,
+    SENSORS,
 )
 
 _LOGGER: Final = logging.getLogger(__name__)
 
-SENSOR_INDEX: Final = "iaq_index"
-SENSOR_LEVEL: Final = "iaq_level"
-
-SENSORS: Final = {
-    SENSOR_INDEX: "Indoor Air Quality Index",
-    SENSOR_LEVEL: "Indoor Air Quality Level",
-}
-
 
 # pylint: disable=unused-argument
 async def async_setup_platform(
-    hass: HomeAssistant, config: ConfigType, async_add_entities, discovery_info=None
-):
+    hass: HomeAssistant,
+    config: ConfigType,  # noqa: ARG001
+    async_add_entities: AddEntitiesCallback,
+    discovery_info: DiscoveryInfoType | None = None,
+) -> None:
     """Set up a sensors to calculate IAQ UK index."""
     if discovery_info is None:
         return
@@ -55,13 +56,13 @@ async def async_setup_platform(
         _LOGGER.debug("Initialize sensor %s for controller %s", sensor_type, object_id)
         sensors.append(IaqukSensor(controller, sensor_type))
 
-    async_add_entities(sensors, True)
+    async_add_entities(sensors, update_before_add=True)
 
 
 class IaqukSensor(SensorEntity):
     """IAQ UK sensor."""
 
-    def __init__(self, controller, sensor_type: str):
+    def __init__(self, controller: IaqukController, sensor_type: str) -> None:
         """Initialize sensor."""
         self._controller = controller
         self._sensor_type = sensor_type
@@ -76,23 +77,20 @@ class IaqukSensor(SensorEntity):
             SensorStateClass.MEASUREMENT if sensor_type == SENSOR_INDEX else None
         )
         self._attr_device_class = (
-            f"{DOMAIN}__level" if sensor_type == SENSOR_LEVEL else None
-        )
-        self._attr_native_unit_of_measurement = (
-            "IAQI" if sensor_type == SENSOR_INDEX else None
+            f"{DOMAIN}__level" if sensor_type == SENSOR_LEVEL else SensorDeviceClass.AQI
         )
         self._attr_icon = ICON_DEFAULT if sensor_type == SENSOR_INDEX else ICON_FAIR
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Register callbacks."""
         self._controller.async_added_to_hass()
 
     @property
-    def extra_state_attributes(self) -> Optional[Mapping[str, Any]]:
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return the state attributes."""
         return self._controller.state_attributes
 
-    async def async_update(self):
+    async def async_update(self) -> None:
         """Update sensor state."""
         if self._sensor_type == SENSOR_INDEX:
             self._attr_native_value = self._controller.iaq_index

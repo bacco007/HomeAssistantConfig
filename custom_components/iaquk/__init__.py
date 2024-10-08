@@ -1,14 +1,15 @@
-"""Component to calculate IAQ UK index.
+"""
+Component to calculate IAQ UK index.
 
 For more details about this component, please refer to
 https://github.com/Limych/ha-iaquk
 """
 
 import logging
-from typing import Any, Dict, Final, List, Optional, Union
+from typing import Any, Final
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant.components.sensor import DOMAIN as SENSOR
 from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
@@ -22,10 +23,15 @@ from homeassistant.const import (
     UNIT_NOT_RECOGNIZED_TEMPLATE,
     UnitOfTemperature,
 )
-from homeassistant.core import Event, EventStateChangedData, State, callback
+from homeassistant.core import (
+    Event,
+    HomeAssistant,
+    State,
+    callback,
+)
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import async_track_state_change_event
+from homeassistant.helpers.typing import ConfigType
 from homeassistant.util.unit_conversion import TemperatureConverter
 
 from .const import (
@@ -54,17 +60,17 @@ from .const import (
     MWEIGTH_HCHO,
     MWEIGTH_NO2,
     MWEIGTH_TVOC,
+    SENSORS,
     STARTUP_MESSAGE,
     UNIT_MGM3,
     UNIT_PPM,
     UNIT_UGM3,
 )
-from .sensor import SENSORS
 
 _LOGGER: Final = logging.getLogger(__name__)
 
 
-def check_voc_keys(conf):
+def check_voc_keys(conf: ConfigType) -> ConfigType:
     """Ensure CONF_TVOC, CONF_VOC_INDEX or none of them are provided."""
     keys: Final = [CONF_TVOC, CONF_VOC_INDEX]
     count = sum(param in conf for param in keys)
@@ -114,12 +120,12 @@ CONFIG_SCHEMA: Final = vol.Schema(
 )
 
 
-def _deslugify(string):
+def _deslugify(string: str) -> str:
     """Deslugify string."""
     return string.replace("_", " ").title()
 
 
-async def async_setup(hass, config):
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up component."""
     if DOMAIN not in config:
         return True
@@ -142,25 +148,26 @@ async def async_setup(hass, config):
             ", ".join([f"{key}={value}" for (key, value) in sources.items()]),
         )
 
-        controller = Iaquk(hass, object_id, name, sources)
+        controller = IaqukController(hass, object_id, name, sources)
         hass.data[DOMAIN][object_id] = controller
 
         discovery.load_platform(
             hass, SENSOR, DOMAIN, {CONF_NAME: object_id, CONF_SENSORS: sensors}, config
         )
 
-    if not hass.data[DOMAIN]:
-        return False
-
-    return True
+    return hass.data.get(DOMAIN) is not None
 
 
-class Iaquk:
+class IaqukController:
     """IAQ UK controller."""
 
     def __init__(
-        self, hass, entity_id: str, name: str, sources: Dict[str, Union[str, List[str]]]
-    ):
+        self,
+        hass: HomeAssistant,
+        entity_id: str,
+        name: str,
+        sources: dict[str, str | list[str]],
+    ) -> None:
         """Initialize controller."""
         self.hass = hass
         self._entity_id = entity_id
@@ -172,18 +179,19 @@ class Iaquk:
         self._added = False
         self._indexes = {}
 
-    def async_added_to_hass(self):
+    def async_added_to_hass(self) -> None:
         """Register callbacks."""
 
         # pylint: disable=unused-argument
+        # pragma: no cover
         @callback
-        def sensor_state_listener(event: Event[EventStateChangedData]) -> None:
+        def sensor_state_listener(event: Event) -> None:  # noqa: ARG001
             """Handle device state changes."""
             self.update()
 
         # pylint: disable=unused-argument
         @callback
-        def sensor_startup(event):
+        def sensor_startup(event: Event) -> None:  # noqa: ARG001
             """Update template on startup."""
             entity_ids = []
             for src in self._sources.values():
@@ -216,30 +224,30 @@ class Iaquk:
         return self._name
 
     @property
-    def iaq_index(self) -> Optional[int]:
+    def iaq_index(self) -> int | None:
         """Get IAQ index."""
         return self._iaq_index
 
     # pylint: disable=R1705
     @property
-    def iaq_level(self) -> Optional[str]:
+    def iaq_level(self) -> str | None:
         """Get IAQ level."""
         # Transform IAQ index to human readable text according
         # to Indoor Air Quality UK: http://www.iaquk.org.uk/
         if self._iaq_index is None:
             return None
-        elif self._iaq_index <= 25:
+        if self._iaq_index <= 25:  # noqa: PLR2004
             return LEVEL_INADEQUATE
-        elif self._iaq_index <= 38:
+        if self._iaq_index <= 38:  # noqa: PLR2004
             return LEVEL_POOR
-        elif self._iaq_index <= 51:
+        if self._iaq_index <= 51:  # noqa: PLR2004
             return LEVEL_FAIR
-        elif self._iaq_index <= 60:
+        if self._iaq_index <= 60:  # noqa: PLR2004
             return LEVEL_GOOD
         return LEVEL_EXCELLENT
 
     @property
-    def state_attributes(self) -> Optional[Dict[str, Any]]:
+    def state_attributes(self) -> dict[str, Any] | None:
         """Return the state attributes."""
         state_attr = {
             ATTR_SOURCES_SET: len(self._sources),
@@ -251,7 +259,7 @@ class Iaquk:
 
         return state_attr
 
-    def update(self):
+    def update(self) -> None:
         """Update index state."""
         _LOGGER.debug("[%s] State update", self._entity_id)
 
@@ -267,9 +275,8 @@ class Iaquk:
                     iaq += idx
                     sources += 1
                     indexes[src] = idx
-            except Exception:  # pylint: disable=broad-except; pragma: no cover
-                pass
-
+            except Exception:
+                _LOGGER.exception("Exception occurred")
         if iaq:
             self._indexes = indexes
             self._iaq_index = int((65 * iaq) / (5 * sources))
@@ -282,13 +289,17 @@ class Iaquk:
             )
 
     @staticmethod
-    def _has_state(state) -> bool:
+    def _has_state(state: str | None) -> bool:
         """Return True if state has any value."""
         return state is not None and state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]
 
     def _get_number_state(
-        self, entity_id, entity_unit=None, source_type="", mweight=None
-    ) -> Optional[float]:
+        self,
+        entity_id: str,
+        entity_unit: str | None = None,
+        source_type: str = "",
+        mweight: float | None = None,
+    ) -> float | None:
         """Convert value to number."""
         target_unit = None
         if entity_unit is not None and not isinstance(entity_unit, dict):
@@ -352,7 +363,7 @@ class Iaquk:
         return value
 
     @property
-    def _temperature_index(self) -> Optional[int]:
+    def _temperature_index(self) -> int | None:
         """Transform indoor temperature values to IAQ points."""
         entity_id = self._sources.get(CONF_TEMPERATURE)
         if entity_id is None:
@@ -375,18 +386,18 @@ class Iaquk:
             )
 
         index = 1
-        if 18 <= value <= 21:  # °C
+        if 18 <= value <= 21:  # °C     # noqa: PLR2004
             index = 5
-        elif 16 < value < 23:  # °C
+        elif 16 < value < 23:  # °C     # noqa: PLR2004
             index = 4
-        elif 15 < value < 24:  # °C
+        elif 15 < value < 24:  # °C     # noqa: PLR2004
             index = 3
-        elif 14 < value < 25:  # °C
+        elif 14 < value < 25:  # °C     # noqa: PLR2004
             index = 2
         return index
 
     @property
-    def _humidity_index(self) -> Optional[int]:
+    def _humidity_index(self) -> int | None:
         """Transform indoor humidity values to IAQ points."""
         entity_id = self._sources.get(CONF_HUMIDITY)
         if entity_id is None:
@@ -397,18 +408,18 @@ class Iaquk:
             return None
 
         index = 1
-        if 40 <= value <= 60:  # %
+        if 40 <= value <= 60:  # %      # noqa: PLR2004
             index = 5
-        elif 30 <= value <= 70:  # %
+        elif 30 <= value <= 70:  # %    # noqa: PLR2004
             index = 4
-        elif 20 <= value <= 80:  # %
+        elif 20 <= value <= 80:  # %    # noqa: PLR2004
             index = 3
-        elif 10 <= value <= 90:  # %
+        elif 10 <= value <= 90:  # %    # noqa: PLR2004
             index = 2
         return index
 
     @property
-    def _co2_index(self) -> Optional[int]:
+    def _co2_index(self) -> int | None:
         """Transform indoor eCO2 values to IAQ points."""
         entity_id = self._sources.get(CONF_CO2)
         if entity_id is None:
@@ -421,18 +432,18 @@ class Iaquk:
             return None
 
         index = 1
-        if value < 600:  # ppm
+        if value < 600:  # ppm      # noqa: PLR2004
             index = 5
-        elif value <= 800:  # ppm
+        elif value <= 800:  # ppm   # noqa: PLR2004
             index = 4
-        elif value <= 1500:  # ppm
+        elif value <= 1500:  # ppm  # noqa: PLR2004
             index = 3
-        elif value <= 1800:  # ppm
+        elif value <= 1800:  # ppm  # noqa: PLR2004
             index = 2
         return index
 
     @property
-    def _tvoc_index(self) -> Optional[int]:
+    def _tvoc_index(self) -> int | None:
         """Transform indoor tVOC values to IAQ points."""
         entity_id = self._sources.get(CONF_TVOC)
         if entity_id is None:
@@ -445,19 +456,20 @@ class Iaquk:
             return None
 
         index = 1
-        if value < 0.1:  # mg/m³
+        if value < 0.1:  # mg/m³        # noqa: PLR2004
             index = 5
-        elif value <= 0.3:  # mg/m³
+        elif value <= 0.3:  # mg/m³     # noqa: PLR2004
             index = 4
-        elif value <= 0.5:  # mg/m³
+        elif value <= 0.5:  # mg/m³     # noqa: PLR2004
             index = 3
         elif value <= 1.0:  # mg/m³
             index = 2
         return index
 
     @property
-    def _voc_index_index(self) -> Optional[int]:
-        """Transform indoor VOC index (0-500) values to IAQ points.
+    def _voc_index_index(self) -> int | None:
+        """
+        Transform indoor VOC index (0-500) values to IAQ points.
 
         Especially for SGP40 and SGP41 gas sensors:
             0-50    — Good
@@ -476,18 +488,18 @@ class Iaquk:
             return None
 
         index = 1
-        if value <= 50:
+        if value <= 50:  # noqa: PLR2004
             index = 5
-        elif value <= 115:
+        elif value <= 115:  # noqa: PLR2004
             index = 4
-        elif value <= 180:
+        elif value <= 180:  # noqa: PLR2004
             index = 3
-        elif value <= 260:
+        elif value <= 260:  # noqa: PLR2004
             index = 2
         return index
 
     @property
-    def _pm_index(self) -> Optional[int]:
+    def _pm_index(self) -> int | None:
         """Transform indoor particulate matters values to IAQ points."""
         entity_ids = self._sources.get(CONF_PM)
         if entity_ids is None or entity_ids == []:
@@ -505,18 +517,18 @@ class Iaquk:
 
         value = sum(values)
         index = 1
-        if value <= 23:  # µg/m3
+        if value <= 23:  # µg/m3    # noqa: PLR2004
             index = 5
-        elif value <= 41:  # µg/m3
+        elif value <= 41:  # µg/m3  # noqa: PLR2004
             index = 4
-        elif value <= 53:  # µg/m3
+        elif value <= 53:  # µg/m3  # noqa: PLR2004
             index = 3
-        elif value <= 64:  # µg/m3
+        elif value <= 64:  # µg/m3  # noqa: PLR2004
             index = 2
         return index
 
     @property
-    def _no2_index(self) -> Optional[int]:
+    def _no2_index(self) -> int | None:
         """Transform indoor NO2 values to IAQ points."""
         entity_id = self._sources.get(CONF_NO2)
         if entity_id is None:
@@ -529,14 +541,14 @@ class Iaquk:
             return None
 
         index = 1
-        if value < 0.2:  # mg/m³
+        if value < 0.2:  # mg/m³        # noqa: PLR2004
             index = 5
-        elif value <= 0.4:  # mg/m³
+        elif value <= 0.4:  # mg/m³     # noqa: PLR2004
             index = 3
         return index
 
     @property
-    def _co_index(self) -> Optional[int]:
+    def _co_index(self) -> int | None:
         """Transform indoor CO values to IAQ points."""
         entity_id = self._sources.get(CONF_CO)
         if entity_id is None:
@@ -551,12 +563,12 @@ class Iaquk:
         index = 1
         if value == 0:  # mg/m³
             index = 5
-        elif value <= 7:  # mg/m³
+        elif value <= 7:  # mg/m³   # noqa: PLR2004
             index = 3
         return index
 
     @property
-    def _hcho_index(self) -> Optional[int]:
+    def _hcho_index(self) -> int | None:
         """Transform indoor Formaldehyde (HCHO) values to IAQ points."""
         entity_id = self._sources.get(CONF_HCHO)
         if entity_id is None:
@@ -569,18 +581,18 @@ class Iaquk:
             return None
 
         index = 1
-        if value < 20:  # µg/m³
+        if value < 20:  # µg/m³         # noqa: PLR2004
             index = 5
-        elif value <= 50:  # µg/m³
+        elif value <= 50:  # µg/m³      # noqa: PLR2004
             index = 4
-        elif value <= 100:  # µg/m³
+        elif value <= 100:  # µg/m³     # noqa: PLR2004
             index = 3
-        elif value <= 200:  # µg/m³
+        elif value <= 200:  # µg/m³     # noqa: PLR2004
             index = 2
         return index
 
     @property
-    def _radon_index(self):
+    def _radon_index(self) -> int | None:
         """Transform indoor Radon (Rn) values to IAQ points."""
         entity_id = self._sources.get(CONF_RADON)
         if entity_id is None:
@@ -593,8 +605,8 @@ class Iaquk:
         index = 1
         if value == 0:  # Bq/m3
             index = 5
-        elif value < 20:  # Bq/m3
+        elif value < 20:  # Bq/m3       # noqa: PLR2004
             index = 3
-        elif value <= 100:  # Bq/m3
+        elif value <= 100:  # Bq/m3     # noqa: PLR2004
             index = 2
         return index
