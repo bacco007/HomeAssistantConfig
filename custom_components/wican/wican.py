@@ -38,15 +38,14 @@ class WiCan:
         except:
             return False
 
-        if "error" in pid_data.data:
+        if not isinstance(pid_meta.data, dict):
             return False
 
         result = {};
         for key in pid_meta.data:
-            if not key in pid_data.data:
-                return False
             result[key] = pid_meta.data[key]
-            result[key]["value"] = pid_data.data[key]
+            value = pid_data.data[key] if key in pid_data.data else False
+            result[key]["value"] = value
 
         return result
 

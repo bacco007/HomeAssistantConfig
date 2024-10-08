@@ -25,8 +25,6 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 def process_status_voltage(i):
-    _LOGGER.warning("PROCESS STATUS VOLTAGE")
-    _LOGGER.warning(i)
     return float( i[:-1] )
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -96,7 +94,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities(entities)
 
     if coordinator.data['pid'] == False:
-        async_add_entities(entities)
+        return async_add_entities(entities)
 
     for key in coordinator.data['pid']:
         entities.append(WiCanPid(coordinator, {
@@ -131,9 +129,11 @@ class WiCanSensorBase(CoordinatorEntity):
         self.coordinator = coordinator
         self.process_state = process_state
 
+        device_id = self.coordinator.data['status']['device_id']
+
         key = self.get_data('key')
-        self._attr_unique_id = "wican_" + self.coordinator.data['status']['device_id'] + "_" + key
-        self.id = 'wican_' + key
+        self._attr_unique_id = "wican_" + device_id + "_" + key
+        self.id = 'wican_' + device_id[-3:] + "_" + key
         self._attr_name = self.get_data('name')
         self.set_state()
 
@@ -148,13 +148,14 @@ class WiCanSensorBase(CoordinatorEntity):
         self.async_write_ha_state()
     
     def set_state(self):
-        _LOGGER.warning(self.process_state)
-        _LOGGER.warning(self.coordinator.data['status'][self.get_data('key')])
         
         if self.process_state is not None:
-            self._state = self.process_state(self.coordinator.data['status'][self.get_data('key')])
+            state = self.process_state(self.coordinator.data['status'][self.get_data('key')])
         else:
-            self._state = self.coordinator.data['status'][self.get_data('key')]
+            state = self.coordinator.data['status'][self.get_data('key')]
+
+        if not state == False:
+            self._state = state
 
     @property
     def extra_state_attributes(self):
@@ -222,7 +223,7 @@ class WiCanCoordinator(DataUpdateCoordinator):
 
         data['pid'] = await self.api.get_pid()
 
-        _LOGGER.warning(data)
+        _LOGGER.info(data)
 
         return data;
 
@@ -244,7 +245,6 @@ class WiCanBool(WiCanSensorBase, BinarySensorEntity):
 
     def set_state(self):
         self._attr_is_on = self.coordinator.data['status'][self.get_data('key')] == self.get_data('target_state')
-        # self._state = self._attr_is_on
 
     @property
     def state(self):
@@ -255,14 +255,15 @@ class WiCanPid(CoordinatorEntity):
     coordinator = None
     _attr_has_entity_name = True
     _attr_name = None
-    def __init__(self, coordinator, data, process_state = None):
+    def __init__(self, coordinator, data):
         super().__init__(coordinator)
         self.data = data
         self.coordinator = coordinator
 
         key = self.get_data('key')
-        self._attr_unique_id = "wican_" + self.coordinator.data['status']['device_id'] + "_" + key
-        self.id = 'wican_pid_' + key
+        device_id = self.coordinator.data['status']['device_id']
+        self._attr_unique_id = "wican_" + device_id + "_" + key
+        self.id = 'wican_' + device_id[-3:] + "_" + key
         self._attr_name = self.get_data('name')
         self.set_state()
 
@@ -277,7 +278,14 @@ class WiCanPid(CoordinatorEntity):
         self.async_write_ha_state()
     
     def set_state(self):
-        self._state = self.coordinator.data['pid'][self.get_data('key')]['value']
+        state = self.coordinator.data['pid'][self.get_data('key')]['value']
+        if state is False:
+            if not hasattr(self, '_state'):
+                # Setting it to False initially if it hasn't been initialized yet
+                self._state = False
+            return
+        
+        self._state = state
 
     @property
     def extra_state_attributes(self):
@@ -306,8 +314,10 @@ class WiCanPid(CoordinatorEntity):
     # TODO
     @property
     def available(self) -> bool:
+        if self._state is False:
+            return False
+        
         return True
-        # return self.coordinator.data['status'] != False
 
     @property
     def entity_category(self):
