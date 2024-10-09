@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.12";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.13";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -3070,7 +3070,7 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
         "--outs-display": `${c.outsDisplay}`
     })}>${c.in0}</div>
             <div class="in-series-info" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--series_summary-display": `${c.seriesSummaryDisplay}`
+        "--series-summary-display": `${c.seriesSummaryDisplay}`
     })}>${c.seriesSummary}</div>
             <div class="line"></div>
             <a class="bottom-clickable ${!c.bottomURL ? "disabled" : ""}" href="${c.bottomURL ? c.bottomURL : "#"}" target="_blank">
@@ -3259,7 +3259,7 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
                 </div>
             </div>
             <div class="pre-series-info" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--series_summary-display": `${c.seriesSummaryDisplay}`
+        "--series-summary-display": `${c.seriesSummaryDisplay}`
     })}>${c.seriesSummary}</div>
             <div class="line"></div>
             <a class="bottom-clickable ${!c.bottomURL ? "disabled" : ""}" href="${c.bottomURL ? c.bottomURL : "#"}" target="_blank">
@@ -3442,7 +3442,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     }
     c.byeTerm = t.translate("common.byeTerm");
     c.seriesSummary = stateObj.attributes.series_summary;
-    if (c.seriesSummary) c.seriesSummaryDisplay = "inherit";
+    if (c.seriesSummary) c.seriesSummaryDisplay = "block";
 }
 function $84bc952fd23869d6$export$f8996dc3406efa5a(o, c) {
     c.outlineWidth = 0;
