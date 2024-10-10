@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2024.10.1 |
-| No. Integrations | 215 |
+| No. Integrations | 217 |
 | No. Custom Integrations | 93 |
 | No. Entities | 6254 |
-| No. Sensors | 4010 |
+| No. Sensors | 4008 |
 | No. Automations | 153 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 4010
+Sensors | 4008
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>631 Integrations</summary>
+<details><summary>635 Integrations</summary>
 
 | Name |
 | --- |
@@ -138,7 +138,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [analytics_insights](https://www.home-assistant.io/components/analytics_insights) |
 | [analytics_insights.sensor](https://www.home-assistant.io/components/analytics_insights.sensor) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
+| [androidtv.media_player](https://www.home-assistant.io/components/androidtv.media_player) |
+| [androidtv.remote](https://www.home-assistant.io/components/androidtv.remote) |
 | [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
+| [androidtv_remote.media_player](https://www.home-assistant.io/components/androidtv_remote.media_player) |
+| [androidtv_remote.remote](https://www.home-assistant.io/components/androidtv_remote.remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [anniversaries.calendar](https://www.home-assistant.io/components/anniversaries.calendar) |
 | [anniversaries.sensor](https://www.home-assistant.io/components/anniversaries.sensor) |
@@ -759,7 +763,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting) |  [v1.23.0] | Adaptive Lighting custom component for Home Assistant |[@basnijholt](https://github.com/basnijholt), [@RubenKelevra](https://github.com/RubenKelevra), [@th3w1zard1](https://github.com/th3w1zard1), [@protyposis](https://github.com/protyposis).|
 | [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.1.1] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v5.2.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
-| [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.1.0] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
+| [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.1.1] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.61.0] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.4.0] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
@@ -778,7 +782,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.4] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
-| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.21.2] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
+| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.21.3] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.7.2] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
@@ -862,7 +866,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.10.0] | Custom brand icons for Home Assistant |
-| [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.0.11] | Home Assistant custom features for tile cards and more. Call any action using buttons, sliders, selectors, and spinboxes |
+| [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.1.0] | Home Assistant custom features for tile cards and more. Call any action using buttons, sliders, selectors, and spinboxes |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
@@ -893,7 +897,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.15.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.16.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
