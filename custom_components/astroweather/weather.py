@@ -23,10 +23,6 @@ from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
-# from pyastroweatherio import (
-#     FORECAST_TYPE_DAILY,
-#     FORECAST_TYPE_HOURLY,
-# )
 from .const import (
     ATTR_FORECAST_CALM,
     ATTR_FORECAST_CLOUD_AREA_FRACTION,

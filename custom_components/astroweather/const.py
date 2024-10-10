@@ -1,4 +1,5 @@
 """Constants in AstroWeather component."""
+
 from homeassistant.const import Platform
 
 # #####################################################
@@ -54,6 +55,7 @@ DEFAULT_CONDITION_TRANSPARENCY_WEIGHT = 1
 DEFAULT_CONDITION_CALM_WEIGHT = 2
 DEFAULT_UPTONIGHT_PATH = "/config/www"
 DEFAULT_EXPERIMENTAL_FEATURES = False
+FORECAST_TYPE_HOURLY = "hourly"
 
 # #####################################################
 # Attribute values

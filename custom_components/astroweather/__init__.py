@@ -4,7 +4,7 @@ import asyncio
 from datetime import timedelta
 import logging
 
-from pyastroweatherio import FORECAST_TYPE_HOURLY, AstroWeather
+from pyastroweatherio import AstroWeather
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -45,6 +45,7 @@ from .const import (
     DEFAULT_LOCATION_NAME,
     DEFAULT_TIMEZONE_INFO,
     DEFAULT_UPTONIGHT_PATH,
+    FORECAST_TYPE_HOURLY,
     DOMAIN,
 )
 
@@ -217,22 +218,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "Data update coordinator created (update interval: %d)",
         entry.options.get(CONF_FORECAST_INTERVAL),
     )
-    # # Currently, the only supported forecast type is hourly since 7Timer
-    # # does only deliver data for more than 3 days
+
     fcst_type = entry.options.get(CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY)
-    # if fcst_type == FORECAST_TYPE_DAILY:
-    #     # Update Forecast with Daily data
-    #     fcst_coordinator = DataUpdateCoordinator(
-    #         hass,
-    #         _LOGGER,
-    #         name=DOMAIN,
-    #         update_method=astroweather.get_daily_forecast,
-    #         update_interval=timedelta(
-    #             minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)
-    #         ),
-    #     )
-    # else:
-    # Update Forecast with Hourly data
+
     fcst_coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
