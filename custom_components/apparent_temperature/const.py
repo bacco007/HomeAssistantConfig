@@ -5,7 +5,7 @@ from typing import Final
 
 NAME: Final = "Apparent Temperature"
 DOMAIN: Final = "apparent_temperature"
-VERSION: Final = "1.1.0"
+VERSION: Final = "1.1.1"
 ISSUE_URL: Final = "https://github.com/Limych/ha-temperature-feeling/issues"
 
 STARTUP_MESSAGE: Final = f"""

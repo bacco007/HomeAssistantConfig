@@ -1,14 +1,16 @@
 """Sensor platform for apparent_temperature."""
 
-from collections.abc import Callable
 import logging
 import math
+from collections.abc import Mapping
+from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.components.climate import (
     ATTR_CURRENT_HUMIDITY,
     ATTR_CURRENT_TEMPERATURE,
+)
+from homeassistant.components.climate import (
     DOMAIN as CLIMATE_DOMAIN,
 )
 from homeassistant.components.group import expand_entity_ids
@@ -23,6 +25,8 @@ from homeassistant.components.weather import (
     ATTR_WEATHER_TEMPERATURE_UNIT,
     ATTR_WEATHER_WIND_SPEED,
     ATTR_WEATHER_WIND_SPEED_UNIT,
+)
+from homeassistant.components.weather import (
     DOMAIN as WEATHER_DOMAIN,
 )
 from homeassistant.const import (
@@ -40,15 +44,15 @@ from homeassistant.const import (
 )
 from homeassistant.core import (
     Event,
-    EventStateChangedData,
     HomeAssistant,
     State,
     callback,
     split_entity_id,
 )
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
-from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, UndefinedType
 from homeassistant.util.unit_conversion import SpeedConverter, TemperatureConverter
 
 from .const import (
@@ -76,9 +80,9 @@ PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend(
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
-    async_add_entities: Callable,
-    discovery_info=None,
-):
+    async_add_entities: AddEntitiesCallback,
+    discovery_info: DiscoveryInfoType | None = None,  # noqa: ARG001
+) -> None:
     """Set up the Car Wash sensor."""
     # Print startup message
     _LOGGER.info(STARTUP_MESSAGE)
@@ -133,7 +137,7 @@ class ApparentTemperatureSensor(SensorEntity):
         )
 
     @property
-    def name(self):
+    def name(self) -> str | UndefinedType | None:
         """Return the name of the sensor."""
         if self._name:
             return self._name
@@ -141,7 +145,7 @@ class ApparentTemperatureSensor(SensorEntity):
         return self._compose_name(split_entity_id(self._sources[0])[1])
 
     @property
-    def extra_state_attributes(self):
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return entity specific state attributes."""
         return {
             ATTR_TEMPERATURE_SOURCE: self._temp,
@@ -197,29 +201,31 @@ class ApparentTemperatureSensor(SensorEntity):
 
         return list(entities)
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Register callbacks."""
 
         # pylint: disable=unused-argument
         @callback
-        def sensor_state_listener(event: Event[EventStateChangedData]) -> None:
+        def sensor_state_listener(event: Event) -> None:  # noqa: ARG001
             """Handle device state changes."""
-            self.async_schedule_update_ha_state(True)
+            self.async_schedule_update_ha_state(force_refresh=True)
 
         # pylint: disable=unused-argument
         @callback
-        def sensor_startup(event):
+        def sensor_startup(event: Event) -> None:  # noqa: ARG001
             """Update entity on startup."""
             async_track_state_change_event(
                 self.hass, self._setup_sources(), sensor_state_listener
             )
 
-            self.async_schedule_update_ha_state(True)  # Force first update
+            self.async_schedule_update_ha_state(
+                force_refresh=True
+            )  # Force first update
 
         self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, sensor_startup)
 
     @staticmethod
-    def _has_state(state) -> bool:
+    def _has_state(state: str | None) -> bool:
         """Return True if state has any value."""
         return state is not None and state not in [
             STATE_UNKNOWN,
@@ -254,8 +260,8 @@ class ApparentTemperatureSensor(SensorEntity):
             temperature = TemperatureConverter.convert(
                 float(temperature), entity_unit, UnitOfTemperature.CELSIUS
             )
-        except ValueError as exc:
-            _LOGGER.error('Could not convert value "%s" to float: %s', state, exc)
+        except ValueError:
+            _LOGGER.exception('Could not convert value "%s" to float', state)
             return None
 
         return float(temperature)
@@ -304,13 +310,13 @@ class ApparentTemperatureSensor(SensorEntity):
             wind_speed = SpeedConverter.convert(
                 float(wind_speed), entity_unit, UnitOfSpeed.METERS_PER_SECOND
             )
-        except ValueError as exc:
-            _LOGGER.error('Could not convert value "%s" to float: %s', state, exc)
+        except ValueError:
+            _LOGGER.exception('Could not convert value "%s" to float', state)
             return None
 
         return float(wind_speed)
 
-    async def async_update(self):
+    async def async_update(self) -> None:
         """Update sensor state."""
         self._temp_val = temp = self._get_temperature(self._temp)  # °C
         self._humd_val = humd = self._get_humidity(self._humd)  # %

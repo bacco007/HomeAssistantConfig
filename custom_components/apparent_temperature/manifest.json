@@ -14,6 +14,8 @@
     "documentation": "https://github.com/Limych/ha-apparent-temperature",
     "iot_class": "calculated",
     "issue_tracker": "https://github.com/Limych/ha-temperature-feeling/issues",
-    "requirements": [],
-    "version": "1.1.0"
+    "requirements": [
+        "pip>=21.3.1"
+    ],
+    "version": "1.1.1"
 }
