@@ -333,7 +333,7 @@
     {%- set time = time | bool(true) -%}
     {%- set parts = [parts | int(1), always_show | count] | max -%} 
   {# create namespace to store debug data #}
-    {%- set ns = namespace(debug="") -%}
+    {%- set debug = namespace(debug="") -%}
   {# 1: check if date input is correct #}
     {%- if date is datetime and compare_date is datetime -%}
     {# convert date input to local or date only #}
@@ -469,7 +469,7 @@
           {# output result #}
             {%- set zero_values = output.items() | selectattr('1', 'eq', 0) | map(attribute='0') | list -%}
             {%- set reject_list = zero_values | reject('in', always_show) | list -%}
-            {{- dict(output.items() | selectattr('0', 'in', to_output) | rejectattr('0', 'in', reject_list), **dict(debug=ns.debug) if ns.debug else dict()) | default({always_return: 0}, true) | to_json-}}
+            {{- dict(output.items() | selectattr('0', 'in', to_output) | rejectattr('0', 'in', reject_list), **dict(debug=debug.debug) if debug.debug else dict()) | default({always_return: 0}, true) | to_json-}}
           {%- else -%} {{- dict(error='No time parts left to output') -}}
           {%- endif -%} {# 3 #}
       {%- endif -%} {# 2 #} 

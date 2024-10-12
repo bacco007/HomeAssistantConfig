@@ -18,3 +18,7 @@
   state_topic: "zigbee2mqtt/bridge/info"
   value_template: "{{ value_json.coordinator.meta.revision }}"
   icon: mdi:chip
+
+- name: "Zigbee2MQTT State"
+  state_topic: "zigbee2mqtt/bridge/state"
+  icon: mdi:router-wireless

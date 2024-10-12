@@ -1358,6 +1358,32 @@ sensor:
           {% endif %}
         {% endif %}
       provider: >
-        {{ state_attr('sensor.weather_uv_index', 'state_attr') }}
+        {{ state_attr('sensor.weather_uv_index', 'provider') }}
     availability: >
       {{ is_number(states('sensor.weather_uv_index')) }}
+
+  - name: "[Weather] Sunlight Percentage"
+    unique_id: weather_sunlight_percentage
+    icon: mdi:weather-sunny
+    device_class: illuminance
+    unit_of_measurement: "%"
+    state: >
+      {%- set elevation = state_attr('sun.sun','elevation') | float %}
+      {%- set cloud_coverage = states('sensor.weather_cloud_cover') | float %}
+      {%- set cloud_factor = (1 - (0.75 * ( cloud_coverage / 100) ** 3 )) %}
+      {%- set min_elevation = -6 %}
+      {%- set max_elevation = 90 %}
+      {%- set adjusted_elevation = elevation - min_elevation %}
+      {%- set adjusted_elevation = [adjusted_elevation,0] | max %}
+      {%- set adjusted_elevation = [adjusted_elevation,max_elevation - min_elevation] | min %}
+      {%- set adjusted_elevation = adjusted_elevation / (max_elevation - min_elevation) %}
+      {%- set adjusted_elevation = adjusted_elevation %}
+      {%- set adjusted_elevation = adjusted_elevation * 100 %}
+      {%- set brightness = adjusted_elevation * cloud_factor %}
+      {{ brightness | round }}
+    attributes:
+      category: weather
+      provider: >
+        {{ state_attr('sensor.weather_cloud_cover', 'provider') }}
+    availability: >
+      {{ is_number(states('sensor.weather_cloud_cover')) }}
