@@ -1,0 +1,114 @@
+---
+theme: geek_light
+title: Now Playing
+path: media
+type: custom:grid-layout
+layout:
+  grid-template-columns: calc( 100% - 8px )
+  grid-template-rows: auto
+  grid-template-areas: '"info"'
+  grid-column-gap: 16px
+  margin: 0 16px
+cards:
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        entity: media_player.currently_playing
+        color_type: card
+        size: 20px
+        show_state: true
+        show_label: true
+        show_icon: false
+        state_display: "[[[ return entity.attributes.media_title ]]]"
+        label: |-
+          [[[ if (entity.attributes.media_content_type == "music") {
+              return entity.attributes.media_album_name + "<br><span style='font-weight: 500;'>" + entity.attributes.media_artist + "</span>"
+            } else if (entity.attributes.media_content_type == "tvshow") {
+              return entity.attributes.media_series_title
+            }
+          ]]]
+        custom_fields:
+          picture: " "
+          space: " "
+        color: transparent
+        styles:
+          card:
+            - aspect-ratio: 5/2
+            - padding: 16px
+            - box-shadow: none
+            - background: |
+                [[[
+                  if (states['media_player.currently_playing'].state == 'playing')
+                    return `linear-gradient(135deg, rgba(states['sensor.dark_vibrant_color'], 0.3), rgba(states['sensor.dark_muted_color'] }}, 0.3))`;
+                  return `var(--sidebar-background-color)`;
+                ]]]
+          grid:
+            - grid-template-areas: |
+                "picture space"
+                "picture n"
+                "picture s"
+                "picture l"
+            - grid-template-columns: calc( 40% - 16px ) 1fr
+            - grid-template-rows: 1fr min-content min-content min-content
+          name:
+            - font-size: 12pt
+            - font-weight: 500
+            - letter-spacing: .05em
+            - padding: 16px 0 8px 0
+            - white-space: normal
+            - text-align: left
+            - justify-self: start
+            - align-self: end
+            - text-transform: uppercase
+            - opacity: 0.67
+          state:
+            - font-size: 48pt
+            - justify-self: start
+            - padding: 0 0 8px 0
+            - font-weight: 500
+            - align-self: start
+            - text-overflow: clip
+            - white-space: normal
+            - line-height: 1.1
+            - text-align: left
+          label:
+            - font-size: 24pt
+            - justify-self: start
+            - padding: 0 0 32px 0
+            - align-self: start
+            - white-space: normal
+            - text-align: left
+            - height: 100%
+          custom_fields:
+            picture:
+              - background: |-
+                  [[[ 
+                    if (entity.attributes.entity_picture != '') {
+                      return "url(" + entity.attributes.entity_picture + ")"
+                    } else if (entity.attributes.entity_picture_local != '') {
+                      return "url(" + entity.attributes.entity_picture_local + ")"
+                    }
+                  ]]]
+              - background-size: cover
+              - xbackground-position: center center
+              - height: calc( 100% - 32px )
+              - aspect-ratio: 1/1
+              - position: relative
+              - xwidth: 100%
+      - type: media-control
+        entity: media_player.currently_playing
+        card_mod:
+          style: >
+            ha-card { background: none; box-shadow: none; }
+
+            .media-info, .top-info, .background { display: none !important; }
+
+            .title-controls { padding: 0 !important; }
+
+            .player { padding-top: 0 !important; color: rgb(255,255,255)
+            !important;} mwc-linear-progress { --mdc-theme-primary: inherit
+            !important; }
+    card_mod:
+      style: |
+        ha-card {background: red;}
+icon: mdi:music-circle

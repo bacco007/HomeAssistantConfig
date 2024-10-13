@@ -1,167 +1,89 @@
 ---
-type: custom:paper-buttons-row
-styles:
-  justify-content: space-between
-  background: none
-  # margin: 24px 20px 16px
-  margin-left: 10px
-  margin-right: 10px
-  text-shadow: 0px 0px 20px var(--card-background-color);
-buttons:
-  - layout: name_state
-    name: '{{ state_attr(''sensor.helper_date'', "date_long") }}'
-    state: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
-    styles:
-      name:
-        font-weight: 400
-        font-size: 16px
-        margin-left: 0
-        display: block
-        text-align: left
-        float: left
-        width: 200px
-        color: "#BAC0C6"
-      button:
-        pointer-events: none
-        align-items: left
-        width: 200px
-        line-height: 1.6em
-        color: "#BAC0C6"
-      state:
-        font-weight: 700
-        font-size: 26px
-        letter-spacing: "-1px"
-        margin-left: 0
-        display: block
-        text-align: left
-        float: left
-        width: 200px
-        color: "#BAC0C6"
-  - layout: name_state
-    name: London
-    state: "{{states('sensor.time_london')}}"
-    styles:
-      name:
-        font-weight: 400
-        font-size: 16px
-        margin-left: 0
-        display: block
-        text-align: center
-        float: left
-        width: 300px
-        color: "#BAC0C6"
-      button:
-        pointer-events: none
-        align-items: center
-        width: 300px
-        line-height: 1.6em
-        color: "#BAC0C6"
-      state:
-        font-weight: 700
-        font-size: 26px
-        letter-spacing: "-1px"
-        margin-left: 0
-        display: block
-        text-align: center
-        float: left
-        width: 300px
-        color: "#BAC0C6"
-  - layout: name_state
-    name: New York
-    state: "{{states('sensor.time_new_york')}}"
-    styles:
-      name:
-        font-weight: 400
-        font-size: 16px
-        margin-left: 0
-        display: block
-        text-align: center
-        float: left
-        width: 300px
-        color: "#BAC0C6"
-      button:
-        pointer-events: none
-        align-items: center
-        width: 300px
-        line-height: 1.6em
-        color: "#BAC0C6"
-      state:
-        font-weight: 700
-        font-size: 26px
-        letter-spacing: "-1px"
-        margin-left: 0
-        display: block
-        text-align: center
-        float: left
-        width: 300px
-        color: "#BAC0C6"
-  - layout: icon|name_state
-    name: 🌧️ {{ states('sensor.weather_precipitation_today') }}mm
-    state: >-
-      {{ states('sensor.weather_temperature') | round(1) }}°C
-    image: |
-      {% set mapper =
-        { 'breezy':'cloudy',
-          'clear-night':'night',
-          'clear':'day',
-          'mostly-clear':'day',
-          'clear-day':'day',
-          'cloudy':'cloudy',
-          'fog':'fog',
-          'hail':'rainy-7',
-          'haze':'haze',
-          'lightning':'thunder',
-          'mostly-cloudy':'cloudy',
-          'partlycloudy':'cloudy-day-3',
-          'partly-cloudy-day':'partly-cloudy-day',
-          'partly-cloudy-night':'partly-cloudy-night',
-          'rain':'rainy-4',
-          'scattered-showers':'rainy-3',
-          'showers':'rainy-6',
-          'sleet':'sleet',
-          'snow':'snowy-6',
-          'mostly-sunny':'day',
-          'sunny':'day',
-          'thunderstorm':'thunder',
-          'tornado':'tornado',
-          'wind':'wind',
-          'windy':'wind'} %}
-      {% set state = states('weather.weatherflow_forecast_brisbane_st') %}
-      {% set weather = mapper[state] if state in mapper else 'weather' %}
-      {% set path = '/local/icons/weather_icons/static/' %}
-      {% set ext = '.svg'%}
-        {{[path,weather,ext]|join('')}}
-    styles:
-      name:
-        font-weight: 400
-        font-size: 16px
-        margin-left: 0
-        display: block
-        text-align: right
-        width: 140px
-        color: "#BAC0C6"
-      button:
-        pointer-events: none
-        align-items: right
-        width: 140px
-        line-height: 1.6em
-        color: "#BAC0C6"
-      state:
-        font-weight: 600
-        font-size: 26px
-        letter-spacing: "-1px"
-        margin-left: 0
-        display: block
-        text-align: right
-        width: 140px
-        color: "#BAC0C6"
-      icon:
-        position: absolute
-        left: 2px
-        transform: scale(0.17)
-        transform-origin: 0 19.5%
-        top: "-48px;"
-        padding: 0;
-        height: 380px !important;
-        width: 380px !important;
-        color: "#BAC0C6"
+type: custom:layout-card
+layout_type: custom:grid-layout
+layout:
+  grid-template-columns: 50% auto 30%
+  grid-template-rows: auto;
+  grid-template-areas: |
+    "left cente right"
+cards:
+  - type: custom:better-moment-card
+    view_layout:
+      grid-area: left
+    card_mod:
+      style: |
+        ha-card {
+          background-color: var(--background-color);
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+    parentStyle: |
+      line-height:normal;
+      padding:0em;
+      background-color:transparent !important;
+      border: none !important;
+      display: grid;
+      grid-template-columns: 40% 20% 20% 20%;
+      grid-template-rows: auto;
+      grid-gap: 0px;
+      align-items: center;
+      justify-items: center;
+      grid-template-areas:
+        'time slot1 slot2 slot3'
+        'date slot1 slot2 slot3'
+    moment:
+      - format: HH:mm
+        parentStyle: |
+          font-size:2em;
+          text-align:center;
+          font-weight:600;
+          grid-area: time;
+      - format: dddd, DD MMMM YYYY
+        parentStyle: |
+          margin-top: -5px;
+          font-size:1.2em;
+          text-align:center;
+          grid-area: date;
+      - format: HH:mm ddd
+        timezone: America/New_York
+        parentStyle: |
+          font-size: 1.1em;
+          text-align:center;
+          grid-area: slot1;
+        template: |
+          <strong>🇺🇸 West</strong><div>{{moment}}</div>
+      - format: HH:mm ddd
+        timezone: America/Los_Angeles
+        parentStyle: |
+          font-size: 1.1em;
+          text-align:center;
+          grid-area: slot2;
+        template: |
+          <strong>🇺🇸 East</strong><div>{{moment}}</div>
+      - format: HH:mm ddd
+        timezone: Europe/London
+        parentStyle: |
+          font-size: 1.1em;
+          text-align:center;
+          grid-area: slot3;
+        template: |
+          <strong>🇬🇧 London</strong><div>{{moment}}</div>
+  - type: custom:simple-weather-card
+    view_layout:
+      grid-area: right
+    entity: weather.weather_home_hourly
+    name: at Home
+    custom:
+      - temp: sensor.weather_temperature
+      - high: sensor.weather_high_temperature
+      - low: sensor.weather_low_temperature
+      - precipitation: sensor.weather_precipitation_today
+      - precipitation_probability: sensor.weather_precipitation_probability
+      - humidity: sensor.weather_humidity
+    card_mod:
+      style: |
+        ha-card {
+          background-color: var(--background-color);
+          box-shadow: none !important;
+        }

@@ -6,3 +6,4 @@ apexcharts_card_templates: !include_dir_merge_named /config/ui/templates/apexcha
 streamline_templates: !include_dir_merge_named /config/ui/templates/streamline
 views:
   - !include /config/ui/dashboards/kiosk/views/1_home.yaml
+  - !include /config/ui/dashboards/kiosk/views/2_currentlyplaying.yaml
