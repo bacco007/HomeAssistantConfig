@@ -7,11 +7,13 @@ import math
 def cubic_interp(x0, x, y):
     """Build a cubic spline.
 
-    x0: Array of floats to interpolate at
-    x : Array of floats in increasing order
-    y : Array of floats to interpolate
+    Arguments:
+        x0 (list): List of floats to interpolate at
+        x (list): List of floats in increasing order
+        y (list): List of floats to interpolate
 
-    Returns array of interpolated values.
+    Returns:
+        list: Array of interpolated values.
     """
     def diff(lst): # numpy-like diff
         size = len(lst) - 1

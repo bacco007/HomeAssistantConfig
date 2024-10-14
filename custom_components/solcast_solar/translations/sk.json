@@ -7,9 +7,10 @@
             "user": {
                 "data": {
                     "api_key": "Kľúč API (viac hodnôt oddelených čiarkou)",
-                    "api_quota": "Kvóta rozhrania API (voliteľne čiarkou oddelené viaceré hodnoty pre každý kľúč)"
+                    "api_quota": "Kvóta rozhrania API (voliteľne čiarkou oddelené viaceré hodnoty pre každý kľúč)",
+                    "auto_update": "Automatická aktualizácia"
                 },
-                "description": "Podrobnosti o účte Solcast"
+                "description": "Podrobnosti o účte Solcast\n\n(Ak nie je automatická aktualizácia, potom je potrebná automatizácia – pozrite si integračnú dokumentáciu)"
             }
         }
     },
@@ -19,14 +20,20 @@
                 "data": {
                     "api_key": "Kľúč API (viac hodnôt oddelených čiarkou)",
                     "api_quota": "Kvóta rozhrania API (voliteľne čiarkou oddelené viaceré hodnoty pre každý kľúč)",
+                    "auto_update": "Automatická aktualizácia (ak nie je automatická aktualizácia, musíte namiesto nej použiť automatizáciu)",
                     "customhoursensor": "Vlastný senzor ďalších X hodín (min=1, max=144)",
+                    "hard_limit": "Pevný limit meniča vo wattoch (pozri integračnú dokumentáciu)",
+                    "key_estimate": "Preferovaná pravdepodobnosť použitia pre senzory",
                     "attr_brk_estimate10": "Povoliť odhad 10 atribútov senzora",
                     "attr_brk_estimate": "Povoliť odhad 50 atribútov senzora",
                     "attr_brk_estimate90": "Povoliť odhad 90 atribútov senzora",
                     "attr_brk_site": "Povoliť atribúty senzora rozdelenia stránok",
                     "attr_brk_halfhourly": "Povoliť polhodinové podrobné atribúty prognózy",
                     "attr_brk_hourly": "Povoliť hodinové podrobné atribúty prognózy",
-                    "config_damp": "Upravte hodinové faktory tlmenia (po kliknutí na odoslať)"
+                    "attr_brk_detailed": "Povoliť rozdelenie stránok pre polhodinové/hodinové atribúty podrobností (tieto sa neuložia do atribútov stavu databázy)",
+                    "config_damp": "Upravte hodinové faktory tlmenia (po kliknutí na odoslať)",
+                    "site_damp": "Granulované tlmenie je nastavené: Clear pre návrat k celkovému hodinovému tlmeniu"
+
                 },
                 "description": "Solcast možnosti konfigurácie"
             },
@@ -72,15 +79,35 @@
             "rooftop_site_count": "Počet miest na streche"
         }
     },
+    "selector": {
+        "auto_update": {
+            "options": {
+                "0": "Žiadna automatická aktualizácia predpovedí",
+                "1": "Automatická aktualizácia predpovedí od východu do západu slnka",
+                "2": "Automatická aktualizácia predpovedí počas 24 hodín"
+            }
+        },
+        "key_estimate": {
+            "options": {
+                "estimate": "Stredná očakávaná generácia (estimate)",
+                "estimate10": "10. percentil očakávanej generácie (dolný koniec možných výsledkov, estimate10)",
+                "estimate90": "90. percentil očakávanej generácie (horný koniec možných výsledkov, estimate90)"
+            }
+        }
+    },
     "services": {
         "update_forecasts": {
             "name": "Aktualizácia",
             "description": "Načítava najnovšie predpovede zo Solcastu."
-            },
+        },
+        "force_update_forecasts": {
+            "name": "Vynútiť Aktualizácia",
+            "description": "Force načítava najnovšie predpovede zo Solcastu."
+        },
         "clear_all_solcast_data": {
             "name": "Vymažte všetky uložené údaje Solcast",
             "description": "Odstráni súbor solcast.json a odstráni všetky aktuálne údaje lokality solcast."
-            },
+        },
         "query_forecast_data": {
             "name": "Dopytujte údaje predpovede",
             "description": "Vráti množinu údajov alebo hodnotu pre daný dotaz.",
@@ -92,18 +119,55 @@
                 "end_date_time": {
                     "name": "Dátum ukončenia čas",
                     "description": "Dopytujte udalosti predpovede údajov o aktuálnom čase."
+                },
+                "undampened": {
+                    "name": "Netlmené",
+                    "description": "Voliteľná booleovská hodnota na získanie netlmenej predpovede"
+                },
+                "site": {
+                    "name": "ID lokality",
+                    "description": "Voliteľná lokalita na získanie prognózy jednej lokality"
                 }
             }
         },
+        "get_dampening": {
+            "name": "Získajte tlmenie predpovedí",
+            "description": "Získajte predpovedané tlmiace faktory.",
+            "fields": {
+                "site": {
+                    "name": "ID lokality",
+                    "description": "Voliteľné miesto na tlmenie. (Poznámka: Nebude fungovať, ak nie je povolené granulárne tlmenie.)"
+                }
+            }
+
+        },
         "set_dampening": {
             "name": "Nastavte tlmenie predpovedí",
-            "description": "Nastavte hodinový faktor tlmenia predpovede.",
+            "description": "Nastavte faktory tlmenia prognózy.",
             "fields": {
                 "damp_factor": {
                     "name": "Tlmiaci reťazec",
-                    "description": "Reťazec hodnôt hodinového faktora tlmenia oddelený čiarkou."
+                    "description": "Reťazec hodnôt tlmiaceho faktora oddelený čiarkou (24 alebo 48 hodnôt)."
+                },
+                "site": {
+                    "name": "ID lokality",
+                    "description": "Voliteľné miesto na nastavenie tlmenia na mieste. (Poznámka: Vynechaním lokality sa vymaže tlmenie pre jednotlivé lokality, pokiaľ nie sú hodnoty 48.)"
                 }
             }
+        },
+        "set_hard_limit": {
+            "name": "Nastavte pevný limit predpovede meniča",
+            "description": "Zabráňte tomu, aby boli predpovedané hodnoty vyššie, ako dokáže menič produkovať.",
+            "fields": {
+                "hard_limit": {
+                    "name": "Limitná hodnota vo wattoch",
+                    "description": "Nastavte maximálnu hodnotu vo wattoch, ktorú môže menič produkovať."
+                }
+            }
+        },
+        "remove_hard_limit": {
+            "name": "Odstráňte pevný limit predpovede meniča",
+            "description": "Odstráňte nastavený limit."
         }
     },
     "entity": {
@@ -116,21 +180,62 @@
             "forecast_this_hour": {"name": "Predpoveď túto hodinu"},
             "get_remaining_today": {"name": "Predpoveď zostávajúca dnes"},
             "forecast_next_hour": {"name": "Predpoveď ďalšie hodina"},
+            "forecast_custom_hours": {"name": "Predpoveď najbližších X hodín"},
             "total_kwh_forecast_tomorrow": {"name": "Prepoveď zajtra"},
             "peak_w_tomorrow": {"name": "Predpoveď špička zajtra"},
             "peak_w_time_tomorrow": {"name": "Čas špičky zajtra"},
             "api_counter": {"name": "Použité API"},
-            "api_limit": {"name": "API Limit"},
-            "lastupdated": {"name": "API Last Polled"},
+            "api_limit": {"name": "Limit API"},
+            "lastupdated": {"name": "API naposledy dotazované"},
             "total_kwh_forecast_d3": {"name": "Predpoveď deň 3"},
             "total_kwh_forecast_d4": {"name": "Prepoveď deň 4"},
             "total_kwh_forecast_d5": {"name": "Predpoveď deň 5"},
             "total_kwh_forecast_d6": {"name": "Predpoveď deň 6"},
             "total_kwh_forecast_d7": {"name": "Predpoveď deň 7"},
-            "power_now": {"name": "Výkon teraz"}
+            "power_now": {"name": "Výkon teraz"},
+            "weather_description": {"name": "Počasie"},
+            "hard_limit": {"name": "Tvrdý limit nastavený"}
         },
         "select": {
             "estimate_mode" : {"name": "Použiť pole predpovede"}
+        }
+    },
+    "exceptions": {
+        "auto_use_force": {
+            "message": "Automatická aktualizácia je povolená, pri aktualizácii prognózy sa ignoruje udalosť služby, namiesto toho použite vynútenie aktualizácie."
+        },
+        "auto_use_normal": {
+            "message": "Automatická aktualizácia nie je povolená, pri vynútenej aktualizácii prognózy ignorujete udalosť služby, namiesto toho použite Aktualizovať."
+        },
+        "damp_not_for_site": {
+            "message": "Tlmenie stránok nie je nastavené pre {site}."
+        },
+        "damp_use_all": {
+            "message": "Tlmenie stránky nie je nastavené pre {site}, 'all' je jediný dostupný parameter stránky pre servisné volanie."
+        },
+        "damp_no_factors": {
+            "message": "Žiadne tlmiace faktory, musí to byť čiarkami oddelený zoznam čísel medzi 0,0 a 1,0."
+        },
+        "damp_count_not_correct": {
+            "message": "Medzi 0,0 a 1,0 nie je 24 alebo 48 čiarkami oddelených čísel."
+        },
+        "damp_no_all_24": {
+            "message": "Zadanie stránky „všetky“ nie je povolené s 24 faktormi, odstráňte stránku zo žiadosti."
+        },
+        "damp_not_site": {
+            "message": "Nie je to nakonfigurovaná lokalita."
+        },
+        "damp_error_parsing": {
+            "message": "Chyba pri analýze tlmiaceho faktora oddelených čiarkami."
+        },
+        "damp_ouside_range": {
+            "message": "Prítomná hodnota faktora tlmenia, ktorá nie je medzi 0,0 a 1,0."
+        },
+        "hard_empty": {
+            "message": "Prázdna hodnota pevného limitu."
+        },
+        "hard_not_positive_number": {
+            "message": "Hodnota pevného limitu nie je kladné číslo."
         }
     }
 }

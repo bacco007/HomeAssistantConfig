@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components import system_health
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.components import system_health # type: ignore
+from homeassistant.core import HomeAssistant, callback # type: ignore
 
 from .const import DOMAIN, SOLCAST_URL
 from .coordinator import SolcastUpdateCoordinator

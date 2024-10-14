@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_API_KEY
-from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry # type: ignore
+from homeassistant.const import CONF_API_KEY # type: ignore
+from homeassistant.core import HomeAssistant # type: ignore
 
 from .const import DOMAIN
 from .coordinator import SolcastUpdateCoordinator
@@ -19,10 +19,18 @@ TO_REDACT = [
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, config_entry: ConfigEntry
+    hass: HomeAssistant, entry: ConfigEntry
 ) -> dict[str, Any]:
-    """Return diagnostics for a config entry."""
-    coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    """Return diagnostics for a config entry.
+
+    Args:
+        hass (HomeAssistant): The Home Assistant instance.
+        entry (ConfigEntry): The integration entry instance, provides access to the coordinator.
+
+    Returns:
+        dict[str, Any]: Diagnostic details to include in a download file.
+    """
+    coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     return {
         "tz_conversion": coordinator.solcast.options.tz,
@@ -31,6 +39,5 @@ async def async_get_config_entry_diagnostics(
         "rooftop_site_count": len(coordinator.solcast.sites),
         "forecast_hard_limit_set": coordinator.solcast.hard_limit < 100,
         "data": (coordinator.data, TO_REDACT),
-        "energy_history_graph": coordinator.get_previousenergy(),
         "energy_forecasts_graph": coordinator.solcast.get_energy_data()["wh_hours"],
     }
