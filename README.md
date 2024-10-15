@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.10.2 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 93 |
-| No. Entities | 6153 |
-| No. Sensors | 3976 |
+| No. Entities | 5950 |
+| No. Sensors | 3878 |
 | No. Automations | 153 |
 
 <details>
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 497
+Binary sensors | 399
 Buttons | 208
 Calendars | 84
 Cameras | 6
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 685
+Devices | 587
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 39
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 6
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 3976
+Sensors | 3878
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -856,7 +856,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.1-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2024.29.07] | Fully customizable date/time card for Lovelace |
+| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2024.29.07] | Show the current date/time how you want in Home Assistant. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
 | [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.0-beta.2] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
@@ -879,7 +879,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.7] | Present the data of Formula One in a pretty way |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  | Heatmap custom card for Home Assistant |
 | [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card) |  [v1.1.0] | Sun Card successor: Visualize the position of the Sun over the horizon. |
-| [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.3.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
+| [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.4.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.2.0] | 🙈 Hides the Home Assistant header and/or sidebar |
@@ -954,7 +954,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | SunGather | 0.1.4 |  | 7b536ee6 |
 | Zigbee2MQTT | 1.40.2-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
-| ZigStar TI CC2652P/P7 FW Flasher | 0.4.0 |  | 193f5383 |
+| ZigStar TI CC2652P/P7 FW Flasher | 0.4.1 |  | 193f5383 |
 </details>
 
 
