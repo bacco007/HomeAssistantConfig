@@ -108,11 +108,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id][COORDINATOR] = coordinator
 
-    for platform in PLATFORMS:
-        coordinator.platforms.append(platform)
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     # add update listener if not already added.
     # if weakref.ref(async_reload_entry) not in entry.update_listeners:
