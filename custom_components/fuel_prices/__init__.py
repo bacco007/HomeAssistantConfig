@@ -1,6 +1,5 @@
 """Fuel Prices integration."""
 
-import contextlib
 import logging
 
 from datetime import timedelta
@@ -30,18 +29,19 @@ from homeassistant.exceptions import HomeAssistantError
 from .const import DOMAIN, CONF_AREAS, CONF_SOURCES, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSORS_COUNT, CONF_CHEAPEST_SENSORS_FUEL_TYPE
 from .coordinator import FuelPricesCoordinator
 
-type FuelPricesConfigEntry = ConfigEntry[FuelPricesConfig]
-
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.SENSOR]
 
 
 @dataclass
 class FuelPricesConfig:
-    """Represent a config for Anglian Water."""
+    """Represent a Fuel Price Config."""
 
     coordinator: FuelPricesCoordinator
     areas: list[dict]
+
+
+type FuelPricesConfigEntry = ConfigEntry[FuelPricesConfig]
 
 
 def _build_configured_areas(hass_areas: dict) -> list[dict]:

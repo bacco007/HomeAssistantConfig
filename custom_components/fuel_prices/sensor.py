@@ -11,14 +11,12 @@ from datetime import datetime, timedelta
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS, CONF_NAME, STATE_UNKNOWN
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from pyfuelprices.const import PROP_FUEL_LOCATION_SOURCE
 from . import FuelPricesConfigEntry
-from .const import CONF_AREAS, DOMAIN, CONF_STATE_VALUE, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSORS_COUNT, CONF_CHEAPEST_SENSORS_FUEL_TYPE
+from .const import CONF_STATE_VALUE, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSORS_COUNT, CONF_CHEAPEST_SENSORS_FUEL_TYPE
 from .entity import FuelStationEntity, CheapestFuelEntity
-from .coordinator import FuelPricesCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -10,10 +10,12 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/pantherale0/ha-fuelprices/issues",
   "requirements": [
+    "xmltodict",
+    "brotli",
     "these-united-states==1.1.0.21",
-    "pyfuelprices==2.6.4"
+    "pyfuelprices==2024.10.1"
   ],
   "ssdp": [],
-  "version": "2024.7.2",
+  "version": "2024.10.0",
   "zeroconf": []
 }

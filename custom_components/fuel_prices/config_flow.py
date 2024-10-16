@@ -2,7 +2,6 @@
 
 import logging
 from typing import Any
-from homeassistant.config_entries import ConfigEntry, OptionsFlow
 
 from pyfuelprices.sources.mapping import SOURCE_MAP, COUNTRY_MAP
 import voluptuous as vol
