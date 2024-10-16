@@ -693,6 +693,8 @@
       'today': 'hoy',
       'tomorrow': 'mañana',
       'yesterday': 'ayer',
+      'next': 'el próximo',
+      'last': 'el pasado',
     },
     'days':[
       'lunes',
@@ -711,12 +713,26 @@
       'mayo',
       'junio',
       'julio',
-      'agosto'
+      'agosto',
       'septiembre',
       'octubre',
       'noviembre',
       'diciembre'
-    ]
+    ],
+    'time_of_hour':{
+      0: '{hour} en punto',
+      1: '{hour} y un minuto',
+      15: '{hour} y quarto',
+      30: '{hour} y media',
+      45: '{hour} menos quarto',
+      59: '{hour} menos uno',
+      'past_hour': '{hour} y {minute}',
+      'to_hour': '{hour} menos {minute}', 
+    },
+    'time_of_day':{
+      'midnight': 'medianoche',
+      'noon': 'mediodía',
+    },
   },
   'it':{
     '_language': 'Italiano',
@@ -1406,9 +1422,12 @@
 {%- if uptime %}
   {%- set value = _delta_seconds(now(), uptime) | int %}
   {%- set seconds = value | abs %}
-  {%- set future = value / seconds > 0 %}
+  {%- set current = value == 0 %}
+  {%- set future = not current and value / seconds > 0 %}
   {%- set items = _just_time(seconds, language, values, biggest, short=short, floor=floor) %}
-  {%- if future %}
+  {%- if current %}
+    {{- items }}
+  {%- elif future %}
     {{- translate('in', language=language) }} {{ items }}
   {%- else %}
     {%- set t = translate('ago', language=language) %}
