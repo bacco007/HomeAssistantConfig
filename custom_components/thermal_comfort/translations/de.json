@@ -112,7 +112,7 @@
           "outside_calculable_range": "Außerhalb des berechenbaren Bereichs",
           "comfortable": "Angenehm",
           "slightly_uncomfortable": "Leicht unangenehm",
-          "moderatly_uncomfortable": "Unangenehm",
+          "moderately_uncomfortable": "Unangenehm",
           "highly_uncomfortable": "Sehr unangenehm"
         }
       },
@@ -122,9 +122,12 @@
           "outside_calculable_range": "Außerhalb des berechenbaren Bereichs",
           "comfortable": "Angenehm",
           "slightly_uncomfortable": "Leicht unangenehm",
-          "moderatly_uncomfortable": "Unangenehm",
+          "moderately_uncomfortable": "Unangenehm",
           "highly_uncomfortable": "Sehr unangenehm"
         }
+      },
+      "summer_simmer_index": {
+        "name": "Summer Simmer Index"
       },
       "summer_simmer_perception": {
         "name": "Sommer Simmer gefühlt",
