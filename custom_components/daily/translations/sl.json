@@ -1,0 +1,61 @@
+{
+  "title": "Dnevni senzor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Dnevni senzor",
+        "description": "If you need help with the configuration, please see https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unikatno ime senzorja",
+          "sensor": "Entiteta, ki bo uporabljena za izračun dnevnega senzorja",
+          "operation": "Operacija, ki se bo izvedla",
+          "unit_of_measurement": "Enota meritve",
+          "interval": "Interval osvežitve v sekundah",
+          "auto_reset": "Samodejno ponastavi ob 00:00"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Navedeni interval ni veljaven, mora biti >0 sekund.",
+      "name": "Vpišite unikatno ime za novi senzor.",
+      "operationnotfound": "Izberite podprto operacijo",
+      "sensornotfound": "Eden ali več navedenih senzorjev ne obstaja",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dnevni senzor",
+        "description": "Če potrebujete pomoč pri konfiguraciji obiščite https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unikatno ime senzorja",
+          "sensor": "Entiteta, ki bo uporabljena za izračun dnevnega senzorja",
+          "operation": "Operacija, ki se bo izvedla",
+          "unit_of_measurement": "Enota meritve",
+          "interval": "Interval osvežitve v sekundah",
+          "auto_reset": "Samodejno ponastavi ob 00:00"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Navedeni interval ni veljaven, mora biti >0 sekund.",
+      "name": "Vpišite unikatno ime za novi senzor.",
+      "operationnotfound": "Izberite podprto operacijo",
+      "sensornotfound": "Eden ali več navedenih senzorjev ne obstaja",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "services": {
+    "reset": {
+      "name": "Resetiraj",
+      "description": "Resetiraj vrednost na 'neznano'"
+    },
+    "update": {
+      "name": "Posodobi",
+      "description": "Posodobi dnevni senzor"
+    }
+  }
+}
