@@ -812,7 +812,7 @@ function tA(e,t,A){return e?t(e):A?.(e)}e([le()],eA.prototype,"configArea",void 
             </div>
           `))}
       </mwc-list-item>
-    `}renderIcons(e){const t=e.length;if(1===t)return j`<ha-icon .icon=${e[0]}></ha-icon>`;const A=e.slice(0,4);return j` <div class="icons">
+    `}renderIcons(e){const t=e.length;if(1===t)return j`<ha-icon .icon=${e[0]}></ha-icon>`;const A=e.slice(0,4);return j` <div class="icons" ?empty=${0===t}>
       ${A.map(((e,A)=>A<3||4===t?j` <ha-icon class="small" .icon=${e}></ha-icon>`:j`<span>+${t-3}</span>`))}
     </div>`}connectedCallback(){super.connectedCallback(),this.dispatchEntityIdEvent()}handleGroupClicked(){if(!this.selected){this.selected=!0;const e=window.location.href.replace(/#.*/g,"");window.location.replace(`${e}#${this.player.id}`),this.dispatchEntityIdEvent()}}static get styles(){return r`
       @keyframes sound {
@@ -864,6 +864,11 @@ function tA(e,t,A){return e?t(e):A?.(e)}e([le()],eA.prototype,"configArea",void 
         margin: 0;
         min-width: 5rem;
         max-width: 5rem;
+      }
+
+      .icons[empty] {
+        min-width: 1rem;
+        max-width: 1rem;
       }
 
       ha-icon {
