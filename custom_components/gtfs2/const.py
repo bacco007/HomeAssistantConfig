@@ -48,6 +48,8 @@ ATTR_TIMEPOINT_ORIGIN = "origin_stop_timepoint_exact"
 ATTR_WHEELCHAIR = "trip_wheelchair_access_available"
 ATTR_WHEELCHAIR_DESTINATION = "destination_station_wheelchair_boarding_available"
 ATTR_WHEELCHAIR_ORIGIN = "origin_station_wheelchair_boarding_available"
+ATTR_TIMEZONE_ORIGIN = "origin_station_time_zone"
+ATTR_TIMEZONE_DESTINATION = "destination_station_time_zone"
 
 #gtfs_rt
 ATTR_STOP_ID = "Stop ID"

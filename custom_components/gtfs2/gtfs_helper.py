@@ -46,11 +46,7 @@ def get_next_departure(self):
         return {}
 
     """Get next departures from data."""
-    if self.hass.config.time_zone is None:
-        _LOGGER.error("Timezone is not set in Home Assistant configuration")
-        timezone = "UTC"
-    else:
-        timezone=dt_util.get_time_zone(self.hass.config.time_zone)
+
     schedule = self._data["schedule"]
     route_type = self._data["route_type"]
     
@@ -99,6 +95,7 @@ def get_next_departure(self):
         route.route_long_name,route.route_short_name,
         	   start_station.stop_id as origin_stop_id,
                start_station.stop_name as origin_stop_name,
+               start_station.stop_timezone as origin_stop_timezone,
                time(origin_stop_time.arrival_time) AS origin_arrival_time,
                time(origin_stop_time.departure_time) AS origin_depart_time,
                date(origin_stop_time.departure_time) AS origin_depart_date,
@@ -109,6 +106,7 @@ def get_next_departure(self):
                origin_stop_time.stop_sequence AS origin_stop_sequence,
                origin_stop_time.timepoint AS origin_stop_timepoint,
                end_station.stop_name as dest_stop_name,
+               end_station.stop_timezone as dest_stop_timezone,
                time(destination_stop_time.arrival_time) AS dest_arrival_time,
                time(destination_stop_time.departure_time) AS dest_depart_time,
                destination_stop_time.drop_off_type AS dest_drop_off_type,
@@ -149,6 +147,7 @@ def get_next_departure(self):
                route.route_long_name,route.route_short_name,
                start_station.stop_id as origin_stop_id,
                start_station.stop_name as origin_stop_name,
+               start_station.stop_timezone as origin_stop_timezone,
                time(origin_stop_time.arrival_time) AS origin_arrival_time,
                time(origin_stop_time.departure_time) AS origin_depart_time,
                date(origin_stop_time.departure_time) AS origin_depart_date,
@@ -159,6 +158,7 @@ def get_next_departure(self):
                origin_stop_time.stop_sequence AS origin_stop_sequence,
                origin_stop_time.timepoint AS origin_stop_timepoint,
                end_station.stop_name as dest_stop_name,
+               end_station.stop_timezone as dest_stop_timezone,
                time(destination_stop_time.arrival_time) AS dest_arrival_time,
                time(destination_stop_time.departure_time) AS dest_depart_time,
                destination_stop_time.drop_off_type AS dest_drop_off_type,
@@ -329,8 +329,30 @@ def get_next_departure(self):
         f"{dest_depart.strftime(dt_util.DATE_STR_FORMAT)} {item['dest_depart_time']}"
     )
     # align on timezone
+    if self.hass.config.time_zone is None:
+        _LOGGER.error("Timezone is not set in Home Assistant configuration")
+        timezone = "UTC"
+    else:
+        timezone = dt_util.get_time_zone(self.hass.config.time_zone)
+        _LOGGER.debug("Timezone HA: %s",timezone)
+    _LOGGER.debug("Default timezone: %s",timezone)
+    _LOGGER.debug("Origin stop timezone: %s",item["origin_stop_timezone"])
+    _LOGGER.debug("Dest stop timezone: %s",item["dest_stop_timezone"])
+    if item["origin_stop_timezone"] is not None:    
+        _LOGGER.debug("Setting Orig TZ based on origin stop: %s",item["origin_stop_timezone"])
+        timezone = dt_util.get_time_zone(item["origin_stop_timezone"])
+    if item["dest_stop_timezone"] is not None:
+        _LOGGER.debug("Setting Dest TZ based on dest stop: %s",item["dest_stop_timezone"])
+        timezone_dest = dt_util.get_time_zone(item["dest_stop_timezone"])  
+    else:
+        timezone_dest = timezone
+    
+    _LOGGER.debug("Used orig timezone: %s",timezone)
+    _LOGGER.debug("Used dest timezone: %s",timezone_dest)    
+
+    
     depart_time = dt_util.parse_datetime(origin_depart_time).replace(tzinfo=timezone)    
-    arrival_time = dt_util.parse_datetime(dest_arrival_time).replace(tzinfo=timezone)
+    arrival_time = dt_util.parse_datetime(dest_arrival_time).replace(tzinfo=timezone_dest)
     origin_arrival_time = dt_util.as_utc(datetime.datetime.strptime(origin_arrival_time, "%Y-%m-%d %H:%M:%S")).isoformat()
     origin_depart_time = dt_util.as_utc(datetime.datetime.strptime(origin_depart_time, "%Y-%m-%d %H:%M:%S")).isoformat()
     dest_arrival_time = dt_util.as_utc(datetime.datetime.strptime(dest_arrival_time, "%Y-%m-%d %H:%M:%S")).isoformat()
@@ -369,7 +391,9 @@ def get_next_departure(self):
         "departure_time": depart_time,
         "arrival_time": arrival_time,
         "origin_stop_time": origin_stop_time,
+        "origin_stop_timezone": item["origin_stop_timezone"],
         "destination_stop_time": destination_stop_time,
+        "destination_stop_timezone": item["dest_stop_timezone"],
         "destination_stop_name": item["dest_stop_name"],
         "next_departures": timetable_remaining,
         "next_departures_lines": timetable_remaining_line,
@@ -595,11 +619,12 @@ def get_agency_list(schedule, data):
     _LOGGER.debug(f"agencies: {agencies}")
     return agencies
 
-def get_datasources(hass, path) -> dict[str]:
+async def get_datasources(hass, path) -> dict[str]:
     _LOGGER.debug(f"Getting datasources for path: {path}")
     gtfs_dir = hass.config.path(path)
     os.makedirs(gtfs_dir, exist_ok=True)
-    files = os.listdir(gtfs_dir)
+    files = await hass.async_add_executor_job(
+            os.listdir, gtfs_dir)
     datasources = []
     for file in files:
         if file.endswith(".sqlite"):

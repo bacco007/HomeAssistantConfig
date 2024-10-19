@@ -93,7 +93,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the source."""
         errors: dict[str, str] = {}      
         if user_input is None:
-            datasources = get_datasources(self.hass, DEFAULT_PATH)
+            datasources = await get_datasources(self.hass, DEFAULT_PATH)
             return self.async_show_form(
                 step_id="start_end",
                 data_schema=vol.Schema(
@@ -113,7 +113,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the source."""
         errors: dict[str, str] = {}       
         if user_input is None:
-            datasources = get_datasources(self.hass, DEFAULT_PATH)
+            datasources = await get_datasources(self.hass, DEFAULT_PATH)
             return self.async_show_form(
                 step_id="local_stops",
                 data_schema=vol.Schema(
@@ -185,7 +185,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         errors: dict[str, str] = {}
         if user_input is None:
-            datasources = get_datasources(self.hass, DEFAULT_PATH)
+            datasources = await get_datasources(self.hass, DEFAULT_PATH)
             return self.async_show_form(
                 step_id="remove",
                 data_schema=vol.Schema(
