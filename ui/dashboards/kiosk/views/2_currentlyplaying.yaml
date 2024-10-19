@@ -82,7 +82,7 @@ cards:
           custom_fields:
             picture:
               - background: |-
-                  [[[ 
+                  [[[
                     if (entity.attributes.entity_picture != '') {
                       return "url(" + entity.attributes.entity_picture + ")"
                     } else if (entity.attributes.entity_picture_local != '') {
