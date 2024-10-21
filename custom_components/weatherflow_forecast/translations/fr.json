@@ -65,9 +65,9 @@
             },
             "precipitation_type": {
                 "state": {
-                    "no_rain": "Dry",
-                    "rain": "Rain",
-                    "heavy_rain": "Heavy rain/Hail"
+                    "no_rain": "Pas de pluie",
+                    "rain": "Pluie",
+                    "heavy_rain": "Pluie forte/grêle"
                 }
             },
             "beaufort": {

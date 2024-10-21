@@ -17,7 +17,7 @@
                 "data": {
                     "station_id": "Station-Id",
                     "api_token": "Personlig API-Token",
-                    "forecast_hours": "Hours to show in Hourly Forecast",
+                    "forecast_hours": "Antal timmar att visa i timbaserad väderprognos",
                     "add_sensors": "Lägg till sensorer från väderstationen"
                 }
             }
@@ -28,7 +28,7 @@
             "init": {
                 "data": {
                     "api_token": "Personlig API-Token",
-                    "forecast_hours": "Hours to show in Hourly Forecast",
+                    "forecast_hours": "Antal timmar att visa i timbaserad väderprognos",
                     "add_sensors": "Lägg till sensorer från väderstationen"
                 }
             }
@@ -65,9 +65,9 @@
             },
             "precipitation_type": {
                 "state": {
-                    "no_rain": "Dry",
-                    "rain": "Rain",
-                    "heavy_rain": "Heavy rain/Hail"
+                    "no_rain": "Torrt",
+                    "rain": "Regn",
+                    "heavy_rain": "Kraftigt regn/Hagel"
                 }
             },
             "beaufort": {
