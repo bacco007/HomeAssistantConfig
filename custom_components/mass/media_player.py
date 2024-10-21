@@ -209,7 +209,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         SERVICE_TRANSFER_QUEUE,
         {
-            vol.Required(ATTR_SOURCE_PLAYER): cv.entity_id,
+            vol.Optional(ATTR_SOURCE_PLAYER): cv.entity_id,
             vol.Optional(ATTR_AUTO_PLAY): vol.Coerce(bool),
         },
         "_async_transfer_queue",
@@ -278,7 +278,7 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
             ATTR_MASS_PLAYER_ID: self.player_id,
             ATTR_MASS_PLAYER_TYPE: player.type.value,
             ATTR_GROUP_LEADER: player.synced_to,
-            ATTR_ACTIVE_QUEUE: player.active_source,
+            ATTR_ACTIVE_QUEUE: queue.queue_id if queue else None,
             ATTR_ACTIVE_GROUP: player.active_group,
             ATTR_QUEUE_ITEMS: queue.items if queue else None,
             ATTR_QUEUE_INDEX: queue.current_index if queue else None,
@@ -310,13 +310,15 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
         if not self.available:
             return
         player = self.player
-        queue = self.mass.player_queues.get(player.active_source)
+        active_queue_id = player.active_source or player.player_id
+        active_queue = self.mass.player_queues.get(active_queue_id)
         # update generic attributes
+        if player.powered and active_queue:
+            self._attr_state = STATE_MAPPING.get(active_queue.state)
         if player.powered:
             self._attr_state = STATE_MAPPING.get(self.player.state)
         else:
             self._attr_state = STATE_OFF
-
         # translate MA group_childs to HA group_members as entity id's
         # TODO: find a way to optimize this a tiny bit more
         # e.g. by holding a lookup dict in memory on integration level
@@ -329,37 +331,30 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
                     continue
                 group_members_entity_ids.append(state.entity_id)
         self._attr_group_members = group_members_entity_ids
-
         self._attr_volume_level = (
             player.volume_level / 100 if player.volume_level is not None else None
         )
         self._attr_is_volume_muted = player.volume_muted
-        self._update_media_attributes(player, queue)
-        self._update_media_image_url(player, queue)
+        self._update_media_attributes(player, active_queue)
+        self._update_media_image_url(player, active_queue)
+        # some features can dynamically change
+        if PlayerFeature.SYNC in player.supported_features:
+            self._attr_supported_features |= MediaPlayerEntityFeature.GROUPING
 
     @catch_musicassistant_error
     async def async_media_play(self) -> None:
         """Send play command to device."""
-        if queue := self.mass.player_queues.get(self.player.active_source):
-            await self.mass.player_queues.queue_command_play(queue.queue_id)
-        else:
-            await self.mass.players.player_command_play(self.player_id)
+        await self.mass.players.player_command_play(self.player_id)
 
     @catch_musicassistant_error
     async def async_media_pause(self) -> None:
         """Send pause command to device."""
-        if queue := self.mass.player_queues.get(self.player.active_source):
-            await self.mass.player_queues.queue_command_pause(queue.queue_id)
-        else:
-            await self.mass.players.player_command_pause(self.player_id)
+        await self.mass.players.player_command_pause(self.player_id)
 
     @catch_musicassistant_error
     async def async_media_stop(self) -> None:
         """Send stop command to device."""
-        if queue := self.mass.player_queues.get(self.player.active_source):
-            await self.mass.player_queues.queue_command_stop(queue.queue_id)
-        else:
-            await self.mass.players.player_command_stop(self.player_id)
+        await self.mass.players.player_command_stop(self.player_id)
 
     @catch_musicassistant_error
     async def async_media_next_track(self) -> None:
@@ -549,18 +544,29 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
 
     @catch_musicassistant_error
     async def _async_transfer_queue(
-        self, source_player: str, auto_play: bool | None = None
+        self, source_player: str | None = None, auto_play: bool | None = None
     ) -> None:
         """Transfer the current queue to another player."""
-        # resolve HA entity_id to MA player_id
-        if (hass_state := self.hass.states.get(source_player)) is None:
-            return  # guard
-        if (mass_player_id := hass_state.attributes.get("mass_player_id")) is None:
-            return  # guard
-        if queue := self.mass.player_queues.get(self.player.active_source):
-            await self.mass.player_queues.transfer_queue(
-                mass_player_id, queue.queue_id, auto_play
-            )
+        if not source_player:
+            # no source player given; try to find a playing player
+            for queue in self.mass.player_queues:
+                if queue.state == PlayerState.PLAYING:
+                    mass_queue_id = queue.queue_id
+                    break
+            else:
+                raise HomeAssistantError(
+                    "Source player not specified and no playing player found."
+                )
+        else:
+            # resolve HA entity_id to MA player_id
+            if (hass_state := self.hass.states.get(source_player)) is None:
+                return  # guard
+            if (mass_queue_id := hass_state.attributes.get("mass_player_id")) is None:
+                return  # guard
+
+        await self.mass.player_queues.transfer_queue(
+            mass_queue_id, queue.queue_id, auto_play
+        )
 
     async def async_browse_media(
         self, media_content_type=None, media_content_id=None
@@ -640,14 +646,19 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
         self, player: Player, queue: PlayerQueue | None
     ) -> None:
         """Update image URL for the active queue item."""
-        if queue is None or queue.current_item is None:
-            self._attr_media_image_url = None
-            return
-        if image_url := self.mass.get_media_item_image_url(queue.current_item):
+        if (
+            queue
+            and queue.current_item
+            and (image_url := self.mass.get_media_item_image_url(queue.current_item))
+        ):
             self._attr_media_image_remotely_accessible = (
                 self.mass.server_url not in image_url
             )
             self._attr_media_image_url = image_url
+            return
+        if player.current_media and player.current_media.image_url:
+            self._attr_media_image_remotely_accessible = True
+            self._attr_media_image_url = player.current_media.image_url
             return
         self._attr_media_image_url = None
 
