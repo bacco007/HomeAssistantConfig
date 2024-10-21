@@ -1,0 +1,32 @@
+---
+trigger:
+  - platform: time_pattern
+    minutes: 15
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: event_template_reloaded
+action:
+  - service: weather.get_forecasts
+    target:
+      entity_id: weather.pirateweather
+    data:
+      type: hourly
+    response_variable: hourly
+  - service: weather.get_forecasts
+    target:
+      entity_id: weather.pirateweather
+    data:
+      type: daily
+    response_variable: daily
+sensor:
+  - name: weather_forecasts_pirateweather_hourly
+    unique_id: weather_forecasts_pirateweather_hourly
+    state: "{{ now().isoformat() }}"
+    attributes:
+      forecast: "{{ hourly['weather.pirateweather'].forecast[:192] }}"
+  - name: weather_forecasts_pirateweather_daily
+    unique_id: weather_forecasts_pirateweather_daily
+    state: "{{ now().isoformat() }}"
+    attributes:
+      forecast: "{{ daily['weather.pirateweather'].forecast[:10] }}"
