@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.10.3 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 93 |
-| No. Entities | 6353 |
+| No. Entities | 6352 |
 | No. Sensors | 4126 |
 | No. Automations | 153 |
 
@@ -882,7 +882,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.4.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
-| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.2.0] | 🙈 Hides the Home Assistant header and/or sidebar |
+| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.3.0] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v1.0.0] | Material Symbols for Home Assistant is collection of 18620 Google Material Symbols files for use within Home Assistant. |
