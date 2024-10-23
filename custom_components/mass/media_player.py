@@ -548,10 +548,10 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
     ) -> None:
         """Transfer the current queue to another player."""
         if not source_player:
-            # no source player given; try to find a playing player
+            # no source player given; try to find a playing player(queue)
             for queue in self.mass.player_queues:
                 if queue.state == PlayerState.PLAYING:
-                    mass_queue_id = queue.queue_id
+                    source_queue_id = queue.queue_id
                     break
             else:
                 raise HomeAssistantError(
@@ -561,11 +561,12 @@ class MassPlayer(MassBaseEntity, MediaPlayerEntity):
             # resolve HA entity_id to MA player_id
             if (hass_state := self.hass.states.get(source_player)) is None:
                 return  # guard
-            if (mass_queue_id := hass_state.attributes.get("mass_player_id")) is None:
+            if (source_queue_id := hass_state.attributes.get("mass_player_id")) is None:
                 return  # guard
 
+        target_queue_id = self.player_id
         await self.mass.player_queues.transfer_queue(
-            mass_queue_id, queue.queue_id, auto_play
+            source_queue_id, target_queue_id, auto_play
         )
 
     async def async_browse_media(
