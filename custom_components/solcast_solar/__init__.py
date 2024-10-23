@@ -184,6 +184,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except loader.IntegrationNotFound:
         pass
 
+    solcast.headers = {
+        'Accept': 'application/json',
+        'User-Agent': 'ha-solcast-solar-integration/'+version[:version.rfind('.')]
+    }
+    _LOGGER.debug("Session headers: %s", solcast.headers)
+
     try:
         await solcast.get_sites_and_usage()
     except Exception as e:
