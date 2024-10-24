@@ -48,6 +48,7 @@ from .const import (
     CONF_REFRESH_INTERVAL,
     CONF_OFFSET,
     CONF_REAL_TIME,
+    CONF_SOURCE_TIMEZONE_CORRECTION,
     ATTR_API_KEY_LOCATIONS
 )    
 
@@ -497,6 +498,7 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
             opt1_schema = {
                         vol.Optional(CONF_REFRESH_INTERVAL, default=self.config_entry.options.get(CONF_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL)): int,
                         vol.Optional(CONF_OFFSET, default=self.config_entry.options.get(CONF_OFFSET, DEFAULT_OFFSET)): int,
+                        vol.Optional(CONF_SOURCE_TIMEZONE_CORRECTION, default=self.config_entry.options.get(CONF_SOURCE_TIMEZONE_CORRECTION, 0)): int,
                         vol.Optional(CONF_REAL_TIME, default=self.config_entry.options.get(CONF_REAL_TIME)): selector.BooleanSelector()
                     }
             return self.async_show_form(

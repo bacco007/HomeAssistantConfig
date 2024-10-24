@@ -117,6 +117,7 @@
         "data": {
           "refresh_interval": "Data refresh interval (in minutes)",
 		  "offset": "Offset in minutes",
+		  "source_timezone_correction": "Correct source gtfs timezone (in hours)",
 		  "real_time": "Setup Realtime integration? \n (needs data from the same source)",
 		  "local_stop_refresh_interval": "Data refresh interval (in minutes)",
           "timerange": "Checking for departures in future from 'now' (in minutes: between 15 and 120)",
