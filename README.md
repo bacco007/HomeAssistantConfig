@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.10.3 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 93 |
-| No. Entities | 6347 |
+| No. Entities | 6348 |
 | No. Sensors | 4120 |
 | No. Automations | 153 |
 
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 689
+Devices | 688
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -99,7 +99,7 @@ Switches | 297
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 314
+Update | 313
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -848,7 +848,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.10] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
-<details><summary>65 Lovelace Plugins</summary>
+<details><summary>64 Lovelace Plugins</summary>
 
 | Name | Version | Description |
 | --- | --- | --- |
@@ -885,7 +885,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.3.1] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
-| [Material Symbols](https://github.com/beecho01/material-symbols) |  [v1.0.0] | Material Symbols for Home Assistant is a collection of 13460 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
@@ -895,7 +894,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.4] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
-| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.4.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
+| [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.5.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
@@ -945,7 +944,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.4 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.6.0 |  | core |
-| Music Assistant Server | 2.2.9 |  | d5369777 |
+| Music Assistant Server | 2.3.0 |  | d5369777 |
 | Node-RED | 18.1.1 |  | a0d7b954 |
 | OpenThread Border Router | 2.11.1 |  | core |
 | phpMyAdmin | 0.10.0 |  | a0d7b954 |
