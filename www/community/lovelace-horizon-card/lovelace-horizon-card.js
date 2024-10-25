@@ -1850,16 +1850,79 @@ var SunCalc = suncalcExports;
 var _templateObject$7;
 var cardStyles = i$2(_templateObject$7 || (_templateObject$7 = _taggedTemplateLiteral(["\n  :host {\n    --hc-primary: var(--primary-text-color);\n    --hc-secondary: var(--secondary-text-color);\n\n    --hc-field-name-color: var(--hc-secondary);\n    --hc-field-value-color: var(--hc-primary);\n\n    --hc-day-color: #8ebeeb;\n    --hc-night-color: #393b78;\n\n    --hc-accent: #d7d7d7;\n    --hc-lines: var(--hc-accent);\n\n    --hc-sun-hue: 44;\n    --hc-sun-saturation: 93%;\n    --hc-sun-lightness: 67%;\n    --hc-sun-hue-reduce: 0;\n    --hc-sun-saturation-reduce: 0%;\n    --hc-sun-lightness-reduce: 0%;\n    --hc-sun-color: hsl(\n      calc(var(--hc-sun-hue) - var(--hc-sun-hue-reduce)),\n      calc(var(--hc-sun-saturation) - var(--hc-sun-saturation-reduce)),\n      calc(var(--hc-sun-lightness) - var(--hc-sun-lightness-reduce))\n    );\n\n    --hc-moon-hue: 52;\n    --hc-moon-saturation: 77%;\n    --hc-moon-lightness: 57%;\n    --hc-moon-saturation-reduce: 0%;\n    --hc-moon-lightness-reduce: 0%;\n    --hc-moon-color: hsl(\n      var(--hc-moon-hue),\n      calc(var(--hc-moon-saturation) - var(--hc-moon-saturation-reduce)),\n      calc(var(--hc-moon-lightness) - var(--hc-moon-lightness-reduce))\n    );\n    --hc-moon-shadow-color: #eeeeee;\n    --hc-moon-spot-color: rgba(170, 170, 170, 0.1);\n  }\n\n  :host(.horizon-card-dark) {\n    --hc-accent: #464646;\n    --hc-moon-saturation: 80%;\n    --hc-moon-lightness: 74%;\n    --hc-moon-shadow-color: #272727;\n  }\n\n  .horizon-card {\n    padding: 0.5em;\n    font-family: var(--primary-font-family);\n  }\n\n  .horizon-card-field-row {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1em;\n    margin-bottom: -0.3em;\n  }\n\n  .horizon-card-text-container {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .horizon-card-field-name {\n    color: var(--hc-field-name-color);\n  }\n\n  .horizon-card-field-value {\n    color: var(--hc-field-value-color);\n    font-size: 1.2em;\n    line-height: 1.1em;\n    text-align: center;\n  }\n\n  .horizon-card-field-value-moon-phase {\n    font-size: inherit;\n  }\n\n  .horizon-card-field-moon-phase {\n    --mdc-icon-size: 2em;\n    color: var(--primary-color);\n  }\n\n  .horizon-card-field-value-secondary {\n    font-size: 0.7em;\n  }\n\n  .horizon-card-sun-value:before {\n    content: \"\u2609\";\n    padding-right: 0.5em;\n  }\n\n  .horizon-card-moon-value:before {\n    content: \"\u263D\";\n    padding-right: 0.5em;\n  }\n\n  .horizon-card-header {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1em;\n    margin-bottom: -0.3em;\n  }\n\n  .horizon-card-header .horizon-card-text-container {\n    font-size: 1.2em;\n  }\n\n  .horizon-card-footer {\n    margin-bottom: 1em;\n  }\n\n  .horizon-card-title {\n    margin: 1em 1em 1em 1em;\n    font-size: 1.5em;\n    color: var(--hc-primary);\n  }\n\n  .horizon-card-graph {\n    margin: 1em 0.5em 1em 0.5em;\n  }\n\n  .horizon-card-graph .dawn {\n    fill: var(--hc-night-color);\n    stroke: var(--hc-night-color);\n  }\n\n  .horizon-card-graph .day {\n    fill: var(--hc-day-color);\n    stroke: var(--hc-day-color);\n  }\n"])));
 
-var azimuth$w = "Азимут";
-var dawn$w = "Зора";
-var dusk$w = "Здрач";
-var elevation$w = "Височина";
-var moonrise$w = "Лунен изгрев";
-var moonset$w = "Лунен залез";
-var noon$w = "Пладне";
-var sunrise$w = "Изгрев";
-var sunset$w = "Залез";
+var azimuth$z = "Азимут";
+var dawn$z = "Зора";
+var dusk$z = "Здрач";
+var elevation$z = "Височина";
+var moonrise$z = "Лунен изгрев";
+var moonset$z = "Лунен залез";
+var noon$z = "Пладне";
+var sunrise$z = "Изгрев";
+var sunset$z = "Залез";
 var bg = {
+	azimuth: azimuth$z,
+	dawn: dawn$z,
+	dusk: dusk$z,
+	elevation: elevation$z,
+	moonrise: moonrise$z,
+	moonset: moonset$z,
+	noon: noon$z,
+	sunrise: sunrise$z,
+	sunset: sunset$z
+};
+
+var azimuth$y = "Azimut";
+var dawn$y = "Alba";
+var dusk$y = "Capvespre";
+var elevation$y = "Elevació";
+var moonrise$y = "Sortida de la lluna";
+var moonset$y = "Posta de lluna";
+var noon$y = "Migdia solar";
+var sunrise$y = "Sortida del sol";
+var sunset$y = "Posta del sol";
+var ca = {
+	azimuth: azimuth$y,
+	dawn: dawn$y,
+	dusk: dusk$y,
+	elevation: elevation$y,
+	moonrise: moonrise$y,
+	moonset: moonset$y,
+	noon: noon$y,
+	sunrise: sunrise$y,
+	sunset: sunset$y
+};
+
+var azimuth$x = "Azimut";
+var dawn$x = "Svítání";
+var dusk$x = "Soumrak";
+var elevation$x = "Výška";
+var moonrise$x = "Východ měsíce";
+var moonset$x = "Západ měsíce";
+var noon$x = "Sluneční poledne";
+var sunrise$x = "Východ slunce";
+var sunset$x = "Západ slunce";
+var cs = {
+	azimuth: azimuth$x,
+	dawn: dawn$x,
+	dusk: dusk$x,
+	elevation: elevation$x,
+	moonrise: moonrise$x,
+	moonset: moonset$x,
+	noon: noon$x,
+	sunrise: sunrise$x,
+	sunset: sunset$x
+};
+
+var azimuth$w = "Azimut";
+var dawn$w = "Daggry";
+var dusk$w = "Skumring";
+var elevation$w = "Højde";
+var moonrise$w = "Måneopgang";
+var moonset$w = "Månenedgang";
+var noon$w = "Middag";
+var sunrise$w = "Solopgang";
+var sunset$w = "Solnedgang";
+var da = {
 	azimuth: azimuth$w,
 	dawn: dawn$w,
 	dusk: dusk$w,
@@ -1872,15 +1935,15 @@ var bg = {
 };
 
 var azimuth$v = "Azimut";
-var dawn$v = "Alba";
-var dusk$v = "Capvespre";
-var elevation$v = "Elevació";
-var moonrise$v = "Sortida de la lluna";
-var moonset$v = "Posta de lluna";
-var noon$v = "Migdia solar";
-var sunrise$v = "Sortida del sol";
-var sunset$v = "Posta del sol";
-var ca = {
+var dawn$v = "Morgendämmerung";
+var dusk$v = "Abenddämmerung";
+var elevation$v = "Höhenwinkel";
+var moonrise$v = "Mondaufgang";
+var moonset$v = "Monduntergang";
+var noon$v = "Mittag";
+var sunrise$v = "Sonnenaufgang";
+var sunset$v = "Sonnenuntergang";
+var de = {
 	azimuth: azimuth$v,
 	dawn: dawn$v,
 	dusk: dusk$v,
@@ -1892,16 +1955,16 @@ var ca = {
 	sunset: sunset$v
 };
 
-var azimuth$u = "Azimut";
-var dawn$u = "Svítání";
-var dusk$u = "Soumrak";
-var elevation$u = "Výška";
-var moonrise$u = "Východ měsíce";
-var moonset$u = "Západ měsíce";
-var noon$u = "Sluneční poledne";
-var sunrise$u = "Východ slunce";
-var sunset$u = "Západ slunce";
-var cs = {
+var azimuth$u = "Αζιμούθιο";
+var dawn$u = "Αυγή";
+var dusk$u = "Σούρουπο";
+var elevation$u = "Υψόμετρο";
+var moonrise$u = "Aνατολή σελήνης";
+var moonset$u = "Δύση σελήνης";
+var noon$u = "Μεσημέρι";
+var sunrise$u = "Ανατολή";
+var sunset$u = "Δύση";
+var el = {
 	azimuth: azimuth$u,
 	dawn: dawn$u,
 	dusk: dusk$u,
@@ -1913,16 +1976,16 @@ var cs = {
 	sunset: sunset$u
 };
 
-var azimuth$t = "Azimut";
-var dawn$t = "Daggry";
-var dusk$t = "Skumring";
-var elevation$t = "Højde";
-var moonrise$t = "Måneopgang";
-var moonset$t = "Månenedgang";
-var noon$t = "Middag";
-var sunrise$t = "Solopgang";
-var sunset$t = "Solnedgang";
-var da = {
+var azimuth$t = "Azimuth";
+var dawn$t = "Dawn";
+var dusk$t = "Dusk";
+var elevation$t = "Elevation";
+var moonrise$t = "Moonrise";
+var moonset$t = "Moonset";
+var noon$t = "Solar noon";
+var sunrise$t = "Sunrise";
+var sunset$t = "Sunset";
+var en = {
 	azimuth: azimuth$t,
 	dawn: dawn$t,
 	dusk: dusk$t,
@@ -1935,15 +1998,15 @@ var da = {
 };
 
 var azimuth$s = "Azimut";
-var dawn$s = "Morgendämmerung";
-var dusk$s = "Abenddämmerung";
-var elevation$s = "Zenitwinkel";
-var moonrise$s = "Mondaufgang";
-var moonset$s = "Monduntergang";
-var noon$s = "Zenit";
-var sunrise$s = "Sonnenaufgang";
-var sunset$s = "Sonnenuntergang";
-var de = {
+var dawn$s = "Amanecer";
+var dusk$s = "Anochecer";
+var elevation$s = "Elevación";
+var moonrise$s = "Salida de la luna";
+var moonset$s = "Puesta de la luna";
+var noon$s = "Mediodía solar";
+var sunrise$s = "Salida del sol";
+var sunset$s = "Atardecer";
+var es = {
 	azimuth: azimuth$s,
 	dawn: dawn$s,
 	dusk: dusk$s,
@@ -1955,16 +2018,16 @@ var de = {
 	sunset: sunset$s
 };
 
-var azimuth$r = "Azimuth";
-var dawn$r = "Dawn";
-var dusk$r = "Dusk";
-var elevation$r = "Elevation";
-var moonrise$r = "Moonrise";
-var moonset$r = "Moonset";
-var noon$r = "Solar noon";
-var sunrise$r = "Sunrise";
-var sunset$r = "Sunset";
-var en = {
+var azimuth$r = "Asimuut";
+var dawn$r = "Koidik";
+var dusk$r = "Hämarik";
+var elevation$r = "Kõrgus";
+var moonrise$r = "Kuutõus";
+var moonset$r = "Kuuloojang";
+var noon$r = "Keskpäev";
+var sunrise$r = "Päikesetõus";
+var sunset$r = "Päikeseloojang";
+var et = {
 	azimuth: azimuth$r,
 	dawn: dawn$r,
 	dusk: dusk$r,
@@ -1976,16 +2039,16 @@ var en = {
 	sunset: sunset$r
 };
 
-var azimuth$q = "Azimut";
-var dawn$q = "Amanecer";
-var dusk$q = "Anochecer";
-var elevation$q = "Elevación";
-var moonrise$q = "Salida de la luna";
-var moonset$q = "Puesta de la luna";
-var noon$q = "Mediodía solar";
-var sunrise$q = "Salida del sol";
-var sunset$q = "Atardecer";
-var es = {
+var azimuth$q = "Atsimuutti";
+var dawn$q = "Sarastus";
+var dusk$q = "Hämärä";
+var elevation$q = "Korkeus";
+var moonrise$q = "Kuunnousu";
+var moonset$q = "Kuunlasku";
+var noon$q = "Keskipäivä";
+var sunrise$q = "Auringonnousu";
+var sunset$q = "Auringonlasku";
+var fi = {
 	azimuth: azimuth$q,
 	dawn: dawn$q,
 	dusk: dusk$q,
@@ -1997,16 +2060,16 @@ var es = {
 	sunset: sunset$q
 };
 
-var azimuth$p = "Asimuut";
-var dawn$p = "Koidik";
-var dusk$p = "Hämarik";
-var elevation$p = "Kõrgus";
-var moonrise$p = "Kuutõus";
-var moonset$p = "Kuuloojang";
-var noon$p = "Keskpäev";
-var sunrise$p = "Päikesetõus";
-var sunset$p = "Päikeseloojang";
-var et = {
+var azimuth$p = "Azimut";
+var dawn$p = "Aube";
+var dusk$p = "Crépuscule";
+var elevation$p = "Élévation";
+var moonrise$p = "Lever de lune";
+var moonset$p = "Coucher de lune";
+var noon$p = "Midi solaire";
+var sunrise$p = "Lever du soleil";
+var sunset$p = "Coucher du soleil";
+var fr = {
 	azimuth: azimuth$p,
 	dawn: dawn$p,
 	dusk: dusk$p,
@@ -2018,16 +2081,16 @@ var et = {
 	sunset: sunset$p
 };
 
-var azimuth$o = "Atsimuutti";
-var dawn$o = "Sarastus";
-var dusk$o = "Hämärä";
-var elevation$o = "Korkeus";
-var moonrise$o = "Kuunnousu";
-var moonset$o = "Kuunlasku";
-var noon$o = "Keskipäivä";
-var sunrise$o = "Auringonnousu";
-var sunset$o = "Auringonlasku";
-var fi = {
+var azimuth$o = "Acimut";
+var dawn$o = "Amencer";
+var dusk$o = "Luscofusco";
+var elevation$o = "Elevación";
+var moonrise$o = "Saída da lúa";
+var moonset$o = "Posta da lúa";
+var noon$o = "Mediodía solar";
+var sunrise$o = "Saída do sol";
+var sunset$o = "Atardecer";
+var gl = {
 	azimuth: azimuth$o,
 	dawn: dawn$o,
 	dusk: dusk$o,
@@ -2039,16 +2102,16 @@ var fi = {
 	sunset: sunset$o
 };
 
-var azimuth$n = "Azimut";
-var dawn$n = "Aube";
-var dusk$n = "Crépuscule";
-var elevation$n = "Élévation";
-var moonrise$n = "Lever de lune";
-var moonset$n = "Coucher de lune";
-var noon$n = "Midi solaire";
-var sunrise$n = "Lever du soleil";
-var sunset$n = "Coucher du soleil";
-var fr = {
+var azimuth$n = "אזימוט";
+var dawn$n = "עלות השחר";
+var dusk$n = "בין הערבים";
+var elevation$n = "גובה";
+var moonrise$n = "זריחה ירח";
+var moonset$n = "שקיעה ירח";
+var noon$n = "אמצע היום";
+var sunrise$n = "זריחה";
+var sunset$n = "שקיעה";
+var he = {
 	azimuth: azimuth$n,
 	dawn: dawn$n,
 	dusk: dusk$n,
@@ -2060,16 +2123,16 @@ var fr = {
 	sunset: sunset$n
 };
 
-var azimuth$m = "אזימוט";
-var dawn$m = "עלות השחר";
-var dusk$m = "בין הערבים";
-var elevation$m = "גובה";
-var moonrise$m = "זריחה ירח";
-var moonset$m = "שקיעה ירח";
-var noon$m = "אמצע היום";
-var sunrise$m = "זריחה";
-var sunset$m = "שקיעה";
-var he = {
+var azimuth$m = "Azimut";
+var dawn$m = "Zora";
+var dusk$m = "Sumrak";
+var elevation$m = "Visina";
+var moonrise$m = "Izlazak mjeseca";
+var moonset$m = "Zalazak mjeseca";
+var noon$m = "Sunčano podne";
+var sunrise$m = "Izlazak sunca";
+var sunset$m = "Zalazak sunca";
+var hr = {
 	azimuth: azimuth$m,
 	dawn: dawn$m,
 	dusk: dusk$m,
@@ -2082,15 +2145,15 @@ var he = {
 };
 
 var azimuth$l = "Azimut";
-var dawn$l = "Zora";
-var dusk$l = "Sumrak";
-var elevation$l = "Visina";
-var moonrise$l = "Izlazak mjeseca";
-var moonset$l = "Zalazak mjeseca";
-var noon$l = "Sunčano podne";
-var sunrise$l = "Izlazak sunca";
-var sunset$l = "Zalazak sunca";
-var hr = {
+var dawn$l = "Hajnal";
+var dusk$l = "Szürkület";
+var elevation$l = "Magasság";
+var moonrise$l = "Holdkelte";
+var moonset$l = "Holdnyugta";
+var noon$l = "Dél";
+var sunrise$l = "Napkelte";
+var sunset$l = "Napnyugta";
+var hu = {
 	azimuth: azimuth$l,
 	dawn: dawn$l,
 	dusk: dusk$l,
@@ -2102,16 +2165,16 @@ var hr = {
 	sunset: sunset$l
 };
 
-var azimuth$k = "Azimut";
-var dawn$k = "Hajnal";
-var dusk$k = "Szürkület";
-var elevation$k = "Magasság";
-var moonrise$k = "Holdkelte";
-var moonset$k = "Holdnyugta";
-var noon$k = "Dél";
-var sunrise$k = "Napkelte";
-var sunset$k = "Napnyugta";
-var hu = {
+var azimuth$k = "Áttarhorn";
+var dawn$k = "Dögun";
+var dusk$k = "Rökkur";
+var elevation$k = "Hækkun";
+var moonrise$k = "Tunglupprás";
+var moonset$k = "Tunglsetur";
+var noon$k = "Sólarhádegi";
+var sunrise$k = "Sólarupprás";
+var sunset$k = "Sólsetur";
+var is = {
 	azimuth: azimuth$k,
 	dawn: dawn$k,
 	dusk: dusk$k,
@@ -2123,16 +2186,16 @@ var hu = {
 	sunset: sunset$k
 };
 
-var azimuth$j = "Áttarhorn";
-var dawn$j = "Dögun";
-var dusk$j = "Rökkur";
-var elevation$j = "Hækkun";
-var moonrise$j = "Tunglupprás";
-var moonset$j = "Tunglsetur";
-var noon$j = "Sólarhádegi";
-var sunrise$j = "Sólarupprás";
-var sunset$j = "Sólsetur";
-var is = {
+var azimuth$j = "Azimut";
+var dawn$j = "Aurora";
+var dusk$j = "Crepuscolo";
+var elevation$j = "Elevazione";
+var moonrise$j = "Levata";
+var moonset$j = "Calata";
+var noon$j = "Mezzogiorno";
+var sunrise$j = "Alba";
+var sunset$j = "Tramonto";
+var it = {
 	azimuth: azimuth$j,
 	dawn: dawn$j,
 	dusk: dusk$j,
@@ -2144,16 +2207,16 @@ var is = {
 	sunset: sunset$j
 };
 
-var azimuth$i = "Azimuth";
-var dawn$i = "Aurora";
-var dusk$i = "Crepuscolo";
-var elevation$i = "Elevazione";
-var moonrise$i = "Sorgere della luna";
-var moonset$i = "Tramonto della luna";
-var noon$i = "Mezzogiorno solare";
-var sunrise$i = "Alba";
-var sunset$i = "Tramonto";
-var it = {
+var azimuth$i = "方位角";
+var dawn$i = "明け方";
+var dusk$i = "夕方";
+var elevation$i = "高度";
+var moonrise$i = "月の出";
+var moonset$i = "月の入り";
+var noon$i = "南中";
+var sunrise$i = "日の出";
+var sunset$i = "日没";
+var ja = {
 	azimuth: azimuth$i,
 	dawn: dawn$i,
 	dusk: dusk$i,
@@ -2165,16 +2228,16 @@ var it = {
 	sunset: sunset$i
 };
 
-var azimuth$h = "方位角";
-var dawn$h = "明け方";
-var dusk$h = "夕";
-var elevation$h = "仰俯角";
-var moonrise$h = "月の出";
-var moonset$h = "月の入り";
-var noon$h = "太陽の正午";
-var sunrise$h = "日出";
-var sunset$h = "日沒";
-var ja = {
+var azimuth$h = "방위각";
+var dawn$h = "새벽";
+var dusk$h = "저녁";
+var elevation$h = "태양 고도";
+var moonrise$h = "월출";
+var moonset$h = "월몰";
+var noon$h = "태양 정오";
+var sunrise$h = "해돋이";
+var sunset$h = "해넘이";
+var ko = {
 	azimuth: azimuth$h,
 	dawn: dawn$h,
 	dusk: dusk$h,
@@ -2186,16 +2249,16 @@ var ja = {
 	sunset: sunset$h
 };
 
-var azimuth$g = "방위각";
-var dawn$g = "새벽";
-var dusk$g = "저녁";
-var elevation$g = "태양 고도";
-var moonrise$g = "월출";
-var moonset$g = "월몰";
-var noon$g = "태양 정오";
-var sunrise$g = "해돋이";
-var sunset$g = "해넘이";
-var ko = {
+var azimuth$g = "Azimutas";
+var dawn$g = "Aušra";
+var dusk$g = "Prieblanda";
+var elevation$g = "Pakilimas";
+var moonrise$g = "Mėnulio kilimas";
+var moonset$g = "Mėnulio leidimasis";
+var noon$g = "Vidurdienis";
+var sunrise$g = "Saulėtekis";
+var sunset$g = "Saulėlydis";
+var lt = {
 	azimuth: azimuth$g,
 	dawn: dawn$g,
 	dusk: dusk$g,
@@ -2207,16 +2270,16 @@ var ko = {
 	sunset: sunset$g
 };
 
-var azimuth$f = "Azimutas";
-var dawn$f = "Aušra";
-var dusk$f = "Prieblanda";
-var elevation$f = "Pakilimas";
-var moonrise$f = "Mėnulio kilimas";
-var moonset$f = "Mėnulio leidimasis";
-var noon$f = "Vidurdienis";
-var sunrise$f = "Saulėtekis";
-var sunset$f = "Saulėlydis";
-var lt = {
+var azimuth$f = "Azimut";
+var dawn$f = "Fajar";
+var dusk$f = "Senja";
+var elevation$f = "Ketinggian";
+var moonrise$f = "Bulan terbit";
+var moonset$f = "Bulan terbenam";
+var noon$f = "Tengahari";
+var sunrise$f = "Matahari terbit";
+var sunset$f = "Matahari terbenam";
+var ms = {
 	azimuth: azimuth$f,
 	dawn: dawn$f,
 	dusk: dusk$f,
@@ -2229,15 +2292,15 @@ var lt = {
 };
 
 var azimuth$e = "Azimut";
-var dawn$e = "Fajar";
-var dusk$e = "Senja";
-var elevation$e = "Ketinggian";
-var moonrise$e = "Bulan terbit";
-var moonset$e = "Bulan terbenam";
-var noon$e = "Tengahari";
-var sunrise$e = "Matahari terbit";
-var sunset$e = "Matahari terbenam";
-var ms = {
+var dawn$e = "Daggry";
+var dusk$e = "Skumring";
+var elevation$e = "Elevasjon";
+var moonrise$e = "Måneoppgang";
+var moonset$e = "Månenedgang";
+var noon$e = "Middag";
+var sunrise$e = "Soloppgang";
+var sunset$e = "Solnedgang";
+var nb = {
 	azimuth: azimuth$e,
 	dawn: dawn$e,
 	dusk: dusk$e,
@@ -2250,15 +2313,15 @@ var ms = {
 };
 
 var azimuth$d = "Azimut";
-var dawn$d = "Daggry";
-var dusk$d = "Skumring";
-var elevation$d = "Elevasjon";
-var moonrise$d = "Måneoppgang";
-var moonset$d = "Månenedgang";
-var noon$d = "Middag";
-var sunrise$d = "Soloppgang";
-var sunset$d = "Solnedgang";
-var nb = {
+var dawn$d = "Dageraad";
+var dusk$d = "Schemer";
+var elevation$d = "Hoogte";
+var moonrise$d = "Maanopkomst";
+var moonset$d = "Maanondergang";
+var noon$d = "Middaguur";
+var sunrise$d = "Zonsopkomst";
+var sunset$d = "Zonsondergang";
+var nl = {
 	azimuth: azimuth$d,
 	dawn: dawn$d,
 	dusk: dusk$d,
@@ -2270,16 +2333,16 @@ var nb = {
 	sunset: sunset$d
 };
 
-var azimuth$c = "Azimut";
-var dawn$c = "Dageraad";
-var dusk$c = "Schemer";
-var elevation$c = "Hoogte";
-var moonrise$c = "Maanopkomst";
-var moonset$c = "Maanondergang";
-var noon$c = "Middaguur";
-var sunrise$c = "Zonsopkomst";
-var sunset$c = "Zonsondergang";
-var nl = {
+var azimuth$c = "Asimut";
+var dawn$c = "Daggry";
+var dusk$c = "Skumring";
+var elevation$c = "Høgde";
+var moonrise$c = "Måneoppgang";
+var moonset$c = "Månenedgang";
+var noon$c = "Middag";
+var sunrise$c = "Soloppgang";
+var sunset$c = "Solnedgang";
+var nn = {
 	azimuth: azimuth$c,
 	dawn: dawn$c,
 	dusk: dusk$c,
@@ -2291,16 +2354,16 @@ var nl = {
 	sunset: sunset$c
 };
 
-var azimuth$b = "Asimut";
-var dawn$b = "Daggry";
-var dusk$b = "Skumring";
-var elevation$b = "Høgde";
-var moonrise$b = "Måneoppgang";
-var moonset$b = "Månenedgang";
-var noon$b = "Middag";
-var sunrise$b = "Soloppgang";
-var sunset$b = "Solnedgang";
-var nn = {
+var azimuth$b = "Azymut";
+var dawn$b = "Świt";
+var dusk$b = "Zmierzch";
+var elevation$b = "Wysokość";
+var moonrise$b = "Wschód księżyca";
+var moonset$b = "Zachód księżyca";
+var noon$b = "Górowanie";
+var sunrise$b = "Wschód";
+var sunset$b = "Zachód";
+var pl = {
 	azimuth: azimuth$b,
 	dawn: dawn$b,
 	dusk: dusk$b,
@@ -2312,16 +2375,16 @@ var nn = {
 	sunset: sunset$b
 };
 
-var azimuth$a = "Azymut";
-var dawn$a = "Świt";
-var dusk$a = "Zmierzch";
-var elevation$a = "Wysokość";
-var moonrise$a = "Wschód księżyca";
-var moonset$a = "Zachód księżyca";
-var noon$a = "Górowanie";
-var sunrise$a = "Wschód";
-var sunset$a = "Zachód";
-var pl = {
+var azimuth$a = "Azimute";
+var dawn$a = "Amanhecer";
+var dusk$a = "Anoitecer";
+var elevation$a = "Elevação";
+var moonrise$a = "Anoitecer";
+var moonset$a = "Amanhecer";
+var noon$a = "Meio dia";
+var sunrise$a = "Nascer do sol";
+var sunset$a = "Pôr do sol";
+var pt = {
 	azimuth: azimuth$a,
 	dawn: dawn$a,
 	dusk: dusk$a,
@@ -2486,7 +2549,7 @@ var dusk$2 = "Сутінки";
 var elevation$2 = "Висота";
 var moonrise$2 = "Схід місяця";
 var moonset$2 = "Захід місяця";
-var noon$2 = "Заніт";
+var noon$2 = "Зеніт";
 var sunrise$2 = "Схід";
 var sunset$2 = "Захід";
 var uk = {
@@ -2668,11 +2731,13 @@ _defineProperty(Constants, "LOCALIZATION_LANGUAGES", {
   cs: cs,
   da: da,
   de: de,
+  el: el,
   en: en,
   es: es,
   et: et,
   fi: fi,
   fr: fr,
+  gl: gl,
   he: he,
   hr: hr,
   hu: hu,
@@ -2686,6 +2751,7 @@ _defineProperty(Constants, "LOCALIZATION_LANGUAGES", {
   nl: nl,
   nn: nn,
   pl: pl,
+  pt: pt,
   'pt-BR': ptBR,
   ro: ro,
   ru: ru,
@@ -2737,7 +2803,7 @@ var HelperFunctions = /*#__PURE__*/function () {
       if (phase === undefined) {
         return A;
       }
-      var moon_phase_localized = i18n.localize("component.sensor.state.moon__phase.".concat(phase.state));
+      var moon_phase_localized = i18n.localize("component.moon.entity.sensor.phase.state.".concat(phase.state));
       if (!moon_phase_localized) {
         moon_phase_localized = x(_templateObject2$3 || (_templateObject2$3 = _taggedTemplateLiteral(["<span title=\"Install Moon integration to get localized Moon phase name\">", " (!)</span>"])), phase.state);
       }
