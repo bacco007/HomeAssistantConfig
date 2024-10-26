@@ -1,0 +1,11 @@
+{
+    "domain": "response_as_sensor",
+    "name": "Response as Sensor",
+    "codeowners": ["@gjohansson-ST"],
+    "config_flow": true,
+    "documentation": "https://github.com/gjohansson-ST/response_as_sensor/blob/master/readme.md",
+    "integration_type": "helper",
+    "iot_class": "local_push",
+    "issue_tracker": "https://github.com/gjohansson-ST/response_as_sensor/issues",
+    "version": "1.0"
+  }
