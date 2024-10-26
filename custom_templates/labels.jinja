@@ -1,0 +1,37 @@
+{%- macro labels_usage() -%}
+
+    {%- set ns            = namespace(labels=[]) -%}
+    {%- set labels_sorted = labels() | sort  -%}
+    {%- for id in labels_sorted -%}
+
+        {%- set entities = label_entities(id) -%}
+        {%- set devices  = label_devices(id) -%}
+        {%- set areas    = label_areas(id) -%}
+
+        {%- set count_entities     = entities | count | default(0) -%}
+        {%- set count_devices      = devices  | count | default(0) -%}
+        {%- set count_areas        = areas    | count | default(0) -%}
+        {%- set count_automations  = entities | select('match', '^automation\.')       | list | count | default(0) -%}
+        {%- set count_scripts      = entities | select('match', '^script\.')           | list | count | default(0) -%}
+        {%- set count_sensors      = entities | select('match', '^(binary_)?sensor\.') | list | count | default(0) -%}
+        {%- set count_helpers      = count_entities - ( count_automations + count_scripts + count_sensors ) -%}
+        {%- set count_total        = count_entities + count_devices + count_areas -%}
+
+        {%- set row = dict(
+            label_id          = id,
+            label_name        = label_name(id),
+            count_entities    = count_entities,
+            count_devices     = count_devices,
+            count_areas       = count_areas,
+            count_automations = count_automations,
+            count_scripts     = count_scripts,
+            count_sensors     = count_sensors,
+            count_helpers     = count_helpers,
+            count_total       = count_total,
+        ) -%}
+
+        {%- set ns.labels = ns.labels + [row] -%}
+
+    {%- endfor -%}
+    {{- ns.labels | to_json(pretty_print=true) -}}
+{%- endmacro -%}

@@ -1,0 +1,19 @@
+---
+trigger:
+  - platform: time_pattern
+    hour: /1
+    id: every_hour
+    alias: Every Hour
+  - platform: event
+    event_type: label_registry_updated
+
+sensor:
+  - name: ha_labels_usage
+    unique_id: ha_labels_usage
+    state: >
+      {{- labels() | count -}}
+    attributes:
+      labels_usage: >
+        {%- from "labels.jinja" import labels_usage -%}
+        {{- labels_usage() -}}
+    icon: mdi:label-percent-outline

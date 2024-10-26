@@ -1,0 +1,75 @@
+---
+type: "custom:flex-table-card"
+entities:
+  include: sensor.ha_labels_usage
+title: Labels Usage
+clickable: false
+columns:
+  - name: Name
+    data: labels_usage
+    align: left
+    modify: x.label_name
+
+  - name: ID
+    data: labels_usage
+    align: left
+    modify: x.label_id
+
+  - name: Total
+    modify: >-
+      let count_total = parseInt(x.count_total, 10);
+      if(count_total > 5 ){
+          count_total
+      }
+      else{
+        (count_total === 0)
+          ? '<div class="0-negative" style="color:red;">' + count_total + '</div>'
+          : '<div class="1-negative" style="color:green;">' + count_total + '</div>'
+      }
+    <<: &numeric_column
+      data: labels_usage
+      align: right
+
+  - name: Devices
+    modify: x.count_devices
+    <<: *numeric_column
+
+  - name: Entities
+    modify: x.count_entities
+    <<: *numeric_column
+
+  - name: Areas
+    modify: x.count_areas
+    <<: *numeric_column
+
+  - name: Automations
+    modify: x.count_automations
+    <<: *numeric_column
+
+  - name: Script
+    modify: x.count_scripts
+    <<: *numeric_column
+
+  - name: Sensors
+    modify: x.count_sensors
+    <<: *numeric_column
+
+  - name: Helpers
+    modify: x.count_helpers
+    <<: *numeric_column
+
+# -----------------------------------------------------------------------------------
+# https://github.com/custom-cards/flex-table-card/blob/0f0260f170660309906358254b8bb1ed7c301f63/docs/example-cfg-css.md
+# -----------------------------------------------------------------------------------
+css:
+  table+: "padding-top: 5px;"
+  "tbody tr+": "user-select: text"
+  "tbody tr:nth-child(even)": "background-color: #a2542f6;"
+  "th": "padding: 0px 0px 10px 3px; background-color: #eeeeee;"
+  "td": "padding: 10px 10px 10px 10px"
+  "td:nth-child(1)": "font-weight: 700;"
+  "td:nth-child(2)": "color: #999999;font-style:italic;"
+  "td:nth-child(7)": "color: #999999;font-style:italic;"
+  "td:nth-child(8)": "color: #999999;font-style:italic;"
+  "td:nth-child(9)": "color: #999999;font-style:italic;"
+  "td:nth-child(10)": "color: #999999;font-style:italic;"

@@ -17,7 +17,7 @@ action:
       entity_id: calendar.ical_nba_all_teams
     response_variable: agenda
   - variables:
-      dump: "{{ agenda['calendar.ical_nba_all_teams'].events }}"
+      dump: "{{ agenda['calendar.ical_nba_all_teams'].events[1:100] }}"
       all_events: "{{dump |sort(attribute='start') | list }}"
       next_5_events: "{{dump |sort(attribute='start') | list }}"
       countnumb: "{{dump | length }}"
