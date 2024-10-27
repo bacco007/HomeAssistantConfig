@@ -51,7 +51,7 @@ _Stats as at 05:00, unknown_
 | No. Integrations | 217 |
 | No. Custom Integrations | 95 |
 | No. Entities | 6400 |
-| No. Sensors | 4168 |
+| No. Sensors | 4167 |
 | No. Automations | 153 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 690
+Devices | 691
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -83,7 +83,7 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 42
+Media players | 43
 Numbers | 37
 Persistent notifications | 5
 Persons | 4
@@ -91,7 +91,7 @@ Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 4168
+Sensors | 4167
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
