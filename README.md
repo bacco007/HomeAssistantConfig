@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.10.4 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6400 |
-| No. Sensors | 4167 |
+| No. Entities | 6471 |
+| No. Sensors | 4175 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 43
 Numbers | 37
-Persistent notifications | 5
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 4167
+Sensors | 4175
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -804,7 +804,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.2.1a] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.0] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
-| [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.10.24] | Material Symbols for Home Assistant is a collection of 13460 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
+| [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.10.27] | Material Symbols for Home Assistant is a collection of 13460 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
@@ -816,7 +816,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.16] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.15.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.15.0] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
@@ -832,7 +832,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.2.4] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.61] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.62] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -874,10 +874,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.2.2] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.0] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.2.3] | Expander card for HomeAssistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.1] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.7] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
-| [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.8] | Custom card to use with Flightradar24 integration for Home Assistant |
+| [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.10] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.7] | Present the data of Formula One in a pretty way |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  | Heatmap custom card for Home Assistant |
@@ -902,7 +902,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.20.1] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.21.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
