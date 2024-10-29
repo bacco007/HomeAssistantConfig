@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.10.4 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6471 |
-| No. Sensors | 4175 |
+| No. Entities | 6220 |
+| No. Sensors | 4040 |
 | No. Automations | 153 |
 
 <details>
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 497
+Binary sensors | 399
 Buttons | 244
 Calendars | 84
 Cameras | 6
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 691
+Devices | 593
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 43
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 4175
+Sensors | 4040
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 297
+Switches | 270
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 315
+Update | 319
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -902,7 +902,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.21.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v7.21.4] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -934,7 +934,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.22.0 |  | db21ed7f |
-| Cloudflared | 5.1.22 |  | 9074a9fa |
+| Cloudflared | 5.1.23 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
 | ESPHome | 2024.10.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
@@ -947,7 +947,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.4 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.6.0 |  | core |
-| Music Assistant Server | 2.3.1 |  | d5369777 |
+| Music Assistant Server | 2.3.2 |  | d5369777 |
 | Node-RED | 18.1.1 |  | a0d7b954 |
 | OpenThread Border Router | 2.11.1 |  | core |
 | phpMyAdmin | 0.10.0 |  | a0d7b954 |
