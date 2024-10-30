@@ -1009,7 +1009,9 @@ function getWidth(config) {
   return getWidthOrHeight(config.widthPercentage);
 }
 function getGroupPlayerIds(hassEntity) {
-  return hassEntity.attributes.group_members || [hassEntity.entity_id];
+  let groupMembers = hassEntity.attributes.group_members;
+  groupMembers = groupMembers == null ? void 0 : groupMembers.filter((id) => id !== null && id !== void 0);
+  return (groupMembers == null ? void 0 : groupMembers.length) ? groupMembers : [hassEntity.entity_id];
 }
 function supportsTurnOn(player) {
   return ((player.attributes.supported_features || 0) & TURN_ON$1) == TURN_ON$1;
@@ -1024,33 +1026,38 @@ function getGroupingChanges(groupingItems, joinedPlayers, activePlayerId) {
   }
   return { unJoin, join, newMainPlayer };
 }
-function entityMatchSonos(config, hassEntity, hassWithEntities) {
+function entityMatchSonos(config, entityId, hassWithEntities) {
   var _a2, _b;
   const configEntities = [...new Set(config.entities)];
   let includeEntity = true;
   if (configEntities.length) {
-    const includesEntity = configEntities.includes(hassEntity.entity_id);
+    const includesEntity = configEntities.includes(entityId);
     includeEntity = !!config.excludeItemsInEntitiesList !== includesEntity;
   }
   let matchesPlatform = true;
   if (config.entityPlatform) {
-    const platform = (_b = (_a2 = hassWithEntities.entities) == null ? void 0 : _a2[hassEntity.entity_id]) == null ? void 0 : _b.platform;
+    const platform = (_b = (_a2 = hassWithEntities.entities) == null ? void 0 : _a2[entityId]) == null ? void 0 : _b.platform;
     matchesPlatform = platform === config.entityPlatform;
   }
   return includeEntity && matchesPlatform;
 }
-function entityMatchMxmp(config, hassEntity, hassWithEntities) {
+function entityMatchMxmp(config, entityId, hassWithEntities) {
   var _a2, _b;
   const configEntities = [...new Set(config.entities)];
+  let matchesPlatform = false;
   if (config.entityPlatform) {
-    const platform = (_b = (_a2 = hassWithEntities.entities) == null ? void 0 : _a2[hassEntity.entity_id]) == null ? void 0 : _b.platform;
-    return platform === config.entityPlatform;
+    const platform = (_b = (_a2 = hassWithEntities.entities) == null ? void 0 : _a2[entityId]) == null ? void 0 : _b.platform;
+    matchesPlatform = platform === config.entityPlatform;
   }
+  let includeEntity = false;
   if (configEntities.length) {
-    const includesEntity = configEntities.includes(hassEntity.entity_id);
-    return !!config.excludeItemsInEntitiesList !== includesEntity;
+    const includesEntity = configEntities.includes(entityId);
+    includeEntity = !!config.excludeItemsInEntitiesList !== includesEntity;
   }
-  return false;
+  if (config.entityPlatform && configEntities.length) {
+    return matchesPlatform && includeEntity;
+  }
+  return matchesPlatform || includeEntity;
 }
 function isSonosCard(config) {
   return config.type.indexOf("sonos") > -1;
@@ -1975,11 +1982,12 @@ class Store {
   getMediaPlayerHassEntities(hass) {
     const hassWithEntities = hass;
     const filtered = Object.values(hass.states).filter((hassEntity) => {
-      if (hassEntity.entity_id.includes("media_player")) {
+      const entityId = hassEntity.entity_id;
+      if (entityId.includes("media_player")) {
         if (isSonosCard(this.config)) {
-          return entityMatchSonos(this.config, hassEntity, hassWithEntities);
+          return entityMatchSonos(this.config, entityId, hassWithEntities);
         } else {
-          return entityMatchMxmp(this.config, hassEntity, hassWithEntities);
+          return entityMatchMxmp(this.config, entityId, hassWithEntities);
         }
       }
       return false;
