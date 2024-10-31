@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.10.4 |
-| No. Integrations | 217 |
+| HA Version | 2024.11.0b0 |
+| No. Integrations | 212 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6237 |
-| No. Sensors | 4040 |
+| No. Entities | 6071 |
+| No. Sensors | 3875 |
 | No. Automations | 153 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 399
-Buttons | 244
+Binary sensors | 398
+Buttons | 217
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 593
+Devices | 595
 Fans | 1
 Humidifiers | 0
 Images | 10
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 4
 Media players | 43
 Numbers | 37
-Persistent notifications | 5
+Persistent notifications | 4
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 4040
+Sensors | 3875
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 270
+Switches | 289
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>637 Integrations</summary>
+<details><summary>613 Integrations</summary>
 
 | Name |
 | --- |
@@ -167,9 +167,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [awtrix.notify](https://www.home-assistant.io/components/awtrix.notify) |
 | [backup](https://www.home-assistant.io/components/backup) |
 | [bayesian.binary_sensor](https://www.home-assistant.io/components/bayesian.binary_sensor) |
-| [bermuda](https://www.home-assistant.io/components/bermuda) |
-| [bermuda.device_tracker](https://www.home-assistant.io/components/bermuda.device_tracker) |
-| [bermuda.sensor](https://www.home-assistant.io/components/bermuda.sensor) |
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
 | [ble_monitor](https://www.home-assistant.io/components/ble_monitor) |
 | [ble_monitor.binary_sensor](https://www.home-assistant.io/components/ble_monitor.binary_sensor) |
@@ -245,17 +242,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [esphome.sensor](https://www.home-assistant.io/components/esphome.sensor) |
 | [esphome.switch](https://www.home-assistant.io/components/esphome.switch) |
 | [esphome.update](https://www.home-assistant.io/components/esphome.update) |
-| [eufy_security](https://www.home-assistant.io/components/eufy_security) |
-| [eufy_security.alarm_control_panel](https://www.home-assistant.io/components/eufy_security.alarm_control_panel) |
-| [eufy_security.binary_sensor](https://www.home-assistant.io/components/eufy_security.binary_sensor) |
-| [eufy_security.button](https://www.home-assistant.io/components/eufy_security.button) |
-| [eufy_security.camera](https://www.home-assistant.io/components/eufy_security.camera) |
-| [eufy_security.image](https://www.home-assistant.io/components/eufy_security.image) |
-| [eufy_security.lock](https://www.home-assistant.io/components/eufy_security.lock) |
-| [eufy_security.number](https://www.home-assistant.io/components/eufy_security.number) |
-| [eufy_security.select](https://www.home-assistant.io/components/eufy_security.select) |
-| [eufy_security.sensor](https://www.home-assistant.io/components/eufy_security.sensor) |
-| [eufy_security.switch](https://www.home-assistant.io/components/eufy_security.switch) |
 | [event](https://www.home-assistant.io/components/event) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fastdotcom](https://www.home-assistant.io/components/fastdotcom) |
@@ -298,14 +284,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location](https://www.home-assistant.io/components/geo_location) |
 | [github](https://www.home-assistant.io/components/github) |
 | [github.sensor](https://www.home-assistant.io/components/github.sensor) |
+| [go2rtc](https://www.home-assistant.io/components/go2rtc) |
 | [google](https://www.home-assistant.io/components/google) |
 | [google.calendar](https://www.home-assistant.io/components/google.calendar) |
 | [google_fit](https://www.home-assistant.io/components/google_fit) |
 | [google_fit.sensor](https://www.home-assistant.io/components/google_fit.sensor) |
-| [google_home](https://www.home-assistant.io/components/google_home) |
-| [google_home.number](https://www.home-assistant.io/components/google_home.number) |
-| [google_home.sensor](https://www.home-assistant.io/components/google_home.sensor) |
-| [google_home.switch](https://www.home-assistant.io/components/google_home.switch) |
 | [google_translate.tts](https://www.home-assistant.io/components/google_translate.tts) |
 | [group](https://www.home-assistant.io/components/group) |
 | [group.light](https://www.home-assistant.io/components/group.light) |
@@ -386,7 +369,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace_gen](https://www.home-assistant.io/components/lovelace_gen) |
 | [lunar_phase](https://www.home-assistant.io/components/lunar_phase) |
 | [lunar_phase.sensor](https://www.home-assistant.io/components/lunar_phase.sensor) |
-| [map](https://www.home-assistant.io/components/map) |
 | [mass](https://www.home-assistant.io/components/mass) |
 | [mass.media_player](https://www.home-assistant.io/components/mass.media_player) |
 | [mastodon](https://www.home-assistant.io/components/mastodon) |
@@ -407,6 +389,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [matter.sensor](https://www.home-assistant.io/components/matter.sensor) |
 | [matter.switch](https://www.home-assistant.io/components/matter.switch) |
 | [matter.update](https://www.home-assistant.io/components/matter.update) |
+| [matter.vacuum](https://www.home-assistant.io/components/matter.vacuum) |
 | [matter.valve](https://www.home-assistant.io/components/matter.valve) |
 | [media_extractor](https://www.home-assistant.io/components/media_extractor) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
@@ -482,10 +465,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pirateweather](https://www.home-assistant.io/components/pirateweather) |
 | [pirateweather.sensor](https://www.home-assistant.io/components/pirateweather.sensor) |
 | [pirateweather.weather](https://www.home-assistant.io/components/pirateweather.weather) |
-| [playstation_network](https://www.home-assistant.io/components/playstation_network) |
-| [playstation_network.media_player](https://www.home-assistant.io/components/playstation_network.media_player) |
-| [playstation_network.notify](https://www.home-assistant.io/components/playstation_network.notify) |
-| [playstation_network.sensor](https://www.home-assistant.io/components/playstation_network.sensor) |
 | [plex](https://www.home-assistant.io/components/plex) |
 | [plex.button](https://www.home-assistant.io/components/plex.button) |
 | [plex.media_player](https://www.home-assistant.io/components/plex.media_player) |
@@ -507,7 +486,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [proxmoxve.binary_sensor](https://www.home-assistant.io/components/proxmoxve.binary_sensor) |
 | [proxmoxve.button](https://www.home-assistant.io/components/proxmoxve.button) |
 | [proxmoxve.sensor](https://www.home-assistant.io/components/proxmoxve.sensor) |
-| [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [qbittorrent](https://www.home-assistant.io/components/qbittorrent) |
 | [qbittorrent.sensor](https://www.home-assistant.io/components/qbittorrent.sensor) |
@@ -597,6 +575,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [spook.time](https://www.home-assistant.io/components/spook.time) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [spotify.media_player](https://www.home-assistant.io/components/spotify.media_player) |
+| [spotify.sensor](https://www.home-assistant.io/components/spotify.sensor) |
 | [spotifyplus](https://www.home-assistant.io/components/spotifyplus) |
 | [spotifyplus.media_player](https://www.home-assistant.io/components/spotifyplus.media_player) |
 | [sql](https://www.home-assistant.io/components/sql) |
@@ -610,9 +589,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [sun.sensor](https://www.home-assistant.io/components/sun.sensor) |
-| [sun2](https://www.home-assistant.io/components/sun2) |
-| [sun2.binary_sensor](https://www.home-assistant.io/components/sun2.binary_sensor) |
-| [sun2.sensor](https://www.home-assistant.io/components/sun2.sensor) |
 | [swatch_time](https://www.home-assistant.io/components/swatch_time) |
 | [swatch_time.sensor](https://www.home-assistant.io/components/swatch_time.sensor) |
 | [switch](https://www.home-assistant.io/components/switch) |
@@ -835,7 +811,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.62] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
-| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.3] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
+| [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.4] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.11] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.4] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.3] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
@@ -848,7 +824,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.2.1] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.1.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
-| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.10] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
+| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.11] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
 <details><summary>64 Lovelace Plugins</summary>
@@ -861,7 +837,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2024.29.07] | Show the current date/time how you want in Home Assistant. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.0-beta.3] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.0-beta.4] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -891,8 +867,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.7] | Build a beautiful Home Assistant dashboard easily |
-| [My Cards Bundle](https://github.com/AnthonMS/my-cards) |  [v1.0.5] | Bundle of my custom Lovelace cards for Home Assistant. Includes: my-slider, my-slider-v2, my-button |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.0.8] | Build a beautiful Home Assistant dashboard easily |
+| [My Cards Bundle](https://github.com/AnthonMS/my-cards) |  [v1.0.6] | Bundle of my custom Lovelace cards for Home Assistant. Includes: my-slider, my-slider-v2, my-button |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -906,7 +882,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
-| [Streamline Card](https://github.com/brunosabot/streamline-card) |  [v0.0.13] | Streamline your Lovelace configuration with with a card template system. |
+| [Streamline Card](https://github.com/brunosabot/streamline-card) |  [v0.0.14] | Streamline your Lovelace configuration with with a card template system. |
 | [Swipe Card](https://github.com/bramkragten/swipe-card) |  [v5.0.0] | Card that allows you to swipe throught multiple cards for Home Assistant Lovelace |
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
@@ -917,7 +893,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.5.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.7.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.8.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>3 Themes</summary>
 
@@ -934,7 +910,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.22.0 |  | db21ed7f |
-| Cloudflared | 5.1.23 |  | 9074a9fa |
+| Cloudflared | 5.2.0 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
 | ESPHome | 2024.10.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
@@ -1002,7 +978,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.10.4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.11.0b0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
