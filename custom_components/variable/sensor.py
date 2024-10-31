@@ -1,10 +1,13 @@
-from collections.abc import MutableMapping
 import copy
 import logging
+from collections.abc import MutableMapping
 
+import homeassistant.helpers.entity_registry as er
+import voluptuous as vol
 from homeassistant.components.sensor import (
     CONF_STATE_CLASS,
     PLATFORM_SCHEMA,
+    UNIT_CONVERTERS,
     RestoreSensor,
 )
 from homeassistant.config_entries import ConfigEntry
@@ -19,11 +22,10 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity import generate_entity_id
-import homeassistant.helpers.entity_registry as er
 from homeassistant.util import slugify
-import voluptuous as vol
 
 from .const import (
     ATTR_ATTRIBUTES,
@@ -156,7 +158,7 @@ class Variable(RestoreSensor):
         self._value_type = config.get(CONF_VALUE_TYPE)
         self._attr_device_class = config.get(CONF_DEVICE_CLASS)
         self._attr_native_unit_of_measurement = config.get(CONF_UNIT_OF_MEASUREMENT)
-        self._attr_suggested_unit_of_measurement = config.get(CONF_UNIT_OF_MEASUREMENT)
+        self._attr_suggested_unit_of_measurement = None
         self._attr_state_class = config.get(CONF_STATE_CLASS)
         if (
             config.get(CONF_ATTRIBUTES) is not None
@@ -180,6 +182,10 @@ class Variable(RestoreSensor):
                 )
             except ValueError:
                 self._attr_native_value = None
+        if config.get(CONF_DEVICE_CLASS) in UNIT_CONVERTERS:
+            self._attr_suggested_unit_of_measurement = config.get(
+                CONF_UNIT_OF_MEASUREMENT
+            )
 
         # _LOGGER.debug(f"({self._attr_name}) [init] unrecorded_attributes: {self._unrecorded_attributes}")
 

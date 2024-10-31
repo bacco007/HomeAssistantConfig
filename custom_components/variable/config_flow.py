@@ -1165,7 +1165,7 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
             if (
                 user_input.get(CONF_VALUE) is not None
                 and isinstance(user_input.get(CONF_VALUE), str)
-                and self.add_sensor_input.get(CONF_VALUE_TYPE) == "datetime"
+                and self.sensor_options_page_1.get(CONF_VALUE_TYPE) == "datetime"
             ):
                 if (
                     user_input.get(CONF_TZOFFSET) is not None
@@ -1236,6 +1236,11 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
     def check_value_default(self, new_device_class):
+        _LOGGER.debug(
+            f"[check_value_default] value: {self.config_entry.data.get(CONF_VALUE)}, "
+            f"current device_class: {self.config_entry.data.get(CONF_DEVICE_CLASS)} ({type(self.config_entry.data.get(CONF_DEVICE_CLASS))}), "
+            f"new_device_class: {new_device_class} ({type(new_device_class)})"
+        )
         val_default_value = None
         if self.config_entry.data.get(CONF_VALUE) is None or (
             isinstance(self.config_entry.data.get(CONF_VALUE), str)
@@ -1258,10 +1263,13 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
         SENSOR_UNITS_SELECT_LIST.append(
             selector.SelectOptionDict(label="None", value="None")
         )
-
-        val_default, val_default_value = self.check_value_default(
-            self.sensor_options_page_1.get(CONF_DEVICE_CLASS)
+        _LOGGER.debug(
+            f"[build_sensor_options_page_2] device_class: {self.sensor_options_page_1.get(CONF_DEVICE_CLASS)} ({type(self.sensor_options_page_1.get(CONF_DEVICE_CLASS))})"
         )
+        device_class = self.sensor_options_page_1.get(CONF_DEVICE_CLASS)
+        if isinstance(device_class, str) and device_class.lower() == "none":
+            device_class = None
+        val_default, val_default_value = self.check_value_default(device_class)
 
         SENSOR_OPTIONS_PAGE_2_SCHEMA = vol.Schema({})
         if (
