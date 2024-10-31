@@ -197,7 +197,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors=errors,
             )
         try:
-            removed = remove_datasource(self.hass, DEFAULT_PATH, user_input[CONF_FILE])
+            removed = remove_datasource(self.hass, DEFAULT_PATH, user_input[CONF_FILE], True)
             _LOGGER.debug(f"Removed gtfs data source: {removed}")
         except Exception as ex:
             _LOGGER.error("Error while deleting : %s", {ex})
