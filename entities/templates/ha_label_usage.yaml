@@ -1,7 +1,7 @@
 ---
 trigger:
   - platform: time_pattern
-    hour: /1
+    hours: /1
     id: every_hour
     alias: Every Hour
   - platform: event
@@ -14,6 +14,6 @@ sensor:
       {{- labels() | count -}}
     attributes:
       labels_usage: >
-        {%- from "labels.jinja" import labels_usage -%}
+        {% from "labels.jinja" import labels_usage -%}
         {{- labels_usage() -}}
     icon: mdi:label-percent-outline

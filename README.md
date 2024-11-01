@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.11.0b0 |
-| No. Integrations | 212 |
+| HA Version | 2024.11.0b1 |
+| No. Integrations | 215 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6071 |
-| No. Sensors | 3875 |
+| No. Entities | 5722 |
+| No. Sensors | 3720 |
 | No. Automations | 153 |
 
 <details>
@@ -62,15 +62,15 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 398
-Buttons | 217
+Binary sensors | 392
+Buttons | 154
 Calendars | 84
 Cameras | 6
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 110
+Device trackers | 109
 Devices | 595
 Fans | 1
 Humidifiers | 0
@@ -83,23 +83,23 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
-Media players | 43
+Media players | 35
 Numbers | 37
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 8
 Scenes | 2
 Scripts | 80
 Selects | 55
-Sensors | 3875
+Sensors | 3720
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 289
+Switches | 203
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 321
+Update | 309
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>613 Integrations</summary>
+<details><summary>631 Integrations</summary>
 
 | Name |
 | --- |
@@ -167,6 +167,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [awtrix.notify](https://www.home-assistant.io/components/awtrix.notify) |
 | [backup](https://www.home-assistant.io/components/backup) |
 | [bayesian.binary_sensor](https://www.home-assistant.io/components/bayesian.binary_sensor) |
+| [bermuda](https://www.home-assistant.io/components/bermuda) |
+| [bermuda.device_tracker](https://www.home-assistant.io/components/bermuda.device_tracker) |
+| [bermuda.sensor](https://www.home-assistant.io/components/bermuda.sensor) |
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
 | [ble_monitor](https://www.home-assistant.io/components/ble_monitor) |
 | [ble_monitor.binary_sensor](https://www.home-assistant.io/components/ble_monitor.binary_sensor) |
@@ -242,6 +245,17 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [esphome.sensor](https://www.home-assistant.io/components/esphome.sensor) |
 | [esphome.switch](https://www.home-assistant.io/components/esphome.switch) |
 | [esphome.update](https://www.home-assistant.io/components/esphome.update) |
+| [eufy_security](https://www.home-assistant.io/components/eufy_security) |
+| [eufy_security.alarm_control_panel](https://www.home-assistant.io/components/eufy_security.alarm_control_panel) |
+| [eufy_security.binary_sensor](https://www.home-assistant.io/components/eufy_security.binary_sensor) |
+| [eufy_security.button](https://www.home-assistant.io/components/eufy_security.button) |
+| [eufy_security.camera](https://www.home-assistant.io/components/eufy_security.camera) |
+| [eufy_security.image](https://www.home-assistant.io/components/eufy_security.image) |
+| [eufy_security.lock](https://www.home-assistant.io/components/eufy_security.lock) |
+| [eufy_security.number](https://www.home-assistant.io/components/eufy_security.number) |
+| [eufy_security.select](https://www.home-assistant.io/components/eufy_security.select) |
+| [eufy_security.sensor](https://www.home-assistant.io/components/eufy_security.sensor) |
+| [eufy_security.switch](https://www.home-assistant.io/components/eufy_security.switch) |
 | [event](https://www.home-assistant.io/components/event) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fastdotcom](https://www.home-assistant.io/components/fastdotcom) |
@@ -486,6 +500,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [proxmoxve.binary_sensor](https://www.home-assistant.io/components/proxmoxve.binary_sensor) |
 | [proxmoxve.button](https://www.home-assistant.io/components/proxmoxve.button) |
 | [proxmoxve.sensor](https://www.home-assistant.io/components/proxmoxve.sensor) |
+| [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [qbittorrent](https://www.home-assistant.io/components/qbittorrent) |
 | [qbittorrent.sensor](https://www.home-assistant.io/components/qbittorrent.sensor) |
@@ -589,6 +604,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [sun.sensor](https://www.home-assistant.io/components/sun.sensor) |
+| [sun2](https://www.home-assistant.io/components/sun2) |
+| [sun2.binary_sensor](https://www.home-assistant.io/components/sun2.binary_sensor) |
+| [sun2.sensor](https://www.home-assistant.io/components/sun2.sensor) |
 | [swatch_time](https://www.home-assistant.io/components/swatch_time) |
 | [swatch_time.sensor](https://www.home-assistant.io/components/swatch_time.sensor) |
 | [switch](https://www.home-assistant.io/components/switch) |
@@ -766,7 +784,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.1] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.2] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.1] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -816,7 +834,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.4] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.3] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
-| [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.7] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
+| [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.8] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.3] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.11] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
@@ -978,7 +996,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.11.0b0-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.11.0b1-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
