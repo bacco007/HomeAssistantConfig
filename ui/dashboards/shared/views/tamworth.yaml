@@ -27,7 +27,7 @@ cards:
       max_width: 1000
     cards:
       - !include /config/ui/cards/tamworth/snippets/livetraffic.yaml
-      - !include /config/ui/cards/tamworth/snippets/essential_energy.yaml
+      # - !include /config/ui/cards/tamworth/snippets/essential_energy.yaml
       - !include /config/ui/cards/tamworth/snippets/fuel.yaml
       - !include /config/ui/cards/tamworth/pubtransport.yaml
       - !include /config/ui/cards/tamworth/nbn_fttnupgrade.yaml

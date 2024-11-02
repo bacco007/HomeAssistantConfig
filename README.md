@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.11.0b1 |
 | No. Integrations | 215 |
 | No. Custom Integrations | 95 |
-| No. Entities | 5722 |
+| No. Entities | 5723 |
 | No. Sensors | 3720 |
 | No. Automations | 153 |
 
@@ -62,7 +62,7 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 392
+Binary sensors | 393
 Buttons | 154
 Calendars | 84
 Cameras | 6
@@ -84,7 +84,7 @@ Input texts | 3
 Lights | 13
 Locks | 4
 Media players | 35
-Numbers | 37
+Numbers | 41
 Persistent notifications | 5
 Persons | 4
 Remotes | 8
@@ -842,7 +842,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.2.1] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.1.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
-| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.11] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
+| [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.12] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
 <details><summary>64 Lovelace Plugins</summary>
@@ -948,7 +948,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.40.2-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.41.0-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.1 |  | 193f5383 |
 </details>
