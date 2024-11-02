@@ -1045,25 +1045,30 @@ def get_local_stops_next_departures(self):
                 self._get_next_service = {}
                 _LOGGER.debug("Find rt for local stop route: %s - direction: %s - stop: %s", self._route , self._direction, self._stop_id)
                 next_service = get_rt_route_trip_statuses(self)
-                
+                _LOGGER.debug("Next service: %s", next_service)
                 if next_service:                       
                     delays = next_service.get(self._route, {}).get(self._direction, {}).get(self._stop_id, []).get("delays", [])
                     departures = next_service.get(self._route, {}).get(self._direction, {}).get(self._stop_id, []).get("departures", [])
                     delay_rt = delays[0] if delays else "-"
                     departure_rt = departures[0] if departures else "-"
-                    
+                _LOGGER.debug("Departure rt: %s, Delay rt: %s", departure_rt, delay_rt)   
             if departure_rt != '-':
-                depart_time_corrected = departures[0]
-                _LOGGER.debug("Departure time: %s, corrected with delay timestamp: %s", self._departure_time, depart_time_corrected)
+                depart_time_corrected_time = departures[0].astimezone(tz=timezone_stop)
             else: 
-                depart_time_corrected = self._departure_time
-            _LOGGER.debug("remove me 1")
+                depart_time_corrected_time = (dt_util.parse_datetime(f"{now_date} {self._departure_time}")).replace(tzinfo=timezone_stop)
+            _LOGGER.debug("Departure time corrected based on realtime-time: %s", depart_time_corrected_time)    
             if delay_rt != '-':
-                depart_time_corrected = dt_util.parse_datetime(f"{now_date} {self._departure_time}").replace(tzinfo=timezone_stop) + datetime.timedelta(seconds=delay_rt)
-                _LOGGER.debug("Departure time: %s, corrected with delay: %s", dt_util.parse_datetime(f"{now_date} {row["departure_time"]}").replace(tzinfo=timezone), depart_time_corrected)
+                depart_time_corrected_delay = (dt_util.parse_datetime(f"{now_date} {self._departure_time}") + datetime.timedelta(seconds=delay_rt)).replace(tzinfo=timezone_stop)
             else:
-                depart_time_corrected = dt_util.parse_datetime(f"{now_date} {self._departure_time}").replace(tzinfo=timezone_stop)                
-            _LOGGER.debug("Departure time: %s", depart_time_corrected)   
+                depart_time_corrected_delay = dt_util.parse_datetime(f"{now_date} {self._departure_time}").replace(tzinfo=timezone_stop)                
+            _LOGGER.debug("Departure time corrected based on realtime-delay: %s", depart_time_corrected_delay)   
+
+            if depart_time_corrected_delay > depart_time_corrected_time: 
+                depart_time_corrected = depart_time_corrected_delay
+            else:
+                depart_time_corrected = depart_time_corrected_time
+            _LOGGER.debug("Departure time corrected: %s", depart_time_corrected_delay)   
+
             if depart_time_corrected > now_tz: 
                 _LOGGER.debug("Departure time corrected: %s, after now in tz with offset: %s", depart_time_corrected, now_tz)
                 timetable.append({"departure": self._departure_time, "departure_realtime": departure_rt, "delay_realtime": delay_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
