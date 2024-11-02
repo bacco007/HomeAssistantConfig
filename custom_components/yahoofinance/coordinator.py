@@ -209,8 +209,13 @@ class CrumbCoordinator:
 
             if response.status == HTTPStatus.OK:
                 self.crumb = await response.text()
+                if not self.crumb:
+                    _LOGGER.error("No crumb reported")
+
                 _LOGGER.debug("Crumb page reported %s", self.crumb)
                 return self.crumb
+
+            _LOGGER.error("Crumb request responded with status=%d", response.status)
 
             if response.status == 429:
                 # Ideally we would want to use the seconds passed back in the header
