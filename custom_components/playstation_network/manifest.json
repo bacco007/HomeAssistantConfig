@@ -14,8 +14,8 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/JackJPowell/hass-psn/issues",
   "requirements": [
-    "PSNAWP-HA==2.1.0"
+    "PSNAWP-HA==2.1.2"
   ],
   "ssdp": [],
-  "version": "v0.5.0"
+  "version": "v0.5.2"
 }

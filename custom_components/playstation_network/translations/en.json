@@ -2,7 +2,8 @@
   "config": {
     "abort": {
       "already_configured": "Device is already configured",
-      "already_in_progress": "Device is pending setup"
+      "already_in_progress": "Device is pending setup",
+      "reauth_successful": "Reauthentication was successful"
     },
     "error": {
       "cannot_connect": "Failed to connect",
