@@ -98,6 +98,9 @@ class CrumbCoordinator:
                 )
                 return None
 
+        if self.cookies_missing():
+            _LOGGER.error("Attempting to get crumb but have no cookies")
+
         await self.try_crumb_page()
         return self.crumb
 
@@ -122,7 +125,10 @@ class CrumbCoordinator:
 
                 if response.status != HTTPStatus.OK:
                     _LOGGER.error(
-                        "Failed to navigate to %s, status=%d", url, response.status
+                        "Failed to navigate to %s, status=%d, reason=%s",
+                        url,
+                        response.status,
+                        response.reason,
                     )
                     return None
 
@@ -170,7 +176,11 @@ class CrumbCoordinator:
                 # 200
 
                 if response.status != HTTPStatus.OK:
-                    _LOGGER.error("Failed to post consent %d", response.status)
+                    _LOGGER.error(
+                        "Failed to post consent %d, reason=%s",
+                        response.status,
+                        response.reason,
+                    )
                     return False
 
                 if response.cookies:
@@ -204,6 +214,7 @@ class CrumbCoordinator:
             GET_CRUMB_URL,
             headers=REQUEST_HEADERS,
             timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+            cookies=self.cookies,
         ) as response:
             _LOGGER.debug("Crumb response status: %d, %s", response.status, response)
 
@@ -215,7 +226,11 @@ class CrumbCoordinator:
                 _LOGGER.debug("Crumb page reported %s", self.crumb)
                 return self.crumb
 
-            _LOGGER.error("Crumb request responded with status=%d", response.status)
+            _LOGGER.error(
+                "Crumb request responded with status=%d, reason=%s",
+                response.status,
+                response.reason,
+            )
 
             if response.status == 429:
                 # Ideally we would want to use the seconds passed back in the header
