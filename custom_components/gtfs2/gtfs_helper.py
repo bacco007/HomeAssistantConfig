@@ -1054,6 +1054,7 @@ def get_local_stops_next_departures(self):
                 _LOGGER.debug("Departure rt: %s, Delay rt: %s", departure_rt, delay_rt)   
             if departure_rt != '-':
                 depart_time_corrected_time = departures[0].astimezone(tz=timezone_stop)
+                departure_rt = depart_time_corrected_time.replace(tzinfo=None).strftime(TIME_STR_FORMAT)
             else: 
                 depart_time_corrected_time = (dt_util.parse_datetime(f"{now_date} {self._departure_time}")).replace(tzinfo=timezone_stop)
             _LOGGER.debug("Departure time corrected based on realtime-time: %s", depart_time_corrected_time)    
