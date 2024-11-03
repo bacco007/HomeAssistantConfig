@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Optional, Any, Dict
 from datetime import datetime as dt
 
 import logging
@@ -158,13 +158,6 @@ SENSORS: dict[str, SensorEntityDescription] = {
         icon="mdi:clock",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
-    "hard_limit": SensorEntityDescription(
-        key="hard_limit",
-        translation_key="hard_limit",
-        name="Hard Limit Set",
-        icon="mdi:speedometer",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
     "total_kwh_forecast_d3": SensorEntityDescription(
         key="total_kwh_forecast_d3",
         device_class=SensorDeviceClass.ENERGY,
@@ -274,8 +267,9 @@ def get_sensor_update_policy(key: str) -> SensorUpdatePolicy:
             "get_remaining_today" |
             "power_now" |
             "power_now_30m" |
-            "power_now_1hr"
-            ):
+            "power_now_1hr" |
+            "api_counter"
+        ):
             return SensorUpdatePolicy.EVERY_TIME_INTERVAL
         case _:
             return SensorUpdatePolicy.DEFAULT
@@ -300,6 +294,31 @@ async def async_setup_entry(
         sen = SolcastSensor(coordinator, SENSORS[sensor_types], entry)
         entities.append(sen)
 
+    api_keys = coordinator.solcast.options.api_key.split(',')
+    hard_limits = coordinator.solcast.options.hard_limit.split(',')
+    if len(hard_limits) == 1:
+        k = SensorEntityDescription(
+            key="hard_limit",
+            translation_key="hard_limit",
+            name="Hard Limit Set",
+            icon="mdi:speedometer",
+            entity_category=EntityCategory.DIAGNOSTIC,
+        )
+        sen = SolcastSensor(coordinator, k, entry)
+        entities.append(sen)
+    else:
+        for api_key in api_keys:
+            k = SensorEntityDescription(
+                key="hard_limit_" + api_key[-6:],
+                translation_key="hard_limit_api",
+                translation_placeholders={
+                    'api_key': '*'*6 + api_key[-6:],
+                },
+                icon="mdi:speedometer",
+                entity_category=EntityCategory.DIAGNOSTIC,
+            )
+            sen = SolcastSensor(coordinator, k, entry)
+            entities.append(sen)
     for site in coordinator.get_solcast_sites():
         k = RooftopSensorEntityDescription(
                 key=site["resource_id"],
@@ -395,7 +414,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             _LOGGER.error(traceback.format_exc())
 
     @property
-    def extra_state_attributes(self) -> (Dict[str, Any] | None):
+    def extra_state_attributes(self) -> Optional[Dict[str, Any]]:
         """Return the state extra attributes of the sensor.
 
         Returns:
@@ -408,7 +427,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             return None
 
     @property
-    def native_value(self) -> (int | dt | float | Any | str | bool | None):
+    def native_value(self) -> Optional[int | dt | float | str | bool]:
         """Return the current value of the sensor.
 
         Returns:
@@ -548,11 +567,11 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             return None
 
     @property
-    def native_value(self) -> (int | dt | float | Any | str | bool | None):
+    def native_value(self) -> Optional[int | dt | float | str | bool]:
         """Return the current value of the sensor.
 
         Returns:
-            int | dt | float | Any | str | bool | None: The current value of a sensor.
+            int | dt | float | str | bool | None: The current value of a sensor.
         """
         return self._sensor_data
 

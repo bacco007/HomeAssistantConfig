@@ -2,9 +2,11 @@
 
 # pylint: disable=C0200, C0304, C0321, R0914
 
+from __future__ import annotations
+
 import math
 
-def cubic_interp(x0, x, y):
+def cubic_interp(x0: list, x: list, y: list):
     """Build a cubic spline.
 
     Arguments:
@@ -15,13 +17,13 @@ def cubic_interp(x0, x, y):
     Returns:
         list: Array of interpolated values.
     """
-    def diff(lst): # numpy-like diff
+    def diff(lst: list): # numpy-like diff
         size = len(lst) - 1
         r = [0] * size
         for i in range(size): r[i] = lst[i+1] - lst[i]
         return r
 
-    def clip(lst, min_val, max_val, in_place = False): # numpy-like clip
+    def clip(lst: list, min_val: float, max_val: float, in_place: bool=False): # numpy-like clip
         if not in_place: lst = lst[:]
         for i in range(len(lst)):
             if lst[i] < min_val:
@@ -30,14 +32,14 @@ def cubic_interp(x0, x, y):
                 lst[i] = max_val
         return lst
 
-    def searchsorted(list_to_insert, insert_into): # numpy-like searchsorted
+    def searchsorted(list_to_insert: list, insert_into: list): # numpy-like searchsorted
         def float_searchsorted(float_to_insert, insert_into):
             for i in range(len(insert_into)):
                 if float_to_insert <= insert_into[i]: return i
             return len(insert_into)
         return [float_searchsorted(i, insert_into) for i in list_to_insert]
 
-    def subtract(a, b):
+    def subtract(a: float, b: float):
         return a - b
 
     size = len(x)

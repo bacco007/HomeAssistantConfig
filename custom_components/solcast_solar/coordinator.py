@@ -6,7 +6,7 @@ from __future__ import annotations
 from datetime import datetime as dt
 from datetime import timedelta
 
-from typing import Any, Dict
+from typing import Optional, Any, Dict
 
 import logging
 import traceback
@@ -24,6 +24,7 @@ from .const import (
     DATE_FORMAT,
     DOMAIN,
     SENSOR_DEBUG_LOGGING,
+    TIME_FORMAT,
 )
 
 from .solcastapi import SolcastApi
@@ -56,6 +57,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         self._sunrise_tomorrow: dt = None
         self._sunset_tomorrow: dt = None
         self._intervals: list[dt] = []
+        self.interval_just_passed = None
 
         super().__init__(hass, _LOGGER, name=DOMAIN)
 
@@ -68,7 +70,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """
         return self.solcast.get_data()
 
-    async def setup(self):
+    async def setup(self) -> bool:
         """Set up time change tracking."""
         self._last_day = dt.now(self.solcast.options.tz).day
         try:
@@ -80,8 +82,10 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             self.tasks['midnight_update'] = async_track_utc_time_change(self._hass, self.__update_utcmidnight_usage_sensor_data,  hour=0, minute=0, second=0)
             for timer, _ in self.tasks.items():
                 _LOGGER.debug("Started task %s", timer)
+            return True
         except:
             _LOGGER.error("Exception in setup: %s", traceback.format_exc())
+            return False
 
     async def update_integration_listeners(self, *args):
         """Get updated sensor values."""
@@ -119,27 +123,29 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """Check for an auto forecast update event."""
         try:
             if self.solcast.options.auto_update:
-                if len(self._intervals) > 0 and self._intervals[0] < self.solcast.get_now_utc() + timedelta(minutes=5):
-                    update_in = (self._intervals[0] - self.solcast.get_now_utc()).total_seconds()
-                    if self.tasks.get('pending_update') is not None:
-                        # An update is already tasked
-                        _LOGGER.debug("Update already tasked. Updating in %d seconds", update_in)
-                        return
-                    _LOGGER.debug("Forecast will update in %d seconds", update_in)
-                    async def wait_for_fetch():
-                        try:
-                            await asyncio.sleep(update_in)
-                            # Proceed with forecast update if not cancelled
-                            self._intervals = self._intervals[1:]
-                            await self.__forecast_update()
-                            if len(self._intervals) > 0:
-                                _LOGGER.debug("Next forecast update scheduled for %s", self._intervals[0].astimezone(self.solcast.options.tz).strftime(DATE_FORMAT))
-                        except asyncio.CancelledError:
-                            _LOGGER.debug("Cancelled next scheduled update")
-                        finally:
-                            if self.tasks.get('pending_update') is not None:
-                                self.tasks.pop('pending_update')
-                    self.tasks['pending_update'] = asyncio.create_task(wait_for_fetch())
+                if len(self._intervals) > 0:
+                    _now = self.solcast.get_real_now_utc().replace(microsecond=0)
+                    _from = _now.replace(minute=int(_now.minute/5)*5, second=0)
+                    if _from <= self._intervals[0] <= _from + timedelta(seconds=299):
+                        update_in = (self._intervals[0] - _now).total_seconds()
+                        if self.tasks.get('pending_update') is not None:
+                            # An update is already tasked
+                            _LOGGER.debug("Update already tasked and updating in %d seconds", update_in)
+                            return
+                        _LOGGER.debug("Forecast will update in %d seconds", update_in)
+                        async def wait_for_fetch():
+                            try:
+                                await asyncio.sleep(update_in)
+                                # Proceed with forecast update if not cancelled
+                                _LOGGER.info("Auto update: Fetching forecast")
+                                self._intervals = self._intervals[1:]
+                                await self.__forecast_update()
+                            except asyncio.CancelledError:
+                                _LOGGER.info("Auto update: Cancelled next scheduled update")
+                            finally:
+                                if self.tasks.get('pending_update') is not None:
+                                    self.tasks.pop('pending_update')
+                        self.tasks['pending_update'] = asyncio.create_task(wait_for_fetch())
         except:
             _LOGGER.error("Exception in __check_forecast_fetch(): %s", traceback.format_exc())
 
@@ -153,14 +159,15 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         except:
             _LOGGER.error("Exception in __update_utcmidnight_usage_sensor_data(): %s", traceback.format_exc())
 
-    async def __update_midnight_spline_recalc(self, *args):
+    async def __update_midnight_spline_recalc(self):
         """Re-calculates splines at midnight local time."""
         try:
+            await self.solcast.check_data_records()
             await self.solcast.recalculate_splines()
         except:
             _LOGGER.error("Exception in __update_midnight_spline_recalc(): %s", traceback.format_exc())
 
-    def __auto_update_setup(self, init=False):
+    def __auto_update_setup(self, init: bool=False):
         """Daily set up of auto-updates."""
         try:
             match self.solcast.options.auto_update:
@@ -194,7 +201,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             self._sunset.astimezone(self.solcast.options.tz).strftime('%H:%M:%S')
         )
 
-    def __calculate_forecast_updates(self, init=False):
+    def __calculate_forecast_updates(self, init: bool=False):
         """Calculate all automated forecast update UTC events for the day.
 
         This is an even spread between sunrise and sunset.
@@ -206,28 +213,36 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 seconds = int((sunset - sunrise).total_seconds())
                 interval = int(seconds / divisions)
                 intervals = [(sunrise + timedelta(seconds=interval) * i) for i in range(0, divisions)]
-                intervals = [i for i in intervals if i > self.solcast.get_now_utc()]
+                _now = self.solcast.get_real_now_utc()
+                for i in intervals:
+                    if i < _now:
+                        self.interval_just_passed = i
+                    else:
+                        break
+                intervals = [i for i in intervals if i > _now]
+                if len(intervals) < divisions:
+                    _LOGGER.debug("Previous auto update was at: %s (if auto-update was enabled at the time)", self.interval_just_passed.astimezone(self.solcast.options.tz).strftime(DATE_FORMAT))
                 if log:
-                    _LOGGER.debug("Auto update: Total seconds %d, divisions: %d updates, interval: %d seconds", seconds, divisions, interval)
+                    _LOGGER.debug("Auto update total seconds: %d, divisions: %d, interval: %d seconds", seconds, divisions, interval)
                     if init:
-                        _LOGGER.debug("Auto-update will update forecasts %d times %s", divisions, "over 24 hours" if self.solcast.options.auto_update > 1 else "between sunrise and sunset")
+                        _LOGGER.debug("Auto update will update forecasts %d times %s", divisions, "over 24 hours" if self.solcast.options.auto_update > 1 else "between sunrise and sunset")
                 return intervals
 
-            self._intervals = get_intervals(self._sunrise, self._sunset)
-
             def format_intervals(intervals):
-                return [i.astimezone(self.solcast.options.tz).strftime('%H:%M') if len(intervals) > 5 else i.astimezone(self.solcast.options.tz).strftime('%H:%M:%S') for i in intervals]
+                return [i.astimezone(self.solcast.options.tz).strftime('%H:%M') if len(intervals) > 10 else i.astimezone(self.solcast.options.tz).strftime('%H:%M:%S') for i in intervals]
 
-            intervals_today = format_intervals(self._intervals)
+            intervals_today = get_intervals(self._sunrise, self._sunset)
+            intervals_tomorrow = get_intervals(self._sunrise_tomorrow, self._sunset_tomorrow, log=False)
+            self._intervals = intervals_today + intervals_tomorrow
+
             if len(intervals_today) > 0:
-                _LOGGER.info("Auto-scheduled forecast update for today at %s", ', '.join(intervals_today))
+                _LOGGER.info("Auto update: Forecast update%s for today at %s", 's' if len(intervals_today) > 1 else '', ', '.join(format_intervals(intervals_today)))
             if len(intervals_today) < divisions: # Only log tomorrow if part-way though today, or today has no more updates
-                intervals_tomorrow = format_intervals(get_intervals(self._sunrise_tomorrow, self._sunset_tomorrow, log=False))
-                _LOGGER.info("Auto-scheduled forecast update for tomorrow at %s", ', '.join(intervals_tomorrow))
+                _LOGGER.info("Auto update: Forecast update%s for tomorrow at %s", 's' if len(intervals_tomorrow) > 1 else '', ', '.join(format_intervals(intervals_tomorrow)))
         except:
             _LOGGER.error("Exception in __calculate_forecast_updates(): %s", traceback.format_exc())
 
-    async def __forecast_update(self, force=False):
+    async def __forecast_update(self, force: bool=False):
         """Get updated forecast data."""
 
         _LOGGER.debug("Checking for stale usage cache")
@@ -236,24 +251,33 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             await self.solcast.reset_usage_cache()
             await self.__restart_time_track_midnight_update()
 
+        if len(self._intervals) > 0:
+            next_update = self._intervals[0].astimezone(self.solcast.options.tz)
+            next_update = next_update.strftime(TIME_FORMAT) if next_update.date() == dt.now().date() else next_update.strftime(DATE_FORMAT)
+        else:
+            next_update = None
+
         #await self.solcast.get_weather()
-        await self.solcast.get_forecast_update(do_past=False, force=force)
+        await self.solcast.get_forecast_update(do_past=False, force=force, next_update=next_update)
         self._data_updated = True
         await self.update_integration_listeners()
         self._data_updated = False
 
-    async def service_event_update(self, *args):
+    async def service_event_update(self, **kwargs):
         """Get updated forecast data when requested by a service call.
+
+        Arguments:
+            kwargs (dict): If a key of "ignore_auto_enabled" exists (regardless of the value), then the API counter will be incremented.
 
         Raises:
             ServiceValidationError: Notify Home Assistant that an error has occurred, with translation.
         """
-        if self.solcast.options.auto_update > 0:
+        if self.solcast.options.auto_update > 0 and 'ignore_auto_enabled' not in kwargs.keys(): # pylint: disable=C0201
             raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_force")
         else:
             self.tasks['forecast_update'] = asyncio.create_task(self.__forecast_update())
 
-    async def service_event_force_update(self, *args):
+    async def service_event_force_update(self):
         """Force the update of forecast data when requested by a service call. Ignores API usage/limit counts.
 
         Raises:
@@ -264,7 +288,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         else:
             self.tasks['forecast_update'] = asyncio.create_task(self.__forecast_update(force=True))
 
-    async def service_event_delete_old_solcast_json_file(self, *args):
+    async def service_event_delete_old_solcast_json_file(self):
         """Delete the solcast.json file when requested by a service call."""
         await self.solcast.delete_solcast_file()
 
@@ -296,7 +320,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """
         return self._data_updated
 
-    def set_data_updated(self, updated):
+    def set_data_updated(self, updated: bool):
         """Set the state of the data updated flag.
 
         Arguments:
@@ -312,8 +336,16 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """
         return self._date_changed
 
-    def get_sensor_value(self, key="") -> (int | dt | float | Any | str | bool | None):
+    def get_sensor_value(self, key: str="") -> Optional[int | dt | float | str | bool]:
         """Return the value of a sensor."""
+        def unit_adjusted(hard_limit):
+            if hard_limit >= 1000000:
+                return f"{round(hard_limit/1000000, 1)} GW"
+            if hard_limit >= 1000:
+                return f"{round(hard_limit/1000, 1)} MW"
+            else:
+                return f"{round(hard_limit, 1)} kW"
+
         match key:
             case "peak_w_today":
                 return self.solcast.get_peak_w_day(0)
@@ -356,23 +388,28 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             case "api_limit":
                 return self.solcast.get_api_limit()
             case "lastupdated":
-                return self.solcast.get_last_updated_datetime()
+                return self.solcast.get_last_updated()
             case "hard_limit":
-                if self.solcast.hard_limit == 100:
+                hard_limit = float(self.solcast.hard_limit.split(',')[0])
+                if hard_limit == 100:
                     return False
                 else:
-                    if self.solcast.hard_limit >= 1000000:
-                        return f"{round(self.solcast.hard_limit/1000000, 1)} GW"
-                    if self.solcast.hard_limit >= 1000:
-                        return f"{round(self.solcast.hard_limit/1000, 1)} MW"
-                    else:
-                        return f"{round(self.solcast.hard_limit, 1)} kW"
+                    return unit_adjusted(hard_limit)
             # case "weather_description":
             #     return self.solcast.get_weather_description()
             case _:
+                api_keys = self.solcast.options.api_key
+                i = 0
+                for api_key in api_keys.split(','):
+                    if key == "hard_limit_" + api_key[-6:]:
+                        hard_limit = float(self.solcast.hard_limit.split(',')[i])
+                        if hard_limit == 100:
+                            return False
+                        else:
+                            return unit_adjusted(hard_limit)
                 return None
 
-    def get_sensor_extra_attributes(self, key="") -> (Dict[str, Any] | None):
+    def get_sensor_extra_attributes(self, key="") -> Optional[Dict[str, Any]]:
         """Return the attributes for a sensor."""
         match key:
             case "forecast_this_hour":
@@ -428,7 +465,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             case _:
                 return None
 
-    def get_site_sensor_value(self, roof_id, key) -> (float | None):
+    def get_site_sensor_value(self, roof_id: str, key: str) -> Optional[float]:
         """Get the site total for today."""
         match key:
             case "site_data":
@@ -436,7 +473,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             case _:
                 return None
 
-    def get_site_sensor_extra_attributes(self, roof_id, key) -> (dict[str, Any] | None):
+    def get_site_sensor_extra_attributes(self, roof_id: str, key: str) -> Optional[dict[str, Any]]:
         """Get the attributes for a sensor."""
         match key:
             case "site_data":

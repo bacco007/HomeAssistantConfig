@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Optional, Any
 
 import logging
 
@@ -15,7 +15,7 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str) -> (dict[str, Any] | None):
+async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str) -> Optional[dict[str, Any]]:
     """Get solar forecast for a config entry ID.
 
     Arguments:
