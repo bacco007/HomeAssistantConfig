@@ -46,13 +46,13 @@ sensor:
     icon: mdi:smog
     state: >
       {% set level = states('sensor.air_quality_index')|int(-1) %}
-      {% if level < 51 %} Good
-      {% elif level < 101 %} Moderate
-      {% elif level < 101 %} Unhealthy Sensitive Groups
-      {% elif level < 201 %} Unhealthy
-      {% elif level < 301 %} Very Unhealthy
-      {% else %} Hazardous
-      {% endif %}
+      {%- if level < 51 %} Good
+      {%- elif level < 101 %} Moderate
+      {%- elif level < 101 %} Unhealthy Sensitive Groups
+      {%- elif level < 201 %} Unhealthy
+      {%- elif level < 301 %} Very Unhealthy
+      {%- else %} Hazardous
+      {%- endif %}
     availability: "{{ is_number(states('sensor.waqi_air_quality_index')) }}"
     attributes:
       category: waqi
@@ -61,10 +61,10 @@ sensor:
     unique_id: waqi_ozone
     device_class: aqi
     state_class: measurement
-    unit_of_measurement: AQI
+    unit_of_measurement: "µg/m³"
     icon: si:co2
-    state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','ozone') }}"
-    availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','ozone')) }}"
+    state: "{{ states('sensor.ozone_o3') }}"
+    availability: "{{ is_number(states('sensor.ozone_o3')) }}"
     attributes:
       category: waqi
 
@@ -81,9 +81,9 @@ sensor:
     device_class: aqi
     state_class: measurement
     icon: si:co2
-    unit_of_measurement: AQI
-    state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide') }}"
-    availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide')) }}"
+    unit_of_measurement: "µg/m³"
+    state: "{{ states('sensor.nitrogen_dioxide_no2') }}"
+    availability: "{{ is_number(states('sensor.nitrogen_dioxide_no2')) }}"
     attributes:
       category: waqi
 
@@ -99,10 +99,10 @@ sensor:
     unique_id: waqi_particulate_matter_2_5
     device_class: aqi
     state_class: measurement
-    unit_of_measurement: AQI
+    unit_of_measurement: "µg/m³"
     icon: si:pm2-5
-    state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5') }}"
-    availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5')) }}"
+    state: "{{ states('sensor.particulate_matter_pm25') }}"
+    availability: "{{ is_number(states('sensor.particulate_matter_pm25')) }}"
     attributes:
       category: waqi
 
@@ -110,9 +110,9 @@ sensor:
     unique_id: waqi_particulate_matter_10
     device_class: aqi
     state_class: measurement
-    unit_of_measurement: AQI
+    unit_of_measurement: "µg/m³"
     icon: si:pm2-5
-    state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_10') }}"
-    availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_10')) }}"
+    state: "{{ states('sensor.particulate_matter_pm10') }}"
+    availability: "{{ is_number(states('sensor.particulate_matter_pm10')) }}"
     attributes:
       category: waqi

@@ -1268,16 +1268,16 @@ binary_sensor:
       entity_count: >
         "{{ integration_entities('uptime_kuma')|select('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] usgs_earthquakes_feed"
-    unique_id: ha_connected_integration_usgs_earthquakes_feed
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/usgs_earthquakes_feed/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('usgs_earthquakes_feed')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('usgs_earthquakes_feed')|select('has_value')|list|count }}"
+  # - name: "[HA Connected Integration] usgs_earthquakes_feed"
+  #   unique_id: ha_connected_integration_usgs_earthquakes_feed
+  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+  #   picture: https://brands.home-assistant.io/usgs_earthquakes_feed/icon.png
+  #   device_class: connectivity
+  #   state: "{{ integration_entities('usgs_earthquakes_feed')|select('has_value')|list|count > 0 }}"
+  #   attributes:
+  #     category: homeassistant_connectivity
+  #     entity_count: >
+  #       "{{ integration_entities('usgs_earthquakes_feed')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] waqi"
     unique_id: ha_connected_integration_waqi
