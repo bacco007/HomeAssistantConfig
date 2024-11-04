@@ -8,12 +8,12 @@ from homeassistant.components import media_source
 from homeassistant.components.media_player import BrowseError, BrowseMedia
 from homeassistant.components.media_player.const import MediaClass, MediaType
 from homeassistant.core import HomeAssistant, callback
-from music_assistant.common.models.media_items import MediaItemType
+from music_assistant_models.media_items import MediaItemType
 
 from .const import DEFAULT_NAME, DOMAIN
 
 if TYPE_CHECKING:
-    from music_assistant.client import MusicAssistantClient
+    from music_assistant_client import MusicAssistantClient
 
 MEDIA_TYPE_RADIO = "radio"
 

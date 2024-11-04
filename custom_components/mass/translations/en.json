@@ -25,7 +25,6 @@
       "unknown": "Unexpected error"
     },
     "abort": {
-      "already_configured": "Music Assistant is already configured",
       "already_in_progress": "Configuration flow is already in progress",
       "reconfiguration_successful": "Successfully reconfigured the Music Assistant integration.",
       "cannot_connect": "Failed to connect"
@@ -123,6 +122,54 @@
           "description": "Only include results that are in the library."
         }
       }
+    },
+    "get_queue": {
+      "name": "Get PlayerQueue details (advanced)",
+      "description": "Get the full queue details of a Music Assistant Queue.",
+      "fields": {
+        "queue_id": {
+          "name": "Queue ID",
+          "description": "The Music Assistant Queue ID to request details for."
+        }
+      }
+    },
+    "get_library": {
+      "name": "Get Library items",
+      "description": "Get items from a Music Assistant Library.",
+      "fields": {
+        "media_type": {
+          "name": "Media Type",
+          "description": "The MediaType for which to request details for."
+        },
+        "favorite": {
+          "name": "Favorites only",
+          "description": "Filter items so only favorites items are returned."
+        },
+        "search": {
+          "name": "Search",
+          "description": "Optional search string to search through this library."
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "Maximum number of items to return."
+        },
+        "offset": {
+          "name": "Offset",
+          "description": "Offset to start the list from."
+        },
+        "order_by": {
+          "name": "Order By",
+          "description": "Sort the list by this field."
+        },
+        "album_type": {
+          "name": "Album Type filter (albums library only)",
+          "description": "Filter albums by type."
+        },
+        "album_artists_only": {
+          "name": "Enable album artists filter (only for artist library)",
+          "description": "Only return Album Artists when listing the Artists library items."
+        }
+      }
     }
   },
   "selector": {
@@ -133,6 +180,46 @@
         "add": "Add to queue",
         "replace": "Play now and clear queue",
         "replace_next": "Play next and clear queue"
+      }
+    },
+    "media_type": {
+      "options": {
+        "artist": "Artist",
+        "album": "Album",
+        "track": "Track",
+        "playlist": "Playlist",
+        "radio": "Radio"
+      }
+    },
+    "order_by": {
+      "options": {
+        "name": "Name",
+        "name_desc": "Name (desc)",
+        "sort_name": "Sort Name",
+        "sort_name_desc": "Sort Name (desc)",
+        "timestamp_added": "Added",
+        "timestamp_added_desc": "Added (desc)",
+        "last_played": "Last Played",
+        "last_played_desc": "Last Played (desc)",
+        "play_count": "Play Count",
+        "play_count_desc": "Play Count (desc)",
+        "year": "Year",
+        "year_desc": "Year (desc)",
+        "position": "Position",
+        "position_desc": "Position (desc)",
+        "artist_name": "Artist Name",
+        "artist_name_desc": "Artist Name (desc)",
+        "random": "Random",
+        "random_play_count": "Random + Least played"
+      }
+    },
+    "album_type": {
+      "options": {
+        "album": "Album",
+        "single": "Single",
+        "ep": "EP",
+        "compilation": "Compilation",
+        "unknown": "Unknown"
       }
     }
   },
