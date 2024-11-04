@@ -1,0 +1,13 @@
+---
+alias: "[Fans] Fan On"
+fields:
+  fan:
+    description: Fan to Turn On
+    example: bedroom_fan
+sequence:
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.{{ fan }}_speed
+      value: 1
+mode: single
+icon: mdi:fan-speed-1

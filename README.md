@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.11.0b2 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 95 |
-| No. Entities | 5804 |
-| No. Sensors | 3783 |
+| No. Entities | 6003 |
+| No. Sensors | 3871 |
 | No. Automations | 153 |
 
 <details>
@@ -63,39 +63,39 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 394
-Buttons | 154
+Buttons | 209
 Calendars | 84
 Cameras | 6
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 109
+Device trackers | 110
 Devices | 596
-Fans | 1
+Fans | 3
 Humidifiers | 0
 Images | 10
-Input booleans | 25
+Input booleans | 27
 Input buttons | 0
 Input date/times | 0
-Input numbers | 7
+Input numbers | 9
 Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 42
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
-Remotes | 8
+Remotes | 9
 Scenes | 2
-Scripts | 80
+Scripts | 84
 Selects | 56
-Sensors | 3783
+Sensors | 3871
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 229
+Switches | 284
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>645 Integrations</summary>
+<details><summary>635 Integrations</summary>
 
 | Name |
 | --- |
@@ -181,6 +181,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
 | [bluetooth_adapters](https://www.home-assistant.io/components/bluetooth_adapters) |
+| [broadlink](https://www.home-assistant.io/components/broadlink) |
+| [broadlink.remote](https://www.home-assistant.io/components/broadlink.remote) |
+| [broadlink.sensor](https://www.home-assistant.io/components/broadlink.sensor) |
+| [broadlink.switch](https://www.home-assistant.io/components/broadlink.switch) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [browser_mod.binary_sensor](https://www.home-assistant.io/components/browser_mod.binary_sensor) |
 | [browser_mod.camera](https://www.home-assistant.io/components/browser_mod.camera) |
@@ -645,6 +649,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [temperature_feels_like.sensor](https://www.home-assistant.io/components/temperature_feels_like.sensor) |
 | [template](https://www.home-assistant.io/components/template) |
 | [template.binary_sensor](https://www.home-assistant.io/components/template.binary_sensor) |
+| [template.fan](https://www.home-assistant.io/components/template.fan) |
 | [template.sensor](https://www.home-assistant.io/components/template.sensor) |
 | [template.switch](https://www.home-assistant.io/components/template.switch) |
 | [template.weather](https://www.home-assistant.io/components/template.weather) |
@@ -748,21 +753,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
-| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
-| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
-| [zha.button](https://www.home-assistant.io/components/zha.button) |
-| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
-| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
-| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
-| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
-| [zha.light](https://www.home-assistant.io/components/zha.light) |
-| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
-| [zha.number](https://www.home-assistant.io/components/zha.number) |
-| [zha.select](https://www.home-assistant.io/components/zha.select) |
-| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
-| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
-| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
-| [zha.update](https://www.home-assistant.io/components/zha.update) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -798,7 +788,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.11.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.3] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.1] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -816,7 +806,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.2] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.10.1] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
+| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.11.0] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.7] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.1.1] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
@@ -824,7 +814,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.16] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.15.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.1.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.2] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.15.1] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|

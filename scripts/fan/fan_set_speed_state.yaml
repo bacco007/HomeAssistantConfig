@@ -1,0 +1,15 @@
+---
+alias: "[Fans] Set Speed State"
+icon: mdi:fan
+fields:
+  fan:
+    description: The fan to set the speed of
+    example: bedroom_fan
+  speed:
+    description: The speed of the fan
+    example: "1"
+sequence:
+  service: input_number.set_value
+  data:
+    entity_id: input_number.{{ fan }}_speed
+    value: "{{ (speed / 100) * 3 | round(0, 'ceil') }}"

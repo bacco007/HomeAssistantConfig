@@ -1,0 +1,4 @@
+---
+office_fan_state:
+  name: "[Office Fan] State"
+  icon: mdi:fan

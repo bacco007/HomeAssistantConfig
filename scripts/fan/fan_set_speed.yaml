@@ -1,0 +1,33 @@
+---
+alias: "[Fans] Set Speed"
+icon: mdi:fan
+fields:
+  fan:
+    description: The fan to set the speed of
+    example: parents_fan
+  speed:
+    description: The speed of the fan
+    example: "1"
+sequence:
+  - service: remote.send_command
+    data:
+      device: "{{ fan }}"
+      command: fan_speed_{{ speed | round (0, 'floor') }}
+    target:
+      entity_id: remote.wi_fi_universal_remote
+  - if:
+      - condition: template
+        value_template: "{{ (speed | round (0, 'floor')) == 0 }}"
+    then:
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.{{ fan }}_state
+    else:
+      - service: input_boolean.turn_on
+        data:
+          entity_id: input_boolean.{{ fan }}_state
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.{{ fan }}_speed
+      value: "{{ speed }}"
+mode: single

@@ -1,0 +1,4 @@
+---
+bedroom_fan_state:
+  name: "[Bedroom Fan] State"
+  icon: mdi:fan

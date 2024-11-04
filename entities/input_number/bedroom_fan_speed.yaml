@@ -1,0 +1,8 @@
+---
+bedroom_fan_speed:
+  name: "[Bedroom Fan] Speed"
+  icon: mdi:fan
+  step: 1
+  min: 0
+  max: 3
+  mode: slider

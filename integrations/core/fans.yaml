@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/fan.template/
+fan: !include_dir_merge_named /config/entities/fan
