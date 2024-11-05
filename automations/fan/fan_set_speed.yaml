@@ -1,0 +1,18 @@
+---
+id: "fan_set_speed"
+alias: "[Fan] Set Speed"
+description: "[Fan] Set Speed"
+trigger:
+  - platform: state
+    entity_id:
+      - input_number.office_fan_speed
+action:
+  - service: script.fan_set_speed
+    data:
+      fan: "{{ fan }}"
+      speed: "{{ states(trigger.entity_id)| round (0, 'floor') }}"
+variables:
+  fan:
+    "{{ trigger.entity_id | regex_replace(find='input_number.', replace='',
+    ignorecase=False) | regex_replace(find='_speed', replace='', ignorecase=False)
+    }}"

@@ -6,7 +6,17 @@ fans:
     unique_id: office_fan
     speed_count: 3
     value_template: "{{ states('input_boolean.office_fan_state') }}"
-    percentage_template: "{{ (100 * (int(states('input_number.office_fan_speed'))/3)) | round(0, 'floor') }}"
+    percentage_template: >-
+      {% set perval = states('input_number.office_fan_speed')| round (0, 'floor') %}
+      {% if perval == 3 %}
+        100
+      {% elif perval == 2 %}
+        66
+      {% elif perval == 1 %}
+        33
+      {% else %}
+        0
+      {% endif %}
     turn_off:
       service: script.fan_off
       data:
@@ -19,13 +29,32 @@ fans:
       service: script.fan_set_speed_state
       data:
         fan: office_fan
-        speed: "{{ percentage }}"
+        speed: >-
+          {% if percentage == 100 %}
+            3
+          {% elif percentage == 66 %}
+            2
+          {% elif percentage == 33 %}
+            1
+          {% else %}
+            0
+          {% endif %}
   bedroom_fan:
     friendly_name: "[Fan] Bedroom Fan"
     unique_id: bedroom_fan
     speed_count: 3
     value_template: "{{ states('input_boolean.bedroom_fan_state') }}"
-    percentage_template: "{{ (100 * (int(states('input_number.bedroom_fan_speed'))/3)) | round(0, 'floor') }}"
+    percentage_template: >-
+      {% set perval = states('input_number.bedroom_fan_speed')| round (0, 'floor') %}
+      {% if perval == 3 %}
+        100
+      {% elif perval == 2 %}
+        66
+      {% elif perval == 1 %}
+        33
+      {% else %}
+        0
+      {% endif %}
     turn_off:
       service: script.fan_off
       data:
@@ -38,4 +67,13 @@ fans:
       service: script.fan_set_speed_state
       data:
         fan: bedroom_fan
-        speed: "{{ percentage }}"
+        speed: >-
+          {% if percentage == 100 %}
+            3
+          {% elif percentage == 66 %}
+            2
+          {% elif percentage == 33 %}
+            1
+          {% else %}
+            0
+          {% endif %}

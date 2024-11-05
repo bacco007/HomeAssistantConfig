@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.11.0b2 |
-| No. Integrations | 217 |
+| HA Version | 2024.11.0b3 |
+| No. Integrations | 218 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6003 |
-| No. Sensors | 3871 |
-| No. Automations | 153 |
+| No. Entities | 6019 |
+| No. Sensors | 3892 |
+| No. Automations | 154 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 394
-Buttons | 209
+Buttons | 214
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 42
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 3871
+Sensors | 3892
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 284
+Switches | 289
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 309
+Update | 310
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>635 Integrations</summary>
+<details><summary>650 Integrations</summary>
 
 | Name |
 | --- |
@@ -753,6 +753,21 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
+| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
+| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
+| [zha.button](https://www.home-assistant.io/components/zha.button) |
+| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
+| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
+| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
+| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
+| [zha.light](https://www.home-assistant.io/components/zha.light) |
+| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
+| [zha.number](https://www.home-assistant.io/components/zha.number) |
+| [zha.select](https://www.home-assistant.io/components/zha.select) |
+| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
+| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
+| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
+| [zha.update](https://www.home-assistant.io/components/zha.update) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -793,7 +808,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.5.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.1] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.0.5.9] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.1] | iCloud3 v3 - iCloud3 is an advanced iDevice tracker that uses Apple iCloud account and HA Companion App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Development Version](https://github.com/gcobb321/icloud3_v3) |  [v3.0.5.9] | iCloud3 v3, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.0.4] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.0] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -838,7 +853,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.4] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.3] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
-| [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.8] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
+| [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.9] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.3] | Home Assistant custom integration to keep track of missing entities and services in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.11] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
@@ -1000,7 +1015,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.11.0b2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.11.0b3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml

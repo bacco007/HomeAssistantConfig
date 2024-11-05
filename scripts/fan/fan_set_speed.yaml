@@ -12,12 +12,12 @@ sequence:
   - service: remote.send_command
     data:
       device: "{{ fan }}"
-      command: fan_speed_{{ speed | round (0, 'floor') }}
+      command: fan_speed_{{ speed }}
     target:
       entity_id: remote.wi_fi_universal_remote
   - if:
       - condition: template
-        value_template: "{{ (speed | round (0, 'floor')) == 0 }}"
+        value_template: "{{ speed }}"
     then:
       - service: input_boolean.turn_off
         data:

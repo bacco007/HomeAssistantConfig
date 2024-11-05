@@ -12,4 +12,4 @@ sequence:
   service: input_number.set_value
   data:
     entity_id: input_number.{{ fan }}_speed
-    value: "{{ (speed / 100) * 3 | round(0, 'ceil') }}"
+    value: "{{ (speed) }}"
