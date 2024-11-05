@@ -1,20 +1,31 @@
 from __future__ import annotations
 
 import datetime
-from enum import Enum
 import logging
 import re
+from enum import Enum
 from typing import Any
 
+import homeassistant.util.dt as dt_util
+import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.components import binary_sensor, sensor
 from homeassistant.components.device_tracker import ATTR_LOCATION_NAME
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
+    ATTR_CONFIGURATION_URL,
     ATTR_GPS_ACCURACY,
+    ATTR_HW_VERSION,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
+    ATTR_MANUFACTURER,
+    ATTR_MODEL,
+    ATTR_MODEL_ID,
+    ATTR_SERIAL_NUMBER,
+    ATTR_SW_VERSION,
+    CONF_DEVICE,
     CONF_DEVICE_CLASS,
+    CONF_DEVICE_ID,
     CONF_ENTITY_ID,
     CONF_ICON,
     CONF_NAME,
@@ -25,10 +36,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers import config_validation as cv, entity_registry, selector
-import homeassistant.util.dt as dt_util
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_registry, selector
 from iso4217 import Currency
-import voluptuous as vol
 
 from .const import (
     ATTR_ATTRIBUTES,
@@ -36,6 +46,7 @@ from .const import (
     ATTR_REPLACE_ATTRIBUTES,
     ATTR_VALUE,
     CONF_ATTRIBUTES,
+    CONF_CLEAR_DEVICE_ID,
     CONF_ENTITY_PLATFORM,
     CONF_EXCLUDE_FROM_RECORDER,
     CONF_FORCE_UPDATE,
@@ -57,6 +68,7 @@ from .const import (
     SERVICE_UPDATE_DEVICE_TRACKER,
     SERVICE_UPDATE_SENSOR,
 )
+from .device import update_device
 from .helpers import value_to_type
 
 _LOGGER = logging.getLogger(__name__)
@@ -101,6 +113,9 @@ ADD_SENSOR_SCHEMA = vol.Schema(
                 mode=selector.SelectSelectorMode.DROPDOWN,
             )
         ),
+        vol.Optional(CONF_DEVICE_ID): selector.DeviceSelector(
+            selector.DeviceSelectorConfig()
+        ),
         vol.Optional(CONF_RESTORE, default=DEFAULT_RESTORE): selector.BooleanSelector(
             selector.BooleanSelectorConfig()
         ),
@@ -139,6 +154,9 @@ ADD_BINARY_SENSOR_SCHEMA = vol.Schema(
                 custom_value=False,
                 mode=selector.SelectSelectorMode.DROPDOWN,
             )
+        ),
+        vol.Optional(CONF_DEVICE_ID): selector.DeviceSelector(
+            selector.DeviceSelectorConfig()
         ),
         vol.Optional(CONF_RESTORE, default=DEFAULT_RESTORE): selector.BooleanSelector(
             selector.BooleanSelectorConfig()
@@ -199,6 +217,9 @@ ADD_DEVICE_TRACKER_SCHEMA = vol.Schema(
         vol.Optional(CONF_ATTRIBUTES): selector.ObjectSelector(
             selector.ObjectSelectorConfig()
         ),
+        vol.Optional(CONF_DEVICE_ID): selector.DeviceSelector(
+            selector.DeviceSelectorConfig()
+        ),
         vol.Optional(CONF_RESTORE, default=DEFAULT_RESTORE): selector.BooleanSelector(
             selector.BooleanSelectorConfig()
         ),
@@ -208,6 +229,19 @@ ADD_DEVICE_TRACKER_SCHEMA = vol.Schema(
         vol.Optional(
             CONF_EXCLUDE_FROM_RECORDER, default=DEFAULT_EXCLUDE_FROM_RECORDER
         ): selector.BooleanSelector(selector.BooleanSelectorConfig()),
+    }
+)
+
+ADD_DEVICE_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_NAME): cv.string,
+        vol.Optional(ATTR_CONFIGURATION_URL): cv.string,
+        vol.Optional(ATTR_MANUFACTURER): cv.string,
+        vol.Optional(ATTR_HW_VERSION): cv.string,
+        vol.Optional(ATTR_MODEL): cv.string,
+        vol.Optional(ATTR_MODEL_ID): cv.string,
+        vol.Optional(ATTR_SERIAL_NUMBER): cv.string,
+        vol.Optional(ATTR_SW_VERSION): cv.string,
     }
 )
 
@@ -227,15 +261,16 @@ class VariableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None) -> FlowResult:
         """Handle the initial step."""
-
+        platforms_w_device: list = PLATFORMS + [CONF_DEVICE]
         return self.async_show_menu(
             step_id="user",
-            menu_options=["add_" + p for p in PLATFORMS],
+            menu_options=["add_" + p for p in platforms_w_device],
         )
 
     async def async_step_add_sensor(
         self, user_input=None, errors=None, yaml_variable=False
     ):
+        errors = {} if errors is None else errors
         if user_input is not None:
             user_input.update({CONF_ENTITY_PLATFORM: Platform.SENSOR})
             user_input.update({CONF_YAML_VARIABLE: yaml_variable})
@@ -255,8 +290,8 @@ class VariableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             },
         )
 
-    async def async_step_sensor_page_2(self, user_input=None):
-        errors = {}
+    async def async_step_sensor_page_2(self, user_input=None, errors=None):
+        errors = {} if errors is None else errors
         if (
             user_input is not None
             or self.add_sensor_input.get(CONF_YAML_VARIABLE) is True
@@ -495,6 +530,7 @@ class VariableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_add_binary_sensor(
         self, user_input=None, errors=None, yaml_variable=False
     ):
+        errors = {} if errors is None else errors
         if user_input is not None:
             try:
                 user_input.update({CONF_ENTITY_PLATFORM: Platform.BINARY_SENSOR})
@@ -525,6 +561,7 @@ class VariableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_add_device_tracker(
         self, user_input=None, errors=None, yaml_variable=False
     ):
+        errors = {} if errors is None else errors
         if user_input is not None:
             try:
                 user_input.update({CONF_ENTITY_PLATFORM: Platform.DEVICE_TRACKER})
@@ -546,6 +583,42 @@ class VariableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="add_device_tracker",
             data_schema=ADD_DEVICE_TRACKER_SCHEMA,
+            errors=errors,
+            description_placeholders={
+                "component_config_url": COMPONENT_CONFIG_URL,
+            },
+        )
+
+    async def async_step_add_device(
+        self, user_input=None, errors=None, yaml_variable=False
+    ):
+        errors = {} if errors is None else errors
+        if user_input is not None:
+            try:
+                user_input.update({CONF_ENTITY_PLATFORM: CONF_DEVICE})
+                user_input.update({CONF_YAML_VARIABLE: yaml_variable})
+
+                # Cannot use cv.url validation in the schema itself so apply
+                # extra validation here
+                if user_input.get(ATTR_CONFIGURATION_URL, None):
+                    cv.url(user_input.get(ATTR_CONFIGURATION_URL))
+                info = await validate_sensor_input(self.hass, user_input)
+                _LOGGER.debug(f"[New Device] updated user_input: {user_input}")
+                return self.async_create_entry(
+                    title=info.get("title", ""), data=user_input
+                )
+            except vol.Invalid:
+                errors["base"] = "invalid_url"
+            except Exception as e:
+                _LOGGER.exception(
+                    f"Unexpected exception. {e.__class__.__qualname__}: {e}"
+                )
+                errors["base"] = "unknown"
+
+        # If there is no user input or there were errors, show the form again, including any errors that were found with the input.
+        return self.async_show_form(
+            step_id="add_device",
+            data_schema=ADD_DEVICE_SCHEMA,
             errors=errors,
             description_placeholders={
                 "component_config_url": COMPONENT_CONFIG_URL,
@@ -597,12 +670,14 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                 step_id="init",
                 menu_options=[change_value, change_options],
             )
+        elif self.config_entry.data.get(CONF_ENTITY_PLATFORM) == CONF_DEVICE:
+            return await self.async_step_device_options()
         return False
 
     async def async_step_change_sensor_value(
         self, user_input=None, errors=None
     ) -> FlowResult:
-        errors = {}
+        errors = {} if errors is None else errors
         ent = entity_registry.async_entries_for_config_entry(
             entity_registry.async_get(self.hass), self.config_entry.entry_id
         )
@@ -787,7 +862,7 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_change_binary_sensor_value(
         self, user_input=None, errors=None
     ) -> FlowResult:
-        errors = {}
+        errors = {} if errors is None else errors
         ent = entity_registry.async_entries_for_config_entry(
             entity_registry.async_get(self.hass), self.config_entry.entry_id
         )
@@ -885,7 +960,7 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_change_device_tracker_value(
         self, user_input=None, errors=None
     ) -> FlowResult:
-        errors = {}
+        errors = {} if errors is None else errors
         ent = entity_registry.async_entries_for_config_entry(
             entity_registry.async_get(self.hass), self.config_entry.entry_id
         )
@@ -1101,6 +1176,7 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_sensor_options(
         self, user_input=None, errors=None
     ) -> FlowResult:
+        errors = {} if errors is None else errors
         if user_input is not None:
             _LOGGER.debug(f"[Sensor Options Page 1] page_1_input: {user_input}")
             self.sensor_options_page_1 = user_input
@@ -1126,7 +1202,7 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
     def build_sensor_options_page_1(self):
-        return vol.Schema(
+        SENSOR_OPTIONS_PAGE_1_SCHEMA = vol.Schema(
             {
                 vol.Optional(
                     CONF_DEVICE_CLASS,
@@ -1139,6 +1215,32 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                         mode=selector.SelectSelectorMode.DROPDOWN,
                     )
                 ),
+            }
+        )
+
+        if self.config_entry.data.get(CONF_DEVICE_ID, None):
+            SENSOR_OPTIONS_PAGE_1_SCHEMA = SENSOR_OPTIONS_PAGE_1_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_DEVICE_ID,
+                        default=self.config_entry.data.get(CONF_DEVICE_ID, None),
+                    ): selector.DeviceSelector(selector.DeviceSelectorConfig()),
+                    vol.Optional(
+                        CONF_CLEAR_DEVICE_ID,
+                    ): selector.BooleanSelector(selector.BooleanSelectorConfig()),
+                }
+            )
+        else:
+            SENSOR_OPTIONS_PAGE_1_SCHEMA = SENSOR_OPTIONS_PAGE_1_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_DEVICE_ID,
+                    ): selector.DeviceSelector(selector.DeviceSelectorConfig()),
+                }
+            )
+
+        SENSOR_OPTIONS_PAGE_1_SCHEMA = SENSOR_OPTIONS_PAGE_1_SCHEMA.extend(
+            {
                 vol.Optional(
                     CONF_RESTORE,
                     default=self.config_entry.data.get(CONF_RESTORE, DEFAULT_RESTORE),
@@ -1158,8 +1260,10 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
             }
         )
 
-    async def async_step_sensor_options_page_2(self, user_input=None):
-        errors = {}
+        return SENSOR_OPTIONS_PAGE_1_SCHEMA
+
+    async def async_step_sensor_options_page_2(self, user_input=None, errors=None):
+        errors = {} if errors is None else errors
         if user_input is not None:
             _LOGGER.debug(f"[Sensor Options Page 2] user_input: {user_input}")
             if (
@@ -1198,6 +1302,9 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                     user_input.update(self.sensor_options_page_1)
                 for m in dict(self.config_entry.data).keys():
                     user_input.setdefault(m, self.config_entry.data[m])
+                if user_input.get(CONF_CLEAR_DEVICE_ID, False):
+                    user_input.pop(CONF_DEVICE_ID, None)
+                user_input.pop(CONF_CLEAR_DEVICE_ID, None)
                 if user_input is not None:
                     for k, v in list(user_input.items()):
                         if v is None or (isinstance(v, str) and v.lower() == "none"):
@@ -1484,10 +1591,14 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_binary_sensor_options(
         self, user_input=None, errors=None
     ) -> FlowResult:
+        errors = {} if errors is None else errors
         if user_input is not None:
             _LOGGER.debug(f"[Binary Sensor Options] user_input: {user_input}")
             for m in dict(self.config_entry.data).keys():
                 user_input.setdefault(m, self.config_entry.data[m])
+            if user_input.get(CONF_CLEAR_DEVICE_ID, False):
+                user_input.pop(CONF_DEVICE_ID, None)
+            user_input.pop(CONF_CLEAR_DEVICE_ID, None)
             user_input.update({CONF_UPDATED: True})
             _LOGGER.debug(f"[Binary Sensor Options] updated user_input: {user_input}")
 
@@ -1531,6 +1642,32 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                         mode=selector.SelectSelectorMode.DROPDOWN,
                     )
                 ),
+            }
+        )
+
+        if self.config_entry.data.get(CONF_DEVICE_ID, None):
+            BINARY_SENSOR_OPTIONS_SCHEMA = BINARY_SENSOR_OPTIONS_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_DEVICE_ID,
+                        default=self.config_entry.data.get(CONF_DEVICE_ID, None),
+                    ): selector.DeviceSelector(selector.DeviceSelectorConfig()),
+                    vol.Optional(
+                        CONF_CLEAR_DEVICE_ID,
+                    ): selector.BooleanSelector(selector.BooleanSelectorConfig()),
+                }
+            )
+        else:
+            BINARY_SENSOR_OPTIONS_SCHEMA = BINARY_SENSOR_OPTIONS_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_DEVICE_ID,
+                    ): selector.DeviceSelector(selector.DeviceSelectorConfig()),
+                }
+            )
+
+        BINARY_SENSOR_OPTIONS_SCHEMA = BINARY_SENSOR_OPTIONS_SCHEMA.extend(
+            {
                 vol.Optional(
                     CONF_RESTORE,
                     default=self.config_entry.data.get(CONF_RESTORE, DEFAULT_RESTORE),
@@ -1570,10 +1707,14 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_device_tracker_options(
         self, user_input=None, errors=None
     ) -> FlowResult:
+        errors = {} if errors is None else errors
         if user_input is not None:
             _LOGGER.debug(f"[Device Tracker Options] user_input: {user_input}")
             for m in dict(self.config_entry.data).keys():
                 user_input.setdefault(m, self.config_entry.data[m])
+            if user_input.get(CONF_CLEAR_DEVICE_ID, False):
+                user_input.pop(CONF_DEVICE_ID, None)
+            user_input.pop(CONF_CLEAR_DEVICE_ID, None)
             user_input.update({CONF_UPDATED: True})
             _LOGGER.debug(f"[Device Tracker Options] updated user_input: {user_input}")
 
@@ -1696,6 +1837,32 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(
                     CONF_ATTRIBUTES, default=self.config_entry.data.get(CONF_ATTRIBUTES)
                 ): selector.ObjectSelector(selector.ObjectSelectorConfig()),
+            }
+        )
+
+        if self.config_entry.data.get(CONF_DEVICE_ID, None):
+            DEVICE_TRACKER_OPTIONS_SCHEMA = DEVICE_TRACKER_OPTIONS_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_DEVICE_ID,
+                        default=self.config_entry.data.get(CONF_DEVICE_ID, None),
+                    ): selector.DeviceSelector(selector.DeviceSelectorConfig()),
+                    vol.Optional(
+                        CONF_CLEAR_DEVICE_ID,
+                    ): selector.BooleanSelector(selector.BooleanSelectorConfig()),
+                }
+            )
+        else:
+            DEVICE_TRACKER_OPTIONS_SCHEMA = DEVICE_TRACKER_OPTIONS_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_DEVICE_ID,
+                    ): selector.DeviceSelector(selector.DeviceSelectorConfig()),
+                }
+            )
+
+        DEVICE_TRACKER_OPTIONS_SCHEMA = DEVICE_TRACKER_OPTIONS_SCHEMA.extend(
+            {
                 vol.Optional(
                     CONF_RESTORE,
                     default=self.config_entry.data.get(CONF_RESTORE, DEFAULT_RESTORE),
@@ -1729,5 +1896,72 @@ class VariableOptionsFlowHandler(config_entries.OptionsFlow):
             description_placeholders={
                 "component_config_url": COMPONENT_CONFIG_URL,
                 "disp_name": disp_name,
+            },
+        )
+
+    async def async_step_device_options(
+        self, user_input=None, errors=None
+    ) -> FlowResult:
+
+        errors = {} if errors is None else errors
+        if user_input is not None:
+            try:
+                # Cannot use cv.url validation in the schema itself so apply
+                # extra validation here
+                if user_input.get(ATTR_CONFIGURATION_URL, None):
+                    cv.url(user_input.get(ATTR_CONFIGURATION_URL))
+                for m in dict(self.config_entry.data).keys():
+                    user_input.setdefault(m, self.config_entry.data[m])
+                _LOGGER.debug(f"[Device Options] updated user_input: {user_input}")
+            except vol.Invalid:
+                errors["base"] = "invalid_url"
+            except Exception as e:
+                _LOGGER.exception(
+                    f"Unexpected exception. {e.__class__.__qualname__}: {e}"
+                )
+                errors["base"] = "unknown"
+            else:
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    data=user_input,
+                    options={},
+                )
+                await update_device(self.hass, self.config_entry, user_input)
+                return self.async_create_entry(title="", data=user_input)
+
+        DEVICE_OPTIONS_SCHEMA = vol.Schema({})
+
+        options = [
+            ATTR_CONFIGURATION_URL,
+            ATTR_MANUFACTURER,
+            ATTR_HW_VERSION,
+            ATTR_MODEL,
+            ATTR_MODEL_ID,
+            ATTR_SERIAL_NUMBER,
+            ATTR_SW_VERSION,
+        ]
+        for option in options:
+            if self.config_entry.data.get(option, None):
+                DEVICE_OPTIONS_SCHEMA = DEVICE_OPTIONS_SCHEMA.extend(
+                    {
+                        vol.Optional(
+                            option, default=self.config_entry.data.get(option)
+                        ): cv.string
+                    }
+                )
+            else:
+                DEVICE_OPTIONS_SCHEMA = DEVICE_OPTIONS_SCHEMA.extend(
+                    {vol.Optional(option): cv.string}
+                )
+        _LOGGER.debug(
+            f"[Device Options] self.config_entry.data: {self.config_entry.data}"
+        )
+        return self.async_show_form(
+            step_id="device_options",
+            data_schema=DEVICE_OPTIONS_SCHEMA,
+            errors=errors,
+            description_placeholders={
+                "component_config_url": COMPONENT_CONFIG_URL,
+                "disp_name": self.config_entry.data.get(CONF_NAME),
             },
         )

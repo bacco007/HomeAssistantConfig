@@ -15,6 +15,7 @@ from homeassistant.const import (
     ATTR_FRIENDLY_NAME,
     ATTR_ICON,
     CONF_DEVICE_CLASS,
+    CONF_DEVICE_ID,
     CONF_ICON,
     CONF_NAME,
     CONF_UNIT_OF_MEASUREMENT,
@@ -22,8 +23,16 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import entity_platform
+from homeassistant.helpers import (
+    config_validation as cv,
+)
+from homeassistant.helpers import (
+    device_registry as dr,
+)
+from homeassistant.helpers import (
+    entity_platform,
+)
+from homeassistant.helpers.device import async_device_info_to_link_from_device_id
 from homeassistant.helpers.entity import generate_entity_id
 from homeassistant.util import slugify
 
@@ -160,6 +169,11 @@ class Variable(RestoreSensor):
         self._attr_native_unit_of_measurement = config.get(CONF_UNIT_OF_MEASUREMENT)
         self._attr_suggested_unit_of_measurement = None
         self._attr_state_class = config.get(CONF_STATE_CLASS)
+        self._attr_device_info = async_device_info_to_link_from_device_id(
+            hass,
+            config.get(CONF_DEVICE_ID),
+        )
+        # _LOGGER.debug(f"({self._attr_name}) [init] device_id: {config.get(CONF_DEVICE_ID)}, device_info: {self.device_info}")
         if (
             config.get(CONF_ATTRIBUTES) is not None
             and config.get(CONF_ATTRIBUTES)
@@ -232,7 +246,44 @@ class Variable(RestoreSensor):
                         self._attr_extra_state_attributes.pop(
                             CONF_UNIT_OF_MEASUREMENT, None
                         )
-
+                    if self._attr_device_info:
+                        device_registry = dr.async_get(self._hass)
+                        device = device_registry.async_get_device(
+                            identifiers=self._attr_device_info.get(
+                                "identifiers",
+                            )
+                        )
+                        # _LOGGER.debug(f"({self._attr_name}) [restored] device: {device}")
+                        if (
+                            hasattr(device, "name")
+                            and isinstance(device.name, str)
+                            and self._attr_name.lower().strip()
+                            != device.name.lower().strip()
+                            and self._attr_name.lower().startswith(device.name.lower())
+                        ):
+                            old_name = self._attr_name
+                            self._attr_name = self._attr_name.replace(
+                                device.name, "", 1
+                            ).strip()
+                            _LOGGER.debug(
+                                f"({self._attr_name}) [restored] Truncated: {old_name}"
+                            )
+                        elif (
+                            hasattr(device, "name_by_user")
+                            and isinstance(device.name_by_user, str)
+                            and self._attr_name.lower().strip()
+                            != device.name_by_user.lower().strip()
+                            and self._attr_name.lower().startswith(
+                                device.name_by_user.lower()
+                            )
+                        ):
+                            old_name = self._attr_name
+                            self._attr_name = self._attr_name.replace(
+                                device.name_by_user, "", 1
+                            ).strip()
+                            _LOGGER.debug(
+                                f"({self._attr_name}) [restored] Truncated: {old_name}"
+                            )
             _LOGGER.debug(
                 f"({self._attr_name}) [restored] _attr_native_value: {self._attr_native_value}"
             )

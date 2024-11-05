@@ -5,8 +5,11 @@ import copy
 import json
 import logging
 
+import voluptuous as vol
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import (
+    CONF_DEVICE,
+    CONF_DEVICE_ID,
     CONF_ENTITY_ID,
     CONF_FRIENDLY_NAME,
     CONF_ICON,
@@ -17,9 +20,11 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.device import (
+    async_remove_stale_devices_links_keep_current_device,
+)
 from homeassistant.helpers.reload import async_integration_yaml_config
 from homeassistant.helpers.typing import ConfigType
-import voluptuous as vol
 
 from .const import (
     ATTR_ATTRIBUTES,
@@ -40,6 +45,7 @@ from .const import (
     PLATFORMS,
     SERVICE_UPDATE_SENSOR,
 )
+from .device import create_device, remove_device
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -116,6 +122,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             return
         _LOGGER.debug(f" reload_config: {reload_config}")
         await _async_process_yaml(hass, reload_config)
+
     hass.services.async_register(
         DOMAIN,
         SERVICE_SET_VARIABLE_LEGACY,
@@ -219,7 +226,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             yaml_data = copy.deepcopy(dict(entry.data))
             yaml_data.pop(CONF_YAML_PRESENT, None)
             hass.config_entries.async_update_entry(entry, data=yaml_data, options={})
-
+    async_remove_stale_devices_links_keep_current_device(
+        hass,
+        entry.entry_id,
+        entry.data.get(CONF_DEVICE_ID),
+    )
     hass.data.setdefault(DOMAIN, {})
     hass_data = dict(entry.data)
     hass.data[DOMAIN][entry.entry_id] = hass_data
@@ -227,6 +238,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await hass.config_entries.async_forward_entry_setups(
             entry, [hass_data.get(CONF_ENTITY_PLATFORM)]
         )
+    elif hass_data.get(CONF_ENTITY_PLATFORM) == CONF_DEVICE:
+        await create_device(hass, entry)
     return True
 
 
@@ -234,12 +247,15 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
 
     _LOGGER.info(f"Unloading: {entry.data}")
+    # _LOGGER.debug(f"[init async_unload_entry] entry: {entry}")
     hass_data = dict(entry.data)
     unload_ok = False
     if hass_data.get(CONF_ENTITY_PLATFORM) in PLATFORMS:
         unload_ok = await hass.config_entries.async_unload_platforms(
             entry, [hass_data.get(CONF_ENTITY_PLATFORM)]
         )
+    elif hass_data.get(CONF_ENTITY_PLATFORM) == CONF_DEVICE:
+        unload_ok = await remove_device(hass, entry)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 

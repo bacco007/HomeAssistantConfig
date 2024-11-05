@@ -5,7 +5,8 @@
         "menu_options": {
           "add_sensor": "Create a Sensor Variable",
           "add_binary_sensor": "Create a Binary Sensor Variable",
-          "add_device_tracker": "Create a Device Tracker (GPS) Variable"
+          "add_device_tracker": "Create a Device Tracker (GPS) Variable",
+          "add_device": "Create a Device"
         }
       },
       "add_sensor": {
@@ -15,6 +16,7 @@
           "variable_id": "Variable ID",
           "icon": "Icon",
           "device_class": "Device Class",
+          "device_id": "Associate Variable with a Device",
           "restore": "Restore on Restart",
           "force_update": "Force Update",
           "exclude_from_recorder": "Exclude from Recorder"
@@ -41,6 +43,7 @@
           "value": "Initial Value",
           "attributes": "Initial Attributes",
           "device_class": "Device Class",
+          "device_id": "Associate Variable with a Device",
           "restore": "Restore on Restart",
           "force_update": "Force Update",
           "exclude_from_recorder": "Exclude from Recorder"
@@ -59,15 +62,31 @@
           "gps_accuracy": "Initial GPS Accuracy",
           "battery_level": "Initial Battery Level",
           "attributes": "Initial Attributes",
+          "device_id": "Associate Variable with a Device",
           "restore": "Restore on Restart",
           "force_update": "Force Update",
           "exclude_from_recorder": "Exclude from Recorder"
         },
         "description": "Create a new Device Tracker (GPS) Variable\nSee [Configuration Options]({component_config_url}) on GitHub for details"
+      },
+      "add_device": {
+        "title": "Variables+History - Device",
+        "data": {
+          "name": "Device Name",
+          "configuration_url": "Configuration URL",
+          "manufacturer": "Manufacturer",
+          "hw_version": "Hardware Version",
+          "model": "Model",
+          "model_id": "Model ID",
+          "serial_number": "Serial Number",
+          "sw_version": "Software Version"
+        },
+        "description": "Create a new Device\nSee [Configuration Options]({component_config_url}) on GitHub for details"
       }
     },
     "error": {
       "invalid_value_type": "The value entered is not compatible with the selected device_class: {device_class}. Expected {value_type}.",
+      "invalid_url": "Invalid URL",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     }
   },
@@ -80,13 +99,16 @@
           "change_device_tracker_value": "Change Value and Attributes",
           "sensor_options": "Change Options",
           "binary_sensor_options": "Change Options",
-          "device_tracker_options": "Change Options"
+          "device_tracker_options": "Change Options",
+          "device_options": "Change Options"
         }
       },
       "sensor_options": {
         "title": "Variables+History - Sensor",
         "data": {
           "device_class": "Device Class",
+          "device_id": "Associate Variable with a Device",
+          "clear_device_id": "Clear Device Association",
           "restore": "Restore on Restart",
           "force_update": "Force Update",
           "exclude_from_recorder": "Exclude from Recorder"
@@ -140,6 +162,8 @@
           "value": "Value (typically only useful if Restore on Restart is False)",
           "attributes": "Attributes (typically only useful if Restore on Restart is False)",
           "device_class": "Device Class",
+          "device_id": "Associate Variable with a Device",
+          "clear_device_id": "Clear Device Association",
           "restore": "Restore on Restart",
           "force_update": "Force Update",
           "exclude_from_recorder": "Exclude from Recorder"
@@ -155,11 +179,27 @@
           "gps_accuracy": "GPS Accuracy (typically only useful if Restore on Restart is False)",
           "battery_level": "Battery Level (typically only useful if Restore on Restart is False)",
           "attributes": "Attributes (typically only useful if Restore on Restart is False)",
+          "device_id": "Associate Variable with a Device",
+          "clear_device_id": "Clear Device Association",
           "restore": "Restore on Restart",
           "force_update": "Force Update",
           "exclude_from_recorder": "Exclude from Recorder"
         },
         "description": "**Updating Device Tracker (GPS):&nbsp;{disp_name}**\nSee [Configuration Options]({component_config_url}) on GitHub for details"
+      },
+      "device_options": {
+        "title": "Variables+History - Device",
+        "data": {
+          "name": "Device Name",
+          "configuration_url": "Configuration URL",
+          "manufacturer": "Manufacturer",
+          "hw_version": "Hardware Version",
+          "model": "Model",
+          "model_id": "Model ID",
+          "serial_number": "Serial Number",
+          "sw_version": "Software Version"
+        },
+        "description": "**Updating Device:&nbsp;{disp_name}**\nSee [Configuration Options]({component_config_url}) on GitHub for details"
       }
     },
     "abort": {
@@ -169,6 +209,7 @@
     },
     "error": {
       "invalid_value_type": "The value entered is not compatible with the selected device_class: {device_class}. Expected {value_type}.",
+      "invalid_url": "Invalid URL",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     }
   },

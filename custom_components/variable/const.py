@@ -28,6 +28,7 @@ CONF_YAML_PRESENT = "yaml_present"
 CONF_YAML_VARIABLE = "yaml_variable"
 CONF_EXCLUDE_FROM_RECORDER = "exclude_from_recorder"
 CONF_UPDATED = "config_updated"
+CONF_CLEAR_DEVICE_ID = "clear_device_id"
 
 ATTR_ATTRIBUTES = "attributes"
 ATTR_DELETE_LOCATION_NAME = "delete_location_name"

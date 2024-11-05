@@ -1,8 +1,10 @@
-from collections.abc import MutableMapping
 import copy
 import logging
+from collections.abc import MutableMapping
 from typing import final
 
+import homeassistant.helpers.entity_registry as er
+import voluptuous as vol
 from homeassistant.components.device_tracker import (
     ATTR_LOCATION_NAME,
     ATTR_SOURCE_TYPE,
@@ -18,20 +20,22 @@ from homeassistant.const import (
     ATTR_ICON,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
+    CONF_DEVICE_ID,
     CONF_ICON,
     CONF_NAME,
     MATCH_ALL,
     Platform,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
+from homeassistant.helpers.device import async_device_info_to_link_from_device_id
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import generate_entity_id
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-import homeassistant.helpers.entity_registry as er
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import StateType
 from homeassistant.util import slugify
-import voluptuous as vol
 
 from .const import (
     ATTR_ATTRIBUTES,
@@ -139,6 +143,10 @@ class Variable(RestoreEntity, TrackerEntity):
         self._force_update = config.get(CONF_FORCE_UPDATE)
         self._yaml_variable = config.get(CONF_YAML_VARIABLE)
         self._exclude_from_recorder = config.get(CONF_EXCLUDE_FROM_RECORDER)
+        self._attr_device_info = async_device_info_to_link_from_device_id(
+            hass,
+            config.get(CONF_DEVICE_ID),
+        )
         if (
             config.get(CONF_ATTRIBUTES) is not None
             and config.get(CONF_ATTRIBUTES)
@@ -341,6 +349,11 @@ class Variable(RestoreEntity, TrackerEntity):
         if self._attr_location_name is not None:
             attr[ATTR_LOCATION_NAME] = self._attr_location_name
         return attr
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device info."""
+        return self._attr_device_info
 
 
 class VariableNoRecorder(Variable):
