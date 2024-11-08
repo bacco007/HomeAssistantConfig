@@ -195,3 +195,56 @@ cards:
                 padding-top: 2px !important;
                 padding-bottom: 2px !important;
               }
+      - type: custom:mushroom-template-card
+        multiline_secondary: true
+        primary: "NBN FTTN Upgrade > Kate"
+        secondary: >-
+          {%- set tech_status = state_attr(entity, 'addressDetail')['techChangeStatus'] %}
+          {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade',
+            'Planned': 'FTTP Planned',
+            'In Design': 'FTTP Upgrade in Design',
+            'Committed': 'FTTP Upgrade Committed',
+            'Build Finalised': 'FTTP Upgrade Build Finalized',
+            'Eligible To Order': 'FTTP Upgrade Eligible to Order',
+            'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
+            'New Tech Connected': 'New Technology Connected',
+            'Previous Tech Disconnected': 'Previous Technology Disconnected'
+          } %}
+          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
+          {%- if states(entity) == "FTTP_NA" %}
+          Target: {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
+          {%- else %}
+          No Target Date Yet
+          {%- endif %}
+        icon: mdi:check-network
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        entity: sensor.nbn_upgradestatus_kate
+        icon_color: |-
+          {% set alt_reason_code = states(entity) %}
+          {% if alt_reason_code == 'NULL_NA' %}
+            red
+          {% elif alt_reason_code == 'FTTP_NA' %}
+            yellow
+          {% elif alt_reason_code == 'FTTP_SA' %}
+            green
+          {% else %}
+            grey
+          {% endif %}
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                #background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 30px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+                padding-top: 2px !important;
+                padding-bottom: 2px !important;
+              }

@@ -1,5 +1,5 @@
 ---
-resource: https://places.nbnco.net.au/places/v2/details/LOC000107178217
+resource: !secret nbn_upgradestatus_work
 headers:
   Referer: https://www.nbnco.com.au/
 sensor:

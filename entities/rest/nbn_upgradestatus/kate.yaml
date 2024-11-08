@@ -1,10 +1,10 @@
 ---
-resource: !secret nbn_upgradestatus_home
+resource: !secret nbn_upgradestatus_kate
 headers:
   Referer: https://www.nbnco.com.au/
 sensor:
-  name: nbn_upgradestatus_home
-  unique_id: nbn_upgradestatus_home
+  name: nbn_upgradestatus_kate
+  unique_id: nbn_upgradestatus_kate
   value_template: "{{ value_json.addressDetail.altReasonCode }}"
   json_attributes:
     - servingArea
