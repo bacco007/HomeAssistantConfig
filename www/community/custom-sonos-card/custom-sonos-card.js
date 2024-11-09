@@ -1087,24 +1087,29 @@ class PlayerHeader extends h {
   render() {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
-    const speakerList = getSpeakerList(this.activePlayer, this.store.predefinedGroups);
+    return ke` <div class="info">
+      <div class="entity">${getSpeakerList(this.activePlayer, this.store.predefinedGroups)}</div>
+      <div class="song">${this.getSong()}</div>
+      <div class="artist-album">${this.getAlbum()}</div>
+      <sonos-progress .store=${this.store}></sonos-progress>
+    </div>`;
+  }
+  getSong() {
     let song = this.activePlayer.getCurrentTrack();
     song = song || this.config.labelWhenNoMediaIsSelected || "No media selected";
     if (this.config.showSourceInPlayer && this.activePlayer.attributes.source) {
       song = `${song} (${this.activePlayer.attributes.source})`;
     }
+    return song;
+  }
+  getAlbum() {
     let album = this.activePlayer.attributes.media_album_name;
     if (this.config.showChannelInPlayer && this.activePlayer.attributes.media_channel) {
       album = this.activePlayer.attributes.media_channel;
     } else if (!this.config.hidePlaylistInPlayer && this.activePlayer.attributes.media_playlist) {
       album = `${this.activePlayer.attributes.media_playlist} - ${album}`;
     }
-    return ke` <div class="info">
-      <div class="entity">${speakerList}</div>
-      <div class="song">${song}</div>
-      <div class="artist-album">${album}</div>
-      <sonos-progress .store=${this.store}></sonos-progress>
-    </div>`;
+    return album;
   }
   static get styles() {
     return i$2`
@@ -1590,22 +1595,21 @@ class HassService {
     return mediaPlayerItem;
   }
   async getRelatedEntities(player, ...entityTypes) {
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
       const subscribeMessage = {
         type: "render_template",
         template: `{{ device_entities(device_id('${player.id}')) }}`
       };
       try {
-        const unsubscribe = await this.hass.connection.subscribeMessage((response) => {
+        this.hass.connection.subscribeMessage((response) => {
           try {
-            unsubscribe();
             resolve(
               response.result.filter((item) => entityTypes.some((type) => item.includes(type))).map((item) => this.hass.states[item])
             );
           } catch {
             resolve([]);
           }
-        }, subscribeMessage);
+        }, subscribeMessage).then((unsub) => unsub);
       } catch {
         resolve([]);
       }
@@ -1702,7 +1706,7 @@ class MediaBrowseService {
     }
   }
   getFavoritesFromStates(mediaPlayer) {
-    const titles = mediaPlayer.attributes.hasOwnProperty("source_list") ? mediaPlayer.attributes.source_list : [];
+    const titles = mediaPlayer.attributes.source_list ?? [];
     return titles.map((title) => ({ title }));
   }
 }
@@ -1836,7 +1840,7 @@ class MediaPlayer {
     var _a2;
     this.id = hassEntity.entity_id;
     this.config = config;
-    this.name = this.getEntityName(hassEntity, config);
+    this.name = this.getEntityName(hassEntity);
     this.state = hassEntity.state;
     this.attributes = hassEntity.attributes;
     this.members = mediaPlayerHassEntities ? this.createGroupMembers(hassEntity, mediaPlayerHassEntities) : [this];
@@ -1862,12 +1866,21 @@ class MediaPlayer {
     if (!track) {
       track = ((_a2 = this.attributes.media_content_id) == null ? void 0 : _a2.replace(/.*:\/\//g, "")) ?? "";
     }
+    if (this.config.mediaTitleRegexToReplace) {
+      track = track.replace(
+        new RegExp(this.config.mediaTitleRegexToReplace, "g"),
+        this.config.mediaTitleReplacement || ""
+      );
+    }
     return track;
   }
-  getEntityName(hassEntity, config) {
+  getEntityName(hassEntity) {
     const name = hassEntity.attributes.friendly_name || "";
-    if (config.entityNameRegexToReplace) {
-      return name.replace(new RegExp(config.entityNameRegexToReplace, "g"), config.entityNameReplacement || "");
+    if (this.config.entityNameRegexToReplace) {
+      return name.replace(
+        new RegExp(this.config.entityNameRegexToReplace, "g"),
+        this.config.entityNameReplacement || ""
+      );
     }
     return name;
   }
@@ -2334,6 +2347,14 @@ const ADVANCED_SCHEMA = [
   {
     name: "showBrowseMediaInPlayerSection",
     selector: { boolean: {} }
+  },
+  {
+    type: "string",
+    name: "mediaTitleRegexToReplace"
+  },
+  {
+    type: "string",
+    name: "mediaTitleReplacement"
   }
 ];
 class AdvancedEditor extends BaseEditor {
