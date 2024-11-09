@@ -26,7 +26,6 @@ if TYPE_CHECKING:
     from . import MusicAssistantConfigEntry
 
 SERVICE_SEARCH = "search"
-SERVICE_GET_QUEUE = "get_queue"
 SERVICE_GET_LIBRARY = "get_library"
 ATTR_MEDIA_TYPE = "media_type"
 ATTR_SEARCH_NAME = "name"
@@ -34,7 +33,12 @@ ATTR_SEARCH_ARTIST = "artist"
 ATTR_SEARCH_ALBUM = "album"
 ATTR_LIMIT = "limit"
 ATTR_LIBRARY_ONLY = "library_only"
-ATTR_QUEUE_ID = "queue_id"
+ATTR_FAVORITE = "favorite"
+ATTR_SEARCH = "search"
+ATTR_OFFSET = "offset"
+ATTR_ORDER_BY = "order_by"
+ATTR_ALBUM_TYPE = "album_type"
+ATTR_ALBUM_ARTISTS_ONLY = "album_artists_only"
 
 
 @callback
@@ -52,7 +56,6 @@ def get_music_assistant_client(hass: HomeAssistant) -> MusicAssistantClient:
 def register_actions(hass: HomeAssistant) -> None:
     """Register custom actions."""
     register_search_action(hass)
-    register_get_queue_action(hass)
     register_get_library_action(hass)
 
 
@@ -100,30 +103,6 @@ def register_search_action(hass: HomeAssistant) -> None:
     )
 
 
-def register_get_queue_action(hass: HomeAssistant) -> None:
-    """Register get_queue action."""
-
-    async def handle_get_queue(call: ServiceCall) -> ServiceResponse:
-        """Handle get_queue action."""
-        mass = get_music_assistant_client(hass)
-        queue_id = call.data.get(ATTR_QUEUE_ID)
-        if queue_id and (queue := mass.player_queues.get(queue_id)):
-            return cast(ServiceResponse, queue.to_dict())
-        raise HomeAssistantError(f"Queue with ID {queue_id} not found")
-
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_GET_QUEUE,
-        handle_get_queue,
-        schema=vol.Schema(
-            {
-                vol.Required(ATTR_QUEUE_ID): cv.string,
-            }
-        ),
-        supports_response=SupportsResponse.ONLY,
-    )
-
-
 def register_get_library_action(hass: HomeAssistant) -> None:
     """Register get_library action."""
 
@@ -132,21 +111,21 @@ def register_get_library_action(hass: HomeAssistant) -> None:
         mass = get_music_assistant_client(hass)
         media_type = call.data[ATTR_MEDIA_TYPE]
         base_params = {
-            "favorite": call.data.get("favorite"),
-            "search": call.data.get("search"),
-            "limit": call.data.get("limit"),
-            "offset": call.data.get("offset"),
-            "order_by": call.data.get("order_by"),
+            "favorite": call.data.get(ATTR_FAVORITE),
+            "search": call.data.get(ATTR_SEARCH),
+            "limit": call.data.get(ATTR_LIMIT),
+            "offset": call.data.get(ATTR_OFFSET),
+            "order_by": call.data.get(ATTR_ORDER_BY),
         }
         if media_type == MediaType.ALBUM:
             library_result = await mass.music.get_library_albums(
                 **base_params,
-                album_types=call.data.get("album_type"),
+                album_types=call.data.get(ATTR_ALBUM_TYPE),
             )
         elif media_type == MediaType.ARTIST:
             library_result = await mass.music.get_library_artists(
                 **base_params,
-                album_artists_only=call.data.get("album_artists_only"),
+                album_artists_only=call.data.get(ATTR_ALBUM_ARTISTS_ONLY),
             )
         elif media_type == MediaType.TRACK:
             library_result = await mass.music.get_library_tracks(
@@ -173,12 +152,13 @@ def register_get_library_action(hass: HomeAssistant) -> None:
         schema=vol.Schema(
             {
                 vol.Required(ATTR_MEDIA_TYPE): vol.Coerce(MediaType),
-                vol.Optional("favorite"): cv.boolean,
-                vol.Optional("search"): cv.string,
-                vol.Optional("limit"): cv.positive_int,
-                vol.Optional("offset"): int,
-                vol.Optional("order_by"): cv.string,
-                vol.Optional("album_types"): cv.ensure_list,
+                vol.Optional(ATTR_FAVORITE): cv.boolean,
+                vol.Optional(ATTR_SEARCH): cv.string,
+                vol.Optional(ATTR_LIMIT): cv.positive_int,
+                vol.Optional(ATTR_OFFSET): int,
+                vol.Optional(ATTR_ORDER_BY): cv.string,
+                vol.Optional(ATTR_ALBUM_TYPE): list[MediaType],
+                vol.Optional(ATTR_ALBUM_ARTISTS_ONLY): cv.boolean,
             }
         ),
         supports_response=SupportsResponse.ONLY,
