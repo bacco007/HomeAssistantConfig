@@ -1,4 +1,5 @@
-"""Bermuda's internal representation of a device's scanner entry.
+"""
+Bermuda's internal representation of a device's scanner entry.
 
 Every bluetooth scanner gets its own BermudaDevice, but this class
 is the nested entry that gets attached to each device's `scanners`
@@ -8,87 +9,106 @@ to the combination of the scanner and the device it is reporting.
 
 from __future__ import annotations
 
-from homeassistant.components.bluetooth import MONOTONIC_TIME
-from homeassistant.components.bluetooth import BluetoothScannerDevice
+from typing import TYPE_CHECKING, cast
 
-from .const import _LOGGER
-from .const import CONF_ATTENUATION
-from .const import CONF_DEVICES
-from .const import CONF_MAX_VELOCITY
-from .const import CONF_REF_POWER
-from .const import CONF_SMOOTHING_SAMPLES
-from .const import DISTANCE_INFINITE
-from .const import DISTANCE_TIMEOUT
-from .const import HIST_KEEP_COUNT
+from homeassistant.components.bluetooth import MONOTONIC_TIME, BluetoothScannerDevice
+
+from .const import (
+    _LOGGER,
+    CONF_ATTENUATION,
+    CONF_DEVICES,
+    CONF_MAX_VELOCITY,
+    CONF_REF_POWER,
+    CONF_RSSI_OFFSETS,
+    CONF_SMOOTHING_SAMPLES,
+    DISTANCE_INFINITE,
+    DISTANCE_TIMEOUT,
+    HIST_KEEP_COUNT,
+)
 
 # from .const import _LOGGER_SPAM_LESS
 from .util import rssi_to_metres
 
+if TYPE_CHECKING:
+    from .bermuda_device import BermudaDevice
+
 
 class BermudaDeviceScanner(dict):
-    """Represents details from a scanner relevant to a specific device
+    """
+    Represents details from a scanner relevant to a specific device.
 
-    A BermudaDevice will contain 0 or more of these depending on whether
-    it has been "seen" by that scanner.
+    Effectively a link between two BermudaDevices, being the tracked device
+    and the scanner device. So each transmitting device will have a collection
+    of these BermudaDeviceScanner entries, one for each scanner that has picked
+    up the advertisement.
 
-    Note that details on a scanner itself are BermudaDevice instances
-    in their own right.
+    This is created (and updated) by the receipt of an advertisement, which represents
+    a BermudaDevice hearing an advert from another BermudaDevice, if that makes sense!
+
+    A BermudaDevice's "scanners" property will contain one of these for each
+    scanner that has "seen" it.
+
     """
 
     def __init__(
         self,
-        device_address: str,
-        scandata: BluetoothScannerDevice,
-        area_id: str,
+        parent_device: BermudaDevice,  # The device being tracked
+        scandata: BluetoothScannerDevice,  # The advertisement info from the device, received by the scanner
         options,
-    ):
+        scanner_device: BermudaDevice,  # The scanner device that "saw" it.
+    ) -> None:
         # I am declaring these just to control their order in the dump,
         # which is a bit silly, I suspect.
         self.name: str = scandata.scanner.name
-        self.area_id: str = area_id
-        self.parent_device = device_address
-
+        self.scanner_device_name = scanner_device.name
+        self.adapter: str = scandata.scanner.adapter
+        self.address = scanner_device.address
+        self.source: str = scandata.scanner.source
+        self.area_id: str | None = scanner_device.area_id
+        self.area_name: str | None = scanner_device.area_name
+        self.parent_device = parent_device
+        self.parent_device_address = parent_device.address
+        self.scanner_device = scanner_device  # links to the source device
+        self.options = options
         self.stamp: float | None = 0
-        self.new_stamp: float | None = (
-            None  # Set when a new advert is loaded from update
-        )
-        self.hist_stamp = []
+        self.scanner_sends_stamps: bool = False
+        self.new_stamp: float | None = None  # Set when a new advert is loaded from update
         self.rssi: float | None = None
+        self.tx_power: float | None = None
+        self.rssi_distance: float | None = None
+        self.rssi_distance_raw: float | None = None
+        self.ref_power: float = 0  # Override of global, set from parent device.
+        self.stale_update_count = 0  # How many times we did an update but no new stamps were found.
+        self.hist_stamp = []
         self.hist_rssi = []
         self.hist_distance = []
         self.hist_distance_by_interval = []  # updated per-interval
         self.hist_interval = []  # WARNING: This is actually "age of ad when we polled"
         self.hist_velocity = []  # Effective velocity versus previous stamped reading
-        self.stale_update_count = (
-            0  # How many times we did an update but no new stamps were found.
-        )
-        self.tx_power: float | None = None
-        self.rssi_distance: float | None = None
-        self.rssi_distance_raw: float | None = None
-        self.adverts: dict[str, bytes] = {}
+        self.adverts: dict[str, list] = {
+            "manufacturer_data": [],
+            "service_data": [],
+            "service_uuids": [],
+            "platform_data": [],
+        }
 
         # Just pass the rest on to update...
-        self.update_advertisement(device_address, scandata, area_id, options)
+        self.update_advertisement(scandata)
 
-    def update_advertisement(
-        self,
-        device_address: str,
-        scandata: BluetoothScannerDevice,
-        area_id: str,
-        options,
-    ):
-        """Update gets called every time we see a new packet or
+    def update_advertisement(self, scandata: BluetoothScannerDevice):
+        """
+        Update gets called every time we see a new packet or
         every time we do a polled update.
 
         This method needs to update all the history and tracking data for this
         device+scanner combination. This method only gets called when a given scanner
         claims to have data.
         """
-
         # In case the scanner has changed it's details since startup:
-        self.name: str = scandata.scanner.name
-        self.area_id: str = area_id
-        new_stamp: float | None = None
+        self.name = scandata.scanner.name
+        self.area_id = self.scanner_device.area_id
+        self.area_name = self.scanner_device.area_name
+        new_stamp = None
 
         # Only remote scanners log timestamps here (local usb adaptors do not),
         if hasattr(scandata.scanner, "_discovered_device_timestamps"):
@@ -97,14 +117,12 @@ class BermudaDeviceScanner(dict):
             # There's no API for this, so we somewhat sneakily are accessing
             # what is intended to be a protected dict.
             # pylint: disable-next=protected-access
-            stamps = scandata.scanner._discovered_device_timestamps  # type: ignore
+            stamps = scandata.scanner._discovered_device_timestamps  # type: ignore #noqa
 
             # In this dict all MAC address keys are upper-cased
-            uppermac = device_address.upper()
+            uppermac = self.parent_device_address.upper()
             if uppermac in stamps:
-                if self.stamp is None or (
-                    stamps[uppermac] is not None and stamps[uppermac] > self.stamp
-                ):
+                if self.stamp is None or (stamps[uppermac] is not None and stamps[uppermac] > self.stamp):
                     new_stamp = stamps[uppermac]
                 else:
                     # We have no updated advert in this run.
@@ -116,7 +134,7 @@ class BermudaDeviceScanner(dict):
                 _LOGGER.error(
                     "Scanner %s has no stamp for %s - very odd.",
                     scandata.scanner.source,
-                    device_address,
+                    self.parent_device_address,
                 )
                 new_stamp = None
         else:
@@ -138,16 +156,13 @@ class BermudaDeviceScanner(dict):
                 new_stamp = None
 
         if len(self.hist_stamp) == 0 or new_stamp is not None:
-            # this is the first entry or a new one...
+            # this is the first entry or a new one, bring in the new reading
+            # and calculate the distance.
 
             self.rssi = scandata.advertisement.rssi
             self.hist_rssi.insert(0, self.rssi)
-            self.rssi_distance_raw = rssi_to_metres(
-                self.rssi,
-                options.get(CONF_REF_POWER),
-                options.get(CONF_ATTENUATION),
-            )
-            self.hist_distance.insert(0, self.rssi_distance_raw)
+
+            self._update_raw_distance(reading_is_new=True)
 
             # Note: this is not actually the interval between adverts,
             # but rather a function of our UPDATE_INTERVAL plus the packet
@@ -171,28 +186,80 @@ class BermudaDeviceScanner(dict):
 
         self.adapter: str = scandata.scanner.adapter
         self.source: str = scandata.scanner.source
-        if (
-            self.tx_power is not None
-            and scandata.advertisement.tx_power != self.tx_power
-        ):
+        if self.tx_power is not None and scandata.advertisement.tx_power != self.tx_power:
             # Not really an erorr, we just don't account for this happening -
             # I want to know if it does.
             # AJG 2024-01-11: This does happen. Looks like maybe apple devices?
             # Changing from warning to debug to quiet users' logs.
             _LOGGER.debug(
                 "Device changed TX-POWER! That was unexpected: %s %sdB",
-                device_address,
+                self.parent_device_address,
                 scandata.advertisement.tx_power,
             )
         self.tx_power = scandata.advertisement.tx_power
-        for ad_str, ad_bytes in scandata.advertisement.service_data.items():
-            self.adverts[ad_str] = ad_bytes
-        self.options = options
+
+        # Track each advertisement element as or if they change.
+        for key, data in self.adverts.items():
+            new_data = getattr(scandata.advertisement, key, {})
+            if len(new_data) > 0:
+                if len(data) == 0 or data[0] != new_data:
+                    data.insert(0, new_data)
+                    # trim to keep size in check
+                    del data[HIST_KEEP_COUNT:]
 
         self.new_stamp = new_stamp
 
+    def _update_raw_distance(self, reading_is_new=True) -> float:
+        """
+        Converts rssi to raw distance and updates history stack and
+        returns the new raw distance.
+
+        reading_is_new should only be called by the regular update
+        cycle, as it creates a new entry in the histories. Call with
+        false if you just need to set / override distance measurements
+        immediately, perhaps between cycles, in order to reflect a
+        setting change (such as altering a device's ref_power setting).
+        """
+        # Check if we should use a device-based ref_power
+        if self.ref_power == 0:
+            ref_power = self.options.get(CONF_REF_POWER)
+        else:
+            ref_power = self.ref_power
+
+        distance = rssi_to_metres(
+            self.rssi + self.options.get(CONF_RSSI_OFFSETS, {}).get(self.address, 0),
+            ref_power,
+            self.options.get(CONF_ATTENUATION),
+        )
+        self.rssi_distance_raw = distance
+        if reading_is_new:
+            # Add a new historical reading
+            self.hist_distance.insert(0, distance)
+            # don't insert into hist_distance_by_interval, that's done by the caller.
+        else:
+            # We are over-riding readings between cycles. Force the
+            # new value in-place.
+            self.rssi_distance = distance
+            if len(self.hist_distance) > 0:
+                self.hist_distance[0] = distance
+            else:
+                self.hist_distance.append(distance)
+            if len(self.hist_distance_by_interval) > 0:
+                self.hist_distance_by_interval[0] = distance
+            # We don't else because we don't want to *add* a hist-by-interval reading, only
+            # modify in-place.
+        return distance
+
+    def set_ref_power(self, value: float):
+        """Set a new reference power from the parent device and immediately update distance."""
+        # When the user updates the ref_power we want to reflect that change immediately,
+        # and not subject it to the normal smoothing algo.
+        self.ref_power = value
+        return self._update_raw_distance(False)
+
     def calculate_data(self):
-        """Filter and update distance estimates.
+        """
+        Filter and update distance estimates.
 
         All smoothing and noise-management of the distance between a scanner
         and a device should be done in this method, as it is
@@ -232,7 +299,6 @@ class BermudaDeviceScanner(dict):
         is how we decide how long to wait, and should accommodate for dropped
         packets and for temporary occlusion (dogs' bodies etc)
         """
-
         new_stamp = self.new_stamp  # should have been set by update()
         self.new_stamp = None  # Clear so we know if an update is missed next cycle
 
@@ -245,15 +311,13 @@ class BermudaDeviceScanner(dict):
             self.hist_distance_by_interval.insert(0, self.rssi_distance_raw)
             del self.hist_distance_by_interval[1:]
 
-        elif new_stamp is None and (
-            self.stamp is None or self.stamp < MONOTONIC_TIME() - DISTANCE_TIMEOUT
-        ):
+        elif new_stamp is None and (self.stamp is None or self.stamp < MONOTONIC_TIME() - DISTANCE_TIMEOUT):
             # DEVICE IS AWAY!
             # Last distance reading is stale, mark device distance as unknown.
             self.rssi_distance = None
             # Clear the smoothing history
             if len(self.hist_distance_by_interval) > 0:
-                self.hist_distance_by_interval = []
+                self.hist_distance_by_interval.clear()
 
         else:
             # Add the current reading (whether new or old) to
@@ -297,9 +361,7 @@ class BermudaDeviceScanner(dict):
                             # (not so for == 0 since it might still be an invalid retreat)
                             break
 
-                    if velocity > peak_velocity:
-                        # but on subsequent comparisons we only care if they're faster retreats
-                        peak_velocity = velocity
+                    peak_velocity = max(velocity, peak_velocity)
                 # we've been through the history and have peak velo retreat, or the most recent
                 # approach velo.
                 velocity = peak_velocity
@@ -310,24 +372,20 @@ class BermudaDeviceScanner(dict):
             self.hist_velocity.insert(0, velocity)
 
             if velocity > self.options.get(CONF_MAX_VELOCITY):
-                if self.parent_device.upper() in self.options.get(CONF_DEVICES, []):
+                if self.parent_device_address.upper() in self.options.get(CONF_DEVICES, []):
                     _LOGGER.debug(
                         "This sparrow %s flies too fast (%2fm/s), ignoring",
-                        self.parent_device,
+                        self.parent_device_address,
                         velocity,
                     )
                 # Discard the bogus reading by duplicating the last.
-                self.hist_distance_by_interval.insert(
-                    0, self.hist_distance_by_interval[0]
-                )
+                self.hist_distance_by_interval.insert(0, self.hist_distance_by_interval[0])
             else:
                 # Looks valid enough, add the current reading to the interval log
                 self.hist_distance_by_interval.insert(0, self.rssi_distance_raw)
 
             # trim the log to length
-            del self.hist_distance_by_interval[
-                self.options.get(CONF_SMOOTHING_SAMPLES) :
-            ]
+            del self.hist_distance_by_interval[self.options.get(CONF_SMOOTHING_SAMPLES) :]
 
             # Calculate a moving-window average, that only includes
             # historical values if their "closer" (ie more reliable).
@@ -341,7 +399,7 @@ class BermudaDeviceScanner(dict):
             dist_total: float = 0
             dist_count: int = 0
             local_min: float = self.rssi_distance_raw or DISTANCE_INFINITE
-            for i, distance in enumerate(self.hist_distance_by_interval):
+            for distance in self.hist_distance_by_interval:
                 if distance <= local_min:
                     dist_total += distance
                     local_min = distance
@@ -371,12 +429,24 @@ class BermudaDeviceScanner(dict):
             del histlist[HIST_KEEP_COUNT:]
 
     def to_dict(self):
-        """Convert class to serialisable dict for dump_devices"""
+        """Convert class to serialisable dict for dump_devices."""
         out = {}
         for var, val in vars(self).items():
+            if var in ["options", "parent_device", "scanner_device"]:
+                # skip certain vars that we don't want in the dump output.
+                continue
             if var == "adverts":
-                val = {}
-                for uuid, thebytes in self.adverts.items():
-                    val[uuid] = thebytes.hex()
+                adout = {}
+                for adtype, adarray in val.items():
+                    out_adarray = []
+                    for ad_data in adarray:
+                        if adtype in ["manufacturer_data", "service_data"]:
+                            for ad_key, ad_value in ad_data.items():
+                                out_adarray.append({ad_key: cast(bytes, ad_value).hex()})
+                        else:
+                            out_adarray.append(ad_data)
+                    adout[adtype] = out_adarray
+                out[var] = adout
+                continue
             out[var] = val
         return out

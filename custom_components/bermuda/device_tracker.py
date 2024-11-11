@@ -1,40 +1,41 @@
-"""Create device_tracker entities for Bermuda devices"""
+"""Create device_tracker entities for Bermuda devices."""
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.device_tracker.config_entry import BaseTrackerEntity
 from homeassistant.components.device_tracker.const import SourceType
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_HOME
-from homeassistant.core import HomeAssistant
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
 from .const import SIGNAL_DEVICE_NEW
-from .coordinator import BermudaDataUpdateCoordinator
 from .entity import BermudaEntity
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from . import BermudaConfigEntry
+    from .coordinator import BermudaDataUpdateCoordinator
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: BermudaConfigEntry,
     async_add_devices: AddEntitiesCallback,
 ) -> None:
     """Load Device Tracker entities for a config entry."""
-    coordinator: BermudaDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: BermudaDataUpdateCoordinator = entry.runtime_data.coordinator
 
     created_devices = []  # list of devices we've already created entities for
 
     @callback
-    def device_new(
-        address: str, scanners: list[str]
-    ) -> None:  # pylint: disable=unused-argument
-        """Create entities for newly-found device
+    def device_new(address: str, scanners: list[str]) -> None:  # pylint: disable=unused-argument
+        """
+        Create entities for newly-found device.
 
         Called from the data co-ordinator when it finds a new device that needs
         to have sensors created. Not called directly, but via the dispatch
@@ -72,8 +73,10 @@ class BermudaDeviceTracker(BermudaEntity, BaseTrackerEntity):
 
     @property
     def unique_id(self):
-        """ "Uniquely identify this sensor so that it gets stored in the entity_registry,
-        and can be maintained / renamed etc by the user"""
+        """
+        "Uniquely identify this sensor so that it gets stored in the entity_registry,
+        and can be maintained / renamed etc by the user.
+        """
         return self._device.unique_id
 
     @property
@@ -94,8 +97,4 @@ class BermudaDeviceTracker(BermudaEntity, BaseTrackerEntity):
     @property
     def icon(self) -> str:
         """Return device icon."""
-        return (
-            "mdi:bluetooth-connect"
-            if self._device.zone == STATE_HOME
-            else "mdi:bluetooth-off"
-        )
+        return "mdi:bluetooth-connect" if self._device.zone == STATE_HOME else "mdi:bluetooth-off"
