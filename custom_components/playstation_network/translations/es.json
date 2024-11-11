@@ -1,0 +1,27 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Dispositivo ya está configurado",
+      "already_in_progress": "Dispositivo pendiente de configuración",
+      "reauth_successful": "Reautenticación fue exitosa"
+    },
+    "error": {
+      "cannot_connect": "No se pudo conectar",
+      "invalid_auth": "Autenticación no válida",
+      "unknown": "Error inesperado"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "npsso": "Código NPSSO"
+        }
+      },
+      "reauth_confirm": {
+        "data": {
+          "npsso": "Código NPSSO"
+        },
+        "title": "Reautenticar con nuevo código NPSSO"
+      }
+    }
+  }
+}
