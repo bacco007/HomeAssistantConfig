@@ -612,6 +612,7 @@ var Section = /* @__PURE__ */ ((Section2) => {
   Section2["PLAYER"] = "player";
   Section2["GROUPING"] = "grouping";
   Section2["VOLUMES"] = "volumes";
+  Section2["QUEUE"] = "queue";
   return Section2;
 })(Section || {});
 var MediaPlayerEntityFeature = /* @__PURE__ */ ((MediaPlayerEntityFeature2) => {
@@ -641,8 +642,11 @@ var mdiCog = "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 1
 var mdiDelete = "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
 var mdiFastForward = "M13,6V18L21.5,12M4,18L12.5,12L4,6V18Z";
 var mdiPen = "M20.71,7.04C20.37,7.38 20.04,7.71 20.03,8.04C20,8.36 20.34,8.69 20.66,9C21.14,9.5 21.61,9.95 21.59,10.44C21.57,10.93 21.06,11.44 20.55,11.94L16.42,16.08L15,14.66L19.25,10.42L18.29,9.46L16.87,10.87L13.12,7.12L16.96,3.29C17.35,2.9 18,2.9 18.37,3.29L20.71,5.63C21.1,6 21.1,6.65 20.71,7.04M3,17.25L12.56,7.68L16.31,11.43L6.75,21H3V17.25Z";
+var mdiPlaylistEdit = "M3 6V8H14V6H3M3 10V12H14V10H3M20 10.1C19.9 10.1 19.7 10.2 19.6 10.3L18.6 11.3L20.7 13.4L21.7 12.4C21.9 12.2 21.9 11.8 21.7 11.6L20.4 10.3C20.3 10.2 20.2 10.1 20 10.1M18.1 11.9L12 17.9V20H14.1L20.2 13.9L18.1 11.9M3 14V16H10V14H3Z";
+var mdiPlaylistRemove = "M14 10H3V12H14V10M14 6H3V8H14V6M3 16H10V14H3V16M14.4 22L17 19.4L19.6 22L21 20.6L18.4 18L21 15.4L19.6 14L17 16.6L14.4 14L13 15.4L15.6 18L13 20.6L14.4 22Z";
 var mdiPlus = "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z";
 var mdiRewind = "M11.5,12L20,18V6M11,18V6L2.5,12L11,18Z";
+var mdiTrashCanOutline = "M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z";
 var mdiVolumeHigh = "M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z";
 var mdiVolumeMinus = "M3,9H7L12,4V20L7,15H3V9M14,11H22V13H14V11Z";
 var mdiVolumeMute = "M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z";
@@ -810,16 +814,16 @@ class we extends $t {
   }
 }
 const be = e(we);
-var __defProp$p = Object.defineProperty;
-var __decorateClass$p = (decorators, target, key, kind) => {
+var __defProp$q = Object.defineProperty;
+var __decorateClass$q = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$p(target, key, result);
+  if (result) __defProp$q(target, key, result);
   return result;
 };
-const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
+const { SHUFFLE_SET: SHUFFLE_SET$1, REPEAT_SET: REPEAT_SET$1, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
 class PlayerControls extends h {
   constructor() {
     super(...arguments);
@@ -873,7 +877,7 @@ class PlayerControls extends h {
     return audioInputFormat && audioInputFormat.state && audioInputFormat.state !== "No audio" ? ke`<div>${audioInputFormat.state}</div>` : "";
   }
   showShuffle() {
-    return this.config.hidePlayerControlShuffleButton ? [] : [SHUFFLE_SET];
+    return this.config.hidePlayerControlShuffleButton ? [] : [SHUFFLE_SET$1];
   }
   showPrev() {
     return this.config.hidePlayerControlPrevTrackButton ? [] : [PREVIOUS_TRACK];
@@ -882,7 +886,7 @@ class PlayerControls extends h {
     return this.config.hidePlayerControlNextTrackButton ? [] : [NEXT_TRACK];
   }
   showRepeat() {
-    return this.config.hidePlayerControlRepeatButton ? [] : [REPEAT_SET];
+    return this.config.hidePlayerControlRepeatButton ? [] : [REPEAT_SET$1];
   }
   showBrowseMedia() {
     return this.config.showBrowseMediaInPlayerSection ? [BROWSE_MEDIA] : [];
@@ -931,7 +935,7 @@ class PlayerControls extends h {
     `;
   }
 }
-__decorateClass$p([
+__decorateClass$q([
   n2({ attribute: false })
 ], PlayerControls.prototype, "store");
 customElements.define("sonos-player-controls", PlayerControls);
@@ -951,7 +955,7 @@ const listStyle = i$2`
     overflow: hidden;
   }
 `;
-const mediaBrowserTitleStyle = i$2`
+const mediaItemTitleStyle = i$2`
   .title {
     color: var(--secondary-text-color);
     font-weight: bold;
@@ -1074,13 +1078,13 @@ function sortEntities(config, filtered) {
     return filtered.sort((a2, b2) => a2.entity_id.localeCompare(b2.entity_id));
   }
 }
-var __defProp$o = Object.defineProperty;
-var __decorateClass$o = (decorators, target, key, kind) => {
+var __defProp$p = Object.defineProperty;
+var __decorateClass$p = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$o(target, key, result);
+  if (result) __defProp$p(target, key, result);
   return result;
 };
 class PlayerHeader extends h {
@@ -1144,7 +1148,7 @@ class PlayerHeader extends h {
     `;
   }
 }
-__decorateClass$o([
+__decorateClass$p([
   n2({ attribute: false })
 ], PlayerHeader.prototype, "store");
 customElements.define("sonos-player-header", PlayerHeader);
@@ -1179,13 +1183,13 @@ const ee = "important", ie = " !" + ee, se = e(class extends i {
     return R;
   }
 });
-var __defProp$n = Object.defineProperty;
-var __decorateClass$n = (decorators, target, key, kind) => {
+var __defProp$o = Object.defineProperty;
+var __decorateClass$o = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$n(target, key, result);
+  if (result) __defProp$o(target, key, result);
   return result;
 };
 class Progress extends h {
@@ -1271,13 +1275,13 @@ class Progress extends h {
     `;
   }
 }
-__decorateClass$n([
+__decorateClass$o([
   n2({ attribute: false })
 ], Progress.prototype, "store");
-__decorateClass$n([
+__decorateClass$o([
   r$1()
 ], Progress.prototype, "playingProgress");
-__decorateClass$n([
+__decorateClass$o([
   e$1(".bar")
 ], Progress.prototype, "progressBar");
 const convertProgress = (duration) => {
@@ -1285,13 +1289,13 @@ const convertProgress = (duration) => {
   return date.startsWith("00:") ? date.substring(3) : date;
 };
 customElements.define("sonos-progress", Progress);
-var __defProp$m = Object.defineProperty;
-var __decorateClass$m = (decorators, target, key, kind) => {
+var __defProp$n = Object.defineProperty;
+var __decorateClass$n = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$m(target, key, result);
+  if (result) __defProp$n(target, key, result);
   return result;
 };
 class Volume extends h {
@@ -1402,19 +1406,19 @@ class Volume extends h {
     `;
   }
 }
-__decorateClass$m([
+__decorateClass$n([
   n2({ attribute: false })
 ], Volume.prototype, "store");
-__decorateClass$m([
+__decorateClass$n([
   n2({ attribute: false })
 ], Volume.prototype, "player");
-__decorateClass$m([
+__decorateClass$n([
   n2({ type: Boolean })
 ], Volume.prototype, "updateMembers");
-__decorateClass$m([
+__decorateClass$n([
   n2()
 ], Volume.prototype, "volumeClicked");
-__decorateClass$m([
+__decorateClass$n([
   n2()
 ], Volume.prototype, "slim");
 function numberFromEvent(e2) {
@@ -1422,13 +1426,13 @@ function numberFromEvent(e2) {
   return Number.parseInt((_a2 = e2 == null ? void 0 : e2.target) == null ? void 0 : _a2.value);
 }
 customElements.define("sonos-volume", Volume);
-var __defProp$l = Object.defineProperty;
-var __decorateClass$l = (decorators, target, key, kind) => {
+var __defProp$m = Object.defineProperty;
+var __decorateClass$m = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$l(target, key, result);
+  if (result) __defProp$m(target, key, result);
   return result;
 };
 class Player extends h {
@@ -1548,7 +1552,7 @@ class Player extends h {
     `;
   }
 }
-__decorateClass$l([
+__decorateClass$m([
   n2({ attribute: false })
 ], Player.prototype, "store");
 /**
@@ -1615,26 +1619,68 @@ class HassService {
       }
     });
   }
+  async getQueue(mediaPlayer) {
+    try {
+      const ret = await this.hass.callWS({
+        type: "call_service",
+        domain: "sonos",
+        service: "get_queue",
+        target: {
+          entity_id: mediaPlayer.id
+        },
+        return_response: true
+      });
+      const queueItems = ret.response[mediaPlayer.id];
+      return queueItems.map((item) => {
+        return {
+          title: `${item.media_artist} - ${item.media_title}`
+        };
+      });
+    } catch (e2) {
+      console.error("Error getting queue", e2);
+      return [];
+    }
+  }
+  async playQueue(mediaPlayer, queuePosition) {
+    this.card.dispatchEvent(customEvent(CALL_MEDIA_STARTED, { section: this.currentSection }));
+    try {
+      await this.hass.callService("sonos", "play_queue", {
+        entity_id: mediaPlayer.id,
+        queue_position: queuePosition
+      });
+    } finally {
+      this.card.dispatchEvent(customEvent(CALL_MEDIA_DONE));
+    }
+  }
+  async removeFromQueue(mediaPlayer, queuePosition) {
+    await this.hass.callService("sonos", "remove_from_queue", {
+      entity_id: mediaPlayer.id,
+      queue_position: queuePosition
+    });
+  }
+  async clearQueue(mediaPlayer) {
+    await this.hass.callService("media_player", "clear_playlist", { entity_id: mediaPlayer.id });
+  }
 }
 const DEFAULT_MEDIA_THUMBNAIL = "data:image/png;base64,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";
 function hasItemsWithImage(items) {
   return items.some((item) => item.thumbnail);
 }
-function getValueFromKeyIgnoreSpecialChars(customThumbnails, currentTitle) {
-  for (const title in customThumbnails) {
+function getValueFromKeyIgnoreSpecialChars(customFavoriteThumbnails, currentTitle) {
+  for (const title in customFavoriteThumbnails) {
     if (removeSpecialChars(title) === removeSpecialChars(currentTitle)) {
-      return customThumbnails[title];
+      return customFavoriteThumbnails[title];
     }
   }
   return void 0;
 }
 function getThumbnail(mediaItem, config, itemsWithImage) {
   var _a2;
-  let thumbnail = getValueFromKeyIgnoreSpecialChars(config.customThumbnail, mediaItem.title) ?? mediaItem.thumbnail;
+  let thumbnail = getValueFromKeyIgnoreSpecialChars(config.customFavoriteThumbnails, mediaItem.title) ?? mediaItem.thumbnail;
   if (!thumbnail) {
-    thumbnail = getValueFromKeyIgnoreSpecialChars(config.customThumbnailIfMissing, mediaItem.title);
+    thumbnail = getValueFromKeyIgnoreSpecialChars(config.customFavoriteThumbnailsIfMissing, mediaItem.title);
     if (itemsWithImage && !thumbnail) {
-      thumbnail = ((_a2 = config.customThumbnailIfMissing) == null ? void 0 : _a2["default"]) || DEFAULT_MEDIA_THUMBNAIL;
+      thumbnail = ((_a2 = config.customFavoriteThumbnailsIfMissing) == null ? void 0 : _a2["default"]) || DEFAULT_MEDIA_THUMBNAIL;
     }
   } else if (thumbnail == null ? void 0 : thumbnail.match(/https:\/\/brands\.home-assistant\.io\/.+\/logo.png/)) {
     thumbnail = thumbnail == null ? void 0 : thumbnail.replace("logo.png", "icon.png");
@@ -2055,13 +2101,13 @@ class Store {
     }
   }
 }
-var __defProp$k = Object.defineProperty;
-var __decorateClass$k = (decorators, target, key, kind) => {
+var __defProp$l = Object.defineProperty;
+var __decorateClass$l = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$k(target, key, result);
+  if (result) __defProp$l(target, key, result);
   return result;
 };
 class SectionButton extends h {
@@ -2084,29 +2130,29 @@ class SectionButton extends h {
     `;
   }
 }
-__decorateClass$k([
+__decorateClass$l([
   n2({ attribute: false })
 ], SectionButton.prototype, "config");
-__decorateClass$k([
+__decorateClass$l([
   n2()
 ], SectionButton.prototype, "icon");
-__decorateClass$k([
+__decorateClass$l([
   n2()
 ], SectionButton.prototype, "section");
-__decorateClass$k([
+__decorateClass$l([
   n2()
 ], SectionButton.prototype, "selectedSection");
 customElements.define("sonos-section-button", SectionButton);
-var __defProp$j = Object.defineProperty;
-var __decorateClass$j = (decorators, target, key, kind) => {
+var __defProp$k = Object.defineProperty;
+var __decorateClass$k = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$j(target, key, result);
+  if (result) __defProp$k(target, key, result);
   return result;
 };
-const { GROUPING: GROUPING$1, GROUPS: GROUPS$1, MEDIA_BROWSER: MEDIA_BROWSER$1, PLAYER: PLAYER$1, VOLUMES: VOLUMES$1 } = Section;
+const { GROUPING: GROUPING$1, GROUPS: GROUPS$1, MEDIA_BROWSER: MEDIA_BROWSER$1, PLAYER: PLAYER$1, VOLUMES: VOLUMES$1, QUEUE: QUEUE$1 } = Section;
 class Footer extends h {
   render() {
     const icons = this.config.sectionButtonIcons;
@@ -2115,6 +2161,7 @@ class Footer extends h {
       [MEDIA_BROWSER$1, (icons == null ? void 0 : icons.mediaBrowser) ?? "mdi:star-outline"],
       [GROUPS$1, (icons == null ? void 0 : icons.groups) ?? "mdi:speaker-multiple"],
       [GROUPING$1, (icons == null ? void 0 : icons.grouping) ?? "mdi:checkbox-multiple-marked-circle-outline"],
+      [QUEUE$1, (icons == null ? void 0 : icons.queue) ?? "mdi:queue-first-in-last-out"],
       [VOLUMES$1, (icons == null ? void 0 : icons.volumes) ?? "mdi:tune"]
     ];
     sections = sections.filter(([section]) => {
@@ -2141,15 +2188,15 @@ class Footer extends h {
         justify-content: space-between;
       }
       :host > * {
-        padding: 1rem;
+        padding: 1rem 0;
       }
     `;
   }
 }
-__decorateClass$j([
+__decorateClass$k([
   n2({ attribute: false })
 ], Footer.prototype, "config");
-__decorateClass$j([
+__decorateClass$k([
   n2()
 ], Footer.prototype, "section");
 customElements.define("sonos-footer", Footer);
@@ -2164,13 +2211,13 @@ var ne = function(e2, t2, r2, n3) {
   var i2 = new Event(t2, { bubbles: void 0 === n3.bubbles || n3.bubbles, cancelable: Boolean(n3.cancelable), composed: void 0 === n3.composed || n3.composed });
   return i2.detail = r2, e2.dispatchEvent(i2), i2;
 };
-var __defProp$i = Object.defineProperty;
-var __decorateClass$i = (decorators, target, key, kind) => {
+var __defProp$j = Object.defineProperty;
+var __decorateClass$j = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$i(target, key, result);
+  if (result) __defProp$j(target, key, result);
   return result;
 };
 class BaseEditor extends h {
@@ -2201,10 +2248,10 @@ class BaseEditor extends h {
     return this.dispatchEvent(new CustomEvent("closed"));
   }
 }
-__decorateClass$i([
+__decorateClass$j([
   n2({ attribute: false })
 ], BaseEditor.prototype, "config");
-__decorateClass$i([
+__decorateClass$j([
   n2({ attribute: false })
 ], BaseEditor.prototype, "hass");
 var ConfigArea = /* @__PURE__ */ ((ConfigArea2) => {
@@ -2269,11 +2316,15 @@ const ADVANCED_SCHEMA = [
     type: "string"
   },
   {
+    name: "queueTitle",
+    type: "string"
+  },
+  {
     name: "artworkHostname",
     type: "string"
   },
   {
-    name: "mediaBrowserHideTitleForThumbnailIcons",
+    name: "favoritesHideTitleForThumbnailIcons",
     selector: { boolean: {} }
   },
   {
@@ -2372,9 +2423,9 @@ class AdvancedEditor extends BaseEditor {
       <div>
         The following needs to be configured using code (YAML):
         <ul>
-          <li>customSources</li>
-          <li>customThumbnail</li>
-          <li>customThumbnailIfMissing</li>
+          <li>customFavorites</li>
+          <li>customFavoriteThumbnails</li>
+          <li>customFavoriteThumbnailsIfMissing</li>
           <li>favoritesToIgnore</li>
           <li>groupingButtonIcons</li>
           <li>sectionButtonIcons</li>
@@ -2393,39 +2444,28 @@ class AdvancedEditor extends BaseEditor {
   }
 }
 customElements.define("sonos-card-advanced-editor", AdvancedEditor);
-var __defProp$h = Object.defineProperty;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = void 0;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = decorator(target, key, result) || result;
-  if (result) __defProp$h(target, key, result);
-  return result;
+const options = {
+  player: "Player",
+  "media browser": "Media Browser",
+  groups: "Groups",
+  grouping: "Grouping",
+  volumes: "Volumes",
+  queue: "Queue"
 };
-class CustomSourceEditor extends BaseEditor {
-  render() {
-    return ke``;
-  }
-}
-__decorateClass$h([
-  n2({ type: Number })
-], CustomSourceEditor.prototype, "index");
-customElements.define("sonos-card-custom-source-editor", CustomSourceEditor);
 const GENERAL_SCHEMA = [
   {
     type: "multi_select",
-    options: {
-      player: "Player",
-      "media browser": "Media Browser",
-      groups: "Groups",
-      grouping: "Grouping",
-      volumes: "Volumes"
-    },
+    options,
     name: "sections"
   },
   {
+    type: "select",
+    options: Object.entries(options).map((entry) => entry),
+    name: "startSection"
+  },
+  {
     type: "integer",
-    name: "mediaBrowserItemsPerRow",
+    name: "favoritesItemsPerRow",
     default: 4,
     required: true,
     valueMin: 1,
@@ -2494,13 +2534,13 @@ class GeneralEditor extends BaseEditor {
   }
 }
 customElements.define("sonos-card-general-editor", GeneralEditor);
-var __defProp$g = Object.defineProperty;
-var __decorateClass$g = (decorators, target, key, kind) => {
+var __defProp$i = Object.defineProperty;
+var __decorateClass$i = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$g(target, key, result);
+  if (result) __defProp$i(target, key, result);
   return result;
 };
 const ENTITIES_RENAME_SCHEMA = [
@@ -2590,17 +2630,17 @@ class EntitiesEditor extends BaseEditor {
         `;
   }
 }
-__decorateClass$g([
+__decorateClass$i([
   r$1()
 ], EntitiesEditor.prototype, "editGroup");
 customElements.define("sonos-card-entities-editor", EntitiesEditor);
-var __defProp$f = Object.defineProperty;
-var __decorateClass$f = (decorators, target, key, kind) => {
+var __defProp$h = Object.defineProperty;
+var __decorateClass$h = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$f(target, key, result);
+  if (result) __defProp$h(target, key, result);
   return result;
 };
 class PredefinedGroupEditor extends BaseEditor {
@@ -2723,20 +2763,20 @@ class PredefinedGroupEditor extends BaseEditor {
     this.dispatchClose();
   }
 }
-__decorateClass$f([
+__decorateClass$h([
   n2({ type: Number })
 ], PredefinedGroupEditor.prototype, "index");
-__decorateClass$f([
+__decorateClass$h([
   r$1()
 ], PredefinedGroupEditor.prototype, "predefinedGroup");
 customElements.define("sonos-card-predefined-group-editor", PredefinedGroupEditor);
-var __defProp$e = Object.defineProperty;
-var __decorateClass$e = (decorators, target, key, kind) => {
+var __defProp$g = Object.defineProperty;
+var __decorateClass$g = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$e(target, key, result);
+  if (result) __defProp$g(target, key, result);
   return result;
 };
 class ArtworkOverridesEditor extends BaseEditor {
@@ -2767,17 +2807,17 @@ class ArtworkOverridesEditor extends BaseEditor {
         `;
   }
 }
-__decorateClass$e([
+__decorateClass$g([
   r$1()
 ], ArtworkOverridesEditor.prototype, "editItem");
 customElements.define("sonos-card-artwork-overrides-editor", ArtworkOverridesEditor);
-var __defProp$d = Object.defineProperty;
-var __decorateClass$d = (decorators, target, key, kind) => {
+var __defProp$f = Object.defineProperty;
+var __decorateClass$f = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$d(target, key, result);
+  if (result) __defProp$f(target, key, result);
   return result;
 };
 const newOverride = { ifMissing: false };
@@ -2864,17 +2904,17 @@ class ArtworkOverrideEditor extends BaseEditor {
     this.configChanged();
   }
 }
-__decorateClass$d([
+__decorateClass$f([
   n2({ type: Number })
 ], ArtworkOverrideEditor.prototype, "index");
 customElements.define("sonos-card-artwork-override-editor", ArtworkOverrideEditor);
-var __defProp$c = Object.defineProperty;
-var __decorateClass$c = (decorators, target, key, kind) => {
+var __defProp$e = Object.defineProperty;
+var __decorateClass$e = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$c(target, key, result);
+  if (result) __defProp$e(target, key, result);
   return result;
 };
 class Form extends BaseEditor {
@@ -2898,13 +2938,13 @@ class Form extends BaseEditor {
     this.configChanged();
   }
 }
-__decorateClass$c([
+__decorateClass$e([
   n2({ attribute: false })
 ], Form.prototype, "schema");
-__decorateClass$c([
+__decorateClass$e([
   n2({ attribute: false })
 ], Form.prototype, "data");
-__decorateClass$c([
+__decorateClass$e([
   n2()
 ], Form.prototype, "changed");
 function computeLabel({ help, label, name }) {
@@ -2916,13 +2956,13 @@ function computeLabel({ help, label, name }) {
   return unCamelCased + (help ? ` (${help})` : "");
 }
 customElements.define("sonos-card-editor-form", Form);
-var __defProp$b = Object.defineProperty;
-var __decorateClass$b = (decorators, target, key, kind) => {
+var __defProp$d = Object.defineProperty;
+var __decorateClass$d = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$b(target, key, result);
+  if (result) __defProp$d(target, key, result);
   return result;
 };
 const { GENERAL, ENTITIES, ADVANCED, ARTWORK } = ConfigArea;
@@ -2933,7 +2973,14 @@ class CardEditor extends BaseEditor {
   }
   render() {
     if (!this.config.sections || this.config.sections.length === 0) {
-      this.config.sections = [Section.PLAYER, Section.VOLUMES, Section.GROUPS, Section.GROUPING, Section.MEDIA_BROWSER];
+      this.config.sections = [
+        Section.PLAYER,
+        Section.VOLUMES,
+        Section.GROUPS,
+        Section.GROUPING,
+        Section.MEDIA_BROWSER,
+        Section.QUEUE
+      ];
     }
     return ke`
       <ha-control-button-group>
@@ -2983,7 +3030,7 @@ class CardEditor extends BaseEditor {
     `;
   }
 }
-__decorateClass$b([
+__decorateClass$d([
   r$1()
 ], CardEditor.prototype, "configArea");
 customElements.define("sonos-card-editor", CardEditor);
@@ -2995,16 +3042,16 @@ customElements.define("sonos-card-editor", CardEditor);
 function nn(n3, r2, t2) {
   return n3 ? r2(n3) : t2 == null ? void 0 : t2(n3);
 }
-var __defProp$a = Object.defineProperty;
-var __decorateClass$a = (decorators, target, key, kind) => {
+var __defProp$c = Object.defineProperty;
+var __decorateClass$c = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$a(target, key, result);
+  if (result) __defProp$c(target, key, result);
   return result;
 };
-const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES } = Section;
+const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES, QUEUE } = Section;
 const TITLE_HEIGHT = 2;
 const FOOTER_HEIGHT = 5;
 class Card extends h {
@@ -3097,7 +3144,11 @@ class Card extends h {
                       ></sonos-media-browser>
                     `
       ],
-      [VOLUMES, () => ke` <sonos-volumes .store=${this.store}></sonos-volumes>`]
+      [VOLUMES, () => ke` <sonos-volumes .store=${this.store}></sonos-volumes>`],
+      [
+        QUEUE,
+        () => ke`<sonos-queue .store=${this.store} @item-selected=${this.onMediaItemSelected}></sonos-queue>`
+      ]
     ]) : ke`<div class="no-players">No supported players found</div>`}
         </div>
         ${nn(
@@ -3153,7 +3204,7 @@ class Card extends h {
   footerStyle() {
     return se({
       height: `${FOOTER_HEIGHT}rem`,
-      paddingBottom: "1rem"
+      padding: "0 1rem"
     });
   }
   contentStyle(height) {
@@ -3170,13 +3221,15 @@ class Card extends h {
         delete newConfig[key];
       }
     }
-    const sections = newConfig.sections;
-    if (sections) {
-      this.section = sections.includes(PLAYER) ? PLAYER : sections.includes(MEDIA_BROWSER) ? MEDIA_BROWSER : sections.includes(GROUPS) ? GROUPS : sections.includes(GROUPING) ? GROUPING : VOLUMES;
+    const sections = newConfig.sections || Object.values(Section);
+    if (newConfig.startSection && sections.includes(newConfig.startSection)) {
+      this.section = newConfig.startSection;
+    } else if (sections) {
+      this.section = sections.includes(PLAYER) ? PLAYER : sections.includes(MEDIA_BROWSER) ? MEDIA_BROWSER : sections.includes(GROUPS) ? GROUPS : sections.includes(GROUPING) ? GROUPING : sections.includes(QUEUE) ? QUEUE : VOLUMES;
     } else {
       this.section = PLAYER;
     }
-    newConfig.mediaBrowserItemsPerRow = newConfig.mediaBrowserItemsPerRow || 4;
+    newConfig.favoritesItemsPerRow = newConfig.favoritesItemsPerRow || 4;
     if (((_a2 = newConfig.entities) == null ? void 0 : _a2.length) && newConfig.entities[0].entity) {
       newConfig.entities = newConfig.entities.map((entity) => entity.entity);
     }
@@ -3185,6 +3238,18 @@ class Card extends h {
       if (newConfig.showNonSonosPlayers) {
         newConfig.entityPlatform = void 0;
       }
+    }
+    if (newConfig.customSources) {
+      newConfig.customFavorites = newConfig.customSources;
+    }
+    if (newConfig.customThumbnail) {
+      newConfig.customFavoriteThumbnails = newConfig.customThumbnail;
+    }
+    if (newConfig.customThumbnailIfMissing) {
+      newConfig.customFavoriteThumbnailsIfMissing = newConfig.customThumbnailIfMissing;
+    }
+    if (newConfig.mediaBrowserItemsPerRow) {
+      newConfig.favoritesItemsPerRow = newConfig.mediaBrowserItemsPerRow;
     }
     this.config = newConfig;
   }
@@ -3219,37 +3284,37 @@ class Card extends h {
     `;
   }
 }
-__decorateClass$a([
+__decorateClass$c([
   n2({ attribute: false })
 ], Card.prototype, "hass");
-__decorateClass$a([
+__decorateClass$c([
   n2({ attribute: false })
 ], Card.prototype, "config");
-__decorateClass$a([
+__decorateClass$c([
   r$1()
 ], Card.prototype, "section");
-__decorateClass$a([
+__decorateClass$c([
   r$1()
 ], Card.prototype, "store");
-__decorateClass$a([
+__decorateClass$c([
   r$1()
 ], Card.prototype, "showLoader");
-__decorateClass$a([
+__decorateClass$c([
   r$1()
 ], Card.prototype, "loaderTimestamp");
-__decorateClass$a([
+__decorateClass$c([
   r$1()
 ], Card.prototype, "cancelLoader");
-__decorateClass$a([
+__decorateClass$c([
   r$1()
 ], Card.prototype, "activePlayerId");
-var __defProp$9 = Object.defineProperty;
-var __decorateClass$9 = (decorators, target, key, kind) => {
+var __defProp$b = Object.defineProperty;
+var __decorateClass$b = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$9(target, key, result);
+  if (result) __defProp$b(target, key, result);
   return result;
 };
 class GroupingButton extends h {
@@ -3289,13 +3354,13 @@ class GroupingButton extends h {
     `;
   }
 }
-__decorateClass$9([
+__decorateClass$b([
   n2()
 ], GroupingButton.prototype, "icon");
-__decorateClass$9([
+__decorateClass$b([
   n2()
 ], GroupingButton.prototype, "name");
-__decorateClass$9([
+__decorateClass$b([
   n2()
 ], GroupingButton.prototype, "selected");
 customElements.define("sonos-grouping-button", GroupingButton);
@@ -3311,13 +3376,13 @@ class GroupingItem {
     this.icon = this.isSelected ? "check-circle" : "checkbox-blank-circle-outline";
   }
 }
-var __defProp$8 = Object.defineProperty;
-var __decorateClass$8 = (decorators, target, key, kind) => {
+var __defProp$a = Object.defineProperty;
+var __decorateClass$a = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$8(target, key, result);
+  if (result) __defProp$a(target, key, result);
   return result;
 };
 class Grouping extends h {
@@ -3571,22 +3636,22 @@ class Grouping extends h {
     });
   }
 }
-__decorateClass$8([
+__decorateClass$a([
   n2({ attribute: false })
 ], Grouping.prototype, "store");
-__decorateClass$8([
+__decorateClass$a([
   r$1()
 ], Grouping.prototype, "modifiedItems");
-__decorateClass$8([
+__decorateClass$a([
   r$1()
 ], Grouping.prototype, "selectedPredefinedGroup");
-var __defProp$7 = Object.defineProperty;
-var __decorateClass$7 = (decorators, target, key, kind) => {
+var __defProp$9 = Object.defineProperty;
+var __decorateClass$9 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$7(target, key, result);
+  if (result) __defProp$9(target, key, result);
   return result;
 };
 class Group extends h {
@@ -3757,23 +3822,23 @@ class Group extends h {
     `;
   }
 }
-__decorateClass$7([
+__decorateClass$9([
   n2({ attribute: false })
 ], Group.prototype, "store");
-__decorateClass$7([
+__decorateClass$9([
   n2({ attribute: false })
 ], Group.prototype, "player");
-__decorateClass$7([
+__decorateClass$9([
   n2({ type: Boolean })
 ], Group.prototype, "selected");
 customElements.define("sonos-group", Group);
-var __defProp$6 = Object.defineProperty;
-var __decorateClass$6 = (decorators, target, key, kind) => {
+var __defProp$8 = Object.defineProperty;
+var __decorateClass$8 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$6(target, key, result);
+  if (result) __defProp$8(target, key, result);
   return result;
 };
 class Groups extends h {
@@ -3793,16 +3858,16 @@ class Groups extends h {
     return listStyle;
   }
 }
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], Groups.prototype, "store");
-var __defProp$5 = Object.defineProperty;
-var __decorateClass$5 = (decorators, target, key, kind) => {
+var __defProp$7 = Object.defineProperty;
+var __decorateClass$7 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$5(target, key, result);
+  if (result) __defProp$7(target, key, result);
   return result;
 };
 class MediaBrowserList extends h {
@@ -3812,59 +3877,33 @@ class MediaBrowserList extends h {
       <mwc-list multi class="list">
         ${itemsWithFallbacks(this.items, this.config).map((item) => {
       return ke`
-            <mwc-list-item class="button" @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}>
-              <div class="row">${renderMediaBrowserItem(item)}</div>
-            </mwc-list-item>
+            <sonos-media-row
+              @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}
+              .item=${item}
+            ></sonos-media-row>
           `;
     })}
       </mwc-list>
     `;
   }
   static get styles() {
-    return [
-      i$2`
-        .button {
-          --icon-width: 35px;
-          height: 40px;
-        }
-
-        .row {
-          display: flex;
-        }
-
-        .thumbnail {
-          width: var(--icon-width);
-          height: var(--icon-width);
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: left;
-        }
-
-        .title {
-          font-size: 1.1rem;
-          align-self: center;
-          flex: 1;
-        }
-      `,
-      mediaBrowserTitleStyle,
-      listStyle
-    ];
+    return listStyle;
   }
 }
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], MediaBrowserList.prototype, "store");
-__decorateClass$5([
+__decorateClass$7([
   n2({ type: Array })
 ], MediaBrowserList.prototype, "items");
 customElements.define("sonos-media-browser-list", MediaBrowserList);
-var __defProp$4 = Object.defineProperty;
-var __decorateClass$4 = (decorators, target, key, kind) => {
+var __defProp$6 = Object.defineProperty;
+var __decorateClass$6 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$4(target, key, result);
+  if (result) __defProp$6(target, key, result);
   return result;
 };
 class MediaBrowserIcons extends h {
@@ -3875,19 +3914,19 @@ class MediaBrowserIcons extends h {
         ${itemsWithFallbacks(this.items, this.config).map(
       (item) => ke`
             <ha-control-button
-              style=${this.buttonStyle(this.config.mediaBrowserItemsPerRow || 4)}
+              style=${this.buttonStyle(this.config.favoritesItemsPerRow || 4)}
               @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}
             >
-              ${renderMediaBrowserItem(item, !item.thumbnail || !this.config.mediaBrowserHideTitleForThumbnailIcons)}
+              ${renderMediaBrowserItem(item, !item.thumbnail || !this.config.favoritesHideTitleForThumbnailIcons)}
             </ha-control-button>
           `
     )}
       </div>
     `;
   }
-  buttonStyle(mediaBrowserItemsPerRow) {
+  buttonStyle(favoritesItemsPerRow) {
     const margin = "1%";
-    const size = `calc(100% / ${mediaBrowserItemsPerRow} - ${margin} * 2)`;
+    const size = `calc(100% / ${favoritesItemsPerRow} - ${margin} * 2)`;
     return se({
       width: size,
       height: size,
@@ -3896,7 +3935,7 @@ class MediaBrowserIcons extends h {
   }
   static get styles() {
     return [
-      mediaBrowserTitleStyle,
+      mediaItemTitleStyle,
       i$2`
         .icons {
           display: flex;
@@ -3924,20 +3963,20 @@ class MediaBrowserIcons extends h {
     ];
   }
 }
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], MediaBrowserIcons.prototype, "store");
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], MediaBrowserIcons.prototype, "items");
 customElements.define("sonos-media-browser-icons", MediaBrowserIcons);
-var __defProp$3 = Object.defineProperty;
-var __decorateClass$3 = (decorators, target, key, kind) => {
+var __defProp$5 = Object.defineProperty;
+var __decorateClass$5 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$3(target, key, result);
+  if (result) __defProp$5(target, key, result);
   return result;
 };
 class MediaBrowserHeader extends h {
@@ -3974,17 +4013,17 @@ class MediaBrowserHeader extends h {
     `;
   }
 }
-__decorateClass$3([
+__decorateClass$5([
   n2({ attribute: false })
 ], MediaBrowserHeader.prototype, "store");
 customElements.define("sonos-media-browser-header", MediaBrowserHeader);
-var __defProp$2 = Object.defineProperty;
-var __decorateClass$2 = (decorators, target, key, kind) => {
+var __defProp$4 = Object.defineProperty;
+var __decorateClass$4 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$2(target, key, result);
+  if (result) __defProp$4(target, key, result);
   return result;
 };
 const _MediaBrowser = class _MediaBrowser2 extends h {
@@ -4007,7 +4046,7 @@ const _MediaBrowser = class _MediaBrowser2 extends h {
       ${this.activePlayer && be(
       this.getFavorites(this.activePlayer).then((items) => {
         if (items == null ? void 0 : items.length) {
-          const itemsPerRow = this.config.mediaBrowserItemsPerRow || 4;
+          const itemsPerRow = this.config.favoritesItemsPerRow || 4;
           if (itemsPerRow > 1) {
             return ke`
                 <sonos-media-browser-icons
@@ -4044,8 +4083,8 @@ const _MediaBrowser = class _MediaBrowser2 extends h {
     let favorites = await this.mediaBrowseService.getFavorites(player);
     favorites.sort((a2, b2) => this.sortOnTopFavoritesThenAlphabetically(a2.title, b2.title));
     favorites = [
-      ...((_b = (_a2 = this.config.customSources) == null ? void 0 : _a2[this.activePlayer.id]) == null ? void 0 : _b.map(_MediaBrowser2.createSource)) || [],
-      ...((_d = (_c = this.config.customSources) == null ? void 0 : _c.all) == null ? void 0 : _d.map(_MediaBrowser2.createSource)) || [],
+      ...((_b = (_a2 = this.config.customFavorites) == null ? void 0 : _a2[this.activePlayer.id]) == null ? void 0 : _b.map(_MediaBrowser2.createFavorite)) || [],
+      ...((_d = (_c = this.config.customFavorites) == null ? void 0 : _c.all) == null ? void 0 : _d.map(_MediaBrowser2.createFavorite)) || [],
       ...favorites
     ];
     return this.config.numberOfFavoritesToShow ? favorites.slice(0, this.config.numberOfFavoritesToShow) : favorites;
@@ -4064,7 +4103,7 @@ const _MediaBrowser = class _MediaBrowser2 extends h {
       return result;
     }
   }
-  static createSource(source) {
+  static createFavorite(source) {
     return { ...source, can_play: true };
   }
   static get styles() {
@@ -4076,17 +4115,17 @@ const _MediaBrowser = class _MediaBrowser2 extends h {
     `;
   }
 };
-__decorateClass$2([
+__decorateClass$4([
   n2({ attribute: false })
 ], _MediaBrowser.prototype, "store");
 let MediaBrowser = _MediaBrowser;
-var __defProp$1 = Object.defineProperty;
-var __decorateClass$1 = (decorators, target, key, kind) => {
+var __defProp$3 = Object.defineProperty;
+var __decorateClass$3 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$1(target, key, result);
+  if (result) __defProp$3(target, key, result);
   return result;
 };
 const { SELECT_SOURCE } = MediaPlayerEntityFeature;
@@ -4223,20 +4262,19 @@ class Volumes extends h {
     `;
   }
 }
-__decorateClass$1([
+__decorateClass$3([
   n2({ attribute: false })
 ], Volumes.prototype, "store");
-__decorateClass$1([
+__decorateClass$3([
   r$1()
 ], Volumes.prototype, "showSwitches");
-customElements.define("sonos-volumes", Volumes);
-var __defProp = Object.defineProperty;
-var __decorateClass = (decorators, target, key, kind) => {
+var __defProp$2 = Object.defineProperty;
+var __decorateClass$2 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp(target, key, result);
+  if (result) __defProp$2(target, key, result);
   return result;
 };
 class HaPlayer extends h {
@@ -4251,13 +4289,236 @@ class HaPlayer extends h {
     return ke` <more-info-content .stateObj=${playerState} .hass=${this.store.hass}></more-info-content> `;
   }
 }
-__decorateClass([
+__decorateClass$2([
   n2({ attribute: false })
 ], HaPlayer.prototype, "store");
-__decorateClass([
+__decorateClass$2([
   n2({ attribute: false })
 ], HaPlayer.prototype, "features");
 customElements.define("sonos-ha-player", HaPlayer);
+var __defProp$1 = Object.defineProperty;
+var __decorateClass$1 = (decorators, target, key, kind) => {
+  var result = void 0;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = decorator(target, key, result) || result;
+  if (result) __defProp$1(target, key, result);
+  return result;
+};
+class MediaRow extends h {
+  constructor() {
+    super(...arguments);
+    this.selected = false;
+  }
+  render() {
+    return ke`
+      <mwc-list-item hasMeta ?selected=${this.selected} ?activated=${this.selected} class="button">
+        <div class="row">${renderMediaBrowserItem(this.item)}</div>
+        <slot slot="meta"></slot>
+      </mwc-list-item>
+    `;
+  }
+  async firstUpdated(_changedProperties) {
+    super.firstUpdated(_changedProperties);
+    await this.scrollToSelected(_changedProperties);
+  }
+  async updated(_changedProperties) {
+    super.updated(_changedProperties);
+    await this.scrollToSelected(_changedProperties);
+  }
+  async scrollToSelected(_changedProperties) {
+    await new Promise((r2) => setTimeout(r2, 0));
+    if (this.selected && _changedProperties.has("selected")) {
+      this.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+  static get styles() {
+    return [
+      i$2`
+        .mdc-deprecated-list-item__text {
+          width: 100%;
+        }
+        .button {
+          margin: 0.3rem;
+          border-radius: 0.3rem;
+          background: var(--secondary-background-color);
+          --icon-width: 35px;
+          height: 40px;
+        }
+
+        .row {
+          display: flex;
+        }
+
+        .thumbnail {
+          width: var(--icon-width);
+          height: var(--icon-width);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: left;
+        }
+
+        .title {
+          font-size: 1.1rem;
+          align-self: center;
+          flex: 1;
+        }
+      `,
+      mediaItemTitleStyle
+    ];
+  }
+}
+__decorateClass$1([
+  n2({ attribute: false })
+], MediaRow.prototype, "store");
+__decorateClass$1([
+  n2({ attribute: false })
+], MediaRow.prototype, "item");
+__decorateClass$1([
+  n2({ type: Boolean })
+], MediaRow.prototype, "selected");
+customElements.define("sonos-media-row", MediaRow);
+var __defProp = Object.defineProperty;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = void 0;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = decorator(target, key, result) || result;
+  if (result) __defProp(target, key, result);
+  return result;
+};
+const { SHUFFLE_SET, REPEAT_SET, CLEAR_PLAYLIST } = MediaPlayerEntityFeature;
+class Queue extends h {
+  constructor() {
+    super(...arguments);
+    this.editMode = false;
+    this.firstRender = true;
+    this.onMediaItemSelected = async (index) => {
+      if (!this.editMode) {
+        await this.store.hassService.playQueue(this.activePlayer, index);
+        this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED));
+      }
+    };
+  }
+  render() {
+    this.activePlayer = this.store.activePlayer;
+    const selected = this.activePlayer.attributes.queue_position - 1;
+    return ke`${this.renderQueue(selected)}`;
+  }
+  renderQueue(selected) {
+    this.firstRender = false;
+    return ke`
+      <div class="header">
+        <div class="title">
+          ${this.store.config.queueTitle ?? (this.activePlayer.attributes.media_playlist ?? `Play Queue`) + (this.activePlayer.attributes.media_channel ? " (not active)" : "")}
+        </div>
+        <div class="header-icons">
+          <sonos-ha-player
+            .store=${this.store}
+            .features=${[SHUFFLE_SET, REPEAT_SET, CLEAR_PLAYLIST]}
+          ></sonos-ha-player>
+          <ha-icon-button .path=${mdiPlaylistRemove} @click=${this.clearQueue}></ha-icon-button>
+          <ha-icon-button
+            .path=${mdiPlaylistEdit}
+            @click=${this.toggleEditMode}
+            selected=${this.editMode || D}
+          ></ha-icon-button>
+        </div>
+      </div>
+      <div class="list">
+        <mwc-list multi>
+          ${be(
+      this.store.hassService.getQueue(this.store.activePlayer).then(
+        (queue) => queue.map((item, index) => {
+          return ke`
+                  <sonos-media-row
+                    @click=${() => this.onMediaItemSelected(index)}
+                    .item=${item}
+                    .selected=${selected !== void 0 && selected === index}
+                    ><ha-icon-button
+                      hide=${this.editMode && D}
+                      @click=${(event) => {
+            event.stopPropagation();
+            return this.removeFromQueue(index);
+          }}
+                      .path=${mdiTrashCanOutline}
+                    ></ha-icon-button
+                  ></sonos-media-row>
+                `;
+        })
+      )
+    )}
+        </mwc-list>
+      </div>
+    `;
+  }
+  toggleEditMode() {
+    this.editMode = !this.editMode;
+  }
+  async clearQueue() {
+    await this.store.hassService.clearQueue(this.activePlayer);
+    this.requestUpdate();
+  }
+  async removeFromQueue(index) {
+    await this.store.hassService.removeFromQueue(this.activePlayer, index);
+    this.requestUpdate();
+  }
+  static get styles() {
+    return [
+      listStyle,
+      i$2`
+        :host {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem;
+        }
+        .header-icons {
+          white-space: nowrap;
+        }
+        .header-icons > * {
+          display: inline-block;
+        }
+        .title {
+          text-align: center;
+          font-size: 1.2rem;
+          font-weight: bold;
+          align-items: center;
+          justify-content: center;
+          padding: 0.5rem;
+        }
+        .list {
+          overflow: auto;
+          --mdc-icon-button-size: 1.5rem;
+          --mdc-icon-size: 1rem;
+        }
+        *[selected] {
+          color: var(--accent-color);
+        }
+        *[hide] {
+          display: none;
+        }
+      `
+    ];
+  }
+}
+__decorateClass([
+  n2()
+], Queue.prototype, "store");
+__decorateClass([
+  r$1()
+], Queue.prototype, "activePlayer");
+__decorateClass([
+  r$1()
+], Queue.prototype, "editMode");
+__decorateClass([
+  r$1()
+], Queue.prototype, "firstRender");
 window.customCards.push({
   type: "sonos-card",
   name: "Sonos",
@@ -4269,3 +4530,5 @@ customElements.define("sonos-grouping", Grouping);
 customElements.define("sonos-groups", Groups);
 customElements.define("sonos-media-browser", MediaBrowser);
 customElements.define("sonos-player", Player);
+customElements.define("sonos-volumes", Volumes);
+customElements.define("sonos-queue", Queue);
