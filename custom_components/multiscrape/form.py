@@ -88,6 +88,7 @@ class FormSubmitter:
         self._parser = parser
         self._should_submit = True
         self._cookies = None
+        self._payload = None
 
     def notify_scrape_exception(self):
         """Make sure form is re-submitted after an exception."""
@@ -98,12 +99,13 @@ class FormSubmitter:
             )
             self._should_submit = True
 
+    @property
+    def should_submit(self):
+        """Return the form variables."""
+        return self._should_submit
+
     async def async_submit(self, main_resource):
         """Submit the form."""
-        if not self._should_submit:
-            _LOGGER.debug("%s # Skip submitting form", self._config_name)
-            return
-
         _LOGGER.debug("%s # Starting with form-submit", self._config_name)
         input_fields = {}
         action, method = None, None
@@ -134,13 +136,16 @@ class FormSubmitter:
                 self._config_name,
             )
 
-        input_fields.update(self._input_values)
+        if self._input_values is not None:
 
-        _LOGGER.debug(
-            "%s # Merged input fields with input data in config. Result: %s",
-            self._config_name,
-            input_fields,
-        )
+            input_fields.update(self._input_values)
+
+            _LOGGER.debug(
+                "%s # Merged input fields with input data in config. Result: %s",
+                self._config_name,
+                input_fields,
+            )
+            self._payload = input_fields
 
         if not method:
             method = "POST"
@@ -152,7 +157,7 @@ class FormSubmitter:
             "form_submit",
             submit_resource,
             method=method,
-            request_data=input_fields,
+            request_data=self._payload,
             cookies=self._cookies
         )
         _LOGGER.debug(
