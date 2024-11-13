@@ -248,7 +248,8 @@ def get_rt_route_trip_statuses(self):
                         if due_in_minutes(datetime.fromtimestamp(stop_time)) >= 0:
                             departure_times[route_id][direction_id][
                                 stop_id
-                            ]["departures"].append(dt_util.as_utc(datetime.fromtimestamp(stop_time)))
+                            ]["departures"].append(datetime.utcfromtimestamp(stop_time).replace(tzinfo=dt_util.get_time_zone("UTC")))
+                            _LOGGER.debug("RT stoptime: %s, utcfromtimestamp: %s, format utc: %s", stop_time, datetime.utcfromtimestamp(stop_time), datetime.utcfromtimestamp(stop_time).replace(tzinfo=dt_util.get_time_zone("UTC")))
                         else:
                             _LOGGER.debug("Not using realtime stop data for old due-in-minutes: %s", due_in_minutes(datetime.fromtimestamp(stop_time)))
                             

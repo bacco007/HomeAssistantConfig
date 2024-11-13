@@ -25,6 +25,7 @@ from .const import (
     CONF_API_KEY,
     CONF_API_KEY_LOCATION,
     CONF_API_KEY_NAME,
+    CONF_ACCEPT_HEADER_PB,
     DEFAULT_LOCAL_STOP_TIMERANGE, 
     DEFAULT_LOCAL_STOP_TIMERANGE_HISTORY,
     DEFAULT_LOCAL_STOP_RADIUS,
@@ -987,9 +988,13 @@ def get_local_stops_next_departures(self):
         self._rt_group = "trip"
         self._rt_data = {
             "url": self._trip_update_url,
-            "headers": self._headers,
+            CONF_API_KEY : self._headers.get(CONF_API_KEY,None),
+            CONF_API_KEY_NAME : self._headers.get(CONF_API_KEY_NAME, None),
+            CONF_API_KEY_LOCATION : self._headers.get(CONF_API_KEY_LOCATION,None),
+            CONF_ACCEPT_HEADER_PB :self._headers.get(CONF_ACCEPT_HEADER_PB,None),
             "file": self._data["name"] + "_localstop",
             }
+        _LOGGER.debug("self rt_data: %s, self headers: %s, self data: %s", self._rt_data, self._headers, self._data)
         check = get_gtfs_rt(self.hass,DEFAULT_PATH_RT,self._rt_data)
         # check if local file created
         if check != "ok":
@@ -1064,7 +1069,7 @@ def get_local_stops_next_departures(self):
                     delay_rt_derived = '-' + str(td)
                 elif td.seconds != 0: 
                     delay_rt_derived = str(td)
-                _LOGGER.debug("Delay derived: %s", delay_rt_derived) 
+                _LOGGER.debug("Delay derived: %s, departure_rt: %s", delay_rt_derived,departure_rt) 
             else: 
                 depart_time_corrected_time = (dt_util.parse_datetime(f"{now_date} {self._departure_time}")).replace(tzinfo=timezone_stop)
             _LOGGER.debug("Departure time corrected based on realtime-time: %s", depart_time_corrected_time)    

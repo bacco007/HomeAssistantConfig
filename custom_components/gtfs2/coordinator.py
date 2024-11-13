@@ -190,7 +190,7 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
                 self._get_next_service = {}
                 """Initialize the info object."""
                 self._route_delimiter = None
-                self._headers = None
+                self._headers = {}
                 self._trip_update_url = options.get("trip_update_url", None)
                 self._vehicle_position_url = options.get("vehicle_position_url", None)
                 self._alerts_url = options.get("alerts_url", None)
@@ -200,9 +200,12 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
                     self._vehicle_position_url = self._vehicle_position_url + "?" + options[CONF_API_KEY_NAME] + "=" + options[CONF_API_KEY]
                     self._alerts_url = self._alerts_url + "?" + options[CONF_API_KEY_NAME] + "=" + options[CONF_API_KEY]
                 if options.get(CONF_API_KEY_LOCATION, None) == "header":
-                    self._headers = {options[CONF_API_KEY_NAME]: options[CONF_API_KEY]}               
+                    self._headers = {options[CONF_API_KEY_NAME]: options[CONF_API_KEY]}   
+                    self._headers[CONF_API_KEY_LOCATION] = options.get(CONF_API_KEY_LOCATION,None)
+                    self._headers[CONF_API_KEY_NAME] = options.get(CONF_API_KEY_NAME, None)
                 if options.get(CONF_ACCEPT_HEADER_PB, False):
                     self._headers["Accept"] = "application/x-protobuf"
+                _LOGGER.debug("RT header: %s", self._headers)
         self._pygtfs = get_gtfs(
             self.hass, DEFAULT_PATH, data, False
         )        
