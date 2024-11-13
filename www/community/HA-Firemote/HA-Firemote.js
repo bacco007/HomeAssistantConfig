@@ -1,9 +1,9 @@
-const HAFiremoteVersion = 'v4.1.2';
+const HAFiremoteVersion = 'v4.1.3';
 
 import {LitElement, html, css, unsafeHTML, unsafeCSS, styleMap} from './lit/lit-all.min.js';
-import {launcherData, launcherCSS} from "./launcher-buttons.js?version=v4.1.2";
-import {rosettaStone} from './language-translations.js?version=v4.1.2';
-import {devices} from './supported-devices.js?version=v4.1.2';
+import {launcherData, launcherCSS} from "./launcher-buttons.js?version=v4.1.3";
+import {rosettaStone} from './language-translations.js?version=v4.1.3';
+import {devices} from './supported-devices.js?version=v4.1.3';
 
 console.groupCollapsed("%c 🔥 FIREMOTE-CARD 🔥 %c "+HAFiremoteVersion+" installed ", "color: orange; font-weight: bold; background: black", "color: green; font-weight: bold;"),
 console.log("Readme:", "https://github.com/PRProd/HA-Firemote"),
@@ -3716,6 +3716,23 @@ class FiremoteCard extends LitElement {
       }
     }
 
+    //Draw Optional MediaControl buttons on CC
+    function drawMediaControlButtons(e, config) {
+      if (config.show_media_controls==true) {
+        return html`
+          <button class="remote-button" id="rewind-button" @pointerdown=${e.buttonDown}>
+            <ha-icon icon="mdi:rewind"></ha-icon>
+          </button>
+          <button class="remote-button${playingStatusClass}" id="playpause-button" @pointerdown=${e.buttonDown}>
+            <ha-icon icon="mdi:play-pause"></ha-icon>
+          </button>
+          <button class="remote-button" id="fastforward-button" @pointerdown=${e.buttonDown}>
+            <ha-icon icon="mdi:fast-forward"></ha-icon>
+          </button>
+          `;
+        }
+        return;
+    }
 
     // Reused SVG Logos
     function renderfiretvlogo() {
@@ -5315,6 +5332,9 @@ class FiremoteCard extends LitElement {
           <button class="remote-button" id="mute-button" @pointerdown=${this.buttonDown}>
             <ha-icon icon="mdi:volume-mute"></ha-icon>
           </button>
+
+          ${drawMediaControlButtons(this, this._config)}
+
 
           ${drawAppLaunchButtons(this, this._config, 2, appButtonMax[getDeviceAttribute('defaultRemoteStyle')])}
 
@@ -7934,6 +7954,9 @@ class FiremoteCardEditor extends LitElement {
         case 'useCustomSkinCheckbox':
           this._config.useCustomSkin = ev.target.checked;
           break;
+        case "showMediaControlsCheckbox":
+          this._config.show_media_controls = ev.target.checked;
+          break;
       }
     }
 
@@ -8349,6 +8372,17 @@ class FiremoteCardEditor extends LitElement {
     }
   }
 
+  getChromecastMediaControls(remoteStyle) {
+    if (['CC1', 'CC2', 'CC3'].includes(remoteStyle)) {
+        return html`
+          <label for="showMediaControlsCheckbox">
+            <input type="checkbox" id="showMediaControlsCheckbox" name="show_media_controls"
+              ?checked=${this._config.show_media_controls === true} @change=${this.configChanged}>&nbsp; ${this.translateToUsrLang("Show Media Controls")}
+          </label>
+          <br>`;
+    }
+  }
+
   render() {
     if (!this.hass || !this._config) {
       return html``;
@@ -8457,6 +8491,8 @@ class FiremoteCardEditor extends LitElement {
         </select>
         <br>
         <br>
+        ${this.getChromecastMediaControls(getDeviceAttribute("defaultRemoteStyle"))}
+
         ${this.getCompatibilityModeDropdown(this._config.compatibility_mode, getDeviceAttribute('friendlyName'))}
 
         ${this.getAppChoiceOptionMenus(getDeviceAttribute("defaultRemoteStyle"))}
