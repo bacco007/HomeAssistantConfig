@@ -401,9 +401,14 @@ def get_gtfs_rt(hass, path, data):
     try:
         r = requests.get(url, headers = _headers , allow_redirects=True)
         open(os.path.join(gtfs_dir, file), "wb").write(r.content)
+        if r.status_code != 200:
+            _LOGGER.error("Ìssues with downloading GTFS RT data, error: %s, content: %s", r.status_code, r.content)
+            return "no_rt_data_file"
     except Exception as ex:  # pylint: disable=broad-except
         _LOGGER.error("Ìssues with downloading GTFS RT data to: %s", os.path.join(gtfs_dir, file))
         return "no_rt_data_file"
+
+    
     if data.get("debug_output", False):
         try:
             data_out = ""

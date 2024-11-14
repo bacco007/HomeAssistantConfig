@@ -203,8 +203,8 @@ class GTFSLocalStopUpdateCoordinator(DataUpdateCoordinator):
                     self._headers = {options[CONF_API_KEY_NAME]: options[CONF_API_KEY]}   
                     self._headers[CONF_API_KEY_LOCATION] = options.get(CONF_API_KEY_LOCATION,None)
                     self._headers[CONF_API_KEY_NAME] = options.get(CONF_API_KEY_NAME, None)
-                if options.get(CONF_ACCEPT_HEADER_PB, False):
-                    self._headers["Accept"] = "application/x-protobuf"
+                    self._headers[CONF_API_KEY] = options.get(CONF_API_KEY, None)
+                    self._headers[CONF_ACCEPT_HEADER_PB] = options.get(CONF_ACCEPT_HEADER_PB, False)
                 _LOGGER.debug("RT header: %s", self._headers)
         self._pygtfs = get_gtfs(
             self.hass, DEFAULT_PATH, data, False

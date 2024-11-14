@@ -999,7 +999,7 @@ def get_local_stops_next_departures(self):
         # check if local file created
         if check != "ok":
             _LOGGER.error("Could not download RT data from: %s", self._trip_update_url)
-            return False
+            return {}
         else:
             # use local file created as new url
             self._trip_update_url = "file://" + DEFAULT_PATH_RT + "/" + self._data["name"] + "_localstop.rt"
