@@ -14,6 +14,7 @@ from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.vacuum import DOMAIN as VACUUM_DOMAIN
 from homeassistant.const import __version__ as HA_VERSION  # noqa
 from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers import translation
@@ -38,6 +39,7 @@ class DeviceType(StrEnum):
     SMART_SWITCH = "smart_switch"
     SMART_SPEAKER = "smart_speaker"
     NETWORK = "network"
+    VACUUM_ROBOT = "vacuum_robot"
 
 
 class SubProfileMatcherType(StrEnum):
@@ -55,6 +57,7 @@ DOMAIN_DEVICE_TYPE = {
     MEDIA_PLAYER_DOMAIN: DeviceType.SMART_SPEAKER,
     BINARY_SENSOR_DOMAIN: DeviceType.NETWORK,
     SENSOR_DOMAIN: DeviceType.PRINTER,
+    VACUUM_DOMAIN: DeviceType.VACUUM_ROBOT,
 }
 
 
@@ -118,11 +121,11 @@ class PowerProfile:
 
     @property
     def linked_lut(self) -> str | None:
-        return self._json_data.get("linked_lut")  # type: ignore
+        return self._json_data.get("linked_lut")
 
     @property
     def calculation_enabled_condition(self) -> str | None:
-        return self._json_data.get("calculation_enabled_condition")  # type: ignore
+        return self._json_data.get("calculation_enabled_condition")
 
     @property
     def aliases(self) -> list[str]:
@@ -172,11 +175,15 @@ class PowerProfile:
         ) and not self._json_data.get("fixed_config")
 
     @property
-    def device_type(self) -> DeviceType:
+    def device_type(self) -> DeviceType | None:
         device_type = self._json_data.get("device_type")
         if not device_type:
             return DeviceType.LIGHT
-        return DeviceType(device_type)
+        try:
+            return DeviceType(device_type)
+        except ValueError:
+            _LOGGER.error("Unknown device type: %s", device_type)
+            return None
 
     @property
     def config_flow_discovery_remarks(self) -> str | None:
@@ -191,7 +198,7 @@ class PowerProfile:
             translation_key = f"component.{DOMAIN}.common.remarks_smart_switch"
             return translations.get(translation_key)
 
-        return remarks  # type: ignore
+        return remarks
 
     async def get_sub_profiles(self) -> list[str]:
         """Get listing of possible sub profiles."""
@@ -254,6 +261,9 @@ class PowerProfile:
             self.device_type == DeviceType.SMART_SWITCH and entity_entry and entity_entry.platform in ["hue"] and source_entity.domain == LIGHT_DOMAIN
         ):  # see https://github.com/bramstroker/homeassistant-powercalc/issues/1491
             return True
+
+        if self.device_type is None:
+            return False
 
         entity_domain = next(k for k, v in DOMAIN_DEVICE_TYPE.items() if v == self.device_type)
         return entity_domain == source_entity.domain
