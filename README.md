@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.11.1 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6025 |
+| No. Entities | 6034 |
 | No. Sensors | 3885 |
 | No. Automations | 154 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 42
-Persistent notifications | 5
+Persistent notifications | 6
 Persons | 4
 Remotes | 9
 Scenes | 2
@@ -786,7 +786,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.61.1] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.4.0] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
-| [Bermuda Ble Trilateration](https://github.com/agittins/bermuda) |  [v0.7.0] | Bermuda Bluetooth/BLE Triangulation / Trilateration for HomeAssistant |[@agittins](https://github.com/agittins).|
+| [Bermuda Ble Trilateration](https://github.com/agittins/bermuda) |  [v0.7.2] | Bermuda Bluetooth/BLE Triangulation / Trilateration for HomeAssistant |[@agittins](https://github.com/agittins).|
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.8] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.1] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.3] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
@@ -803,7 +803,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
 | [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.22.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
-| [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.11.0] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
+| [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.11.1] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
@@ -825,7 +825,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.3] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.11.3] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
+| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.11.4] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.7] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.1.1] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
@@ -934,7 +934,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.5.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.8.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.9.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>3 Themes</summary>
 
