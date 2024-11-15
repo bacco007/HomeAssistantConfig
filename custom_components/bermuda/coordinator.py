@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, cast
 
 import voluptuous as vol
 import yaml
+from habluetooth import BaseHaRemoteScanner, BaseHaScanner
 from homeassistant.components import bluetooth
 from homeassistant.components.bluetooth import (
     MONOTONIC_TIME,
@@ -17,6 +18,7 @@ from homeassistant.components.bluetooth import (
     BluetoothScannerDevice,
 )
 from homeassistant.components.bluetooth.api import _get_manager
+from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import EVENT_STATE_CHANGED
 from homeassistant.core import (
     Event,
@@ -83,6 +85,7 @@ from .const import (
     PRUNE_TIME_DEFAULT,
     PRUNE_TIME_INTERVAL,
     PRUNE_TIME_IRK,
+    SAVEOUT_COOLDOWN,
     SIGNAL_DEVICE_NEW,
     UPDATE_INTERVAL,
 )
@@ -139,15 +142,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         self.stamp_last_prune: float = 0  # When we last pruned device list
 
         self.member_uuids = {}
-        def load_manufacturer_ids():
-            """Import yaml file containing manufacturer name mappings."""
-            file_path = Path(__file__).parent / "manufacturer_identification" / "member_uuids.yaml"
 
-            with file_path.open("r") as f:
-                member_uuids_yaml = yaml.safe_load(f)["uuids"]
-            self.member_uuids = {hex(member["uuid"])[2:]: member["name"] for member in member_uuids_yaml}
-
-        hass.async_add_executor_job(load_manufacturer_ids)
+        hass.async_add_executor_job(self.load_manufacturer_ids)
         super().__init__(
             hass,
             _LOGGER,
@@ -155,7 +151,9 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
 
-        self._manager: HomeAssistantBluetoothManager = _get_manager(hass)
+        self._manager: HomeAssistantBluetoothManager = _get_manager(hass)  # instance of the bluetooth manager
+        self._hascanners: set[BaseHaScanner]  # Links to the backend scanners
+        self._hascanner_timestamps: dict[str, dict[str, float]] = {}  # scanner_address, device_address, stamp
 
         self._entity_registry = er.async_get(self.hass)
         self._device_registry = dr.async_get(self.hass)
@@ -167,38 +165,16 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         self.metadevices: dict[str, BermudaDevice] = {}
 
         self._ad_listener_cancel: Cancellable | None = None
-        self.last_config_entry_update: datetime | None = None
 
-        @callback
-        def handle_state_changes(ev: Event[EventStateChangedData]):
-            """Watch for new mac addresses on private ble devices and act."""
-            if ev.event_type == EVENT_STATE_CHANGED:
-                event_entity = ev.data.get("entity_id", "invalid_event_entity")
-                if event_entity in self.pb_state_sources:
-                    # It's a state change of an entity we are tracking.
-                    new_state = ev.data.get("new_state")
-                    if new_state:
-                        # _LOGGER.debug("New state change! %s", new_state)
-                        # check new_state.attributes.assumed_state
-                        if hasattr(new_state, "attributes"):
-                            new_address = new_state.attributes.get("current_address")
-                            if new_address is not None and new_address.lower() != self.pb_state_sources[event_entity]:
-                                _LOGGER.debug(
-                                    "Have a new source address for %s, %s",
-                                    event_entity,
-                                    new_address,
-                                )
-                                self.pb_state_sources[event_entity] = new_address.lower()
-                                # Flag that we need new pb checks, and work them out:
-                                self._do_private_device_init = True
-                                # If no sensors have yet been configured, the coordinator
-                                # won't be getting polled for fresh data. Since we have
-                                # found something, we should get it to do that.
-                                # No longer using async_config_entry_first_refresh as it
-                                # breaks
-                                self.hass.add_job(self.async_refresh())
+        # Tracks the last stamp that we *actually* saved our config entry. Mostly for debugging,
+        # we use a request stamp for tracking our add_job request.
+        self.last_config_entry_update: float = 0  # Stamp of last *save-out* of config.data
 
-        self.hass.bus.async_listen(EVENT_STATE_CHANGED, handle_state_changes)
+        # We want to delay the first save-out, since it takes a few seconds for things
+        # to stabilise. So set the stamp into the future.
+        self.last_config_entry_update_request = MONOTONIC_TIME() + SAVEOUT_COOLDOWN  # Stamp for save-out requests
+
+        self.hass.bus.async_listen(EVENT_STATE_CHANGED, self.handle_state_changes)
 
         # First time around we freshen the restored scanner info by
         # forcing a scan of the captured info.
@@ -208,70 +184,9 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         # any there for us to track.
         self._do_private_device_init = True
 
-        @callback
-        def handle_devreg_changes(ev: Event[EventDeviceRegistryUpdatedData]):
-            """
-            Update our scanner list if the device registry is changed.
-
-            This catches area changes (on scanners) and any new/changed
-            Private BLE Devices.
-            """
-            # TODO: Ignore the below, and implement filtering. This gets
-            # called a "fair number" of times each time we get reloaded.
-            #
-            # We could try filtering on "updates" and "area" but I doubt
-            # this will fire all that often, and even when it does fire
-            # the difference in cycle time appears to be less than 1ms.
-            _LOGGER.debug(
-                "Device registry has changed. ev: %s",
-                ev,
-            )
-            if ev.data["action"] in {"create", "update"}:
-                device = self._device_registry.async_get(ev.data["device_id"])
-                # if this is an "update" we also get a "changes" dict, but we don't
-                # bother with it yet.
-
-                if device is not None:
-                    # Work out if it's a device that interests us and respond appropriately.
-                    for conn_type, _conn_id in device.connections:
-                        if conn_type == "private_ble_device":
-                            _LOGGER.debug("Trigger updating of Private BLE Devices")
-                            self._do_private_device_init = True
-                        elif conn_type == "ibeacon":
-                            # this was probably us, nothing else to do
-                            pass
-                        else:
-                            # might be a scanner, so let's refresh those
-                            _LOGGER.debug("Trigger updating of Scanner Listings")
-                            self._do_full_scanner_init = True
-                else:
-                    _LOGGER.error("Received DR update/create but device id does not exist: %s", ev.data["device_id"])
-
-            elif ev.data["action"] == "remove":
-                device_found = False
-                for scanner in self.scanner_list:
-                    if self.devices[scanner].entry_id == ev.data["device_id"]:
-                        _LOGGER.debug("Scanner %s removed, trigger update of scanners.", self.devices[scanner].name)
-                        self._do_full_scanner_init = True
-                        device_found = True
-                if not device_found:
-                    # If we save the private ble device's device_id into devices[].entry_id
-                    # we could check ev.data["device_id"] against it to decide if we should
-                    # rescan PBLE devices. But right now we don't, so scan 'em anyway.
-                    _LOGGER.debug("Opportunistic trigger of update for Private BLE Devices")
-                    self._do_private_device_init = True
-
-            # The co-ordinator will only get updates if we have created entities already.
-            # Since this might not always be the case (say, private_ble_device loads after
-            # we do), then we trigger an update here with the expectation that we got a
-            # device registry update after the private ble device was created. There might
-            # be other corner cases where we need to trigger our own update here, so test
-            # carefully and completely if you are tempted to remove / alter this.
-            self.hass.add_job(self._async_update_data())
-
         # Listen for changes to the device registry and handle them.
         # Primarily for changes to scanners and Private BLE Devices.
-        hass.bus.async_listen(EVENT_DEVICE_REGISTRY_UPDATED, handle_devreg_changes)
+        hass.bus.async_listen(EVENT_DEVICE_REGISTRY_UPDATED, self.handle_devreg_changes)
 
         self.options = {}
 
@@ -324,7 +239,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                         setattr(scanner, key, value)
                 self.scanner_list.append(address)
 
-        # Set up the dump_devices service
+        # Register the dump_devices service
         hass.services.async_register(
             DOMAIN,
             "dump_devices",
@@ -350,6 +265,103 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                 )
             )
 
+    def load_manufacturer_ids(self):
+        """Import yaml file containing manufacturer name mappings."""
+        file_path = Path(__file__).parent / "manufacturer_identification" / "member_uuids.yaml"
+
+        with file_path.open("r") as f:
+            member_uuids_yaml = yaml.safe_load(f)["uuids"]
+        self.member_uuids = {hex(member["uuid"])[2:]: member["name"] for member in member_uuids_yaml}
+
+    @callback
+    def handle_state_changes(self, ev: Event[EventStateChangedData]):
+        """Watch for new mac addresses on private ble devices and act."""
+        if ev.event_type == EVENT_STATE_CHANGED:
+            event_entity = ev.data.get("entity_id", "invalid_event_entity")
+            if event_entity in self.pb_state_sources:
+                # It's a state change of an entity we are tracking.
+                new_state = ev.data.get("new_state")
+                if new_state:
+                    # _LOGGER.debug("New state change! %s", new_state)
+                    # check new_state.attributes.assumed_state
+                    if hasattr(new_state, "attributes"):
+                        new_address = new_state.attributes.get("current_address")
+                        if new_address is not None and new_address.lower() != self.pb_state_sources[event_entity]:
+                            _LOGGER.debug(
+                                "Have a new source address for %s, %s",
+                                event_entity,
+                                new_address,
+                            )
+                            self.pb_state_sources[event_entity] = new_address.lower()
+                            # Flag that we need new pb checks, and work them out:
+                            self._do_private_device_init = True
+                            # If no sensors have yet been configured, the coordinator
+                            # won't be getting polled for fresh data. Since we have
+                            # found something, we should get it to do that.
+                            # No longer using async_config_entry_first_refresh as it
+                            # breaks
+                            self.hass.add_job(self.async_refresh())
+
+    @callback
+    def handle_devreg_changes(self, ev: Event[EventDeviceRegistryUpdatedData]):
+        """
+        Update our scanner list if the device registry is changed.
+
+        This catches area changes (on scanners) and any new/changed
+        Private BLE Devices.
+        """
+        # TODO: Ignore the below, and implement filtering. This gets
+        # called a "fair number" of times each time we get reloaded.
+        #
+        # We could try filtering on "updates" and "area" but I doubt
+        # this will fire all that often, and even when it does fire
+        # the difference in cycle time appears to be less than 1ms.
+        _LOGGER.debug(
+            "Device registry has changed. ev: %s",
+            ev,
+        )
+        if ev.data["action"] in {"create", "update"}:
+            device = self._device_registry.async_get(ev.data["device_id"])
+            # if this is an "update" we also get a "changes" dict, but we don't
+            # bother with it yet.
+
+            if device is not None:
+                # Work out if it's a device that interests us and respond appropriately.
+                for conn_type, _conn_id in device.connections:
+                    if conn_type == "private_ble_device":
+                        _LOGGER.debug("Trigger updating of Private BLE Devices")
+                        self._do_private_device_init = True
+                    elif conn_type == "ibeacon":
+                        # this was probably us, nothing else to do
+                        pass
+                    else:
+                        # might be a scanner, so let's refresh those
+                        _LOGGER.debug("Trigger updating of Scanner Listings")
+                        self._do_full_scanner_init = True
+            else:
+                _LOGGER.error("Received DR update/create but device id does not exist: %s", ev.data["device_id"])
+
+        elif ev.data["action"] == "remove":
+            device_found = False
+            for scanner in self.scanner_list:
+                if self.devices[scanner].entry_id == ev.data["device_id"]:
+                    _LOGGER.debug("Scanner %s removed, trigger update of scanners.", self.devices[scanner].name)
+                    self._do_full_scanner_init = True
+                    device_found = True
+            if not device_found:
+                # If we save the private ble device's device_id into devices[].entry_id
+                # we could check ev.data["device_id"] against it to decide if we should
+                # rescan PBLE devices. But right now we don't, so scan 'em anyway.
+                _LOGGER.debug("Opportunistic trigger of update for Private BLE Devices")
+                self._do_private_device_init = True
+        # The co-ordinator will only get updates if we have created entities already.
+        # Since this might not always be the case (say, private_ble_device loads after
+        # we do), then we trigger an update here with the expectation that we got a
+        # device registry update after the private ble device was created. There might
+        # be other corner cases where we need to trigger our own update here, so test
+        # carefully and completely if you are tempted to remove / alter this.
+        self.hass.add_job(self._async_update_data())
+
     @callback
     def async_handle_advert(
         self,
@@ -365,14 +377,14 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         responding to changing rssi values, but it *is* good for seeding our updates in case
         there are no defined sensors yet (or the defined ones are away).
         """
-        _LOGGER.debug(
-            "New Advert! change: %s, scanner: %s mac: %s name: %s serviceinfo: %s",
-            change,
-            service_info.source,
-            service_info.address,
-            service_info.name,
-            service_info,
-        )
+        # _LOGGER.debug(
+        #     "New Advert! change: %s, scanner: %s mac: %s name: %s serviceinfo: %s",
+        #     change,
+        #     service_info.source,
+        #     service_info.address,
+        #     service_info.name,
+        #     service_info,
+        # )
         #
         # If there are no configured_devices already present during Bermuda's
         # initial setup, then no sensors will be created, and no updates will
@@ -662,9 +674,10 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         # since the last time we booted.
         if self._do_full_scanner_init:
             if not self._refresh_scanners():
-                _LOGGER.debug("Failed to refresh scanners, likely config entry not ready.")
+                # _LOGGER.debug("Failed to refresh scanners, likely config entry not ready.")
                 # don't fail the update, just try again next time.
                 # self.last_update_success = False
+                pass
 
         # set up any beacons and update their data. We do this after all the devices
         # have had their updates done since any beacon inherits data from its source
@@ -923,10 +936,12 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         other initialisation.
         """
         # First seed the metadevice skeletons and set their latest beacon_source entries
-        # Private BLE Devices:
+        # Private BLE Devices. It will only do anything if the self._do_private_device_init
+        # flag is set.
         self.discover_private_ble_metadevices()
 
         # iBeacon devices should already have their metadevices created.
+        # FIXME: irk and ibeacons will fight over their relative ref_power too.
 
         for metadev in self.metadevices.values():
             # We Expect the first beacon source to be the current one.
@@ -942,8 +957,24 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                 # Map the source device's scanner list into ours
                 metadev.scanners = source_device.scanners
 
-                # Set the source device's ref_power from our own
-                source_device.set_ref_power(metadev.ref_power)
+                # Set the source device's ref_power from our own. This will cause
+                # the source device and all its scanner entries to update their
+                # distance measurements. This won't affect Area wins though, because
+                # they are "relative", not absolute.
+
+                # FIXME: This has two potential bugs:
+                # - if multiple metadevices share a source, they will
+                #   "fight" over their preferred ref_power, if different.
+                # - The non-meta device (if tracked) will receive distances
+                #   based on the meta device's ref_power.
+                # - The non-meta device if tracked will have its own ref_power ignored.
+                #
+                # None of these are terribly awful, but worth fixing.
+
+                # Note we are setting the ref_power on the source_device, not the
+                # individual scanner entries (it will propagate to them though)
+                if source_device.ref_power != metadev.ref_power:
+                    source_device.set_ref_power(metadev.ref_power)
 
                 # anything that isn't already set to something interesting, overwrite
                 # it with the new device's data.
@@ -1042,8 +1073,6 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
     def _refresh_area_by_min_distance(self, device: BermudaDevice):
         """Very basic Area setting by finding closest beacon to a given device."""
-        # FIXME: Asserts should be avoided in non-tests as running python in optimized mode will skip them
-        assert device.is_scanner is not True  # noqa
         closest_scanner: BermudaDeviceScanner | None = None
         for scanner in device.scanners.values():
             # Check each scanner and keep note of the closest one based on rssi_distance.
@@ -1067,129 +1096,154 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         """
         Refresh our local (and saved) list of scanners (BLE Proxies).
 
-        If self._do_full_scanner_init is true a full scan will be done.
-        Otherwise, you need to supply a list of scanners that you wish
-        to refresh.
+        The scanners list param is ignored and no longer required. We refresh all scanners
+        each time we are called, since the overhead is now lower and we had prematurely
+        optimised the routine. We only save out the config entry if it has changed *AND*
+        we haven't tried to do so in the last SAVEOUT_COOLDOWN seconds (10 seems to be enough,
+        we only do it when the proxies config has *actually* changed).
         """
-        addresses = set()
-        update_scannerlist = False
+        _previous_scannerlist = [device.address for device in self.devices.values() if device.is_scanner]
+        _purge_scanners = _previous_scannerlist.copy()
 
-        if scanners is not None:
-            for scanner in scanners:
-                addresses.add(scanner.scanner.source.lower())
+        # _LOGGER.error("Preserving %d current scanner entries", len(_previous_scannerlist))
 
-        # If we are doing a full scan, add all the known
-        # scanner addresses to the list, since that will cover
-        # the scanners that have been restored from config.data
-        if self._do_full_scanner_init:
+        # Find active HaBaseScanners in the backend, and only pay attention to those
+        # instead of trawling through the device registry first.
+        #
+        # scanner_ha: BaseHaScanner from HA's bluetooth backend
+        # scanner_devreg: DeviceEntry from HA's device_registry
+        # scanner_b: BermudaDevice entry
+        #
+        # Evil: We're acessing private members of bt manager to do it since there's no API call for it.
+        self._hascanners = self._manager._connectable_scanners | self._manager._non_connectable_scanners  # noqa: SLF001
+        for hascanner in self._hascanners:
+            scanner_address = format_mac(hascanner.source).lower()
+            scanner_devreg = self._device_registry.async_get_device(
+                connections={
+                    ("mac", scanner_address),  # Matches ESPHome proxies, Shellys etc
+                    ("bluetooth", scanner_address.upper()),  # Matches local USB Bluetooth (hci0..)
+                }
+            )
+            if scanner_devreg is None:
+                _LOGGER_SPAM_LESS.error(
+                    "scanner_not_in_devreg",
+                    "Failed to find scanner %s (%s) in Device Registry",
+                    hascanner.name,
+                    hascanner.source,
+                )
+                continue
+            # _LOGGER.info("Great! Found scanner: %s (%s)", scanner_ha.name, scanner_ha.source)
+            # Since this scanner still exists, we won't purge it
+            if scanner_address in _purge_scanners:
+                _purge_scanners.remove(scanner_address)
+
+            # Populate the local copy of timestamps, if applicable
+            if isinstance(hascanner, BaseHaRemoteScanner):
+                self._hascanner_timestamps[hascanner.source.lower()] = hascanner._discovered_device_timestamps  # noqa: SLF001
+
+            scanner_b = self._get_device(scanner_address)
+            if scanner_b is None:
+                # It's a new scanner, we will need to update our saved config.
+                # _LOGGER.debug("New Scanner: %s", scanner_ha.name)
+                scanner_b = self._get_or_create_device(scanner_address)
+
+            # We found the device entry and have created our scannerdevice,
+            # now update any fields that might be new from the device reg:
+            scanner_b.area_id = scanner_devreg.area_id
+            scanner_b.entry_id = scanner_devreg.id
+            if scanner_devreg.name_by_user is not None:
+                scanner_b.name = scanner_devreg.name_by_user
+            else:
+                scanner_b.name = scanner_devreg.name
+            areas = self.area_reg.async_get_area(scanner_devreg.area_id) if scanner_devreg.area_id else None
+            if areas is not None and hasattr(areas, "name"):
+                scanner_b.area_name = areas.name
+            else:
+                _LOGGER_SPAM_LESS.warning(
+                    f"no_area_on_update{scanner_b.name}",
+                    "No area name or no area id updating scanner %s, area_id %s",
+                    scanner_b.name,
+                    areas,
+                )
+            scanner_b.is_scanner = True
+
+        # Now un-tag any devices that are no longer scanners
+        for address in _purge_scanners:
+            self.devices[address].is_scanner = False
             update_scannerlist = True
-            for address in self.scanner_list:
-                addresses.add(address.lower())
-            self._do_full_scanner_init = False
 
-        if len(addresses) > 0:
-            # FIXME: Really? This can't possibly be a sensible nesting of loops.
-            # should probably look at the API. Anyway, we are checking any devices
-            # that have a "mac" or "bluetooth" connection,
-            devreg = dr.async_get(self.hass)
-            for dev_entry in devreg.devices.data.values():
-                for dev_connection in dev_entry.connections:
-                    if dev_connection[0] in ["mac", "bluetooth"]:
-                        found_address = format_mac(dev_connection[1])
-                        if found_address in addresses:
-                            scandev = self._get_device(found_address)
-                            if scandev is None:
-                                # It's a new scanner, we will need to update our saved config.
-                                _LOGGER.debug("New Scanner: %s", found_address)
-                                update_scannerlist = True
-                                scandev = self._get_or_create_device(found_address)
-                            # Found the device entry and have created our scannerdevice,
-                            # now update any fields that might be new from the device reg:
-                            scandev_orig = scandev
-                            scandev.area_id = dev_entry.area_id
-                            scandev.entry_id = dev_entry.id
-                            if dev_entry.name_by_user is not None:
-                                scandev.name = dev_entry.name_by_user
-                            else:
-                                scandev.name = dev_entry.name
-                            areas = self.area_reg.async_get_area(dev_entry.area_id) if dev_entry.area_id else None
-                            if areas is not None and hasattr(areas, "name"):
-                                scandev.area_name = areas.name
-                            else:
-                                _LOGGER_SPAM_LESS.warning(
-                                    f"no_area_on_update{scandev.name}",
-                                    "No area name or no area id updating scanner %s, area_id %s",
-                                    scandev.name,
-                                    areas,
-                                )
-                            scandev.is_scanner = True
-                            # If the scanner data we loaded from our saved data appears
-                            # out of date, trigger a full rescan of seen scanners.
-                            if scandev_orig != scandev:
-                                # something changed, let's update the saved list.
-                                _LOGGER.debug(
-                                    "Scanner info for %s has changed, we'll update our saved data.",
-                                    scandev.name,
-                                )
-                                update_scannerlist = True
+        # Because of the quick check-time and the checks we have on saving the config_entry,
+        # we'll update on every call:
+        update_scannerlist = True
         if update_scannerlist:
-            # Take the existing list of scanners and save them into config data
-            # for our next start-up.
-            for entry in self.hass.config_entries.async_entries(DOMAIN, include_disabled=False, include_ignore=False):
-                _LOGGER.debug("Loaded entry %s, state: %s", entry.entry_id, entry.state)
-                self.config_entry = entry
+            # bail out if the config entry isn't ready yet.
+            if self.config_entry is None or self.config_entry.state != ConfigEntryState.LOADED:
+                # _LOGGER.debug("Aborting refresh scanners due to config entry not being ready")
+                self._do_full_scanner_init = True
+                return False
+
+            # Build the config_data and self.scanner_list structs fresh
+            # ready to update our config entry if needed.
             self.scanner_list.clear()
             confdata_scanners: dict[str, dict] = {}
             for device in self.devices.values():
                 if device.is_scanner:
-                    confdata_scanners[device.address] = device.to_dict()
                     self.scanner_list.append(device.address)
-
-            if self.config_entry is None:
-                _LOGGER.debug("Aborting refresh scanners due to config entry not being ready")
-                return False
+                    # Only add the necessary fields to confdata
+                    confdata_scanners[device.address] = {
+                        key: getattr(device, key)
+                        for key in [
+                            "name",
+                            "local_name",
+                            "prefname",
+                            "address",
+                            "ref_power",
+                            "unique_id",
+                            "address_type",
+                            "area_id",
+                            "area_name",
+                            "is_scanner",
+                            "entry_id",
+                        ]
+                    }
 
             if self.config_entry.data.get(CONFDATA_SCANNERS, {}) == confdata_scanners:
-                _LOGGER.debug("Scanner configs are identical, not doing update.")
-                # Return true since we're happy that the config entry
-                # exists and has the current scanner data that we want,
-                # so there's nothing to do.
-                # See #351, #341
+                # **** BAIL OUT, CONFIG HAS NOT CHANGED ****
+                # _LOGGER.debug("Scanner configs are identical, not doing update.")
+                self._do_full_scanner_init = False
                 return True
 
-            _LOGGER.debug(
-                "Replacing config data scanners was %s now %s",
-                self.config_entry.data.get(CONFDATA_SCANNERS, {}),
-                confdata_scanners,
-            )
+            # We will arrive here every second for as long as the saved config is
+            # different from our running config. But we don't want to save immediately,
+            # since there is a lot of bouncing that happens during setup.
 
-            @callback
-            def async_call_update_entry() -> None:
-                """
-                Call in the event loop to update the scanner entries in our config.
-
-                We do this via add_job to ensure it runs in the event loop.
-                """
-                self.last_config_entry_update = now()
-                self.hass.config_entries.async_update_entry(
-                    self.config_entry,
-                    data={
-                        **self.config_entry.data,
-                        CONFDATA_SCANNERS: confdata_scanners,
-                    },
-                )
-
-            # To prevent strain on the system, let's only update if
-            # A) we have a new scanner
-            # B) It has been 30 minutes since our last update
-            if (
-                len(self.config_entry.data.get(CONFDATA_SCANNERS, {})) != len(confdata_scanners)
-                or self.last_config_entry_update is None
-                or (now() - self.last_config_entry_update).total_seconds() > 1800
-            ):
-                self.hass.add_job(async_call_update_entry)
+            # Make sure we haven't requested recently...
+            if self.last_config_entry_update_request < MONOTONIC_TIME() - SAVEOUT_COOLDOWN:
+                # OK, we're good to go.
+                self.last_config_entry_update_request = MONOTONIC_TIME()
+                _LOGGER.debug("Requesting save-out of scanner configs")
+                self.hass.add_job(self.async_call_update_entry, confdata_scanners)
 
         return True
+
+    @callback
+    def async_call_update_entry(self, confdata_scanners) -> None:
+        """
+        Call in the event loop to update the scanner entries in our config.
+
+        We do this via add_job to ensure it runs in the event loop.
+        """
+        # Clear the flag for init and update the stamp
+        self._do_full_scanner_init = False
+        self.last_config_entry_update = MONOTONIC_TIME()
+        # Apply new config (will cause reload if there are changes)
+        self.hass.config_entries.async_update_entry(
+            self.config_entry,
+            data={
+                **self.config_entry.data,
+                CONFDATA_SCANNERS: confdata_scanners,
+            },
+        )
 
     async def service_dump_devices(self, call: ServiceCall) -> ServiceResponse:  # pylint: disable=unused-argument;
         """Return a dump of beacon advertisements by receiver."""
@@ -1207,6 +1261,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             # configured and scanners
             addresses += self.scanner_list
             addresses += self.options.get(CONF_DEVICES, [])
+            # known IRK/Private BLE Devices
+            addresses += self.pb_state_sources
 
         # lowercase all the addresses for matching
         addresses = list(map(str.lower, addresses))

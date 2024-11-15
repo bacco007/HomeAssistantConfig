@@ -16,7 +16,7 @@ DOMAIN_DATA = f"{DOMAIN}_data"
 # that the component has been checked out from git, not pulled from
 # an officially built release. HACS will use the git tag (or the zip file,
 # either way it works).
-VERSION = "0.7.0"
+VERSION = "0.7.2"
 
 ATTRIBUTION = "Data provided by http://jsonplaceholder.typicode.com/"
 ISSUE_URL = "https://github.com/agittins/bermuda/issues"
@@ -91,6 +91,8 @@ PRUNE_MAX_COUNT = 1000  # How many device entries to allow at maximum
 PRUNE_TIME_INTERVAL = 310  # Every 5m10s, prune stale devices
 PRUNE_TIME_DEFAULT = 259200  # Max age of regular device entries (3days)
 PRUNE_TIME_IRK = 3600  # Resolvable Private addresses change often, prune regularly (1h)
+
+SAVEOUT_COOLDOWN = 10  # seconds to delay before re-trying config entry save.
 
 DOCS = {}
 

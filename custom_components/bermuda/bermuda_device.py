@@ -55,6 +55,7 @@ class BermudaDevice(dict):
         self.prefname: str | None = None  # "preferred" name - ideally local_name
         self.address: str = address
         self.ref_power: float = 0  # If non-zero, use in place of global ref_power.
+        self.ref_power_changed: float = 0  # Stamp for last change to ref_power, for cache zapping.
         self.options = options
         self.unique_id: str | None = None  # mac address formatted.
         self.address_type = BDADDR_TYPE_UNKNOWN
@@ -128,21 +129,33 @@ class BermudaDevice(dict):
             else:
                 self.address_type = BDADDR_TYPE_OTHER
 
-    def set_ref_power(self, value: float):
+    def set_ref_power(self, new_ref_power: float):
         """
         Set a new reference power for this device and immediately apply
         an interim distance calculation.
+
+        This gets called by the calibration routines, but also by metadevice
+        updates, as they need to apply their own ref_power if necessary.
         """
-        self.ref_power = value
-        nearest_distance = 9999  # running tally to find closest scanner
-        nearest_scanner = None
-        for scanner in self.scanners.values():
-            rawdist = scanner.set_ref_power(value)
-            if rawdist < nearest_distance:
-                nearest_distance = rawdist
-                nearest_scanner = scanner
-        if nearest_scanner is not None:
+        if new_ref_power != self.ref_power:
+            # it's actually changed, proceed...
+            self.ref_power = new_ref_power
+            nearest_distance = 9999  # running tally to find closest scanner
+            nearest_scanner = None
+            for scanner in self.scanners.values():
+                rawdist = scanner.set_ref_power(new_ref_power)
+                if rawdist is not None and rawdist < nearest_distance:
+                    nearest_distance = rawdist
+                    nearest_scanner = scanner
+            # Even though the actual scanner should not have changed (it should
+            # remain none or a given scanner, since the relative distances won't have
+            # changed due to ref_power), we still call apply so that the new area_distance
+            # gets applied.
+            # if nearest_scanner is not None:
             self.apply_scanner_selection(nearest_scanner)
+            # Update the stamp so that the BermudaEntity can clear the cache and show the
+            # new measurement(s) immediately.
+            self.ref_power_changed = MONOTONIC_TIME()
 
     def apply_scanner_selection(self, closest_scanner: BermudaDeviceScanner | None):
         """
@@ -151,23 +164,16 @@ class BermudaDevice(dict):
 
         Used to apply a "winning" scanner's data to the device for setting closest Area.
         """
+        # FIXME: This might need to check if it's a metadevice source or dest, and
+        # ensure things are applied correctly. Might be a non-issue.
+        old_area = self.area_name
         if closest_scanner is not None:
             # We found a winner
-            old_area = self.area_name
             self.area_id = closest_scanner.area_id
             self.area_name = closest_scanner.area_name
             self.area_distance = closest_scanner.rssi_distance
             self.area_rssi = closest_scanner.rssi
             self.area_scanner = closest_scanner.name
-            if (old_area != self.area_name) and self.create_sensor:
-                # We check against area_name so we can know if the
-                # device's area changed names.
-                _LOGGER.debug(
-                    "Device %s was in '%s', now in '%s'",
-                    self.name,
-                    old_area,
-                    self.area_name,
-                )
         else:
             # Not close to any scanners!
             self.area_id = None
@@ -175,6 +181,14 @@ class BermudaDevice(dict):
             self.area_distance = None
             self.area_rssi = None
             self.area_scanner = None
+        if (old_area != self.area_name) and self.create_sensor:
+            # Our area has changed!
+            _LOGGER.debug(
+                "Device %s was in '%s', now '%s'",
+                self.name,
+                old_area,
+                self.area_name,
+            )
 
     def calculate_data(self):
         """
@@ -182,6 +196,7 @@ class BermudaDevice(dict):
         etc can be freshly smoothed and filtered.
 
         """
+        # Run calculate_data on each child scanner of this device:
         for scanner in self.scanners.values():
             if isinstance(scanner, BermudaDeviceScanner):
                 # in issue #355 someone had an empty dict instead of a scanner object.
@@ -193,7 +208,7 @@ class BermudaDevice(dict):
                     "scanner_not_instance", "Scanner device is not a BermudaDevice instance, skipping."
                 )
 
-        # Update whether the device has been seen recently, for device_tracker:
+        # Update whether this device has been seen recently, for device_tracker:
         if (
             self.last_seen is not None
             and MONOTONIC_TIME() - self.options.get(CONF_DEVTRACK_TIMEOUT, DEFAULT_DEVTRACK_TIMEOUT) < self.last_seen
