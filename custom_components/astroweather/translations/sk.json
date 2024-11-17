@@ -1,70 +1,74 @@
 {
-    "config": {
-        "step": {
-            "location": {
-                "description": "Konfigurácia geografickej polohy a časového pásma.",
-                "data": {
-                    "location_name": "Názov pre umiestnenie vášho teleskopu",
-                    "latitude": "Zemepisná šírka (-89° to 89°)",
-                    "longitude": "Zemepisná dĺžka (-180° to 180°)",
-                    "elevation": "Nadmorská výška (0m do 4000m)",
-                    "timezone_info": "Časové pásmo v databáze TZ"
-                }
-            },
-            "calculation": {
-                "description": "Konfigurácia výpočtu stavu, interval aktualizácie predpovede, cesta k vášmu /config/www a prepnutie na povolenie experimentálnych funkcií AstroWeathers.",
-                "data": {
-                    "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
-                    "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
-                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu",
-                    "calm_weight": "Váha pokoja pre výpočet stavu",
-                    "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
-                    "uptonight_path": "Cesta k /conf/www",
-                    "experimental_features": "Experimentálne funkcie"
-                }
-            },
-            "cloudweakening": {
-                "description": "Konfigurácia vplyvu rôznych výšok oblačnosti na výpočet.",
-                "data": {
-                    "cloudcover_high_weakening": "Vplyv vysokej oblačnosti (%)",
-                    "cloudcover_medium_weakening": "Vplyv strednej oblačnosti (%)",
-                    "cloudcover_low_weakening": "Vplyv nízkej oblačnosti (%)"
-                }
-            }
+  "config": {
+    "step": {
+      "location": {
+        "description": "Konfigurácia geografickej polohy a časového pásma.",
+        "data": {
+          "location_name": "Názov pre umiestnenie vášho teleskopu",
+          "latitude": "Zemepisná šírka (-89° to 89°)",
+          "longitude": "Zemepisná dĺžka (-180° to 180°)",
+          "elevation": "Nadmorská výška (0m do 4000m)",
+          "timezone_info": "Časové pásmo v databáze TZ"
         }
-    },
-    "options": {
-        "step": {
-            "location": {
-                "description": "Konfigurácia geografickej polohy a časového pásma.",
-                "data": {
-                    "location_name": "Názov pre umiestnenie vášho teleskopu",
-                    "latitude": "Zemepisná šírka (-89° to 89°)",
-                    "longitude": "Zemepisná dĺžka (-180° to 180°)",
-                    "elevation": "Nadmorská výška (0m do 4000m)",
-                    "timezone_info": "Časové pásmo v databáze TZ"
-                }
-            },
-            "calculation": {
-                "description": "Konfigurácia výpočtu stavu, interval aktualizácie predpovede, cesta k vášmu /config/www a prepnutie na povolenie experimentálnych funkcií AstroWeathers.",
-                "data": {
-                    "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
-                    "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
-                    "transparency_weight": "Váha priehľadnosti pre výpočet stavu",
-                    "calm_weight": "Váha pokoja pre výpočet stavu",
-                    "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
-                    "uptonight_path": "Cesta k /conf/www",
-                    "experimental_features": "Experimentálne funkcie"
-                }
-            },
-            "cloudweakening": {
-                "description": "Konfigurácia vplyvu rôznych výšok oblačnosti na výpočet.",
-                "data": {
-                    "cloudcover_high_weakening": "Vplyv vysokej oblačnosti (%)",
-                    "cloudcover_medium_weakening": "Vplyv strednej oblačnosti (%)",
-                    "cloudcover_low_weakening": "Vplyv nízkej oblačnosti (%)"
-                }
-            }
+      },
+      "calculation": {
+        "description": "Konfigurácia výpočtu stavu, interval aktualizácie predpovede, cesta k vášmu /config/www a prepnutie na povolenie experimentálnych funkcií AstroWeathers.",
+        "data": {
+          "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
+          "fog_weight": "Hmotnosť hustoty hmly pre výpočet stavu",
+          "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
+          "transparency_weight": "Váha priehľadnosti pre výpočet stavu",
+          "calm_weight": "Váha pokoja pre výpočet stavu",
+          "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
+          "uptonight_path": "Cesta k /conf/www",
+          "experimental_features": "Experimentálne funkcie",
+          "open_meteo_service": "Otvorená služba Meteo, ktorá sa má používať"
         }
+      },
+      "cloudweakening": {
+        "description": "Konfigurácia vplyvu rôznych výšok oblačnosti na výpočet.",
+        "data": {
+          "cloudcover_high_weakening": "Vplyv vysokej oblačnosti (%)",
+          "cloudcover_medium_weakening": "Vplyv strednej oblačnosti (%)",
+          "cloudcover_low_weakening": "Vplyv nízkej oblačnosti (%)"
+        }
+      }
     }
+  },
+  "options": {
+    "step": {
+      "location": {
+        "description": "Konfigurácia geografickej polohy a časového pásma.",
+        "data": {
+          "location_name": "Názov pre umiestnenie vášho teleskopu",
+          "latitude": "Zemepisná šírka (-89° to 89°)",
+          "longitude": "Zemepisná dĺžka (-180° to 180°)",
+          "elevation": "Nadmorská výška (0m do 4000m)",
+          "timezone_info": "Časové pásmo v databáze TZ"
+        }
+      },
+      "calculation": {
+        "description": "Konfigurácia výpočtu stavu, interval aktualizácie predpovede, cesta k vášmu /config/www a prepnutie na povolenie experimentálnych funkcií AstroWeathers.",
+        "data": {
+          "cloudcover_weight": "Váha pokrytia oblačnosti pre výpočet stavu",
+          "fog_weight": "Hmotnosť hustoty hmly pre výpočet stavu",
+          "seeing_weight": "Váha dohľadnosti pre výpočet stavu",
+          "transparency_weight": "Váha priehľadnosti pre výpočet stavu",
+          "calm_weight": "Váha pokoja pre výpočet stavu",
+          "forecast_interval": "Interval medzi aktualizáciami prognózy (min)",
+          "uptonight_path": "Cesta k /conf/www",
+          "experimental_features": "Experimentálne funkcie",
+          "open_meteo_service": "Otvorená služba Meteo, ktorá sa má používať"
+        }
+      },
+      "cloudweakening": {
+        "description": "Konfigurácia vplyvu rôznych výšok oblačnosti na výpočet.",
+        "data": {
+          "cloudcover_high_weakening": "Vplyv vysokej oblačnosti (%)",
+          "cloudcover_medium_weakening": "Vplyv strednej oblačnosti (%)",
+          "cloudcover_low_weakening": "Vplyv nízkej oblačnosti (%)"
+        }
+      }
+    }
+  }
 }

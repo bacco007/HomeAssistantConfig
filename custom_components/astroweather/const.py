@@ -18,6 +18,8 @@ UPTONIGHT = "uptonight"
 # #####################################################
 # Configuration settings
 # #####################################################
+DISABLED = "disabled"
+
 CONF_FORECAST_TYPE = "forecast_type"
 CONF_FORECAST_INTERVAL = "forecast_interval"
 CONF_LOCATION_NAME = "location_name"
@@ -29,16 +31,20 @@ CONF_CONDITION_CLOUDCOVER_WEIGHT = "cloudcover_weight"
 CONF_CONDITION_CLOUDCOVER_HIGH_WEAKENING = "cloudcover_high_weakening"
 CONF_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING = "cloudcover_medium_weakening"
 CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING = "cloudcover_low_weakening"
+CONF_CONDITION_FOG_WEIGHT = "fog_weight"
 CONF_CONDITION_SEEING_WEIGHT = "seeing_weight"
 CONF_CONDITION_TRANSPARENCY_WEIGHT = "transparency_weight"
 CONF_CONDITION_CALM_WEIGHT = "calm_weight"
 CONF_UPTONIGHT_PATH = "uptonight_path"
 CONF_EXPERIMENTAL_FEATURES = "experimental_features"
+CONF_OPEN_METEO_SERVICE = DISABLED
 
 # #####################################################
 # Default values
 # #####################################################
-DEFAULT_ATTRIBUTION = "Powered by 7Timer and Met.no"
+DEFAULT_ATTRIBUTION = "Powered by Met.no"
+ATTRIBUTION_OPEN_METEO = ", Open-Meteo"
+ATTRIBUTION_SEVENTIMER = ", 7Timer"
 EXPERIMENTAL_ATTRIBUTION = "Powered by Met.no"
 DEFAULT_FORECAST_INTERVAL = 5
 FORECAST_INTERVAL_MIN = 1
@@ -50,11 +56,13 @@ DEFAULT_CONDITION_CLOUDCOVER_WEIGHT = 3
 DEFAULT_CONDITION_CLOUDCOVER_HIGH_WEAKENING = 100
 DEFAULT_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING = 100
 DEFAULT_CONDITION_CLOUDCOVER_LOW_WEAKENING = 100
+DEFAULT_CONDITION_FOG_WEIGHT = 3
 DEFAULT_CONDITION_SEEING_WEIGHT = 2
 DEFAULT_CONDITION_TRANSPARENCY_WEIGHT = 1
 DEFAULT_CONDITION_CALM_WEIGHT = 2
 DEFAULT_UPTONIGHT_PATH = "/config/www"
 DEFAULT_EXPERIMENTAL_FEATURES = False
+DEFAULT_OPEN_METEO_SERVICE = "icon_seamless"
 FORECAST_TYPE_HOURLY = "hourly"
 
 # #####################################################
@@ -69,6 +77,8 @@ ATTR_WEATHER_CLOUD_AREA_FRACTION_HIGH = "cloud_area_fraction_high"
 ATTR_WEATHER_CLOUD_AREA_FRACTION_MEDIUM = "cloud_area_fraction_medium"
 ATTR_WEATHER_CLOUD_AREA_FRACTION_LOW = "cloud_area_fraction_low"
 ATTR_WEATHER_FOG_AREA_FRACTION = "fog_area_fraction"
+ATTR_WEATHER_FOG2M_AREA_FRACTION = "fog2m_area_fraction"
+ATTR_WEATHER_DEWPOINT = "dewpoint"
 ATTR_WEATHER_SEEING = "seeing"
 ATTR_WEATHER_SEEING_PERCENTAGE = "seeing_percentage"
 ATTR_WEATHER_TRANSPARENCY = "transparency"
@@ -84,9 +94,7 @@ ATTR_WEATHER_DEEPSKY_TODAY_PRECIP6 = "deepsky_forecast_today_precipitation_amoun
 ATTR_WEATHER_DEEPSKY_TODAY_DESC = "deepsky_forecast_today_desc"
 ATTR_WEATHER_DEEPSKY_TOMORROW_DAYNAME = "deepsky_forecast_tomorrow_dayname"
 ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN = "deepsky_forecast_tomorrow_plain"
-ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6 = (
-    "deepsky_forecast_tomorrow_precipitation_amount6"
-)
+ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6 = "deepsky_forecast_tomorrow_precipitation_amount6"
 ATTR_WEATHER_DEEPSKY_TOMORROW_DESC = "deepsky_forecast_tomorrow_desc"
 ATTR_WEATHER_SUN_NEXT_RISING = "sun_next_rising"
 ATTR_WEATHER_SUN_NEXT_SETTING = "sun_next_setting"
@@ -108,6 +116,7 @@ ATTR_FORECAST_CLOUD_AREA_FRACTION_HIGH = "cloud_area_fraction_high"
 ATTR_FORECAST_CLOUD_AREA_FRACTION_MEDIUM = "cloud_area_fraction_medium"
 ATTR_FORECAST_CLOUD_AREA_FRACTION_LOW = "cloud_area_fraction_low"
 ATTR_FORECAST_FOG_AREA_FRACTION = "fog_area_fraction"
+ATTR_FORECAST_FOG2M_AREA_FRACTION = "fog2m_area_fraction"
 ATTR_FORECAST_SEEING = "seeing"
 ATTR_FORECAST_SEEING_PERCENTAGE = "seeing_percentage"
 ATTR_FORECAST_TRANSPARENCY = "transparency"
@@ -121,6 +130,29 @@ ATTR_FORECAST_PRECIPITATION_AMOUNT = "precipitation_amount"
 # Lists
 # #####################################################
 CONDITION_CLASSES = ["excellent", "good", "fair", "poor", "bad"]
+
+OPEN_METEO_SERVICES = [
+    {
+        "label": "DWD Germany",
+        "value": "icon_seamless",
+    },
+    {
+        "label": "MET Norway",
+        "value": "metno_seamless",
+    },
+    {
+        "label": "NOAA U.S.",
+        "value": "gfs_seamless",
+    },
+    {
+        "label": "ECMWF",
+        "value": "ecmwf_ifs025",
+    },
+    {
+        "label": "Disabled",
+        "value": DISABLED,
+    },
+]
 
 TIMEZONES = [
     "Africa/Abidjan",

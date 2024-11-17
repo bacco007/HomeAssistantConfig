@@ -11,6 +11,7 @@ from homeassistant.const import CONF_ELEVATION, CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import AbortFlow
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.selector import selector
 
 from .const import (
     CONF_CONDITION_CALM_WEIGHT,
@@ -18,6 +19,7 @@ from .const import (
     CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING,
     CONF_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING,
     CONF_CONDITION_CLOUDCOVER_WEIGHT,
+    CONF_CONDITION_FOG_WEIGHT,
     CONF_CONDITION_SEEING_WEIGHT,
     CONF_CONDITION_TRANSPARENCY_WEIGHT,
     CONF_EXPERIMENTAL_FEATURES,
@@ -30,6 +32,7 @@ from .const import (
     DEFAULT_CONDITION_CLOUDCOVER_LOW_WEAKENING,
     DEFAULT_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING,
     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
+    DEFAULT_CONDITION_FOG_WEIGHT,
     DEFAULT_CONDITION_SEEING_WEIGHT,
     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
     DEFAULT_ELEVATION,
@@ -41,6 +44,9 @@ from .const import (
     FORECAST_INTERVAL_MAX,
     FORECAST_INTERVAL_MIN,
     TIMEZONES,
+    OPEN_METEO_SERVICES,
+    DEFAULT_OPEN_METEO_SERVICE,
+    CONF_OPEN_METEO_SERVICE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -62,17 +68,13 @@ def _get_current_values(hass: HomeAssistant, data: ConfigType):
     if CONF_CONDITION_CLOUDCOVER_WEIGHT not in data:
         data[CONF_CONDITION_CLOUDCOVER_WEIGHT] = DEFAULT_CONDITION_CLOUDCOVER_WEIGHT
     if CONF_CONDITION_CLOUDCOVER_HIGH_WEAKENING not in data:
-        data[CONF_CONDITION_CLOUDCOVER_HIGH_WEAKENING] = (
-            DEFAULT_CONDITION_CLOUDCOVER_HIGH_WEAKENING
-        )
+        data[CONF_CONDITION_CLOUDCOVER_HIGH_WEAKENING] = DEFAULT_CONDITION_CLOUDCOVER_HIGH_WEAKENING
     if CONF_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING not in data:
-        data[CONF_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING] = (
-            DEFAULT_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING
-        )
+        data[CONF_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING] = DEFAULT_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING
     if CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING not in data:
-        data[CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING] = (
-            DEFAULT_CONDITION_CLOUDCOVER_LOW_WEAKENING
-        )
+        data[CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING] = DEFAULT_CONDITION_CLOUDCOVER_LOW_WEAKENING
+    if CONF_CONDITION_FOG_WEIGHT not in data:
+        data[CONF_CONDITION_FOG_WEIGHT] = DEFAULT_CONDITION_FOG_WEIGHT
     if CONF_CONDITION_SEEING_WEIGHT not in data:
         data[CONF_CONDITION_SEEING_WEIGHT] = DEFAULT_CONDITION_SEEING_WEIGHT
     if CONF_CONDITION_TRANSPARENCY_WEIGHT not in data:
@@ -85,13 +87,13 @@ def _get_current_values(hass: HomeAssistant, data: ConfigType):
         data[CONF_UPTONIGHT_PATH] = DEFAULT_UPTONIGHT_PATH
     if CONF_EXPERIMENTAL_FEATURES not in data:
         data[CONF_EXPERIMENTAL_FEATURES] = DEFAULT_EXPERIMENTAL_FEATURES
+    if CONF_OPEN_METEO_SERVICE not in data:
+        data[CONF_OPEN_METEO_SERVICE] = DEFAULT_OPEN_METEO_SERVICE
 
     return data
 
 
-def _get_config_data(
-    hass: HomeAssistant, data: ConfigType, user_input: ConfigType
-) -> ConfigType:
+def _get_config_data(hass: HomeAssistant, data: ConfigType, user_input: ConfigType) -> ConfigType:
     """Return config data."""
 
     data = _get_current_values(hass, data)
@@ -132,25 +134,20 @@ def _get_config_data(
             CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING,
             data[CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING],
         ),
-        CONF_CONDITION_SEEING_WEIGHT: user_input.get(
-            CONF_CONDITION_SEEING_WEIGHT, data[CONF_CONDITION_SEEING_WEIGHT]
+        CONF_CONDITION_FOG_WEIGHT: user_input.get(
+            CONF_CONDITION_FOG_WEIGHT,
+            data[CONF_CONDITION_FOG_WEIGHT],
         ),
+        CONF_CONDITION_SEEING_WEIGHT: user_input.get(CONF_CONDITION_SEEING_WEIGHT, data[CONF_CONDITION_SEEING_WEIGHT]),
         CONF_CONDITION_TRANSPARENCY_WEIGHT: user_input.get(
             CONF_CONDITION_TRANSPARENCY_WEIGHT,
             data[CONF_CONDITION_TRANSPARENCY_WEIGHT],
         ),
-        CONF_CONDITION_CALM_WEIGHT: user_input.get(
-            CONF_CONDITION_CALM_WEIGHT, data[CONF_CONDITION_CALM_WEIGHT]
-        ),
-        CONF_FORECAST_INTERVAL: data.get(
-            CONF_FORECAST_INTERVAL, data[CONF_FORECAST_INTERVAL]
-        ),
-        CONF_UPTONIGHT_PATH: user_input.get(
-            CONF_UPTONIGHT_PATH, data[CONF_UPTONIGHT_PATH]
-        ),
-        CONF_EXPERIMENTAL_FEATURES: user_input.get(
-            CONF_EXPERIMENTAL_FEATURES, data[CONF_EXPERIMENTAL_FEATURES]
-        ),
+        CONF_CONDITION_CALM_WEIGHT: user_input.get(CONF_CONDITION_CALM_WEIGHT, data[CONF_CONDITION_CALM_WEIGHT]),
+        CONF_FORECAST_INTERVAL: data.get(CONF_FORECAST_INTERVAL, data[CONF_FORECAST_INTERVAL]),
+        CONF_UPTONIGHT_PATH: user_input.get(CONF_UPTONIGHT_PATH, data[CONF_UPTONIGHT_PATH]),
+        CONF_EXPERIMENTAL_FEATURES: user_input.get(CONF_EXPERIMENTAL_FEATURES, data[CONF_EXPERIMENTAL_FEATURES]),
+        CONF_OPEN_METEO_SERVICE: user_input.get(CONF_OPEN_METEO_SERVICE, data[CONF_OPEN_METEO_SERVICE]),
     }
 
 
@@ -159,9 +156,7 @@ def get_location_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
 
     return vol.Schema(
         {
-            vol.Required(CONF_LOCATION_NAME, default=DEFAULT_LOCATION_NAME): vol.All(
-                vol.Coerce(str)
-            ),
+            vol.Required(CONF_LOCATION_NAME, default=DEFAULT_LOCATION_NAME): vol.All(vol.Coerce(str)),
             vol.Required(CONF_LATITUDE, default=hass.config.latitude): vol.All(
                 vol.Coerce(float), vol.Range(min=-89, max=89)
             ),
@@ -182,11 +177,24 @@ def get_calculation_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
     """Return the calculation schema."""
 
     data = _get_current_values(hass, data)
+
+    open_meteo_dropdown = {
+        "options": OPEN_METEO_SERVICES,
+        "mode": "dropdown",
+    }
+
     return vol.Schema(
         {
             vol.Required(
                 CONF_CONDITION_CLOUDCOVER_WEIGHT,
                 default=data[CONF_CONDITION_CLOUDCOVER_WEIGHT],
+            ): vol.All(
+                vol.Coerce(int),
+                vol.Range(min=0, max=5),
+            ),
+            vol.Required(
+                CONF_CONDITION_FOG_WEIGHT,
+                default=data[CONF_CONDITION_FOG_WEIGHT],
             ): vol.All(
                 vol.Coerce(int),
                 vol.Range(min=0, max=5),
@@ -212,9 +220,7 @@ def get_calculation_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
                 vol.Coerce(int),
                 vol.Range(min=0, max=5),
             ),
-            vol.Required(
-                CONF_FORECAST_INTERVAL, default=data[CONF_FORECAST_INTERVAL]
-            ): vol.All(
+            vol.Required(CONF_FORECAST_INTERVAL, default=data[CONF_FORECAST_INTERVAL]): vol.All(
                 vol.Coerce(int),
                 vol.Range(min=FORECAST_INTERVAL_MIN, max=FORECAST_INTERVAL_MAX),
             ),
@@ -224,6 +230,10 @@ def get_calculation_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
             ): vol.All(
                 vol.Coerce(str),
             ),
+            vol.Required(
+                CONF_OPEN_METEO_SERVICE,
+                default=data[CONF_OPEN_METEO_SERVICE],
+            ): selector({"select": open_meteo_dropdown}),
             vol.Required(
                 CONF_EXPERIMENTAL_FEATURES,
                 default=data[CONF_EXPERIMENTAL_FEATURES],
@@ -265,24 +275,18 @@ def get_cloudweakening_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
     )
 
 
-def _update_location_input(
-    hass: HomeAssistant, data: ConfigType, location_input: ConfigType
-) -> None:
+def _update_location_input(hass: HomeAssistant, data: ConfigType, location_input: ConfigType) -> None:
     """Update location data."""
 
     if location_input is not None:
-        data[CONF_LOCATION_NAME] = location_input.get(
-            CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME
-        )
+        data[CONF_LOCATION_NAME] = location_input.get(CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME)
         data[CONF_LATITUDE] = location_input.get(CONF_LATITUDE, hass.config.latitude)
         data[CONF_LONGITUDE] = location_input.get(
             CONF_LONGITUDE,
             hass.config.longitude,
         )
         data[CONF_ELEVATION] = location_input.get(CONF_ELEVATION, DEFAULT_ELEVATION)
-        data[CONF_TIMEZONE_INFO] = location_input.get(
-            CONF_TIMEZONE_INFO, hass.config.time_zone
-        )
+        data[CONF_TIMEZONE_INFO] = location_input.get(CONF_TIMEZONE_INFO, hass.config.time_zone)
 
 
 def _update_calculation_input(data: ConfigType, calculation_input: ConfigType) -> None:
@@ -292,6 +296,7 @@ def _update_calculation_input(data: ConfigType, calculation_input: ConfigType) -
         data[CONF_CONDITION_CLOUDCOVER_WEIGHT] = calculation_input.get(
             CONF_CONDITION_CLOUDCOVER_WEIGHT, DEFAULT_CONDITION_CLOUDCOVER_WEIGHT
         )
+        data[CONF_CONDITION_FOG_WEIGHT] = calculation_input.get(CONF_CONDITION_FOG_WEIGHT, DEFAULT_CONDITION_FOG_WEIGHT)
         data[CONF_CONDITION_SEEING_WEIGHT] = calculation_input.get(
             CONF_CONDITION_SEEING_WEIGHT, DEFAULT_CONDITION_SEEING_WEIGHT
         )
@@ -302,20 +307,14 @@ def _update_calculation_input(data: ConfigType, calculation_input: ConfigType) -
         data[CONF_CONDITION_CALM_WEIGHT] = calculation_input.get(
             CONF_CONDITION_CALM_WEIGHT, DEFAULT_CONDITION_CALM_WEIGHT
         )
-        data[CONF_FORECAST_INTERVAL] = calculation_input.get(
-            CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL
-        )
-        data[CONF_UPTONIGHT_PATH] = calculation_input.get(
-            CONF_UPTONIGHT_PATH, DEFAULT_UPTONIGHT_PATH
-        )
+        data[CONF_FORECAST_INTERVAL] = calculation_input.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)
+        data[CONF_UPTONIGHT_PATH] = calculation_input.get(CONF_UPTONIGHT_PATH, DEFAULT_UPTONIGHT_PATH)
         data[CONF_EXPERIMENTAL_FEATURES] = calculation_input.get(
             CONF_EXPERIMENTAL_FEATURES, DEFAULT_EXPERIMENTAL_FEATURES
         )
 
 
-def _update_cloudweakening_input(
-    data: ConfigType, cloudweakening_input: ConfigType
-) -> None:
+def _update_cloudweakening_input(data: ConfigType, cloudweakening_input: ConfigType) -> None:
     """Update cloudweakening data."""
 
     if cloudweakening_input is not None:
@@ -345,16 +344,12 @@ class AstroWeatherConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         self.data: ConfigType = {}
 
-    async def async_step_user(
-        self, user_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_user(self, user_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         return await self.async_step_location(user_input=user_input)
 
-    async def async_step_location(
-        self, user_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_location(self, user_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         if user_input is not None:
@@ -368,15 +363,11 @@ class AstroWeatherConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=get_location_schema(hass=self.hass, data=self.data),
         )
 
-    async def async_step_calculation(
-        self, calculation_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_calculation(self, calculation_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         if calculation_input is not None:
-            self.data = _get_config_data(
-                self.hass, self.data, user_input=calculation_input
-            )
+            self.data = _get_config_data(self.hass, self.data, user_input=calculation_input)
             return await self.async_step_cloudweakening()
 
         _update_calculation_input(data=self.data, calculation_input=calculation_input)
@@ -386,9 +377,7 @@ class AstroWeatherConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=get_calculation_schema(self.hass, data=self.data),
         )
 
-    async def async_step_cloudweakening(
-        self, cloudweakening_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_cloudweakening(self, cloudweakening_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         if cloudweakening_input is None:
@@ -397,9 +386,7 @@ class AstroWeatherConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 data_schema=get_cloudweakening_schema(self.hass, data=self.data),
             )
 
-        _update_cloudweakening_input(
-            data=self.data, cloudweakening_input=cloudweakening_input
-        )
+        _update_cloudweakening_input(data=self.data, cloudweakening_input=cloudweakening_input)
 
         try:
             unique_id = f"{self.data[CONF_LOCATION_NAME]!s}"
@@ -410,9 +397,7 @@ class AstroWeatherConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             msg = f"Location {self.data[CONF_LOCATION_NAME]!s} is {af.reason.replace('_', ' ')}"
             return self.async_abort(reason=msg)
         else:
-            return self.async_create_entry(
-                title=self.data[CONF_LOCATION_NAME], data=self.data
-            )
+            return self.async_create_entry(title=self.data[CONF_LOCATION_NAME], data=self.data)
 
         # return self.async_show_form(
         #     step_id="location",
@@ -436,17 +421,13 @@ class AstroWeatherOptionsFlowHandler(OptionsFlow):
         self.entry = entry
         self.data: ConfigType = dict(self.entry.data.items())
 
-    async def async_step_init(
-        self, user_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_init(self, user_input: ConfigType | None = None) -> ConfigFlowResult:
         """Manage the options."""
 
         # return await self.async_step_location(user_input=user_input)
         return await self.async_step_calculation(calculation_input=user_input)
 
-    async def async_step_location(
-        self, user_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_location(self, user_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         if user_input is not None:
@@ -461,15 +442,11 @@ class AstroWeatherOptionsFlowHandler(OptionsFlow):
             data_schema=get_location_schema(hass=self.hass, data=self.data),
         )
 
-    async def async_step_calculation(
-        self, calculation_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_calculation(self, calculation_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         if calculation_input is not None:
-            self.data = _get_config_data(
-                self.hass, self.data, user_input=calculation_input
-            )
+            self.data = _get_config_data(self.hass, self.data, user_input=calculation_input)
             return await self.async_step_cloudweakening()
 
         _update_calculation_input(data=self.data, calculation_input=calculation_input)
@@ -479,9 +456,7 @@ class AstroWeatherOptionsFlowHandler(OptionsFlow):
             data_schema=get_calculation_schema(self.hass, data=self.data),
         )
 
-    async def async_step_cloudweakening(
-        self, cloudweakening_input: ConfigType | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_cloudweakening(self, cloudweakening_input: ConfigType | None = None) -> ConfigFlowResult:
         """Handle a flow initiated by the user."""
 
         if cloudweakening_input is None:
@@ -490,9 +465,7 @@ class AstroWeatherOptionsFlowHandler(OptionsFlow):
                 data_schema=get_cloudweakening_schema(self.hass, data=self.data),
             )
 
-        _update_cloudweakening_input(
-            data=self.data, cloudweakening_input=cloudweakening_input
-        )
+        _update_cloudweakening_input(data=self.data, cloudweakening_input=cloudweakening_input)
 
         self.hass.config_entries.async_update_entry(
             entry=self.entry,

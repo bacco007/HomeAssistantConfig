@@ -32,6 +32,7 @@ from .const import (
     ATTR_FORECAST_CLOUDCOVER,
     ATTR_FORECAST_CLOUDLESS,
     ATTR_FORECAST_FOG_AREA_FRACTION,
+    ATTR_FORECAST_FOG2M_AREA_FRACTION,
     ATTR_FORECAST_HUMIDITY,
     ATTR_FORECAST_LIFTED_INDEX,
     ATTR_FORECAST_PRECIPITATION_AMOUNT,
@@ -49,6 +50,7 @@ from .const import (
     ATTR_WEATHER_CLOUDLESS,
     ATTR_WEATHER_CONDITION,
     ATTR_WEATHER_CONDITION_PLAIN,
+    ATTR_WEATHER_DEWPOINT,
     ATTR_WEATHER_DEEP_SKY_DARKNESS,
     ATTR_WEATHER_DEEPSKY_TODAY_DAYNAME,
     ATTR_WEATHER_DEEPSKY_TODAY_DESC,
@@ -59,6 +61,7 @@ from .const import (
     ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6,
     ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN,
     ATTR_WEATHER_FOG_AREA_FRACTION,
+    ATTR_WEATHER_FOG2M_AREA_FRACTION,
     ATTR_WEATHER_LIFTED_INDEX,
     ATTR_WEATHER_MOON_NEXT_FULL_MOON,
     ATTR_WEATHER_MOON_NEXT_NEW_MOON,
@@ -89,9 +92,7 @@ from .entity import AstroWeatherEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
     """Set up the AstroWeather weather platform."""
     _LOGGER.info("Set up AstroWeather weather platform")
 
@@ -139,9 +140,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         entry,
     ) -> None:
         """Initialize the AstroWeather weather entity."""
-        super().__init__(
-            coordinator, entries, device_type, fcst_coordinator, entry.entry_id
-        )
+        super().__init__(coordinator, entries, device_type, fcst_coordinator, entry.entry_id)
         self._weather = None
         self._unit_system = unit_system
         self._forecast_type = fcst_type
@@ -169,7 +168,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
 
     @property
     def time_shift(self) -> int:
-        """Return the humidity."""
+        """Return the time shift to UTC."""
         if self._current is not None:
             return self._current.time_shift
         return None
@@ -221,6 +220,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         """Return current fog area fraction. Met.no only."""
         if self._current is not None:
             return self._current.fog_area_fraction_percentage
+        return None
+
+    @property
+    def fog2m_area_fraction(self) -> int:
+        """Return current fog 2m area fraction. Met.no only."""
+        if self._current is not None:
+            return self._current.fog2m_area_fraction_percentage
         return None
 
     @property
@@ -361,10 +367,17 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return UnitOfTemperature.CELSIUS
 
     @property
-    def humidity(self) -> int:
+    def humidity(self) -> float:
         """Return the humidity."""
         if self._current is not None:
             return self._current.rh2m
+        return None
+
+    @property
+    def dewpoint(self) -> float:
+        """Return the humidity."""
+        if self._current is not None:
+            return self._current.dewpoint2m
         return None
 
     @property
@@ -510,7 +523,9 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_DEEPSKY_TOMORROW_PRECIP6: self.deepsky_forecast_tomorrow_precipitation_amount6,
             ATTR_WEATHER_DEEPSKY_TOMORROW_PLAIN: self.deepsky_forecast_tomorrow_plain,
             ATTR_WEATHER_FOG_AREA_FRACTION: self.fog_area_fraction,
+            ATTR_WEATHER_FOG2M_AREA_FRACTION: self.fog2m_area_fraction,
             ATTR_WEATHER_HUMIDITY: self.humidity,
+            ATTR_WEATHER_DEWPOINT: self.dewpoint,
             ATTR_WEATHER_LIFTED_INDEX: self.lifted_index,
             ATTR_WEATHER_MOON_NEXT_FULL_MOON: self.moon_next_full_moon,
             ATTR_WEATHER_MOON_NEXT_NEW_MOON: self.moon_next_new_moon,
@@ -563,16 +578,17 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
                     ATTR_FORECAST_CLOUDLESS: forecast.cloudless_percentage,
                     ATTR_FORECAST_CONDITION: forecast.condition_percentage,
                     ATTR_FORECAST_FOG_AREA_FRACTION: forecast.fog_area_fraction_percentage,
+                    ATTR_FORECAST_FOG2M_AREA_FRACTION: forecast.fog2m_area_fraction_percentage,
                     ATTR_FORECAST_HUMIDITY: forecast.rh2m,
                     ATTR_FORECAST_LIFTED_INDEX: forecast.lifted_index,
                     ATTR_FORECAST_PRECIPITATION_AMOUNT: forecast.precipitation_amount,
-                    ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
-                    ATTR_FORECAST_PRECIPITATION: None,
+                    # ATTR_FORECAST_PRECIPITATION_PROBABILITY: None,
+                    # ATTR_FORECAST_PRECIPITATION: None,
                     ATTR_FORECAST_SEEING_PERCENTAGE: forecast.seeing_percentage,
-                    ATTR_FORECAST_SEEING: forecast.seeing,
+                    # ATTR_FORECAST_SEEING: forecast.seeing,
                     ATTR_FORECAST_TEMP: forecast.temp2m,
                     ATTR_FORECAST_TRANSPARENCY_PERCENTAGE: forecast.transparency_percentage,
-                    ATTR_FORECAST_TRANSPARENCY: forecast.transparency,
+                    # ATTR_FORECAST_TRANSPARENCY: forecast.transparency,
                     ATTR_FORECAST_WIND_BEARING: forecast.wind10m_direction,
                     ATTR_FORECAST_WIND_SPEED: forecast.wind10m_speed,
                 }

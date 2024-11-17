@@ -1,70 +1,74 @@
 {
-    "config": {
-        "step": {
-            "location": {
-                "description": "Configuration of the geographic location and timezone.",
-                "data": {
-                    "location_name": "Name for the location of your telescope",
-                    "latitude": "Latitude (-89° to 89°)",
-                    "longitude": "Longitude (-180° to 180°)",
-                    "elevation": "Elevation (0m to 4000m)",
-                    "timezone_info": "Timezone in TZ database"
-                }
-            },
-            "calculation": {
-                "description": "Configuration of the condition calculation, forecast update interval, path to your /config/www, and switch to enable AstroWeathers experimental features.",
-                "data": {
-                    "cloudcover_weight": "Cloud coverage weight",
-                    "seeing_weight": "Seeing weight",
-                    "transparency_weight": "Transparency weight",
-                    "calm_weight": "Weighting of the degree of calmness",
-                    "forecast_interval": "Interval between forecast updates (min)",
-                    "uptonight_path": "Path to /conf/www",
-                    "experimental_features": "Experimental features"
-                }
-            },
-            "cloudweakening": {
-                "description": "Configuration of the influence of different cloud heights on the calculation.",
-                "data": {
-                    "cloudcover_high_weakening": "High clouds influence (%)",
-                    "cloudcover_medium_weakening": "Medium clouds influence (%)",
-                    "cloudcover_low_weakening": "Low clouds influence (%)"
-                }
-            }
+  "config": {
+    "step": {
+      "location": {
+        "description": "Configuration of the geographic location and timezone.",
+        "data": {
+          "location_name": "Name for the location of your telescope",
+          "latitude": "Latitude (-89° to 89°)",
+          "longitude": "Longitude (-180° to 180°)",
+          "elevation": "Elevation (0m to 4000m)",
+          "timezone_info": "Timezone in TZ database"
         }
-    },
-    "options": {
-        "step": {
-            "location": {
-                "description": "Configuration of the geographic location and timezone.",
-                "data": {
-                    "location_name": "Name for the location of your telescope",
-                    "latitude": "Latitude (-89° to 89°)",
-                    "longitude": "Longitude (-180° to 180°)",
-                    "elevation": "Elevation (0m to 4000m)",
-                    "timezone_info": "Timezone in TZ database"
-                }
-            },
-            "calculation": {
-                "description": "Configuration of the condition calculation, forecast update interval, path to your /config/www, and switch to enable AstroWeathers experimental features.",
-                "data": {
-                    "cloudcover_weight": "Cloud coverage weight",
-                    "seeing_weight": "Seeing weight",
-                    "transparency_weight": "Transparency weight",
-                    "calm_weight": "Weighting of calmness",
-                    "forecast_interval": "Interval between forecast updates (min)",
-                    "uptonight_path": "Path to conf/www",
-                    "experimental_features": "Experimental features"
-                }
-            },
-            "cloudweakening": {
-                "description": "Configuration of the influence of different cloud heights on the calculation.",
-                "data": {
-                    "cloudcover_high_weakening": "High clouds influence (%)",
-                    "cloudcover_medium_weakening": "Medium clouds influence (%)",
-                    "cloudcover_low_weakening": "Low clouds influence (%)"
-                }
-            }
+      },
+      "calculation": {
+        "description": "Configuration of the condition calculation, forecast update interval, path to your /config/www, and switch to enable AstroWeathers experimental features.",
+        "data": {
+          "cloudcover_weight": "Cloud coverage weight",
+          "fog_weight": "Fog density weight",
+          "seeing_weight": "Seeing weight",
+          "transparency_weight": "Transparency weight",
+          "calm_weight": "Weighting of the degree of calmness",
+          "forecast_interval": "Interval between forecast updates (min)",
+          "uptonight_path": "Path to /conf/www",
+          "experimental_features": "Experimental features",
+          "open_meteo_service": "Open Meteo Service to use"
         }
+      },
+      "cloudweakening": {
+        "description": "Configuration of the influence of different cloud heights on the calculation.",
+        "data": {
+          "cloudcover_high_weakening": "High clouds influence (%)",
+          "cloudcover_medium_weakening": "Medium clouds influence (%)",
+          "cloudcover_low_weakening": "Low clouds influence (%)"
+        }
+      }
     }
+  },
+  "options": {
+    "step": {
+      "location": {
+        "description": "Configuration of the geographic location and timezone.",
+        "data": {
+          "location_name": "Name for the location of your telescope",
+          "latitude": "Latitude (-89° to 89°)",
+          "longitude": "Longitude (-180° to 180°)",
+          "elevation": "Elevation (0m to 4000m)",
+          "timezone_info": "Timezone in TZ database"
+        }
+      },
+      "calculation": {
+        "description": "Configuration of the condition calculation, forecast update interval, path to your /config/www, and switch to enable AstroWeathers experimental features.",
+        "data": {
+          "cloudcover_weight": "Cloud coverage weight",
+          "fog_weight": "Fog density weight",
+          "seeing_weight": "Seeing weight",
+          "transparency_weight": "Transparency weight",
+          "calm_weight": "Weighting of calmness",
+          "forecast_interval": "Interval between forecast updates (min)",
+          "uptonight_path": "Path to conf/www",
+          "experimental_features": "Experimental features",
+          "open_meteo_service": "Open Meteo Service to use"
+        }
+      },
+      "cloudweakening": {
+        "description": "Configuration of the influence of different cloud heights on the calculation.",
+        "data": {
+          "cloudcover_high_weakening": "High clouds influence (%)",
+          "cloudcover_medium_weakening": "Medium clouds influence (%)",
+          "cloudcover_low_weakening": "Low clouds influence (%)"
+        }
+      }
+    }
+  }
 }

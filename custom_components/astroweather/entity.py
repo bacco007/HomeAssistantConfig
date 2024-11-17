@@ -4,10 +4,13 @@ from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.entity import Entity
 
 from .const import (
+    ATTRIBUTION_OPEN_METEO,
+    ATTRIBUTION_SEVENTIMER,
     CONF_EXPERIMENTAL_FEATURES,
     CONF_LOCATION_NAME,
+    CONF_OPEN_METEO_SERVICE,
     DEFAULT_ATTRIBUTION,
-    EXPERIMENTAL_ATTRIBUTION,
+    DISABLED,
 )
 
 
@@ -52,21 +55,19 @@ class AstroWeatherEntity(Entity):
     def extra_state_attributes(self):
         """Return common attributes."""
 
-        if self.entries.get(CONF_EXPERIMENTAL_FEATURES):
-            return {
-                ATTR_ATTRIBUTION: EXPERIMENTAL_ATTRIBUTION,
-            }
+        attribution = DEFAULT_ATTRIBUTION
+
+        if self.entries.get(CONF_OPEN_METEO_SERVICE) != DISABLED:
+            attribution += ATTRIBUTION_OPEN_METEO
+        if not self.entries.get(CONF_EXPERIMENTAL_FEATURES):
+            attribution += ATTRIBUTION_SEVENTIMER
         return {
-            ATTR_ATTRIBUTION: DEFAULT_ATTRIBUTION,
+            ATTR_ATTRIBUTION: attribution,
         }
 
     async def async_added_to_hass(self):
         """When entity is added to hass."""
 
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
-        self.async_on_remove(
-            self.fcst_coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        self.async_on_remove(self.fcst_coordinator.async_add_listener(self.async_write_ha_state))
