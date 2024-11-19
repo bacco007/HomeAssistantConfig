@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.11.2 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6103 |
+| No. Entities | 6094 |
 | No. Sensors | 3942 |
 | No. Automations | 154 |
 
@@ -845,7 +845,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.4.2] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Response As Sensor](https://github.com/gjohansson-ST/response_as_sensor) |  [v1.0] | Home Assistant Service call response as entity |[@gjohansson-ST](https://github.com/gjohansson-ST).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.11] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
-| [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.2.2] | Use Simple Icons in Home Assistant ||
+| [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.3.0] | Use Simple Icons in Home Assistant ||
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.40.3] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.2.5] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
