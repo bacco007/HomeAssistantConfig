@@ -12,7 +12,6 @@ action:
       fan: "{{ fan }}"
       speed: "{{ states(trigger.entity_id)| round (0, 'floor') }}"
 variables:
-  fan:
-    "{{ trigger.entity_id | regex_replace(find='input_number.', replace='',
+  fan: "{{ trigger.entity_id | regex_replace(find='input_number.', replace='',
     ignorecase=False) | regex_replace(find='_speed', replace='', ignorecase=False)
     }}"
