@@ -10,7 +10,7 @@
     "iot_class": "local_polling",
     "name": "Simple Icons",
     "requirements": [
-        "simpleicons==7.14.0"
+        "simplepycons==1!13.17.0"
     ],
-    "version": "v2.2.2"
+    "version": "v2.3.1"
 }
