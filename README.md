@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.11.2 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6099 |
-| No. Sensors | 3965 |
+| No. Entities | 6088 |
+| No. Sensors | 3966 |
 | No. Automations | 154 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 597
+Devices | 598
 Fans | 3
 Humidifiers | 0
 Images | 10
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 47
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 3965
+Sensors | 3966
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -879,7 +879,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2024.29.07] | Show the current date/time how you want in Home Assistant. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.0-beta.7] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.0-beta.8] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -952,9 +952,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.22.0 |  | db21ed7f |
-| Cloudflared | 5.2.1 |  | 9074a9fa |
+| Cloudflared | 5.2.2 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
-| ESPHome | 2024.10.3 |  | 15ef4d2f |
+| ESPHome Device Compiler | 2024.11.1 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
@@ -962,12 +962,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Git Exporter | 1.17.0 |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.7.5 |  | dc473884 |
-| JupyterLab | 0.15.4 |  | a0d7b954 |
+| JupyterLab | 0.15.5 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.6.0 |  | core |
 | Music Assistant Server | 2.3.3 |  | d5369777 |
 | Node-RED | 18.1.1 |  | a0d7b954 |
-| OpenThread Border Router | 2.12.0 |  | core |
+| OpenThread Border Router | 2.12.1 |  | core |
 | phpMyAdmin | 0.10.0 |  | a0d7b954 |
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
