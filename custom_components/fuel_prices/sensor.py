@@ -10,6 +10,7 @@ from typing import Any
 from datetime import datetime, timedelta
 
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS, CONF_NAME, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -19,6 +20,8 @@ from .const import CONF_STATE_VALUE, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSOR
 from .entity import FuelStationEntity, CheapestFuelEntity
 
 _LOGGER = logging.getLogger(__name__)
+
+SCAN_INTERVAL = timedelta(minutes=1)
 
 
 async def async_setup_entry(
@@ -115,14 +118,23 @@ class FeulStationTracker(FuelStationEntity, SensorEntity):
             return None
         return "total"
 
+    @property
+    def device_class(self) -> SensorDeviceClass | None:
+        """Return device class."""
+        if isinstance(self.native_value, str):
+            return None
+        return SensorDeviceClass.MONETARY
+
 
 class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
     """A entity that shows the cheapest fuel for an area."""
 
+    _attr_force_update = True
     _attr_should_poll = True  # we need to query the module for this data
     _last_update = None
     _next_update = datetime.now()
     _cached_data = None
+    _attr_device_class = SensorDeviceClass.MONETARY
 
     async def async_update(self) -> None:
         """Update device data."""
@@ -136,11 +148,11 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
             radius=self._radius
         )
         if len(data) >= (int(self._count)-1):
+            self._last_update = datetime.now()
+            self._next_update = datetime.now() + timedelta(minutes=5)
             self._cached_data = data[int(self._count)-1]
             return True
         self._cached_data = None
-        self._last_update = datetime.now()
-        self._next_update = datetime.now() + timedelta(minutes=5)
 
     @property
     def native_value(self) -> str | float:
@@ -155,6 +167,13 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
         return f"{self._area} cheapest {self._fuel} {self._count}"
 
     @property
+    def native_unit_of_measurement(self) -> str:
+        """Return unit of measurement."""
+        if isinstance(self.native_value, float):
+            return self._cached_data["currency"]
+        return None
+
+    @property
     def state_class(self) -> str:
         """Return state type."""
         if isinstance(self.native_value, float):
@@ -164,9 +183,8 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return extra state attributes."""
-        return {
-            "area": self._area,
-            **self._cached_data,
-            "last_updated": self._last_update,
-            "next_update": self._next_update
-        }
+        data = self._cached_data
+        data["area"] = self._area
+        data["sensor_last_poll"] = self._last_update
+        data["sensor_next_poll"] = self._next_update
+        return data

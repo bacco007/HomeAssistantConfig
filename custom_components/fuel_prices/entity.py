@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .coordinator import FuelPricesCoordinator
@@ -35,13 +36,12 @@ class FuelStationEntity(CoordinatorEntity):
         return f"fuelprices_{self._fuel_station_id}_{self._entity_id}"
 
 
-class CheapestFuelEntity(CoordinatorEntity):
+class CheapestFuelEntity(Entity):
     """Represents a fuel."""
 
     def __init__(
             self, coordinator: FuelPricesCoordinator, count: str, area: str, fuel: str, coords: tuple, radius: float):
         """Initialize."""
-        super().__init__(coordinator)
         self.coordinator: FuelPricesCoordinator = coordinator
         self._count = count
         self._area = area
