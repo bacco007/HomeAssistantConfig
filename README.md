@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.11.2 |
+| HA Version | 2024.11.3 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6088 |
-| No. Sensors | 3966 |
+| No. Entities | 6070 |
+| No. Sensors | 3978 |
 | No. Automations | 154 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 394
-Buttons | 214
+Buttons | 209
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 47
-Persistent notifications | 5
+Persistent notifications | 4
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 3966
+Sensors | 3978
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 290
+Switches | 286
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -800,11 +800,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.9.0] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.5.0] |  |[@martinarva](https://github.com/martinarva).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
-| [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.0.4] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
+| [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.1.0] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
 | [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.22.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
-| [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.11.2] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
+| [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.11.3] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
@@ -859,7 +859,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.3] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.9] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
-| [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.3] | Home Assistant custom integration to keep track of missing entities and actions in your config files |[@dummylabs](https://github.com/dummylabs).|
+| [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.4] | Home Assistant custom integration to keep track of missing entities and actions in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.11] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [Whats Up Docker Updates Monitor](https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor) |  [v0.5] | Basic integration for What's up Docker API |[@pveiga90](https://github.com/pveiga90).|
@@ -935,7 +935,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.5.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.9.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.10.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>3 Themes</summary>
 
@@ -1020,7 +1020,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.11.2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.11.3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
