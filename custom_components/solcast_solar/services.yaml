@@ -13,7 +13,7 @@ clear_all_solcast_data:
 
 query_forecast_data:
   name: Query forecasts
-  description: List of forecasts between start datetime and end datetime
+  description: List of forecasts between start date/time and end date/time
   fields:
     start_date_time:
       example: "2024-10-06T00:00:00Z"
@@ -46,7 +46,7 @@ get_dampening:
 
 set_hard_limit:
   name: Set inverter forecast hard limit in kW
-  description: Prevent forcast values being higher than the inverter can produce
+  description: Prevent forecast values being higher than the inverter can produce
   fields:
     hard_limit:
       example: "6.0"

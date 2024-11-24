@@ -225,7 +225,7 @@
         "damp_error_parsing": {
             "message": "Erreur lors de l'analyse des nombres séparés par des virgules du facteur d'amortissement."
         },
-        "damp_ouside_range": {
+        "damp_outside_range": {
             "message": "Valeur du facteur d'amortissement présente qui n'est pas comprise entre 0,0 et 1,0."
         },
         "hard_empty": {
@@ -233,6 +233,9 @@
         },
         "hard_not_positive_number": {
             "message": "La valeur limite stricte n’est pas un nombre positif."
+        },
+        "remove_cache_failed": {
+            "message": "Échec de l'effacement de toutes les données Solcast."
         }
     }
 }

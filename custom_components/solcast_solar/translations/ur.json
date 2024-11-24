@@ -226,7 +226,7 @@
         "damp_error_parsing": {
             "message": "ڈیمپننگ فیکٹر کوما سے الگ کردہ نمبرز کو پارس کرنے میں خرابی۔"
         },
-        "damp_ouside_range": {
+        "damp_outside_range": {
             "message": "ڈیمپننگ فیکٹر ویلیو موجود ہے جو صفر اور ایک کے درمیان نہیں ہے۔"
         },
         "hard_empty": {
@@ -234,6 +234,9 @@
         },
         "hard_not_positive_number": {
             "message": "سخت حد کی قدر کوئی مثبت نمبر نہیں ہے۔"
+        },
+        "remove_cache_failed": {
+            "message": "تمام سولکاسٹ ڈیٹا کو صاف کرنا ناکام ہوگیا۔"
         }
     }
 }

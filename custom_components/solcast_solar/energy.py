@@ -1,21 +1,19 @@
 """Energy platform."""
 
-# pylint: disable=C0304, E0401
-
 from __future__ import annotations
 
-from typing import Optional, Any
-
 import logging
+from typing import Any
 
-from homeassistant.core import HomeAssistant # type: ignore
+from homeassistant.core import HomeAssistant
 
 from . import SolcastUpdateCoordinator
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str) -> Optional[dict[str, Any]]:
+
+async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str) -> dict[str, Any] | None:
     """Get solar forecast for a config entry ID.
 
     Arguments:
@@ -24,6 +22,7 @@ async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str) ->
 
     Returns:
         dict[str, Any] | None: The Energy Dashboard compatible forecast data
+
     """
 
     if not hass.data.get(DOMAIN):

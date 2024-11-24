@@ -1,26 +1,22 @@
 """Support for the Solcast diagnostics."""
 
-# pylint: disable=C0304, E0401
-
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Final
 
-from homeassistant.config_entries import ConfigEntry # type: ignore
-from homeassistant.const import CONF_API_KEY # type: ignore
-from homeassistant.core import HomeAssistant # type: ignore
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_API_KEY
+from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
 from .coordinator import SolcastUpdateCoordinator
 
-TO_REDACT = [
+TO_REDACT: Final = [
     CONF_API_KEY,
 ]
 
 
-async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> dict[str, Any]:
+async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, Any]:
     """Return diagnostics for a config entry.
 
     Args:
@@ -29,13 +25,14 @@ async def async_get_config_entry_diagnostics(
 
     Returns:
         dict[str, Any]: Diagnostic details to include in a download file.
+
     """
     coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     def hard_limit_set():
         hard_set = False
-        for hard_limit in coordinator.solcast.hard_limit.split(','):
-            if hard_limit != '100.0':
+        for hard_limit in coordinator.solcast.hard_limit.split(","):
+            if hard_limit != "100.0":
                 hard_set = True
         return hard_set
 

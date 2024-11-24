@@ -226,7 +226,7 @@
         "damp_error_parsing": {
             "message": "Chyba pri analýze tlmiaceho faktora oddelených čiarkami."
         },
-        "damp_ouside_range": {
+        "damp_outside_range": {
             "message": "Prítomná hodnota faktora tlmenia, ktorá nie je medzi 0,0 a 1,0."
         },
         "hard_empty": {
@@ -234,6 +234,9 @@
         },
         "hard_not_positive_number": {
             "message": "Hodnota pevného limitu nie je kladné číslo."
+        },
+        "remove_cache_failed": {
+            "message": "Vymazanie všetkých údajov Solcast zlyhalo."
         }
     }
 }
