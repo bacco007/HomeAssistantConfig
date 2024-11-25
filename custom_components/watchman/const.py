@@ -4,7 +4,7 @@ from homeassistant.const import Platform
 
 DOMAIN = "watchman"
 DOMAIN_DATA = "watchman_data"
-VERSION = "0.6.4"
+VERSION = "0.6.5"
 
 CONFIG_ENTRY_VERSION = 2
 CONFIG_ENTRY_MINOR_VERSION = 1
@@ -12,6 +12,8 @@ CONFIG_ENTRY_MINOR_VERSION = 1
 DEFAULT_REPORT_FILENAME = "watchman_report.txt"
 DEFAULT_HEADER = "-== WATCHMAN REPORT ==- "
 DEFAULT_CHUNK_SIZE = 3500
+
+PACKAGE_NAME = "custom_components.watchman"
 
 HASS_DATA_PARSED_ENTITY_LIST = "entity_list"
 HASS_DATA_PARSED_SERVICE_LIST = "service_list"
@@ -115,3 +117,26 @@ DEFAULT_OPTIONS = {
         CONF_FRIENDLY_NAMES: False,
     },
 }
+
+# additional domains to detect entities which are not included into
+# homeassistant.const.Platform enum
+DEFAULT_HA_DOMAINS = [
+    "group",
+    "input_boolean",
+    "input_select",
+    "input_text",
+    "script",
+    "alert",
+    "automation",
+    "counter",
+    "input_datetime",
+    "input_number",
+    "input_button",
+    "person",
+    "plant",
+    "proximity",
+    "sun",
+    "timer",
+    "zone",
+    "schedule",
+]
