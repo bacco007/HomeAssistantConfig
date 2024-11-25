@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.11.3 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6070 |
+| No. Entities | 6086 |
 | No. Sensors | 3978 |
 | No. Automations | 154 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 47
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 9
 Scenes | 2
@@ -859,7 +859,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.3] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.0] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.9] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
-| [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.4] | Home Assistant custom integration to keep track of missing entities and actions in your config files |[@dummylabs](https://github.com/dummylabs).|
+| [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.5] | Home Assistant custom integration to keep track of missing entities and actions in your config files |[@dummylabs](https://github.com/dummylabs).|
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.11] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [Whats Up Docker Updates Monitor](https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor) |  [v0.5] | Basic integration for What's up Docker API |[@pveiga90](https://github.com/pveiga90).|
