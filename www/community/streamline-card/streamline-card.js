@@ -77,7 +77,7 @@ class StreamlineCardEditor extends HTMLElement {
     const s = StreamlineCardEditor.formatConfig(t), [r] = Object.keys(this._templates), i = {};
     i.type = s.type, i.template = s.template ?? r ?? "", i.variables = s.variables ?? {};
     const n = this.setVariablesDefault(i);
-    deepEqual(n, this._config) === !1 && (this._config = n, fireEvent(this, "config-changed", { config: i })), this.render();
+    deepEqual(n, this._config) === !1 && (this._config = n, this.saveConfig(i)), this.render();
   }
   setVariablesDefault(t) {
     return this.getVariablesForTemplate(t.template).forEach((r) => {
@@ -94,7 +94,7 @@ class StreamlineCardEditor extends HTMLElement {
       }
     `, this.elements.form = document.createElement("ha-form"), this.elements.form.classList.add("streamline-card-form"), this.elements.form.computeLabel = StreamlineCardEditor.computeLabel, this.elements.form.addEventListener("value-changed", (t) => {
       let s = StreamlineCardEditor.formatConfig(t.detail.value);
-      this._config.template !== s.template && (s.variables = {}, s = this.setVariablesDefault(s)), fireEvent(this, "config-changed", { config: s }), this._config = s, this.render();
+      this._config.template !== s.template && (s.variables = {}, s = this.setVariablesDefault(s)), this._config = s, this.render(), this.saveConfig(s);
     }), this._shadow.appendChild(this.elements.error), this._shadow.appendChild(this.elements.form), this._shadow.appendChild(this.elements.style);
   }
   getVariablesForTemplate(t) {
@@ -108,12 +108,18 @@ class StreamlineCardEditor extends HTMLElement {
       s[l] = l;
     }), Object.keys(s).sort((l, c) => {
       const d = Object.keys(this._config.variables).find(
-        (h) => Object.hasOwn(this._config.variables[h], l)
+        (h) => Object.hasOwn(this._config.variables[h] ?? "", l)
       ), f = Object.keys(this._config.variables).find(
-        (h) => Object.hasOwn(this._config.variables[h], c)
+        (h) => Object.hasOwn(this._config.variables[h] ?? "", c)
       );
       return d - f;
     });
+  }
+  saveConfig(t) {
+    const s = JSON.parse(JSON.stringify(t));
+    Object.keys(s.variables).forEach((r) => {
+      s.variables[r] === "" && delete s.variables[r];
+    }), fireEvent(this, "config-changed", { config: s });
   }
   static formatConfig(t) {
     const s = { ...t };
@@ -269,7 +275,7 @@ function evaluateConfig(e, a, t) {
   }
   return s;
 }
-const version = "0.0.15";
+const version = "0.0.18";
 (async function e() {
   const a = window.loadCardHelpers ? await window.loadCardHelpers() : void 0;
   class t extends HTMLElement {
@@ -324,9 +330,7 @@ const version = "0.0.15";
       return this._hass;
     }
     set hass(i) {
-      this._hass = i, setTimeout(() => {
-        this.parseConfig() && this.updateCardConfig(), this.updateCardHass();
-      }, 0);
+      this._hass = i, this.parseConfig() && this.updateCardConfig(), this.updateCardHass();
     }
     prepareConfig() {
       const i = getLovelace() || getLovelaceCast();
@@ -373,9 +377,14 @@ const version = "0.0.15";
       var i, n;
       return ((n = (i = this._card) == null ? void 0 : i.getCardSize) == null ? void 0 : n.call(i)) ?? 1;
     }
+    /** @deprecated Use `getGridOptions` instead */
     getLayoutOptions() {
       var i, n;
       return ((n = (i = this._card) == null ? void 0 : i.getLayoutOptions) == null ? void 0 : n.call(i)) ?? {};
+    }
+    getGridOptions() {
+      var i, n;
+      return ((n = (i = this._card) == null ? void 0 : i.getGridOptions) == null ? void 0 : n.call(i)) ?? {};
     }
     createCard() {
       this._templateConfig.card ? this._card = a.createCardElement(this._config) : this._templateConfig.element && (this._card = a.createHuiElement(this._config), this._config.style && Object.keys(this._config.style).forEach((i) => {
