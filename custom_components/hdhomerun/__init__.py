@@ -4,12 +4,13 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from datetime import timedelta
-from typing import Any, Callable, List, Mapping
+from typing import Any, Callable
 
 import homeassistant.helpers.device_registry as dr
 import homeassistant.helpers.entity_registry as er
-from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -31,7 +32,6 @@ from .const import (
     DEF_SCAN_INTERVAL_SECS,
     DEF_SCAN_INTERVAL_TUNER_STATUS_SECS,
     DOMAIN,
-    ENTITY_SLUG,
     PLATFORMS,
 )
 from .logger import Logger
@@ -62,7 +62,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     # region #-- set up the coordinators --#
     async def _async_data_coordinator_update() -> bool:
         """Update routine for the general details DataUpdateCoordinator."""
-        device: List[HDHomeRunDevice] | HDHomeRunDevice | None = None
+        device: list[HDHomeRunDevice] | HDHomeRunDevice | None = None
         try:
             if (
                 device := hass.data[DOMAIN][config_entry.entry_id][
@@ -82,7 +82,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                     device = device[0]
             await device.async_gather_details()
             device_registry: dr.DeviceRegistry = dr.async_get(hass=hass)
-            device_entry: List[dr.DeviceEntry] = [
+            device_entry: list[dr.DeviceEntry] = [
                 device_details
                 for _, device_details in device_registry.devices.items()
                 if (DOMAIN, config_entry.unique_id) in device_details.identifiers
@@ -109,7 +109,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     async def _async_data_coordinator_tuner_status_update() -> bool:
         """Update routine for the tuner status DataUpdateCoordinator."""
-        device: List[HDHomeRunDevice] | HDHomeRunDevice | None = None
+        device: list[HDHomeRunDevice] | HDHomeRunDevice | None = None
         try:
             if (
                 device := hass.data[DOMAIN][config_entry.entry_id][
@@ -167,7 +167,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     # endregion
 
     # region #-- setup the platforms --#
-    setup_platforms: List[str] = list(filter(None, PLATFORMS))
+    setup_platforms: list[str] = list(filter(None, PLATFORMS))
     _LOGGER.debug(log_formatter.format("setting up platforms: %s"), setup_platforms)
     await hass.config_entries.async_forward_entry_setups(config_entry, setup_platforms)
     # endregion
@@ -179,7 +179,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Cleanup when unloading a config entry."""
     # region #-- clean up the platforms --#
-    setup_platforms: List[str] = list(filter(None, PLATFORMS))
+    setup_platforms: list[str] = list(filter(None, PLATFORMS))
     ret = await hass.config_entries.async_unload_platforms(
         config_entry, setup_platforms
     )
@@ -298,7 +298,7 @@ class HDHomerunTunerEntity(CoordinatorEntity):
 
 # region #-- cleanup entities --#
 def entity_cleanup(
-    config_entry: ConfigEntry, entities: List[HDHomerunEntity], hass: HomeAssistant
+    config_entry: ConfigEntry, entities: list[HDHomerunEntity], hass: HomeAssistant
 ):
     """Remove entities from the registry if they are no longer needed."""
     log_formatter = Logger(
@@ -308,7 +308,7 @@ def entity_cleanup(
     _LOGGER.debug(log_formatter.format("entered"))
 
     entity_registry: er.EntityRegistry = er.async_get(hass=hass)
-    er_entries: List[er.RegistryEntry] = er.async_entries_for_config_entry(
+    er_entries: list[er.RegistryEntry] = er.async_entries_for_config_entry(
         registry=entity_registry, config_entry_id=config_entry.entry_id
     )
 

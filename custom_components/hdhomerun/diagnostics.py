@@ -2,7 +2,7 @@
 
 # region #-- imports --#
 import logging
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
@@ -23,14 +23,14 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, config_entry: ConfigEntry
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Diagnostics for the config entry."""
-    diags: Dict[str, Any] = {}
+    diags: dict[str, Any] = {}
 
     device: HDHomeRunDevice | None = hass.data[DOMAIN][config_entry.entry_id][
         CONF_DATA_COORDINATOR_GENERAL
     ].data
-    diags: Dict[str, Any] = {
+    diags: dict[str, Any] = {
         "device": {
             p: getattr(device, p, None)
             for p in [prop for prop in dir(HDHomeRunDevice) if not prop.startswith("_")]

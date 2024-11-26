@@ -5,8 +5,9 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+from collections.abc import Mapping
 from datetime import datetime, timedelta
-from typing import Any, Callable, List, Mapping
+from typing import Any, Callable
 
 from homeassistant.components.binary_sensor import DOMAIN as ENTITY_DOMAIN
 from homeassistant.components.binary_sensor import (
@@ -109,7 +110,7 @@ async def async_setup_entry(
 
     async_add_entities(sensors, update_before_add=True)
 
-    sensors_to_remove: List[HDHomerunBinarySensor] = []
+    sensors_to_remove: list[HDHomerunBinarySensor] = []
     if (
         UPDATE_DOMAIN is not None
     ):  # remove the existing version sensors if the update entity is available
@@ -233,10 +234,10 @@ class HDHomeRunRecurringBinarySensor(HDHomerunEntity, BinarySensorEntity):
             self.coordinator.data, self._state_method, None
         )
         if not isinstance(state_method, Callable):
-            raise RuntimeError("State method is not callable") from None
+            raise TypeError("State method is not callable") from None
 
         if not isinstance(self._state_processor, Callable):
-            raise RuntimeError("State processor is not callable") from None
+            raise TypeError("State processor is not callable") from None
 
         state_method_results: Any = await state_method()
         if isinstance(self._additional_description.extra_attributes, Callable):

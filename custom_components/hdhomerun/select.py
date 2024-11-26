@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Callable, List
+from typing import Any, Callable
 
 from homeassistant.components.select import DOMAIN as ENTITY_DOMAIN
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
@@ -48,7 +48,7 @@ async def async_setup_entry(
         CONF_DATA_COORDINATOR_GENERAL
     ]
 
-    selects: List[HDHomeRunSelect] = []
+    selects: list[HDHomeRunSelect] = []
 
     if coordinator.data.channel_sources:
         selects.append(
@@ -101,7 +101,7 @@ class HDHomeRunSelect(HDHomerunEntity, SelectEntity):
         )
 
     @property
-    def options(self) -> List[str] | None:
+    def options(self) -> list[str] | None:
         """Build the options for the select."""
         if self.entity_description.key:
             return getattr(self.coordinator.data, self.entity_description.key, None)

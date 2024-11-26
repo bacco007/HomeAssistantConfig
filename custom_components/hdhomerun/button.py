@@ -6,7 +6,7 @@ from __future__ import annotations
 import dataclasses
 import logging
 from abc import ABC
-from typing import Callable, List, Optional
+from typing import Callable
 
 from homeassistant.components.button import DOMAIN as ENTITY_DOMAIN
 from homeassistant.components.button import (
@@ -45,7 +45,7 @@ class AdditionalButtonDescription:
     press_action: str
     listen_for_signal: str | None = None
     listen_for_signal_action: str | None = None
-    press_action_arguments: Optional[dict] = dataclasses.field(default_factory=dict)
+    press_action_arguments: dict | None = dataclasses.field(default_factory=dict)
 
 
 # endregion
@@ -61,7 +61,7 @@ async def async_setup_entry(
         CONF_DATA_COORDINATOR_GENERAL
     ]
 
-    buttons: List[HDHomeRunButton] = [
+    buttons: list[HDHomeRunButton] = [
         HDHomeRunButton(
             additional_description=AdditionalButtonDescription(
                 press_action="async_restart",
@@ -101,7 +101,7 @@ async def async_setup_entry(
 
     async_add_entities(buttons)
 
-    buttons_to_remove: List = []
+    buttons_to_remove: list = []
     if buttons_to_remove:
         entity_cleanup(config_entry=config_entry, entities=buttons_to_remove, hass=hass)
 

@@ -7,9 +7,10 @@ import dataclasses
 import logging
 import os.path
 import re
+from collections.abc import Mapping
 from datetime import date, datetime
 from enum import StrEnum
-from typing import Any, Callable, Mapping
+from typing import Any, Callable
 
 from homeassistant.components.sensor import DOMAIN as ENTITY_DOMAIN
 from homeassistant.components.sensor import (

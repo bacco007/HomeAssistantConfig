@@ -6,7 +6,6 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import Dict, List, Optional
 from urllib.parse import urlparse
 
 import voluptuous as vol
@@ -98,7 +97,9 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
 
     if step == STEP_SELECT_DEVICE:
         schema = {
-            vol.Required(CONF_HOST,): selector.SelectSelector(
+            vol.Required(
+                CONF_HOST,
+            ): selector.SelectSelector(
                 config=selector.SelectSelectorConfig(
                     mode=selector.SelectSelectorMode.LIST,
                     multiple=False,
@@ -157,8 +158,8 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         """Initialis."""
         Logger.__init__(self)
 
-        self._discovered_devices: Dict[str, str] | None = None
-        self._discovered_devices_hd: List[HDHomeRunDevice] | None = None
+        self._discovered_devices: dict[str, str] | None = None
+        self._discovered_devices_hd: list[HDHomeRunDevice] | None = None
         self._errors: dict = {}
         self._error_message: str = ""
         self._friendly_name: str = ""
@@ -177,7 +178,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         """Discover all available devices."""
         err_msg: str | None = None
         try:
-            self._discovered_devices_hd: List[HDHomeRunDevice] = await Discover(
+            self._discovered_devices_hd: list[HDHomeRunDevice] = await Discover(
                 session=async_get_clientsession(hass=self.hass)
             ).async_discover()
             if len(self._discovered_devices_hd) == 0:
@@ -196,9 +197,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
 
     async def _async_task_discover_single(self) -> None:
         """Discover a single device as specified by the instance host."""
-        err_msg: Optional[str] = None
+        err_msg: str | None = None
         if self._host:
-            hdhomerun_device: List[HDHomeRunDevice] | HDHomeRunDevice
+            hdhomerun_device: list[HDHomeRunDevice] | HDHomeRunDevice
             try:
                 hdhomerun_device = await Discover(
                     broadcast_address=self._host,
@@ -308,10 +309,10 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
             return await self.async_step_friendly_name()
 
         # region #-- build the names to show as options --#
-        existing_entries: List[
-            config_entries.ConfigEntry
-        ] = self.hass.config_entries.async_entries(domain=DOMAIN)
-        existing_ids: List[str] = [ce.unique_id for ce in existing_entries]
+        existing_entries: list[config_entries.ConfigEntry] = (
+            self.hass.config_entries.async_entries(domain=DOMAIN)
+        )
+        existing_ids: list[str] = [ce.unique_id for ce in existing_entries]
         for dev in self._discovered_devices_hd:
             await dev.async_gather_details()
             if dev.device_id not in existing_ids:
@@ -366,11 +367,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         # region #-- set a unique_id, update details if device has changed IP --#
         _LOGGER.debug(self.format("setting unique_id: %s"), serial)
         await self.async_set_unique_id(unique_id=serial)
-        matching_instance: List[
-            config_entries.ConfigEntry
-        ] | config_entries.ConfigEntry = [
-            instance for instance in self.hass.config_entries.async_entries(DOMAIN)
-        ]
+        matching_instance: (
+            list[config_entries.ConfigEntry] | config_entries.ConfigEntry
+        ) = [instance for instance in self.hass.config_entries.async_entries(DOMAIN)]
         if matching_instance:
             matching_instance = matching_instance[0]
             if matching_instance.source == "ssdp":
@@ -433,7 +432,7 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
         return await self.async_step_timeouts()
 
     async def async_step_options(
-        self, user_input: Optional[dict] = None
+        self, user_input: dict | None = None
     ) -> data_entry_flow.FlowResult:
         """Present the main options."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
@@ -456,7 +455,7 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
         )
 
     async def async_step_timeouts(
-        self, user_input: Optional[dict] = None
+        self, user_input: dict | None = None
     ) -> data_entry_flow.FlowResult:
         """Present the timeout options."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)

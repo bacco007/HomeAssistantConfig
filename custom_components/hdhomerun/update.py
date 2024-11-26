@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import List
 
 from homeassistant.components.update import DOMAIN as ENTITY_DOMAIN
 from homeassistant.components.update import (
@@ -35,7 +34,7 @@ async def async_setup_entry(
     ][CONF_DATA_COORDINATOR_GENERAL]
 
     # region #-- add default sensors --#
-    update_entities: List[HDHomerunUpdate] = []
+    update_entities: list[HDHomerunUpdate] = []
 
     if coordinator_general.data.discovery_method is DiscoverMode.HTTP:
         update_entities.append(

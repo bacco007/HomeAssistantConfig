@@ -12,7 +12,6 @@ from .pyhdhr.const import DiscoverMode
 # endregion
 
 DOMAIN: str = "hdhomerun"
-ENTITY_SLUG: str = "HDHomeRun"
 
 CONF_DATA_COORDINATOR_GENERAL: str = "data_coordinator_general"
 CONF_DATA_COORDINATOR_TUNER_STATUS: str = "data_coordinaror_tuner_status"
