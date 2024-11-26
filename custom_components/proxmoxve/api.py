@@ -31,6 +31,7 @@ class ProxmoxClient:
         host: str,
         user: str,
         password: str,
+        token_name: str = '',
         port: int | None = DEFAULT_PORT,
         realm: str | None = DEFAULT_REALM,
         verify_ssl: bool | None = DEFAULT_VERIFY_SSL,
@@ -40,6 +41,7 @@ class ProxmoxClient:
         self._host = host
         self._port = port
         self._user = user
+        self._token_name = token_name
         self._realm = realm
         self._password = password
         self._verify_ssl = verify_ssl
@@ -55,14 +57,25 @@ class ProxmoxClient:
         else:
             user_id = f"{self._user}@{self._realm}"
 
-        self._proxmox = ProxmoxAPI(
-            self._host,
-            port=self._port,
-            user=user_id,
-            password=self._password,
-            verify_ssl=self._verify_ssl,
-            timeout=30,
-        )
+        if self._token_name:
+            self._proxmox = ProxmoxAPI(
+                self._host,
+                port=self._port,
+                user=user_id,
+                token_name=self._token_name,
+                token_value=self._password,
+                verify_ssl=self._verify_ssl,
+                timeout=30,
+            )
+        else:
+            self._proxmox = ProxmoxAPI(
+                self._host,
+                port=self._port,
+                user=user_id,
+                password=self._password,
+                verify_ssl=self._verify_ssl,
+                timeout=30,
+            )
 
     def get_api_client(self) -> ProxmoxAPI:
         """Return the ProxmoxAPI client."""
@@ -113,10 +126,11 @@ def post_api_command(
         issue_id = f"{self.config_entry.entry_id}_{vm_id}_command_forbiden"
 
     try:
-        # Only the START_ALL and STOP_ALL are not part of status API
+        # START_ALL, STOP_ALL, WAKEONLAN are not part of status API
         if api_category is ProxmoxType.Node and command in [
             ProxmoxCommand.START_ALL,
             ProxmoxCommand.STOP_ALL,
+            ProxmoxCommand.WAKEONLAN,
         ]:
             result = post_api(proxmox, f"nodes/{node}/{command}")
         elif api_category is ProxmoxType.Node:

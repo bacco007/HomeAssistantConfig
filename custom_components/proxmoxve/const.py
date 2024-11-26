@@ -5,6 +5,7 @@ import logging
 
 DOMAIN = "proxmoxve"
 PROXMOX_CLIENTS = "proxmox_clients"
+CONF_TOKEN_NAME = "token_name"
 CONF_REALM = "realm"
 CONF_NODE = "node"
 CONF_NODES = "nodes"
@@ -62,6 +63,7 @@ class ProxmoxCommand(StrEnum):
     START_ALL = "startall"
     STOP_ALL = "stopall"
     HIBERNATE = "hibernate"
+    WAKEONLAN = "wakeonlan"
 
 
 class ProxmoxKeyAPIParse(StrEnum):
