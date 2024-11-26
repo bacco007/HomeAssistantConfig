@@ -1,13 +1,19 @@
 """Core components of AWTRIX Light."""
 
-from datetime import datetime
+import base64
+from io import BytesIO
 import json
+import logging
+
+from PIL import Image
+import requests
 
 from homeassistant.components.media_source import Unresolvable
 from homeassistant.const import STATE_UNAVAILABLE
-import homeassistant.util.dt as dt_util
 
 """Support for AWTRIX service."""
+
+_LOGGER = logging.getLogger(__name__)
 
 def merge_custom_data(payload, data):
     """Merge the custom values."""
