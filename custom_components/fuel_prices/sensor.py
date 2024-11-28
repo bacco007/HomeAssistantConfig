@@ -134,7 +134,6 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
     _last_update = None
     _next_update = datetime.now()
     _cached_data = None
-    _attr_device_class = SensorDeviceClass.MONETARY
 
     async def async_update(self) -> None:
         """Update device data."""
@@ -150,16 +149,26 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
         if len(data) >= (int(self._count)-1):
             self._last_update = datetime.now()
             self._next_update = datetime.now() + timedelta(minutes=5)
-            self._cached_data = data[int(self._count)-1]
+            if len(data) >= self._count:
+                self._cached_data = data[int(self._count)-1]
+            else:
+                self._cached_data = {}
             return True
         self._cached_data = None
 
     @property
-    def native_value(self) -> str | float:
+    def native_value(self) -> str | float | int:
         """Return state of entity."""
         if self._cached_data is not None:
-            return self._cached_data["cost"]
+            return self._cached_data.get("cost", STATE_UNKNOWN)
         return STATE_UNKNOWN
+
+    @property
+    def device_class(self) -> SensorDeviceClass | None:
+        """Return device class."""
+        if isinstance(self.native_value, float) or isinstance(self.native_value, int):
+            return SensorDeviceClass.MONETARY
+        return None
 
     @property
     def name(self) -> str:
@@ -169,21 +178,23 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return unit of measurement."""
-        if isinstance(self.native_value, float):
+        if isinstance(self.native_value, float) or isinstance(self.native_value, int):
             return self._cached_data["currency"]
         return None
 
     @property
     def state_class(self) -> str:
         """Return state type."""
-        if isinstance(self.native_value, float):
+        if isinstance(self.native_value, float) or isinstance(self.native_value, int):
             return "total"
         return None
 
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return extra state attributes."""
-        data = self._cached_data
+        data = {}
+        if self._cached_data is not None:
+            data = self._cached_data
         data["area"] = self._area
         data["sensor_last_poll"] = self._last_update
         data["sensor_next_poll"] = self._next_update

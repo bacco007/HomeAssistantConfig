@@ -19,13 +19,13 @@
                 "title": "Friendly name"
             },
             "select_device": {
-                "description": "Select the device from the list below.<br />Devices already configured are not shown in the list."
+                "description": "Select the device from the list below.\nDevices already configured are not shown in the list."
             },
             "user": {
                 "data": {
                     "host": "Host"
                 },
-                "description": "Enter the address of an HDHomeRun device on the network.<br />Leave blank to invoke discovery.",
+                "description": "Enter the address of an HDHomeRun device on the network.\nLeave blank to invoke discovery.",
                 "title": "Enter an address"
             }
         }

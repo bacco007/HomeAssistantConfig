@@ -6,6 +6,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from enum import StrEnum, auto
 from urllib.parse import urlparse
 
 import voluptuous as vol
@@ -37,16 +38,21 @@ from .pyhdhr.exceptions import HDHomeRunDeviceNotFoundError
 # endregion
 
 
+class Steps(StrEnum):
+    """Define the steps available to the config flow."""
+
+    DETAILS = auto()
+    FINISH = auto()
+    FRIENDLY_NAME = auto()
+    OPTIONS = auto()
+    SELECT_DEVICE = auto()
+    TIMEOUTS = auto()
+    USER = auto()
+
+
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FRIENDLY_NAME: str = "friendly_name"
-STEP_DETAILS: str = "details"
-STEP_FINISH: str = "finish"
-STEP_FRIENDLY_NAME: str = "friendly_name"
-STEP_OPTIONS: str = "options"
-STEP_SELECT_DEVICE: str = "select_device"
-STEP_TIMEOUTS: str = "timeouts"
-STEP_USER: str = "user"
 
 
 async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol.Schema:
@@ -60,14 +66,14 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
         user_input = {}
 
     schema = {}
-    if step == STEP_FRIENDLY_NAME:
+    if step == Steps.FRIENDLY_NAME:
         schema = {
             vol.Required(
                 CONF_FRIENDLY_NAME, default=user_input.get(CONF_FRIENDLY_NAME, "")
             ): selector.TextSelector(),
         }
 
-    if step == STEP_OPTIONS:
+    if step == Steps.OPTIONS:
         schema = {
             vol.Optional(
                 CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
@@ -95,7 +101,7 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
             ),
         }
 
-    if step == STEP_SELECT_DEVICE:
+    if step == Steps.SELECT_DEVICE:
         schema = {
             vol.Required(
                 CONF_HOST,
@@ -108,7 +114,7 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
             ),
         }
 
-    if step == STEP_TIMEOUTS:
+    if step == Steps.TIMEOUTS:
         schema = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
@@ -136,7 +142,7 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
             ),
         }
 
-    if step == STEP_USER:
+    if step == Steps.USER:
         schema = {
             vol.Optional(
                 CONF_HOST, default=user_input.get(CONF_HOST, "")
@@ -155,7 +161,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
     """
 
     def __init__(self):
-        """Initialis."""
+        """Initialise."""
         Logger.__init__(self)
 
         self._discovered_devices: dict[str, str] | None = None
@@ -232,7 +238,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
     async def async_step_details(self, user_input=None) -> data_entry_flow.FlowResult:
         """Execute the discovery before proceeding."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
-        if not self._task_details:
+        if self._task_details is None:
             _LOGGER.debug(self.format("creating task for gathering details"))
             if self._host:  # try and lookup the device
                 self._task_details = self.hass.async_create_task(
@@ -242,21 +248,23 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
                 self._task_details = self.hass.async_create_task(
                     self._async_task_discover_all()
                 )
-            return self.async_show_progress(
-                step_id=STEP_DETAILS, progress_action="task_discover"
-            )
 
-        await self._task_details
+        if self._task_details.done():
+            _LOGGER.debug(self.format("_errors: %s"), self._errors)
+            next_step: str = Steps.SELECT_DEVICE
+            if self._errors:
+                next_step = Steps.USER
+            if self._discovered_devices_hd is None:
+                next_step = Steps.FRIENDLY_NAME
 
-        _LOGGER.debug(self.format("_errors: %s"), self._errors)
-        if self._errors:
-            return self.async_show_progress_done(next_step_id=STEP_USER)
+            _LOGGER.debug(self.format("next step: %s"), next_step)
+            return self.async_show_progress_done(next_step_id=next_step)
 
-        _LOGGER.debug(self.format("proceeding to next step"))
-        if self._discovered_devices_hd is None:
-            return self.async_show_progress_done(next_step_id=STEP_FRIENDLY_NAME)
-
-        return self.async_show_progress_done(next_step_id=STEP_SELECT_DEVICE)
+        return self.async_show_progress(
+            step_id=Steps.DETAILS,
+            progress_action="task_discover",
+            progress_task=self._task_details,
+        )
 
     async def async_step_finish(self, _=None) -> data_entry_flow.FlowResult:
         """Finalise the configuration entry."""
@@ -282,9 +290,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
             return await self.async_step_finish()
 
         return self.async_show_form(
-            step_id=STEP_FRIENDLY_NAME,
+            step_id=Steps.FRIENDLY_NAME,
             data_schema=await _async_build_schema_with_user_input(
-                STEP_FRIENDLY_NAME, {CONF_FRIENDLY_NAME: self._friendly_name}
+                Steps.FRIENDLY_NAME, {CONF_FRIENDLY_NAME: self._friendly_name}
             ),
         )
 
@@ -331,9 +339,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         # endregion
 
         return self.async_show_form(
-            step_id=STEP_SELECT_DEVICE,
+            step_id=Steps.SELECT_DEVICE,
             data_schema=await _async_build_schema_with_user_input(
-                STEP_SELECT_DEVICE,
+                Steps.SELECT_DEVICE,
                 user_input=[
                     {"label": dev_name, "value": dev_ip}
                     for dev_ip, dev_name in self._discovered_devices.items()
@@ -369,7 +377,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         await self.async_set_unique_id(unique_id=serial)
         matching_instance: (
             list[config_entries.ConfigEntry] | config_entries.ConfigEntry
-        ) = [instance for instance in self.hass.config_entries.async_entries(DOMAIN)]
+        ) = list(self.hass.config_entries.async_entries(DOMAIN))
         if matching_instance:
             matching_instance = matching_instance[0]
             if matching_instance.source == "ssdp":
@@ -399,9 +407,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
             return await self.async_step_details()
 
         return self.async_show_form(
-            step_id=STEP_USER,
+            step_id=Steps.USER,
             data_schema=await _async_build_schema_with_user_input(
-                STEP_USER, user_input
+                Steps.USER, user_input
             ),
             description_placeholders={"error_message": self._error_message},
             errors=self._errors,
@@ -446,9 +454,9 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
             return await self.async_step_finish()
 
         return self.async_show_form(
-            step_id=STEP_OPTIONS,
+            step_id=Steps.OPTIONS,
             data_schema=await _async_build_schema_with_user_input(
-                STEP_OPTIONS, self._options
+                Steps.OPTIONS, self._options
             ),
             errors=self._errors,
             last_step=True,
@@ -465,9 +473,9 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
             return await self.async_step_options()
 
         return self.async_show_form(
-            step_id=STEP_TIMEOUTS,
+            step_id=Steps.TIMEOUTS,
             data_schema=await _async_build_schema_with_user_input(
-                STEP_TIMEOUTS, self._options
+                Steps.TIMEOUTS, self._options
             ),
             errors=self._errors,
             last_step=False,
