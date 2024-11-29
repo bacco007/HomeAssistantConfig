@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.12.0b0 |
-| No. Integrations | 215 |
+| HA Version | 2024.12.0b2 |
+| No. Integrations | 216 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6090 |
-| No. Sensors | 3980 |
+| No. Entities | 6092 |
+| No. Sensors | 3985 |
 | No. Automations | 154 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 5
+Persistent notifications | 4
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 3980
+Sensors | 3985
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>628 Integrations</summary>
+<details><summary>643 Integrations</summary>
 
 | Name |
 | --- |
@@ -208,6 +208,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
+| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -601,7 +602,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [spook.time](https://www.home-assistant.io/components/spook.time) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [spotify.media_player](https://www.home-assistant.io/components/spotify.media_player) |
-| [spotify.sensor](https://www.home-assistant.io/components/spotify.sensor) |
 | [spotifyplus](https://www.home-assistant.io/components/spotifyplus) |
 | [spotifyplus.media_player](https://www.home-assistant.io/components/spotifyplus.media_player) |
 | [sql](https://www.home-assistant.io/components/sql) |
@@ -746,6 +746,21 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
+| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
+| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
+| [zha.button](https://www.home-assistant.io/components/zha.button) |
+| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
+| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
+| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
+| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
+| [zha.light](https://www.home-assistant.io/components/zha.light) |
+| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
+| [zha.number](https://www.home-assistant.io/components/zha.number) |
+| [zha.select](https://www.home-assistant.io/components/zha.select) |
+| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
+| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
+| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
+| [zha.update](https://www.home-assistant.io/components/zha.update) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -774,7 +789,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.5.0] |  |[@martinarva](https://github.com/martinarva).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.1.0] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
-| [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.11] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
+| [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.12] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
 | [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.22.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.11.4] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
@@ -810,7 +825,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.3] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.15.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.15.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -993,7 +1008,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.12.0b0-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.12.0b2-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
