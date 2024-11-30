@@ -47,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             "moon_calc": moon,
         }
 
-        await hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
+        await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
     except Exception as err:
         _LOGGER.error("Error setting up Moon Phase: %s", err, exc_info=True)

@@ -1,0 +1,55 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat al geconfigureerd"
+        },
+        "error": {
+            "cannot_connect": "Geen verbinding",
+            "city_not_found": "Stad niet gevonden",
+            "invalid_auth": "Ongeldige authenticatie",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "location": {
+                "data": {
+                    "city": "Stad",
+                    "latitude": "Lengtegraad",
+                    "longitude": "Breedtegraad",
+                    "region": "Regio",
+                    "time_zone": "Tijdzone"
+                }
+            },
+            "user": {
+                "data": {
+                    "city": "Stad"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "moon_phase": {
+                "name": "Maan Fase",
+                "state": {
+                    "first_quarter": "Eerste kwartier",
+                    "full_moon": "Volle maan",
+                    "last_quarter": "Laatste kwartier",
+                    "new_moon": "Nieuwe maan",
+                    "waning_crescent": "Afnemende halve maan",
+                    "waning_gibbous": "Afnemende maan",
+                    "waxing_crescent": "Wassende halve maan",
+                    "waxing_gibbous": "Wassende maan"
+                }
+            },
+            "next_phase": {
+                "state": {
+                    "first_quarter": "Eesrte kwartier",
+                    "full_moon": "Volle maan",
+                    "last_quarter": "Laatste kwartier",
+                    "new_moon": "Nieuwe maan"
+                }
+            }
+        }
+    },
+    "title": "Lunar Phase"
+}

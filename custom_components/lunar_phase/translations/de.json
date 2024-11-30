@@ -32,9 +32,9 @@
             "moon_phase": {
                 "name": "Mondphase",
                 "state": {
-                    "first_quarter": "Zunehmender Mond",
+                    "first_quarter": "Zunehmender Halbmond",
                     "full_moon": "Vollmond",
-                    "last_quarter": "Zunehmender Dreiviertelmond",
+                    "last_quarter": "Abnehmender Halbmond",
                     "new_moon": "Neumond",
                     "waning_crescent": "Abnehmender Sichelmond",
                     "waning_gibbous": "Abnehmender Dreiviertelmond",
@@ -44,9 +44,9 @@
             },
             "next_phase": {
                 "state": {
-                    "first_quarter": "Zunehmender Mond",
+                    "first_quarter": "Zunehmender Halbmond",
                     "full_moon": "Vollmond",
-                    "last_quarter": "Zunehmender Dreiviertelmond",
+                    "last_quarter": "Abnehmender Halbmond",
                     "new_moon": "Neumond"
                 }
             }
