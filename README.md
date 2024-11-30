@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.12.0b2 |
 | No. Integrations | 216 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6092 |
+| No. Entities | 6102 |
 | No. Sensors | 3985 |
 | No. Automations | 154 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 9
 Scenes | 2
@@ -809,7 +809,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v1.4.2] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.1] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
-| [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.0] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
+| [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.1] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.11.23] | Material Symbols for Home Assistant is a collection of 13,693 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
@@ -825,7 +825,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.3] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.15.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.0] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
