@@ -17,3 +17,4 @@ sensor:
     - site_url
     - time
     - system_uptime
+    - piaware_version

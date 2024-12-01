@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.12.0b2 |
-| No. Integrations | 216 |
+| HA Version | 2024.12.0b3 |
+| No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6102 |
-| No. Sensors | 3985 |
+| No. Entities | 6139 |
+| No. Sensors | 4024 |
 | No. Automations | 154 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 5
+Persistent notifications | 3
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 3985
+Sensors | 4024
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>643 Integrations</summary>
+<details><summary>657 Integrations</summary>
 
 | Name |
 | --- |
@@ -250,10 +250,22 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [esphome.sensor](https://www.home-assistant.io/components/esphome.sensor) |
 | [esphome.switch](https://www.home-assistant.io/components/esphome.switch) |
 | [esphome.update](https://www.home-assistant.io/components/esphome.update) |
+| [eufy_security](https://www.home-assistant.io/components/eufy_security) |
+| [eufy_security.alarm_control_panel](https://www.home-assistant.io/components/eufy_security.alarm_control_panel) |
+| [eufy_security.binary_sensor](https://www.home-assistant.io/components/eufy_security.binary_sensor) |
+| [eufy_security.button](https://www.home-assistant.io/components/eufy_security.button) |
+| [eufy_security.camera](https://www.home-assistant.io/components/eufy_security.camera) |
+| [eufy_security.image](https://www.home-assistant.io/components/eufy_security.image) |
+| [eufy_security.lock](https://www.home-assistant.io/components/eufy_security.lock) |
+| [eufy_security.number](https://www.home-assistant.io/components/eufy_security.number) |
+| [eufy_security.select](https://www.home-assistant.io/components/eufy_security.select) |
+| [eufy_security.sensor](https://www.home-assistant.io/components/eufy_security.sensor) |
+| [eufy_security.switch](https://www.home-assistant.io/components/eufy_security.switch) |
 | [event](https://www.home-assistant.io/components/event) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fastdotcom](https://www.home-assistant.io/components/fastdotcom) |
 | [fastdotcom.sensor](https://www.home-assistant.io/components/fastdotcom.sensor) |
+| [feedparser.sensor](https://www.home-assistant.io/components/feedparser.sensor) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
 | [file](https://www.home-assistant.io/components/file) |
 | [file.notify](https://www.home-assistant.io/components/file.notify) |
@@ -388,6 +400,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [logger](https://www.home-assistant.io/components/logger) |
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [lovelace_gen](https://www.home-assistant.io/components/lovelace_gen) |
+| [lunar_phase](https://www.home-assistant.io/components/lunar_phase) |
+| [lunar_phase.sensor](https://www.home-assistant.io/components/lunar_phase.sensor) |
 | [mass](https://www.home-assistant.io/components/mass) |
 | [mass.media_player](https://www.home-assistant.io/components/mass.media_player) |
 | [mastodon](https://www.home-assistant.io/components/mastodon) |
@@ -825,7 +839,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.3] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.0] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.2] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.1] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -876,7 +890,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.0] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) |  [v2024.11.1] | Custom brand icons for Home Assistant |
-| [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.2.0] | Home Assistant custom features for tile cards and more. Call any action using buttons, sliders, selectors, and spinboxes |
+| [Custom Features For Home Assistant Cards](https://github.com/Nerwyn/service-call-tile-feature) |  [v4.2.1] | Home Assistant custom features for tile cards and more. Call any action using buttons, sliders, selectors, and spinboxes |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
@@ -908,7 +922,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.0.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.1.1] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -1008,7 +1022,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.12.0b2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.12.0b3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml

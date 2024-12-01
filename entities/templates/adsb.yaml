@@ -273,3 +273,101 @@ sensor:
     attributes:
       category: adsb
       provider: adsb.lol
+
+  - name: "PiAware Messages per Second"
+    unique_id: "adsb_piaware_msgs_per_second"
+    unit_of_measurement: "msg/sec"
+    state: >
+      {% set messages = state_attr('sensor.adsb_aircraft_tracked', 'messages') | float(0) %}
+      {% set var_now = state_attr('sensor.adsb_aircraft_tracked', 'now') | float(0) %}
+      {% set last_messages = state_attr('sensor.piaware_messages_per_second', 'last_messages') | float(0) %}
+      {% set last_now = state_attr('sensor.piaware_messages_per_second', 'last_now') | float(0) %}
+      {% set last_rate = states('sensor.piaware_messages_per_second') | float(0) %}
+      {% if messages > 0 and var_now > 0 and last_now > 0 and last_messages > 0 %}
+        {% set delta_messages = messages - last_messages %}
+        {% set delta_time = var_now - last_now %}
+        {% if delta_time > 0 %}
+          {{ (delta_messages / delta_time) | round(1) }}
+        {% else %}
+          {{ last_rate }}
+        {% endif %}
+      {% else %}
+        {{ last_rate }}
+      {% endif %}
+    attributes:
+      last_messages: >
+        {% set current_messages = state_attr('sensor.adsb_aircraft_tracked', 'messages') | float(0) %}
+        {% if current_messages > 0 %}
+          {{ current_messages }}
+        {% else %}
+          {% set last_messages = state_attr('sensor.piaware_messages_per_second', 'last_messages') | float(0) %}
+          {{ last_messages }}
+        {% endif %}
+      last_now: >
+        {% set current_now = state_attr('sensor.adsb_aircraft_tracked', 'now') | float(0) %}
+        {% if current_now > 0 %}
+          {{ current_now }}
+        {% else %}
+          {% set last_now = state_attr('sensor.piaware_messages_per_second', 'last_now') | float(0) %}
+          {{ last_now }}
+        {% endif %}
+
+  - name: "Piaware 1090 Radio"
+    state: "{{ state_attr('sensor.adsb_fa_feeder', 'radio')['status'] }}"
+    icon: >
+      {% if state_attr('sensor.adsb_fa_feeder', 'radio')['status'] == 'green' %}
+        mdi:check-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'radio')['status'] in ['yellow', 'orange'] %}
+        mdi:alert-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'radio')['status'] == 'red' %}
+        mdi:close-circle
+      {% else %}
+        mdi:help-circle
+      {% endif %}
+    attributes:
+      message: "{{ state_attr('sensor.adsb_fa_feeder', 'radio')['message'] }}"
+
+  - name: "Piaware Daemon"
+    state: "{{ state_attr('sensor.adsb_fa_feeder', 'piaware')['status'] }}"
+    icon: >
+      {% if state_attr('sensor.adsb_fa_feeder', 'piaware')['status'] == 'green' %}
+        mdi:check-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'piaware')['status'] in ['yellow', 'orange'] %}
+        mdi:alert-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'piaware')['status'] == 'red' %}
+        mdi:close-circle
+      {% else %}
+        mdi:help-circle
+      {% endif %}
+    attributes:
+      message: "{{ state_attr('sensor.adsb_fa_feeder', 'piaware')['message'] }}"
+
+  - name: "Piaware Connection"
+    state: "{{ state_attr('sensor.adsb_fa_feeder', 'adept')['status'] }}"
+    icon: >
+      {% if state_attr('sensor.adsb_fa_feeder', 'adept')['status'] == 'green' %}
+        mdi:check-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'adept')['status'] in ['yellow', 'orange'] %}
+        mdi:alert-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'adept')['status'] == 'red' %}
+        mdi:close-circle
+      {% else %}
+        mdi:help-circle
+      {% endif %}
+    attributes:
+      message: "{{ state_attr('sensor.adsb_fa_feeder', 'adept')['message'] }}"
+
+  - name: "Piaware MLAT"
+    state: "{{ state_attr('sensor.adsb_fa_feeder', 'mlat')['status'] }}"
+    icon: >
+      {% if state_attr('sensor.adsb_fa_feeder', 'mlat')['status'] == 'green' %}
+        mdi:check-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'mlat')['status'] in ['yellow', 'orange'] %}
+        mdi:alert-circle
+      {% elif state_attr('sensor.adsb_fa_feeder', 'mlat')['status'] == 'red' %}
+        mdi:close-circle
+      {% else %}
+        mdi:help-circle
+      {% endif %}
+    attributes:
+      message: "{{ state_attr('sensor.adsb_fa_feeder', 'mlat')['message'] }}"
