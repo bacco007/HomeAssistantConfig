@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import auto, Enum, StrEnum
+from enum import Enum, StrEnum, auto
 
 from homeassistant.config_entries import ConfigEntry
 
@@ -22,16 +22,16 @@ class ConfigField(Enum):
     host = "127.0.0.1"
     port = 3000
     sync_interval = 600  # seconds
-    rtsp_server_address = auto()
+    rtsp_server_address = 3
     no_stream_in_hass = False
     name_for_custom1 = "Custom 1"
     name_for_custom2 = "Custom 2"
     name_for_custom3 = "Custom 3"
-    captcha_id = auto()
-    captcha_img = auto()
-    captcha_input = auto()
-    mfa_required = auto()
-    mfa_input = auto()
+    captcha_id = 8
+    captcha_img = 9
+    captcha_input = 10
+    mfa_required = 11
+    mfa_input = 12
 
 
 @dataclass
