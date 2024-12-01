@@ -817,131 +817,6 @@ class we extends $t {
   }
 }
 const be = e(we);
-var __defProp$r = Object.defineProperty;
-var __decorateClass$r = (decorators, target, key, kind) => {
-  var result = void 0;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = decorator(target, key, result) || result;
-  if (result) __defProp$r(target, key, result);
-  return result;
-};
-const { SHUFFLE_SET: SHUFFLE_SET$1, REPEAT_SET: REPEAT_SET$1, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
-class PlayerControls extends h {
-  constructor() {
-    super(...arguments);
-    this.volDown = async () => await this.mediaControlService.volumeDown(this.volumePlayer, !this.config.playerVolumeEntityId);
-    this.volUp = async () => await this.mediaControlService.volumeUp(this.volumePlayer, !this.config.playerVolumeEntityId);
-    this.rewind = async () => await this.mediaControlService.seek(
-      this.volumePlayer,
-      this.volumePlayer.attributes.media_position - (this.config.fastForwardAndRewindStepSizeSeconds || 15)
-    );
-    this.fastForward = async () => await this.mediaControlService.seek(
-      this.volumePlayer,
-      this.volumePlayer.attributes.media_position + (this.config.fastForwardAndRewindStepSizeSeconds || 15)
-    );
-  }
-  render() {
-    this.config = this.store.config;
-    this.activePlayer = this.store.activePlayer;
-    this.mediaControlService = this.store.mediaControlService;
-    const noUpDown = !!this.config.showVolumeUpAndDownButtons && D;
-    const noFastForwardAndRewind = !!this.config.showFastForwardAndRewindButtons && D;
-    this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
-    return ke`
-      <div class="main" id="mediaControls">
-          <div class="icons">
-              <div class="flex-1"></div>
-              <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
-              <sonos-ha-player .store=${this.store} .features=${this.showShuffle()}></sonos-ha-player>
-              <sonos-ha-player .store=${this.store} .features=${this.showPrev()}></sonos-ha-player>
-              <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.rewind} .path=${mdiRewind}></ha-icon-button>
-              <sonos-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></sonos-ha-player>
-              <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.fastForward} .path=${mdiFastForward}></ha-icon-button>
-              <sonos-ha-player .store=${this.store} .features=${this.showNext()}></sonos-ha-player>
-              <sonos-ha-player .store=${this.store} .features=${this.showRepeat()}></sonos-ha-player>
-              <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
-              <div class="audio-input-format">
-                ${this.config.showAudioInputFormat && be(this.getAudioInputFormat())}
-              </div>
-              <sonos-ha-player .store=${this.store} .features=${this.showBrowseMedia()}></sonos-ha-player>
-          </div>
-          <sonos-volume .store=${this.store} .player=${this.volumePlayer}
-                       .updateMembers=${!this.config.playerVolumeEntityId}></sonos-volume>
-          <div class="icons">
-              <sonos-ha-player .store=${this.store} .features=${this.store.showPower(true)}></sonos-ha-player>
-          </div">
-      </div>
-  `;
-  }
-  async getAudioInputFormat() {
-    const sensors = await this.store.hassService.getRelatedEntities(this.activePlayer, "sensor");
-    const audioInputFormat = sensors.find((sensor) => sensor.entity_id.includes("audio_input_format"));
-    return audioInputFormat && audioInputFormat.state && audioInputFormat.state !== "No audio" ? ke`<div>${audioInputFormat.state}</div>` : "";
-  }
-  showShuffle() {
-    return this.config.hidePlayerControlShuffleButton ? [] : [SHUFFLE_SET$1];
-  }
-  showPrev() {
-    return this.config.hidePlayerControlPrevTrackButton ? [] : [PREVIOUS_TRACK];
-  }
-  showNext() {
-    return this.config.hidePlayerControlNextTrackButton ? [] : [NEXT_TRACK];
-  }
-  showRepeat() {
-    return this.config.hidePlayerControlRepeatButton ? [] : [REPEAT_SET$1];
-  }
-  showBrowseMedia() {
-    return this.config.showBrowseMediaInPlayerSection ? [BROWSE_MEDIA] : [];
-  }
-  static get styles() {
-    return i$2`
-      .main {
-        overflow: hidden auto;
-      }
-      .icons {
-        justify-content: center;
-        display: flex;
-        align-items: center;
-      }
-      *[hide] {
-        display: none;
-      }
-      .big-icon {
-        --mdc-icon-button-size: 5rem;
-        --mdc-icon-size: 5rem;
-      }
-      .audio-input-format {
-        flex: 1 0 0;
-        margin-bottom: 10px;
-        text-align: center;
-        align-self: stretch;
-        position: relative;
-      }
-      .audio-input-format > div {
-        color: var(--card-background-color);
-        background: var(--disabled-text-color);
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        max-width: 100%;
-        font-size: smaller;
-        line-height: normal;
-        padding: 3px;
-      }
-      .flex-1 {
-        flex: 1;
-      }
-    `;
-  }
-}
-__decorateClass$r([
-  n2({ attribute: false })
-], PlayerControls.prototype, "store");
-customElements.define("sonos-player-controls", PlayerControls);
 const dispatchPrefix = "sonos-card-dispatch-event-";
 const ACTIVE_PLAYER_EVENT_INTERNAL = "active-player";
 const ACTIVE_PLAYER_EVENT = dispatchPrefix + ACTIVE_PLAYER_EVENT_INTERNAL;
@@ -1083,6 +958,146 @@ function sortEntities(config, filtered) {
     return filtered.sort((a2, b2) => a2.entity_id.localeCompare(b2.entity_id));
   }
 }
+function findPlayer(mediaPlayers, playerId) {
+  return mediaPlayers.find((member) => member.id === playerId);
+}
+var __defProp$r = Object.defineProperty;
+var __decorateClass$r = (decorators, target, key, kind) => {
+  var result = void 0;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = decorator(target, key, result) || result;
+  if (result) __defProp$r(target, key, result);
+  return result;
+};
+const { SHUFFLE_SET: SHUFFLE_SET$1, REPEAT_SET: REPEAT_SET$1, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
+class PlayerControls extends h {
+  constructor() {
+    super(...arguments);
+    this.volDown = async () => await this.mediaControlService.volumeDown(this.volumePlayer, this.updateMemberVolumes);
+    this.volUp = async () => await this.mediaControlService.volumeUp(this.volumePlayer, this.updateMemberVolumes);
+    this.rewind = async () => await this.mediaControlService.seek(
+      this.activePlayer,
+      this.activePlayer.attributes.media_position - (this.config.fastForwardAndRewindStepSizeSeconds || 15)
+    );
+    this.fastForward = async () => await this.mediaControlService.seek(
+      this.activePlayer,
+      this.activePlayer.attributes.media_position + (this.config.fastForwardAndRewindStepSizeSeconds || 15)
+    );
+  }
+  render() {
+    this.config = this.store.config;
+    this.activePlayer = this.store.activePlayer;
+    this.mediaControlService = this.store.mediaControlService;
+    const noUpDown = !!this.config.showVolumeUpAndDownButtons && D;
+    const noFastForwardAndRewind = !!this.config.showFastForwardAndRewindButtons && D;
+    this.volumePlayer = this.getVolumePlayer();
+    this.updateMemberVolumes = !this.config.playerVolumeEntityId;
+    return ke`
+      <div class="main" id="mediaControls">
+          <div class="icons">
+              <div class="flex-1"></div>
+              <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
+              <sonos-ha-player .store=${this.store} .features=${this.showShuffle()}></sonos-ha-player>
+              <sonos-ha-player .store=${this.store} .features=${this.showPrev()}></sonos-ha-player>
+              <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.rewind} .path=${mdiRewind}></ha-icon-button>
+              <sonos-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></sonos-ha-player>
+              <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.fastForward} .path=${mdiFastForward}></ha-icon-button>
+              <sonos-ha-player .store=${this.store} .features=${this.showNext()}></sonos-ha-player>
+              <sonos-ha-player .store=${this.store} .features=${this.showRepeat()}></sonos-ha-player>
+              <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
+              <div class="audio-input-format">
+                ${this.config.showAudioInputFormat && be(this.getAudioInputFormat())}
+              </div>
+              <sonos-ha-player .store=${this.store} .features=${this.showBrowseMedia()}></sonos-ha-player>
+          </div>
+          <sonos-volume .store=${this.store} .player=${this.volumePlayer}
+                       .updateMembers=${this.updateMemberVolumes}></sonos-volume>
+          <div class="icons">
+              <sonos-ha-player .store=${this.store} .features=${this.store.showPower(true)}></sonos-ha-player>
+          </div">
+      </div>
+  `;
+  }
+  getVolumePlayer() {
+    let result;
+    if (this.config.playerVolumeEntityId) {
+      if (this.config.allowPlayerVolumeEntityOutsideOfGroup) {
+        result = findPlayer(this.store.allMediaPlayers, this.config.playerVolumeEntityId);
+      } else {
+        result = this.activePlayer.getMember(this.config.playerVolumeEntityId);
+      }
+    }
+    return result ?? this.activePlayer;
+  }
+  async getAudioInputFormat() {
+    const sensors = await this.store.hassService.getRelatedEntities(this.activePlayer, "sensor");
+    const audioInputFormat = sensors.find((sensor) => sensor.entity_id.includes("audio_input_format"));
+    return audioInputFormat && audioInputFormat.state && audioInputFormat.state !== "No audio" ? ke`<div>${audioInputFormat.state}</div>` : "";
+  }
+  showShuffle() {
+    return this.config.hidePlayerControlShuffleButton ? [] : [SHUFFLE_SET$1];
+  }
+  showPrev() {
+    return this.config.hidePlayerControlPrevTrackButton ? [] : [PREVIOUS_TRACK];
+  }
+  showNext() {
+    return this.config.hidePlayerControlNextTrackButton ? [] : [NEXT_TRACK];
+  }
+  showRepeat() {
+    return this.config.hidePlayerControlRepeatButton ? [] : [REPEAT_SET$1];
+  }
+  showBrowseMedia() {
+    return this.config.showBrowseMediaInPlayerSection ? [BROWSE_MEDIA] : [];
+  }
+  static get styles() {
+    return i$2`
+      .main {
+        overflow: hidden auto;
+      }
+      .icons {
+        justify-content: center;
+        display: flex;
+        align-items: center;
+      }
+      *[hide] {
+        display: none;
+      }
+      .big-icon {
+        --mdc-icon-button-size: 5rem;
+        --mdc-icon-size: 5rem;
+      }
+      .audio-input-format {
+        flex: 1 0 0;
+        margin-bottom: 10px;
+        text-align: center;
+        align-self: stretch;
+        position: relative;
+      }
+      .audio-input-format > div {
+        color: var(--card-background-color);
+        background: var(--disabled-text-color);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        max-width: 100%;
+        font-size: smaller;
+        line-height: normal;
+        padding: 3px;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+    `;
+  }
+}
+__decorateClass$r([
+  n2({ attribute: false })
+], PlayerControls.prototype, "store");
+customElements.define("sonos-player-controls", PlayerControls);
 var __defProp$q = Object.defineProperty;
 var __decorateClass$q = (decorators, target, key, kind) => {
   var result = void 0;
@@ -1910,7 +1925,7 @@ class MediaPlayer {
     this.ignoreVolume = !!((_a2 = this.config.entitiesToIgnoreVolumeLevelFor) == null ? void 0 : _a2.includes(this.volumePlayer.id));
   }
   getMember(playerId) {
-    return this.members.find((member) => member.id === playerId);
+    return findPlayer(this.members, playerId);
   }
   hasMember(playerId) {
     return this.getMember(playerId) !== void 0;
@@ -2203,7 +2218,7 @@ class Footer extends h {
         justify-content: space-between;
       }
       :host > * {
-        padding: 1rem 0;
+        align-content: center;
       }
     `;
   }
@@ -2376,6 +2391,10 @@ const ADVANCED_SCHEMA = [
     selector: { entity: { multiple: false, filter: { domain: "media_player" } } }
   },
   {
+    name: "allowPlayerVolumeEntityOutsideOfGroup",
+    selector: { boolean: {} }
+  },
+  {
     name: "dontSwitchPlayerWhenGrouping",
     selector: { boolean: {} }
   },
@@ -2421,6 +2440,11 @@ const ADVANCED_SCHEMA = [
   {
     type: "string",
     name: "mediaTitleReplacement"
+  },
+  {
+    name: "footerHeight",
+    type: "integer",
+    valueMin: 0
   }
 ];
 class AdvancedEditor extends BaseEditor {
@@ -3123,7 +3147,8 @@ class Card extends h {
     let height = getHeight(this.config);
     const sections = this.config.sections;
     const showFooter = !sections || sections.length > 1;
-    const contentHeight = showFooter ? height - FOOTER_HEIGHT : height;
+    const footerHeight = this.config.footerHeight || FOOTER_HEIGHT;
+    const contentHeight = showFooter ? height - footerHeight : height;
     const title = this.config.title;
     height = title ? height + TITLE_HEIGHT : height;
     return ke`
@@ -3169,7 +3194,7 @@ class Card extends h {
         ${nn(
       showFooter,
       () => ke`<sonos-footer
-              style=${this.footerStyle()}
+              style=${this.footerStyle(footerHeight)}
               .config=${this.config}
               .section=${this.section}
               @show-section=${this.showSectionListener}
@@ -3216,9 +3241,9 @@ class Card extends h {
       overflow: "hidden"
     });
   }
-  footerStyle() {
+  footerStyle(height) {
     return se({
-      height: `${FOOTER_HEIGHT}rem`,
+      height: `${height}rem`,
       padding: "0 1rem"
     });
   }
