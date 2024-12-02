@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.12.0b3 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6139 |
+| No. Entities | 6134 |
 | No. Sensors | 4024 |
 | No. Automations | 154 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 9
 Scenes | 2
@@ -922,7 +922,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.1.1] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.2.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -974,7 +974,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.41.0-1 |  | 45df7312 |
+| Zigbee2MQTT | 1.42.0-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.1 |  | 193f5383 |
 </details>
