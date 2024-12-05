@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 from asyncio import InvalidStateError
 from collections import OrderedDict, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 import contextlib
 import copy
 from dataclasses import dataclass
@@ -55,6 +56,14 @@ from .const import (
     SPLINE_DEBUG_LOGGING,
 )
 from .spline import cubic_interp
+
+
+class DataCallStatus(Enum):
+    """The result of a data call."""
+
+    SUCCESS = 0
+    FAIL = 1
+    ABORT = 2
 
 
 class Api(Enum):
@@ -2121,9 +2130,10 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
 
     async def recalculate_splines(self):
         """Recalculate both the moment and remaining splines."""
-        _LOGGER.debug("Calculating splines")
+        start_time = time.time()
         await self.__spline_moments()
         await self.__spline_remaining()
+        _LOGGER.debug("Task recalculate_splines took %.3f seconds", time.time() - start_time)
 
     def __get_moment(self, site: str, forecast_confidence: str, n_min: int) -> float:
         """Get a time value from a moment spline.
@@ -2447,27 +2457,34 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                     do_past=do_past,
                     force=force,
                 )
-                if not result:
+                if result == DataCallStatus.FAIL:
                     failure = True
-                    if len(self.sites) > 1:
-                        if sites_attempted < len(self.sites):
-                            _LOGGER.warning(
-                                "Forecast update for site %s failed so not getting remaining sites%s",
-                                site["resource_id"],
-                                " - API use count may be odd" if len(self.sites) > 2 and sites_succeeded and not force else "",
-                            )
+                    if self.hass.data[DOMAIN].get(self.entry.entry_id) is not None:
+                        if len(self.sites) > 1:
+                            if sites_attempted < len(self.sites):
+                                _LOGGER.warning(
+                                    "Forecast update for site %s failed so not getting remaining sites%s%s",
+                                    site["resource_id"],
+                                    " - API use count may be odd" if len(self.sites) > 2 and sites_succeeded and not force else "",
+                                    next_update(),
+                                )
+                            else:
+                                _LOGGER.warning(
+                                    "Forecast update for the last site queued failed (%s)%s%s",
+                                    site["resource_id"],
+                                    " - API use count may be odd" if sites_succeeded and not force else "",
+                                    next_update(),
+                                )
+                            status = "At least one site forecast get failed"
                         else:
-                            _LOGGER.warning(
-                                "Forecast update for the last site queued failed (%s)%s",
-                                site["resource_id"],
-                                " - API use count may be odd" if sites_succeeded and not force else "",
-                            )
-                        status = "At least one site forecast get failed"
+                            _LOGGER.warning("Forecast update failed%s", next_update())
+                            status = "Forecast get failed"
                     else:
-                        _LOGGER.warning("Forecast update failed%s", next_update())
-                        status = "Forecast get failed"
+                        status = "KILLED"
                     break
-                if result:
+                if result == DataCallStatus.ABORT:
+                    return ""
+                if result == DataCallStatus.SUCCESS:
                     sites_succeeded += 1
 
             if sites_attempted > 0 and not failure:
@@ -2489,11 +2506,12 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                     _LOGGER.info("Forecast update completed successfully%s", next_update())
             else:
                 if sites_attempted > 0:
-                    _LOGGER.error(
-                        "%site failed to fetch, so forecast has not been built%s",
-                        "At least one s" if len(self.sites) > 1 else "S",
-                        next_update(),
-                    )
+                    if status != "KILLED":
+                        _LOGGER.error(
+                            "%site failed to fetch, so forecast has not been built%s",
+                            "At least one s" if len(self.sites) > 1 else "S",
+                            next_update(),
+                        )
                 else:
                     _LOGGER.error("Internal error, there is no sites data so forecast has not been built")
                 status = "At least one site forecast get failed"
@@ -2683,7 +2701,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
         api_key: str | None = None,
         do_past: bool = False,
         force: bool = False,
-    ) -> bool:
+    ) -> DataCallStatus:
         """Request forecast data via the Solcast API.
 
         Arguments:
@@ -2693,7 +2711,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
             force (bool): A forced update, which does not update the internal API use counter.
 
         Returns:
-            bool: A flag indicating success or failure
+            DataCallStatus: A flag indicating success, failure or abort
 
         """
         try:
@@ -2713,7 +2731,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
             if do_past:
                 if self.tasks.get("fetch") is not None:
                     _LOGGER.error("Internal error: A fetch task is already running, so aborting get past actuals")
-                    return False
+                    return DataCallStatus.FAIL
                 self.tasks["fetch"] = asyncio.create_task(
                     self.__fetch_data(
                         168,
@@ -2723,17 +2741,19 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                         force=force,
                     )
                 )
+                response = None
                 await self.tasks["fetch"]
-                response = self.tasks["fetch"].result()
-
                 if self.tasks.get("fetch") is not None:
+                    response = self.tasks["fetch"].result()
                     self.tasks.pop("fetch")
+                if response is None:
+                    return DataCallStatus.FAIL
                 if not isinstance(response, dict):
                     _LOGGER.error(
-                        "No data was returned for estimated_actuals so this will cause issues (API limit may be exhausted, or Solcast might have a problem)"
+                        "No valid data was returned for estimated_actuals so this will cause issues (API limit may be exhausted, or Solcast might have a problem)"
                     )
                     _LOGGER.error("API did not return a json object, returned %s", response)
-                    return False
+                    return DataCallStatus.FAIL
 
                 estimate_actuals = response.get("estimated_actuals", None)
 
@@ -2742,7 +2762,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                         "Estimated actuals must be a list, not %s",
                         type(estimate_actuals),
                     )
-                    return False
+                    return DataCallStatus.FAIL
 
                 oldest = (dt.now(self._tz).replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=6)).astimezone(datetime.UTC)
 
@@ -2755,7 +2775,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                             "Got a period_start minute that is not 0 or 30, period_start: %d",
                             period_start.minute,
                         )
-                        return False
+                        return DataCallStatus.FAIL
                     if period_start > oldest:
                         new_data.append(
                             {
@@ -2770,7 +2790,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
 
             if self.tasks.get("fetch") is not None:
                 _LOGGER.warning("A fetch task is already running, so aborting forecast update")
-                return False
+                return DataCallStatus.ABORT
             self.tasks["fetch"] = asyncio.create_task(
                 self.__fetch_data(
                     hours,
@@ -2780,21 +2800,22 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                     force=force,
                 )
             )
+            response = None
             await self.tasks["fetch"]
-            response = self.tasks["fetch"].result()
             if self.tasks.get("fetch") is not None:
+                response = self.tasks["fetch"].result()
                 self.tasks.pop("fetch")
             if response is None:
-                return False
+                return DataCallStatus.FAIL
 
             if not isinstance(response, dict):
                 _LOGGER.error("API did not return a json object. Returned %s", response)
-                return False
+                return DataCallStatus.FAIL
 
             latest_forecasts = response.get("forecasts", None)
             if not isinstance(latest_forecasts, list):
                 _LOGGER.error("Forecasts must be a list, not %s", type(latest_forecasts))
-                return False
+                return DataCallStatus.FAIL
 
             _LOGGER.debug("%d records returned", len(latest_forecasts))
 
@@ -2808,7 +2829,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                         "Got a period_start minute that is not 0 or 30, period_start: %d",
                         period_start.minute,
                     )
-                    return False
+                    return DataCallStatus.FAIL
                 if period_start < last_day:
                     new_data.append(
                         {
@@ -2833,58 +2854,59 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
             except:  # noqa: E722
                 forecasts_undampened = {}
 
-            # Apply dampening to the new data
-            valid_granular_dampening = self.__valid_granular_dampening()
-            for forecast in sorted(new_data, key=itemgetter("period_start")):
-                period_start = forecast["period_start"]
-                pv = round(forecast["pv_estimate"], 4)
-                pv10 = round(forecast["pv_estimate10"], 4)
-                pv90 = round(forecast["pv_estimate90"], 4)
+            _LOGGER.debug("Task load_new_data took %.3f seconds", time.time() - start_time)
 
-                # Retrieve the dampening factor for the period, and dampen the estimates.
+            # Apply dampening to the new data
+            start_time = time.time()
+            valid_granular_dampening = self.__valid_granular_dampening()
+            for forecast in new_data:
+                period_start = forecast["period_start"]
                 dampening_factor = self.__get_dampening_factor(site, period_start.astimezone(self._tz), valid_granular_dampening)
-                pv_dampened = round(pv * dampening_factor, 4)
-                pv10_dampened = round(pv10 * dampening_factor, 4)
-                pv90_dampened = round(pv90 * dampening_factor, 4)
 
                 # Add or update the new entries.
-                self.__forecast_entry_update(forecasts, period_start, pv_dampened, pv10_dampened, pv90_dampened)
-                self.__forecast_entry_update(forecasts_undampened, period_start, pv, pv10, pv90)
-
-            # Forecasts contains up to 730 days of period history data for each site. Convert dictionary to list, retain the past two years, sort by period start.
-            past_days = self.get_day_start_utc(future=-730)
-            forecasts = sorted(
-                filter(
-                    lambda forecast: forecast["period_start"] >= past_days,
-                    forecasts.values(),
-                ),
-                key=itemgetter("period_start"),
-            )
-            self._data["siteinfo"].update({site: {"forecasts": copy.deepcopy(forecasts)}})
-
-            # Un-dampened forecasts contains up to 14 days of period history data for each site.
-            past_days = self.get_day_start_utc(future=-14)
-            forecasts_undampened = sorted(
-                filter(
-                    lambda forecast: forecast["period_start"] >= past_days,
-                    forecasts_undampened.values(),
-                ),
-                key=itemgetter("period_start"),
-            )
-            self._data_undampened["siteinfo"].update({site: {"forecasts": copy.deepcopy(forecasts_undampened)}})
-
-            _LOGGER.debug("Forecasts dictionary length %s", len(forecasts))
-            _LOGGER.debug("Un-dampened forecasts dictionary length %s", len(forecasts_undampened))
+                self.__forecast_entry_update(
+                    forecasts,
+                    period_start,
+                    round(forecast["pv_estimate"] * dampening_factor, 4),
+                    round(forecast["pv_estimate10"] * dampening_factor, 4),
+                    round(forecast["pv_estimate90"] * dampening_factor, 4),
+                )
+                self.__forecast_entry_update(
+                    forecasts_undampened,
+                    period_start,
+                    round(forecast["pv_estimate"], 4),
+                    round(forecast["pv_estimate10"], 4),
+                    round(forecast["pv_estimate90"], 4),
+                )
             _LOGGER.debug(
-                "HTTP data call processing took %.3f seconds",
-                round(time.time() - start_time, 4),
+                "Task apply_dampening took %.3f seconds",
+                time.time() - start_time,
             )
+
+            def sort_and_prune(data, past_days, forecasts):
+                past_days = self.get_day_start_utc(future=past_days * -1)
+                forecasts = sorted(
+                    filter(
+                        lambda forecast: forecast["period_start"] >= past_days,
+                        forecasts.values(),
+                    ),
+                    key=itemgetter("period_start"),
+                )
+                data["siteinfo"].update({site: {"forecasts": copy.deepcopy(forecasts)}})
+
+            start_time = time.time()
+            with ThreadPoolExecutor() as ex:
+                ex.submit(sort_and_prune, self._data, 730, forecasts)
+                ex.submit(sort_and_prune, self._data_undampened, 14, forecasts_undampened)
+            _LOGGER.debug("Task sort_and_prune took %.3f seconds", time.time() - start_time)
+
+            _LOGGER.debug("Forecasts dictionary length %s (%s un-dampened)", len(forecasts), len(forecasts_undampened))
         except InvalidStateError:
-            return False
+            return DataCallStatus.FAIL
         except Exception as e:  # noqa: BLE001
             _LOGGER.error("Exception in __http_data_call(): %s: %s", e, traceback.format_exc())
-            return False
-        return True
+            return DataCallStatus.FAIL
+        return DataCallStatus.SUCCESS
 
     async def __fetch_data(  # noqa: C901
         self,
@@ -2918,6 +2940,8 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
             # fetches is increased each time. All attempts possible span a maximum of
             # fifteen minutes, and this is also the timeout limit set for the entire
             # async operation.
+
+            start_time = time.time()
 
             async with asyncio.timeout(900):
                 if self._api_used[api_key] < self._api_limit[api_key] or force:
@@ -2986,15 +3010,13 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                         # Solcast is in a possibly recoverable state, so delay (15 seconds * counter), plus a random number of seconds between zero and 15.
                         delay = (counter * backoff) + random.randrange(0, 15)
                         _LOGGER.warning(
-                            "API returned %s, pausing %d seconds before retry",
+                            "Call status %s, pausing %d seconds before retry",
                             self.__translate(status),
                             delay,
                         )
                         await asyncio.sleep(delay)
 
                     if status == 200:
-                        _LOGGER.debug("Fetch successful")
-
                         if not force:
                             _LOGGER.debug(
                                 "API returned data, API counter incremented from %d to %d",
@@ -3020,7 +3042,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                         return None
                     else:
                         _LOGGER.error(
-                            "API returned status %s, API used is %d/%d",
+                            "Call status %s, API used is %d/%d",
                             self.__translate(status),
                             self._api_used[api_key],
                             self._api_limit[api_key],
@@ -3035,7 +3057,8 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                     )
                     return None
 
-                _LOGGER.debug("HTTP session returned data type %s", type(response_json))
+                if type(response_json) is not dict:
+                    _LOGGER.warning("HTTP session return is not dict: type %s", type(response_json))
                 _LOGGER.debug("HTTP session status %s", self.__translate(status))
 
             if status == 429:
@@ -3052,11 +3075,15 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                 )
             elif status == 200:
                 response = cast(dict, response_json)
+                _LOGGER.debug(
+                    "Task fetch_data took %.3f seconds",
+                    time.time() - start_time,
+                )
                 if FORECAST_DEBUG_LOGGING:
                     _LOGGER.debug("HTTP session returned: %s", str(response))
                 return response
         except asyncio.exceptions.CancelledError:
-            _LOGGER.debug("Fetch cancelled")
+            _LOGGER.info("Fetch cancelled")
         except ConnectionRefusedError as e:
             _LOGGER.error("Connection error in __fetch_data(), connection refused: %s", e)
         except ClientConnectionError as e:
@@ -3098,20 +3125,26 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
 
         return {"wh_hours": forecast_generation}
 
-    def __site_api_key(self, site: str):
+    def __site_api_key(self, site: str) -> str | None:
         for _site in self.sites:
             if _site["resource_id"] == site:
                 return _site["api_key"]
         return None
 
-    def hard_limit_set(self):
-        """Determine whether a hard limit is set."""
+    def hard_limit_set(self) -> tuple[bool, bool]:
+        """Determine whether a hard limit is set.
+
+        Returns:
+            tuple: A flag indicating whether a hard limit is set, and whether multiple keys are in use.
+
+        """
         limit_set = False
         hard_limit = self.hard_limit.split(",")
         multi_key = len(hard_limit) > 1
         for limit in hard_limit:
             if limit != "100.0":
                 limit_set = True
+                break
         return limit_set, multi_key
 
     def __hard_limit_for_key(self, api_key: str) -> float:
@@ -3140,7 +3173,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
             forecasts = {}
             forecasts_undampened = {}
 
-            async def build_data(
+            def build_data(
                 data: list,
                 commencing: dt,
                 forecasts: dict,
@@ -3148,6 +3181,8 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                 sites_hard_limit: defaultdict,
                 update_tally: bool = False,
             ):
+                # start_time = time.time()
+
                 # Build per-site hard limit.
                 # The API key hard limit for each site is calculated as proportion of the site contribution for the account.
                 start_time = time.time()
@@ -3214,7 +3249,7 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                                     }
                     _LOGGER.debug(
                         "Build hard limit processing took %.3f seconds for %s",
-                        round(time.time() - start_time, 4),
+                        time.time() - start_time,
                         "dampened" if update_tally else "un-dampened",
                     )
                 elif multi_key:
@@ -3234,8 +3269,6 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                         sites_hard_limit["all"][pv_estimate] = {}
 
                 # Build per-site and total forecasts with proportionate hard limit applied.
-
-                start_time = time.time()
                 for site, siteinfo in data["siteinfo"].items():
                     api_key = self.__site_api_key(site) if multi_key else "all"
                     if update_tally:
@@ -3308,31 +3341,37 @@ class SolcastApi:  # pylint: disable=too-many-public-methods
                     if update_tally:
                         siteinfo["tally"] = round(tally, 4)
                         self._tally[site] = siteinfo["tally"]
-                _LOGGER.debug(
-                    "Build per-site and total processing took %.3f seconds for %s",
-                    round(time.time() - start_time, 4),
-                    "dampened" if update_tally else "un-dampened",
+                if update_tally:
+                    self._data_forecasts = sorted(forecasts.values(), key=itemgetter("period_start"))
+                else:
+                    self._data_forecasts_undampened = sorted(forecasts.values(), key=itemgetter("period_start"))
+                # _LOGGER.debug(
+                #    "Build per-site and total processing took %.3f seconds for %s",
+                #    time.time() - start_time,
+                #    "dampened" if update_tally else "un-dampened",
+                # )
+
+            start_time = time.time()
+            with ThreadPoolExecutor() as ex:
+                ex.submit(
+                    build_data,
+                    self._data,
+                    commencing,
+                    forecasts,
+                    self._site_data_forecasts,
+                    self._sites_hard_limit,
+                    update_tally=True,
                 )
-
-            await build_data(
-                self._data,
-                commencing,
-                forecasts,
-                self._site_data_forecasts,
-                self._sites_hard_limit,
-                update_tally=True,
-            )
-            self._data_forecasts = sorted(forecasts.values(), key=itemgetter("period_start"))
+                ex.submit(
+                    build_data,
+                    self._data_undampened,
+                    commencing_undampened,
+                    forecasts_undampened,
+                    self._site_data_forecasts_undampened,
+                    self._sites_hard_limit_undampened,
+                )
+            _LOGGER.debug("Task build_data took %.3f seconds", time.time() - start_time)
             self._data_energy_dashboard = self.__make_energy_dict()
-
-            await build_data(
-                self._data_undampened,
-                commencing_undampened,
-                forecasts_undampened,
-                self._site_data_forecasts_undampened,
-                self._sites_hard_limit_undampened,
-            )
-            self._data_forecasts_undampened = sorted(forecasts_undampened.values(), key=itemgetter("period_start"))
 
             await self.check_data_records()
             await self.recalculate_splines()

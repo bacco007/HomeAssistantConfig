@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 import re
 from typing import Any
 
+import aiofiles
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -42,6 +44,8 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+LIKE_SITE_ID = r"^[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}$"
+
 
 @config_entries.HANDLERS.register(DOMAIN)
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -75,6 +79,44 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         """
         return SolcastSolarOptionFlowHandler(config_entry)
 
+    async def __conflicting_integration(self) -> tuple[bool, str]:
+        """Search for other integrations installed having a solcastapi.py file and a viable manifest."""
+
+        def find_others() -> list[str]:
+            path = Path(Path(__file__).parent).parent
+            return list(path.rglob("solcastapi.py"))
+
+        us = str(Path(__file__).parent).rsplit("/", maxsplit=1)[-1]
+        _LOGGER.debug("Integration path: %s", us)
+        failed = False
+        conflict = ""
+        try:
+            others = await self.hass.async_add_executor_job(find_others)
+        except Exception as e:  # noqa: BLE001
+            _LOGGER.warning("Conflict check failed: %s", e)
+            others = []
+        for sol in others:
+            try:
+                parent = str(Path(sol).parent)
+                folder = parent.rsplit("/", maxsplit=1)[-1]
+                if folder != us and Path(parent, "manifest.json").is_file():
+                    async with aiofiles.open(Path(parent, "manifest.json")) as file:
+                        manifest = json.loads(await file.read())
+                        if manifest.get("domain") == folder:
+                            _LOGGER.warning("Conflicting integration found in %s, code owners: %s", folder, manifest.get("codeowners"))
+                            entities = self.hass.states.async_entity_ids(None)
+                            _LOGGER.debug("Entities: %s", entities)
+                            found = [e for e in entities if e.startswith("sensor.solcast_")]
+                            if len(found) > 0:
+                                _LOGGER.error("Conflicting integration is running")
+                                failed = True
+                                conflict = folder
+                            else:
+                                _LOGGER.warning("Conflicting integration is present but not running")
+            except Exception as e:  # noqa: BLE001
+                _LOGGER.warning("Conflict check failed testing '%s': %s", str(sol), e)
+        return failed, conflict
+
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle a flow initiated by the user.
 
@@ -87,12 +129,21 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         """
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
+        failed, conflict = await self.__conflicting_integration()
+        if failed:
+            return self.async_abort(reason="Conflicting integration found: " + conflict)
 
         if user_input is not None:
+            # Validate API key
             api_key = user_input[CONF_API_KEY].replace(" ", "")
-            if not re.match("^[a-zA-Z0-9,]+$", api_key):
-                return self.async_abort(reason="API key contains invalid character")
-            api_count = len(api_key.split(","))
+            api_key = [s for s in api_key.split(",") if s]
+            for key in api_key:
+                if re.match(LIKE_SITE_ID, key):
+                    return self.async_abort(reason="API key looks like a site ID")
+            api_count = len(api_key)
+            api_key = ",".join(api_key)
+
+            # Validate API limit
             api_quota = user_input[API_QUOTA].replace(" ", "")
             api_quota = [s for s in api_quota.split(",") if s]
             for q in api_quota:
@@ -103,6 +154,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
             if len(api_quota) > api_count:
                 return self.async_abort(reason="There are more API limit counts entered than keys!")
             api_quota = ",".join(api_quota)
+
             options = {
                 CONF_API_KEY: api_key,
                 API_QUOTA: api_quota,
@@ -179,9 +231,10 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
 
                 # Validate API key
                 api_key = user_input[CONF_API_KEY].replace(" ", "")
-                if not re.match("^[a-zA-Z0-9,]+$", api_key):
-                    return self.async_abort(reason="API key contains invalid character")
                 api_key = [s for s in api_key.split(",") if s]
+                for key in api_key:
+                    if re.match(LIKE_SITE_ID, key):
+                        return self.async_abort(reason="API key looks like a site ID")
                 api_count = len(api_key)
                 api_key = ",".join(api_key)
                 all_config_data[CONF_API_KEY] = api_key

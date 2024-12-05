@@ -6,6 +6,7 @@ import asyncio
 import contextlib
 from datetime import datetime as dt, timedelta
 import logging
+import time
 import traceback
 from typing import Any
 
@@ -15,7 +16,13 @@ from homeassistant.helpers.event import async_track_utc_time_change
 from homeassistant.helpers.sun import get_astral_event_next
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import DATE_FORMAT, DOMAIN, SENSOR_DEBUG_LOGGING, TIME_FORMAT
+from .const import (
+    DATE_FORMAT,
+    DOMAIN,
+    SENSOR_DEBUG_LOGGING,
+    SENSOR_UPDATE_LOGGING,
+    TIME_FORMAT,
+)
 from .solcastapi import SolcastApi
 
 _LOGGER = logging.getLogger(__name__)
@@ -124,6 +131,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def update_integration_listeners(self, *args):
         """Get updated sensor values."""
+        if SENSOR_UPDATE_LOGGING:
+            start_time = time.time()
         try:
             if SENSOR_DEBUG_LOGGING:
                 _LOGGER.debug("Update listeners")
@@ -140,6 +149,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         except:  # noqa: E722
             # _LOGGER.error("Exception in update_integration_listeners(): %s", traceback.format_exc())
             pass
+        if SENSOR_UPDATE_LOGGING:
+            _LOGGER.debug("Update listeners took %.3f seconds", time.time() - start_time)
 
     async def __restart_time_track_midnight_update(self):
         """Cancel and restart UTC time change tracker."""
@@ -175,18 +186,17 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
                 async def wait_for_fetch(update_in: int):
                     try:
+                        task_name = f"pending_update_{update_in:03}"
                         await asyncio.sleep(update_in)
                         _LOGGER.info("Auto update forecast")
                         self._intervals = self._intervals[1:]
                         set_next_update()
-                        await self.__forecast_update()
+                        await self.__forecast_update(completion=f"Completed task {task_name}")
                     except asyncio.CancelledError:
                         _LOGGER.info("Auto update scheduled update cancelled")
                     finally:
                         with contextlib.suppress(Exception):
-                            task_name = f"pending_update_{update_in:03}"
                             self.tasks.pop(task_name)
-                            _LOGGER.debug("Completed task %s", task_name)
 
                 if len(self._intervals) > 0:
                     _now = self.solcast.get_real_now_utc().replace(microsecond=0)
@@ -342,20 +352,27 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         except:  # noqa: E722
             _LOGGER.error("Exception in __calculate_forecast_updates(): %s", traceback.format_exc())
 
-    async def __forecast_update(self, force: bool = False):
+    async def __forecast_update(self, force: bool = False, completion: str = ""):
         """Get updated forecast data."""
 
-        _LOGGER.debug("Checking for stale usage cache")
-        if self.solcast.is_stale_usage_cache():
-            _LOGGER.warning("Usage cache reset time is stale, last reset was more than 24-hours ago, resetting API usage")
-            await self.solcast.reset_usage_cache()
-            await self.__restart_time_track_midnight_update()
+        try:
+            _LOGGER.debug("Started task %s", "update" if completion == "" else completion.replace("Completed task ", ""))
+            _LOGGER.debug("Checking for stale usage cache")
+            if self.solcast.is_stale_usage_cache():
+                _LOGGER.warning("Usage cache reset time is stale, last reset was more than 24-hours ago, resetting API usage")
+                await self.solcast.reset_usage_cache()
+                await self.__restart_time_track_midnight_update()
 
-        # await self.solcast.get_weather()
-        await self.solcast.get_forecast_update(do_past=False, force=force)
-        self._data_updated = True
-        await self.update_integration_listeners()
-        self._data_updated = False
+            # await self.solcast.get_weather()
+            await self.solcast.get_forecast_update(do_past=False, force=force)
+            self._data_updated = True
+            await self.update_integration_listeners()
+            self._data_updated = False
+            _LOGGER.debug(completion)
+        finally:
+            with contextlib.suppress(Exception):
+                # Clean up a task created by a service call action
+                self.tasks.pop("forecast_update")
 
     async def service_event_update(self, **kwargs):
         """Get updated forecast data when requested by a service call.
@@ -369,7 +386,9 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """
         if self.solcast.options.auto_update > 0 and "ignore_auto_enabled" not in kwargs:
             raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_force")
-        self.tasks["forecast_update"] = asyncio.create_task(self.__forecast_update())
+        self.tasks["forecast_update"] = asyncio.create_task(
+            self.__forecast_update(completion="Completed task update" if not kwargs.get("completion") else kwargs["completion"])
+        )
 
     async def service_event_force_update(self):
         """Force the update of forecast data when requested by a service call. Ignores API usage/limit counts.
@@ -380,7 +399,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """
         if self.solcast.options.auto_update == 0:
             raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_normal")
-        self.tasks["forecast_update"] = asyncio.create_task(self.__forecast_update(force=True))
+        self.tasks["forecast_update"] = asyncio.create_task(self.__forecast_update(force=True, completion="Completed task force_update"))
 
     async def service_event_delete_old_solcast_json_file(self):
         """Delete the solcast.json file when requested by a service call."""

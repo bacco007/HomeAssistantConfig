@@ -5,7 +5,6 @@ import contextlib
 from datetime import timedelta
 import json
 import logging
-from pathlib import Path
 import random
 import traceback
 from typing import Any, Final
@@ -216,48 +215,17 @@ async def __get_granular_dampening(hass: HomeAssistant, entry: ConfigEntry, solc
     hass.data[DOMAIN]["entry_options"] = entry.options
 
 
-async def __conflicting_integration(hass: HomeAssistant) -> tuple[bool, str]:
-    """Search for other integrations installed having a solcastapi.py file and a viable manifest."""
-
-    def find_others() -> list[str]:
-        path = Path(Path(__file__).parent).parent
-        return list(path.rglob("solcastapi.py"))
-
-    us = str(Path(__file__).parent).rsplit("/", maxsplit=1)[-1]
-    _LOGGER.debug("Integration path: %s", us)
-    failed = False
-    conflict = ""
-    try:
-        others = await hass.async_add_executor_job(find_others)
-    except Exception as e:  # noqa: BLE001
-        _LOGGER.warning("Conflict check failed: %s", e)
-        others = []
-    for sol in others:
-        try:
-            parent = str(Path(sol).parent)
-            folder = parent.rsplit("/", maxsplit=1)[-1]
-            if folder != us and Path(parent, "manifest.json").is_file():
-                async with aiofiles.open(Path(parent, "manifest.json")) as file:
-                    manifest = json.loads(await file.read())
-                    if manifest.get("domain") == folder:
-                        _LOGGER.error("Conflicting integration found in %s, code owners: %s", folder, manifest.get("codeowners"))
-                        failed = True
-                        conflict = folder
-        except Exception as e:  # noqa: BLE001
-            _LOGGER.warning("Conflict check failed testing '%s': %s", str(sol), e)
-    return failed, conflict
-
-
 async def __check_stale_start(coordinator: SolcastUpdateCoordinator):
     """Check whether the integration has been failed for some time and then is restarted, and if so update forecast."""
+    _LOGGER.debug("Checking for stale start")
     if coordinator.solcast.is_stale_data():
         try:
             if coordinator.solcast.options.auto_update == 0:
                 _LOGGER.warning("The update automation has not been running, updating forecast")
-                await coordinator.service_event_update()
+                await coordinator.service_event_update(completion="Completed task stale_update")
             else:
                 _LOGGER.warning("Many auto updates have been missed, updating forecast")
-                await coordinator.service_event_update(ignore_auto_enabled=True)
+                await coordinator.service_event_update(ignore_auto_enabled=True, completion="Completed task stale_update")
         except Exception as e:  # noqa: BLE001
             _LOGGER.error(
                 "Exception fetching data on stale start: %s: %s",
@@ -265,6 +233,8 @@ async def __check_stale_start(coordinator: SolcastUpdateCoordinator):
                 traceback.format_exc(),
             )
             _LOGGER.warning("Continuing... ")
+    else:
+        _LOGGER.debug("Start is not stale")
 
 
 async def __check_auto_update_missed(coordinator: SolcastUpdateCoordinator):
@@ -276,14 +246,14 @@ async def __check_auto_update_missed(coordinator: SolcastUpdateCoordinator):
                 if (
                     coordinator.interval_just_passed is not None
                     and coordinator.solcast.get_data()["auto_updated"]
-                    and coordinator.solcast.get_data()["last_attempt"] < coordinator.interval_just_passed - timedelta(minutes=1)
+                    and coordinator.solcast.get_data()["last_attempt"] < coordinator.interval_just_passed
                 ):
                     _LOGGER.info(
                         "Last auto update forecast recorded (%s) is older than expected, should be (%s), updating forecast",
                         coordinator.solcast.get_data()["last_attempt"].astimezone(coordinator.solcast.options.tz).strftime(DATE_FORMAT),
                         coordinator.interval_just_passed.astimezone(coordinator.solcast.options.tz).strftime(DATE_FORMAT),
                     )
-                    await coordinator.service_event_update(ignore_auto_enabled=True)
+                    await coordinator.service_event_update(ignore_auto_enabled=True, completion="Completed task update_missed")
                 else:
                     _LOGGER.debug("Auto update forecast is fresh")
             except TypeError:
@@ -322,10 +292,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
     """
     random.seed()
 
-    failed, conflict = await __conflicting_integration(hass)
-    if failed:
-        raise ConfigEntryNotReady(f"Load failed: Conflicting integration found: {conflict}")
-
     version = await __get_version(hass)
     options = await __get_options(hass, entry)
     __setup_storage(hass)
@@ -361,6 +327,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
     await __check_auto_update_missed(coordinator)
     hass.data[DOMAIN]["has_loaded"] = True
 
+    # Testing of options migration. Used to validate the upgrade process when the options version changes.
     # await __test_options_migration(hass, entry)
     # __log_entry_options(entry)
     # pass  # <<< Set breakpoint here, then "step over" once.
@@ -613,7 +580,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload config entry.
 
-    This also removes the services available.
+    This also removes the actions available and terminates running tasks.
 
     Arguments:
         hass (HomeAssistant): The Home Assistant instance.
@@ -623,8 +590,14 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         bool: Whether the unload completed successfully.
 
     """
+    # Terminate all tasks
+    tasks_cancel_ok = await tasks_cancel(hass, entry)
+    if not tasks_cancel_ok:
+        _LOGGER.error("Tasks cancel failed")
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
+        # Remove all actions
         for action in hass.services.async_services_for_domain(DOMAIN):
             _LOGGER.debug("Remove action: %s.%s", DOMAIN, action)
             hass.services.async_remove(DOMAIN, action)
@@ -633,7 +606,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     else:
         _LOGGER.error("Unload failed")
 
-    return unload_ok
+    return unload_ok and tasks_cancel_ok
 
 
 async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEntry, device) -> bool:
@@ -652,6 +625,35 @@ async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEnt
     return True
 
 
+async def tasks_cancel(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Cancel all tasks.
+
+    Returns:
+        bool: Whether the tasks cancel completed successfully.
+
+    """
+    try:
+        coordinator = hass.data[DOMAIN][entry.entry_id]
+        # Terminate solcastapi tasks in progress
+        for task, cancel in coordinator.solcast.tasks.items():
+            _LOGGER.debug("Cancelling solcastapi task %s", task)
+            cancel.cancel()
+        # Terminate coordinator tasks in progress
+        for task, cancel in coordinator.tasks.items():
+            _LOGGER.debug("Cancelling coordinator task %s", task)
+            if isinstance(cancel, asyncio.Task):
+                cancel.cancel()
+            else:
+                cancel()
+    except Exception as e:  # noqa: BLE001
+        _LOGGER.error("Cancelling tasks failed: %s: %s", e, traceback.format_exc())
+        return False
+    finally:
+        coordinator.solcast.tasks = {}
+        coordinator.tasks = {}
+    return True
+
+
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
     """Reconfigure the integration when options get updated.
 
@@ -665,25 +667,6 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
 
     """
     coordinator = hass.data[DOMAIN][entry.entry_id]
-
-    def tasks_cancel():
-        try:
-            # Terminate solcastapi tasks in progress
-            for task, cancel in coordinator.solcast.tasks.items():
-                _LOGGER.debug("Cancelling solcastapi task %s", task)
-                cancel.cancel()
-            coordinator.solcast.tasks = {}
-            # Terminate coordinator tasks in progress
-            for task, cancel in coordinator.tasks.items():
-                _LOGGER.debug("Cancelling coordinator task %s", task)
-                if isinstance(cancel, asyncio.Task):
-                    cancel.cancel()
-                else:
-                    cancel()
-            coordinator.tasks = {}
-        except Exception as e:  # noqa: BLE001
-            _LOGGER.error("Cancelling tasks failed: %s: %s", e, traceback.format_exc())
-        coordinator.solcast.tasks = {}
 
     try:
         reload = False
@@ -758,12 +741,12 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
             coordinator.solcast.entry_options = entry.options
         else:
             # Reload
-            tasks_cancel()
+            await tasks_cancel(hass, entry)
             await hass.config_entries.async_reload(entry.entry_id)
     except:  # noqa: E722
         _LOGGER.debug(traceback.format_exc())
         # Restart on exception
-        tasks_cancel()
+        await tasks_cancel(hass, entry)
         await hass.config_entries.async_reload(entry.entry_id)
 
 
@@ -914,7 +897,7 @@ async def __test_options_migration(hass: HomeAssistant, entry: ConfigEntry):
     """
 
     new_options = {**entry.options}
-    # Not sure.
+    # Not sure of version.
     if new_options.get(HARD_LIMIT):
         new_options.pop(HARD_LIMIT)
     # V5
