@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import asyncio
+import ipaddress
 import json
 import logging
 from enum import StrEnum, auto
@@ -374,19 +375,30 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
 
         # region #-- set a unique_id, update details if device has changed IP --#
         _LOGGER.debug(self.format("setting unique_id: %s"), serial)
-        await self.async_set_unique_id(unique_id=serial)
-        matching_instance: (
-            list[config_entries.ConfigEntry] | config_entries.ConfigEntry
-        ) = list(self.hass.config_entries.async_entries(DOMAIN))
-        if matching_instance:
-            matching_instance = matching_instance[0]
-            if matching_instance.source == "ssdp":
-                _LOGGER.debug(self.format("instance already configured, updating host"))
-                self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
+        config_entry: config_entries.ConfigEntry = await self.async_set_unique_id(
+            unique_id=serial
+        )
+        if config_entry is not None and config_entry.source == "ssdp":
+            ip: ipaddress.IPv4Address | ipaddress.IPv6Address = ipaddress.ip_address(
+                self._host
+            )
+            if ip.version == 4:
+                if self._host != config_entry.data.get(CONF_HOST):
+                    _LOGGER.debug(
+                        self.format("instance already configured, updating host")
+                    )
+                    self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
+                else:
+                    _LOGGER.debug(
+                        self.format("instance already configured, no change in host")
+                    )
+                    self._abort_if_unique_id_configured()
             else:
                 _LOGGER.debug(
-                    self.format("instance already configured, not updating host")
+                    self.format("instance already configured, rejecting IPv6 address")
                 )
+        else:
+            _LOGGER.debug(self.format("instance already configured, not updating host"))
         # endregion
 
         self.context["title_placeholders"] = {
