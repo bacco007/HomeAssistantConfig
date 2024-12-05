@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import logging
 from enum import Enum, auto
+import logging
 
 from homeassistant.components.alarm_control_panel import (
     AlarmControlPanelEntity,
@@ -23,7 +23,7 @@ from .eufy_security_api.util import get_child_value
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
-# KEYPAD_OFF_CODE = 6
+#KEYPAD_OFF_CODE = 6
 
 
 class CurrentModeToState(Enum):
@@ -82,6 +82,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     platform.async_register_entity_service("chime", Schema.CHIME_SERVICE_SCHEMA.value, "chime")
     platform.async_register_entity_service("reboot", {}, "async_reboot")
     platform.async_register_entity_service("alarm_off", {}, "async_alarm_off")
+
 
 
 class EufySecurityAlarmControlPanel(AlarmControlPanelEntity, EufySecurityEntity):
