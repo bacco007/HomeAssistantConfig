@@ -27,7 +27,7 @@ class MoonScript:
         {
             "from": 0.033863193308711,
             "to": 0.216136806691289,
-            "id": "waning_crescent",
+            "id": "waxing_crescent",
             "emoji": "🌒",
             "code": ":waxing_crescent_moon:",
             "name": "Waxing Crescent",
@@ -49,7 +49,7 @@ class MoonScript:
         {
             "from": 0.283863193308711,
             "to": 0.466136806691289,
-            "id": "waning_gibbous",
+            "id": "waxing_gibbous",
             "emoji": "🌔",
             "code": ":waxing_gibbous_moon:",
             "name": "Waxing Gibbous",
