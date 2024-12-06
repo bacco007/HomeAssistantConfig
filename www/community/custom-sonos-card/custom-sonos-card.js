@@ -970,7 +970,7 @@ var __decorateClass$r = (decorators, target, key, kind) => {
   if (result) __defProp$r(target, key, result);
   return result;
 };
-const { SHUFFLE_SET: SHUFFLE_SET$1, REPEAT_SET: REPEAT_SET$1, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
+const { SHUFFLE_SET: SHUFFLE_SET$1, REPEAT_SET: REPEAT_SET$1, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA, STOP } = MediaPlayerEntityFeature;
 class PlayerControls extends h {
   constructor() {
     super(...arguments);
@@ -993,6 +993,7 @@ class PlayerControls extends h {
     const noFastForwardAndRewind = !!this.config.showFastForwardAndRewindButtons && D;
     this.volumePlayer = this.getVolumePlayer();
     this.updateMemberVolumes = !this.config.playerVolumeEntityId;
+    const pauseOrStop = this.config.stopInsteadOfPause ? STOP : PAUSE;
     return ke`
       <div class="main" id="mediaControls">
           <div class="icons">
@@ -1001,7 +1002,7 @@ class PlayerControls extends h {
               <sonos-ha-player .store=${this.store} .features=${this.showShuffle()}></sonos-ha-player>
               <sonos-ha-player .store=${this.store} .features=${this.showPrev()}></sonos-ha-player>
               <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.rewind} .path=${mdiRewind}></ha-icon-button>
-              <sonos-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></sonos-ha-player>
+              <sonos-ha-player .store=${this.store} .features=${[PLAY, pauseOrStop]} class="big-icon"></sonos-ha-player>
               <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.fastForward} .path=${mdiFastForward}></ha-icon-button>
               <sonos-ha-player .store=${this.store} .features=${this.showNext()}></sonos-ha-player>
               <sonos-ha-player .store=${this.store} .features=${this.showRepeat()}></sonos-ha-player>
@@ -2194,6 +2195,9 @@ class Footer extends h {
       [QUEUE$1, (icons == null ? void 0 : icons.queue) ?? "mdi:queue-first-in-last-out"],
       [VOLUMES$1, (icons == null ? void 0 : icons.volumes) ?? "mdi:tune"]
     ];
+    if (!isSonosCard(this.config)) {
+      sections = sections.filter(([section]) => section !== QUEUE$1);
+    }
     sections = sections.filter(([section]) => {
       var _a2;
       return !this.config.sections || ((_a2 = this.config.sections) == null ? void 0 : _a2.includes(section));
@@ -2347,7 +2351,8 @@ const ADVANCED_SCHEMA = [
   },
   {
     name: "queueTitle",
-    type: "string"
+    type: "string",
+    cardType: "sonos"
   },
   {
     name: "artworkHostname",
@@ -2445,6 +2450,10 @@ const ADVANCED_SCHEMA = [
     name: "footerHeight",
     type: "integer",
     valueMin: 0
+  },
+  {
+    name: "stopInsteadOfPause",
+    selector: { boolean: {} }
   }
 ];
 class AdvancedEditor extends BaseEditor {
@@ -2958,10 +2967,11 @@ var __decorateClass$f = (decorators, target, key, kind) => {
 };
 class Form extends BaseEditor {
   render() {
+    const schema = filterEditorSchemaOnCardType(this.schema, this.config.type);
     return ke`
       <ha-form
         .data=${this.data || this.config}
-        .schema=${this.schema}
+        .schema=${schema}
         .computeLabel=${computeLabel}
         .hass=${this.hass}
         @value-changed=${this.changed || this.valueChanged}
@@ -2994,6 +3004,9 @@ function computeLabel({ help, label, name }) {
   unCamelCased = unCamelCased.charAt(0).toUpperCase() + unCamelCased.slice(1);
   return unCamelCased + (help ? ` (${help})` : "");
 }
+function filterEditorSchemaOnCardType(schema, cardType) {
+  return schema.filter((schema2) => schema2.cardType === void 0 || cardType.indexOf(schema2.cardType) > -1);
+}
 customElements.define("sonos-card-editor-form", Form);
 var __defProp$e = Object.defineProperty;
 var __decorateClass$e = (decorators, target, key, kind) => {
@@ -3012,14 +3025,10 @@ class CardEditor extends BaseEditor {
   }
   render() {
     if (!this.config.sections || this.config.sections.length === 0) {
-      this.config.sections = [
-        Section.PLAYER,
-        Section.VOLUMES,
-        Section.GROUPS,
-        Section.GROUPING,
-        Section.MEDIA_BROWSER,
-        Section.QUEUE
-      ];
+      this.config.sections = [Section.PLAYER, Section.VOLUMES, Section.GROUPS, Section.GROUPING, Section.MEDIA_BROWSER];
+      if (isSonosCard(this.config)) {
+        this.config.sections.push(Section.QUEUE);
+      }
     }
     return ke`
       <ha-control-button-group>
@@ -3261,11 +3270,11 @@ class Card extends h {
         delete newConfig[key];
       }
     }
-    const sections = newConfig.sections || Object.values(Section).filter((section) => !isSonosCard(newConfig) || section !== QUEUE);
+    const sections = newConfig.sections || Object.values(Section).filter((section) => isSonosCard(newConfig) || section !== QUEUE);
     if (newConfig.startSection && sections.includes(newConfig.startSection)) {
       this.section = newConfig.startSection;
     } else if (sections) {
-      this.section = sections.includes(PLAYER) ? PLAYER : sections.includes(MEDIA_BROWSER) ? MEDIA_BROWSER : sections.includes(GROUPS) ? GROUPS : sections.includes(GROUPING) ? GROUPING : sections.includes(QUEUE) ? QUEUE : VOLUMES;
+      this.section = sections.includes(PLAYER) ? PLAYER : sections.includes(MEDIA_BROWSER) ? MEDIA_BROWSER : sections.includes(GROUPS) ? GROUPS : sections.includes(GROUPING) ? GROUPING : sections.includes(QUEUE) && isSonosCard(newConfig) ? QUEUE : VOLUMES;
     } else {
       this.section = PLAYER;
     }
