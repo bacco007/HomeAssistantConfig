@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2024.12.0b4 |
-| No. Integrations | 218 |
-| No. Custom Integrations | 95 |
-| No. Entities | 6139 |
-| No. Sensors | 4032 |
+| HA Version | 2024.12.0 |
+| No. Integrations | 219 |
+| No. Custom Integrations | 94 |
+| No. Entities | 6091 |
+| No. Sensors | 4011 |
 | No. Automations | 154 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 604
+Devices | 605
 Fans | 3
 Humidifiers | 0
 Images | 10
@@ -85,21 +85,21 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 6
+Persistent notifications | 5
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 4032
+Sensors | 4011
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 286
+Switches | 259
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 317
+Update | 316
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>654 Integrations</summary>
+<details><summary>656 Integrations</summary>
 
 | Name |
 | --- |
@@ -453,6 +453,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [multiscrape](https://www.home-assistant.io/components/multiscrape) |
 | [multiscrape.button](https://www.home-assistant.io/components/multiscrape.button) |
 | [multiscrape.sensor](https://www.home-assistant.io/components/multiscrape.sensor) |
+| [music_assistant](https://www.home-assistant.io/components/music_assistant) |
+| [music_assistant.media_player](https://www.home-assistant.io/components/music_assistant.media_player) |
 | [my](https://www.home-assistant.io/components/my) |
 | [myjdownloader](https://www.home-assistant.io/components/myjdownloader) |
 | [myjdownloader.sensor](https://www.home-assistant.io/components/myjdownloader.sensor) |
@@ -775,7 +777,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>87 Custom Integrations</summary>
+<details><summary>86 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -825,7 +827,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.3] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Music Assistant](https://github.com/music-assistant/hass-music-assistant) |  [v2024.12.0] | Turn your Home Assistant instance into a jukebox, hassle free streaming of your favorite media to Home Assistant media players. |[@music-assistant](https://github.com/music-assistant).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.7] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.1.1] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
@@ -897,7 +898,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.10] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.7] | Present the data of Formula One in a pretty way |
-| [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  | Heatmap custom card for Home Assistant |
+| [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  [vac99408] | Heatmap custom card for Home Assistant |
 | [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card) |  [v1.3.1] | Sun Card successor: Visualize the position of the Sun over the horizon. |
 | [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.4.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
@@ -919,7 +920,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.2.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.3.0] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -934,7 +935,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.5.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.10.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.11.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>3 Themes</summary>
 
@@ -953,7 +954,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.22.0 |  | db21ed7f |
 | Cloudflared | 5.2.2 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
-| ESPHome Device Compiler | 2024.11.2 |  | 15ef4d2f |
+| ESPHome Device Compiler | 2024.11.3 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
@@ -1019,7 +1020,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2024.12.0b4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2024.12.0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
