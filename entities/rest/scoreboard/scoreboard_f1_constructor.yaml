@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/racing/f1/standings?region=us&lang=en&contentorigin=espn&seasontype=2&group=1&sort=points:desc
+sensor:
+  name: scoreboard_f1_driver
+  value_template: "{{ now() }}"
+  json_attributes_path: "$.[0]['standings']"
+  json_attributes:
+    - entries
+scan_interval: 3600

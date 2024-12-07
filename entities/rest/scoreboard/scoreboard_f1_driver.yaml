@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/racing/f1/standings?seasontype=1&type=0&level=3
+sensor:
+  name: scoreboard_f1_driver
+  value_template: "{{ now() }}"
+  json_attributes_path: "$['children'][0]['standings']"
+  json_attributes:
+    - entries
+scan_interval: 3600
