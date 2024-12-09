@@ -178,7 +178,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
                 if (("cpuinfo" in api_status) and "model" in api_status["cpuinfo"])
                 else UNDEFINED,
                 status=api_status.get("status", "Offline"),
-                version=api_status["version"].get("version", UNDEFINED) 
+                version=api_status["version"].get("version", UNDEFINED)
                 if ("version" in api_status)
                 else UNDEFINED,
                 uptime=api_status.get("uptime", UNDEFINED),
@@ -207,7 +207,7 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
                 if (("qemu" in api_status) and "total" in api_status["qemu"])
                 else 0,
                 qemu_on_list=api_status["qemu"]["list"]
-                 if (("qemu" in api_status) and "list" in api_status["qemu"])
+                if (("qemu" in api_status) and "list" in api_status["qemu"])
                 else UNDEFINED,
                 lxc_on=api_status["lxc"]["total"]
                 if (("lxc" in api_status) and "total" in api_status["lxc"])
@@ -521,9 +521,9 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
                 if node_api[CONF_NODE] == self.node_name:
                     node_status = node_api["status"]
                     break
-            if node_status == "":                                
+            if node_status == "":
                 node_status = "offline"
-            LOGGER.debug("Node %s status is %s", self.node_name, node_status)    
+            LOGGER.debug("Node %s status is %s", self.node_name, node_status)
 
         if node_status == "online":
             if self.node_name is not None:
@@ -825,12 +825,7 @@ def poll_api(
                 return "Unmapped"
 
     try:
-        ir.delete_issue(
-            hass,
-            DOMAIN,
-            f"{config_entry.entry_id}_{resource_id}_forbiden",
-        )
-        return get_api(proxmox, api_path)
+        api_data = get_api(proxmox, api_path)
     except AuthenticationError as error:
         raise ConfigEntryAuthFailed from error
     except (
@@ -849,12 +844,16 @@ def poll_api(
                 DOMAIN,
                 f"{config_entry.entry_id}_{resource_id}_forbiden",
                 is_fixable=False,
+                is_persistent=True,
                 severity=ir.IssueSeverity.ERROR,
                 translation_key="resource_exception_forbiden",
                 translation_placeholders={
-                    "resource": f"{api_category.capitalize()} {resource_id}",
+                    "resource": f"{api_category.capitalize()} {resource_id.replace(f"{ProxmoxType.Update.capitalize()} ", "")}",
                     "user": config_entry.data[CONF_USERNAME],
-                    "permission": permission_to_resource(api_category, resource_id),
+                    "permission": permission_to_resource(
+                        api_category,
+                        resource_id.replace(f"{ProxmoxType.Update.capitalize()} ", ""),
+                    ),
                 },
             )
             LOGGER.debug(
@@ -862,3 +861,9 @@ def poll_api(
             )
             return None
         raise UpdateFailed from error
+    ir.delete_issue(
+        hass,
+        DOMAIN,
+        f"{config_entry.entry_id}_{resource_id}_forbiden",
+    )
+    return api_data
