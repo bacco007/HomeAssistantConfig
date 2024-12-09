@@ -32,7 +32,7 @@ from .errors import ModelNotSupportedError
 from .helpers import get_or_create_unique_id
 from .power_profile.factory import get_power_profile
 from .power_profile.library import ModelInfo, ProfileLibrary
-from .power_profile.power_profile import DOMAIN_DEVICE_TYPE, DeviceType, PowerProfile
+from .power_profile.power_profile import PowerProfile
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -155,11 +155,12 @@ class DiscoveryManager:
 
     async def init_wled_flow(self, model_info: ModelInfo, source_entity: SourceEntity) -> None:
         """Initialize the discovery flow for a WLED light."""
-        unique_id = get_or_create_unique_id({}, source_entity, None)
+        unique_id = f"pc_{source_entity.device_entry.id}" if source_entity.device_entry else get_or_create_unique_id({}, source_entity, None)
         if self._is_already_discovered(source_entity, unique_id):
             _LOGGER.debug(
-                "%s: Already setup with discovery, skipping new discovery",
+                "%s: Already setup with discovery, skipping new discovery (unique_id=%s)",
                 source_entity.entity_id,
+                unique_id,
             )
             return
 
@@ -180,6 +181,7 @@ class DiscoveryManager:
             model_info.manufacturer == MANUFACTURER_WLED
             and entity_entry.domain == LIGHT_DOMAIN
             and not re.search("master|segment", str(entity_entry.original_name), flags=re.IGNORECASE)
+            and not re.search("master|segment", str(entity_entry.entity_id), flags=re.IGNORECASE)
         )
 
     async def is_entity_supported(
@@ -208,12 +210,6 @@ class DiscoveryManager:
     def should_process_entity(self, entity_entry: er.RegistryEntry) -> bool:
         """Do some validations on the registry entry to see if it qualifies for discovery."""
         if entity_entry.disabled:
-            return False
-
-        if entity_entry.domain not in DOMAIN_DEVICE_TYPE:
-            return False
-
-        if DOMAIN_DEVICE_TYPE[entity_entry.domain] == DeviceType.PRINTER and entity_entry.unit_of_measurement:
             return False
 
         if entity_entry.entity_category in [
@@ -315,6 +311,9 @@ class DiscoveryManager:
             discovery_data.update(extra_discovery_data)
 
         self.initialized_flows.update({unique_id, source_entity.entity_id})
+
+        _LOGGER.debug("%s: Initiating discovery flow, unique_id=%s", source_entity.entity_id, unique_id)
+
         discovery_flow.async_create_flow(
             self.hass,
             DOMAIN,
@@ -382,8 +381,10 @@ class DiscoveryManager:
                 self._extract_entity_ids(item, found_entity_ids)
 
     def _is_already_discovered(self, source_entity: SourceEntity, unique_id: str) -> bool:
-        unique_ids_to_check = [unique_id, source_entity.entity_id]
+        """Prevent duplicate discovery flows."""
+        unique_ids_to_check = [unique_id, source_entity.entity_id, source_entity.unique_id]
         if unique_id.startswith("pc_"):
             unique_ids_to_check.append(unique_id[3:])
+        unique_ids_to_check.extend([f"pc_{uid}" for uid in unique_ids_to_check])
 
         return any(unique_id in self.initialized_flows for unique_id in unique_ids_to_check)
