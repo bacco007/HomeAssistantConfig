@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.12.2 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 94 |
-| No. Entities | 6199 |
-| No. Sensors | 4087 |
+| No. Entities | 6138 |
+| No. Sensors | 4052 |
 | No. Automations | 154 |
 
 <details>
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 4087
+Sensors | 4052
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 286
+Switches | 259
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -784,7 +784,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting) |  [v1.23.0] | Adaptive Lighting custom component for Home Assistant |[@basnijholt](https://github.com/basnijholt), [@RubenKelevra](https://github.com/RubenKelevra), [@th3w1zard1](https://github.com/th3w1zard1), [@protyposis](https://github.com/protyposis).|
 | [Adsb.Lol For Homeassistant](https://github.com/vingerha/ha_adsb_lol) |  [v0.1.1] | Home Assistant Integration with adsb.lol |[@vingerha](https://github.com/vingerha).|
-| [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v6.0.0] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
+| [Anniversaries](https://github.com/pinkywafer/Anniversaries) |  [v6.0.1] | Anniversary Countdown Sensor for Home Assistant |[@pinkywafer](https://github.com/pinkywafer).|
 | [Apparent Temperature](https://github.com/Limych/ha-apparent-temperature) |  [v1.1.1] | Sensor of Apparent Temperature for Home Assistant. |[@Limych](https://github.com/Limych).|
 | [Astroweather](https://github.com/mawinkler/astroweather) |  [v0.70.2] | Asynchronous Astro Weather Forecast for Home Assistant |[@mawinkler](https://github.com/mawinkler).|
 | [Average Sensor](https://github.com/Limych/ha-average) |  [v2.4.0] | Average Sensor for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -804,7 +804,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.1.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.12] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
-| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.22.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
+| [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.23.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
 | [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2024.11.4] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
@@ -931,7 +931,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.13] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
-| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.2.1] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
+| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.0] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v0.5.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
