@@ -2,7 +2,7 @@
 
 import logging
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Self
 from urllib.parse import quote
 
 import homeassistant.helpers.config_validation as cv
@@ -112,6 +112,14 @@ class ICSCalendarConfigFlow(ConfigFlow, domain=DOMAIN):
     def __init__(self):
         """Construct ICSCalendarConfigFlow."""
         self.data = {}
+
+    def is_matching(self, other_flow: Self) -> bool:
+        """Match discovery method.
+
+        This method doesn't do anything, because this integration has no
+        discoverable components.
+        """
+        return False
 
     async def async_step_reauth(self, user_input=None):
         """Re-authenticateon auth error."""
