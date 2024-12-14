@@ -49,9 +49,9 @@ _Stats as at 05:00, unknown_
 | ---|--- |
 | HA Version | 2024.12.2 |
 | No. Integrations | 219 |
-| No. Custom Integrations | 94 |
-| No. Entities | 6138 |
-| No. Sensors | 4051 |
+| No. Custom Integrations | 95 |
+| No. Entities | 6223 |
+| No. Sensors | 4105 |
 | No. Automations | 154 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 605
+Devices | 606
 Fans | 3
 Humidifiers | 0
 Images | 10
@@ -91,15 +91,15 @@ Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 4051
+Sensors | 4105
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 259
+Switches | 287
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 315
+Update | 317
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>657 Integrations</summary>
+<details><summary>645 Integrations</summary>
 
 | Name |
 | --- |
@@ -242,6 +242,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [dyson_local.select](https://www.home-assistant.io/components/dyson_local.select) |
 | [dyson_local.sensor](https://www.home-assistant.io/components/dyson_local.sensor) |
 | [dyson_local.switch](https://www.home-assistant.io/components/dyson_local.switch) |
+| [emsc_earthquake](https://www.home-assistant.io/components/emsc_earthquake) |
+| [emsc_earthquake.sensor](https://www.home-assistant.io/components/emsc_earthquake.sensor) |
 | [energy](https://www.home-assistant.io/components/energy) |
 | [energy.sensor](https://www.home-assistant.io/components/energy.sensor) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
@@ -274,6 +276,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [flightradar24](https://www.home-assistant.io/components/flightradar24) |
 | [flightradar24.device_tracker](https://www.home-assistant.io/components/flightradar24.device_tracker) |
 | [flightradar24.sensor](https://www.home-assistant.io/components/flightradar24.sensor) |
+| [flightradar24.switch](https://www.home-assistant.io/components/flightradar24.switch) |
 | [flightradar24.text](https://www.home-assistant.io/components/flightradar24.text) |
 | [folder.sensor](https://www.home-assistant.io/components/folder.sensor) |
 | [fontawesome](https://www.home-assistant.io/components/fontawesome) |
@@ -760,25 +763,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
-| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
-| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
-| [zha.button](https://www.home-assistant.io/components/zha.button) |
-| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
-| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
-| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
-| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
-| [zha.light](https://www.home-assistant.io/components/zha.light) |
-| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
-| [zha.number](https://www.home-assistant.io/components/zha.number) |
-| [zha.select](https://www.home-assistant.io/components/zha.select) |
-| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
-| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
-| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
-| [zha.update](https://www.home-assistant.io/components/zha.update) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>86 Custom Integrations</summary>
+<details><summary>87 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -802,6 +790,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.9.0] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.5.0] |  |[@martinarva](https://github.com/martinarva).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
+| [Emsc Earthquake](https://github.com/febalci/ha_emsc_earthquake) |  | Home Assistant Custom Component for Near Realtime Notifications of Earthquakes from EMSC |[@your_github_handle](https://github.com/your_github_handle).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.1.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.12] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
 | [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.23.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
@@ -838,7 +827,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.3] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.4] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -880,7 +869,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2024.29.07] | Show the current date/time how you want in Home Assistant. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.2] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.3] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.3] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -933,7 +922,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.0] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
-| [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v1.0.0] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
+| [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v1.0.1] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
 | [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.11.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
