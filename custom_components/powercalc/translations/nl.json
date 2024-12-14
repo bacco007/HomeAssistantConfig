@@ -41,7 +41,7 @@
         },
         "title": "Maak een dagelijkse energieverbruik sensor"
       },
-      "domain_group": {
+      "group_domain": {
         "data": {
           "name": "Naam",
           "create_energy_sensor": "Creëer energie sensoren",
@@ -109,7 +109,7 @@
           "utility_meter_types": "Nutsmeter types"
         }
       },
-      "group": {
+      "group_custom": {
         "data": {
           "area": "Ruimte",
           "create_energy_sensor": "Creëer energie sensoren",
@@ -149,10 +149,10 @@
       },
       "library_multi_profile": {
         "data": {
-          "model": "Select model"
+          "model": "Selecteer model"
         },
-        "description": "Manufacturer \"{manufacturer}\" and model \"{model}\" were automatically detected for your device. There are multiple profiles found for the entity which can potentially be used. Please look up the exact model of your device in [Powercalc library]({library_link}) and select the correct one",
-        "title": "Library"
+        "description": "Fabrikant \"{manufacturer}\" en model \"{model}\" werden automatisch gedetecteerd voor uw apparaat. Er zijn meerdere profielen gevonden voor de entiteit die mogelijk gebruikt kunnen worden. Zoek het exacte model van je apparaat op in [Powercalc library]({library_link}) en selecteer het juiste model",
+        "title": "Bibliotheek"
       },
       "linear": {
         "data": {
@@ -184,8 +184,9 @@
       },
       "menu_group": {
         "menu_options": {
-          "group": "Standaard groep",
-          "domain_group": "Domein gebaseerde groep"
+          "group_custom": "Standaard groep",
+          "group_domain": "Domein gebaseerde groep",
+          "group_subtract": "Aftrekken"
         },
         "title": "Kies het type groep",
         "description": "Selecteer het type groepssensor dat je wilt aanmaken. Kies een domein gebaseerde groep als u alle entiteiten van een specifiek domein wilt groeperen of een sensor opsomming wilt maken van al uw energie sensoren."
@@ -222,7 +223,7 @@
         "data": {
           "calculation_enabled_condition": "Calculatie ingeschakeld conditie",
           "energy_integration_method": "Energie integratie methode",
-          "energy_sensor_unit_prefix": "Energy sensor unit prefix",
+          "energy_sensor_unit_prefix": "Voorvoegsel van de energiesensor eenheid",
           "ignore_unavailable_state": "Negeer onbeschikbaar status",
           "multiply_factor": "Vermenigvuldigingsfactor",
           "multiply_factor_standby": "Vermenigvuldigingsfactor standby",
@@ -255,7 +256,7 @@
         "description": "Momenteel kunnen specifieke instellingen alleen globaal worden geconfigureerd",
         "title": "Maak een energiesensor voor een bestaande stroomsensor"
       },
-      "subtract_group": {
+      "group_subtract": {
         "data": {
           "create_energy_sensor": "Creëer energie sensoren",
           "create_utility_meters": "Creëer utiliteit meters",
@@ -295,6 +296,8 @@
         "menu_options": {
           "daily_energy": "Dagelijkse energie",
           "group": "Groep",
+          "global_configuration": "Globale configuratie",
+          "menu_group": "Groep",
           "menu_library": "Virtueel vermogen (bibliotheek)",
           "real_power": "Energie gebaseerd op bestaande vermogen sensor",
           "virtual_power": "Virtueel vermogen (handmatig)"
@@ -477,7 +480,7 @@
           "utility_meter_types": "Nutsmeter types"
         }
       },
-      "group": {
+      "group_custom": {
         "title": "Groep opties",
         "data": {
           "area": "Ruimte",
@@ -508,11 +511,12 @@
           "daily_energy": "Dagelijkse energie opties",
           "fixed": "Fixed opties",
           "group": "Groep opties",
+          "library_options": "Bibliotheek opties",
           "linear": "Lineaire opties",
           "playbook": "Playbook opties",
           "multi_switch": "Multi switch opties",
           "real_power": "Real power opties",
-          "subtract_group": "Groep opties",
+          "group_subtract": "Groep opties",
           "utility_meter_options": "Nutsmeter opties",
           "wled": "WLED opties"
         }
@@ -572,7 +576,7 @@
           "device": "Voeg de gecreëerde energiesensor toe aan een specifiek apparaat"
         }
       },
-      "subtract_group": {
+      "group_subtract": {
         "data": {
           "entity_id": "Basis entiteit",
           "subtract_entities": "Entiteiten aftrekken"
