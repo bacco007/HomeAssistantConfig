@@ -1,0 +1,10 @@
+{
+  "domain": "emsc_earthquake",
+  "name": "EMSC Earthquake",
+  "version": "1.0.0",
+  "documentation": "https://seismicportal.eu/realtime.html",
+  "codeowners": ["@your_github_handle"],
+  "config_flow": true,
+  "requirements": ["websockets>=10.0"],
+  "dependencies": []
+}
