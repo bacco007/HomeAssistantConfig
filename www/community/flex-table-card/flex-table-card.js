@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "0.7.7";
+var VERSION = "0.7.8";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -155,8 +155,8 @@ class DataTable {
                 this.rows.sort((x, y) => 
                     sort_conf.reduce((out, conf) => 
                         out || conf.dir * compare(
-                            x.data[conf.idx] && x.data[conf.idx].content,
-                            y.data[conf.idx] && y.data[conf.idx].content),
+                            x.data[conf.idx] && (x.data[conf.idx].sort_unmodified ? x.data[conf.idx].raw_content : x.data[conf.idx].content),
+                            y.data[conf.idx] && (y.data[conf.idx].sort_unmodified ? y.data[conf.idx].raw_content : y.data[conf.idx].content)),
                         false
                     )
                 );
@@ -287,6 +287,12 @@ class DataRow {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
                         raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
+                    } else if (col_key === "area") {
+                        // 'area' will show the entity's or its device's assigned area, if any
+                        raw_content.push(this._get_area_name(this.entity.entity_id, hass));
+                    } else if (col_key === "device") {
+                        // 'device' will show the entity's device name, if any
+                        raw_content.push(this._get_device_name(this.entity.entity_id, hass));
                     } else if (col_key === "state" && config.auto_format && !col.no_auto_format) {
                         // format entity state
                         raw_content.push(hass.formatEntityState(this.entity));
@@ -317,14 +323,25 @@ class DataRow {
                             //  until the final object value is found.
                             // if at any point in the traversal, the object is not found
                             //  then null will be used as the value.
+                            // Works for arrays as well as single values.
                             let objs = col_key.split('.');
-                            let value = this.entity.attributes;
-                            if (value) {
-                                for (let idx = 0; value && idx < objs.length; idx++) {
-                                    value = (objs[idx] in value) ? value[objs[idx]] : null;
+                            let struct = this.entity.attributes;
+                            let values = [];
+                            if (struct) {
+                                for (let idx = 0; struct && idx < objs.length; idx++) {
+                                    if (Array.isArray(struct)) {
+                                        struct.forEach(function (item, index) {
+                                            values.push(struct[index][objs[idx]]);
+                                        });
+                                    }
+                                    else {
+                                        struct = (objs[idx] in struct) ? struct[objs[idx]] : null;
+                                    }
                                 }
+                                // If no array found, single value is in struct.
+                                if (values.length == 0) values = struct;
                             }
-                            raw_content.push(value);
+                            raw_content.push(values);
                         }
                     }
 
@@ -394,14 +411,33 @@ class DataRow {
         return null;
     }
 
+    _get_device_name(entity_id, hass) {
+        var device_id;
+        if (hass.entities[entity_id] !== undefined) {
+            device_id = hass.entities[entity_id].device_id;
+        }
+        return device_id === undefined ? "-" : hass.devices[device_id].name_by_user || hass.devices[device_id].name;
+    }
+
+    _get_area_name(entity_id, hass) {
+        var area_id;
+        if (hass.entities[entity_id] !== undefined) {
+            area_id = hass.entities[entity_id].area_id;
+            if (area_id === undefined) {
+                let device_id = hass.entities[entity_id].device_id;
+                if (device_id !== undefined) area_id = hass.devices[device_id].area_id;
+            }
+        }
+        return area_id === undefined || hass.areas[area_id] === undefined ? "-" : hass.areas[area_id].name;
+    }
+
     render_data(col_cfgs) {
         // apply passed "modify" configuration setting by using eval()
         // assuming the data is available inside the function as "x"
         this.data = this.raw_data.map((raw, idx) => {
             let x = raw;
             let cfg = col_cfgs[idx];
-						
-						let fmt = new CellFormatters();
+			let fmt = new CellFormatters();
             if (cfg.fmt) {
                 x = fmt[cfg.fmt](x);
                 if (fmt.failed)
@@ -420,7 +456,9 @@ class DataRow {
                 pre: cfg.prefix || "",
                 suf: cfg.suffix || "",
                 css: cfg.align || "left",
-                hide: cfg.hidden
+                hide: cfg.hidden,
+                raw_content: raw,
+                sort_unmodified: cfg.sort_unmodified
             });
         });
         this.hidden = this.data.some(data => (data === null));
@@ -492,10 +530,10 @@ class FlexTableCard extends HTMLElement {
             throw new Error('Please provide the "columns" option as a list.');
         }
 
-        if (config.service) {
-            const service_config = config.service.split('.');
-            if (service_config.length != 2) {
-                throw new Error('Please specify service in "domain.service" format.');
+        if (config.action || config.service) {
+            const action_config = config.action ? config.action.split('.') : config.service.split('.');
+            if (action_config.length != 2) {
+                throw new Error('Please specify action in "domain.action" format.');
             }
         }
 
@@ -533,7 +571,8 @@ class FlexTableCard extends HTMLElement {
                                         "text-decoration: underline; ",
             "tbody tr:nth-child(odd)":  "background-color: var(--table-row-background-color); ",
             "tbody tr:nth-child(even)": "background-color: var(--table-row-alternative-background-color); ",
-            "th ha-icon":               "height: 1em; vertical-align: top; "
+            "th ha-icon":               "height: 1em; vertical-align: top; ",
+            "tfoot *":                  "border-style: solid none solid none;"
         }
         // apply CSS-styles from configuration
         // ("+" suffix to key means "append" instead of replace)
@@ -562,7 +601,7 @@ class FlexTableCard extends HTMLElement {
         }));
 
 
-        // table skeleton, body identified with: 'flextbl'
+        // table skeleton, body identified with: 'flextbl', footer with 'flexfoot'
         content.innerHTML = `
                 <table>
                     <thead>
@@ -572,6 +611,7 @@ class FlexTableCard extends HTMLElement {
                         </tr>
                     </thead>
                     <tbody id='flextbl'></tbody>
+                    <tfoot id='flexfoot'></tfoot>
                 </table>
                 `;
         // push css-style & table as content into the card's DOM tree
@@ -630,6 +670,118 @@ class FlexTableCard extends HTMLElement {
         });
     }
 
+    _updateFooter(footer, config, rows) {
+        var innerHTML = '<tr>';
+        var colnum = -1;
+        var raw = "";
+        var colspan_remainder = 0
+
+        config.columns.map((col, idx) => {
+            if (!col.hidden) {
+                colnum++;
+                if (colspan_remainder > 0)
+                    // Skip column if previous colspan would overlap it
+                    colspan_remainder--;
+                else {
+                    var cfg = config.columns[idx];
+                    if (col.footer_type) {
+                        switch (col.footer_type) {
+                            case 'sum':
+                                raw = this._sumColumn(rows, colnum);
+                                break;
+                            case 'average':
+                                raw = this._avgColumn(rows, colnum);
+                                break;
+                            case 'count':
+                                raw = rows.length;
+                                break;
+                            case 'max':
+                                raw = this._maxColumn(rows, colnum);
+                                break;
+                            case 'min':
+                                raw = this._minColumn(rows, colnum);
+                                break;
+                            case 'text':
+                                raw = col.footer_text;
+                                break;
+                            default:
+                                console.log("Invalid footer_type: ", col.footer_type);
+                        }
+                        let x = raw;
+                        let value = cfg.footer_modify ? eval(cfg.footer_modify) : x;
+                        if (col.footer_type == 'text') {
+                            let colspan = cfg.footer_colspan ? cfg.footer_colspan : 1;
+                            innerHTML += `<th id="tfootcol${colnum}" colspan=${colspan}>${value}</th>`;
+                            colspan_remainder = colspan - 1;
+                        }
+                        else
+                            innerHTML += `<td id="tfootcol${colnum}" class="${cfg.align || ""}">${cfg.prefix || ""}${value}${cfg.suffix || ""}</td>`;
+                    }
+                    else {
+                        innerHTML += '<td></td>'
+                    }
+                }
+            }
+        });
+
+        innerHTML += '</tr>';
+        footer.innerHTML = innerHTML;
+    }
+
+    _sumColumn(rows, colnum) {
+        var sum = 0;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) sum += cellValue;
+        }
+        return sum;
+    }
+
+    _avgColumn(rows, colnum) {
+        var sum = 0;
+        var count = 0;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) {
+                sum += cellValue;
+                count++;
+            }
+        }
+        return sum / count;
+    }
+
+    _maxColumn(rows, colnum) {
+        var max = Number.MIN_VALUE;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) {
+                if (cellValue > max) max = cellValue;
+            }
+        }
+        return max == Number.MIN_VALUE ? Number.NaN : max;
+    }
+
+    _minColumn(rows, colnum) {
+        var min = Number.MAX_VALUE;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) {
+                if (cellValue < min) min = cellValue;
+            }
+        }
+        return min == Number.MAX_VALUE ? Number.NaN : min;
+    }
+
+    // Trim whitespace and leading non-numeric, but not minus sign
+    _findNumber(val) {
+        if (typeof val === "number") {
+            return val;
+        }
+        else {
+            let value = val.trim();
+            return (Number.isNaN(parseFloat(value[0])) && value[0] !== '-') ? parseFloat(value.substring(1)) : parseFloat(value);
+        }
+    }
     set hass(hass) {
         const config = this._config;
         const root = this.shadowRoot;
@@ -648,12 +800,12 @@ class FlexTableCard extends HTMLElement {
         }
         this.#old_rowcount = rowcount;
 
-        if (config.service) {
-            // Use service to populate
-            const service_config = config.service.split('.');
-            let domain = service_config[0];
-            let service = service_config[1];
-            let service_data = config.service_data;
+        if (config.action || config.service) {
+            // Use action to populate
+            const action_config = config.action ? config.action.split('.') : config.service.split('.');
+            let domain = action_config[0];
+            let action = action_config[1];
+            let action_data = config.action_data || config.service_data;
 
             let entity_list = entities.map((entity) =>
                 entity.entity_id
@@ -662,9 +814,9 @@ class FlexTableCard extends HTMLElement {
             hass.callWS({
                 "type": "call_service",
                 "domain": domain,
-                "service": service,
-                "service_data": service_data,
-                "target": { "entity_id": entity_list },
+                "service": action,
+                "service_data": action_data,
+                "target": entity_list.length ? { "entity_id": entity_list } : undefined,
                 "return_response": true,
             }).then(return_response => {
                 const entities = new Array();
@@ -710,7 +862,9 @@ class FlexTableCard extends HTMLElement {
         // finally set card height and insert card
         this._setCardSize(this.tbl.rows.length);
         // all preprocessing / rendering will be done here inside DataTable::get_rows()
-        this._updateContent(root.getElementById('flextbl'), this.tbl.get_rows());
+        let data_rows = this.tbl.get_rows();
+        this._updateContent(root.getElementById('flextbl'), data_rows);
+        if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, data_rows);
     }
 
     _setCardSize(num_rows) {
