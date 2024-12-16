@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.12.3 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 95 |
-| No. Entities | 6222 |
-| No. Sensors | 4108 |
+| No. Entities | 6219 |
+| No. Sensors | 4107 |
 | No. Automations | 154 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 4108
+Sensors | 4107
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -838,7 +838,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.20] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.16] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
-| [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.19.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
+| [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.20.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.3] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
@@ -967,7 +967,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Home Assistant Git Exporter | 1.17.1-migrate |  | 243ffc37 |
 | Home Assistant Google Drive Backup | 0.112.1 |  | cebe7a76 |
 | Home Assistant Stream Deck | 2024.7.5 |  | dc473884 |
-| JupyterLab | 0.15.5 |  | a0d7b954 |
+| JupyterLab | 0.15.6 |  | a0d7b954 |
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 6.6.1 |  | core |
 | Music Assistant Server | 2.3.3 |  | d5369777 |
