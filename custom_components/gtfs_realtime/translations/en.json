@@ -1,0 +1,42 @@
+{
+    "title": "GTFS Realtime",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Select a GTFS Provider",
+                "data": {
+                    "gtfs_provider": "GTFS Provider"
+                },
+                "description": "Select a GTFS Provider"
+            },
+            "choose_static_and_realtime_feeds": {
+                "data": {
+                    "api_key": "API Key (if required)",
+                    "url_endpoints": "Feed URL",
+                    "gtfs_static_data": "GTFS Static Feeds (file or URL)",
+                    "route_icons": "Route Icons format URL"
+                },
+                "data_description": {
+                    "url_endpoints": "Feed URLs for realtime GTFS Data",
+                    "gtfs_static_data": "GTFS static feed zip file. Can be local file or URL from your provider.",
+                    "route_icons": "URL to a route-icons provider containing an svg image file for a given route.  The string can contain up to 3 str.format() compatible formatters for [route_id], [route_color], and [route_text_color] respectively. If your provider gives these colors as HTML hex, you may need to add an html-escaped '#' preceeding the input."
+                },
+                "title": "Select GTFS Realtime and Static Feed URLs.",
+                "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance."
+            },
+            "choose_informed_entities": {
+                "data": {
+                    "gtfs_provider": "GTFS Provider Name",
+                    "route_ids": "Route ID",
+                    "stop_ids": "Stop ID",
+                    "arrival_limit": "Arrival Limit"
+                },
+                "data_description": {
+                    "route_ids": "Route ID for a GTFS entity to receive service alerts.",
+                    "stop_ids": "Stop ID for a GTFS entity to receive arrival data and service alerts"
+                },
+                "description": "Configure GTFS parameters."
+            }
+        }
+    }
+}
