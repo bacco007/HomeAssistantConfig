@@ -1,0 +1,37 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Apparaat is al geconfigureerd",
+      "already_in_progress": "Apparaat wacht op configuratie",
+      "reauth_successful": "De herauthenticatie is gelukt"
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken",
+      "invalid_auth": "Ongeldige authenticatie",
+      "unknown": "Onverwachte fout"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "npsso": "NPSSO Code"
+        }
+      },
+      "reauth_confirm": {
+        "data": {
+          "npsso": "NPSSO Code"
+        },
+        "title": "Verifieer opnieuw met de nieuwe NPSSO-code"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "entities": {
+        "title": "Playstation Network Options",
+        "data": {
+          "attributes_as_entities": "Maak extra attributen als entiteiten"
+        }
+      }
+    }
+  }
+}

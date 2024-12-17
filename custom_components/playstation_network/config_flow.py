@@ -2,22 +2,24 @@
 
 import logging
 from typing import Any
+import re
 
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry, ConfigFlow
 from homeassistant.const import CONF_USERNAME
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import AbortFlow, FlowResult
 from homeassistant.exceptions import (
     ConfigEntryAuthFailed,
     ConfigEntryNotReady,
     HomeAssistantError,
 )
+from homeassistant.helpers import entity_registry as er, device_registry as dr
 from psnawp_api.core.psnawp_exceptions import PSNAWPAuthenticationError
 from psnawp_api.psnawp import PSNAWP
 
-from .const import DOMAIN
+from .const import DOMAIN, CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES
 from .coordinator import PsnCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -74,6 +76,14 @@ class PlaystationNetworkConfigFlow(ConfigFlow, domain=DOMAIN):
     # def async_get_options_flow(config_entry: ConfigEntry) -> PlaystationNetworkOptionsFlowHandler:
     #     """Get the options flow for this handler."""
     #     return PlaystationNetworkOptionsFlowHandler(config_entry)
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: ConfigEntry,
+    ):
+        """Get the options flow for this handler."""
+        return PlaystationNetworkOptionsFlowHandler(config_entry)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -175,6 +185,91 @@ class PlaystationNetworkConfigFlow(ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured(
             updates={CONF_USERNAME: unique_id},
         )
+
+
+class PlaystationNetworkOptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle Playstation Network options."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+        self.options = dict(config_entry.options)
+
+    async def async_step_init(self, user_input=None):  # pylint: disable=unused-argument
+        """Manage the options."""
+        return await self.async_step_entities()
+
+    async def async_step_entities(self, user_input=None):
+        """Handle options initialized by the user."""
+        if user_input is not None:
+            self.options.update(user_input)
+            return await self._update_options()
+
+        return self.async_show_form(
+            step_id="entities",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES,
+                        default=self.config_entry.options.get(
+                            CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES, False
+                        ),
+                    ): bool,
+                }
+            ),
+            last_step=True,
+        )
+
+    async def _update_options(self):
+        """Update config entry options."""
+        if self.options.get(CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES) is False:
+            self._remove_unused_entities()
+
+        return self.async_create_entry(title="", data=self.options)
+
+    def _remove_unused_entities(self):
+        try:
+            entities_to_remove = []
+            device = None
+            if self.options.get(CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES) is False:
+                entity_registry = er.async_get(self.hass)
+                dev_reg = dr.async_get(self.hass)
+                devices: list[dr.DeviceEntry] = dr.async_entries_for_config_entry(
+                    dev_reg, self.config_entry.entry_id
+                )
+                for device in devices:
+                    if device.name.lower() == self.config_entry.unique_id.lower():
+                        continue
+
+                if device is not None:
+                    entity_entries = er.async_entries_for_device(
+                        er.async_get(self.hass),
+                        device.id,
+                        include_disabled_entities=True,
+                    )
+
+                    for entity in entity_entries:
+                        try:
+                            if re.search("_attr$", entity.unique_id):
+                                entities_to_remove.append(
+                                    entity_registry.async_get_entity_id(
+                                        "sensor", DOMAIN, entity.unique_id
+                                    )
+                                )
+                        except Exception as ex:
+                            _LOGGER.debug(
+                                "Unexpected item when looping over entities %s", ex
+                            )
+                    for entity_id in entities_to_remove:
+                        _LOGGER.debug("Removing entity: %s", entity_id)
+                        entity_registry.async_remove(entity_id)
+                else:
+                    _LOGGER.debug(
+                        "Unable to find device matching name: %s",
+                        self.config_entry.unique_id,
+                    )
+        except Exception as ex:
+            _LOGGER.debug("Unexpected issue when removing entities: %s", ex)
 
 
 class CannotConnect(HomeAssistantError):

@@ -10,12 +10,12 @@
   ],
   "documentation": "https://github.com/JackJPowell/hass-psn",
   "homekit": {},
-  "integration_type": "device",
+  "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/JackJPowell/hass-psn/issues",
   "requirements": [
-    "PSNAWP-HA==2.1.2"
+    "PSNAWP-HA==2.2.2"
   ],
   "ssdp": [],
-  "version": "v0.5.3"
+  "version": "v0.7.0"
 }

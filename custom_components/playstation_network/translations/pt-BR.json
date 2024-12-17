@@ -1,0 +1,37 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "O dispositivo já está configurado",
+      "already_in_progress": "O dispositivo está pendente de configuração",
+      "reauth_successful": "Reautenticação bem-sucedida"
+    },
+    "error": {
+      "cannot_connect": "Falha ao conectar",
+      "invalid_auth": "Autenticação inválida",
+      "unknown": "Erro inesperado"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "npsso": "Código NPSSO"
+        }
+      },
+      "reauth_confirm": {
+        "data": {
+          "npsso": "Código NPSSO"
+        },
+        "title": "Reautenticar com novo Código NPSSO"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "entities": {
+        "title": "Playstation Network Opções",
+        "data": {
+          "attributes_as_entities": "Criar atributos adicionais como entidades"
+        }
+      }
+    }
+  }
+}

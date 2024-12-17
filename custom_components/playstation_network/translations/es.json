@@ -23,5 +23,15 @@
         "title": "Reautenticar con nuevo código NPSSO"
       }
     }
+  },
+  "options": {
+    "step": {
+      "entities": {
+        "title": "Playstation Network Opciones",
+        "data": {
+          "attributes_as_entities": "Crear atributos adicionales como entidades"
+        }
+      }
+    }
   }
 }
