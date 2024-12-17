@@ -27,6 +27,7 @@ class Flightradar24Card extends HTMLElement {
     this.config.no_flights_message = config.no_flights_message ?? 'No flights are currently visible. Please check back later.';
     this.units = Object.assign({ altitude: 'ft', speed: 'kts', distance: 'km' }, config.units);
     this.radar = Object.assign({ range: this.units.distance === 'km' ? 35 : 25 }, config.radar);
+    this.radar.initialRange = this.radar.range;
     this.defines = Object.assign({}, config.defines);
     this.sortFn = this.getSortFn(
       config.sort ?? [
@@ -42,27 +43,28 @@ class Flightradar24Card extends HTMLElement {
           '${flight.aircraft_photo_small ? `<img style="float: right; width: 120px; height: auto; marginLeft: 8px; border: 1px solid black;" src="${flight.aircraft_photo_small}" />` : ""}',
         icon: '${flight.altitude > 0 ? (flight.vertical_speed > 100 ? "airplane-takeoff" : flight.vertical_speed < -100 ? "airplane-landing" : "airplane") : "airport"}',
         icon_element: '<ha-icon style="float: left;" icon="mdi:${tpl.icon}"></ha-icon>',
-        flight_info: '${[flight.airline_short, flight.flight_number, flight.callsign !== flight.flight_number ? flight.callsign : ""].filter((el) => el).join(" - ")}',
+        flight_info: '${joinList(" - ")(flight.airline_short, flight.flight_number, flight.callsign !== flight.flight_number ? flight.callsign : "")}',
         flight_info_element: '<div style="font-weight: bold; padding-left: 5px; padding-top: 5px;">${tpl.flight_info}</div>',
         header: '<div>${tpl.img_element}${tpl.icon_element}${tpl.flight_info_element}</div>',
-        aircraft_info: '${[flight.aircraft_registration, flight.aircraft_model].filter((el) => el).join(" - ")}',
+        aircraft_info: '${joinList(" - ")(flight.aircraft_registration, flight.aircraft_model)}',
         aircraft_info_element: '${tpl.aircraft_info ? `<div>${tpl.aircraft_info}</div>` : ""}',
         departure_info:
           '${flight.altitude === 0 && flight.time_scheduled_departure ? ` (${new Date(flight.time_scheduled_departure * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})` : ""}',
-        origin_info: '${[flight.airport_origin_code_iata, tpl.departure_info, flight.origin_flag].filter((el) => el).join("")}',
+        origin_info: '${joinList("")(flight.airport_origin_code_iata, tpl.departure_info, flight.origin_flag)}',
         arrival_info: '',
-        destination_info: '${[flight.airport_destination_code_iata, tpl.arrival_info, flight.destination_flag].filter((el) => el).join(" ")}',
-        route_info: '${[tpl.origin_info, tpl.destination_info].filter((el) => el).join(" -> ")}',
+        destination_info: '${joinList("")(flight.airport_destination_code_iata, tpl.arrival_info, flight.destination_flag)}',
+        route_info: '${joinList(" -> ")(tpl.origin_info, tpl.destination_info)}',
         route_element: '<div>${tpl.route_info}</div>',
         alt_info: '${flight.alt_in_unit ? "Alt: " + flight.alt_in_unit + flight.climb_descend_indicator : undefined}',
         spd_info: '${flight.spd_in_unit ? "Spd: " + flight.spd_in_unit : undefined}',
         hdg_info: '${flight.heading ? "Hdg: " + flight.heading + "°" : undefined}',
         dist_info: '${flight.dist_in_unit ? "Dist: " + flight.dist_in_unit + flight.approach_indicator : undefined}',
-        flight_status: '<div>${[tpl.alt_info, tpl.spd_info, tpl.hdg_info].filter((el) => el).join(" - ")}</div>',
-        position_status: '<div>${[tpl.dist_info, flight.direction_info].filter((el) => el).join(" - ")}</div>',
+        flight_status: '<div>${joinList(" - ")(tpl.alt_info, tpl.spd_info, tpl.hdg_info)}</div>',
+        position_status: '<div>${joinList(" - ")(tpl.dist_info, flight.direction_info)}</div>',
         proximity_info:
-          '<div style="font-weight: bold; font-style: italic;">${flight.is_approaching && flight.ground_speed > 70 && flight.closest_passing_distance < 15 ? `Closest Distance: ${Math.round(flight.closest_passing_distance)} ${units.distance}, ETA: ${Math.round(flight.eta_to_closest_distance)} min` : ""}</div>',
-        flight_element: '${tpl.header}${tpl.aircraft_info_element}${tpl.route_element}${tpl.flight_status}${tpl.position_status}${tpl.proximity_info}'
+          '<div style="font-weight: bold; font-style: italic;">${flight.is_approaching && flight.ground_speed > 70 && flight.closest_passing_distance < 15 ? `Closest Distance: ${flight.closest_passing_distance} ${units.distance}, ETA: ${flight.eta_to_closest_distance} min` : ""}</div>',
+        flight_element: '${tpl.header}${tpl.aircraft_info_element}${tpl.route_element}${tpl.flight_status}${tpl.position_status}${tpl.proximity_info}',
+        radar_range: 'Range: ${radar_range} ${units.distance}'
       },
       config.templates,
       {}
@@ -225,7 +227,7 @@ class Flightradar24Card extends HTMLElement {
   renderRadarScreen() {
     const radarInfoDisplay = this.shadowRoot.getElementById('radar-info');
     if (radarInfoDisplay) {
-      const infoElements = [this.config.radar?.hide_range !== true ? `Range: ${Math.round(this.radar.range)}${this.units.distance}` : ''].filter((el) => el);
+      const infoElements = [this.config.radar?.hide_range !== true ? this.parseTemplate('radar_range') : ''].filter((el) => el);
       radarInfoDisplay.innerHTML = infoElements.join('<br />');
     }
 
@@ -250,7 +252,7 @@ class Flightradar24Card extends HTMLElement {
       radarScreenBackground.id = 'radar-screen-background';
       radarScreen.appendChild(radarScreenBackground);
 
-      const ringDistance = this.config.radar.ring_distance ?? 10; // Distance between rings in km or miles
+      const ringDistance = this.radar.ring_distance ?? 10; // Distance between rings in km or miles
       const ringCount = Math.floor(radarRange / ringDistance);
 
       for (let i = 1; i <= ringCount; i++) {
@@ -277,6 +279,7 @@ class Flightradar24Card extends HTMLElement {
           const refLon = location.longitude;
 
           this.radar.local_features.forEach((feature) => {
+            if (feature.max_range !== undefined && feature.max_range <= this.radar.range) return;
             if (feature.type === 'outline' && feature.points && feature.points.length > 1) {
               for (let i = 0; i < feature.points.length - 1; i++) {
                 const start = feature.points[i];
@@ -424,7 +427,7 @@ class Flightradar24Card extends HTMLElement {
             if (this._selectedFlights && this._selectedFlights.includes(flight.id)) {
               plane.classList.add('selected');
             }
-        
+
             plane.addEventListener('click', () => this.toggleSelectedFlight(flight));
             label.addEventListener('click', () => this.toggleSelectedFlight(flight));
 
@@ -436,7 +439,7 @@ class Flightradar24Card extends HTMLElement {
 
   updateRadarRange(delta) {
     const minRange = this.radar.min_range || 1;
-    const maxRange = this.radar.max_range || 100;
+    const maxRange = this.radar.max_range || Math.max(100, this.radar.initialRange);
     let newRange = this.radar.range + delta;
 
     if (newRange < minRange) newRange = minRange;
@@ -446,13 +449,17 @@ class Flightradar24Card extends HTMLElement {
 
     this.renderRadarScreen();
 
-    this.renderRadar(
-      this.radar.filter === true
-        ? this.applyFilter(this._flightsData, this.config.filter)
-        : this.radar.filter && typeof this.radar.filter === 'object'
-        ? this.applyFilter(this._flightsData, this.radar.filter)
-        : this._flightsData
-    );
+    if (this.renderDynamicOnRangeChange && this.config.updateRangeFilterOnTouchEnd !== true) {
+      this.renderDynamic();
+    } else {
+      this.renderRadar(
+        this.radar.filter === true
+          ? this.applyFilter(this._flightsData, this.config.filter)
+          : this.radar.filter && typeof this.radar.filter === 'object'
+          ? this.applyFilter(this._flightsData, this.radar.filter)
+          : this._flightsData
+      );
+    }
   }
 
   renderFlight(_flight) {
@@ -504,7 +511,7 @@ class Flightradar24Card extends HTMLElement {
         : undefined;
 
     flight.approach_indicator = flight.ground_speed > 70 ? (flight.is_approaching ? '↓' : flight.is_receding ? '↑' : '') : '';
-    flight.dist_in_unit = `${Math.round(flight.distance_to_tracker)}${this.units.distance}`;
+    flight.dist_in_unit = `${Math.round(flight.distance_to_tracker)} ${this.units.distance}`;
     flight.direction_info = `${Math.round(flight.heading_from_tracker)}° ${flight.cardinal_direction_from_tracker}`;
 
     const flightElement = document.createElement('div');
@@ -883,10 +890,20 @@ class Flightradar24Card extends HTMLElement {
   }
 
   parseTemplate(templateId, flight) {
+    const joinList =
+      (joinWith) =>
+      (...elements) =>
+        elements?.filter((e) => e).join(joinWith || ' ');
     const compiledTemplate = this.compileTemplate(this.templates, templateId);
     try {
-      const parsedTemplate = new Function('flight', 'tpl', 'units', `return \`${compiledTemplate.replace(/\${(.*?)}/g, (_, expr) => `\${${expr}}`)}\``)(flight, {}, this.units);
-      return parsedTemplate !== 'undefined' ? parsedTemplate : "";
+      const parsedTemplate = new Function('flight', 'tpl', 'units', 'radar_range', 'joinList', `return \`${compiledTemplate.replace(/\${(.*?)}/g, (_, expr) => `\${${expr}}`)}\``)(
+        flight,
+        {},
+        this.units,
+        Math.round(this.radar.range),
+        joinList
+      );
+      return parsedTemplate !== 'undefined' ? parsedTemplate : '';
     } catch (e) {
       console.error('Error when rendering: ' + compiledTemplate, e);
       return '';
@@ -898,6 +915,10 @@ class Flightradar24Card extends HTMLElement {
       const key = value.slice(2, -1);
       if (key === 'selectedFlights') {
         return this._selectedFlights;
+      } else if (key === 'radar_range') {
+        // Filter is dependent on range
+        this.renderDynamicOnRangeChange = true;
+        return this.radar.range;
       } else if (key in this.defines) {
         return this.defines[key];
       } else if (key in this.config.toggles) {
@@ -943,12 +964,15 @@ class Flightradar24Card extends HTMLElement {
     const entityState = this.hass.states[this.config.flights_entity];
     if (entityState) {
       try {
-        this._flightsData = entityState.attributes.flights ? JSON.parse(JSON.stringify(entityState.attributes.flights)) : [];
+        this._flightsData = parseFloat(entityState.state) > 0 && entityState.attributes.flights
+          ? JSON.parse(JSON.stringify(entityState.attributes.flights))
+          : [];
       } catch (error) {
-        console.error('Error fetching or parsing flight data:', error);
+        console.error("Error fetching or parsing flight data:", error);
+        this._flightsData = [];
       }
     } else {
-      console.error('Flights entity state is undefined. Check the configuration.');
+      throw new Error("Flights entity state is undefined. Check the configuration.");
     }
 
     const { moving } = this.calculateFlightData();
@@ -1016,8 +1040,9 @@ class Flightradar24Card extends HTMLElement {
         if (flight.is_approaching) {
           let closestPassingLatLon = this.calculateClosestPassingPoint(refLat, refLon, flight.latitude, flight.longitude, flight.heading);
 
-          flight.closest_passing_distance = this.haversine(refLat, refLon, closestPassingLatLon.lat, closestPassingLatLon.lon);
-          flight.eta_to_closest_distance = this.calculateETA(flight.latitude, flight.longitude, closestPassingLatLon.lat, closestPassingLatLon.lon, flight.ground_speed);
+          flight.closest_passing_distance = Math.round(this.haversine(refLat, refLon, closestPassingLatLon.lat, closestPassingLatLon.lon));
+          const eta_to_closest_distance = this.calculateETA(flight.latitude, flight.longitude, closestPassingLatLon.lat, closestPassingLatLon.lon, flight.ground_speed);
+          flight.eta_to_closest_distance = Math.round(eta_to_closest_distance);
 
           // If the plane is descending, calculate time to touchdown
           if (flight.vertical_speed < 0 && flight.altitude > 0) {
@@ -1025,15 +1050,20 @@ class Flightradar24Card extends HTMLElement {
             const touchdownLatLon = this.calculateNewPosition(flight.latitude, flight.longitude, flight.heading, (flight.ground_speed * timeToTouchdown) / 60);
             const touchdownDistance = this.haversine(refLat, refLon, touchdownLatLon.lat, touchdownLatLon.lon);
 
-            if (timeToTouchdown < flight.eta_to_closest_distance) {
+            if (timeToTouchdown < eta_to_closest_distance) {
               flight.is_landing = true;
-              flight.eta_to_closest_distance = timeToTouchdown;
-              flight.closest_passing_distance = touchdownDistance;
+              flight.closest_passing_distance = Math.round(touchdownDistance);
+              flight.eta_to_closest_distance = Math.round(timeToTouchdown);
               closestPassingLatLon = touchdownLatLon;
             }
           }
 
           flight.heading_from_tracker_to_closest_passing = Math.round(this.calculateBearing(refLat, refLon, closestPassingLatLon.lat, closestPassingLatLon.lon));
+        } else {
+          delete flight.closest_passing_distance;
+          delete flight.eta_to_closest_distance;
+          delete flight.heading_from_tracker_to_closest_passing;
+          delete flight.is_landing;
         }
       });
     } else {
@@ -1076,7 +1106,7 @@ class Flightradar24Card extends HTMLElement {
 
   areHeadingsAligned(direction_to_tracker, heading, margin = 60) {
     const diff = Math.abs((direction_to_tracker - heading + 360) % 360);
-    return diff <= margin || diff >= (360 - margin);
+    return diff <= margin || diff >= 360 - margin;
   }
 
   calculateNewPosition(lat, lon, bearing, distance) {
@@ -1266,6 +1296,9 @@ class Flightradar24Card extends HTMLElement {
   handleTouchEnd() {
     this._initialPinchDistance = null;
     this._initialRadarRange = null;
+    if (this.renderDynamicOnRangeChange && this.config.updateRangeFilterOnTouchEnd) {
+      this.renderDynamic();
+    }
   }
   getPinchDistance(touches) {
     const [touch1, touch2] = touches;
