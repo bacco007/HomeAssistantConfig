@@ -49,8 +49,8 @@ _Stats as at 05:00, unknown_
 | ---|--- |
 | HA Version | 2024.12.3 |
 | No. Integrations | 220 |
-| No. Custom Integrations | 95 |
-| No. Entities | 6219 |
+| No. Custom Integrations | 96 |
+| No. Entities | 6254 |
 | No. Sensors | 4107 |
 | No. Automations | 154 |
 
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 606
+Devices | 607
 Fans | 3
 Humidifiers | 0
 Images | 10
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 38
 Numbers | 48
-Persistent notifications | 4
+Persistent notifications | 6
 Persons | 4
 Remotes | 9
 Scenes | 2
@@ -99,7 +99,7 @@ Switches | 287
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 317
+Update | 318
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>660 Integrations</summary>
+<details><summary>661 Integrations</summary>
 
 | Name |
 | --- |
@@ -355,6 +355,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [homekit](https://www.home-assistant.io/components/homekit) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
+| [iaqualink](https://www.home-assistant.io/components/iaqualink) |
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
 | [iaquk.sensor](https://www.home-assistant.io/components/iaquk.sensor) |
 | [ibeacon](https://www.home-assistant.io/components/ibeacon) |
@@ -781,7 +782,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>87 Custom Integrations</summary>
+<details><summary>88 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -814,6 +815,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
+| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.1.7] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
 | [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.1] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.12.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
@@ -840,13 +842,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.20.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
-| [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.5.3] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
+| [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
-| [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.0.6] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
+| [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.1.0] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
 | [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) |  [v0.4.2] | 🎬 Radarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Response As Sensor](https://github.com/gjohansson-ST/response_as_sensor) |  [v1.0] | Home Assistant Service call response as entity |[@gjohansson-ST](https://github.com/gjohansson-ST).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.11] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
@@ -898,9 +900,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.3.1] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.4] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.5] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.8] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
-| [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.10] | Custom card to use with Flightradar24 integration for Home Assistant |
+| [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.11] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.7] | Present the data of Formula One in a pretty way |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  [vac99408] | Heatmap custom card for Home Assistant |
