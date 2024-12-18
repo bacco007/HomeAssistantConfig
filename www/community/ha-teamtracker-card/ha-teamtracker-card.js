@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.13";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.14";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -3449,7 +3449,7 @@ function $84bc952fd23869d6$export$f8996dc3406efa5a(o, c) {
     c.outlineColor = o.outlineColor;
     if (o.outline == true) c.outlineWidth = 1;
 }
-function $84bc952fd23869d6$export$539ef78a097046ba(c, stateObj, t, lang, time_format) {
+function $84bc952fd23869d6$export$539ef78a097046ba(c, stateObj, t, lang, time_format, server_time_zone) {
     var gameDate = new Date(stateObj.attributes.date);
     var gameDateStr = gameDate.toLocaleDateString(lang, {
         month: "short",
@@ -3476,26 +3476,54 @@ function $84bc952fd23869d6$export$539ef78a097046ba(c, stateObj, t, lang, time_fo
     c.gameDatePOST = gameDateStr;
     c.gameDatePRE = null;
     if (gameDate > nextweekDate) c.gameDatePRE = gameDateStr;
-    c.gameTime = gameDate.toLocaleTimeString(lang, {
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-    if (time_format == "24") c.gameTime = gameDate.toLocaleTimeString(lang, {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false
-    });
-    if (time_format == "12") c.gameTime = gameDate.toLocaleTimeString(lang, {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true
-    });
-    if (time_format == "system") {
-        var sys_lang = navigator.language || "en";
-        c.gameTime = gameDate.toLocaleTimeString(sys_lang, {
+    if (server_time_zone) {
+        c.gameTime = gameDate.toLocaleTimeString(lang, {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: server_time_zone
+        });
+        if (time_format == "24") c.gameTime = gameDate.toLocaleTimeString(lang, {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+            timeZone: server_time_zone
+        });
+        if (time_format == "12") c.gameTime = gameDate.toLocaleTimeString(lang, {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+            timeZone: server_time_zone
+        });
+        if (time_format == "system") {
+            var sys_lang = navigator.language || "en";
+            c.gameTime = gameDate.toLocaleTimeString(sys_lang, {
+                hour: "2-digit",
+                minute: "2-digit",
+                timeZone: server_time_zone
+            });
+        }
+    } else {
+        c.gameTime = gameDate.toLocaleTimeString(lang, {
             hour: "2-digit",
             minute: "2-digit"
         });
+        if (time_format == "24") c.gameTime = gameDate.toLocaleTimeString(lang, {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+        if (time_format == "12") c.gameTime = gameDate.toLocaleTimeString(lang, {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+        });
+        if (time_format == "system") {
+            var sys_lang = navigator.language || "en";
+            c.gameTime = gameDate.toLocaleTimeString(sys_lang, {
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
     }
 }
 
@@ -3825,11 +3853,13 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         var t = new (0, $cfd70fadc94c42c5$export$9850010f89e291bb)(lang);
         var sport = stateObj.attributes.sport || "default";
         if (t.translate(sport + ".startTerm") == "{" + sport + ".startTerm" + "}") sport = "default";
+        var server_time_zone = null;
+        if (this.hass.locale.time_zone == "server") server_time_zone = this.hass.config.time_zone;
         //
         //  Set card data
         //
         (0, $84bc952fd23869d6$export$554552fb00f06e66)(c);
-        (0, $84bc952fd23869d6$export$539ef78a097046ba)(c, stateObj, t, lang, time_format);
+        (0, $84bc952fd23869d6$export$539ef78a097046ba)(c, stateObj, t, lang, time_format, server_time_zone);
         (0, $84bc952fd23869d6$export$f8996dc3406efa5a)(o, c);
         (0, $84bc952fd23869d6$export$2e2366488d12e20d)(t, lang, stateObj, c, o, sport, team, oppo);
         (0, $8d10daf0cda71373$export$42406174c4ed4231)(sport, t, stateObj, c, team, oppo);
@@ -3852,6 +3882,12 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
                 hour: "2-digit",
                 minute: "2-digit",
                 second: "2-digit"
+            });
+            if (server_time_zone) updateTime = lastUpdate.toLocaleTimeString(lang, {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                timeZone: server_time_zone
             });
             c.title = this._config.entity + " " + c.title + "(";
             if (stateObj.attributes.api_message) c.title = c.title + stateObj.attributes.api_message[0];
