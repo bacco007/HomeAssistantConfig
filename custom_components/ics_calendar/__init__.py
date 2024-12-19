@@ -35,6 +35,8 @@ from .const import (
     CONF_PARSER,
     CONF_REQUIRES_AUTH,
     CONF_SET_TIMEOUT,
+    CONF_SUMMARY_DEFAULT,
+    CONF_SUMMARY_DEFAULT_DEFAULT,
     CONF_USER_AGENT,
     DOMAIN,
 )
@@ -94,6 +96,10 @@ CONFIG_SCHEMA = vol.Schema(
                                     vol.Optional(
                                         CONF_CONNECTION_TIMEOUT, default=300
                                     ): cv.positive_float,
+                                    vol.Optional(
+                                        CONF_SUMMARY_DEFAULT,
+                                        default=CONF_SUMMARY_DEFAULT_DEFAULT,
+                                    ): cv.string,
                                 }
                             )
                         ]
@@ -201,74 +207,44 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-def add_missing_defaults(  # noqa: C901,R701 # pylint: disable=R0912,R0915
+def add_missing_defaults(
     entry: ConfigEntry,
 ) -> dict:
     """Initialize missing data."""
-    data = {}
-    data[CONF_NAME] = entry.data[CONF_NAME]
-    data[CONF_URL] = entry.data[CONF_URL]
-    data[CONF_ADV_CONNECT_OPTS] = False
-    data[CONF_REQUIRES_AUTH] = False
-    if CONF_INCLUDE_ALL_DAY in entry.data:
-        data[CONF_INCLUDE_ALL_DAY] = entry.data[CONF_INCLUDE_ALL_DAY]
-    else:
-        data[CONF_INCLUDE_ALL_DAY] = False
-    if CONF_USERNAME in entry.data:
+    data = {
+        CONF_NAME: "",
+        CONF_URL: "",
+        CONF_ADV_CONNECT_OPTS: False,
+        CONF_SET_TIMEOUT: False,
+        CONF_REQUIRES_AUTH: False,
+        CONF_INCLUDE_ALL_DAY: False,
+        CONF_REQUIRES_AUTH: False,
+        CONF_USERNAME: "",
+        CONF_PASSWORD: "",
+        CONF_PARSER: "rie",
+        CONF_PREFIX: "",
+        CONF_DAYS: 1,
+        CONF_DOWNLOAD_INTERVAL: 15,
+        CONF_USER_AGENT: "",
+        CONF_EXCLUDE: "",
+        CONF_INCLUDE: "",
+        CONF_OFFSET_HOURS: 0,
+        CONF_ACCEPT_HEADER: "",
+        CONF_CONNECTION_TIMEOUT: 300.0,
+        CONF_SUMMARY_DEFAULT: CONF_SUMMARY_DEFAULT_DEFAULT,
+    }
+    data.update(entry.data)
+
+    if CONF_USERNAME in entry.data or CONF_PASSWORD in entry.data:
         data[CONF_REQUIRES_AUTH] = True
-        data[CONF_USERNAME] = entry.data[CONF_USERNAME]
-    else:
-        data[CONF_USERNAME] = ""
-    if CONF_PASSWORD in entry.data:
-        data[CONF_REQUIRES_AUTH] = True
-        data[CONF_PASSWORD] = entry.data[CONF_PASSWORD]
-    else:
-        data[CONF_PASSWORD] = ""
-    if CONF_PARSER in entry.data:
-        data[CONF_PARSER] = entry.data[CONF_PARSER]
-    else:
-        data[CONF_PARSER] = "rie"
-    if CONF_PREFIX in entry.data:
-        data[CONF_PREFIX] = entry.data[CONF_PREFIX]
-    else:
-        data[CONF_PREFIX] = ""
-    if CONF_DAYS in entry.data:
-        data[CONF_DAYS] = entry.data[CONF_DAYS]
-    else:
-        data[CONF_DAYS] = 1
-    if CONF_DOWNLOAD_INTERVAL in entry.data:
-        data[CONF_DOWNLOAD_INTERVAL] = entry.data[CONF_DOWNLOAD_INTERVAL]
-    else:
-        data[CONF_DOWNLOAD_INTERVAL] = 15
-    if CONF_USER_AGENT in entry.data:
+    if (
+        CONF_USER_AGENT in entry.data
+        or CONF_ACCEPT_HEADER in entry.data
+        or CONF_CONNECTION_TIMEOUT in entry.data
+    ):
         data[CONF_ADV_CONNECT_OPTS] = True
-        data[CONF_USER_AGENT] = entry.data[CONF_USER_AGENT]
-    else:
-        data[CONF_USER_AGENT] = ""
-    if CONF_EXCLUDE in entry.data:
-        data[CONF_EXCLUDE] = entry.data[CONF_EXCLUDE]
-    else:
-        data[CONF_EXCLUDE] = ""
-    if CONF_INCLUDE in entry.data:
-        data[CONF_INCLUDE] = entry.data[CONF_INCLUDE]
-    else:
-        data[CONF_INCLUDE] = ""
-    if CONF_OFFSET_HOURS in entry.data:
-        data[CONF_OFFSET_HOURS] = entry.data[CONF_OFFSET_HOURS]
-    else:
-        data[CONF_OFFSET_HOURS] = 0
-    if CONF_ACCEPT_HEADER in entry.data:
-        data[CONF_ADV_CONNECT_OPTS] = True
-        data[CONF_ACCEPT_HEADER] = entry.data[CONF_ACCEPT_HEADER]
-    else:
-        data[CONF_ACCEPT_HEADER] = ""
     if CONF_CONNECTION_TIMEOUT in entry.data:
-        data[CONF_ADV_CONNECT_OPTS] = True
         data[CONF_SET_TIMEOUT] = True
-        data[CONF_CONNECTION_TIMEOUT] = entry.data[CONF_CONNECTION_TIMEOUT]
-    else:
-        data[CONF_SET_TIMEOUT] = False
-        data[CONF_CONNECTION_TIMEOUT] = 300.0
 
     return data
 

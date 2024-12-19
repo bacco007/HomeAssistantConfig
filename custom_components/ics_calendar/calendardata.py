@@ -1,10 +1,6 @@
 """Provide CalendarData class."""
 
-from datetime import timedelta
 from logging import Logger
-from socket import (  # type: ignore[attr-defined]  # private, not in typeshed
-    _GLOBAL_DEFAULT_TIMEOUT,
-)
 
 import httpx
 import httpx_auth
@@ -29,13 +25,11 @@ class CalendarData:  # pylint: disable=R0902
     instance.
     """
 
-    def __init__(  # pylint: disable=R0913,R0917
+    def __init__(
         self,
         async_client: httpx.AsyncClient,
         logger: Logger,
-        name: str,
-        url: str,
-        min_update_time: timedelta,
+        conf: dict,
     ):
         """Construct CalendarData object.
 
@@ -43,23 +37,18 @@ class CalendarData:  # pylint: disable=R0902
         :type httpx.AsyncClient
         :param logger: The logger for reporting problems
         :type logger: Logger
-        :param name: The name of the calendar (used for reporting problems)
-        :type name: str
-        :param url: The URL of the calendar
-        :type url: str
-        :param min_update_time: The minimum time between downloading data from
-            the URL when requested
-        :type min_update_time: timedelta
+        :param conf: Configuration options
+        :type conf: dict
         """
         self._auth = None
         self._calendar_data = None
         self._headers = []
         self._last_download = None
-        self._min_update_time = min_update_time
+        self._min_update_time = conf["min_update_time"]
         self.logger = logger
-        self.name = name
-        self.url = url
-        self.connection_timeout = _GLOBAL_DEFAULT_TIMEOUT
+        self.name = conf["name"]
+        self.url = conf["url"]
+        self.connection_timeout = None
         self._httpx = async_client
 
     async def download_calendar(self) -> bool:

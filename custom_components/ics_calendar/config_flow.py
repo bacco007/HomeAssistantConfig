@@ -30,9 +30,10 @@ from . import (
     CONF_PARSER,
     CONF_REQUIRES_AUTH,
     CONF_SET_TIMEOUT,
+    CONF_SUMMARY_DEFAULT,
     CONF_USER_AGENT,
 )
-from .const import DOMAIN
+from .const import CONF_SUMMARY_DEFAULT_DEFAULT, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -54,6 +55,9 @@ CALENDAR_OPTS_SCHEMA = vol.Schema(
         vol.Optional(CONF_PARSER, default="rie"): selector(
             {"select": {"options": ["rie", "ics"], "mode": "dropdown"}}
         ),
+        vol.Optional(
+            CONF_SUMMARY_DEFAULT, default=CONF_SUMMARY_DEFAULT_DEFAULT
+        ): cv.string,
     }
 )
 
@@ -113,7 +117,7 @@ class ICSCalendarConfigFlow(ConfigFlow, domain=DOMAIN):
         """Construct ICSCalendarConfigFlow."""
         self.data = {}
 
-    def is_matching(self, other_flow: Self) -> bool:
+    def is_matching(self, _other_flow: Self) -> bool:
         """Match discovery method.
 
         This method doesn't do anything, because this integration has no
@@ -170,7 +174,7 @@ class ICSCalendarConfigFlow(ConfigFlow, domain=DOMAIN):
             last_step=False,
         )
 
-    async def async_step_calendar_opts(  # noqa: R701
+    async def async_step_calendar_opts(  # noqa: R701,C901
         self, user_input: Optional[Dict[str, Any]] = None
     ):
         """Calendar Options step for ConfigFlow."""
@@ -196,6 +200,9 @@ class ICSCalendarConfigFlow(ConfigFlow, domain=DOMAIN):
             if user_input[CONF_DOWNLOAD_INTERVAL] < 15:
                 _LOGGER.error("download_interval_too_small error")
                 errors[CONF_DOWNLOAD_INTERVAL] = "download_interval_too_small"
+
+            if not user_input[CONF_SUMMARY_DEFAULT]:
+                user_input[CONF_SUMMARY_DEFAULT] = CONF_SUMMARY_DEFAULT_DEFAULT
 
             if not errors:
                 self.data.update(user_input)

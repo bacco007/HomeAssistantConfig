@@ -23,7 +23,8 @@
                     "prefix": "String to prefix all event summaries",
                     "download_interval": "Download interval (minutes)",
                     "offset_hours": "Number of hours to offset event times",
-                    "parser": "Parser (rie or ics)"
+                    "parser": "Parser (rie or ics)",
+                    "summary_default": "Summary if event doesn't have one"
                 },
                 "title": "Calendar Options"
             },
