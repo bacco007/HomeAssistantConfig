@@ -545,18 +545,28 @@ spi:
 
 display:
   - platform: waveshare_epaper
-    cs_pin: 15
-    dc_pin: 27
-    busy_pin:
-      number: 25
-      inverted: True
-    reset_pin: 26
-    #model: 7.50inbv2
-    #model: 7.50in-bv2-rb
-    model: 7.50in-bV3
-    id: eink_display
+    id: eink_display  
+    # cs_pin: 15
+    # dc_pin: 27
+    # busy_pin:
+    #   number: 25
+    #   inverted: True
+    # reset_pin: 26
+    # #model: 7.50inbv2
+    # #model: 7.50in-bv2-rb
+    # model: 7.50in-bV3
     update_interval: never
+    # reset_duration: 2ms
+    cs_pin:
+      number: GPIO15
+      ignore_strapping_warning: true
+    dc_pin: GPIO27
+    busy_pin:
+      number: GPIO25
+      inverted: True
+    reset_pin: GPIO26
     reset_duration: 2ms
+    model: 7.50in-bv3-bwr    
     rotation: 180
     lambda: |-
       int xres = it.get_width();
