@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ssh-keygen -F github.com -t dsa || ssh-keyscan github.com >> ~/.ssh/known_hosts > file.log 2>&1
+ssh-keygen -F github.com -t dsa || ssh-keyscan -t dsa github.com >> ~/.ssh/known_hosts > file.log 2>&1
 
 git fetch origin master > file.log 2>&1
 
