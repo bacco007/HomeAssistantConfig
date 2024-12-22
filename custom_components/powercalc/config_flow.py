@@ -801,7 +801,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         """Get the fixed power config for smart switch."""
         if self.selected_profile is None:
             return {CONF_POWER: 0}  # pragma: no cover
-        self_usage_on = self.selected_profile.fixed_mode_config.get(CONF_POWER, 0) if self.selected_profile.fixed_mode_config else 0
+        self_usage_on = self.selected_profile.fixed_config.get(CONF_POWER, 0) if self.selected_profile.fixed_config else 0
         power = user_input.get(CONF_POWER, 0)
         self_usage_included = user_input.get(CONF_SELF_USAGE_INCLUDED, True)
         if self_usage_included:
@@ -1051,8 +1051,8 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
             }
 
         self_usage_on = 0
-        if self.selected_profile and self.selected_profile.fixed_mode_config:
-            self_usage_on = self.selected_profile.fixed_mode_config.get(CONF_POWER, 0)
+        if self.selected_profile and self.selected_profile.fixed_config:
+            self_usage_on = self.selected_profile.fixed_config.get(CONF_POWER, 0)
         return await self.handle_form_step(
             PowercalcFormStep(
                 step=Step.SMART_SWITCH,
@@ -1543,7 +1543,7 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         super().__init__()
-        self.config_entry = config_entry
+        self._config_entry = config_entry
         self.sensor_config = dict(config_entry.data)
         self.sensor_type: SensorType = self.sensor_config.get(CONF_SENSOR_TYPE) or SensorType.VIRTUAL_POWER
         self.source_entity_id: str = self.sensor_config.get(CONF_ENTITY_ID)  # type: ignore
@@ -1554,11 +1554,11 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
         user_input: dict[str, Any] | None = None,
     ) -> FlowResult:
         """Handle options flow."""
-        if self.config_entry.unique_id == ENTRY_GLOBAL_CONFIG_UNIQUE_ID:
+        if self._config_entry.unique_id == ENTRY_GLOBAL_CONFIG_UNIQUE_ID:
             self.global_config = self.get_global_powercalc_config()
             return self.async_show_menu(step_id=Step.INIT, menu_options=self.build_global_config_menu())
 
-        self.sensor_config = dict(self.config_entry.data)
+        self.sensor_config = dict(self._config_entry.data)
         if self.source_entity_id:
             self.source_entity = await create_source_entity(
                 self.source_entity_id,
@@ -1686,7 +1686,7 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
     async def async_step_group_custom(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the group options flow."""
         schema = self.fill_schema_defaults(
-            self.create_schema_group_custom(self.config_entry, True),
+            self.create_schema_group_custom(self._config_entry, True),
             self.sensor_config,
         )
         return await self.async_handle_options_step(user_input, schema, Step.GROUP_CUSTOM)
@@ -1768,10 +1768,10 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
 
     def persist_config_entry(self) -> FlowResult:
         """Persist changed options on the config entry."""
-        data = (self.config_entry.unique_id == ENTRY_GLOBAL_CONFIG_UNIQUE_ID and self.global_config) or self.sensor_config
+        data = (self._config_entry.unique_id == ENTRY_GLOBAL_CONFIG_UNIQUE_ID and self.global_config) or self.sensor_config
 
         self.hass.config_entries.async_update_entry(
-            self.config_entry,
+            self._config_entry,
             data=data,
         )
         return self.async_create_entry(title="", data={})

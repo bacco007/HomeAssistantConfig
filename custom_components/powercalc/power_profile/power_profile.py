@@ -6,7 +6,7 @@ import os
 import re
 from collections import defaultdict
 from enum import StrEnum
-from typing import NamedTuple, Protocol
+from typing import NamedTuple, Protocol, cast
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.camera import DOMAIN as CAMERA_DOMAIN
@@ -23,7 +23,7 @@ from homeassistant.helpers.entity_registry import RegistryEntry
 from homeassistant.helpers.typing import ConfigType
 
 from custom_components.powercalc.common import SourceEntity
-from custom_components.powercalc.const import CONF_POWER, DOMAIN, CalculationStrategy
+from custom_components.powercalc.const import CONF_MAX_POWER, CONF_MIN_POWER, CONF_POWER, DOMAIN, CalculationStrategy
 from custom_components.powercalc.errors import (
     ModelNotSupportedError,
     PowercalcSetupError,
@@ -150,22 +150,35 @@ class PowerProfile:
         return self._json_data.get("aliases") or []
 
     @property
-    def linear_mode_config(self) -> ConfigType | None:
+    def linear_config(self) -> ConfigType | None:
         """Get configuration to setup linear strategy."""
-        return self.get_strategy_config(CalculationStrategy.LINEAR)
+        config = self.get_strategy_config(CalculationStrategy.LINEAR)
+        if config is None:
+            return {CONF_MIN_POWER: 0, CONF_MAX_POWER: 0}
+        return config
 
     @property
-    def multi_switch_mode_config(self) -> ConfigType | None:
+    def multi_switch_config(self) -> ConfigType | None:
         """Get configuration to setup linear strategy."""
         return self.get_strategy_config(CalculationStrategy.MULTI_SWITCH)
 
     @property
-    def fixed_mode_config(self) -> ConfigType | None:
+    def fixed_config(self) -> ConfigType | None:
         """Get configuration to setup fixed strategy."""
         config = self.get_strategy_config(CalculationStrategy.FIXED)
         if config is None and self.standby_power_on:
-            config = {CONF_POWER: 0}
+            return {CONF_POWER: 0}
         return config
+
+    @property
+    def composite_config(self) -> list | None:
+        """Get configuration to setup composite strategy."""
+        return cast(list, self._json_data.get("composite_config"))
+
+    @property
+    def playbook_config(self) -> ConfigType | None:
+        """Get configuration to setup playbook strategy."""
+        return self.get_strategy_config(CalculationStrategy.PLAYBOOK)
 
     def get_strategy_config(self, strategy: CalculationStrategy) -> ConfigType | None:
         if not self.is_strategy_supported(strategy):
