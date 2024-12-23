@@ -1330,7 +1330,8 @@ class Volume extends h {
     this.mediaControlService = this.store.mediaControlService;
     const volume = this.player.getVolume();
     const max = this.getMax(volume);
-    const muteIcon = this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh;
+    const isMuted = this.updateMembers ? this.player.isGroupMuted() : this.player.isMemberMuted();
+    const muteIcon = isMuted ? mdiVolumeMute : mdiVolumeHigh;
     const disabled = this.player.ignoreVolume;
     return ke`
       <div class="volume" slim=${this.slim || D}>
@@ -1731,6 +1732,9 @@ function indexOfWithoutSpecialChars(array, str) {
   });
   return result;
 }
+function stringContainsAnyItemInArray(array, str) {
+  return !!array.find((value) => str.includes(value));
+}
 function itemsWithFallbacks(mediaPlayerItems, config) {
   const itemsWithImage = hasItemsWithImage(mediaPlayerItems);
   return mediaPlayerItems.map((item) => {
@@ -1760,9 +1764,12 @@ class MediaBrowseService {
     favorites = favorites.flatMap((f2) => f2);
     favorites = this.removeDuplicates(favorites);
     favorites = favorites.length ? favorites : this.getFavoritesFromStates(player);
-    return favorites.filter(
-      (item) => indexOfWithoutSpecialChars(this.config.favoritesToIgnore ?? [], item.title) === -1
-    );
+    const favoritesToIgnore = this.config.favoritesToIgnore ?? [];
+    return favorites.filter((item) => {
+      const titleNotIgnored = !stringContainsAnyItemInArray(favoritesToIgnore, item.title);
+      const contentIdNotIgnored = !stringContainsAnyItemInArray(favoritesToIgnore, item.media_content_id ?? "");
+      return titleNotIgnored && contentIdNotIgnored;
+    });
   }
   removeDuplicates(items) {
     return items.filter((item, index, all) => {
@@ -1886,7 +1893,8 @@ class MediaControlService {
     }
   }
   async toggleMute(mediaPlayer, updateMembers = true) {
-    const muteVolume = !mediaPlayer.isMuted(updateMembers);
+    const isMuted = updateMembers ? mediaPlayer.isGroupMuted() : mediaPlayer.isMemberMuted();
+    const muteVolume = !isMuted;
     await this.setVolumeMute(mediaPlayer, muteVolume, updateMembers);
   }
   async setVolumeMute(mediaPlayer, muteVolume, updateMembers = true) {
@@ -1934,8 +1942,14 @@ class MediaPlayer {
   isPlaying() {
     return this.state === "playing";
   }
-  isMuted(checkMembers) {
-    return this.attributes.is_volume_muted && (!checkMembers || this.members.every((member) => member.isMuted(false)));
+  isMemberMuted() {
+    return this.attributes.is_volume_muted;
+  }
+  isGroupMuted() {
+    if (this.config.inverseGroupMuteState) {
+      return this.members.some((member) => member.isMemberMuted());
+    }
+    return this.members.every((member) => member.isMemberMuted());
   }
   getCurrentTrack() {
     var _a2;
@@ -2297,11 +2311,6 @@ var ConfigArea = /* @__PURE__ */ ((ConfigArea2) => {
 })(ConfigArea || {});
 const ADVANCED_SCHEMA = [
   {
-    name: "entityPlatform",
-    help: "Show all media players for the selected platform",
-    type: "string"
-  },
-  {
     name: "hideGroupCurrentTrack",
     selector: { boolean: {} }
   },
@@ -2453,6 +2462,10 @@ const ADVANCED_SCHEMA = [
   },
   {
     name: "stopInsteadOfPause",
+    selector: { boolean: {} }
+  },
+  {
+    name: "inverseGroupMuteState",
     selector: { boolean: {} }
   }
 ];
@@ -2628,6 +2641,11 @@ const ENTITIES_SCHEMA = [
     help: "Show all media players, including those that are not on the Sonos platform",
     cardType: "sonos",
     selector: { boolean: {} }
+  },
+  {
+    name: "entityPlatform",
+    help: "Show all media players for the selected platform",
+    type: "string"
   }
 ];
 class EntitiesEditor extends BaseEditor {
@@ -3160,6 +3178,7 @@ class Card extends h {
     const contentHeight = showFooter ? height - footerHeight : height;
     const title = this.config.title;
     height = title ? height + TITLE_HEIGHT : height;
+    const noPlayersText = isSonosCard(this.config) ? "No supported players found" : "No players found. Make sure you have configured entities in the card's configuration, or configured `entityPlatform`.";
     return ke`
       <ha-card style=${this.haCardStyle(height)}>
         <div class="loader" ?hidden=${!this.showLoader}>
@@ -3198,7 +3217,7 @@ class Card extends h {
         QUEUE,
         () => ke`<sonos-queue .store=${this.store} @item-selected=${this.onMediaItemSelected}></sonos-queue>`
       ]
-    ]) : ke`<div class="no-players">No supported players found</div>`}
+    ]) : ke`<div class="no-players">${noPlayersText}</div>`}
         </div>
         ${nn(
       showFooter,
