@@ -1,0 +1,8 @@
+refresh_static_feeds:
+  fields:
+    gtfs_static_data:
+      required: false
+      selector:
+        text:
+          type: url
+          multiple: true

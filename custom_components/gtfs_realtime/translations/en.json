@@ -1,42 +1,109 @@
 {
-    "title": "GTFS Realtime",
-    "config": {
-        "step": {
-            "user": {
-                "title": "Select a GTFS Provider",
-                "data": {
-                    "gtfs_provider": "GTFS Provider"
-                },
-                "description": "Select a GTFS Provider"
-            },
-            "choose_static_and_realtime_feeds": {
-                "data": {
-                    "api_key": "API Key (if required)",
-                    "url_endpoints": "Feed URL",
-                    "gtfs_static_data": "GTFS Static Feeds (file or URL)",
-                    "route_icons": "Route Icons format URL"
-                },
-                "data_description": {
-                    "url_endpoints": "Feed URLs for realtime GTFS Data",
-                    "gtfs_static_data": "GTFS static feed zip file. Can be local file or URL from your provider.",
-                    "route_icons": "URL to a route-icons provider containing an svg image file for a given route.  The string can contain up to 3 str.format() compatible formatters for [route_id], [route_color], and [route_text_color] respectively. If your provider gives these colors as HTML hex, you may need to add an html-escaped '#' preceeding the input."
-                },
-                "title": "Select GTFS Realtime and Static Feed URLs.",
-                "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance."
-            },
-            "choose_informed_entities": {
-                "data": {
-                    "gtfs_provider": "GTFS Provider Name",
-                    "route_ids": "Route ID",
-                    "stop_ids": "Stop ID",
-                    "arrival_limit": "Arrival Limit"
-                },
-                "data_description": {
-                    "route_ids": "Route ID for a GTFS entity to receive service alerts.",
-                    "stop_ids": "Stop ID for a GTFS entity to receive arrival data and service alerts"
-                },
-                "description": "Configure GTFS parameters."
-            }
+  "title": "GTFS Realtime",
+  "common": {
+    "generic_gtfs_provider": "Generic GTFS Provider",
+    "manual_gtfs_provider_name": "Other - Enter Manually"
+  },
+  "config": {
+    "error": {
+      "failed_preconfigured_feeds": "Failed to get preconfigured feeds",
+      "select_at_least_one_stop_or_route": "Must select at least one stop or route for GTFS updates.",
+      "unexpected_user_input": "Unexpected user Input"
+    },
+    "step": {
+      "choose_informed_entities": {
+        "title": "Select Route and Stop IDs to create sensor and binary sensor entities.",
+        "data": {
+          "arrival_limit": "Arrival Limit",
+          "gtfs_provider": "GTFS Provider Name",
+          "route_ids": "Route ID",
+          "stop_ids": "Stop ID"
+        },
+        "data_description": {
+          "route_ids": "Route ID for a GTFS entity to receive service alerts.",
+          "stop_ids": "Stop ID for a GTFS entity to receive arrival data and service alerts"
+        },
+        "description": "Configure GTFS parameters.",
+        "sections": {
+          "static_sources_update_frequency": {
+            "name": "Static Data Update Frequency",
+            "description": "Set the duration of time between each update for static data. Check with your GTFS provider for the expected frequency."
+          }
         }
+      },
+      "choose_static_and_realtime_feeds": {
+        "title": "Select GTFS Realtime and Static Feed URLs.",
+        "data": {
+          "api_key": "API Key (if required)",
+          "gtfs_static_data": "GTFS Static Feeds (file or URL)",
+          "route_icons": "Route Icons format URL",
+          "url_endpoints": "Feed URL"
+        },
+        "data_description": {
+          "gtfs_static_data": "GTFS static feed zip file. Can be local file or URL from your provider.",
+          "route_icons": "URL to a route-icons provider containing an svg image file for a given route.  The string can contain up to 3 str.format() compatible formatters for [route_id], [route_color], and [route_text_color] respectively. If your provider gives these colors as HTML hex, you may need to add an html-escaped '#' preceeding the input.",
+          "url_endpoints": "Feed URLs for realtime GTFS Data"
+        },
+        "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance."
+      },
+      "reconfigure": {
+        "title": "Reconfigure GTFS parameters.",
+        "description": "This will force update to static data."
+      },
+      "user": {
+        "title": "Select a GTFS Provider",
+        "data": {
+          "gtfs_provider_id": "GTFS Provider"
+        },
+        "description": "Select GTFS Provider"
+      }
     }
+  },
+  "entity_component": {
+    "binary_sensor": {
+      "state_attributes": {
+        "description": {
+          "name": "Description {i+1}"
+        },
+        "header": {
+          "name": "Header {i+1}"
+        }
+      }
+    },
+    "sensor": {
+      "state_attributes": {
+        "headsign": {
+          "name": "Headsign"
+        },
+        "route_color": {
+          "name": "Route Color"
+        },
+        "route_id": {
+          "name": "Route ID"
+        },
+        "route_text_color": {
+          "name": "Route Text Color"
+        },
+        "trip_id": {
+          "name": "Trip ID"
+        }
+      }
+    }
+  },
+  "services": {
+    "clear_static_feeds": {
+      "name": "Clear Static Feeds",
+      "description": "Clear static GTFS schedule data. Data will be pulled again on the configured intervals for each source."
+    },
+    "refresh_static_feeds": {
+      "name": "Refresh Static Feeds",
+      "description": "Pulls static GTFS schedule data from the data provider URIs.",
+      "fields": {
+        "gtfs_static_data": {
+          "name": "URL or File Path",
+          "description": "Static data sources to update. If blank, all Static Resources will be updated."
+        }
+      }
+    }
+  }
 }

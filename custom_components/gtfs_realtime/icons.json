@@ -1,0 +1,10 @@
+{
+  "services": {
+    "clear_static_feeds": {
+      "service": "mdi:delete-empty"
+    },
+    "refresh_static_feeds": {
+      "service": "mdi:calendar-refresh"
+    }
+  }
+}

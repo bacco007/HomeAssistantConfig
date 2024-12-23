@@ -13,19 +13,12 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.core import HomeAssistant, callback
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 import voluptuous as vol
 
-from .const import (
-    CONF_ROUTE_IDS,
-    COORDINATOR_REALTIME,
-    DESCRIPTION_PRETTY,
-    DOMAIN,
-    HEADER_PRETTY,
-    ROUTE_ID,
-    STOP_ID,
-)
+from custom_components.gtfs_realtime import GtfsRealtimeConfigEntry
+
+from .const import CONF_ROUTE_IDS, ROUTE_ID, STOP_ID
 from .coordinator import GtfsRealtimeCoordinator
 
 PLATFORM_SCHEMA = BINARY_SENSOR_PLATFORM_SCHEMA.extend(
@@ -40,32 +33,31 @@ PLATFORM_SCHEMA = BINARY_SENSOR_PLATFORM_SCHEMA.extend(
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
+    entry: GtfsRealtimeConfigEntry,
     add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Set up the sensor platform."""
-    coordinator: GtfsRealtimeCoordinator = hass.data[DOMAIN][COORDINATOR_REALTIME]
-    if discovery_info is None:
-        if CONF_ROUTE_IDS in config.data:
-            add_entities(
-                [
-                    AlertSensor(
-                        coordinator,
-                        RouteStatus(route_id, coordinator.hub),
-                        hass.config.language,
-                        None,
-                    )
-                    for route_id in config.data[CONF_ROUTE_IDS]
-                ]
-            )
+    coordinator: GtfsRealtimeCoordinator = entry.runtime_data
+    if CONF_ROUTE_IDS in entry.data:
+        add_entities(
+            [
+                AlertSensor(
+                    coordinator,
+                    RouteStatus(route_id, coordinator.hub),
+                    hass.config.language,
+                    None,
+                )
+                for route_id in entry.data[CONF_ROUTE_IDS]
+            ]
+        )
 
 
 class AlertSensor(BinarySensorEntity, CoordinatorEntity):
     """Representation of a Station GTFS Realtime Alert Sensor."""
 
-    CLEAN_ALERT_DATA = {HEADER_PRETTY: "", DESCRIPTION_PRETTY: ""}
+    CLEAN_ALERT_DATA = {"header_0": "", "description_0": ""}
 
+    _attr_translation_key = "alert_descriptions"
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
 
     def __init__(
@@ -95,6 +87,7 @@ class AlertSensor(BinarySensorEntity, CoordinatorEntity):
         return self._alert_detail
 
     def update(self) -> None:
+        """Update state from coordinator data."""
         alerts = self.informed_entity.alerts
         self._alert_detail = {}
         if len(alerts) == 0:
@@ -102,14 +95,15 @@ class AlertSensor(BinarySensorEntity, CoordinatorEntity):
         elif len(alerts) > 0:
             self._attr_is_on = True
             for i, alert in enumerate(alerts):
-                self._alert_detail[f"{HEADER_PRETTY}{f" {i + 1}" if i > 0 else ""}"] = (
-                    alert.header_text.get(self.language, "")
+                self._alert_detail[f"header_{i + 1}"] = alert.header_text.get(
+                    self.language, ""
                 )
-                self._alert_detail[
-                    f"{DESCRIPTION_PRETTY}{f" {i + 1}" if i > 0 else ""}"
-                ] = alert.description_text.get(self.language, "")
+                self._alert_detail[f"description_{i + 1}"] = alert.description_text.get(
+                    self.language, ""
+                )
         self.async_write_ha_state()
 
     @callback
     def _handle_coordinator_update(self) -> None:
+        """Handle coordinator update callback."""
         self.update()

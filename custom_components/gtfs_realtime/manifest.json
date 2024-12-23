@@ -7,10 +7,11 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/bcpearce/homeassistant-gtfs-realtime",
+  "integration_type": "hub",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/bcpearce/homeassistant-gtfs-realtime/issues",
   "requirements": [
     "gtfs_station_stop==0.8.0"
   ],
-  "version": "0.1.7"
+  "version": "0.2.0"
 }
