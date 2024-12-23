@@ -15,7 +15,7 @@ from homeassistant.helpers import entity_registry as er
 from psnawp_api.core.psnawp_exceptions import PSNAWPAuthenticationError
 from psnawp_api.psnawp import PSNAWP
 
-from .const import DOMAIN, PSN_API, PSN_COORDINATOR
+from .const import DOMAIN, PSN_API, PSN_COORDINATOR, CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES
 from .coordinator import PsnCoordinator
 
 PLATFORMS: list[Platform] = [
@@ -95,6 +95,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _migrate_device_identifiers(hass, entry.entry_id, coordinator)
         hass.config_entries.async_update_entry(entry, version=2)
 
+    if entry.version < 3:
+        _remove_option_sensor(hass, entry, coordinator)
+        hass.config_entries.async_update_entry(entry, version=3)
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(update_listener))
     return True
@@ -132,3 +136,17 @@ def _migrate_device_identifiers(
                 "migrate identifier '%s' to '%s'", device.identifiers, new_identifier
             )
             dev_reg.async_update_device(device.id, new_identifiers=new_identifier)
+
+
+def _remove_option_sensor(
+    hass: HomeAssistant, entry: ConfigEntry, coordinator: PsnCoordinator
+) -> None:
+    if entry.options.get(CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES) is True:
+        entity_registry = er.async_get(hass)
+        entity_id = entity_registry.async_get_entity_id(
+            "sensor",
+            DOMAIN,
+            f"{coordinator.data.get("username").lower()}_psn_about_me_attr",
+        )
+        if entity_id:
+            entity_registry.async_remove(entity_id)

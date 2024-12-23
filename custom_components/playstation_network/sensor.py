@@ -185,6 +185,16 @@ PSN_SENSOR: tuple[PsnSensorEntityDescription, ...] = (
         unique_id="has_playstation_plus",
         value_fn=get_ps_plus_status,
     ),
+    PsnSensorEntityDescription(
+        key="about_me",
+        native_unit_of_measurement=None,
+        name="About Me",
+        icon="mdi:comment-text-outline",
+        entity_registry_enabled_default=True,
+        has_entity_name=True,
+        unique_id="about_me",
+        value_fn=lambda data: data.get("profile").get("aboutMe"),
+    ),
 )
 
 PSN_ADDITIONAL_SENSOR: tuple[PsnSensorEntityDescription, ...] = (
@@ -197,16 +207,6 @@ PSN_ADDITIONAL_SENSOR: tuple[PsnSensorEntityDescription, ...] = (
         has_entity_name=True,
         unique_id="psn_title_name_attr",
         value_fn=lambda data: data.get("name"),
-    ),
-    PsnSensorEntityDescription(
-        key="about_me",
-        native_unit_of_measurement=None,
-        name="About Me",
-        icon="mdi:information-outline",
-        entity_registry_enabled_default=True,
-        has_entity_name=True,
-        unique_id="psn_about_me_attr",
-        value_fn=lambda data: data.get("about_me"),
     ),
     PsnSensorEntityDescription(
         key="platform",
