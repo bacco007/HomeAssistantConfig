@@ -1721,7 +1721,7 @@ function getThumbnail(mediaItem, config, itemsWithImage) {
   return thumbnail || "";
 }
 function removeSpecialChars(str) {
-  return str.replace(/[^a-zA-Z ]/g, "");
+  return str.replace(/[^a-zA-Z0-9 ]/g, "");
 }
 function indexOfWithoutSpecialChars(array, str) {
   let result = -1;
