@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2024.12.5 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6266 |
-| No. Sensors | 4140 |
+| No. Entities | 6278 |
+| No. Sensors | 4158 |
 | No. Automations | 154 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 56
-Sensors | 4140
+Sensors | 4158
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -815,7 +815,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.1.7] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
+| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.0] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
 | [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.1] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.12.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
@@ -842,9 +842,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v12.20.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
-| [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.0] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
+| [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.1] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -857,7 +857,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.2.7] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.72] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.75] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.5] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -927,7 +927,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.3.0] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.5.2] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -959,7 +959,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | --- | --- | --- |
 | Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.25.0 |  | db21ed7f |
-| Cloudflared | 5.2.3 |  | 9074a9fa |
+| Cloudflared | 5.2.4 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
 | ESPHome Device Builder | 2024.12.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
