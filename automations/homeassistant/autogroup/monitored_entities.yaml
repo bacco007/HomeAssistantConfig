@@ -4,7 +4,7 @@ alias: "[HA] Autogroup - Monitored Entities"
 description: "Update Monitored Entities Groups automatically"
 mode: single
 max_exceeded: silent
-trigger:
+triggers:
   - platform: homeassistant
     id: startup
     event: start
@@ -21,7 +21,7 @@ trigger:
 
   - platform: time_pattern
     minutes: "/1"
-action:
+actions:
   - if: "{{ trigger.id == 'startup' }}"
     then:
       - delay: 240
