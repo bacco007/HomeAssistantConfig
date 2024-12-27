@@ -1,0 +1,21 @@
+---
+trigger:
+  - platform: event
+    event_type: flightradar24_exit
+
+sensor:
+  - unique_id: flightradar24_last_5_flights
+    name: "FlightRadar24 Last 5 Flights"
+    state: >-
+      {% set flight = trigger.event.data %}
+      {{ flight.flight_number }} - {{ flight.airline_short }} - {{ flight.aircraft_model }} ({{ flight.aircraft_registration }})
+      {{ flight.airport_origin_city }} > {{ flight.airport_destination_city }}
+    attributes:
+      flights: >-
+        {% set n = 5 %}
+        {% set m = this.attributes.flights | count | default(0) %}
+        {{ [ trigger.event.data ] +
+            ( [] if m == 0 else
+              this.attributes.flights[0:n-1] )
+        }}
+      icon: mdi:airplane

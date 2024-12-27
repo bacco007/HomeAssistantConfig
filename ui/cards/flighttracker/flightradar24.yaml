@@ -409,3 +409,115 @@ cards:
             else {
                 '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
             }
+
+  - type: custom:flex-table-card
+    strict: false
+    sort_by:
+      - flights-
+    entities:
+      include: sensor.flightradar24_last_5_flights
+    card_mod:
+      style: |
+        ha-card {
+          border: 0;
+          box-shadow: none;
+          overflow: auto;
+          padding-top: 5px;
+          font-size: 12px;
+        }
+        tbody tr:hover {
+          background-color: coral !important
+        }
+    css:
+      table+: "padding: 16px;"
+      tbody tr+: "user-select: text"
+      tbody tr td:nth-child(2)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(3)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(4)+: "min-width: 1fr;width: 1fr; white-space: nowrap;"
+      tbody tr td:nth-child(5)+: "min-width: 1fr;width: 1fr;"
+      tbody tr td:nth-child(6)+: "min-width: 1fr;width: 1fr;"
+      th+: "border-bottom: 1px solid rgb(127,127,127);"
+    columns:
+      - name: TAIL
+        data: flights
+        align: center
+        modify: |
+          if(x.airline_icao != null)
+            '<img src="https://content.airhex.com/content/logos/airlines_' + x.airline_icao + '_50_50_f.png?proportions=keep">'
+          else {
+              '<img src="https://content.airhex.com/content/logos/airlines_' + x.airline_icao + '_50_50_f.png?proportions=keep">';
+          }
+      - name: FLIGHT
+        data: flights
+        align: center
+        modify: |
+          if(x.airline != null)
+            {x.airline + ' (' + x.airline_iata + ' / ' + x.airline_icao + ')'}
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
+      - name: FLTNO
+        data: flights
+        align: center
+        modify: |
+          if(x.flight_number != null)
+            {x.flight_number}
+          else {
+              x.callsign
+          }
+      - name: REGO
+        data: flights
+        align: center
+        modify: |
+          if(x.aircraft_registration != null)
+            {x.aircraft_registration}
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
+      - name: AIRCRAFT
+        data: flights
+        align: center
+        modify: |
+          if(x.aircraft_model != null)
+            {x.aircraft_model + ' (' + x.aircraft_code + ')'}
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
+      - name: ALT (m)
+        data: flights
+        align: center
+        modify: |
+          if(x.altitude != null)
+            {var data = x.altitude * 0.3048;
+            data.toFixed(0)
+            }
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
+      - name: SPD (km)
+        data: flights
+        align: center
+        modify: |
+          if(x.ground_speed != null)
+            {var data = x.ground_speed * 1.852;
+            data.toFixed(0)
+            }
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
+      - name: ORGN
+        data: flights
+        modify: |
+          if(x.airport_origin_name != null)
+            {x.airport_origin_name + ' (' + x.airport_origin_code_icao + ')'}
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
+      - name: DEST
+        data: flights
+        modify: |
+          if(x.airport_destination_name != null)
+            {x.airport_destination_name + ' (' + x.airport_destination_code_icao + ')'}
+          else {
+              '<span style="color:grey;"><i>' + "N/A" + '</i></span>';
+          }
