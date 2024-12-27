@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "该设备已配置",
+            "existing_instance_updated": "已更新现有配置。"
+        },
+        "error": {
+            "cannot_connect": "连接失败",
+            "invalid_auth": "身份验证无效",
+            "unknown": "意外错误"
+        },
+        "step": {
+            "user": {
+                "description": "输入您的 Uptime Kuma 实例的连接信息：",
+                "data": {
+                    "host": "主机或 URL",
+                    "password": "密码",
+                    "port": "端口",
+                    "username": "用户名",
+                    "verify_ssl": "验证 SSL 证书"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie je už nakonfigurované",
+            "existing_instance_updated": "Aktualizovaná už existujúca konfigurácia."
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripojiť",
+            "invalid_auth": "Neplatné overenie",
+            "unknown": "Neočakávaná chyba"
+        },
+        "step": {
+            "user": {
+                "description": "Zadajte informácie o pripojení pre inštanciu Uptime Kuma:",
+                "data": {
+                    "host": "Host/URL",
+                    "password": "Heslo",
+                    "port": "Port",
+                    "username": "Užívateľské meno",
+                    "verify_ssl": "Overiť SSL certifikát"
+                }
+            }
+        }
+    }
+}

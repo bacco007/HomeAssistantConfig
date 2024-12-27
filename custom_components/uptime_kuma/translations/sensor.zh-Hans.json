@@ -1,0 +1,8 @@
+{
+    "state": {
+        "uptimerobot__monitor_status": {
+            "down": "离线",
+            "up": "在线"
+        }
+    }
+  }
