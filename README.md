@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.0b2 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6013 |
+| No. Entities | 6011 |
 | No. Sensors | 4039 |
 | No. Automations | 154 |
 
@@ -85,7 +85,7 @@ Lights | 13
 Locks | 4
 Media players | 39
 Numbers | 48
-Persistent notifications | 4
+Persistent notifications | 5
 Persons | 4
 Remotes | 9
 Scenes | 2
