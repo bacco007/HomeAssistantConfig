@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.0b2 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6011 |
+| No. Entities | 6017 |
 | No. Sensors | 4039 |
 | No. Automations | 154 |
 
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 607
+Devices | 608
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -99,7 +99,7 @@ Switches | 193
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 323
+Update | 324
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -857,7 +857,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.2.7] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.75] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.76] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.5] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -876,7 +876,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.13] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
-<details><summary>64 Lovelace Plugins</summary>
+<details><summary>65 Lovelace Plugins</summary>
 
 | Name | Version | Description |
 | --- | --- | --- |
@@ -907,7 +907,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Formula One Card](https://github.com/marcokreeft87/formulaone-card) |  [v1.9.7] | Present the data of Formula One in a pretty way |
 | [Heatmap Card](https://github.com/kandsten/ha-heatmap-card) |  [vac99408] | Heatmap custom card for Home Assistant |
 | [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card) |  [v1.3.1] | Sun Card successor: Visualize the position of the Sun over the horizon. |
-| [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.4.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
+| [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.5.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.4.0] | 🙈 Hides the Home Assistant header and/or sidebar |
@@ -936,6 +936,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.14] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
+| [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v0.9.4] | Temperature Hetmap for Home Assistant heatmap |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.1] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
