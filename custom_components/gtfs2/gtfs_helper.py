@@ -896,7 +896,8 @@ def get_local_stops_next_departures(self):
         tomorrow_name = tomorrow.strftime("%A").lower()
         tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date(:now_offset) or calendar_date_today.date = date(:now_offset,'+1 day'))"
-        tomorrow_select2 = f"CASE WHEN date(:now_offset) < calendar_date_today.date THEN '1' else '0' END as tomorrow,"        
+        tomorrow_select2 = f"CASE WHEN date(:now_offset) < calendar_date_today.date THEN '1' else '0' END as tomorrow,"    
+    _LOGGER.debug("Query params: Latitude %s - Longitude %s - Timerange %s - Timerange_history %s - Radius %s - Now: %s", latitude, longitude, time_range, time_range_history, radius, now)
     sql_query = f"""
         SELECT * FROM (
         SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, stop.stop_timezone as stop_timezone, agency.agency_timezone as agency_timezone, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,
@@ -1032,6 +1033,10 @@ def get_local_stops_next_departures(self):
         self._icon = ICONS.get(row['route_type'], ICON)
         
         if row["today"] == 1 or (row["today_cd"] == 1 and row["start_date"] == row["calendar_date"]):
+            if row["today"] == 1:
+                _LOGGER.debug("Adding row from calendar today=1")
+            if row["today_cd"] == 1 and row["start_date"] == row["calendar_date"]:
+                _LOGGER.debug("Adding row from calendar_dates today_cd=1 and start_date = calendar_date")    
             self._trip_id = row["trip_id"]
             self._direction = str(row["direction_id"])
             self._route = row['route_id']   
@@ -1088,20 +1093,26 @@ def get_local_stops_next_departures(self):
 
             if depart_time_corrected > now_tz: 
                 _LOGGER.debug("Departure time corrected: %s, after now in tz with offset: %s", depart_time_corrected, now_tz)
-                timetable.append({"departure": self._departure_time, "departure_datetime": self._departure_datetime_utc, "departure_realtime": departure_rt, "departure_realtime_datetime": departure_rt_datetime, "delay_realtime_derived": delay_rt_derived, "delay_realtime": delay_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
+                element = {"departure": self._departure_time, "departure_datetime": self._departure_datetime_utc, "departure_realtime": departure_rt, "departure_realtime_datetime": departure_rt_datetime, "delay_realtime_derived": delay_rt_derived, "delay_realtime": delay_rt, "date": now_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon}
+                if element not in timetable: 
+                    timetable.append(element)
                 _LOGGER.debug("Timetable: %s", timetable)
         
         if (row["tomorrow"] == '1' or row["tomorrow"] == 1) and (datetime.datetime.strptime(now_time_hist_corrected,"%H:%M") > datetime.datetime.strptime(row["departure_time"],"%H:%M:%S")):
             _LOGGER.debug("Tomorrow: adding row")
-            timetable.append({"departure": self._departure_time, "departure_datetime": self._departure_datetime_utc, "departure_realtime": "tomorrow", "departure_realtime_datetime": "tomorrow", "delay_realtime_derived": "tomorrow", "delay_realtime": "tomorrow",  "date": tomorrow_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon})
+            element = {"departure": self._departure_time, "departure_datetime": self._departure_datetime_utc, "departure_realtime": "tomorrow", "departure_realtime_datetime": "tomorrow", "delay_realtime_derived": "tomorrow", "delay_realtime": "tomorrow",  "date": tomorrow_date, "stop_name": row['stop_name'], "route": row["route_short_name"], "route_long": row["route_long_name"], "headsign": row["trip_headsign"], "trip_id": row["trip_id"], "direction_id": row["direction_id"], "icon": self._icon}
+            if element not in timetable: 
+                timetable.append(element)
+            _LOGGER.debug("Timetable: %s", timetable)
         
         prev_entry = entry.copy()
         prev_stop_id = str(row["stop_id"])
-        entry["departure"] = timetable          
+        entry["departure"] = timetable         
+
 
     if entry:      
-
         local_stops_list.append(entry)
+
     data_returned = local_stops_list   
     _LOGGER.debug("Stop data returned: %s", data_returned)
     return data_returned
@@ -1116,3 +1127,5 @@ async def update_gtfs_local_stops(hass, data):
         _LOGGER.debug("Reloading local stops for config_entry_id: %s", cf_entry) 
         reload = await hass.config_entries.async_reload(cf_entry)    
     return
+    
+ 
