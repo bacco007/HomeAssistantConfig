@@ -1,0 +1,8 @@
+---
+platform: snmp
+name: udm_wan_out
+host: 192.168.1.1
+community: public
+version: 2c
+baseoid: 1.3.6.1.2.1.2.2.1.16.13 # ifOutOctets.13 / eth4 (interface 12, zero-indexed)
+unit_of_measurement: octets
