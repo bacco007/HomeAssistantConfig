@@ -69,7 +69,6 @@ from custom_components.powercalc.const import (
     CONF_SLEEP_POWER,
     CONF_STANDBY_POWER,
     CONF_UNAVAILABLE_POWER,
-    DATA_CALCULATOR_FACTORY,
     DATA_DISCOVERY_MANAGER,
     DATA_STANDBY_POWER_SENSORS,
     DEFAULT_POWER_SENSOR_PRECISION,
@@ -156,7 +155,7 @@ async def create_virtual_power_sensor(
         )
         entity_category: str | None = sensor_config.get(CONF_POWER_SENSOR_CATEGORY) or None
         strategy = detect_calculation_strategy(sensor_config, power_profile)
-        calculation_strategy_factory: PowerCalculatorStrategyFactory = hass.data[DOMAIN][DATA_CALCULATOR_FACTORY]
+        calculation_strategy_factory = PowerCalculatorStrategyFactory.get_instance(hass)
 
         standby_power, standby_power_on = _get_standby_power(sensor_config, power_profile)
 
@@ -210,7 +209,7 @@ async def _get_power_profile(
 
     power_profile = None
     try:
-        model_info = await discovery_manager.extract_model_info_from_entity(source_entity.entity_entry)
+        model_info = await discovery_manager.extract_model_info_from_device_info(source_entity.entity_entry)
         power_profile = await get_power_profile(
             hass,
             sensor_config,
@@ -682,7 +681,7 @@ class VirtualPowerSensor(SensorEntity, PowerSensor):
         await strategy_instance.stop_playbook()
 
     def get_active_playbook(self) -> dict[str, str]:
-        """Stop an active playbook"""
+        """Get the active playbook"""
         strategy_instance = self._ensure_playbook_strategy()
         playbook = strategy_instance.get_active_playbook()
         if not playbook:
