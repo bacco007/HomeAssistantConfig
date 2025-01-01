@@ -209,8 +209,14 @@ def get_rt_route_trip_statuses(self):
                 
                 for stop in entity["trip_update"]["stop_time_update"]:
                     stop_id = stop["stop_id"]
-                    if stop_id == self._stop_id:
+                    stop_sequence = stop["stop_sequence"]
+                    if stop_id == self._stop_id or (stop_id == "" and stop_sequence == self._stop_sequence):
                         _LOGGER.debug("Stop found: %s", stop)
+                        # if the data does not contain a stop_id but only a stop_sequence, assume stop_id being the correct stop based on sequence
+                        # this does not have to be always correct but best-guess
+                        if stop_id == "":
+                            stop_id = self._stop_id
+                        
                         if route_id not in departure_times:
                             departure_times[route_id] = {}
                                                

@@ -422,6 +422,7 @@ def get_next_departure(self):
         "first": item["first"],
         "last": item["last"],
         "origin_stop_id": item["origin_stop_id"],
+        "origin_stop_sequence": item["origin_stop_sequence"],
         "origin_stop_name": item["origin_stop_name"],
         "departure_time": depart_time,
         "arrival_time": arrival_time,
@@ -900,7 +901,7 @@ def get_local_stops_next_departures(self):
     _LOGGER.debug("Query params: Latitude %s - Longitude %s - Timerange %s - Timerange_history %s - Radius %s - Now: %s", latitude, longitude, time_range, time_range_history, radius, now)
     sql_query = f"""
         SELECT * FROM (
-        SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, stop.stop_timezone as stop_timezone, agency.agency_timezone as agency_timezone, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,
+        SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, stop.stop_timezone as stop_timezone, agency.agency_timezone as agency_timezone, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,st.stop_sequence as stop_sequence,
                route.route_long_name,route.route_short_name,route.route_type,
                calendar.{now.strftime("%A").lower()} AS today,
                {tomorrow_select}
@@ -929,7 +930,7 @@ def get_local_stops_next_departures(self):
         )
 		UNION ALL
         SELECT * FROM (
-	    SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, stop.stop_timezone as stop_timezone, agency.agency_timezone as agency_timezone, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,
+	    SELECT stop.stop_id, stop.stop_name,stop.stop_lat as latitude, stop.stop_lon as longitude, stop.stop_timezone as stop_timezone, agency.agency_timezone as agency_timezone, trip.trip_id, trip.trip_headsign, trip.direction_id, time(st.departure_time) as departure_time,st.stop_sequence as stop_sequence,
                route.route_long_name,route.route_short_name,route.route_type,
                '0' AS today,
                {tomorrow_select2}
@@ -1029,7 +1030,7 @@ def get_local_stops_next_departures(self):
             local_stops_list.append(prev_entry)
             timetable = []
              
-        entry = {"stop_id": row['stop_id'], "stop_name": row['stop_name'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable, "offset": offset}
+        entry = {"stop_id": row['stop_id'], "stop_name": row['stop_name'], "stop_sequence": row['stop_sequence'], "latitude": row['latitude'], "longitude": row['longitude'], "departure": timetable, "offset": offset}
         self._icon = ICONS.get(row['route_type'], ICON)
         
         if row["today"] == 1 or (row["today_cd"] == 1 and row["start_date"] == row["calendar_date"]):
@@ -1042,6 +1043,7 @@ def get_local_stops_next_departures(self):
             self._route = row['route_id']   
             self._route_id = row['route_id'] 
             self._stop_id = row['stop_id']
+            self._stop_sequence = row['stop_sequence']
             _LOGGER.debug("Row departure_time: %s", row["departure_time"])              
             # collect departure time from row, using agency timezone as basis, then transforming it to the stop-specific timezone (based on Amtrak)
             self._departure_datetime = datetime.datetime.strptime(now_date + " " + row["departure_time"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone_agency).astimezone(tz=timezone_stop)
@@ -1056,7 +1058,7 @@ def get_local_stops_next_departures(self):
             # Find RT if configured
             if self._realtime:
                 self._get_next_service = {}
-                _LOGGER.debug("Find rt for local stop route: %s - direction: %s - stop: %s", self._route , self._direction, self._stop_id)
+                _LOGGER.debug("Find rt for local stop route: %s - direction: %s - stop: %s - stop_sequence: %s", self._route , self._direction, self._stop_id, self._stop_sequence)
                 next_service = get_rt_route_trip_statuses(self)
                 _LOGGER.debug("Next service: %s", next_service)
                 if next_service:                       
