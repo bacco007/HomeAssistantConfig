@@ -32,6 +32,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import selector
 from homeassistant.helpers.schema_config_entry_flow import SchemaFlowError
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -104,6 +105,7 @@ from .const import (
     CONF_UTILITY_METER_TYPES,
     CONF_VALUE,
     CONF_VALUE_TEMPLATE,
+    CONF_VARIABLES,
     DISCOVERY_POWER_PROFILES,
     DISCOVERY_SOURCE_ENTITY,
     DOMAIN,
@@ -120,6 +122,7 @@ from .const import (
 )
 from .discovery import get_power_profile_by_source_entity
 from .errors import ModelNotSupportedError, StrategyConfigurationError
+from .flow_helper.dynamic_field_builder import build_dynamic_field_schema
 from .group_include.include import find_entities
 from .power_profile.factory import get_power_profile
 from .power_profile.library import ModelInfo, ProfileLibrary
@@ -144,6 +147,7 @@ class Step(StrEnum):
     GROUP_TRACKED_UNTRACKED_MANUAL = "group_tracked_untracked_manual"
     LIBRARY = "library"
     POST_LIBRARY = "post_library"
+    LIBRARY_CUSTOM_FIELDS = "library_custom_fields"
     LIBRARY_MULTI_PROFILE = "library_multi_profile"
     LIBRARY_OPTIONS = "library_options"
     VIRTUAL_POWER = "virtual_power"
@@ -195,7 +199,7 @@ MENU_OPTIONS = [
 LIBRARY_URL = "https://library.powercalc.nl"
 UNIQUE_ID_TRACKED_UNTRACKED = "pc_tracked_untracked"
 
-STRATEGY_STEP_MAPPING = {
+STRATEGY_STEP_MAPPING: dict[CalculationStrategy, Step] = {
     CalculationStrategy.FIXED: Step.FIXED,
     CalculationStrategy.LINEAR: Step.LINEAR,
     CalculationStrategy.MULTI_SWITCH: Step.MULTI_SWITCH,
@@ -203,7 +207,7 @@ STRATEGY_STEP_MAPPING = {
     CalculationStrategy.WLED: Step.WLED,
 }
 
-GROUP_STEP_MAPPING = {
+GROUP_STEP_MAPPING: dict[GroupType, Step] = {
     GroupType.CUSTOM: Step.GROUP_CUSTOM,
     GroupType.DOMAIN: Step.GROUP_DOMAIN,
     GroupType.STANDBY: Step.GROUP_DOMAIN,
@@ -363,16 +367,8 @@ SCHEMA_POWER_LINEAR = vol.Schema(
     },
 )
 
-SCHEMA_POWER_MULTI_SWITCH = vol.Schema(
-    {
-        vol.Required(CONF_ENTITIES): selector.EntitySelector(
-            selector.EntitySelectorConfig(domain=Platform.SWITCH, multiple=True),
-        ),
-    },
-)
 SCHEMA_POWER_MULTI_SWITCH_MANUAL = vol.Schema(
     {
-        **SCHEMA_POWER_MULTI_SWITCH.schema,
         vol.Required(CONF_POWER): vol.Coerce(float),
         vol.Required(CONF_POWER_OFF): vol.Coerce(float),
     },
@@ -549,11 +545,17 @@ SCHEMA_GLOBAL_CONFIGURATION_ENERGY_SENSOR = vol.Schema(
     },
 )
 
-GROUP_SCHEMAS = {
+GROUP_SCHEMAS: dict[GroupType, vol.Schema] = {
     GroupType.CUSTOM: SCHEMA_GROUP,
     GroupType.DOMAIN: SCHEMA_GROUP_DOMAIN,
     GroupType.SUBTRACT: SCHEMA_GROUP_SUBTRACT,
     GroupType.TRACKED_UNTRACKED: SCHEMA_GROUP_TRACKED_UNTRACKED,
+}
+
+STRATEGY_SCHEMAS: dict[CalculationStrategy, vol.Schema] = {
+    CalculationStrategy.FIXED: SCHEMA_POWER_FIXED,
+    CalculationStrategy.PLAYBOOK: SCHEMA_POWER_PLAYBOOK,
+    CalculationStrategy.WLED: SCHEMA_POWER_WLED,
 }
 
 
@@ -587,6 +589,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         self.is_library_flow: bool = False
         self.skip_advanced_step: bool = False
         self.is_options_flow: bool = isinstance(self, OptionsFlow)
+        self.strategy: CalculationStrategy | None = None
         self.name: str | None = None
         super().__init__()
 
@@ -622,26 +625,72 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         if not any(key in (user_input or {}) for key in required_keys):
             raise SchemaFlowError("group_mandatory")
 
-    def create_strategy_schema(self, strategy: CalculationStrategy, source_entity_id: str) -> vol.Schema:
+    def create_strategy_schema(self) -> vol.Schema:
         """Get the config schema for a given power calculation strategy."""
-        if strategy == CalculationStrategy.LINEAR:
-            return SCHEMA_POWER_LINEAR.extend(  # type: ignore
+        if not self.strategy:
+            raise ValueError("No strategy selected")  # pragma: no cover
+
+        if hasattr(self, f"create_schema_{self.strategy.value.lower()}"):
+            return getattr(self, f"create_schema_{self.strategy.value.lower()}")()  # type: ignore
+
+        return STRATEGY_SCHEMAS[self.strategy]
+
+    def create_schema_linear(self) -> vol.Schema:
+        """Create the config schema for linear strategy."""
+        return SCHEMA_POWER_LINEAR.extend(  # type: ignore
+            {
+                vol.Optional(CONF_ATTRIBUTE): selector.AttributeSelector(
+                    selector.AttributeSelectorConfig(
+                        entity_id=self.source_entity_id,  # type: ignore
+                        hide_attributes=[],
+                    ),
+                ),
+            },
+        )
+
+    def create_schema_multi_switch(self) -> vol.Schema:
+        """Create the config schema for multi switch strategy."""
+
+        entity_registry = er.async_get(self.hass)
+        entities: list[str] = []
+        if self.source_entity and self.source_entity.device_entry:
+            entities = [
+                entity.entity_id
+                for entity in entity_registry.entities.get_entries_for_device_id(self.source_entity.device_entry.id)
+                if entity.domain == Platform.SWITCH
+            ]
+
+        # pre-populate the entity selector with the switches from the device
+        if entities:
+            schema = vol.Schema(
                 {
-                    vol.Optional(CONF_ATTRIBUTE): selector.AttributeSelector(
-                        selector.AttributeSelectorConfig(
-                            entity_id=source_entity_id,
-                            hide_attributes=[],
+                    vol.Required(
+                        CONF_ENTITIES,
+                        description={"suggested_value": entities},
+                    ): selector.EntitySelector(
+                        selector.EntitySelectorConfig(
+                            domain=Platform.SWITCH,
+                            multiple=True,
+                            include_entities=entities,
                         ),
                     ),
                 },
             )
-        if strategy == CalculationStrategy.PLAYBOOK:
-            return SCHEMA_POWER_PLAYBOOK
-        if strategy == CalculationStrategy.MULTI_SWITCH:
-            return SCHEMA_POWER_MULTI_SWITCH if self.is_library_flow else SCHEMA_POWER_MULTI_SWITCH_MANUAL
-        if strategy == CalculationStrategy.WLED:
-            return SCHEMA_POWER_WLED
-        return SCHEMA_POWER_FIXED
+        else:
+            schema = vol.Schema(
+                {
+                    vol.Required(CONF_ENTITIES): selector.EntitySelector(
+                        selector.EntitySelectorConfig(
+                            domain=Platform.SWITCH,
+                            multiple=True,
+                        ),
+                    ),
+                },
+            )
+        if not self.is_library_flow:
+            schema = schema.extend(SCHEMA_POWER_MULTI_SWITCH_MANUAL.schema)
+
+        return schema
 
     def create_schema_group_custom(
         self,
@@ -769,12 +818,10 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
 
     def build_strategy_config(
         self,
-        strategy: CalculationStrategy,
-        source_entity_id: str,
         user_input: dict[str, Any],
     ) -> dict[str, Any]:
         """Build the config dict needed for the configured strategy."""
-        strategy_schema = self.create_strategy_schema(strategy, source_entity_id)
+        strategy_schema = self.create_strategy_schema()
         strategy_options: dict[str, Any] = {}
         for key in strategy_schema.schema:
             if user_input.get(key) is None:
@@ -932,7 +979,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
                 ),
             )
             self.selected_profile = profile
-            if self.selected_profile and not await self.selected_profile.has_sub_profiles:
+            if self.selected_profile and not await self.selected_profile.needs_user_configuration:
                 await self.validate_strategy_config()
             return user_input
 
@@ -974,26 +1021,44 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         Handles the logic after the user either selected manufacturer/model himself or confirmed autodiscovered.
         Forwards to the next step in the flow.
         """
-        if self.selected_profile and await self.selected_profile.has_sub_profiles and not self.selected_profile.sub_profile_select:
+        if not self.selected_profile:
+            return self.async_abort(reason="model_not_supported")  # pragma: no cover
+
+        if self.selected_profile.has_custom_fields and not self.sensor_config.get(CONF_VARIABLES):
+            return await self.async_step_library_custom_fields()
+
+        if await self.selected_profile.has_sub_profiles and not self.selected_profile.sub_profile_select:
             return await self.async_step_sub_profile()
 
-        if (
-            self.selected_profile
-            and self.selected_profile.device_type == DeviceType.SMART_SWITCH
-            and self.selected_profile.calculation_strategy == CalculationStrategy.FIXED
-        ):
+        if self.selected_profile.device_type == DeviceType.SMART_SWITCH and self.selected_profile.calculation_strategy == CalculationStrategy.FIXED:
             return await self.async_step_smart_switch()
 
-        if self.selected_profile and self.selected_profile.needs_fixed_config:  # pragma: no cover
+        if self.selected_profile.needs_fixed_config:  # pragma: no cover
             return await self.async_step_fixed()
 
-        if self.selected_profile and self.selected_profile.needs_linear_config:
+        if self.selected_profile.needs_linear_config:
             return await self.async_step_linear()
 
-        if self.selected_profile and self.selected_profile.calculation_strategy == CalculationStrategy.MULTI_SWITCH:
+        if self.selected_profile.calculation_strategy == CalculationStrategy.MULTI_SWITCH:
             return await self.async_step_multi_switch()
 
         return await self.async_step_power_advanced()
+
+    async def async_step_library_custom_fields(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Handle the flow for custom fields."""
+
+        async def _process_user_input(user_input: dict[str, Any]) -> dict[str, Any]:
+            return {CONF_VARIABLES: user_input}
+
+        return await self.handle_form_step(
+            PowercalcFormStep(
+                step=Step.LIBRARY_CUSTOM_FIELDS,
+                schema=build_dynamic_field_schema(self.selected_profile),  # type: ignore
+                next_step=Step.POST_LIBRARY,
+                validate_user_input=_process_user_input,
+            ),
+            user_input,
+        )
 
     async def async_step_sub_profile(
         self,
@@ -1009,7 +1074,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         ) -> vol.Schema:
             """Create sub profile schema."""
             library = await ProfileLibrary.factory(self.hass)
-            profile = await library.get_profile(model_info)
+            profile = await library.get_profile(model_info, process_variables=False)
             sub_profiles = [selector.SelectOptionDict(value=sub_profile, label=sub_profile) for sub_profile in await profile.get_sub_profiles()]
             return vol.Schema(
                 {
@@ -1099,13 +1164,15 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         user_input: dict[str, Any] | None = None,
         validate: Callable[[dict[str, Any]], None] | None = None,
     ) -> FlowResult:
+        self.strategy = strategy
+
         async def _validate(user_input: dict[str, Any]) -> dict[str, Any]:
             if validate:
                 validate(user_input)
             await self.validate_strategy_config({strategy: user_input})
             return {strategy: user_input}
 
-        schema = self.create_strategy_schema(strategy, self.source_entity_id)  # type: ignore
+        schema = self.create_strategy_schema()
 
         return await self.handle_form_step(
             PowercalcFormStep(
@@ -1613,7 +1680,7 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
         self.sensor_config = dict(config_entry.data)
         self.sensor_type: SensorType = self.sensor_config.get(CONF_SENSOR_TYPE) or SensorType.VIRTUAL_POWER
         self.source_entity_id: str = self.sensor_config.get(CONF_ENTITY_ID)  # type: ignore
-        self.strategy: CalculationStrategy | None = self.sensor_config.get(CONF_MODE)
+        self.strategy = self.sensor_config.get(CONF_MODE)
 
     async def async_step_init(
         self,
@@ -1835,7 +1902,7 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
 
         step = STRATEGY_STEP_MAPPING.get(self.strategy, Step.FIXED)
 
-        schema = self.create_strategy_schema(self.strategy, self.source_entity_id)
+        schema = self.create_strategy_schema()
         if self.selected_profile and self.selected_profile.device_type == DeviceType.SMART_SWITCH:
             schema = SCHEMA_POWER_SMART_SWITCH
 
@@ -1884,11 +1951,7 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
                 self._process_user_input(user_input, SCHEMA_POWER_SMART_SWITCH)
                 user_input = {CONF_POWER: user_input.get(CONF_POWER, 0)}
 
-            strategy_options = self.build_strategy_config(
-                self.strategy,
-                self.source_entity_id,
-                user_input or {},
-            )
+            strategy_options = self.build_strategy_config(user_input or {})
 
             if self.strategy != CalculationStrategy.LUT:
                 self.sensor_config.update({str(self.strategy): strategy_options})

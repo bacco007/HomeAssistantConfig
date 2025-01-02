@@ -87,6 +87,7 @@ from custom_components.powercalc.errors import (
 from custom_components.powercalc.helpers import evaluate_power
 from custom_components.powercalc.power_profile.factory import get_power_profile
 from custom_components.powercalc.power_profile.power_profile import (
+    DiscoveryBy,
     PowerProfile,
     SubProfileSelectConfig,
     SubProfileSelector,
@@ -490,7 +491,6 @@ class VirtualPowerSensor(SensorEntity, PowerSensor):
 
         template: Template | str = self._sensor_config.get(CONF_CALCULATION_ENABLED_CONDITION)  # type: ignore
         if isinstance(template, str):
-            template = template.replace("[[entity]]", self.source_entity)
             template = Template(template, self.hass)
 
         self._calculation_enabled_condition = template
@@ -506,7 +506,8 @@ class VirtualPowerSensor(SensorEntity, PowerSensor):
             self._sleep_power_timer()
             self._sleep_power_timer = None
 
-        if self.source_entity == DUMMY_ENTITY_ID:
+        discovery_by = self._power_profile.discovery_by if self._power_profile else DiscoveryBy.ENTITY
+        if self.source_entity == DUMMY_ENTITY_ID and discovery_by == DiscoveryBy.ENTITY:
             state = State(self.source_entity, STATE_ON)
 
         if not state or not self._has_valid_state(state):
