@@ -101,9 +101,9 @@ class AlertSensor(BinarySensorEntity, CoordinatorEntity):
                 self._alert_detail[f"description_{i + 1}"] = alert.description_text.get(
                     self.language, ""
                 )
-        self.async_write_ha_state()
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle coordinator update callback."""
         self.update()
+        super()._handle_coordinator_update()

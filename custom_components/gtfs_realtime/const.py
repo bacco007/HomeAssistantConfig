@@ -16,10 +16,6 @@ CONF_ARRIVAL_LIMIT = "arrival_limit"
 CONF_VERSION = 2
 CONF_MINOR_VERSION = 0
 
-# SERVICES
-REFRESH_STATIC_FEEDS = "refresh_static_feeds"
-CLEAR_STATIC_FEEDS = "clear_static_feeds"
-
 # ERRORS
 CONF_SELECT_AT_LEAST_ONE_STOP_OR_ROUTE = "select_at_least_one_stop_or_route"
 

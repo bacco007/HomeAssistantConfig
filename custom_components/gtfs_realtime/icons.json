@@ -1,10 +1,17 @@
 {
-  "services": {
-    "clear_static_feeds": {
-      "service": "mdi:delete-empty"
+  "entity": {
+    "button": {
+      "clear": {
+        "default": "mdi:delete"
+      },
+      "refresh": {
+        "default": "mdi:cloud-refresh"
+      }
     },
-    "refresh_static_feeds": {
-      "service": "mdi:calendar-refresh"
+    "number": {
+      "refresh": {
+        "default": "mdi:clock-outline"
+      }
     }
   }
 }

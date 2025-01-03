@@ -5,6 +5,11 @@
     "manual_gtfs_provider_name": "Other - Enter Manually"
   },
   "config": {
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]",
+      "reconfigure_successful": "Reconfigure successful, if any entities were removed, they can be deleted in settings."
+    },
     "error": {
       "failed_preconfigured_feeds": "Failed to get preconfigured feeds",
       "select_at_least_one_stop_or_route": "Must select at least one stop or route for GTFS updates.",
@@ -48,7 +53,23 @@
       },
       "reconfigure": {
         "title": "Reconfigure GTFS parameters.",
-        "description": "This will force update to static data."
+        "data": {
+          "arrival_limit": "Arrival Limit",
+          "gtfs_provider": "GTFS Provider Name",
+          "route_ids": "Route ID",
+          "stop_ids": "Stop ID"
+        },
+        "data_description": {
+          "route_ids": "Route ID for a GTFS entity to receive service alerts.",
+          "stop_ids": "Stop ID for a GTFS entity to receive arrival data and service alerts"
+        },
+        "description": "Reconfigure GTFS parameters for existing entry.",
+        "sections": {
+          "static_sources_update_frequency": {
+            "name": "Static Data Update Frequency",
+            "description": "Set the duration of time between each update for static data. Check with your GTFS provider for the expected frequency."
+          }
+        }
       },
       "user": {
         "title": "Select a GTFS Provider",
@@ -56,6 +77,16 @@
           "gtfs_provider_id": "GTFS Provider"
         },
         "description": "Select GTFS Provider"
+      }
+    }
+  },
+  "entity": {
+    "button": {
+      "clear": {
+        "name": "Clear All Schedule Data"
+      },
+      "refresh": {
+        "name": "Refresh Schedule Feed: {gtfs_static_source}"
       }
     }
   },
@@ -67,6 +98,13 @@
         },
         "header": {
           "name": "Header {i+1}"
+        }
+      }
+    },
+    "button": {
+      "state_attributes": {
+        "target_url": {
+          "name": "Target URL"
         }
       }
     },
@@ -86,22 +124,6 @@
         },
         "trip_id": {
           "name": "Trip ID"
-        }
-      }
-    }
-  },
-  "services": {
-    "clear_static_feeds": {
-      "name": "Clear Static Feeds",
-      "description": "Clear static GTFS schedule data. Data will be pulled again on the configured intervals for each source."
-    },
-    "refresh_static_feeds": {
-      "name": "Refresh Static Feeds",
-      "description": "Pulls static GTFS schedule data from the data provider URIs.",
-      "fields": {
-        "gtfs_static_data": {
-          "name": "URL or File Path",
-          "description": "Static data sources to update. If blank, all Static Resources will be updated."
         }
       }
     }

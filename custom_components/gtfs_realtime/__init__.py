@@ -10,13 +10,11 @@ from gtfs_station_stop.feed_subject import FeedSubject
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.selector import TextSelector, TextSelectorConfig
 import voluptuous as vol
 
 from custom_components.gtfs_realtime.config_flow import DOMAIN_SCHEMA
 
 from .const import (
-    CLEAR_STATIC_FEEDS,
     CONF_API_KEY,
     CONF_GTFS_STATIC_DATA,
     CONF_ROUTE_ICONS,
@@ -24,11 +22,15 @@ from .const import (
     CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT,
     CONF_URL_ENDPOINTS,
     DOMAIN,
-    REFRESH_STATIC_FEEDS,
 )
 from .coordinator import GtfsRealtimeCoordinator
 
-PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR]
+PLATFORMS = [
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.BUTTON,
+    Platform.NUMBER,
+]
 
 CONFIG_SCHEMA = vol.Schema(
     {DOMAIN: DOMAIN_SCHEMA},
@@ -73,37 +75,6 @@ async def async_setup_entry(
     coordinator: GtfsRealtimeCoordinator = create_gtfs_update_hub(hass, entry.data)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
-
-    async def handle_refresh_static_feeds(call):
-        """Handle service action to refresh static feeds."""
-        entry.runtime_data.static_update_targets = set(call.data["gtfs_static_data"])
-        await entry.runtime_data.async_update_static_data()
-
-    async def handle_clear_static_feeds(call):
-        """Handle service action to clear static feeds."""
-        await entry.runtime_data.async_update_static_data(clear_old_data=True)
-
-    hass.services.async_register(
-        DOMAIN,
-        REFRESH_STATIC_FEEDS,
-        handle_refresh_static_feeds,
-        vol.Schema(
-            {
-                vol.Optional(
-                    CONF_GTFS_STATIC_DATA,
-                    default=entry.runtime_data.gtfs_static_zip,
-                    description=(
-                        {"suggested_value": ["https://"]}
-                        if len(entry.runtime_data.gtfs_static_zip) == 0
-                        else {}
-                    ),
-                ): TextSelector(TextSelectorConfig(multiline=False, multiple=True)),
-            }
-        ),
-    )
-
-    hass.services.async_register(DOMAIN, CLEAR_STATIC_FEEDS, handle_clear_static_feeds)
-
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
