@@ -40,6 +40,10 @@ class TemperatureHeatmapCard extends LitElement {
     setTimeout(function(){that.get_recorder([entityId], 7);}, 500);
     setTimeout(function(){that.get_recorder([entityId], 7);}, 1500);
     setTimeout(function(){that.get_recorder([entityId], 7);}, 2000);
+
+    var day_forecast;
+    if (this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
+    if (day_forecast) this.getTomorrowHourlyTemperatures();
     //this.get_recorder([entityId], 7);
     this.hass_inited = true;
   }
@@ -63,6 +67,7 @@ class TemperatureHeatmapCard extends LitElement {
     }
 
     this.grid = [];
+    this.initForecast();
     this.responseComplete = 0;
     ev.stopPropagation();
     this.shiftDay = this.shiftDay + shiftDay;
@@ -81,6 +86,7 @@ class TemperatureHeatmapCard extends LitElement {
     }
 
     this.grid = [];
+    this.initForecast();
     this.responseComplete = 0;
     this.shiftDay = this.shiftDay - shiftDay;
     const entityId = this.config.entity;
@@ -122,6 +128,7 @@ class TemperatureHeatmapCard extends LitElement {
     if (theDiv) {
       var day_label = false;
       var day_trend = false;
+      var day_forecast = false;
       var prevDay = 0;
       var prevDayX = 0;
       var nowDay = 0;
@@ -191,15 +198,135 @@ class TemperatureHeatmapCard extends LitElement {
          icona_color = "#ff0000";
       }
       //text = nowDay.toFixed(2);
+
+      if (pos == "7") {
+         icona = "weather-cloudy-clock";
+         icona_color = "#26768c";
+      }
       
       var trend = "";
+      var forecast = "";
+      var force_fahrenheit = false;
       if (this.responseComplete >= 3) trend = "<ha-icon style='color:"+icona_color+"' icon='mdi:"+icona+"'></ha-icon>";
       if (this.config.day_label !== undefined) day_label = this.config.day_label;
       if (this.config.day_trend !== undefined) day_trend = this.config.day_trend;
+      if (this.config.force_fahrenheit !== undefined) force_fahrenheit = this.config.force_fahrenheit;
+      if (this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
       if (!day_trend) trend = "";
+      if (!day_forecast) forecast = "";
       if (!day_label) theDiv.innerHTML = text + "<br/>" + trend;
       else theDiv.innerHTML  = text + "<br/>" + trend + letter;
     }
+  }
+
+  initForecast() {
+      if (this.gridForecast === undefined) 
+        this.gridForecast = [[-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999]];
+  }
+
+  formatDate(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var month;
+    var _day;
+    //var ampm = hours >= 12 ? 'pm' : 'am';
+    //hours = hours % 12;
+    //hours = hours ? hours : 12; // the hour '0' should be '12'
+    if (hours < 10)
+       hours = "0" + hours;
+
+
+    month = date.getMonth() + 1;
+    if (month < 10)
+      month = "0" + month;
+
+    _day = date.getDate();
+    if (_day < 10)
+      _day = "0" + _day;
+   
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours;// + ':' + minutes;
+    return date.getFullYear() + '-' + month + '-' + _day + " " + strTime;
+  }
+
+  lastDay() {
+      var dataToday = this.formatDate(new Date()).substr(0,10);
+      const now = new Date();
+      var day6full = this.formatDate(new Date(now - ((this.shiftDay) * 86400000))).substr(0,10);
+      if (day6full == dataToday) return true;
+      return false;
+  }
+
+  subscribeForecastEvents() {
+    this.initForecast();
+    var temp_adj = 0;
+    if (this.config.temp_adj !== undefined) temp_adj = parseFloat(this.config.temp_adj);
+    const callback = (event) => {
+      var dataToday = this.formatDate(new Date());
+      var forecastItems = event.forecast;
+      const now = new Date();
+      var day6full = this.formatDate(new Date(now - ((this.shiftDay) * 86400000))).substr(0,10);
+      var i;
+      for (i = 0; i < forecastItems.length; i++) {
+        var d = forecastItems[i];
+        var dateForecast = this.formatDate(new Date(d.datetime));
+        var tempForecast = d.temperature;
+        if (dateForecast.substr(0,10) == dataToday.substr(0,10)) {
+           if (dateForecast.substr(0,10) == day6full) {
+             var ora = dateForecast.substr(11,2);
+             if (ora == "00") this.gridForecast[6][0] = d.temperature + temp_adj;
+             if (ora == "02") this.gridForecast[6][1] = d.temperature + temp_adj;
+             if (ora == "04") this.gridForecast[6][2] = d.temperature + temp_adj;
+             if (ora == "06") this.gridForecast[6][3] = d.temperature + temp_adj;
+             if (ora == "08") this.gridForecast[6][4] = d.temperature + temp_adj;
+             if (ora == "10") this.gridForecast[6][5] = d.temperature + temp_adj;
+             if (ora == "12") this.gridForecast[6][6] = d.temperature + temp_adj;
+             if (ora == "14") this.gridForecast[6][7] = d.temperature + temp_adj;
+             if (ora == "16") this.gridForecast[6][8] = d.temperature + temp_adj;
+             if (ora == "18") this.gridForecast[6][9] = d.temperature + temp_adj;
+             if (ora == "20") this.gridForecast[6][10] = d.temperature + temp_adj;
+             if (ora == "22") this.gridForecast[6][11] = d.temperature + temp_adj;
+           }
+        }
+        if (dateForecast.substr(0,10) > dataToday.substr(0,10)) {
+          var ora = dateForecast.substr(11,2);
+             if (ora == "00") this.gridForecast[7][0] = d.temperature + temp_adj;
+             if (ora == "02") this.gridForecast[7][1] = d.temperature + temp_adj;
+             if (ora == "04") this.gridForecast[7][2] = d.temperature + temp_adj;
+             if (ora == "06") this.gridForecast[7][3] = d.temperature + temp_adj;
+             if (ora == "08") this.gridForecast[7][4] = d.temperature + temp_adj;
+             if (ora == "10") this.gridForecast[7][5] = d.temperature + temp_adj;
+             if (ora == "12") this.gridForecast[7][6] = d.temperature + temp_adj;
+             if (ora == "14") this.gridForecast[7][7] = d.temperature + temp_adj;
+             if (ora == "16") this.gridForecast[7][8] = d.temperature + temp_adj;
+             if (ora == "18") this.gridForecast[7][9] = d.temperature + temp_adj;
+             if (ora == "20") this.gridForecast[7][10] = d.temperature + temp_adj;
+             if (ora == "22") this.gridForecast[7][11] = d.temperature + temp_adj;
+        }
+      }
+
+
+      //this.forecasts = event.forecast;
+      //this.requestUpdate();
+      //this.drawChart();
+    };
+  
+    this.forecastSubscriber = this.myhass.connection.subscribeMessage(callback, {
+      type: "weather/subscribe_forecast",
+      forecast_type: 'hourly',
+      entity_id: this.config.forecast_entity
+    });
+  }
+
+  getTomorrowHourlyTemperatures() {
+    if (!this.forecastSubscriber) this.subscribeForecastEvents();
   }
 
   // The user supplied configuration. Throw an exception and Home Assistant
@@ -216,6 +343,24 @@ class TemperatureHeatmapCard extends LitElement {
   // distribute all cards over the available columns.
   getCardSize() {
     return 3;
+  }
+
+  getWidthTable() {
+      var day_forecast = "";
+      if (this.lastDay() && this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
+      if (day_forecast)
+        return html`10`;
+      else
+        return html`12`;
+  }
+
+  getWidthCell() {
+      var day_forecast = "";
+      if (this.lastDay() && this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
+      if (day_forecast)
+        return html`min-width:13px`;
+      else
+        return html`min-width:0px`;
   }
 
   getHeadTable() {
@@ -239,6 +384,7 @@ class TemperatureHeatmapCard extends LitElement {
     var TR04 = this.shadowRoot.getElementById(this.id+"TR04")
     var TR05 = this.shadowRoot.getElementById(this.id+"TR05")
     var TR06 = this.shadowRoot.getElementById(this.id+"TR06")
+    var TR07 = this.shadowRoot.getElementById(this.id+"TR07")
     var TD00 = this.shadowRoot.getElementById(this.id+"TD00")
     var TD10 = this.shadowRoot.getElementById(this.id+"TD10")
     var TD11 = this.shadowRoot.getElementById(this.id+"TD11")
@@ -252,6 +398,8 @@ class TemperatureHeatmapCard extends LitElement {
     var TD51 = this.shadowRoot.getElementById(this.id+"TD51")
     var TD60 = this.shadowRoot.getElementById(this.id+"TD60")
     var TD61 = this.shadowRoot.getElementById(this.id+"TD61")
+    var TD70 = this.shadowRoot.getElementById(this.id+"TD70")
+    var TD71 = this.shadowRoot.getElementById(this.id+"TD71")
     var DAY0 = this.shadowRoot.getElementById(this.id+"DAY0");
     var DAY1 = this.shadowRoot.getElementById(this.id+"DAY1");
     var DAY2 = this.shadowRoot.getElementById(this.id+"DAY2");
@@ -259,6 +407,7 @@ class TemperatureHeatmapCard extends LitElement {
     var DAY4 = this.shadowRoot.getElementById(this.id+"DAY4");
     var DAY5 = this.shadowRoot.getElementById(this.id+"DAY5");
     var DAY6 = this.shadowRoot.getElementById(this.id+"DAY6");
+    var DAY7 = this.shadowRoot.getElementById(this.id+"DAY7");
     var posMonth = 0;
     if (month_label) {
       if (TR00) { 
@@ -408,13 +557,14 @@ class TemperatureHeatmapCard extends LitElement {
       }
     }
 
-    return html`<tr id="${this.id}TR00" style="display:none"><td></td><td colspan="7" id="${this.id}TD00" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR01" style="display:none"><td></td><td colspan="1" id="${this.id}TD10" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="6" id="${this.id}TD11" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR02" style="display:none"><td></td><td colspan="2" id="${this.id}TD20" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="5" id="${this.id}TD21" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR03" style="display:none"><td></td><td colspan="3" id="${this.id}TD30" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="4" id="${this.id}TD31" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR04" style="display:none"><td></td><td colspan="4" id="${this.id}TD40" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="3" id="${this.id}TD41" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR05" style="display:none"><td></td><td colspan="5" id="${this.id}TD50" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="2" id="${this.id}TD51" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR06" style="display:none"><td></td><td colspan="6" id="${this.id}TD60" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="1" id="${this.id}TD61" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>`;
+    return html`<tr id="${this.id}TR00" style="display:none"><td></td><td colspan="8" id="${this.id}TD00" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR01" style="display:none"><td></td><td colspan="1" id="${this.id}TD10" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="7" id="${this.id}TD11" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR02" style="display:none"><td></td><td colspan="2" id="${this.id}TD20" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="6" id="${this.id}TD21" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR03" style="display:none"><td></td><td colspan="3" id="${this.id}TD30" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="5" id="${this.id}TD31" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR04" style="display:none"><td></td><td colspan="4" id="${this.id}TD40" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="4" id="${this.id}TD41" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR05" style="display:none"><td></td><td colspan="5" id="${this.id}TD50" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="3" id="${this.id}TD51" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR06" style="display:none"><td></td><td colspan="6" id="${this.id}TD60" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="2" id="${this.id}TD61" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR07" style="display:none"><td></td><td colspan="7" id="${this.id}TD70" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="1" id="${this.id}TD71" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>`;
   }
 
   getFootTable() {
@@ -440,6 +590,8 @@ class TemperatureHeatmapCard extends LitElement {
     var maximum = 35;
     var humidity = false;
     var fahrenheit = false;
+
+    if (this.config.force_fahrenheit !== undefined) fahrenheit = this.config.force_fahrenheit;
     //if (this.config.humidity !== undefined) humidity = this.config.humidity;
     const entityId = this.config.entity;
     const consumerAttributes = this.myhass.states[this.config.entity].attributes;
@@ -477,9 +629,12 @@ class TemperatureHeatmapCard extends LitElement {
   }
 
   render() {
+      var day_forecast = "";
+      if (this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
         // We may be trying to render before we've received the recorder data.
       var gridHTML = "";
       var grid7 = [[-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
+                   [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
                    [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
                    [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
                    [-999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999],
@@ -547,6 +702,14 @@ class TemperatureHeatmapCard extends LitElement {
         grid7[j][9] = hour18;
         grid7[j][10] = hour20;
         grid7[j][11] = hour22;
+      }
+
+      if (this.gridForecast) {
+        var jj;
+        for (jj=0; jj<12; jj++) 
+          if (this.gridForecast && this.gridForecast[6][jj] != -999 && isNaN(grid7[6][jj])) grid7[6][jj] = this.gridForecast[6][jj];
+        for (jj=0; jj<12; jj++) 
+          if (this.gridForecast && this.gridForecast[7][jj] != -999 && grid7[7][jj] == -999) grid7[7][jj] = this.gridForecast[7][jj];
       }
       if (this.lastHour !== undefined) {
            if (this.lastTime == "00") i = 0;
@@ -662,6 +825,20 @@ class TemperatureHeatmapCard extends LitElement {
     this.replaceText("4b", grid7[4][11]);
     this.replaceText("5b", grid7[5][11]);
     this.replaceText("6b", grid7[6][11]);
+    if (day_forecast && this.lastDay()) {
+      this.replaceText("70", grid7[7][0]); //trick
+      this.replaceText("71", grid7[7][1]); //trick
+      this.replaceText("72", grid7[7][2]); //trick
+      this.replaceText("73", grid7[7][3]); //trick
+      this.replaceText("74", grid7[7][4]); //trick
+      this.replaceText("75", grid7[7][5]); //trick
+      this.replaceText("76", grid7[7][6]); //trick
+      this.replaceText("77", grid7[7][7]); //trick
+      this.replaceText("78", grid7[7][8]); //trick
+      this.replaceText("79", grid7[7][9]); //trick
+      this.replaceText("7a", grid7[7][10]); //trick
+      this.replaceText("7b", grid7[7][11]); //trick
+    }
     this.replaceDay(0, this.Day0, this.Day0L);
     this.replaceDay(1, this.Day1, this.Day1L);
     this.replaceDay(2, this.Day2, this.Day2L);
@@ -669,8 +846,19 @@ class TemperatureHeatmapCard extends LitElement {
     this.replaceDay(4, this.Day4, this.Day4L);
     this.replaceDay(5, this.Day5, this.Day5L);
     this.replaceDay(6, this.Day6, this.Day6L);
+    if (this.lastDay() && day_forecast) {
+      this.replaceDay(7, this.Day7, this.Day7L); //trick
+    }
     var rightButton = this.shadowRoot.getElementById(this.id+"rightButton");
     var leftButton = this.shadowRoot.getElementById(this.id+"leftButton");
+    var TDDAY0 = this.shadowRoot.getElementById(this.id+"TDDAY0");
+    var TDDAY1 = this.shadowRoot.getElementById(this.id+"TDDAY1");
+    var TDDAY2 = this.shadowRoot.getElementById(this.id+"TDDAY2");
+    var TDDAY3 = this.shadowRoot.getElementById(this.id+"TDDAY3");
+    var TDDAY4 = this.shadowRoot.getElementById(this.id+"TDDAY4");
+    var TDDAY5 = this.shadowRoot.getElementById(this.id+"TDDAY5");
+    var TDDAY6 = this.shadowRoot.getElementById(this.id+"TDDAY6");
+    var TDDAY7 = this.shadowRoot.getElementById(this.id+"TDDAY7");
     
     if (rightButton) {
       if ((this.DayNOW == this.Day6) && (this.MonthNOW == this.Month6)) { rightButton.style.display = "none"; }
@@ -680,6 +868,19 @@ class TemperatureHeatmapCard extends LitElement {
     if (leftButton) {
       if ((grid7[0][0] == -999 && grid7[0][11] == -999) || (this.dayDizio[this.DayY] === undefined)) { leftButton.style.display = "none"; }
       else { leftButton.style.removeProperty('display'); }
+    }
+
+    if (TDDAY0 && day_forecast) {
+      if (this.lastDay()) {
+        TDDAY0.style.setProperty("min-width", "13px");
+        TDDAY1.style.setProperty("min-width", "13px");
+        TDDAY2.style.setProperty("min-width", "13px");
+        TDDAY3.style.setProperty("min-width", "13px");
+        TDDAY4.style.setProperty("min-width", "13px");
+        TDDAY5.style.setProperty("min-width", "13px");
+        TDDAY6.style.setProperty("min-width", "13px");
+        TDDAY7.style.setProperty("min-width", "13px");
+      }
     }
 
     const stateAttributes = this.myhass.states[this.config.entity].attributes;
@@ -702,13 +903,14 @@ class TemperatureHeatmapCard extends LitElement {
       <tbody>
           <tr>                    
               <td width="16%" ></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY0">${this.Day0}</div></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY1">${this.Day1}</div></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY2">${this.Day2}</div></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY3">${this.Day3}</div></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY4">${this.Day4}</div></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY5">${this.Day5}</div></td>
-                  <td width="12%" style="white-space: nowrap;text-align:center;vertical-align:middle;"><div id="${this.id}DAY6">${this.Day6}</div></td>
+                  <td id="${this.id}TDDAY0" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY0">${this.Day0}</div></td>
+                  <td id="${this.id}TDDAY1" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY1">${this.Day1}</div></td>
+                  <td id="${this.id}TDDAY2" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY2">${this.Day2}</div></td>
+                  <td id="${this.id}TDDAY3" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY3">${this.Day3}</div></td>
+                  <td id="${this.id}TDDAY4" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY4">${this.Day4}</div></td>
+                  <td id="${this.id}TDDAY5" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY5">${this.Day5}</div></td>
+                  <td id="${this.id}TDDAY6" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY6">${this.Day6}</div></td>
+                  <td id="${this.id}TDDAY7" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY7">${this.Day7}</div></td>
           </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>00:00</td>
                           <td id="${this.id}td00" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -731,6 +933,9 @@ class TemperatureHeatmapCard extends LitElement {
                           </td>
                           <td id="${this.id}td60" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}60"></div>
+                          </td>
+                          <td id="${this.id}td70" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}70"></div>
                           </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>02:00</td>
@@ -755,6 +960,9 @@ class TemperatureHeatmapCard extends LitElement {
                           <td id="${this.id}td61" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}61"></div>
                           </td>
+                          <td id="${this.id}td71" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}71"></div>
+                          </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>04:00</td>
                           <td id="${this.id}td02" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -777,6 +985,9 @@ class TemperatureHeatmapCard extends LitElement {
                           </td>
                           <td id="${this.id}td62" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}62"></div>
+                          </td>
+                          <td id="${this.id}td72" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}72"></div>
                           </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>06:00</td>
@@ -801,6 +1012,9 @@ class TemperatureHeatmapCard extends LitElement {
                           <td id="${this.id}td63" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}63"></div>
                           </td>
+                          <td id="${this.id}td73" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}73"></div>
+                          </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>08:00</td>
                           <td id="${this.id}td04" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -823,6 +1037,9 @@ class TemperatureHeatmapCard extends LitElement {
                           </td>
                           <td id="${this.id}td64" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}64"></div>
+                          </td>
+                          <td id="${this.id}td74" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}74"></div>
                           </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>10:00</td>
@@ -847,6 +1064,9 @@ class TemperatureHeatmapCard extends LitElement {
                           <td id="${this.id}td65" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}65"></div>
                           </td>
+                          <td id="${this.id}td75" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}75"></div>
+                          </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>12:00</td>
                           <td id="${this.id}td06" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -869,6 +1089,9 @@ class TemperatureHeatmapCard extends LitElement {
                           </td>
                           <td id="${this.id}td66" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}66"></div>
+                          </td>
+                          <td id="${this.id}td76" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}76"></div>
                           </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>14:00</td>
@@ -893,6 +1116,9 @@ class TemperatureHeatmapCard extends LitElement {
                           <td id="${this.id}td67" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}67"></div>
                           </td>
+                          <td id="${this.id}td77" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}77"></div>
+                          </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>16:00</td>
                           <td id="${this.id}td08" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -915,6 +1141,9 @@ class TemperatureHeatmapCard extends LitElement {
                           </td>
                           <td id="${this.id}td68" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}68"></div>
+                          </td>
+                          <td id="${this.id}td78" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}78"></div>
                           </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>18:00</td>
@@ -939,6 +1168,9 @@ class TemperatureHeatmapCard extends LitElement {
                           <td id="${this.id}td69" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}69"></div>
                           </td>
+                          <td id="${this.id}td79" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}79"></div>
+                          </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>20:00</td>
                           <td id="${this.id}td0a" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -962,6 +1194,9 @@ class TemperatureHeatmapCard extends LitElement {
                           <td id="${this.id}td6a" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}6a"></div>
                           </td>
+                          <td id="${this.id}td7a" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}7a"></div>
+                          </td>
               </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>22:00</td>
                           <td id="${this.id}td0b" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -984,6 +1219,9 @@ class TemperatureHeatmapCard extends LitElement {
                           </td>
                           <td id="${this.id}td6b" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
                               <div id="${this.id}6b"></div>
+                          </td>
+                          <td id="${this.id}td7b" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
+                              <div id="${this.id}7b"></div>
                           </td>
               </tr>
            </tbody>
@@ -1102,7 +1340,7 @@ class TemperatureHeatmapCard extends LitElement {
 
   getMonthShortName(monthNo) {
     const date = new Date();
-    date.setMonth(monthNo);
+    date.setMonth(parseInt(monthNo), 1);
     var mese = date.toLocaleString([], { month: 'short' });
     return mese[0].toUpperCase() + mese.substring(1);
   }
@@ -1191,6 +1429,7 @@ class TemperatureHeatmapCard extends LitElement {
         startTime = new Date(now - ((days+shiftDay) * 86400000))
         var hour = startTime.getHours();
         this.DayNOW = new Date(now).getDate();
+        this.Day7 = (new Date(now - ((-1) * 86400000))).getDate();
         this.Day6 = (new Date(now - ((0+shiftDay) * 86400000))).getDate();
         this.Day5 = (new Date(now - ((1+shiftDay) * 86400000))).getDate();
         this.Day4 = (new Date(now - ((2+shiftDay) * 86400000))).getDate();
@@ -1200,6 +1439,7 @@ class TemperatureHeatmapCard extends LitElement {
         this.Day0 = (new Date(now - ((6+shiftDay) * 86400000))).getDate();
         this.DayX = (new Date(now - ((7+shiftDay) * 86400000))).getDate();
         this.DayY = (new Date(now - ((8+shiftDay) * 86400000))).getDate();
+        this.Day7L = this.getDayShortName((new Date(now - ((-1) * 86400000))));
         this.Day6L = this.getDayShortName((new Date(now - ((0+shiftDay) * 86400000))));
         this.Day5L = this.getDayShortName((new Date(now - ((1+shiftDay) * 86400000))));
         this.Day4L = this.getDayShortName((new Date(now - ((2+shiftDay) * 86400000))));
@@ -1253,9 +1493,12 @@ export class TemperatureHeatmapCardEditor extends LitElement {
             _config: {},
             entity: undefined,
             title: undefined,
+            temp_adj: undefined,
             month_label: undefined,
             day_label: undefined,
             day_trend: undefined,
+            force_fahrenheit: undefined,
+            day_forecast: undefined,
             footer: undefined
         };
     }
@@ -1276,9 +1519,12 @@ export class TemperatureHeatmapCardEditor extends LitElement {
 
         this.entity = this.myhass.states[this._config.entity];
         this.title = this.myhass.states[this._config.title];
+        this.temp_adj = this.myhass.states[this._config.temp_adj];
         this.month_label = this.myhass.states[this._config.month_label];
         this.day_label = this.myhass.states[this._config.day_label];
         this.day_trend = this.myhass.states[this._config.day_trend];
+        this.force_fahrenheit = this.myhass.states[this._config.force_fahrenheit];
+        this.day_forecast = this.myhass.states[this._config.day_forecast];
         this.footer = this.myhass.states[this._config.footer];
     }
 
@@ -1334,6 +1580,26 @@ export class TemperatureHeatmapCardEditor extends LitElement {
             <h3>Show Day Trend</h3>
             <ha-switch
               .checked=${this._config.day_trend !== undefined && this._config.day_trend !== false} .configValue=${"day_trend"} .value=${this._config.day_trend}></ha-switch>
+            <h3>Force Fahrenheit</h3>
+            <ha-switch
+              .checked=${this._config.force_fahrenheit !== undefined && this._config.force_fahrenheit !== false} .configValue=${"force_fahrenheit"} .value=${this._config.force_fahrenheit}></ha-switch>
+            <h3>Day Forecast</h3>
+            <ha-switch
+              .checked=${this._config.day_forecast !== undefined && this._config.day_forecast !== false} .configValue=${"day_forecast"} .value=${this._config.day_forecast}></ha-switch>
+            <h3>Weather Forecast</h3>
+            <ha-entity-picker
+                .required=${false}
+                .hass=${this.myhass}
+                .value=${this._config.forecast_entity}
+                .configValue=${"forecast_entity"}
+                .includeDomains=${"weather"}
+            ></ha-entity-picker>
+            <h3>Forecast Temp Adj</h3>
+            <ha-textfield
+                .label=${"Forecast Temp Adj"}
+                .value=${this._config.temp_adj || ""}
+                .configValue=${"temp_adj"}
+                @input=${this.update_field}></ha-textfield>
             <h3>Stat Footer</h3>
             <ha-switch
               .checked=${this._config.footer !== undefined && this._config.footer !== false} .configValue=${"footer"} .value=${this._config.footer}></ha-switch>
@@ -1372,7 +1638,7 @@ export class TemperatureHeatmapCardEditor extends LitElement {
         root.addEventListener("change", (ev) => {
             ev.stopPropagation();
             const key = ev.target.configValue;
-            if (key != "month_label" && key != 'day_label' && key != 'day_trend' && key != 'footer') return;
+            if (key != "month_label" && key != 'day_label' && key != 'day_trend' && key != 'force_fahrenheit' && key != 'day_forecast' && key != 'footer') return;
             const val = ev.target.checked;
             var config = JSON.parse(JSON.stringify(this._config));
 
