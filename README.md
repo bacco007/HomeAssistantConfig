@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.1.0b7 |
-| No. Integrations | 219 |
+| HA Version | 2025.1.0 |
+| No. Integrations | 220 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6404 |
-| No. Sensors | 4254 |
+| No. Entities | 6280 |
+| No. Sensors | 4185 |
 | No. Automations | 154 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 395
-Buttons | 212
+Binary sensors | 394
+Buttons | 193
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -82,24 +82,24 @@ Input numbers | 9
 Input selects | 3
 Input texts | 3
 Lights | 13
-Locks | 4
+Locks | 0
 Media players | 40
-Numbers | 48
-Persistent notifications | 4
+Numbers | 52
+Persistent notifications | 3
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
-Selects | 56
-Sensors | 4254
+Selects | 57
+Sensors | 4185
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 288
+Switches | 248
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 324
+Update | 325
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>660 Integrations</summary>
+<details><summary>658 Integrations</summary>
 
 | Name |
 | --- |
@@ -208,7 +208,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
-| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -364,6 +363,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ical.calendar](https://www.home-assistant.io/components/ical.calendar) |
 | [ical.sensor](https://www.home-assistant.io/components/ical.sensor) |
 | [ics_calendar](https://www.home-assistant.io/components/ics_calendar) |
+| [ics_calendar.calendar](https://www.home-assistant.io/components/ics_calendar.calendar) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -444,7 +444,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt.binary_sensor](https://www.home-assistant.io/components/mqtt.binary_sensor) |
 | [mqtt.button](https://www.home-assistant.io/components/mqtt.button) |
 | [mqtt.light](https://www.home-assistant.io/components/mqtt.light) |
-| [mqtt.lock](https://www.home-assistant.io/components/mqtt.lock) |
 | [mqtt.number](https://www.home-assistant.io/components/mqtt.number) |
 | [mqtt.select](https://www.home-assistant.io/components/mqtt.select) |
 | [mqtt.sensor](https://www.home-assistant.io/components/mqtt.sensor) |
@@ -756,7 +755,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
 | [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
-| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -899,7 +897,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
 | [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.3.1] | Expander card for HomeAssistant |
-| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.5] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
+| [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.6] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.8] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.11] | Custom card to use with Flightradar24 integration for Home Assistant |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) |  [v2.2.0] | 🔹 A foldable row for entities card, containing other rows |
@@ -979,7 +977,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.3.2 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 1.42.0-2 |  | 45df7312 |
+| Zigbee2MQTT | 2.0.0-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.1 |  | 193f5383 |
 </details>
@@ -1027,7 +1025,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.1.0b7-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.1.0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml

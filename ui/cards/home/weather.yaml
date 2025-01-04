@@ -61,7 +61,7 @@ cards:
     card_type: button
     button_type: state
     entity: weather.east_tamworth_hourly
-    name: " Current Weather"
+    name: "Current Weather"
     styles: |-
       .bubble-button-card-container {
         background: rgba(33, 150, 243, 0.2) !important;
@@ -94,12 +94,13 @@ cards:
         show_state: true
     show_state: false
     show_last_changed: false
-    card_layout: large-2-rows
-    columns: 2
-    rows: 2
+    grid_options:
+      columns: full
+    styles: "${(() => {if(window.innerWidth < 450){card.classList.add('rows-2')}})()}"
+    card_layout: large
     show_icon: true
     scrolling_effect: false
-    show_name: false
+    show_name: true
     show_attribute: false
   - type: custom:bubble-card
     card_type: button
@@ -154,7 +155,9 @@ cards:
         show_icon: true
         scrolling_effect: false
         show_state: false
-        card_layout: normal
+        card_layout: large-2-rows
+        columns: 2
+        rows: 2
         styles: |-
           .bubble-button-card-container {
             background-color: rgba(${state < 51 ? "0, 153, 102" : state < 101 ? "255, 222, 51" : state < 151 ? "255, 153, 51" : state < 201 ? "204, 0, 51" : state < 301 ? "102, 0, 153" : state> 301 ? "126, 0, 35" : "192,192,192" },0.5) !important;
@@ -182,6 +185,7 @@ cards:
         show_icon: true
         scrolling_effect: false
         show_state: false
+        card_layout: large-2-rows
         styles: |-
           .bubble-button-card-container {
             background-color: rgba(${state < 2.6 ? "85, 139, 47" : state < 5.6 ? "249, 168, 37" : state < 7.6 ? "239, 108, 0" : state < 10.6 ? "135, 28, 28" : state < 15.1 ? "106, 27, 154" : "192,192,192" },0.2) !important;
@@ -196,14 +200,14 @@ cards:
             show_attribute: true
             show_state: true
             show_background: false
-            name: Std
+            name: S
           - entity: sensor.weather_uv_index_cloud_effect
             show_name: true
             show_icon: false
             show_attribute: true
             show_state: true
             show_background: false
-            name: Cld
+            name: C
 
       - type: custom:bubble-card
         card_type: button
