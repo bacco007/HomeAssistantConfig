@@ -12,9 +12,9 @@ cards:
         }
   - type: entities
     entities:
-      - entity: binary_sensor.aurora_31_150
+      - entity: binary_sensor.aurora_visibility_visibility_alert
         name: Visibility Alert
-      - entity: sensor.aurora_31_150
+      - entity: sensor.aurora_visibility_visibility
         name: Aurora Visibility
       - type: section
       - entity: sensor.aurora_chance

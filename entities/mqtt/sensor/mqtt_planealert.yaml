@@ -1,0 +1,6 @@
+---
+- icon: mdi:airplane-alert
+  name: planealert_mqtt
+  state_topic: planefence/planealert
+  value_template: "{{value_json.tail}}"
+  json_attributes_topic: planefence/planealert

@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.0 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6280 |
-| No. Sensors | 4185 |
+| No. Entities | 6429 |
+| No. Sensors | 4273 |
 | No. Automations | 154 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 394
-Buttons | 193
+Buttons | 212
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 611
+Devices | 612
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -83,19 +83,19 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 0
-Media players | 40
+Media players | 41
 Numbers | 52
-Persistent notifications | 3
+Persistent notifications | 5
 Persons | 4
 Remotes | 9
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4185
+Sensors | 4273
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 248
+Switches | 293
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>658 Integrations</summary>
+<details><summary>661 Integrations</summary>
 
 | Name |
 | --- |
@@ -208,6 +208,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
+| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -363,7 +364,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ical.calendar](https://www.home-assistant.io/components/ical.calendar) |
 | [ical.sensor](https://www.home-assistant.io/components/ical.sensor) |
 | [ics_calendar](https://www.home-assistant.io/components/ics_calendar) |
-| [ics_calendar.calendar](https://www.home-assistant.io/components/ics_calendar.calendar) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -755,6 +755,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
 | [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
+| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -776,6 +777,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zha.siren](https://www.home-assistant.io/components/zha.siren) |
 | [zha.switch](https://www.home-assistant.io/components/zha.switch) |
 | [zha.update](https://www.home-assistant.io/components/zha.update) |
+| [zodiac](https://www.home-assistant.io/components/zodiac) |
+| [zodiac.sensor](https://www.home-assistant.io/components/zodiac.sensor) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -814,7 +817,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
 | [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.1] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
 | [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
-| [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.1] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
+| [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.2] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.12.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.1] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
@@ -924,7 +927,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) |  [v0.8.5] | Minimalistic weather card for Home Assistant |
 | [Slider Button Card](https://github.com/custom-cards/slider-button-card) |  [v1.13.0] | A button card with integrated slider |
-| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.5.4] | Home Assistant custom lovelace sonos card |
+| [Sonos Card](https://github.com/punxaphil/custom-sonos-card) |  [v8.5.9] | Home Assistant custom lovelace sonos card |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) |  [v2.4.0] | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) |  [v0.2.0] | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) |  [v1.9.5] | 🔹Dynamically replace lovelace cards depending on occasion |
@@ -955,9 +958,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
-| Advanced SSH & Web Terminal | 18.0.0 |  | a0d7b954 |
+| Advanced SSH & Web Terminal | 20.0.0 |  | a0d7b954 |
 | Browserless Chromium | 2.25.0 |  | db21ed7f |
-| Cloudflared | 5.2.5 |  | 9074a9fa |
+| Cloudflared | 5.2.6 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
 | ESPHome Device Builder | 2024.12.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
@@ -971,7 +974,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | MariaDB | 2.7.1 |  | core |
 | Matter Server | 7.0.0 |  | core |
 | Music Assistant Server | 2.3.5 |  | d5369777 |
-| Node-RED | 18.1.1 |  | a0d7b954 |
+| Node-RED | 19.0.0 |  | a0d7b954 |
 | OpenThread Border Router | 2.12.2 |  | core |
 | phpMyAdmin | 0.11.0 |  | a0d7b954 |
 | Samba share | 12.3.2 |  | core |
