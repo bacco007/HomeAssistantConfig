@@ -1778,16 +1778,33 @@ class MediaBrowseService {
   }
   async getFavoritesForPlayer(player) {
     var _a2;
-    try {
-      const favoritesRoot = await this.hassService.browseMedia(player, "favorites", "");
-      const favoriteTypesPromise = (_a2 = favoritesRoot.children) == null ? void 0 : _a2.map(
-        (favoriteItem) => this.hassService.browseMedia(player, favoriteItem.media_content_type, favoriteItem.media_content_id)
-      );
-      const favoriteTypes = favoriteTypesPromise ? await Promise.all(favoriteTypesPromise) : [];
-      return favoriteTypes.flatMap((item) => item.children ?? []);
-    } catch (e2) {
-      console.error(`Sonos Card: error getting favorites for player ${player.id}: ${JSON.stringify(e2)}`);
+    const mediaRoot = await this.hassService.browseMedia(player);
+    const favoritesStr = "favorites";
+    const favoritesDir = (_a2 = mediaRoot.children) == null ? void 0 : _a2.find(
+      (child) => {
+        var _a3, _b;
+        return ((_a3 = child.media_content_type) == null ? void 0 : _a3.toLowerCase()) === favoritesStr || ((_b = child.media_content_id) == null ? void 0 : _b.toLowerCase()) === favoritesStr || child.title.toLowerCase() === favoritesStr;
+      }
+    );
+    if (!favoritesDir) {
       return [];
+    }
+    const favorites = [];
+    await this.browseDir(player, favoritesDir, favorites);
+    return favorites;
+  }
+  async browseDir(player, favoritesDir, favorites) {
+    const dir = await this.hassService.browseMedia(
+      player,
+      favoritesDir.media_content_type,
+      favoritesDir.media_content_id
+    );
+    for (const child of dir.children ?? []) {
+      if (child.can_play) {
+        favorites.push(child);
+      } else if (child.can_expand) {
+        await this.browseDir(player, child, favorites);
+      }
     }
   }
   getFavoritesFromStates(mediaPlayer) {
@@ -4113,25 +4130,27 @@ const _MediaBrowser = class _MediaBrowser2 extends h {
           const itemsPerRow = this.config.favoritesItemsPerRow || 4;
           if (itemsPerRow > 1) {
             return ke`
-                <sonos-media-browser-icons
-                  .items=${items}
-                  .store=${this.store}
-                  @item-selected=${this.onMediaItemSelected}
-                ></sonos-media-browser-icons>
-              `;
+                  <sonos-media-browser-icons
+                    .items=${items}
+                    .store=${this.store}
+                    @item-selected=${this.onMediaItemSelected}
+                  ></sonos-media-browser-icons>
+                `;
           } else {
             return ke`
-                <sonos-media-browser-list
-                  .items=${items}
-                  .store=${this.store}
-                  @item-selected=${this.onMediaItemSelected}
-                ></sonos-media-browser-list>
-              `;
+                  <sonos-media-browser-list
+                    .items=${items}
+                    .store=${this.store}
+                    @item-selected=${this.onMediaItemSelected}
+                  ></sonos-media-browser-list>
+                `;
           }
         } else {
           return ke`<div class="no-items">No favorites found</div>`;
         }
-      })
+      }).catch(
+        (e2) => ke`<div class="no-items">Failed to fetch list of favorites. ${e2.message ?? JSON.stringify(e2)}</div>`
+      )
     )}
     `;
   }
