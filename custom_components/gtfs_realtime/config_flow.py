@@ -29,8 +29,8 @@ from homeassistant.helpers.selector import (
 import voluptuous as vol
 
 from .const import (
-    CONF_API_KEY,
     CONF_ARRIVAL_LIMIT,
+    CONF_AUTH_HEADER,
     CONF_GTFS_PROVIDER,
     CONF_GTFS_PROVIDER_ID,
     CONF_GTFS_STATIC_DATA,
@@ -46,15 +46,7 @@ from .const import (
     DOMAIN,
     FEEDS_URL,
 )
-
-DOMAIN_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_API_KEY): cv.string,
-        vol.Required(CONF_URL_ENDPOINTS): vol.All([cv.url]),
-        vol.Optional(CONF_GTFS_STATIC_DATA): vol.All([cv.url]),
-        vol.Optional(CONF_ROUTE_ICONS): cv.path,
-    }
-)
+from .helpers import header_dict_from_header_str
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -131,7 +123,9 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
             return await self.async_step_choose_informed_entities()
         gtfs_provider_id = user_input.get(CONF_GTFS_PROVIDER_ID)
         self.hub_config[CONF_GTFS_PROVIDER] = "Manual"
-        feed_data = GtfsRealtimeConfigFlow.feeds.get(gtfs_provider_id, {})
+        feed_data: dict[str, Any] = GtfsRealtimeConfigFlow.feeds.get(
+            gtfs_provider_id, {}
+        )
         realtime_feeds: list[str] = list(
             feed_data.get("realtime_feeds", {"_": [""]}).values()
         )
@@ -144,7 +138,10 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
 
         data_schema = vol.Schema(
             {
-                vol.Optional(CONF_API_KEY, default=""): cv.string,
+                vol.Optional(
+                    CONF_AUTH_HEADER,
+                    default=feed_data.get("auth_hint"),
+                ): cv.string,
                 vol.Optional(
                     CONF_URL_ENDPOINTS,
                     default=realtime_feeds,
@@ -299,9 +296,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_ROUTE_IDS] = CONF_SELECT_AT_LEAST_ONE_STOP_OR_ROUTE
                 errors[CONF_STOP_IDS] = CONF_SELECT_AT_LEAST_ONE_STOP_OR_ROUTE
 
-        headers = {}
-        if self.hub_config.get(CONF_API_KEY):
-            headers["api_key"] = user_input[CONF_API_KEY]
+        headers = header_dict_from_header_str(self.hub_config.get(CONF_AUTH_HEADER))
         try:
             stops, routes = await asyncio.gather(
                 self._get_stop_options(headers), self._get_route_options(headers)
@@ -325,7 +320,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         entry = self._get_reconfigure_entry()
         self.hub_config = entry.data
         if user_input is not None:
-            self.async_set_unique_id()
+            await self.async_set_unique_id()
             self._abort_if_unique_id_mismatch()
             return self.async_update_reload_and_abort(
                 self._get_reconfigure_entry(), data_updates=user_input

@@ -39,12 +39,13 @@
       "choose_static_and_realtime_feeds": {
         "title": "Select GTFS Realtime and Static Feed URLs.",
         "data": {
-          "api_key": "API Key (if required)",
+          "auth_header": "Authorization header (if required)",
           "gtfs_static_data": "GTFS Static Feeds (file or URL)",
           "route_icons": "Route Icons format URL",
           "url_endpoints": "Feed URL"
         },
         "data_description": {
+          "auth_header": "Must be in the form '[Authorization Type]: [authorization string]'. For example, this could be 'X-Api-Key: [the api key]' or 'Authorization: apikey [the api key]'. Not all auth types are supported.",
           "gtfs_static_data": "GTFS static feed zip file. Can be local file or URL from your provider.",
           "route_icons": "URL to a route-icons provider containing an svg image file for a given route.  The string can contain up to 3 str.format() compatible formatters for [route_id], [route_color], and [route_text_color] respectively. If your provider gives these colors as HTML hex, you may need to add an html-escaped '#' preceeding the input.",
           "url_endpoints": "Feed URLs for realtime GTFS Data"

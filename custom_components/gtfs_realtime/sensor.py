@@ -91,7 +91,6 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
         self._idx = idx
         self.coordinator = coordinator
         self.route_type = RouteType.UNKNOWN
-        self.gtfs_provider = coordinator.gtfs_provider
 
         self._name = f"{self._idx + 1}: {self._get_stop_ref()}"
         self._attr_unique_id = f"arrival_{self.station_stop.id}_{self._idx}"
@@ -145,7 +144,8 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
         return DeviceInfo(
             identifiers={(DOMAIN, self.station_stop.id)},
             name=f"{self._get_stop_ref()} ({self.station_stop.id})",
-            manufacturer=self.gtfs_provider,
+            manufacturer=self.coordinator.gtfs_provider,
+            model=self.station_stop.id,
         )
 
     def update(self) -> None:

@@ -4,7 +4,7 @@ DOMAIN = "gtfs_realtime"
 
 CONF_GTFS_PROVIDER = "gtfs_provider"
 CONF_GTFS_PROVIDER_ID = "gtfs_provider_id"
-CONF_API_KEY = "api_key"
+CONF_AUTH_HEADER = "auth_header"
 CONF_GTFS_STATIC_DATA = "gtfs_static_data"
 CONF_STATIC_SOURCES_UPDATE_FREQUENCY = "static_sources_update_frequency"
 CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT = 2  # hours
@@ -19,7 +19,7 @@ CONF_MINOR_VERSION = 0
 # ERRORS
 CONF_SELECT_AT_LEAST_ONE_STOP_OR_ROUTE = "select_at_least_one_stop_or_route"
 
-FEEDS_URL = "https://gist.githubusercontent.com/bcpearce/cc60c18f4022c4a11c460c5ccd2ec158/raw/feeds.json"
+FEEDS_URL = "https://gitlab.bcpearce.com/bcpearce/homeassistant-gtfs-realtime/-/raw/develop/resources/feeds.json?ref_type=heads"
 
 STOP_ID = "stop_id"
 ROUTE_ID = "route_id"

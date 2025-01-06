@@ -10,20 +10,18 @@ from gtfs_station_stop.feed_subject import FeedSubject
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-import voluptuous as vol
-
-from custom_components.gtfs_realtime.config_flow import DOMAIN_SCHEMA
 
 from .const import (
-    CONF_API_KEY,
+    CONF_AUTH_HEADER,
+    CONF_GTFS_PROVIDER,
     CONF_GTFS_STATIC_DATA,
     CONF_ROUTE_ICONS,
     CONF_STATIC_SOURCES_UPDATE_FREQUENCY,
     CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT,
     CONF_URL_ENDPOINTS,
-    DOMAIN,
 )
 from .coordinator import GtfsRealtimeCoordinator
+from .helpers import header_dict_from_header_str
 
 PLATFORMS = [
     Platform.BINARY_SENSOR,
@@ -31,11 +29,6 @@ PLATFORMS = [
     Platform.BUTTON,
     Platform.NUMBER,
 ]
-
-CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: DOMAIN_SCHEMA},
-    extra=vol.ALLOW_EXTRA,
-)
 
 type GtfsRealtimeConfigEntry = ConfigEntry[GtfsRealtimeCoordinator]
 
@@ -46,10 +39,13 @@ def create_gtfs_update_hub(
     hass: HomeAssistant, config: dict[str, Any]
 ) -> GtfsRealtimeCoordinator:
     """Create the Update Coordinator."""
+    headers = header_dict_from_header_str(config.get(CONF_AUTH_HEADER))
     hub = FeedSubject(
-        config[CONF_URL_ENDPOINTS], headers={"api_key": config[CONF_API_KEY]}
+        config[CONF_URL_ENDPOINTS],
+        headers=headers,
     )
     route_icons: str | None = config.get(CONF_ROUTE_ICONS)  # optional
+    gtfs_provider: str | None = config.get(CONF_GTFS_PROVIDER)
 
     static_timedelta = {
         uri: timedelta(**timedelta_dict)
@@ -65,6 +61,8 @@ def create_gtfs_update_hub(
         config[CONF_GTFS_STATIC_DATA],
         static_timedelta=static_timedelta,
         route_icons=route_icons,
+        gtfs_provider=gtfs_provider,
+        headers=headers,
     )
 
 

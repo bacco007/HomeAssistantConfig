@@ -14,12 +14,7 @@ from gtfs_station_stop.station_stop import StationStop
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import (
-    CONF_GTFS_PROVIDER,
-    CONF_ROUTE_ICONS,
-    CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT,
-    DOMAIN,
-)
+from .const import CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT, DOMAIN
 
 PARALLEL_UPDATES = 0
 
@@ -47,6 +42,10 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
         hass: HomeAssistant,
         feed_subject: FeedSubject,
         gtfs_static_zip: Iterable[os.PathLike] | os.PathLike = list[os.PathLike],
+        *,
+        gtfs_provider: str | None = None,
+        static_timedelta: dict[os.PathLike, timedelta] = {},
+        route_icons: str | None = None,
         **kwargs,
     ) -> None:
         """Initialize the GTFS Update Coordinator to notify all entities upon poll."""
@@ -59,15 +58,13 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             update_interval=self.realtime_timedelta,
         )
-        self.static_timedelta: dict[os.PathLike, timedelta] = kwargs.get(
-            "static_timedelta", {}
-        )
+        self.static_timedelta = static_timedelta
         self.kwargs = kwargs
-        self.gtfs_provider = kwargs.get(CONF_GTFS_PROVIDER)
+        self.gtfs_provider = gtfs_provider
         self.hub: FeedSubject = feed_subject
         self.gtfs_update_data = GtfsUpdateData()
         self.gtfs_static_zip: Iterable[os.PathLike] | os.PathLike = gtfs_static_zip
-        self.route_icons: str | None = kwargs.get(CONF_ROUTE_ICONS)
+        self.route_icons = route_icons
         self.static_update_targets: set[os.PathLike] = set(gtfs_static_zip)
         self.last_static_update: dict[os.PathLike, datetime] = {}
         _LOGGER.debug("Setup GTFS Realtime Update Coordinator")
