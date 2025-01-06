@@ -27,7 +27,6 @@ cards:
       max_width: 1000
     cards:
       - !include /config/ui/cards/devices/appletv.yaml
-      - !include /config/ui/cards/devices/shield.yaml
       - !include /config/ui/cards/devices/synology.yaml
       - !include /config/ui/cards/devices/hdhomerun.yaml
       - !include /config/ui/cards/devices/sonos_office.yaml

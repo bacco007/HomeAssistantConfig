@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2025.1.0 |
-| No. Integrations | 220 |
+| No. Integrations | 216 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6429 |
-| No. Sensors | 4273 |
+| No. Entities | 6495 |
+| No. Sensors | 4292 |
 | No. Automations | 154 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 17
 Binary sensors | 394
-Buttons | 212
+Buttons | 217
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 612
+Devices | 611
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -83,19 +83,19 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 0
-Media players | 41
+Media players | 39
 Numbers | 52
-Persistent notifications | 5
+Persistent notifications | 3
 Persons | 4
-Remotes | 9
+Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4273
+Sensors | 4292
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 293
+Switches | 298
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>661 Integrations</summary>
+<details><summary>642 Integrations</summary>
 
 | Name |
 | --- |
@@ -137,12 +137,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [analytics](https://www.home-assistant.io/components/analytics) |
 | [analytics_insights](https://www.home-assistant.io/components/analytics_insights) |
 | [analytics_insights.sensor](https://www.home-assistant.io/components/analytics_insights.sensor) |
-| [androidtv](https://www.home-assistant.io/components/androidtv) |
-| [androidtv.media_player](https://www.home-assistant.io/components/androidtv.media_player) |
-| [androidtv.remote](https://www.home-assistant.io/components/androidtv.remote) |
-| [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
-| [androidtv_remote.media_player](https://www.home-assistant.io/components/androidtv_remote.media_player) |
-| [androidtv_remote.remote](https://www.home-assistant.io/components/androidtv_remote.remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [anniversaries.calendar](https://www.home-assistant.io/components/anniversaries.calendar) |
 | [anniversaries.sensor](https://www.home-assistant.io/components/anniversaries.sensor) |
@@ -183,9 +177,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
 | [bluetooth_adapters](https://www.home-assistant.io/components/bluetooth_adapters) |
 | [broadlink](https://www.home-assistant.io/components/broadlink) |
-| [broadlink.remote](https://www.home-assistant.io/components/broadlink.remote) |
-| [broadlink.sensor](https://www.home-assistant.io/components/broadlink.sensor) |
-| [broadlink.switch](https://www.home-assistant.io/components/broadlink.switch) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [browser_mod.binary_sensor](https://www.home-assistant.io/components/browser_mod.binary_sensor) |
 | [browser_mod.camera](https://www.home-assistant.io/components/browser_mod.camera) |
@@ -208,7 +199,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
-| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -384,15 +374,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
 | [lastfm.sensor](https://www.home-assistant.io/components/lastfm.sensor) |
 | [lg_thinq](https://www.home-assistant.io/components/lg_thinq) |
-| [lg_thinq.binary_sensor](https://www.home-assistant.io/components/lg_thinq.binary_sensor) |
-| [lg_thinq.climate](https://www.home-assistant.io/components/lg_thinq.climate) |
-| [lg_thinq.event](https://www.home-assistant.io/components/lg_thinq.event) |
-| [lg_thinq.fan](https://www.home-assistant.io/components/lg_thinq.fan) |
-| [lg_thinq.number](https://www.home-assistant.io/components/lg_thinq.number) |
-| [lg_thinq.select](https://www.home-assistant.io/components/lg_thinq.select) |
-| [lg_thinq.sensor](https://www.home-assistant.io/components/lg_thinq.sensor) |
-| [lg_thinq.switch](https://www.home-assistant.io/components/lg_thinq.switch) |
-| [lg_thinq.vacuum](https://www.home-assistant.io/components/lg_thinq.vacuum) |
 | [light](https://www.home-assistant.io/components/light) |
 | [llmvision](https://www.home-assistant.io/components/llmvision) |
 | [local_ip](https://www.home-assistant.io/components/local_ip) |
@@ -815,7 +796,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.1] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
+| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.2] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
 | [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.4] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.2] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.12.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
@@ -853,7 +834,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Response As Sensor](https://github.com/gjohansson-ST/response_as_sensor) |  [v1.0] | Home Assistant Service call response as entity |[@gjohansson-ST](https://github.com/gjohansson-ST).|
 | [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) |  [v0.0.11] | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |[@djtimca](https://github.com/djtimca).|
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) |  [v2.3.1] | Use Simple Icons in Home Assistant ||
-| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.40.3] | HomeAssistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |[@ollo69](https://github.com/ollo69).|
+| [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) |  [v0.41.1] | HomeAssistant custom integration for SmartThinQ LG devices |[@ollo69](https://github.com/ollo69).|
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.2.7] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|

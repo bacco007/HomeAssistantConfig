@@ -124,28 +124,6 @@ binary_sensor:
       entity_count: >
         "{{ integration_entities('alert')|select('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] androidtv"
-    unique_id: ha_connected_integration_androidtv
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/androidtv/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('androidtv')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('androidtv')|select('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] androidtv_remote"
-    unique_id: ha_connected_integration_androidtv_remote
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/androidtv_remote/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('androidtv_remote')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('androidtv_remote')|select('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] anniversaries"
     unique_id: ha_connected_integration_anniversaries
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
