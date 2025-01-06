@@ -32,11 +32,11 @@ from .const import (
     MANUFACTURER_WLED,
     CalculationStrategy,
 )
-from .group_include.filter import CategoryFilter, CompositeFilter, FilterOperator, LambdaFilter, NotFilter, get_filtered_entity_list
+from .group_include.filter import CategoryFilter, CompositeFilter, DomainFilter, FilterOperator, LambdaFilter, NotFilter, get_filtered_entity_list
 from .helpers import get_or_create_unique_id
 from .power_profile.factory import get_power_profile
 from .power_profile.library import ModelInfo, ProfileLibrary
-from .power_profile.power_profile import DiscoveryBy, PowerProfile
+from .power_profile.power_profile import DEVICE_TYPE_DOMAIN, DiscoveryBy, PowerProfile
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -90,21 +90,33 @@ class DiscoveryManager:
 
     async def start_discovery(self) -> None:
         """Start the discovery procedure."""
-
-        # Build a list of config entries which are already setup, to prevent duplicate discovery flows
-        for entry in self.hass.config_entries.async_entries(DOMAIN):
-            if entry.unique_id:
-                self.initialized_flows.add(entry.unique_id)
-                entity_id = str(entry.data.get(CONF_ENTITY_ID))
-                if entity_id != DUMMY_ENTITY_ID:
-                    self.initialized_flows.add(entity_id)
+        await self.initialize_existing_entries()
 
         _LOGGER.debug("Start auto discovery")
 
+        _LOGGER.debug("Start entity discovery")
         await self.perform_discovery(self.get_entities, self.create_entity_source, DiscoveryBy.ENTITY)  # type: ignore[arg-type]
+
+        _LOGGER.debug("Start device discovery")
         await self.perform_discovery(self.get_devices, self.create_device_source, DiscoveryBy.DEVICE)  # type: ignore[arg-type]
 
         _LOGGER.debug("Done auto discovery")
+
+    async def initialize_existing_entries(self) -> None:
+        """Build a list of config entries which are already setup, to prevent duplicate discovery flows"""
+        for entry in self.hass.config_entries.async_entries(DOMAIN):
+            if not entry.unique_id:
+                continue
+
+            self.initialized_flows.add(entry.unique_id)
+            entity_id = entry.data.get(CONF_ENTITY_ID)
+            if not entity_id or entity_id == DUMMY_ENTITY_ID:
+                continue
+
+            entity = await create_source_entity(str(entity_id), self.hass)
+            if entity and entity.device_entry:
+                self.initialized_flows.add(f"pc_{entity.device_entry.id}")
+            self.initialized_flows.add(entity_id)
 
     async def perform_discovery(
         self,
@@ -114,6 +126,7 @@ class DiscoveryManager:
     ) -> None:
         """Generalized discovery procedure for entities and devices."""
         for source in await source_provider():
+            log_identifier = source.entity_id if discovery_type == DiscoveryBy.ENTITY else source.id
             try:
                 model_info = await self.extract_model_info_from_device_info(source)
                 if not model_info:
@@ -123,10 +136,7 @@ class DiscoveryManager:
 
                 power_profiles = await self.discover_entity(source_entity, model_info, discovery_type)
                 if not power_profiles:
-                    _LOGGER.debug(
-                        "%s: Model not found in library, skipping discovery",
-                        source_entity.entity_id,
-                    )
+                    _LOGGER.debug("%s: Model not found in library, skipping discovery", log_identifier)
                     continue
 
                 unique_id = self.create_unique_id(
@@ -137,17 +147,19 @@ class DiscoveryManager:
 
                 if self._is_already_discovered(source_entity, unique_id):
                     _LOGGER.debug(
-                        "%s: Already setup with discovery, skipping",
-                        source_entity.entity_id,
+                        "%s: Already setup with discovery, skipping new discovery (unique_id=%s)",
+                        log_identifier,
+                        unique_id,
                     )
                     continue
 
-                self._init_entity_discovery(model_info, unique_id, source_entity, power_profiles, {})
-            except Exception:  # noqa: BLE001
+                self._init_entity_discovery(model_info, unique_id, source_entity, log_identifier, power_profiles, {})
+            except Exception as err:  # noqa: BLE001
                 _LOGGER.error(
-                    "Error during %s discovery: %s",
+                    "%s: Error during %s discovery: %s",
+                    log_identifier,
                     discovery_type,
-                    source,
+                    err,
                 )
 
     async def discover_entity(
@@ -183,7 +195,7 @@ class DiscoveryManager:
         if discovery_type == DiscoveryBy.DEVICE:
             device_id = source.object_id
             if source.device_entry:
-                device_id = source.device_entry.primary_config_entry or source.device_entry.id
+                device_id = source.device_entry.id
             return f"pc_{device_id}"
 
         return get_or_create_unique_id({}, source, power_profile)
@@ -228,6 +240,7 @@ class DiscoveryManager:
             model_info,
             unique_id,
             source_entity,
+            source_entity.entity_id,
             power_profiles=None,
             extra_discovery_data={
                 CONF_MODE: CalculationStrategy.WLED,
@@ -268,6 +281,7 @@ class DiscoveryManager:
                 LambdaFilter(lambda entity: entity.device_id is None),
                 LambdaFilter(lambda entity: entity.platform == "mqtt" and "segment" in entity.entity_id),
                 LambdaFilter(lambda entity: entity.platform == "powercalc"),
+                NotFilter(DomainFilter(DEVICE_TYPE_DOMAIN.values())),
             ],
             FilterOperator.OR,
         )
@@ -277,10 +291,15 @@ class DiscoveryManager:
         """Fetch device entries."""
         return list(dr.async_get(self.hass).devices.values())
 
-    async def extract_model_info_from_device_info(self, entry: er.RegistryEntry | dr.DeviceEntry | None) -> ModelInfo | None:
+    async def extract_model_info_from_device_info(
+        self,
+        entry: er.RegistryEntry | dr.DeviceEntry | None,
+    ) -> ModelInfo | None:
         """Try to auto discover manufacturer and model from the known device information."""
         if not entry:
             return None
+
+        log_identifier = entry.entity_id if isinstance(entry, er.RegistryEntry) else entry.id
 
         if isinstance(entry, er.RegistryEntry):
             model_info = await self.get_model_information_from_entity(entry)
@@ -289,7 +308,7 @@ class DiscoveryManager:
         if not model_info:
             _LOGGER.debug(
                 "%s: Cannot autodiscover model, manufacturer or model unknown from device registry",
-                entry.id,
+                log_identifier,
             )
             return None
 
@@ -305,7 +324,7 @@ class DiscoveryManager:
 
         _LOGGER.debug(
             "%s: Found model information on device (manufacturer=%s, model=%s, model_id=%s)",
-            entry.id,
+            log_identifier,
             model_info.manufacturer,
             model_info.model,
             model_info.model_id,
@@ -344,6 +363,7 @@ class DiscoveryManager:
         model_info: ModelInfo,
         unique_id: str,
         source_entity: SourceEntity,
+        log_identifier: str,
         power_profiles: list[PowerProfile] | None,
         extra_discovery_data: dict | None,
     ) -> None:
@@ -374,7 +394,7 @@ class DiscoveryManager:
         if source_entity.entity_id != DUMMY_ENTITY_ID:
             self.initialized_flows.add(source_entity.entity_id)
 
-        _LOGGER.debug("%s: Initiating discovery flow, unique_id=%s", source_entity.entity_id, unique_id)
+        _LOGGER.debug("%s: Initiating discovery flow, unique_id=%s", log_identifier, unique_id)
 
         discovery_flow.async_create_flow(
             self.hass,
