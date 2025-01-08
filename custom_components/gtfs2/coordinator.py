@@ -24,7 +24,9 @@ from .const import (
     ATTR_DUE_IN,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
-    ATTR_RT_UPDATED_AT
+    ATTR_RT_UPDATED_AT,
+    ICON,
+    ICONS
 )    
 from .gtfs_helper import get_gtfs, get_next_departure, check_datasource_index, create_trip_geojson, check_extracting, get_local_stops_next_departures
 from .gtfs_rt_helper import get_next_services, get_rt_alerts
@@ -72,12 +74,13 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
             "name": data["name"],
             "file": data["file"],
             "route_type": data["route_type"],
+            "route": data["route"],
             "extracting": False,
             "next_departure": {},
             "next_departure_realtime_attr": {},
             "alert": {}
         }           
-
+        
         if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):    
             _LOGGER.debug("Cannot update this sensor as still unpacking: %s", self._data["file"])
             previous_data["extracting"] = True
@@ -122,6 +125,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                 self._headers = None
                 self._trip_update_url = options.get("trip_update_url", None)
                 self._vehicle_position_url = options.get("vehicle_position_url", None)
+                self._icon = ICONS.get(int(self._data["route_type"]), ICON)
                 self._alerts_url = options.get("alerts_url", None)
                 if options.get(CONF_API_KEY_LOCATION, None) == "query_string":
                   if options.get(CONF_API_KEY, None):

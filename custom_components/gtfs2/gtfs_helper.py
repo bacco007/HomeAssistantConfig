@@ -584,7 +584,7 @@ def get_route_list(schedule, data):
     if data["route_type"] != "99":
         route_type_where = f"and route_type = {data['route_type']}"
     sql_routes = f"""
-    SELECT r.route_id, r.route_short_name, r.route_long_name, a.agency_name 
+    SELECT r.route_type, r.route_id, r.route_short_name, r.route_long_name, a.agency_name
     from routes r
     left join agency a on a.agency_id = r.agency_id
     where 1=1
@@ -602,7 +602,7 @@ def get_route_list(schedule, data):
         row = row_cursor._asdict()
         routes_list.append(list(row_cursor))
     for x in routes_list:
-        val = str(x[0]) + ": " + str(x[1]) + " (" + str(x[2]) + ")" + " - " + str(x[3])
+        val = str(x[0]) + "#" + str(x[1]) + ": (" + str(x[2]) + " - " + str(x[3]) + ") " + str(x[4])
         routes.append(val)
     _LOGGER.debug(f"routes: {routes}")
     return routes
