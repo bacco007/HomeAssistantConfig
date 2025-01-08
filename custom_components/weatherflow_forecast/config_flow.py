@@ -80,7 +80,7 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "wrong_token"
             return await self._show_setup_form(errors)
 
-        await self.async_set_unique_id(user_input[CONF_STATION_ID])
+        await self.async_set_unique_id(str(user_input[CONF_STATION_ID]))
         self._abort_if_unique_id_configured
 
         return self.async_create_entry(
@@ -105,7 +105,7 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_STATION_ID): int,
+                    vol.Required(CONF_STATION_ID): str,
                     vol.Required(CONF_API_TOKEN): str,
                     vol.Optional(CONF_FORECAST_HOURS, default=DEFAULT_FORECAST_HOURS): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
                     vol.Optional(CONF_ADD_SENSORS, default=DEFAULT_ADD_SENSOR): bool,

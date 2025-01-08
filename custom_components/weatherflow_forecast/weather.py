@@ -188,7 +188,9 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
                 condition = item.icon
                 datetime = utc_from_timestamp(item.timestamp).isoformat()
                 humidity = item.humidity
+                precipitation_icon = item.precip_icon
                 precipitation_probability = item.precipitation_probability
+                precipitation_type = item.precip_type
                 native_precipitation = item.precipitation
                 native_pressure = item.pressure
                 native_temperature = item.temperature
@@ -202,7 +204,9 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
                     "condition": condition,
                     "datetime": datetime,
                     "humidity": humidity,
+                    "precipitation_icon": precipitation_icon,
                     "precipitation_probability": precipitation_probability,
+                    "precipitation_type": precipitation_type,
                     "native_precipitation": native_precipitation,
                     "native_pressure": native_pressure,
                     "native_temperature": native_temperature,
@@ -217,7 +221,9 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
             for item in self.coordinator.data.daily_forecast:
                 condition = item.icon
                 datetime = utc_from_timestamp(item.timestamp).isoformat()
+                precipitation_icon = item.precip_icon
                 precipitation_probability = item.precipitation_probability
+                precipitation_type = item.precip_type
                 native_temperature = item.temperature
                 native_templow = item.temp_low
                 native_precipitation = item.precipitation
@@ -228,7 +234,9 @@ class WeatherFlowWeather(SingleCoordinatorWeatherEntity[WeatherFlowForecastDataU
                 ha_item = {
                     "condition": condition,
                     "datetime": datetime,
+                    "precipitation_icon": precipitation_icon,
                     "precipitation_probability": precipitation_probability,
+                    "precipitation_type": precipitation_type,
                     "native_precipitation": native_precipitation,
                     "native_temperature": native_temperature,
                     "native_templow": native_templow,
