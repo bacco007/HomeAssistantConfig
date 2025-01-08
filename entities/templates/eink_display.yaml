@@ -26,13 +26,13 @@ sensor:
       home_temperature_min: >
         {{ states('sensor.weather_temperature_today_minimum') }}
       home_rainfall_today: >
-        {{ states('sensor.weather_precipitation_today') }}
+        {{ states('sensor.weatherflow_rainfall_daily') }}
       home_rainfall_week: >
-        {{ states('sensor.weatherstats_rain_home_week') }}
+        {{ states('sensor.weatherflow_rainfall_weekly') }}
       home_rainfall_month: >
-        {{ states('sensor.weatherstats_rain_home_month') }}
+        {{ states('sensor.weatherflow_rainfall_monthly') }}
       home_rainfall_year: >
-        {{ states('sensor.weatherstats_rain_home') }}
+        {{ states('sensor.weatherflow_rainfall_yearly') }}
       media_playing_status: >
         {{ states('media_player.currently_playing') }}
       media_playing_title: >
