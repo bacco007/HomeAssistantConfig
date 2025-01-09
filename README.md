@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.1 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6456 |
-| No. Sensors | 4307 |
+| No. Entities | 6444 |
+| No. Sensors | 4297 |
 | No. Automations | 154 |
 
 <details>
@@ -64,7 +64,7 @@ Alarm control panels | 2
 Areas | 17
 Binary sensors | 394
 Buttons | 217
-Calendars | 84
+Calendars | 83
 Cameras | 6
 Climate | 2
 Covers | 0
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4307
+Sensors | 4297
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>652 Integrations</summary>
+<details><summary>650 Integrations</summary>
 
 | Name |
 | --- |
@@ -351,10 +351,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ibeacon](https://www.home-assistant.io/components/ibeacon) |
 | [ibeacon.device_tracker](https://www.home-assistant.io/components/ibeacon.device_tracker) |
 | [ibeacon.sensor](https://www.home-assistant.io/components/ibeacon.sensor) |
-| [ical](https://www.home-assistant.io/components/ical) |
-| [ical.calendar](https://www.home-assistant.io/components/ical.calendar) |
-| [ical.sensor](https://www.home-assistant.io/components/ical.sensor) |
 | [ics_calendar](https://www.home-assistant.io/components/ics_calendar) |
+| [ics_calendar.calendar](https://www.home-assistant.io/components/ics_calendar.calendar) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -901,7 +899,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather) |  [v6.5.0] | Hourly weather card for Home Assistant. Visualize upcoming weather conditions as a colored horizontal bar. |
 | [Html Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) |  [v1.0.2] | This card displays provided Jinja2 template as an HTML content of a card. It uses exactly the same engine as Home Assistant in Developer tools. |
 | [Hui Element](https://github.com/thomasloven/lovelace-hui-element) |  | 🔹 Use built-in elements in the wrong place |
-| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.5.0] | 🙈 Hides the Home Assistant header and/or sidebar |
+| [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.6.0] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
@@ -929,7 +927,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.14] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v0.9.9.4] | Temperature Hetmap for Home Assistant heatmap |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
-| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.3] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
+| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.4] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v1.0.1] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |

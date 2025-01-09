@@ -542,17 +542,6 @@ binary_sensor:
       entity_count: >
         "{{ integration_entities('ibeacon')|select('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] ical"
-    unique_id: ha_connected_integration_ical
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/ical/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('ical')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('ical')|select('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] ics_calendar"
     unique_id: ha_connected_integration_ics_calendar
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
