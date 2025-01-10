@@ -5,6 +5,7 @@ import logging
 import os
 import re
 from collections import defaultdict
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any, NamedTuple, Protocol, cast
@@ -68,32 +69,34 @@ class CustomField:
     description: str | None = None
 
 
-DEVICE_TYPE_DOMAIN = {
+DEVICE_TYPE_DOMAIN: dict[DeviceType, str | set[str]] = {
     DeviceType.CAMERA: CAMERA_DOMAIN,
     DeviceType.COVER: COVER_DOMAIN,
     DeviceType.GENERIC_IOT: SENSOR_DOMAIN,
     DeviceType.LIGHT: LIGHT_DOMAIN,
     DeviceType.POWER_METER: SENSOR_DOMAIN,
     DeviceType.SMART_DIMMER: LIGHT_DOMAIN,
-    DeviceType.SMART_SWITCH: SWITCH_DOMAIN,
+    DeviceType.SMART_SWITCH: {SWITCH_DOMAIN, LIGHT_DOMAIN},
     DeviceType.SMART_SPEAKER: MEDIA_PLAYER_DOMAIN,
     DeviceType.NETWORK: BINARY_SENSOR_DOMAIN,
     DeviceType.PRINTER: SENSOR_DOMAIN,
     DeviceType.VACUUM_ROBOT: VACUUM_DOMAIN,
 }
 
-DOMAIN_TO_DEVICE_TYPES = defaultdict(set)
-for device_type, domain in DEVICE_TYPE_DOMAIN.items():
-    DOMAIN_TO_DEVICE_TYPES[domain].add(device_type)
+SUPPORTED_DOMAINS: set[str] = {domain for domains in DEVICE_TYPE_DOMAIN.values() for domain in (domains if isinstance(domains, set) else {domains})}
 
 
-def get_entity_device_types(entity_domain: str, entity_entry: RegistryEntry | None) -> set[DeviceType]:
+def _build_domain_device_type_mapping() -> Mapping[str, set[DeviceType]]:
     """Get the device types for a given entity domain."""
-    device_types = set(DOMAIN_TO_DEVICE_TYPES.get(entity_domain, {}))
-    # see https://github.com/bramstroker/homeassistant-powercalc/issues/1491
-    if entity_entry and entity_entry.platform in ["hue", "osramlightify"] and entity_domain == LIGHT_DOMAIN:
-        device_types.add(DeviceType.SMART_SWITCH)
-    return device_types
+    domain_to_device_type: defaultdict[str, set[DeviceType]] = defaultdict(set)
+    for device_type, domains in DEVICE_TYPE_DOMAIN.items():
+        domain_set = domains if isinstance(domains, set) else {domains}
+        for domain in domain_set:
+            domain_to_device_type[domain].add(device_type)
+    return domain_to_device_type
+
+
+DOMAIN_DEVICE_TYPE_MAPPING: Mapping[str, set[DeviceType]] = _build_domain_device_type_mapping()
 
 
 class PowerProfile:
@@ -286,17 +289,26 @@ class PowerProfile:
     def config_flow_discovery_remarks(self) -> str | None:
         """Get remarks to show at the config flow discovery step."""
         remarks = self._json_data.get("config_flow_discovery_remarks")
-        if not remarks and self.device_type == DeviceType.SMART_SWITCH:
-            translations = translation.async_get_cached_translations(
-                self._hass,
-                self._hass.config.language,
-                "common",
-                DOMAIN,
-            )
-            translation_key = f"component.{DOMAIN}.common.remarks_smart_switch"
-            return translations.get(translation_key)
+        if not remarks:
+            translation_key = self.get_default_discovery_remarks_translation_key()
+            if translation_key:
+                translations = translation.async_get_cached_translations(
+                    self._hass,
+                    self._hass.config.language,
+                    "common",
+                    DOMAIN,
+                )
+                return translations.get(f"component.{DOMAIN}.common.{translation_key}")
 
         return remarks
+
+    def get_default_discovery_remarks_translation_key(self) -> str | None:
+        """When no remarks are provided in the profile, see if we need to show a default remark."""
+        if self.device_type == DeviceType.SMART_SWITCH and self.needs_fixed_config:
+            return "remarks_smart_switch"
+        if self.device_type == DeviceType.SMART_DIMMER and self.needs_linear_config:
+            return "remarks_smart_dimmer"
+        return None
 
     async def get_sub_profiles(self) -> list[str]:
         """Get listing of possible sub profiles."""
@@ -378,7 +390,7 @@ class PowerProfile:
         if self.device_type == DeviceType.PRINTER and entity_entry.unit_of_measurement:
             return False
 
-        return self.device_type in get_entity_device_types(domain, entity_entry)
+        return self.device_type in DOMAIN_DEVICE_TYPE_MAPPING[domain]
 
 
 class SubProfileSelector:
