@@ -1801,7 +1801,7 @@ class MediaBrowseService {
     );
     for (const child of dir.children ?? []) {
       if (child.can_play) {
-        favorites.push(child);
+        favorites.push({ ...child, favoriteType: dir.title });
       } else if (child.can_expand) {
         await this.browseDir(player, child, favorites);
       }
@@ -2483,6 +2483,10 @@ const ADVANCED_SCHEMA = [
   },
   {
     name: "inverseGroupMuteState",
+    selector: { boolean: {} }
+  },
+  {
+    name: "sortFavoritesByType",
     selector: { boolean: {} }
   }
 ];
@@ -3990,20 +3994,35 @@ var __decorateClass$7 = (decorators, target, key, kind) => {
 class MediaBrowserIcons extends h {
   render() {
     this.config = this.store.config;
+    const items = itemsWithFallbacks(this.items, this.config);
+    let prevType = "";
+    this.sortItemsByFavoriteTypeIfConfigured(items);
     return ke`
       <div class="icons">
-        ${itemsWithFallbacks(this.items, this.config).map(
-      (item) => ke`
+        ${items.map((item) => {
+      const showFavoriteType = this.config.sortFavoritesByType && item.favoriteType !== prevType || D;
+      const toRender = ke`
+            <div class="favorite-type" show=${showFavoriteType}>${item.favoriteType}</div>
             <ha-control-button
               style=${this.buttonStyle(this.config.favoritesItemsPerRow || 4)}
               @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}
             >
               ${renderMediaBrowserItem(item, !item.thumbnail || !this.config.favoritesHideTitleForThumbnailIcons)}
             </ha-control-button>
-          `
-    )}
+          `;
+      prevType = item.favoriteType;
+      return toRender;
+    })}
       </div>
     `;
+  }
+  sortItemsByFavoriteTypeIfConfigured(items) {
+    if (this.config.sortFavoritesByType) {
+      items.sort((a2, b2) => {
+        var _a2;
+        return ((_a2 = a2.favoriteType) == null ? void 0 : _a2.localeCompare(b2.favoriteType ?? "")) || a2.title.localeCompare(b2.title);
+      });
+    }
   }
   buttonStyle(favoritesItemsPerRow) {
     const margin = "1%";
@@ -4039,6 +4058,18 @@ class MediaBrowserIcons extends h {
           line-height: 160%;
           bottom: 0;
           background-color: rgba(var(--rgb-card-background-color), 0.733);
+        }
+
+        .favorite-type {
+          width: 100%;
+          border-bottom: 1px solid var(--secondary-background-color);
+          display: none;
+          margin-top: 0.2rem;
+          font-weight: bold;
+        }
+
+        .favorite-type[show] {
+          display: block;
         }
       `
     ];
