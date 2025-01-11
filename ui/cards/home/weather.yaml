@@ -69,6 +69,7 @@ cards:
       .bubble-icon {
         opacity: 1;
       }
+      ${(() => {if(window.innerWidth < 450){card.classList.add('rows-2')}})()}
     sub_button:
       - entity: sensor.weather_humidity
         show_name: false
@@ -96,7 +97,6 @@ cards:
     show_last_changed: false
     grid_options:
       columns: full
-    styles: "${(() => {if(window.innerWidth < 450){card.classList.add('rows-2')}})()}"
     card_layout: large
     show_icon: true
     scrolling_effect: false

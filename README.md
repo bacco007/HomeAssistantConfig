@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.2 |
 | No. Integrations | 217 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6442 |
+| No. Entities | 6443 |
 | No. Sensors | 4297 |
 | No. Automations | 154 |
 
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 611
+Devices | 612
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -99,7 +99,7 @@ Switches | 298
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 325
+Update | 326
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -832,7 +832,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.1] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.16.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.17.0] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -864,7 +864,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.13] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
-<details><summary>65 Lovelace Plugins</summary>
+<details><summary>66 Lovelace Plugins</summary>
 
 | Name | Version | Description |
 | --- | --- | --- |
@@ -872,7 +872,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.1-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2024.29.07] | Show the current date/time how you want in Home Assistant. |
+| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.10] | Show the current date/time how you want in Home Assistant. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
 | [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.4-beta.1] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
@@ -910,6 +910,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
 | [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus) |  [v0.2.4] | A power distribution card inspired by the official Energy Distribution card for Home Assistant |
+| [Pqina Flip Clock](https://github.com/Thyraz/pqina-flip-clock-card) |  [v1.1.1] | Home Assistant Lovelace custom card showing a flip clock using the "PQINA flip" web component |
 | [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart) |  [v3.6.0] | A Home Assistant lovelace card to display a sankey chart. For example for power consumption |
 | [Search Card](https://github.com/postlund/search-card) |  [v0c66839] | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) |  [v5.0] | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
