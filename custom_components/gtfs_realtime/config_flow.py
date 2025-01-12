@@ -140,7 +140,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
             {
                 vol.Optional(
                     CONF_AUTH_HEADER,
-                    default=feed_data.get("auth_hint"),
+                    default=feed_data.get("auth_hint", ""),
                 ): cv.string,
                 vol.Optional(
                     CONF_URL_ENDPOINTS,

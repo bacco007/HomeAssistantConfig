@@ -19,7 +19,7 @@ CONF_MINOR_VERSION = 0
 # ERRORS
 CONF_SELECT_AT_LEAST_ONE_STOP_OR_ROUTE = "select_at_least_one_stop_or_route"
 
-FEEDS_URL = "https://gitlab.bcpearce.com/bcpearce/homeassistant-gtfs-realtime/-/raw/develop/resources/feeds.json?ref_type=heads"
+FEEDS_URL = "https://raw.githubusercontent.com/bcpearce/homeassistant-gtfs-realtime/refs/heads/main/resources/feeds.json"
 
 STOP_ID = "stop_id"
 ROUTE_ID = "route_id"
