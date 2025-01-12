@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2025.1.2 |
-| No. Integrations | 217 |
+| No. Integrations | 219 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6443 |
-| No. Sensors | 4297 |
+| No. Entities | 6485 |
+| No. Sensors | 4320 |
 | No. Automations | 154 |
 
 <details>
@@ -62,8 +62,8 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 17
-Binary sensors | 394
-Buttons | 217
+Binary sensors | 398
+Buttons | 221
 Calendars | 83
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 612
+Devices | 617
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -84,14 +84,14 @@ Input texts | 3
 Lights | 13
 Locks | 0
 Media players | 39
-Numbers | 52
-Persistent notifications | 4
+Numbers | 54
+Persistent notifications | 6
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4297
+Sensors | 4320
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>649 Integrations</summary>
+<details><summary>658 Integrations</summary>
 
 | Name |
 | --- |
@@ -177,6 +177,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
 | [bluetooth_adapters](https://www.home-assistant.io/components/bluetooth_adapters) |
 | [broadlink](https://www.home-assistant.io/components/broadlink) |
+| [broadlink.remote](https://www.home-assistant.io/components/broadlink.remote) |
+| [broadlink.sensor](https://www.home-assistant.io/components/broadlink.sensor) |
+| [broadlink.switch](https://www.home-assistant.io/components/broadlink.switch) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [browser_mod.binary_sensor](https://www.home-assistant.io/components/browser_mod.binary_sensor) |
 | [browser_mod.camera](https://www.home-assistant.io/components/browser_mod.camera) |
@@ -312,6 +315,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [group.notify](https://www.home-assistant.io/components/group.notify) |
 | [gtfs2](https://www.home-assistant.io/components/gtfs2) |
 | [gtfs2.sensor](https://www.home-assistant.io/components/gtfs2.sensor) |
+| [gtfs_realtime](https://www.home-assistant.io/components/gtfs_realtime) |
+| [gtfs_realtime.binary_sensor](https://www.home-assistant.io/components/gtfs_realtime.binary_sensor) |
+| [gtfs_realtime.button](https://www.home-assistant.io/components/gtfs_realtime.button) |
+| [gtfs_realtime.number](https://www.home-assistant.io/components/gtfs_realtime.number) |
+| [gtfs_realtime.sensor](https://www.home-assistant.io/components/gtfs_realtime.sensor) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [hacs.switch](https://www.home-assistant.io/components/hacs.switch) |
 | [hacs.update](https://www.home-assistant.io/components/hacs.update) |
@@ -744,6 +752,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
 | [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
+| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -803,7 +812,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
-| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.2] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
+| [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.3] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
 | [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.2] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.12.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
@@ -872,7 +881,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.1-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.10] | Show the current date/time how you want in Home Assistant. |
+| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.11] | Digital clock card for Home Assistant, highly customizable. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
 | [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.3.4-beta.1] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
@@ -933,7 +942,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
 | [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.11.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
-| [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.9.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
+| [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.10.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>3 Themes</summary>
 
 | Name | Version | Description |

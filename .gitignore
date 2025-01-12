@@ -21,6 +21,7 @@ multiscrape
 gtfs2
 glances
 www/browserless
+.mypy_cache
 
 # Ignore File Extensions
 *.conf
@@ -29,6 +30,7 @@ www/browserless
 *.crt
 *.csr
 *.key
+*.sqlite
 
 # Temporary files
 *.db-journal
