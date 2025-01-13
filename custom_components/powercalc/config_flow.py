@@ -39,12 +39,14 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import selector
 from homeassistant.helpers.schema_config_entry_flow import SchemaFlowError
+from homeassistant.helpers.selector import TextSelector
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .common import SourceEntity, create_source_entity
 from .const import (
     CONF_AREA,
     CONF_AUTOSTART,
+    CONF_AVAILABILITY_ENTITY,
     CONF_CALCULATION_ENABLED_CONDITION,
     CONF_CALIBRATE,
     CONF_CREATE_ENERGY_SENSOR,
@@ -82,6 +84,7 @@ from .const import (
     CONF_MODEL,
     CONF_MULTIPLY_FACTOR,
     CONF_MULTIPLY_FACTOR_STANDBY,
+    CONF_NEW_GROUP,
     CONF_ON_TIME,
     CONF_PLAYBOOKS,
     CONF_POWER,
@@ -130,8 +133,9 @@ from .flow_helper.dynamic_field_builder import build_dynamic_field_schema
 from .group_include.include import find_entities
 from .power_profile.factory import get_power_profile
 from .power_profile.library import ModelInfo, ProfileLibrary
-from .power_profile.power_profile import DOMAIN_DEVICE_TYPE_MAPPING, SUPPORTED_DOMAINS, DeviceType, PowerProfile
+from .power_profile.power_profile import DEVICE_TYPE_DOMAIN, DOMAIN_DEVICE_TYPE_MAPPING, SUPPORTED_DOMAINS, DeviceType, DiscoveryBy, PowerProfile
 from .sensors.daily_energy import DEFAULT_DAILY_UPDATE_FREQUENCY
+from .sensors.group.config_entry_utils import get_group_entries
 from .sensors.power import PowerSensor
 from .strategy.factory import PowerCalculatorStrategyFactory
 from .strategy.wled import CONFIG_SCHEMA as SCHEMA_POWER_WLED
@@ -143,6 +147,8 @@ CONF_CONFIRM_AUTODISCOVERED_MODEL = "confirm_autodisovered_model"
 
 class Step(StrEnum):
     ADVANCED_OPTIONS = "advanced_options"
+    ASSIGN_GROUPS = "assign_groups"
+    AVAILABILITY_ENTITY = "availability_entity"
     BASIC_OPTIONS = "basic_options"
     GROUP_CUSTOM = "group_custom"
     GROUP_DOMAIN = "group_domain"
@@ -566,7 +572,7 @@ STRATEGY_SCHEMAS: dict[CalculationStrategy, vol.Schema] = {
 @dataclass(slots=True)
 class PowercalcFormStep:
     schema: vol.Schema | Callable[[], Coroutine[Any, Any, vol.Schema | None]]
-
+    step: Step
     validate_user_input: (
         Callable[
             [dict[str, Any]],
@@ -576,7 +582,6 @@ class PowercalcFormStep:
     ) = None
 
     next_step: Step | Callable[[dict[str, Any]], Coroutine[Any, Any, Step | None]] | None = None
-    step: Step | None = None
     continue_utility_meter_options_step: bool = False
     continue_advanced_step: bool = False
     form_kwarg: dict[str, Any] | None = None
@@ -592,9 +597,11 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         self.selected_profile: PowerProfile | None = None
         self.is_library_flow: bool = False
         self.skip_advanced_step: bool = False
+        self.selected_sensor_type: str | None = None
         self.is_options_flow: bool = isinstance(self, OptionsFlow)
         self.strategy: CalculationStrategy | None = None
         self.name: str | None = None
+        self.handled_steps: list[Step] = []
         super().__init__()
 
     @abstractmethod
@@ -655,42 +662,19 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
     def create_schema_multi_switch(self) -> vol.Schema:
         """Create the config schema for multi switch strategy."""
 
-        entity_registry = er.async_get(self.hass)
-        entities: list[str] = []
+        switch_domains = [str(Platform.SWITCH), str(Platform.LIGHT), str(Platform.COVER)]
         if self.source_entity and self.source_entity.device_entry:
-            entities = [
-                entity.entity_id
-                for entity in entity_registry.entities.get_entries_for_device_id(self.source_entity.device_entry.id)
-                if entity.domain in (Platform.SWITCH, Platform.LIGHT)
-            ]
-
-        # pre-populate the entity selector with the switches from the device
-        if entities:
-            schema = vol.Schema(
-                {
-                    vol.Required(
-                        CONF_ENTITIES,
-                        description={"suggested_value": entities},
-                    ): selector.EntitySelector(
-                        selector.EntitySelectorConfig(
-                            domain=Platform.SWITCH,
-                            multiple=True,
-                            include_entities=entities,
-                        ),
-                    ),
-                },
-            )
+            entity_selector = self.create_device_entity_selector(switch_domains, multiple=True)
         else:
-            schema = vol.Schema(
-                {
-                    vol.Required(CONF_ENTITIES): selector.EntitySelector(
-                        selector.EntitySelectorConfig(
-                            domain=Platform.SWITCH,
-                            multiple=True,
-                        ),
-                    ),
-                },
+            entity_selector = selector.EntitySelector(
+                selector.EntitySelectorConfig(
+                    domain=switch_domains,
+                    multiple=True,
+                ),
             )
+
+        schema = vol.Schema({vol.Required(CONF_ENTITIES): entity_selector})
+
         if not self.is_library_flow:
             schema = schema.extend(SCHEMA_POWER_MULTI_SWITCH_MANUAL.schema)
 
@@ -734,10 +718,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
                         multiple=True,
                     ),
                 ),
-                vol.Optional(CONF_SUB_GROUPS): self.create_group_selector(
-                    current_entry=config_entry,
-                    multiple=True,
-                ),
+                vol.Optional(CONF_SUB_GROUPS): self.create_group_selector(current_entry=config_entry),
                 vol.Optional(CONF_AREA): selector.AreaSelector(),
                 vol.Optional(CONF_DEVICE): selector.DeviceSelector(),
                 vol.Optional(CONF_HIDE_MEMBERS, default=False): selector.BooleanSelector(),
@@ -765,7 +746,6 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
                 vol.Optional(CONF_ENTITY_ID): self.create_source_entity_selector(),
             },
         ).extend(SCHEMA_POWER_BASE.schema)
-        schema = schema.extend({vol.Optional(CONF_GROUP): self.create_group_selector()})
         if not self.is_library_flow:
             schema = schema.extend(
                 {
@@ -795,10 +775,29 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
             )
         return selector.EntitySelector()
 
+    def create_device_entity_selector(self, domains: list[str], multiple: bool = False) -> selector.EntitySelector:
+        entity_registry = er.async_get(self.hass)
+        if self.source_entity and self.source_entity.device_entry:
+            entities = [
+                entity.entity_id
+                for entity in entity_registry.entities.get_entries_for_device_id(self.source_entity.device_entry.id)
+                if entity.domain in domains
+            ]
+        else:
+            entities = []
+
+        return selector.EntitySelector(
+            selector.EntitySelectorConfig(
+                domain=domains,
+                multiple=multiple,
+                include_entities=entities,
+            ),
+        )
+
     def create_group_selector(
         self,
         current_entry: ConfigEntry | None = None,
-        multiple: bool = False,
+        group_entries: list[ConfigEntry] | None = None,
     ) -> selector.SelectSelector:
         """Create the group selector."""
         options = [
@@ -806,15 +805,14 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
                 value=config_entry.entry_id,
                 label=str(config_entry.data.get(CONF_NAME)),
             )
-            for config_entry in self.hass.config_entries.async_entries(DOMAIN)
-            if config_entry.data.get(CONF_SENSOR_TYPE) == SensorType.GROUP
-            and (current_entry is None or config_entry.entry_id != current_entry.entry_id)
+            for config_entry in (group_entries or get_group_entries(self.hass))
+            if current_entry is None or config_entry.entry_id != current_entry.entry_id
         ]
 
         return selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=options,
-                multiple=multiple,
+                multiple=True,
                 mode=selector.SelectSelectorMode.DROPDOWN,
                 custom_value=True,
             ),
@@ -900,17 +898,31 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
                 self.name = user_input[CONF_NAME]
             self.sensor_config.update(user_input)
 
+            self.handled_steps.append(form_step.step)
             next_step = form_step.next_step
             if callable(form_step.next_step):
                 next_step = await form_step.next_step(user_input)
             if not next_step:
-                if form_step.continue_utility_meter_options_step and self.sensor_config.get(CONF_CREATE_UTILITY_METERS):
-                    return await self.async_step_utility_meter_options()
-                return self.persist_config_entry()
+                return await self.handle_final_steps(
+                    skip_advanced=not form_step.continue_advanced_step,
+                    skip_utility_meter_options=not form_step.continue_utility_meter_options_step,
+                )
 
             return await getattr(self, f"async_step_{next_step}")()  # type: ignore
 
         return await self._show_form(form_step)
+
+    async def handle_final_steps(
+        self,
+        skip_advanced: bool = False,
+        skip_utility_meter_options: bool = False,
+    ) -> FlowResult:
+        """Handle the final steps of the flow if needed and persist the config entry."""
+        if not skip_advanced and self.selected_sensor_type == SensorType.VIRTUAL_POWER:
+            return await self.async_step_power_advanced()
+        if not skip_utility_meter_options and self.sensor_config.get(CONF_CREATE_UTILITY_METERS):
+            return await self.async_step_utility_meter_options()
+        return self.persist_config_entry()
 
     async def _show_form(self, form_step: PowercalcFormStep, error: SchemaFlowError | None = None) -> FlowResult:
         # Show form for next step
@@ -923,7 +935,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
             step_id=form_step.step,
             data_schema=self.fill_schema_defaults(
                 schema,
-                self.get_global_powercalc_config(),
+                {**self.sensor_config, **self.get_global_powercalc_config()},
             ),
             errors={"base": str(error)} if error else {},
             last_step=last_step,
@@ -1027,25 +1039,63 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         if not self.selected_profile:
             return self.async_abort(reason="model_not_supported")  # pragma: no cover
 
-        if self.selected_profile.has_custom_fields and not self.sensor_config.get(CONF_VARIABLES):
+        if Step.LIBRARY_CUSTOM_FIELDS not in self.handled_steps and self.selected_profile.has_custom_fields:
             return await self.async_step_library_custom_fields()
 
-        if await self.selected_profile.has_sub_profiles and not self.selected_profile.sub_profile_select:
+        if Step.AVAILABILITY_ENTITY not in self.handled_steps and self.selected_profile.discovery_by == DiscoveryBy.DEVICE:
+            result = await self.async_step_availability_entity()
+            if result:
+                return result
+
+        if (
+            Step.SUB_PROFILE not in self.handled_steps
+            and await self.selected_profile.has_sub_profiles
+            and not self.selected_profile.sub_profile_select
+        ):
             return await self.async_step_sub_profile()
 
-        if self.selected_profile.device_type == DeviceType.SMART_SWITCH and self.selected_profile.calculation_strategy == CalculationStrategy.FIXED:
+        if (
+            Step.SMART_SWITCH not in self.handled_steps
+            and self.selected_profile.device_type == DeviceType.SMART_SWITCH
+            and self.selected_profile.calculation_strategy == CalculationStrategy.FIXED
+        ):
             return await self.async_step_smart_switch()
 
-        if self.selected_profile.needs_fixed_config:  # pragma: no cover
+        if Step.FIXED not in self.handled_steps and self.selected_profile.needs_fixed_config:  # pragma: no cover
             return await self.async_step_fixed()
 
-        if self.selected_profile.needs_linear_config:
+        if Step.LINEAR not in self.handled_steps and self.selected_profile.needs_linear_config:
             return await self.async_step_linear()
 
-        if self.selected_profile.calculation_strategy == CalculationStrategy.MULTI_SWITCH:
+        if Step.MULTI_SWITCH not in self.handled_steps and self.selected_profile.calculation_strategy == CalculationStrategy.MULTI_SWITCH:
             return await self.async_step_multi_switch()
 
-        return await self.async_step_power_advanced()
+        return await self.async_step_assign_groups()
+
+    async def async_step_availability_entity(self, user_input: dict[str, Any] | None = None) -> FlowResult | None:
+        """Handle the flow for availability entity."""
+        domains = DEVICE_TYPE_DOMAIN[self.selected_profile.device_type]  # type: ignore
+        entity_selector = self.create_device_entity_selector(
+            list(domains) if isinstance(domains, set) else [domains],
+        )
+        try:
+            first_entity = entity_selector.config["include_entities"][0]
+        except IndexError:
+            # Skip step if no entities are available
+            self.handled_steps.append(Step.AVAILABILITY_ENTITY)
+            return None
+        return await self.handle_form_step(
+            PowercalcFormStep(
+                step=Step.AVAILABILITY_ENTITY,
+                schema=vol.Schema(
+                    {
+                        vol.Optional(CONF_AVAILABILITY_ENTITY, default=first_entity): entity_selector,
+                    },
+                ),
+                next_step=Step.POST_LIBRARY,
+            ),
+            user_input,
+        )
 
     async def async_step_library_custom_fields(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the flow for custom fields."""
@@ -1078,7 +1128,13 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
             """Create sub profile schema."""
             library = await ProfileLibrary.factory(self.hass)
             profile = await library.get_profile(model_info, process_variables=False)
-            sub_profiles = [selector.SelectOptionDict(value=sub_profile, label=sub_profile) for sub_profile in await profile.get_sub_profiles()]
+            sub_profiles = [
+                selector.SelectOptionDict(
+                    value=sub_profile[0],
+                    label=sub_profile[1]["name"] if "name" in sub_profile[1] else sub_profile[0],
+                )
+                for sub_profile in await profile.get_sub_profiles()
+            ]
             return vol.Schema(
                 {
                     vol.Required(CONF_SUB_PROFILE): selector.SelectSelector(
@@ -1105,6 +1161,37 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
             user_input,
         )
 
+    async def async_step_assign_groups(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Handle the flow for assigning groups."""
+        group_entries = get_group_entries(self.hass)
+        if not group_entries:
+            return await self.handle_final_steps()
+
+        schema = vol.Schema(
+            {
+                vol.Optional(CONF_GROUP): self.create_group_selector(group_entries=group_entries),
+                vol.Optional(CONF_NEW_GROUP): TextSelector(),
+            },
+        )
+
+        async def _validate(user_input: dict[str, Any]) -> dict[str, Any]:
+            groups = user_input.get(CONF_GROUP) or []
+            new_group = user_input.get(CONF_NEW_GROUP)
+            if new_group:
+                groups.append(new_group)
+            return {CONF_GROUP: groups}
+
+        return await self.handle_form_step(
+            PowercalcFormStep(
+                step=Step.ASSIGN_GROUPS,
+                schema=schema,
+                continue_advanced_step=True,
+                continue_utility_meter_options_step=True,
+                validate_user_input=_validate,
+            ),
+            user_input,
+        )
+
     async def async_step_power_advanced(
         self,
         user_input: dict[str, Any] | None = None,
@@ -1112,7 +1199,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
         """Handle the flow for advanced options."""
 
         if self.is_options_flow:
-            return self.persist_config_entry()
+            return self.persist_config_entry()  # pragma: no cover
 
         if user_input is not None or self.skip_advanced_step:
             self.sensor_config.update(user_input or {})
@@ -1181,7 +1268,7 @@ class PowercalcCommonFlow(ABC, ConfigEntryBaseFlow):
             PowercalcFormStep(
                 step=STRATEGY_STEP_MAPPING[strategy],
                 schema=schema,
-                next_step=Step.POWER_ADVANCED,
+                next_step=Step.ASSIGN_GROUPS,
                 validate_user_input=_validate,
             ),
             user_input,
@@ -1291,7 +1378,6 @@ class PowercalcConfigFlow(PowercalcCommonFlow, ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Initialize options flow."""
-        self.selected_sensor_type: str | None = None
         self.discovered_profiles: dict[str, PowerProfile] = {}
         super().__init__()
 
@@ -1445,23 +1531,17 @@ class PowercalcConfigFlow(PowercalcCommonFlow, ConfigFlow, domain=DOMAIN):
         """Handle the flow for daily energy sensor."""
         self.selected_sensor_type = SensorType.DAILY_ENERGY
 
-        schema = SCHEMA_DAILY_ENERGY.extend(
-            {
-                vol.Optional(CONF_GROUP): self.create_group_selector(),
-            },
-        )
-
         async def _validate(user_input: dict[str, Any]) -> dict[str, Any]:
             if CONF_VALUE not in user_input and CONF_VALUE_TEMPLATE not in user_input:
                 raise SchemaFlowError("daily_energy_mandatory")
-            return self.build_daily_energy_config(user_input, schema)
+            return self.build_daily_energy_config(user_input, SCHEMA_DAILY_ENERGY)
 
         return await self.handle_form_step(
             PowercalcFormStep(
                 step=Step.DAILY_ENERGY,
-                schema=schema,
+                schema=SCHEMA_DAILY_ENERGY,
                 validate_user_input=_validate,
-                continue_utility_meter_options_step=True,
+                next_step=Step.ASSIGN_GROUPS,
             ),
             user_input,
         )
@@ -1742,7 +1822,7 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
         """Build the options menu."""
         menu = [Step.BASIC_OPTIONS]
         if self.sensor_type == SensorType.VIRTUAL_POWER:
-            if self.strategy and self.strategy != CalculationStrategy.LUT:
+            if self.strategy and self.should_add_strategy_option_to_menu():
                 strategy_step = STRATEGY_STEP_MAPPING[self.strategy]
                 menu.append(strategy_step)
             if self.selected_profile:
@@ -1759,6 +1839,20 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
             menu.append(Step.UTILITY_METER_OPTIONS)
 
         return menu
+
+    def should_add_strategy_option_to_menu(self) -> bool:
+        """Check whether the strategy option should be added to the menu."""
+        if not self.strategy or self.strategy == CalculationStrategy.LUT:
+            return False
+
+        if self.selected_profile:
+            if self.strategy == CalculationStrategy.FIXED and not self.selected_profile.needs_fixed_config:
+                return False
+
+            if self.strategy == CalculationStrategy.LINEAR and not self.selected_profile.needs_linear_config:
+                return False
+
+        return True
 
     def build_group_menu(self) -> list[Step]:
         """Build the group options menu."""
@@ -2006,11 +2100,20 @@ class PowercalcOptionsFlow(PowercalcCommonFlow, OptionsFlow):
                 },
             )
 
+        schema = vol.Schema(
+            {
+                **SCHEMA_ENERGY_SENSOR_TOGGLE.schema,
+                **SCHEMA_UTILITY_METER_TOGGLE.schema,
+            },
+        )
+        if not (self.selected_profile and self.selected_profile.only_self_usage):
+            schema.extend({vol.Optional(CONF_STANDBY_POWER): vol.Coerce(float)})
+
         if self.source_entity_id == DUMMY_ENTITY_ID:
-            return SCHEMA_POWER_OPTIONS
+            return schema
 
         return vol.Schema(  # type: ignore
             {
                 vol.Optional(CONF_ENTITY_ID): self.create_source_entity_selector(),
             },
-        ).extend(SCHEMA_POWER_OPTIONS.schema)
+        ).extend(schema.schema)
