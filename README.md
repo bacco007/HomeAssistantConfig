@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.2 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 96 |
-| No. Entities | 6485 |
+| No. Entities | 6475 |
 | No. Sensors | 4320 |
 | No. Automations | 154 |
 
@@ -792,7 +792,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Awtrix Notifications](https://github.com/10der/homeassistant-custom_components-awtrix) |  | HASS awtrix |[@10der](https://github.com/10der).|
 | [Bermuda Ble Trilateration](https://github.com/agittins/bermuda) |  [v0.7.2] | Bermuda Bluetooth/BLE Triangulation / Trilateration for HomeAssistant |[@agittins](https://github.com/agittins).|
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) |  [v1.3.9] | Custom Component for fetching lightning data from blitzortung.org |[@mrk-its](https://github.com/mrk-its).|
-| [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.2] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
+| [Browser Mod](https://github.com/thomasloven/hass-browser_mod) |  [v2.3.3] | 🔹 A Home Assistant integration to turn your browser into a controllable entity and media player ||
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) |  [v1.3.3] | Custom component for retrieving weather information from the Bureau of Meteorology. |[@bremor,@makin-things](https://github.com/bremor,makin-things).|
 | [Cloudflare Tunnel Monitor](https://github.com/deadbeef3137/ha-cloudflare-tunnel-monitor) |  [v2.1.7.1] | Integration (custom_component) for Home Assistant that monitors the status of your Cloudflare tunnels. |[@deadbeef3137](https://github.com/deadbeef3137).|
 | [Composite Device Tracker](https://github.com/pnbruckner/ha-composite-tracker) |  [v3.4.5] | Home Assistant Composite Device Tracker |[@pnbruckner](https://github.com/pnbruckner).|
