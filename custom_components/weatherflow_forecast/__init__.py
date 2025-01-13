@@ -20,13 +20,14 @@ from pyweatherflow_forecast import (
     WeatherFlowStationData,
 )
 
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ConfigEntryNotReady, Unauthorized
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.loader import async_get_integration
 
 from .const import (
     DEFAULT_ADD_SENSOR,
@@ -36,6 +37,7 @@ from .const import (
     CONF_API_TOKEN,
     CONF_FORECAST_HOURS,
     CONF_STATION_ID,
+    STARTUP,
 )
 
 PLATFORMS = [Platform.WEATHER, Platform.SENSOR, Platform.BINARY_SENSOR]
@@ -59,13 +61,19 @@ def _get_forecast_hours(config_entry: ConfigEntry):
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up WeatherFlow Forecast as config entry."""
+    hass.data.setdefault(DOMAIN, {})
+    integration = await async_get_integration(hass, DOMAIN)
+    _LOGGER.info(STARTUP, integration.version)
 
     add_sensors = _get_platforms(config_entry)
     forecast_hours = _get_forecast_hours(config_entry)
 
     coordinator = WeatherFlowForecastDataUpdateCoordinator(
         hass, config_entry, add_sensors, forecast_hours)
-    await coordinator.async_config_entry_first_refresh()
+    if ConfigEntryState == ConfigEntryState.SETUP_IN_PROGRESS:
+        await coordinator.async_config_entry_first_refresh()
+    else:
+        await coordinator.async_refresh()
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][config_entry.entry_id] = coordinator
@@ -75,7 +83,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
     if not add_sensors:
-        await cleanup_old_device(hass, config_entry.data[CONF_STATION_ID])
+        await cleanup_old_device(hass, str(config_entry.data[CONF_STATION_ID]))
 
     return True
 
@@ -112,7 +120,7 @@ async def cleanup_old_device(hass: HomeAssistant, station_id) -> None:
 class CannotConnect(HomeAssistantError):
     """Unable to connect to the web site."""
 
-class WeatherFlowForecastDataUpdateCoordinator(DataUpdateCoordinator["WeatherFlowForecastWeatherData"]):
+class WeatherFlowForecastDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching WeatherFlow data."""
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, add_sensors: bool, forecast_hours: int) -> None:
@@ -130,7 +138,7 @@ class WeatherFlowForecastDataUpdateCoordinator(DataUpdateCoordinator["WeatherFlo
         else:
             update_interval = timedelta(minutes=randrange(25, 35))
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval, config_entry=config_entry)
 
     async def _async_update_data(self) -> WeatherFlowForecastWeatherData:
         """Fetch data from WeatherFlow Forecast."""
@@ -160,7 +168,7 @@ class WeatherFlowForecastWeatherData:
         """Establish connection to API."""
 
         self._weather_data = WeatherFlow(
-            self._config[CONF_STATION_ID], self._config[CONF_API_TOKEN], elevation=self.hass.config.elevation, session=async_get_clientsession(self.hass), forecast_hours=self._forecast_hours)
+            str(self._config[CONF_STATION_ID]), self._config[CONF_API_TOKEN], elevation=self.hass.config.elevation, session=async_get_clientsession(self.hass), forecast_hours=self._forecast_hours)
 
         return True
 

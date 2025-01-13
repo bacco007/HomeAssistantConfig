@@ -42,3 +42,15 @@ TIMESTAMP_SENSORS = [
     "lightning_strike_last_epoch",
     "timestamp",
 ]
+
+STARTUP = """
+-------------------------------------------------------------------
+Weatherflow Forecast
+
+Version: %s
+This is a custom integration
+If you have any issues with this you need to open an issue here:
+https://github.com/briis/weatherflow_forecast/issues
+Pleae make sure to supply enough debugging information
+-------------------------------------------------------------------
+"""
