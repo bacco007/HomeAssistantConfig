@@ -446,7 +446,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
     entities: list[WeatherFlowSensor[Any]] = [
         WeatherFlowSensor(coordinator, description, config_entry)
-        for description in SENSOR_TYPES if getattr(coordinator.data.sensor_data, description.key) is not None
+        for description in SENSOR_TYPES if getattr(coordinator.data.sensor_data, description.key, None) is not None
     ]
 
     async_add_entities(entities, False)

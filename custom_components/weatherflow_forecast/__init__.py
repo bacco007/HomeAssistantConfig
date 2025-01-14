@@ -63,7 +63,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     """Set up WeatherFlow Forecast as config entry."""
     hass.data.setdefault(DOMAIN, {})
     integration = await async_get_integration(hass, DOMAIN)
-    _LOGGER.info(STARTUP, integration.version)
+    _LOGGER.info(STARTUP, integration.version, str(config_entry.data[CONF_STATION_ID]))
 
     add_sensors = _get_platforms(config_entry)
     forecast_hours = _get_forecast_hours(config_entry)
