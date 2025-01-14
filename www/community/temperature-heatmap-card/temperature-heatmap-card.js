@@ -1,8 +1,3 @@
-/*import {
-  LitElement,
-  html,
-  css,
-} from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";*/
 const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace"));
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
@@ -57,6 +52,30 @@ class TemperatureHeatmapCard extends LitElement {
   }
 
   onClickLeft(ev, shiftDay) {
+    var TD60 = this.shadowRoot.getElementById(this.id+"td60")
+    var TD61 = this.shadowRoot.getElementById(this.id+"td61")
+    var TD62 = this.shadowRoot.getElementById(this.id+"td62")
+    var TD63 = this.shadowRoot.getElementById(this.id+"td63")
+    var TD64 = this.shadowRoot.getElementById(this.id+"td64")
+    var TD65 = this.shadowRoot.getElementById(this.id+"td65")
+    var TD66 = this.shadowRoot.getElementById(this.id+"td66")
+    var TD67 = this.shadowRoot.getElementById(this.id+"td67")
+    var TD68 = this.shadowRoot.getElementById(this.id+"td68")
+    var TD69 = this.shadowRoot.getElementById(this.id+"td69")
+    var TD6a = this.shadowRoot.getElementById(this.id+"td6a")
+    var TD6b = this.shadowRoot.getElementById(this.id+"td6b")
+    if (TD60) TD68.style.border = '0px dotted #000000';
+    if (TD61) TD68.style.border = '0px dotted #000000';
+    if (TD62) TD68.style.border = '0px dotted #000000';
+    if (TD63) TD68.style.border = '0px dotted #000000';
+    if (TD64) TD68.style.border = '0px dotted #000000';
+    if (TD65) TD68.style.border = '0px dotted #000000';
+    if (TD66) TD68.style.border = '0px dotted #000000';
+    if (TD67) TD68.style.border = '0px dotted #000000';
+    if (TD68) TD68.style.border = '0px dotted #000000';
+    if (TD69) TD68.style.border = '0px dotted #000000';
+    if (TD6a) TD68.style.border = '0px dotted #000000';
+    if (TD6b) TD68.style.border = '0px dotted #000000';
     this.dayDizio = {};
     this.dayDizioPartial = {};
     var leftButton = this.shadowRoot.getElementById(this.id+"leftButton");
@@ -108,6 +127,16 @@ class TemperatureHeatmapCard extends LitElement {
     var theTD = this.shadowRoot.getElementById(this.id+"td"+posxy);
     if (theDiv) {
       theDiv.innerHTML = this.tempToLabel(Math.round(text));
+      var decimal_point = false;
+      if (this.config.decimal_point !== undefined) decimal_point = this.config.decimal_point;
+      if (decimal_point && text != -999 && !isNaN(text)) {
+        var text_dec = (Math.round(text * 10) / 10).toFixed(1);
+        var text_int = parseInt(text_dec);
+        var text_flo = parseInt(((Math.round(text * 10) / 10) - text_int) * 10);
+        if (text_flo < 0) text_flo = text_flo * -1;
+        var text_html = text_int + ".<small>" + text_flo + "</small>";
+        theDiv.innerHTML = text_html;
+      }
       theTD.style.backgroundColor = "#"+this.tempToRGB(text);
     }
   }
@@ -268,6 +297,7 @@ class TemperatureHeatmapCard extends LitElement {
     this.initForecast();
     var temp_adj = 0;
     if (this.config.temp_adj !== undefined) temp_adj = parseFloat(this.config.temp_adj);
+    if (isNaN(temp_adj)) temp_adj = 0;
     const callback = (event) => {
       var dataToday = this.formatDate(new Date());
       var forecastItems = event.forecast;
@@ -349,30 +379,78 @@ class TemperatureHeatmapCard extends LitElement {
       var day_forecast = "";
       if (this.lastDay() && this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
       if (day_forecast)
-        return html`10`;
+        return '10';
       else
-        return html`12`;
+        return '12';
+  }
+
+  getBorderCell(_id) {
+      var nowHour = parseInt(new Date().getHours() / 2);
+      var DayNOW1 = new Date(new Date()).getDate();
+      var TD60 = this.shadowRoot.getElementById(this.id+"td60")
+      var TD61 = this.shadowRoot.getElementById(this.id+"td61")
+      var TD62 = this.shadowRoot.getElementById(this.id+"td62")
+      var TD63 = this.shadowRoot.getElementById(this.id+"td63")
+      var TD64 = this.shadowRoot.getElementById(this.id+"td64")
+      var TD65 = this.shadowRoot.getElementById(this.id+"td65")
+      var TD66 = this.shadowRoot.getElementById(this.id+"td66")
+      var TD67 = this.shadowRoot.getElementById(this.id+"td67")
+      var TD68 = this.shadowRoot.getElementById(this.id+"td68")
+      var TD69 = this.shadowRoot.getElementById(this.id+"td69")
+      var TD6a = this.shadowRoot.getElementById(this.id+"td6a")
+      var TD6b = this.shadowRoot.getElementById(this.id+"td6b")
+      if (DayNOW1 == this.Day6) {
+        if (_id == "td60" && nowHour == 0 && TD60) TD60.style.border = '4px dotted #000000';
+        if (_id == "td61" && nowHour == 1 && TD61) TD61.style.border = '4px dotted #000000';
+        if (_id == "td62" && nowHour == 2 && TD62) TD62.style.border = '4px dotted #000000';
+        if (_id == "td63" && nowHour == 3 && TD63) TD63.style.border = '4px dotted #000000';
+        if (_id == "td64" && nowHour == 4 && TD64) TD64.style.border = '4px dotted #000000';
+        if (_id == "td65" && nowHour == 5 && TD65) TD65.style.border = '4px dotted #000000';
+        if (_id == "td66" && nowHour == 6 && TD66) TD66.style.border = '4px dotted #000000';
+        if (_id == "td67" && nowHour == 7 && TD67) TD67.style.border = '4px dotted #000000';
+        if (_id == "td68" && nowHour == 8 && TD68) TD68.style.border = '4px dotted #000000';
+        if (_id == "td69" && nowHour == 9 && TD69) TD69.style.border = '4px dotted #000000';
+        if (_id == "td6a" && nowHour == 10 && TD6a) TD6a.style.border = '4px dotted #000000';
+        if (_id == "td6b" && nowHour == 11 && TD6b) TD6b.style.border = '4px dotted #000000';
+      } else {
+        if (TD60) TD60.style.border = '0px dotted #000000';
+        if (TD61) TD61.style.border = '0px dotted #000000';
+        if (TD62) TD62.style.border = '0px dotted #000000';
+        if (TD63) TD63.style.border = '0px dotted #000000';
+        if (TD64) TD64.style.border = '0px dotted #000000';
+        if (TD65) TD65.style.border = '0px dotted #000000';
+        if (TD66) TD66.style.border = '0px dotted #000000';
+        if (TD67) TD67.style.border = '0px dotted #000000';
+        if (TD68) TD68.style.border = '0px dotted #000000';
+        if (TD69) TD69.style.border = '0px dotted #000000';
+        if (TD6a) TD6a.style.border = '0px dotted #000000';
+        if (TD6b) TD6b.style.border = '0px dotted #000000';
+      }
   }
 
   getWidthCell() {
       var day_forecast = "";
       if (this.lastDay() && this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
       if (day_forecast)
-        return html`min-width:13px`;
+        return 'min-width:13px';
       else
-        return html`min-width:0px`;
+        return 'min-width:0px';
   }
 
   getHeadTable() {
     var month_label = false;
+    var day_forecast = "";
+    if (this.config.day_forecast !== undefined) day_forecast = this.config.day_forecast;
     if (this.config.month_label !== undefined) month_label = this.config.month_label;
 
     var border_top = "";
     var border_right = "";
+    var border_left = "";
     this.thead = "";
     if (month_label) {
       border_top = "border-top:solid rgb(128, 128, 128);";
       border_right = "border-right:solid rgb(128, 128, 128);";
+      border_left = "border-left:solid rgb(128, 128, 128);";
     }
 
     var colspan0 = "0";
@@ -388,6 +466,13 @@ class TemperatureHeatmapCard extends LitElement {
     var TD00 = this.shadowRoot.getElementById(this.id+"TD00")
     var TD10 = this.shadowRoot.getElementById(this.id+"TD10")
     var TD11 = this.shadowRoot.getElementById(this.id+"TD11")
+    var TD011 = this.shadowRoot.getElementById(this.id+"TD011")
+    var TD111 = this.shadowRoot.getElementById(this.id+"TD111")
+    var TD211 = this.shadowRoot.getElementById(this.id+"TD211")
+    var TD311 = this.shadowRoot.getElementById(this.id+"TD311")
+    var TD411 = this.shadowRoot.getElementById(this.id+"TD411")
+    var TD511 = this.shadowRoot.getElementById(this.id+"TD511")
+    var TD611 = this.shadowRoot.getElementById(this.id+"TD611")
     var TD20 = this.shadowRoot.getElementById(this.id+"TD20")
     var TD21 = this.shadowRoot.getElementById(this.id+"TD21")
     var TD30 = this.shadowRoot.getElementById(this.id+"TD30")
@@ -399,7 +484,6 @@ class TemperatureHeatmapCard extends LitElement {
     var TD60 = this.shadowRoot.getElementById(this.id+"TD60")
     var TD61 = this.shadowRoot.getElementById(this.id+"TD61")
     var TD70 = this.shadowRoot.getElementById(this.id+"TD70")
-    var TD71 = this.shadowRoot.getElementById(this.id+"TD71")
     var DAY0 = this.shadowRoot.getElementById(this.id+"DAY0");
     var DAY1 = this.shadowRoot.getElementById(this.id+"DAY1");
     var DAY2 = this.shadowRoot.getElementById(this.id+"DAY2");
@@ -408,6 +492,7 @@ class TemperatureHeatmapCard extends LitElement {
     var DAY5 = this.shadowRoot.getElementById(this.id+"DAY5");
     var DAY6 = this.shadowRoot.getElementById(this.id+"DAY6");
     var DAY7 = this.shadowRoot.getElementById(this.id+"DAY7");
+
     var posMonth = 0;
     if (month_label) {
       if (TR00) { 
@@ -422,6 +507,15 @@ class TemperatureHeatmapCard extends LitElement {
           TR06.style.display = "none";
           TD10.innerHTML = this.Month0;
           TD11.innerHTML = this.Month1;
+          if (this.Month6 != this.Month7) {
+            if (TD111) TD111.innerHTML = this.Month7;
+            if (TD111) TD111.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else { 
+            if (TD111) TD111.innerHTML = "";
+            if (TD111) TD111.style.removeProperty("border-left");
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
           DAY0.style.borderRight = "solid rgb(128, 128, 128)";
           DAY1.style.removeProperty("border-right");
           DAY2.style.removeProperty("border-right");
@@ -440,6 +534,15 @@ class TemperatureHeatmapCard extends LitElement {
           TR06.style.display = "none";
           TD20.innerHTML = this.Month1;
           TD21.innerHTML = this.Month2;
+          if (this.Month2 != this.Month7) {
+            if (TD211) TD211.innerHTML = this.Month7;
+            if (TD211) TD211.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else { 
+            if (TD211) TD211.innerHTML = "";
+            if (TD211) TD211.style.removeProperty("border-left");
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
           DAY0.style.removeProperty("border-right");
           DAY1.style.borderRight = "solid rgb(128, 128, 128)";
           DAY2.style.removeProperty("border-right");
@@ -458,6 +561,15 @@ class TemperatureHeatmapCard extends LitElement {
           TR06.style.display = "none";
           TD30.innerHTML = this.Month2;
           TD31.innerHTML = this.Month3;
+          if (this.Month3 != this.Month7) {
+            if (TD311) TD311.innerHTML = this.Month7;
+            if (TD311) TD311.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else { 
+            if (TD311) TD311.innerHTML = "";
+            if (TD311) TD311.style.removeProperty("border-left");
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
           DAY0.style.removeProperty("border-right");
           DAY1.style.removeProperty("border-right");
           DAY2.style.borderRight = "solid rgb(128, 128, 128)";
@@ -476,6 +588,15 @@ class TemperatureHeatmapCard extends LitElement {
           TR06.style.display = "none";
           TD40.innerHTML = this.Month3;
           TD41.innerHTML = this.Month4;
+          if (this.Month4 != this.Month7) {
+            if (TD411) TD411.innerHTML = this.Month7;
+            if (TD411) TD411.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else { 
+            if (TD411) TD411.innerHTML = "";
+            if (TD411) TD411.style.removeProperty("border-left");
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
           DAY0.style.removeProperty("border-right");
           DAY1.style.removeProperty("border-right");
           DAY2.style.removeProperty("border-right");
@@ -494,6 +615,15 @@ class TemperatureHeatmapCard extends LitElement {
           TR06.style.display = "none";
           TD50.innerHTML = this.Month4;
           TD51.innerHTML = this.Month5;
+          if (this.Month5 != this.Month7) {
+            if (TD511) TD511.innerHTML = this.Month7;
+            if (TD511) TD511.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else { 
+            if (TD511) TD511.innerHTML = "";
+            if (TD511) TD511.style.removeProperty("border-left");
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
           DAY0.style.removeProperty("border-right");
           DAY1.style.removeProperty("border-right");
           DAY2.style.removeProperty("border-right");
@@ -512,6 +642,16 @@ class TemperatureHeatmapCard extends LitElement {
           TR06.style.removeProperty('display');
           TD60.innerHTML = this.Month5;
           TD61.innerHTML = this.Month6;
+          if (this.Month6 != this.Month7) {
+            if (TD611) TD611.innerHTML = this.Month7;
+            if (TD611) TD611.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else { 
+            if (TD611) TD611.innerHTML = "";
+            if (TD611) TD611.style.removeProperty("border-left");
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
+          //else TD611.style.removeProperty("border-left");
           DAY0.style.removeProperty("border-right");
           DAY1.style.removeProperty("border-right");
           DAY2.style.removeProperty("border-right");
@@ -529,6 +669,8 @@ class TemperatureHeatmapCard extends LitElement {
           TR05.style.display = "none";
           TR06.style.display = "none";
           TD00.innerHTML = this.Month6;
+          if (this.Month6 != this.Month7) if (TD011) TD011.innerHTML = this.Month7;
+          //else TD011.style.removeProperty("border-left");
           DAY0.style.removeProperty("border-right");
           DAY1.style.removeProperty("border-right");
           DAY2.style.removeProperty("border-right");
@@ -536,6 +678,8 @@ class TemperatureHeatmapCard extends LitElement {
           DAY4.style.removeProperty("border-right");
           DAY5.style.removeProperty("border-right");
           DAY6.style.removeProperty("border-right");
+          if (TD011) TD011.style.borderLeft = "solid rgb(128, 128, 128)";
+          if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
         } else if (this.MonthNOW == this.Month0) {
           posMonth = 0;
           TR00.style.removeProperty('display');
@@ -545,7 +689,17 @@ class TemperatureHeatmapCard extends LitElement {
           TR04.style.display = "none";
           TR05.style.display = "none";
           TR06.style.display = "none";
+          //TR07.style.removeProperty('display');
           TD00.innerHTML = this.Month0;
+          if (this.Month7 != this.MonthNOW) {
+            if (TD011) TD011.innerHTML = this.Month7;
+            if (TD011) TD011.style.borderLeft = "solid rgb(128, 128, 128)";
+            if (DAY7) DAY7.style.borderLeft = "solid rgb(128, 128, 128)";
+          } else {
+            if (TD011) TD011.style.removeProperty("border-left");
+            if (TD011) TD011.innerHTML = "";
+            if (DAY7) DAY7.style.removeProperty("border-left");
+          }
           DAY0.style.removeProperty("border-right");
           DAY1.style.removeProperty("border-right");
           DAY2.style.removeProperty("border-right");
@@ -557,14 +711,23 @@ class TemperatureHeatmapCard extends LitElement {
       }
     }
 
-    return html`<tr id="${this.id}TR00" style="display:none"><td></td><td colspan="8" id="${this.id}TD00" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR01" style="display:none"><td></td><td colspan="1" id="${this.id}TD10" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="7" id="${this.id}TD11" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR02" style="display:none"><td></td><td colspan="2" id="${this.id}TD20" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="6" id="${this.id}TD21" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR03" style="display:none"><td></td><td colspan="3" id="${this.id}TD30" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="5" id="${this.id}TD31" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR04" style="display:none"><td></td><td colspan="4" id="${this.id}TD40" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="4" id="${this.id}TD41" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR05" style="display:none"><td></td><td colspan="5" id="${this.id}TD50" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="3" id="${this.id}TD51" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR06" style="display:none"><td></td><td colspan="6" id="${this.id}TD60" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="2" id="${this.id}TD61" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
-    <tr id="${this.id}TR07" style="display:none"><td></td><td colspan="7" id="${this.id}TD70" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="1" id="${this.id}TD71" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>`;
+
+    if (day_forecast)
+      return html`<tr id="${this.id}TR00" style="display:none"><td></td><td colspan="7" id="${this.id}TD00" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug1</td><td colspan="1" id="${this.id}TD011" style="white-space: nowrap;text-align:center;vertical-align:middle;border-left:solid rgb(128, 128, 128);${border_left}${border_top}"></td></tr>
+    <tr id="${this.id}TR01" style="display:none"><td></td><td colspan="1" id="${this.id}TD10" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="6" id="${this.id}TD11" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td><td colspan="1" id="${this.id}TD111" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_left}${border_top}"></td></tr>
+    <tr id="${this.id}TR02" style="display:none"><td></td><td colspan="2" id="${this.id}TD20" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="5" id="${this.id}TD21" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td><td colspan="1" id="${this.id}TD211" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_left}${border_top}"></td></tr>
+    <tr id="${this.id}TR03" style="display:none"><td></td><td colspan="3" id="${this.id}TD30" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="4" id="${this.id}TD31" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td><td colspan="1" id="${this.id}TD311" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_left}${border_top}"></td></tr>
+    <tr id="${this.id}TR04" style="display:none"><td></td><td colspan="4" id="${this.id}TD40" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="3" id="${this.id}TD41" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td><td colspan="1" id="${this.id}TD411" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_left}${border_top}"></td></tr>
+    <tr id="${this.id}TR05" style="display:none"><td></td><td colspan="5" id="${this.id}TD50" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="2" id="${this.id}TD51" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td><td colspan="1" id="${this.id}TD511" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_left}${border_top}"></td></tr>
+    <tr id="${this.id}TR06" style="display:none"><td></td><td colspan="6" id="${this.id}TD60" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="1" id="${this.id}TD61" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td><td colspan="1" id="${this.id}TD611" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_left}${border_top}"></td></tr>`;
+    return html`<tr id="${this.id}TR00" style="display:none"><td></td><td colspan="7" id="${this.id}TD00" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug1</td></tr>
+    <tr id="${this.id}TR01" style="display:none"><td></td><td colspan="1" id="${this.id}TD10" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="6" id="${this.id}TD11" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR02" style="display:none"><td></td><td colspan="2" id="${this.id}TD20" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="5" id="${this.id}TD21" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR03" style="display:none"><td></td><td colspan="3" id="${this.id}TD30" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="4" id="${this.id}TD31" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR04" style="display:none"><td></td><td colspan="4" id="${this.id}TD40" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="3" id="${this.id}TD41" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR05" style="display:none"><td></td><td colspan="5" id="${this.id}TD50" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="2" id="${this.id}TD51" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>
+    <tr id="${this.id}TR06" style="display:none"><td></td><td colspan="6" id="${this.id}TD60" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu</td><td colspan="1" id="${this.id}TD61" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_top}">Lug</td></tr>`;
+    //<tr id="${this.id}TR07" style="display:none"><td></td><td colspan="7" id="${this.id}TD70" style="white-space: nowrap;text-align:center;vertical-align:middle;${border_right}${border_top}">Giu2</td></tr>`;
   }
 
   getFootTable() {
@@ -607,6 +770,11 @@ class TemperatureHeatmapCard extends LitElement {
        maximum = 90;
     }
     if (!humidity && Math.round(temp) >= 37) return "ff006a";
+    if (!humidity && Math.round(temp) < -5) {
+       var temp_rgb = parseInt(parseInt(Math.abs(Math.round(temp) - 4)) * 7.5);
+       if (temp_rgb > 255) temp_rgb = 255;
+       return temp_rgb.toString(16).padStart(2, '0') + "00ff";
+    }
     var valTemp = temp;
     if (valTemp < minimum) valTemp = minimum;
     if (valTemp > maximum) valTemp = maximum;
@@ -882,6 +1050,19 @@ class TemperatureHeatmapCard extends LitElement {
         TDDAY7.style.setProperty("min-width", "13px");
       }
     }
+  
+    this.getBorderCell('td60');
+    this.getBorderCell('td61');
+    this.getBorderCell('td62');
+    this.getBorderCell('td63');
+    this.getBorderCell('td64');
+    this.getBorderCell('td65');
+    this.getBorderCell('td66');
+    this.getBorderCell('td67');
+    this.getBorderCell('td68');
+    this.getBorderCell('td69');
+    this.getBorderCell('td6a');
+    this.getBorderCell('td6b');
 
     const stateAttributes = this.myhass.states[this.config.entity].attributes;
     if (stateAttributes.state_class === undefined || stateAttributes.state_class != "measurement") {
@@ -910,7 +1091,7 @@ class TemperatureHeatmapCard extends LitElement {
                   <td id="${this.id}TDDAY4" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY4">${this.Day4}</div></td>
                   <td id="${this.id}TDDAY5" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY5">${this.Day5}</div></td>
                   <td id="${this.id}TDDAY6" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY6">${this.Day6}</div></td>
-                  <td id="${this.id}TDDAY7" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY7">${this.Day7}</div></td>
+                  <td id="${this.id}TDDAY7" width="${this.getWidthTable()}%" style="white-space: nowrap;text-align:center;vertical-align:middle;${this.getWidthCell}"><div id="${this.id}DAY7"></div></td>
           </tr>
               <tr><td style='white-space: nowrap;text-align:center;vertical-align:middle;'>00:00</td>
                           <td id="${this.id}td00" style="background-color:#808080;color:#ffffff;white-space: nowrap;text-align:center;vertical-align:middle;">
@@ -1448,6 +1629,7 @@ class TemperatureHeatmapCard extends LitElement {
         this.Day1L = this.getDayShortName((new Date(now - ((5+shiftDay) * 86400000))));
         this.Day0L = this.getDayShortName((new Date(now - ((6+shiftDay) * 86400000))));
         this.MonthNOW = this.getMonthShortName((new Date(now)).getMonth());
+        this.Month7 = this.getMonthShortName(new Date(now - ((-1) * 86400000)).getMonth());
         this.Month6 = this.getMonthShortName(new Date(now - ((0+shiftDay) * 86400000)).getMonth());
         this.Month5 = this.getMonthShortName(new Date(now - ((1+shiftDay) * 86400000)).getMonth());
         this.Month4 = this.getMonthShortName(new Date(now - ((2+shiftDay) * 86400000)).getMonth());
@@ -1499,6 +1681,7 @@ export class TemperatureHeatmapCardEditor extends LitElement {
             day_trend: undefined,
             force_fahrenheit: undefined,
             day_forecast: undefined,
+            decimal_point: undefined,
             footer: undefined
         };
     }
@@ -1523,6 +1706,7 @@ export class TemperatureHeatmapCardEditor extends LitElement {
         this.month_label = this.myhass.states[this._config.month_label];
         this.day_label = this.myhass.states[this._config.day_label];
         this.day_trend = this.myhass.states[this._config.day_trend];
+        this.decimal_point = this.myhass.states[this._config.decimal_point];
         this.force_fahrenheit = this.myhass.states[this._config.force_fahrenheit];
         this.day_forecast = this.myhass.states[this._config.day_forecast];
         this.footer = this.myhass.states[this._config.footer];
@@ -1580,6 +1764,9 @@ export class TemperatureHeatmapCardEditor extends LitElement {
             <h3>Show Day Trend</h3>
             <ha-switch
               .checked=${this._config.day_trend !== undefined && this._config.day_trend !== false} .configValue=${"day_trend"} .value=${this._config.day_trend}></ha-switch>
+            <h3>Show Decimal</h3>
+            <ha-switch
+              .checked=${this._config.decimal_point !== undefined && this._config.decimal_point !== false} .configValue=${"decimal_point"} .value=${this._config.decimal_point}></ha-switch>
             <h3>Force Fahrenheit</h3>
             <ha-switch
               .checked=${this._config.force_fahrenheit !== undefined && this._config.force_fahrenheit !== false} .configValue=${"force_fahrenheit"} .value=${this._config.force_fahrenheit}></ha-switch>
@@ -1597,6 +1784,9 @@ export class TemperatureHeatmapCardEditor extends LitElement {
             <h3>Forecast Temp Adj</h3>
             <ha-textfield
                 .label=${"Forecast Temp Adj"}
+                type="number"
+                inputmode="numeric"
+                step="0.1"
                 .value=${this._config.temp_adj || ""}
                 .configValue=${"temp_adj"}
                 @input=${this.update_field}></ha-textfield>
@@ -1638,7 +1828,7 @@ export class TemperatureHeatmapCardEditor extends LitElement {
         root.addEventListener("change", (ev) => {
             ev.stopPropagation();
             const key = ev.target.configValue;
-            if (key != "month_label" && key != 'day_label' && key != 'day_trend' && key != 'force_fahrenheit' && key != 'day_forecast' && key != 'footer') return;
+            if (key != "month_label" && key != 'day_label' && key != 'day_trend' && key != 'decimal_point' && key != 'force_fahrenheit' && key != 'day_forecast' && key != 'footer') return;
             const val = ev.target.checked;
             var config = JSON.parse(JSON.stringify(this._config));
 
