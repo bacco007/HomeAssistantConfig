@@ -42,6 +42,18 @@ async def async_setup_entry(hass, entry, async_add_entities):
             latitude=conf["latitude"],
             longitude=conf["longitude"],
             elevation=conf["elevation"],
+            pass_type="Visual",
+            min_alert=min_alert,
+        )
+    )
+
+    sensors.append(
+        SatellitePassSensor(
+            coordinator,
+            latitude=conf["latitude"],
+            longitude=conf["longitude"],
+            elevation=conf["elevation"],
+            pass_type="Radio",
             min_alert=min_alert,
         )
     )
@@ -58,16 +70,23 @@ class SatellitePassSensor(CoordinatorEntity, BinarySensorEntity):
         latitude: float,
         longitude: float,
         elevation: float,
+        pass_type: str,
         min_alert: int,
         ):
         """Initialize Entities."""
 
         super().__init__(coordinator=coordinator)
 
-        self._name = f"{self.coordinator._name} 10 Minute Pass Warning"
-        self._unique_id = f"{self.coordinator._satellite}_{latitude}_{longitude}_{elevation}"
+        if pass_type == "Visual":
+            unique_id = f"{self.coordinator._satellite}_{latitude}_{longitude}_{elevation}"
+        else:
+            unique_id = f"{self.coordinator._satellite}_radio_{latitude}_{longitude}_{elevation}"
+
+        self._name = f"{self.coordinator._name} 10 Minute {pass_type} Pass Warning"
+        self._unique_id = unique_id
         self._state = None
         self._min_alert = min_alert
+        self._type = pass_type
         self.attrs = {}
 
     @property
@@ -112,9 +131,13 @@ class SatellitePassSensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool:
         """Return the state."""
-        if self.coordinator.data["visual_passes"]:
+        next_pass = None
+        if self._type == "Visual" and self.coordinator.data["visual_passes"]:
             next_pass = self.coordinator.data["visual_passes"][0]
+        elif self._type == "Radio" and self.coordinator.data["radio_passes"]:
+            next_pass = self.coordinator.data["radio_passes"][0]
 
+        if next_pass:
             if next_pass["startUTC"] < (
                 time.time() + (10 * 60)
             ) and next_pass["startUTC"] > (

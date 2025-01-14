@@ -30,6 +30,8 @@ from .const import (
     TRACKER_TYPE,
     DEFAULT_MIN_VISIBILITY,
     CONF_MIN_VISIBILITY,
+    DEFAULT_MIN_ELEVATION,
+    CONF_MIN_ELEVATION,
     CONF_SATELLITE,
 )
 
@@ -89,6 +91,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         else:
             satellite = conf[CONF_SATELLITE]
             min_visibility = options.get(CONF_MIN_VISIBILITY,DEFAULT_MIN_VISIBILITY)
+            min_elevation = options.get(CONF_MIN_ELEVATION,DEFAULT_MIN_ELEVATION)
             await api.get_TLE(id=satellite)
 
             coordinator = N2YOSatelliteCoordinator(
@@ -99,6 +102,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 tracker_type=tracker_type,
                 satellite=satellite,
                 min_visibility=min_visibility,
+                min_elevation=min_elevation,
             )
     except ConnectionError as error:
         _LOGGER.debug("N2YO API Error: %s", error)
@@ -227,11 +231,13 @@ class N2YOSatelliteCoordinator(N2YOUpdateCoordinator):
         tracker_type:str,
         satellite:int,
         min_visibility:int,
+        min_elevation:int,
     ):
         """Initialize the satellite type data."""
 
         self._satellite=satellite
         self._min_visibility=min_visibility
+        self._min_elevation=min_elevation
 
         super().__init__(
             hass=hass,
@@ -254,6 +260,11 @@ class N2YOSatelliteCoordinator(N2YOUpdateCoordinator):
                 days=10,
                 min_visibility=self._min_visibility,
             )
+            radio_passes_data = await self.api.get_radiopasses(
+                id=self._satellite,
+                days=10,
+                min_elevation=self._min_elevation,
+            )
 
             visual_passes = []
 
@@ -264,6 +275,7 @@ class N2YOSatelliteCoordinator(N2YOUpdateCoordinator):
             return {
                 "positions":positions_data,
                 "visual_passes":visual_passes,
+                "radio_passes":radio_passes_data,
             }
 
         except ConnectionError as error:

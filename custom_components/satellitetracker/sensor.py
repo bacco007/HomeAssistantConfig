@@ -50,6 +50,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
                     coordinator=coordinator,
                     icon="mdi:satellite-variant",
                     sat_count=visible_sensor,
+                    pass_type="Visual",
+                )
+            )
+
+        for radio_sensor in range(0,5):
+            sensors.append(
+                SatelliteSensor(
+                    coordinator=coordinator,
+                    icon="mdi:satellite-variant",
+                    sat_count=radio_sensor,
+                    pass_type="Radio",
                 )
             )
 
@@ -63,15 +74,22 @@ class SatelliteSensor(CoordinatorEntity):
         coordinator: N2YOSatelliteCoordinator,
         icon: str,
         sat_count: int,
+        pass_type: str,
     ):
         """Initialize entities."""
         super().__init__(coordinator=coordinator)
 
-        self._name = f"{coordinator._name} Pass {sat_count}"
-        self._unique_id = f"{coordinator._satellite}_pass_{sat_count}"
+        if pass_type == "Visual":
+            unique_id = f"{coordinator._satellite}_pass_{sat_count}"
+        else:
+            unique_id = f"{coordinator._satellite}_radio_pass_{sat_count}"
+
+        self._name = f"{coordinator._name} {pass_type} Pass {sat_count}"
+        self._unique_id = unique_id
         self._state = None
         self._icon = icon
         self._sat_count = sat_count
+        self._type = pass_type
         self.attrs = {}
 
     @property
@@ -104,9 +122,12 @@ class SatelliteSensor(CoordinatorEntity):
         """Return the state for this entity."""
         state = None
 
-        if len(self.coordinator.data["visual_passes"]) > self._sat_count:
+        if self._type == "Visual" and len(self.coordinator.data["visual_passes"]) > self._sat_count:
             pass_data = self.coordinator.data["visual_passes"][self._sat_count]
             state = pass_data["duration"]
+        elif self._type == "Radio" and len(self.coordinator.data["radio_passes"]) > self._sat_count:
+            pass_data = self.coordinator.data["radio_passes"][self._sat_count]
+            state = pass_data["endUTC"] - pass_data["startUTC"]
 
         return state
 
@@ -114,7 +135,7 @@ class SatelliteSensor(CoordinatorEntity):
     def extra_state_attributes(self):
         """Return the attributes for this entity."""
         self.attrs = {}
-        if len(self.coordinator.data["visual_passes"]) > self._sat_count:
+        if self._type == "Visual" and len(self.coordinator.data["visual_passes"]) > self._sat_count:
             pass_data = self.coordinator.data["visual_passes"][self._sat_count]
             if pass_data["maxEl"] > 65:
                 self.attrs["quality"] = "High"
@@ -138,6 +159,25 @@ class SatelliteSensor(CoordinatorEntity):
             self.attrs["pass_end_unix"] = pass_data["endUTC"]
             self.attrs["start_compass"] = pass_data["startAzCompass"]
             self.attrs["end_compass"] = pass_data["endAzCompass"]
+
+        elif self._type == "Radio" and len(self.coordinator.data["radio_passes"]) > self._sat_count:
+            pass_data = self.coordinator.data["radio_passes"][self._sat_count]
+            self.attrs["start_compass"] = pass_data["startAzCompass"]
+            self.attrs["max_compass"] = pass_data["maxAzCompass"]
+            self.attrs["end_compass"] = pass_data["endAzCompass"]
+            self.attrs["max_elevation"] = pass_data["maxEl"]
+            self.attrs["start_azimuth"] = pass_data["startAz"]
+            self.attrs["max_azimuth"] = pass_data["maxAz"]
+            self.attrs["end_azimuth"] = pass_data["endAz"]
+            self.attrs["duration"] = pass_data["startUTC"] - pass_data["endUTC"]
+            self.attrs["start"] = as_local(utc_from_timestamp(
+                pass_data["startUTC"]
+            )).strftime("%d-%b-%Y %I:%M %p")
+            self.attrs["end"] = as_local(utc_from_timestamp(
+                pass_data["endUTC"]
+            )).strftime("%d-%b-%Y %I:%M %p")
+            self.attrs["start_unix"] = pass_data["startUTC"]
+            self.attrs["end_unix"] = pass_data["endUTC"]
 
         return self.attrs
 
