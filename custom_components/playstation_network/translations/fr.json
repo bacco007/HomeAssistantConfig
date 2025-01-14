@@ -1,0 +1,37 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "L'appareil est déjà configuré",
+      "already_in_progress": "L'appareil est en attente de configuration.",
+      "reauth_successful": "La réauthentification a réussi."
+    },
+    "error": {
+      "cannot_connect": "La connexion a échoué",
+      "invalid_auth": "Authentification invalide.",
+      "unknown": "Erreur inattendue"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "npsso": "Code NPSSO"
+        }
+      },
+      "reauth_confirm": {
+        "data": {
+          "npsso": "Code NPSSO"
+        },
+        "title": "Réauthentification avec un nouveau code de l'ONSSP"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "entities": {
+        "title": "Option Playstation Network",
+        "data": {
+          "attributes_as_entities": "Créer des attributs supplémentaires en tant qu'entités"
+        }
+      }
+    }
+  }
+}
