@@ -407,6 +407,13 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             # set scan interval based on configuration options.
             self._spotifyScanInterval = data.OptionSpotifyScanInterval
         
+            # disable turn on / off features based on configuration options.
+            if data.OptionAlwaysOn:
+                _logsi.LogVerbose("'%s': MediaPlayer always on option enabled; disabling turn on / off features, and setting initial state to IDLE" % self.name)
+                self._attr_supported_features &= ~MediaPlayerEntityFeature.TURN_OFF
+                self._attr_supported_features &= ~MediaPlayerEntityFeature.TURN_ON
+                self._attr_state = MediaPlayerState.IDLE
+
             # trace.
             _logsi.LogObject(SILevel.Verbose, "'%s': MediaPlayer SpotifyClient object" % self.name, self.data.spotifyClient)
             _logsi.LogObject(SILevel.Verbose, "'%s': MediaPlayer initialization complete" % self.name, self)
@@ -1373,6 +1380,21 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         self.schedule_update_ha_state(force_refresh=False)
 
 
+    def _AutoPowerOnCheck(self) -> None:
+        """
+        Checks to see if media player state is OFF, and will switch state to ON if so.
+
+        Note that this does not engage the `turn_on` method, so the turn on script is
+        not called, no source switching, etc.
+
+        This should only be called for services that successfully initiate play in some 
+        way (e.g. PlayerMediaPlayContext, PlayerMediaPlayTracks, Resume, Play, etc).
+        """
+        if self._attr_state is MediaPlayerState.OFF:
+            _logsi.LogVerbose("'%s': MediaPlayer is automatically turning on due to a successful transport command; turn_on method was not called" % (self.name))
+            self._attr_state = MediaPlayerState.ON
+
+
     def _GetPlayerPlaybackState(self) -> tuple[PlayerPlayState, SpotifyConnectDevice, SoCo]:
         """
         Get Spotify Player Playback state and active device.
@@ -1461,6 +1483,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 spotifyId = self.data.spotifyClient.GetIdFromUri(spotifyUri) or ''
                 
                 # set base item properties.
+                playerState.IsEmpty = False
                 playerState.ItemType = spotifyType
                 sTimeValue:str = sonosTrackInfo.get('position',None)
                 playerState._ProgressMS = self.to_seconds(sTimeValue) * 1000        # convert h:mm:ss to milliseconds
@@ -1600,7 +1623,10 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             _logsi.LeaveMethod(SILevel.Debug)
         
 
-    def _UpdateHAFromPlayerPlayState(self, playerPlayState:PlayerPlayState) -> None:
+    def _UpdateHAFromPlayerPlayState(
+        self, 
+        playerPlayState:PlayerPlayState, 
+        ) -> None:
         """
         Updates all media_player attributes that have to do with now playing information.
         """
@@ -1644,7 +1670,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 if self._isInCommandEvent:
                     pass
                 elif (playerPlayState.IsEmpty):
-                    self._attr_state = MediaPlayerState.IDLE
+                    self._attr_state = MediaPlayerState.IDLE    
                 elif playerPlayState.IsPlaying == True:
                     self._attr_state = MediaPlayerState.PLAYING
                 elif playerPlayState.IsPlaying == False:
@@ -6049,6 +6075,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 # for everything else, just use the Spotify Web API command.
                 self.data.spotifyClient.PlayerMediaPlayContext(contextUri, offsetUri, offsetPosition, positionMS, deviceId, delay)
 
+            # check if we need to automatically power on the player.
+            self._AutoPowerOnCheck()
+
             # update ha state.
             self.schedule_update_ha_state(force_refresh=False)
 
@@ -6179,6 +6208,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 # for everything else, just use the Spotify Web API command.
                 self.data.spotifyClient.PlayerMediaPlayTrackFavorites(deviceId, shuffle, delay, resolveDeviceId, limitTotal)
 
+            # check if we need to automatically power on the player.
+            self._AutoPowerOnCheck()
+
             # update ha state.
             self.schedule_update_ha_state(force_refresh=False)
 
@@ -6307,6 +6339,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 # for everything else, just use the Spotify Web API command.
                 self.data.spotifyClient.PlayerMediaPlayTracks(uris, positionMS, deviceId, delay)
             
+            # check if we need to automatically power on the player.
+            self._AutoPowerOnCheck()
+
             # update ha state.
             self.schedule_update_ha_state(force_refresh=False)
 
@@ -6398,6 +6433,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 # for everything else, just use the Spotify Web API command.
                 self.data.spotifyClient.PlayerMediaResume(deviceId, delay)
             
+            # check if we need to automatically power on the player.
+            self._AutoPowerOnCheck()
+
             # update ha state.
             self.schedule_update_ha_state(force_refresh=False)
 
