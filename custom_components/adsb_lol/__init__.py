@@ -9,6 +9,7 @@ from datetime import timedelta
 
 from .const import DOMAIN, PLATFORMS
 from .coordinator import ADSBUpdateCoordinator, ADSBPointUpdateCoordinator
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.const import CONF_HOST
 import voluptuous as vol
 
@@ -18,12 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass, config):
     
-    hass.http.register_static_path(
-            ICONS_URL,
-            hass.config.path(ICONS_PATH),
-            True
-        )
-
+    await hass.http.async_register_static_paths([StaticPathConfig("/adsb_lol/icons", hass.config.path(ICONS_PATH), True)])
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

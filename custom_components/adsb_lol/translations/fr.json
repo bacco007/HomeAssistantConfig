@@ -30,7 +30,7 @@
       },	  
 	  "point_of_interest": {
         "data": {
-		  "point_of_interest": "Rechercher des vols aux alentours",
+		  "device_tracker_id": "Rechercher des vols aux alentours",
           "url": "Selectionnez l'url",
 		  "name": "Nom",
 		  "radius": "Radius (km)",

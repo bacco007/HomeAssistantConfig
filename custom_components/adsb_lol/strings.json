@@ -6,7 +6,7 @@
           "flight_details": "Search for flight details",
 		  "point_of_interest": "Search aircraft around a point of interest"
         },
-        "description": "Select your choice "
+        "description": "Select your choice:"
       },
 	  "flight_details": {
         "data": {

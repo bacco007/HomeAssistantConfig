@@ -30,7 +30,7 @@
       },	  
 	  "point_of_interest": {
         "data": {
-		  "point_of_interest": "Search flights around",
+		  "device_tracker_id": "Search flights around",
           "url": "Select url",
 		  "name": "Name",
 		  "radius": "Radius (km)",
