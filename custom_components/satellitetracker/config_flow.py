@@ -219,7 +219,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         """Initialize options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         """Manage options."""
@@ -227,20 +227,20 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        if self.config_entry.data[CONF_TYPE] == "location":
+        if self._config_entry.data[CONF_TYPE] == "location":
             return self.async_show_form(
                 step_id="init",
                 data_schema=vol.Schema(
                     {
                         vol.Optional(
                             CONF_SCAN_INTERVAL,
-                            default=self.config_entry.options.get(
+                            default=self._config_entry.options.get(
                                 CONF_SCAN_INTERVAL, DEFAULT_POLLING_INTERVAL
                             )
                         ):int,
                         vol.Optional(
                             CONF_RADIUS,
-                            default=self.config_entry.options.get(
+                            default=self._config_entry.options.get(
                                 CONF_RADIUS, 90
                             )
                         ):int,
@@ -254,19 +254,19 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     {
                         vol.Optional(
                             CONF_SCAN_INTERVAL,
-                            default=self.config_entry.options.get(
+                            default=self._config_entry.options.get(
                                 CONF_SCAN_INTERVAL, DEFAULT_POLLING_INTERVAL
                             ),
                         ):int,
                         vol.Optional(
                             CONF_MIN_VISIBILITY,
-                            default=self.config_entry.options.get(
+                            default=self._config_entry.options.get(
                                 CONF_MIN_VISIBILITY, DEFAULT_MIN_VISIBILITY
                             ),
                         ):int,
                         vol.Optional(
                             CONF_MIN_ALERT,
-                            default=self.config_entry.options.get(
+                            default=self._config_entry.options.get(
                                 CONF_MIN_ALERT, DEFAULT_MIN_ALERT
                             ),
                         ):int,
