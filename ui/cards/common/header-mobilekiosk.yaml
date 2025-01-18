@@ -39,13 +39,13 @@ cards:
           text-align:center;
           font-weight:600;
           grid-area: time;
-      - format: dddd, DD MMMM YYYY
+      - format: DDDD
         parentStyle: |
           margin-top: -5px;
           font-size:1.2em;
           text-align:center;
           grid-area: date;
-      - format: HH:mm ddd
+      - format: HH:mm ccc
         timezone: America/New_York
         parentStyle: |
           font-size: 1.1em;
@@ -53,7 +53,7 @@ cards:
           grid-area: slot1;
         template: |
           <strong>🇺🇸 West</strong><div>{{moment}}</div>
-      - format: HH:mm ddd
+      - format: HH:mm ccc
         timezone: America/Los_Angeles
         parentStyle: |
           font-size: 1.1em;
@@ -61,7 +61,7 @@ cards:
           grid-area: slot2;
         template: |
           <strong>🇺🇸 East</strong><div>{{moment}}</div>
-      - format: HH:mm ddd
+      - format: HH:mm ccc
         timezone: Europe/London
         parentStyle: |
           font-size: 1.1em;
