@@ -23,12 +23,13 @@ cards:
           cards:
             - !include /config/ui/cards/sport/snippets/basketball_nbl.yaml
             - !include /config/ui/cards/sport/snippets/basketball_sydkings.yaml
-      - attributes:
-          label: Super Netball
-        card:
-          type: vertical-stack
-          cards:
-            - type: custom:decluttering-card
-              template: sports_card
-              variables:
-                - entity: sensor.upcoming_sport_swifts
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_swifts
+
+  - type: custom:decluttering-card
+    template: sports_card
+    variables:
+      - entity: sensor.upcoming_sport_sailgp
