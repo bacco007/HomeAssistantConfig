@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2025.1.2 |
-| No. Integrations | 219 |
-| No. Custom Integrations | 96 |
-| No. Entities | 6390 |
-| No. Sensors | 4223 |
+| No. Integrations | 220 |
+| No. Custom Integrations | 97 |
+| No. Entities | 6413 |
+| No. Sensors | 4255 |
 | No. Automations | 154 |
 
 <details>
@@ -61,9 +61,9 @@ Type | Qty
 -- | --
 Air quality | 0
 Alarm control panels | 2
-Areas | 17
-Binary sensors | 399
-Buttons | 221
+Areas | 18
+Binary sensors | 403
+Buttons | 225
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 616
+Devices | 617
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4223
+Sensors | 4255
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 298
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 325
+Update | 326
 Vacuums | 0
 Water heaters | 0
 Weather | 13
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>658 Integrations</summary>
+<details><summary>661 Integrations</summary>
 
 | Name |
 | --- |
@@ -699,6 +699,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi.sensor](https://www.home-assistant.io/components/unifi.sensor) |
 | [unifi.switch](https://www.home-assistant.io/components/unifi.switch) |
 | [unifi.update](https://www.home-assistant.io/components/unifi.update) |
+| [unifi_insights](https://www.home-assistant.io/components/unifi_insights) |
+| [unifi_insights.binary_sensor](https://www.home-assistant.io/components/unifi_insights.binary_sensor) |
+| [unifi_insights.button](https://www.home-assistant.io/components/unifi_insights.button) |
+| [unifi_insights.sensor](https://www.home-assistant.io/components/unifi_insights.sensor) |
 | [universal.media_player](https://www.home-assistant.io/components/universal.media_player) |
 | [untappd.sensor](https://www.home-assistant.io/components/untappd.sensor) |
 | [update](https://www.home-assistant.io/components/update) |
@@ -752,7 +756,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
 | [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
-| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -779,7 +782,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>88 Custom Integrations</summary>
+<details><summary>89 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -801,7 +804,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) |  [v2024.10.1] | Sensor for Home Assistant that gets reset at midnight |[@jeroenterheerdt](https://github.com/jeroenterheerdt).|
 | [Default Config Disabler](https://github.com/tronikos/default_config_disabler) |  [v0.0.4] | Disables components from Home Assistant's default_config |[@tronikos](https://github.com/tronikos).|
 | [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.9.0] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
-| [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.6.1] |  |[@martinarva](https://github.com/martinarva).|
+| [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.6.2] |  |[@martinarva](https://github.com/martinarva).|
 | [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.4.2] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Emsc Earthquake](https://github.com/febalci/ha_emsc_earthquake) |  | Home Assistant Custom Component for Near Realtime Notifications of Earthquakes from EMSC |[@your_github_handle](https://github.com/your_github_handle).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.1.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
@@ -818,8 +821,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2024.12.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.1] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.1.4.3] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.4.2] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v.3.1.4.4] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.4.4] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.0] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -835,7 +838,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.7] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.1.2] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.20] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
-| [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.16] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
+| [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.17] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v13.0.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.6.3] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
@@ -861,6 +864,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.13] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.5] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.4] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
+| [Unifi Insights](https://github.com/domalab/ha-unifi-insights) |  [v2025.01.20] | Home Assistant integration that uses the UniFi Network API to monitor and manage UniFi devices |[@domalab](https://github.com/domalab).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.1] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
 | [Variables+History](https://github.com/enkama/hass-variables) |  [v3.4.9] | Home Assistant variables component |[@rogro82](https://github.com/rogro82), [@enkama](https://github.com/enkama), [@Snuffy2](https://github.com/Snuffy2).|
 | [Watchman](https://github.com/dummylabs/thewatchman) |  [v0.6.5] | Home Assistant custom integration to keep track of missing entities and actions in your config files |[@dummylabs](https://github.com/dummylabs).|
@@ -869,7 +873,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Whats Up Docker Updates Monitor](https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor) |  [v0.5] | Basic integration for What's up Docker API |[@pveiga90](https://github.com/pveiga90).|
 | [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.2.1] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
-| [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.1.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
+| [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.2.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.13] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
@@ -934,7 +938,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.14] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
-| [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v1.0] | Temperature Hetmap for Home Assistant heatmap |
+| [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v1.0.3] | Temperature Hetmap for Home Assistant heatmap |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.6] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
