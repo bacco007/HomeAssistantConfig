@@ -1,0 +1,28 @@
+# Service definitions for UniFi Insights
+refresh_data:
+  name: Refresh Data
+  description: Force an immediate refresh of UniFi Insights data.
+  fields:
+    site_id:
+      name: Site ID
+      description: Optional site ID to refresh. If not specified, refreshes all sites.
+      required: false
+      selector:
+        text:
+
+restart_device:
+  name: Restart Device
+  description: Restart a UniFi device.
+  fields:
+    site_id:
+      name: Site ID
+      description: The site ID where the device is located.
+      required: true
+      selector:
+        text:
+    device_id:
+      name: Device ID
+      description: The ID of the device to restart.
+      required: true
+      selector:
+        text:

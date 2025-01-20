@@ -1,0 +1,89 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Set up UniFi Insights integration. You need an API key from your UniFi Controller.",
+                "data": {
+                    "api_key": "[%key:common::config_flow::data::api_key%]",
+                    "host": "[%key:common::config_flow::data::host%]",
+                    "verify_ssl": "Verify SSL certificate"
+                }
+            },
+            "reauth_confirm": {
+                "description": "[%key:common::config_flow::description::confirm_setup%]",
+                "title": "[%key:common::config_flow::title::reauth%]",
+                "data": {
+                    "api_key": "[%key:common::config_flow::data::api_key%]"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+            "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+            "unknown": "[%key:common::config_flow::error::unknown%]"
+        },
+        "abort": {
+            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+            "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+        }
+    },
+    "services": {
+        "refresh_data": {
+            "name": "Refresh Data",
+            "description": "Force an immediate refresh of UniFi Insights data.",
+            "fields": {
+                "site_id": {
+                    "name": "Site ID",
+                    "description": "Optional site ID to refresh. If not specified, refreshes all sites."
+                }
+            }
+        },
+        "restart_device": {
+            "name": "Restart Device",
+            "description": "Restart a UniFi device.",
+            "fields": {
+                "site_id": {
+                    "name": "Site ID",
+                    "description": "The site ID where the device is located."
+                },
+                "device_id": {
+                    "name": "Device ID",
+                    "description": "The ID of the device to restart."
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "cpu_usage": {
+                "name": "CPU Usage"
+            },
+            "memory_usage": {
+                "name": "Memory Usage"
+            },
+            "uptime": {
+                "name": "Uptime"
+            },
+            "tx_rate": {
+                "name": "Transmit Rate"
+            },
+            "rx_rate": {
+                "name": "Receive Rate"
+            }
+        },
+        "binary_sensor": {
+            "device_status": {
+                "name": "Device Status",
+                "state": {
+                    "on": "Online",
+                    "off": "Offline"
+                }
+            }
+        },
+        "button": {
+            "device_restart": {
+                "name": "Device Restart"
+            }
+        }
+    }
+}
