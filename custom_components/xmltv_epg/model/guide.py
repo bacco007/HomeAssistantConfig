@@ -45,6 +45,10 @@ class TVGuide:
         generator_name = xml.attrib.get("generator-info-name")
         generator_url = xml.attrib.get("generator-info-url")
 
+        # seen in https://github.com/shadow578/homeassistant_xmltv-epg/issues/32
+        if generator_name is None:
+            generator_name = xml.attrib.get("source-info-name")
+
         # create guide instance
         guide = cls(generator_name, generator_url)
 

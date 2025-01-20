@@ -10,6 +10,47 @@ if TYPE_CHECKING:
     from .channel import TVChannel
 
 
+def parse_episode_number(xml: ET.Element) -> str | None:
+    """Parse episode number from XML node to a readable format."""
+    episode_nums = {}
+    for episode_num in xml.findall("episode-num"):
+        system = episode_num.attrib.get("system")
+        content = episode_num.text
+        if system is not None and content is not None:
+            episode_nums[system] = episode_num.text
+
+    # prefer Season+Episode format
+    if "SxxExx" in episode_nums:
+        return episode_nums["SxxExx"]
+
+    # fallback to xmltv_ns format, reformatted to 'S{season}E{episode}'
+    # xmltv_ns format is '0.0.' for 'S1E1'
+    # alternative format is '.0.' for episode only
+    if "xmltv_ns" in episode_nums:
+        episode = episode_nums["xmltv_ns"]
+        s, e, _ = episode.split(".")
+
+        if s and e:
+            # Season+Episode format
+            s = int(s) + 1
+            e = int(e) + 1
+            return f"S{s}E{e}"
+        elif s:
+            # Season only format (technically invalid, but still)
+            s = int(s) + 1
+            return f"S{s}"
+        elif e:
+            # Episode only format
+            e = int(e) + 1
+            return f"E{e}"
+
+    # fallback to any other format
+    for episode_num in episode_nums.values():
+        return episode_num
+
+    return None
+
+
 class TVProgram:
     """TV Program Class."""
 
@@ -141,7 +182,7 @@ class TVProgram:
         # get and validate program info
         title = get_child_as_text(xml, "title")
         description = get_child_as_text(xml, "desc")
-        episode = get_child_as_text(xml, "episode-num")
+        episode = parse_episode_number(xml)
         subtitle = get_child_as_text(xml, "sub-title")
 
         if is_none_or_whitespace(title) or is_none_or_whitespace(description):
