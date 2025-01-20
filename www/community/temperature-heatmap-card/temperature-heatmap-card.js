@@ -229,14 +229,62 @@ class TemperatureHeatmapCard extends LitElement {
       //text = nowDay.toFixed(2);
 
       if (pos == "7") {
-         icona = "weather-cloudy-clock";
+         var vis_default = "display:none";
+         var vis_sunny = "display:none";
+         var vis_cloudy = "display:none";
+         var vis_clear = "display:none";
+         var vis_fog = "display:none";
+         var vis_hail = "display:none";
+         var vis_lightning = "display:none";
+         var vis_lightning_rainy = "display:none";
+         var vis_partlycloudy = "display:none";
+         var vis_pouring = "display:none";
+         var vis_rainy = "display:none";
+         var vis_snowy = "display:none";
+         var vis_snowy_rainy = "display:none";
+         var vis_windy = "display:none";
+         var vis_windy_variant = "display:none";
+         if (this.forecastIcon === undefined) { icona = "weather-cloudy-clock"; vis_default = ""; }
          icona_color = "#26768c";
+         if (this.forecastIcon == "sunny") vis_sunny = "";
+         if (this.forecastIcon == "cloudy") vis_cloudy = "";
+         if (this.forecastIcon == "clear") vis_clear = "";
+         if (this.forecastIcon == "fog") vis_fog = "";
+         if (this.forecastIcon == "hail") vis_hail = "";
+         if (this.forecastIcon == "lightning") vis_lightning = ""
+         if (this.forecastIcon == "lighning_rainy") vis_lightning = "";
+         if (this.forecastIcon == "partlycloudy") vis_partlycloudy = "";
+         if (this.forecastIcon == "pouring") vis_pouring = "";
+         if (this.forecastIcon == "rainy") vis_rainy = "";
+         if (this.forecastIcon == "snowy") vis_snowy = "";
+         if (this.forecastIcon == "snowy_rainy") vis_snowy_rainy = "";
+         if (this.forecastIcon == "windy") vis_windy = "";
+         if (this.forecastIcon == "windy_variant") vis_windy_variant = "";
       }
       
       var trend = "";
       var forecast = "";
       var force_fahrenheit = false;
-      if (this.responseComplete >= 3) trend = "<ha-icon style='color:"+icona_color+"' icon='mdi:"+icona+"'></ha-icon>";
+      if (this.responseComplete >= 3) {
+         if (pos != 7) trend = "<ha-icon id='"+this.id+"forecastIcon"+pos+"' style='color:"+icona_color+"' icon='mdi:"+icona+"'></ha-icon>";
+         if (pos == 7 ) {
+           trend = "<div style='"+vis_default+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"sunny' style='color:"+icona_color+"' icon='mdi:"+icona+"'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_sunny+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"sunny' style='color:"+icona_color+"' icon='mdi:weather-sunny'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_cloudy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-cloudy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_clear+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-clear'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_fog+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-fog'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_hail+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-hail'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_lightning+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-lightning'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_lightning_rainy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:lightning-rainy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_partlycloudy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:partlycloudy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_pouring+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-pouring'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_rainy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-rainy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_snowy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-snowy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_snowy_rainy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-snowy-rainy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_windy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-windy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_windy_variant+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-windy-variant'></ha-icon></div>";
+         }
+      }
       if (this.config.day_label !== undefined) day_label = this.config.day_label;
       if (this.config.day_trend !== undefined) day_trend = this.config.day_trend;
       if (this.config.force_fahrenheit !== undefined) force_fahrenheit = this.config.force_fahrenheit;
@@ -293,7 +341,7 @@ class TemperatureHeatmapCard extends LitElement {
       return false;
   }
 
-  subscribeForecastEvents() {
+  subscribeForecastHourlyEvents() {
     this.initForecast();
     var temp_adj = 0;
     if (this.config.temp_adj !== undefined) temp_adj = parseFloat(this.config.temp_adj);
@@ -325,20 +373,26 @@ class TemperatureHeatmapCard extends LitElement {
              if (ora == "22") this.gridForecast[6][11] = d.temperature + temp_adj;
            }
         }
+        var diffDate = new Date(d.datetime).getTime() - (new Date().getTime());
+        var dayDiff = dayDiff = Math.floor(diffDate / (1000 * 60 * 60 * 24));
         if (dateForecast.substr(0,10) > dataToday.substr(0,10)) {
           var ora = dateForecast.substr(11,2);
-             if (ora == "00") this.gridForecast[7][0] = d.temperature + temp_adj;
-             if (ora == "02") this.gridForecast[7][1] = d.temperature + temp_adj;
-             if (ora == "04") this.gridForecast[7][2] = d.temperature + temp_adj;
-             if (ora == "06") this.gridForecast[7][3] = d.temperature + temp_adj;
-             if (ora == "08") this.gridForecast[7][4] = d.temperature + temp_adj;
-             if (ora == "10") this.gridForecast[7][5] = d.temperature + temp_adj;
-             if (ora == "12") this.gridForecast[7][6] = d.temperature + temp_adj;
-             if (ora == "14") this.gridForecast[7][7] = d.temperature + temp_adj;
-             if (ora == "16") this.gridForecast[7][8] = d.temperature + temp_adj;
-             if (ora == "18") this.gridForecast[7][9] = d.temperature + temp_adj;
-             if (ora == "20") this.gridForecast[7][10] = d.temperature + temp_adj;
-             if (ora == "22") this.gridForecast[7][11] = d.temperature + temp_adj;
+             if (ora == "00" && this.gridForecast[7][0] == -999) this.gridForecast[7][0] = d.temperature + temp_adj;
+             if (ora == "02" && this.gridForecast[7][1] == -999) this.gridForecast[7][1] = d.temperature + temp_adj;
+             if (ora == "04" && this.gridForecast[7][2] == -999) this.gridForecast[7][2] = d.temperature + temp_adj;
+             if (ora == "06" && this.gridForecast[7][3] == -999) this.gridForecast[7][3] = d.temperature + temp_adj;
+             if (ora == "08" && this.gridForecast[7][4] == -999) this.gridForecast[7][4] = d.temperature + temp_adj;
+             if (ora == "10" && this.gridForecast[7][5] == -999) this.gridForecast[7][5] = d.temperature + temp_adj;
+             if (ora == "12" && this.gridForecast[7][5] != -999 && this.gridForecast[7][6] == -999) this.gridForecast[7][6] = d.temperature + temp_adj;
+             if (ora == "12" && dayDiff <= 1) {
+                if (this.forecastIcon === undefined) this.forecastIcon = d.condition;
+                //console.log(JSON.stringify(d));
+             }
+             if (ora == "14" && this.gridForecast[7][7] == -999) this.gridForecast[7][7] = d.temperature + temp_adj;
+             if (ora == "16" && this.gridForecast[7][8] == -999) this.gridForecast[7][8] = d.temperature + temp_adj;
+             if (ora == "18" && this.gridForecast[7][9] == -999) this.gridForecast[7][9] = d.temperature + temp_adj;
+             if (ora == "20" && this.gridForecast[7][10] == -999) this.gridForecast[7][10] = d.temperature + temp_adj;
+             if (ora == "22" && this.gridForecast[7][11] == -999) this.gridForecast[7][11] = d.temperature + temp_adj;
         }
       }
 
@@ -348,15 +402,21 @@ class TemperatureHeatmapCard extends LitElement {
       //this.drawChart();
     };
   
-    this.forecastSubscriber = this.myhass.connection.subscribeMessage(callback, {
+    this.forecastSubscriberHourly = this.myhass.connection.subscribeMessage(callback, {
       type: "weather/subscribe_forecast",
       forecast_type: 'hourly',
+      entity_id: this.config.forecast_entity
+    });
+  
+    this.forecastSubscriberDaily = this.myhass.connection.subscribeMessage(callback, {
+      type: "weather/subscribe_forecast",
+      forecast_type: 'daily',
       entity_id: this.config.forecast_entity
     });
   }
 
   getTomorrowHourlyTemperatures() {
-    if (!this.forecastSubscriber) this.subscribeForecastEvents();
+    if (!this.forecastSubscriberHourly) this.subscribeForecastHourlyEvents();
   }
 
   // The user supplied configuration. Throw an exception and Home Assistant
@@ -1913,6 +1973,28 @@ export class TemperatureHeatmapCardEditor extends LitElement {
         /* Don't mess with the line spacing */
         sup, sub {
             line-height: 0;
+        }
+
+        .icon {
+
+        width: 50px;
+
+        height: 50px;
+
+        margin-right: 5px;
+
+        display: inline-block;
+
+        vertical-align: middle;
+
+        background-size: contain;
+
+        background-position: center center;
+
+        background-repeat: no-repeat;
+
+        text-indent: -9999px;
+
         }
     `;
 }
