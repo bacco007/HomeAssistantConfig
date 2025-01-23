@@ -65,6 +65,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.POWER_FACTOR,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:cpu-64-bit",
         value_fn=lambda stats: stats.get("cpuUtilizationPct"),
     ),
     UnifiInsightsSensorEntityDescription(
@@ -74,6 +75,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.POWER_FACTOR,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:memory",
         value_fn=lambda stats: stats.get("memoryUtilizationPct"),
     ),
     UnifiInsightsSensorEntityDescription(
@@ -81,6 +83,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         translation_key="uptime",
         name="Uptime",
         device_class=None,
+        icon="mdi:clock-start",
         value_fn=lambda stats: format_uptime(stats.get("uptimeSec")),
     ),
     UnifiInsightsSensorEntityDescription(
@@ -90,6 +93,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         native_unit_of_measurement="Mbit/s",
         device_class=SensorDeviceClass.DATA_RATE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:upload-network",
         value_fn=lambda stats: bytes_to_megabits(stats.get("uplink", {}).get("txRateBps")),
     ),
     UnifiInsightsSensorEntityDescription(
@@ -99,6 +103,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         native_unit_of_measurement="Mbit/s",
         device_class=SensorDeviceClass.DATA_RATE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:download-network",
         value_fn=lambda stats: bytes_to_megabits(stats.get("uplink", {}).get("rxRateBps")),
     ),
     UnifiInsightsSensorEntityDescription(
@@ -106,6 +111,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         translation_key="firmware_version",
         name="Firmware Version",
         entity_category=EntityCategory.DIAGNOSTIC,
+        icon="mdi:text-box-check",
         value_fn=lambda device: device.get("firmwareVersion"),
     ),
     UnifiInsightsSensorEntityDescription(
@@ -113,6 +119,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         translation_key="wired_clients",
         name="Wired Clients",
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:network",
         value_fn=lambda stats: len([
             c for c in stats.get("clients", [])
             if c.get("type") == "WIRED" and c.get("uplinkDeviceId") == stats.get("id")
@@ -123,6 +130,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         translation_key="wireless_clients", 
         name="Wireless Clients",
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:wifi",
         value_fn=lambda stats: len([
             c for c in stats.get("clients", [])
             if c.get("type") == "WIRELESS" and c.get("uplinkDeviceId") == stats.get("id")
