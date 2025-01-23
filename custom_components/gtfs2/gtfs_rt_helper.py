@@ -401,8 +401,8 @@ def get_gtfs_rt(hass, path, data):
         url = url + "?" + data[CONF_API_KEY_NAME] + "=" + data[CONF_API_KEY]
     if data.get(CONF_API_KEY_LOCATION, None) == "header":
         _headers = {data[CONF_API_KEY_NAME]: data[CONF_API_KEY]}
-    if data.get(CONF_ACCEPT_HEADER_PB, False):
-        _headers["Accept"] = "application/x-protobuf"
+        if data.get(CONF_ACCEPT_HEADER_PB, False):
+            _headers["Accept"] = "application/x-protobuf"
     _LOGGER.debug("Getting gtfs rt locally with headers: %s", _headers)
     try:
         r = requests.get(url, headers = _headers , allow_redirects=True)

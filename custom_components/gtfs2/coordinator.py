@@ -134,8 +134,8 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                     self._alerts_url = self._alerts_url + "?" + options[CONF_API_KEY_NAME] + "=" + options[CONF_API_KEY]
                 if options.get(CONF_API_KEY_LOCATION, None) == "header":
                     self._headers = {options[CONF_API_KEY_NAME]: options[CONF_API_KEY]}               
-                if options.get(CONF_ACCEPT_HEADER_PB, False):
-                    self._headers["Accept"] = "application/x-protobuf"
+                    if options.get(CONF_ACCEPT_HEADER_PB, False):
+                        self._headers["Accept"] = "application/x-protobuf"
                 self.info = {}
                 self._route_id = self._data["next_departure"].get("route_id", None)
                 if self._route_id == None:
