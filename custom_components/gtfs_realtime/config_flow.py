@@ -6,6 +6,7 @@ import logging
 from typing import Any
 
 import aiohttp
+from anyio import open_file as aopen_file
 from gtfs_station_stop.route_info import RouteInfoDataset
 from gtfs_station_stop.static_dataset import async_factory
 from gtfs_station_stop.station_stop_info import LocationType, StationStopInfoDataset
@@ -62,11 +63,23 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         """Initialize config flow."""
         self.hub_config: dict[str, Any] = {}
 
+    @staticmethod
     async def _get_feeds():
+        # try to get the data from the develop branch, it may be more up to date
         async with aiohttp.ClientSession() as session:
             async with session.get(FEEDS_URL) as response:
                 if response.status >= 200 and response.status < 400:
                     GtfsRealtimeConfigFlow.feeds = json.loads(await response.text())
+                    return
+        # fallback to getting the data from the local feeds.json
+        _LOGGER.info(
+            "Failed to fetch feeds from GitHub, falling back to local feeds.json"
+        )
+        async with await aopen_file(
+            "custom_components/gtfs_realtime/feeds.json", "rb"
+        ) as f:
+            content: bytes = await f.read()
+            GtfsRealtimeConfigFlow.feeds = json.loads(content)
 
     async def async_step_user(self, user_input=None):
         """User initiated Config Flow."""
@@ -111,9 +124,16 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_choose_static_and_realtime_feeds(
-        self, user_input: dict[str, str] = {}, errors: dict[str, str] = {}
+        self,
+        user_input: dict[str, Any] | None = None,
+        errors: dict[str, str] | None = None,
     ):
         """Select Static and Realtime Feed URIs."""
+        placeholders: dict[str, str] = {}
+        if user_input is None:
+            user_input = {}
+        if errors is None:
+            errors = {}
         if (
             CONF_GTFS_STATIC_DATA in user_input
             and CONF_URL_ENDPOINTS in user_input
@@ -138,10 +158,6 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
 
         data_schema = vol.Schema(
             {
-                vol.Optional(
-                    CONF_AUTH_HEADER,
-                    default=feed_data.get("auth_hint", ""),
-                ): cv.string,
                 vol.Optional(
                     CONF_URL_ENDPOINTS,
                     default=realtime_feeds,
@@ -172,13 +188,27 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
                 ): cv.string,
             }
         )
+        if feed_data.get("requires_auth_header", True):
+            data_schema = data_schema.extend(
+                {
+                    vol.Optional(
+                        CONF_AUTH_HEADER,
+                        default=feed_data.get("auth_hint", ""),
+                    ): cv.string
+                }
+            )
+        placeholders["disclaimer"] = feed_data.get("disclaimer", "")
+        placeholders["additional_info"] = feed_data.get("additional_info", "")
         return self.async_show_form(
             step_id="choose_static_and_realtime_feeds",
             data_schema=data_schema,
             errors=errors,
+            description_placeholders=placeholders,
         )
 
-    async def _get_route_options(self, headers={}) -> list[SelectOptionDict]:
+    async def _get_route_options(
+        self, headers: dict[str, str] | None = None
+    ) -> list[SelectOptionDict]:
         route_db = await async_factory(
             RouteInfoDataset, *self.hub_config[CONF_GTFS_STATIC_DATA], headers=headers
         )
@@ -190,7 +220,9 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
             for k in route_db.route_infos.keys()
         ]
 
-    async def _get_stop_options(self, headers={}) -> list[SelectOptionDict]:
+    async def _get_stop_options(
+        self, headers: dict[str, str] | None = None
+    ) -> list[SelectOptionDict]:
         ssi_db = await async_factory(
             StationStopInfoDataset,
             *self.hub_config[CONF_GTFS_STATIC_DATA],
@@ -209,8 +241,8 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         self,
         stops: list[SelectOptionDict],
         routes: list[SelectOptionDict],
-        selected_stops: list[str] = [],
-        selected_routes: list[str] = [],
+        selected_stops: list[str] | None = None,
+        selected_routes: list[str] | None = None,
     ) -> vol.Schema:
         """Populate the config schema with stops and routes to choose."""
         data_schema = vol.Schema(
@@ -223,7 +255,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
                 ): cv.string,
                 vol.Optional(
                     CONF_ROUTE_IDS,
-                    default=selected_routes,
+                    default=selected_routes or [],
                 ): SelectSelector(
                     SelectSelectorConfig(
                         options=routes,
@@ -233,7 +265,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
                 ),
                 vol.Optional(
                     CONF_STOP_IDS,
-                    default=selected_stops,
+                    default=selected_stops or [],
                 ): SelectSelector(
                     SelectSelectorConfig(
                         options=stops,
@@ -317,6 +349,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_reconfigure(self, user_input: dict[str, str] | None = None):
+        """Start reconfigure flow."""
         entry = self._get_reconfigure_entry()
         self.hub_config = entry.data
         if user_input is not None:

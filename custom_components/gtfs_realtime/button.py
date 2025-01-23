@@ -130,7 +130,7 @@ class ScheduleClearButton(ScheduleButtonBase):
     ):
         super().__init__(coordinator, description)
         self._attr_unique_id = (
-            f"clear_gtfs_schedule-{"-".join(coordinator.gtfs_static_zip)}"
+            f"clear_gtfs_schedule-{'-'.join(coordinator.gtfs_static_zip)}"
         )
         self._attr_translation_key = description.translation_key
         self._attr_name = "Clear GTFS Schedule"
@@ -138,7 +138,7 @@ class ScheduleClearButton(ScheduleButtonBase):
     @cached_property
     def extra_state_attributes(self) -> dict[str, str]:
         return {
-            f"target_url {i+1}": url
+            f"target_url {i + 1}": url
             for i, url in enumerate(self.coordinator.gtfs_static_zip)
         }
 

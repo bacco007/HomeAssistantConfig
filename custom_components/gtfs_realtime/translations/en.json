@@ -50,7 +50,7 @@
           "route_icons": "URL to a route-icons provider containing an svg image file for a given route.  The string can contain up to 3 str.format() compatible formatters for [route_id], [route_color], and [route_text_color] respectively. If your provider gives these colors as HTML hex, you may need to add an html-escaped '#' preceeding the input.",
           "url_endpoints": "Feed URLs for realtime GTFS Data"
         },
-        "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance."
+        "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance.\n\n{disclaimer}"
       },
       "reconfigure": {
         "title": "Reconfigure GTFS parameters.",

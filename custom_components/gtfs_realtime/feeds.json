@@ -1,0 +1,252 @@
+{
+  "boston_mbta": {
+    "name": "Boston MBTA",
+    "realtime_feeds": {
+      "alerts": "https://cdn.mbta.com/realtime/Alerts.pb",
+      "trip_update": "https://cdn.mbta.com/realtime/TripUpdates.pb",
+      "vehicle_positions": "https://cdn.mbta.com/realtime/VehiclePositions.pb"
+    },
+    "requires_auth_header": false,
+    "static_feeds": {
+      "regular": "https://cdn.mbta.com/MBTA_GTFS.zip"
+    }
+  },
+  "nyc_00_subway": {
+    "name": "NYC Subway",
+    "realtime_feeds": {
+      "1234567S": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs",
+      "ACE": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace",
+      "BDFM": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm",
+      "G": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g",
+      "JZ": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-jz",
+      "L": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l",
+      "NQRW": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw",
+      "SIR": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-si",
+      "alerts": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
+    },
+    "requires_auth_header": false,
+    "route_icons": "https://raw.githubusercontent.com/bcpearce/homeassistant-gtfs-realtime/main/resources/NYCT_Bullets/{}.svg",
+    "static_feeds": {
+      "regular": "http://web.mta.info/developers/data/nyct/subway/google_transit.zip",
+      "supplemented": "http://web.mta.info/developers/files/google_transit_supplemented.zip"
+    }
+  },
+  "nyc_01_bus": {
+    "name": "NYC Busses",
+    "realtime_feeds": {
+      "alerts": "https://gtfsrt.prod.obanyc.com/alerts?key=",
+      "trip_update": "https://gtfsrt.prod.obanyc.com/tripUpdates?key=",
+      "vehicle_positions": "https://gtfsrt.prod.obanyc.com/vehiclePositions?key="
+    },
+    "requires_auth_header": false,
+    "static_feeds": {
+      "bronx": "http://web.mta.info/developers/data/nyct/bus/google_transit_bronx.zip",
+      "brooklyn": "http://web.mta.info/developers/data/nyct/bus/google_transit_brooklyn.zip",
+      "manhattan": "http://web.mta.info/developers/data/nyct/bus/google_transit_manhattan.zip",
+      "mta_bus": "http://web.mta.info/developers/data/busco/google_transit.zip",
+      "queens": "http://web.mta.info/developers/data/nyct/bus/google_transit_queens.zip",
+      "staten_island": "http://web.mta.info/developers/data/nyct/bus/google_transit_staten_island.zip"
+    }
+  },
+  "nyc_02_long_island_railroad": {
+    "name": "Long Island Railroad",
+    "realtime_feeds": {
+      "all": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr"
+    },
+    "static_feeds": {
+      "regular": "https://rrgtfsfeeds.s3.amazonaws.com/google_transit.zip"
+    }
+  },
+  "nyc_03_metro_north_railroad": {
+    "name": "Metro North Railroad",
+    "realtime_feeds": {
+      "all": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr"
+    },
+    "static_feeds": {
+      "regular": "http://web.mta.info/developers/data/mnr/google_transit.zip"
+    }
+  },
+  "nyc_05_ferry": {
+    "name": "NYC Ferry",
+    "realtime_feeds": {
+      "alerts": "http://nycferry.connexionz.net/rtt/public/utility/gtfsrealtime.aspx/alert",
+      "trip_update": "http://nycferry.connexionz.net/rtt/public/utility/gtfsrealtime.aspx/tripupdate"
+    },
+    "static_feeds": {
+      "regular": "http://nycferry.connexionz.net/rtt/public/utility/gtfs.aspx"
+    }
+  },
+  "sf_bart": {
+    "name": "Bay Area Rapid Transit",
+    "realtime_feeds": {
+      "alerts": "http://api.bart.gov/gtfsrt/alerts.aspx",
+      "trip_update": "http://api.bart.gov/gtfsrt/tripupdate.aspx"
+    },
+    "static_feeds": {
+      "regular": "https://www.bart.gov/dev/schedules/google_transit.zip"
+    }
+  },
+  "sydney_buses": {
+    "name": "New South Wales - Buses",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_buses": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/buses",
+      "trip_update_buses": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/buses"
+    },
+    "static_feeds": {
+      "public_transit_for_realtime_buses_GSBC001": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC001",
+      "public_transit_for_realtime_buses_GSBC002": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC002",
+      "public_transit_for_realtime_buses_GSBC003": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC003",
+      "public_transit_for_realtime_buses_GSBC004": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC004",
+      "public_transit_for_realtime_buses_GSBC007": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC007",
+      "public_transit_for_realtime_buses_GSBC008": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC008",
+      "public_transit_for_realtime_buses_GSBC009": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC009",
+      "public_transit_for_realtime_buses_GSBC010": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC010",
+      "public_transit_for_realtime_buses_GSBC014": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/GSBC014",
+      "public_transit_for_realtime_buses_NISC001": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/NISC001",
+      "public_transit_for_realtime_buses_OMBSC006": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OMBSC006",
+      "public_transit_for_realtime_buses_OMBSC007": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OMBSC007",
+      "public_transit_for_realtime_buses_OSMBSC001": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC001",
+      "public_transit_for_realtime_buses_OSMBSC002": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC002",
+      "public_transit_for_realtime_buses_OSMBSC003": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC003",
+      "public_transit_for_realtime_buses_OSMBSC004": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC004",
+      "public_transit_for_realtime_buses_OSMBSC008": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC008",
+      "public_transit_for_realtime_buses_OSMBSC009": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC009",
+      "public_transit_for_realtime_buses_OSMBSC010": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC010",
+      "public_transit_for_realtime_buses_OSMBSC011": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC011",
+      "public_transit_for_realtime_buses_OSMBSC012": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/OSMBSC012",
+      "public_transit_for_realtime_buses_ReplacementBus": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/ReplacementBus",
+      "public_transit_for_realtime_buses_SBSC006": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/buses/SBSC006"
+    }
+  },
+  "sydney_lightrail": {
+    "name": "New South Wales - Light Rail",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_lightrail": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/lightrail",
+      "trip_update_lightrail_cbdandsoutheast": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/lightrail/cbdandsoutheast",
+      "trip_update_lightrail_innerwest": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/lightrail/innerwest",
+      "trip_update_lightrail_newcastle": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/lightrail/newcastle",
+      "trip_update_lightrail_parramatta": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/lightrail/parramatta"
+    },
+    "static_feeds": {
+      "public_transit_for_realtime_lightrail_cbdandsoutheast": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/cbdandsoutheast",
+      "public_transit_for_realtime_lightrail_innerwest": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/innerwest",
+      "public_transit_for_realtime_lightrail_newcastle": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/newcastle",
+      "public_transit_for_realtime_lightrail_parramatta": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/parramatta"
+    }
+  },
+  "sydney_metro": {
+    "name": "New South Wales - Metro",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_metro": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/metro",
+      "trip_update_metro": "https://api.transport.nsw.gov.au/v2/gtfs/realtime/metro"
+    },
+    "static_feeds": {
+      "public_transport_for_realtime_metro": "https://api.transport.nsw.gov.au/v2/gtfs/schedule/metro"
+    }
+  },
+  "sydney_nswtrains": {
+    "name": "New South Wales - NSW Trains",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_nswtrains": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/nswtrains",
+      "trip_update_nswtrains": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/nswtrains"
+    },
+    "static_feeds": {
+      "public_transit_for_realtime_nswtrains": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/nswtrains"
+    }
+  },
+  "sydney_regionbuses": {
+    "name": "New South Wales - Region Buses",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_regionbuses": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/regionbuses",
+      "trip_update_regionbuses_centralwestandorana": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/centralwestandorana",
+      "trip_update_regionbuses_centralwestandorana2": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/centralwestandorana2",
+      "trip_update_regionbuses_farwest": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/farwest",
+      "trip_update_regionbuses_newcastlehunter": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/newcastlehunter",
+      "trip_update_regionbuses_newenglandnorthwest": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/newenglandnorthwest",
+      "trip_update_regionbuses_northcoast": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/northcoast",
+      "trip_update_regionbuses_northcoast2": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/northcoast2",
+      "trip_update_regionbuses_northcoast3": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/northcoast3",
+      "trip_update_regionbuses_riverinamurray": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/riverinamurray",
+      "trip_update_regionbuses_riverinamurray2": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/riverinamurray2",
+      "trip_update_regionbuses_southeasttablelands": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/southeasttablelands",
+      "trip_update_regionbuses_southeasttablelands2": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/southeasttablelands2",
+      "trip_update_regionbuses_sydneysurrounds": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/sydneysurrounds"
+    },
+    "static_feeds": {
+      "public_transit_for_realtime_regionbuses_centralwestandorana": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/centralwestandorana",
+      "public_transit_for_realtime_regionbuses_centralwestandorana2": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/centralwestandorana2",
+      "public_transit_for_realtime_regionbuses_farwest": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/farwest",
+      "public_transit_for_realtime_regionbuses_newcastlehunter": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/newcastlehunter",
+      "public_transit_for_realtime_regionbuses_newenglandnorthwest": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/newenglandnorthwest",
+      "public_transit_for_realtime_regionbuses_northcoast": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/northcoast",
+      "public_transit_for_realtime_regionbuses_northcoast2": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/northcoast2",
+      "public_transit_for_realtime_regionbuses_northcoast3": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/northcoast3",
+      "public_transit_for_realtime_regionbuses_riverinamurray": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/riverinamurray",
+      "public_transit_for_realtime_regionbuses_riverinamurray2": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/riverinamurray2",
+      "public_transit_for_realtime_regionbuses_southeasttablelands": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/southeasttablelands",
+      "public_transit_for_realtime_regionbuses_southeasttablelands2": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/southeasttablelands2",
+      "public_transit_for_realtime_regionbuses_sydneysurrounds": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/regionbuses/sydneysurrounds"
+    }
+  },
+  "sydney_sydneyferries": {
+    "name": "New South Wales - Sydney Ferries",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_ferries": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/ferries",
+      "trip_update_ferries_sydneyferries": "https://api.transport.nsw.gov.au/v1/gtfs/realtime/ferries/sydneyferries"
+    },
+    "static_feeds": {
+      "public_transit_for_realtime_ferries_sydneyferries": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/ferries/sydneyferries"
+    }
+  },
+  "sydney_sydneytrains": {
+    "name": "New South Wales - Sydney Trains",
+    "auth_hint": "Authorization: apikey [your key here]",
+    "realtime_feeds": {
+      "alerts_sydneytrains": "https://api.transport.nsw.gov.au/v2/gtfs/alerts/sydneytrains",
+      "trip_update_sydneytrains": "https://api.transport.nsw.gov.au/v2/gtfs/realtime/sydneytrains"
+    },
+    "static_feeds": {
+      "public_transit_for_realtime_sydneytrains": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/sydneytrains"
+    }
+  },
+  "vancouver_translink": {
+    "name": "Metro Vancouver - TransLink",
+    "disclaimer": "Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.",
+    "realtime_feeds": {
+      "alerts": "https://gtfsapi.translink.ca/v3/gtfsalerts?apikey=[ApiKey]",
+      "trip_update": "https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey=[ApiKey]"
+    },
+    "requires_auth_header": false,
+    "static_feeds": {
+      "regular": "https://gtfs-static.translink.ca/gtfs/google_transit.zip"
+    }
+  },
+  "washington_metro_area_bus": {
+    "name": "Washington Metropolitan Area Transit Authroity Bus",
+    "realtime_feeds": {
+      "alerts": "https://api.wmata.com/gtfs/bus-gtfsrt-alerts.pb",
+      "trip_update": "https://api.wmata.com/gtfs/bus-gtfsrt-tripupdates.pb",
+      "vehicle_positions": "https://api.wmata.com/gtfs/bus-gtfsrt-vehiclepositions.pb"
+    },
+    "static_feeds": {
+      "regular": "https://api.wmata.com/gtfs/bus-gtfs-static.zip"
+    }
+  },
+  "washington_metro_area_rail": {
+    "name": "Washington Metropolitan Area Transit Authority Rail",
+    "realtime_feeds": {
+      "alerts": "https://api.wmata.com/gtfs/rail-gtfsrt-alerts.pb",
+      "trip_update": "https://api.wmata.com/gtfs/rail-gtfsrt-tripupdates.pb",
+      "vehicle_positions": "https://api.wmata.com/gtfs/rail-gtfsrt-vehiclepositions.pb"
+    },
+    "static_feeds": {
+      "regular": "https://api.wmata.com/gtfs/rail-gtfs-static.zip"
+    }
+  }
+}
