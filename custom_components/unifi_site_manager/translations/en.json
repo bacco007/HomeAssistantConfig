@@ -1,0 +1,170 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Enter your UniFi Site Manager API key. You can obtain this from https://unifi.ui.com.",
+                "data": {
+                    "api_key": "API Key"
+                }
+            },
+            "reauth_confirm": {
+                "description": "The UniFi Site Manager integration needs to re-authenticate your account",
+                "title": "Reauthenticate Integration",
+                "data": {
+                    "api_key": "API Key"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+            "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+            "unknown": "[%key:common::config_flow::error::unknown%]"
+        },
+        "abort": {
+            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+            "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "download_speed": {
+                "name": "Download Speed",
+                "state_attributes": {
+                    "isp_name": {
+                        "name": "ISP Name"
+                    },
+                    "download_speed": {
+                        "name": "Raw Download Speed (kbps)"
+                    },
+                    "upload_speed": {
+                        "name": "Raw Upload Speed (kbps)"
+                    },
+                    "latency_avg": {
+                        "name": "Average Latency"
+                    },
+                    "latency_max": {
+                        "name": "Maximum Latency"
+                    },
+                    "packet_loss": {
+                        "name": "Packet Loss"
+                    },
+                    "uptime": {
+                        "name": "WAN Uptime"
+                    },
+                    "total_devices": {
+                        "name": "Total Devices"
+                    }
+                }
+            },
+            "upload_speed": {
+                "name": "Upload Speed"
+            },
+            "latency_average": {
+                "name": "Average Latency"
+            },
+            "latency_max": {
+                "name": "Maximum Latency"
+            },
+            "packet_loss": {
+                "name": "Packet Loss"
+            },
+            "uptime": {
+                "name": "WAN Uptime"
+            },
+            "total_devices": {
+                "name": "Total Devices"
+            },
+            "firmware_version": {
+                "name": "Firmware Version"
+            },
+            "model": {
+                "name": "Model"
+            },
+            "ip_address": {
+                "name": "IP Address"
+            },
+            "product_line": {
+                "name": "Product Line"
+            },
+            "adoption_time": {
+                "name": "Adoption Time"
+            },
+            "startup_time": {
+                "name": "Startup Time"
+            }
+        },
+        "binary_sensor": {
+            "site_online": {
+                "name": "Site Online",
+                "state": {
+                    "on": "Online",
+                    "off": "Offline"
+                }
+            },
+            "devices_all_online": {
+                "name": "All Devices Online",
+                "state": {
+                    "on": "Yes",
+                    "off": "No"
+                }
+            },
+            "updates_available": {
+                "name": "Updates Available",
+                "state": {
+                    "on": "Available",
+                    "off": "Up to date"
+                }
+            },
+            "host_online": {
+                "name": "Host Connection",
+                "state": {
+                    "on": "Connected",
+                    "off": "Disconnected"
+                }
+            },
+            "network_active": {
+                "name": "Network Controller",
+                "state": {
+                    "on": "Active",
+                    "off": "Inactive"
+                }
+            },
+            "protect_active": {
+                "name": "Protect Controller",
+                "state": {
+                    "on": "Active",
+                    "off": "Inactive"
+                }
+            },
+            "device_online": {
+                "name": "Device Status",
+                "state": {
+                    "on": "Online",
+                    "off": "Offline"
+                }
+            },
+            "device_managed": {
+                "name": "Device Management",
+                "state": {
+                    "on": "Managed",
+                    "off": "Unmanaged"
+                }
+            },
+            "firmware_up_to_date": {
+                "name": "Firmware Status",
+                "state": {
+                    "on": "Up to Date",
+                    "off": "Update Available"
+                }
+            }
+        }
+    },
+    "entity_component": {
+        "binary_sensor": {
+            "state": {
+                "on": "Yes",
+                "off": "No"
+            }
+        }
+    }
+}

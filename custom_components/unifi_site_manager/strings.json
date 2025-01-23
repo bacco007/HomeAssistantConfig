@@ -1,0 +1,40 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Enter your UniFi Site Manager API key. You can obtain this from https://unifi.ui.com.",
+                "data": {
+                    "api_key": "API Key"
+                }
+            },
+            "reauth_confirm": {
+                "description": "The UniFi Site Manager integration needs to re-authenticate your account",
+                "title": "Reauthenticate Integration",
+                "data": {
+                    "api_key": "API Key"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect to UniFi Site Manager API",
+            "invalid_auth": "Invalid API key",
+            "unknown": "Unexpected error occurred"
+        },
+        "abort": {
+            "already_configured": "Integration already configured for this API key",
+            "reauth_successful": "Re-authentication was successful"
+        }
+    },
+    "services": {
+        "refresh": {
+            "name": "Refresh data",
+            "description": "Forces an immediate refresh of all UniFi Site Manager data.",
+            "fields": {
+                "refresh_type": {
+                    "name": "Refresh type",
+                    "description": "Specify which type of data to refresh. If not specified, all data will be refreshed."
+                }
+            }
+        }
+    }
+}

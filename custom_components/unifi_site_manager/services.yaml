@@ -1,0 +1,28 @@
+# Service ID
+refresh:
+  # Service name shown in UI
+  name: Refresh data
+  # Service description shown in UI
+  description: Forces an immediate refresh of all UniFi Site Manager data.
+  # Target that can be used to filter entities that apply to this service
+  target:
+    entity:
+      integration: unifi_site_manager
+      # Only sensor and binary_sensor entities can be refreshed
+      domain:
+        - sensor
+        - binary_sensor
+  fields:
+    # Optional, refresh only specific type of data
+    refresh_type:
+      name: Refresh type
+      description: Specify which type of data to refresh. If not specified, all data will be refreshed.
+      example: "metrics"
+      default: "all"
+      selector:
+        select:
+          options:
+            - "all"
+            - "sites"
+            - "hosts"
+            - "metrics"

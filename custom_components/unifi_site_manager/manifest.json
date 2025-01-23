@@ -1,0 +1,13 @@
+{
+  "domain": "unifi_site_manager",
+  "name": "UniFi Site Manager",
+  "codeowners": ["@domalab"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/domalab/ha-unifi-site-manager/wiki",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/domalab/ha-unifi-site-manager/issues",
+  "requirements": [],
+  "version": "2025.01.22"
+}
