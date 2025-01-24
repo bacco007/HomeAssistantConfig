@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.1.3 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 98 |
-| No. Entities | 6444 |
-| No. Sensors | 4278 |
+| No. Entities | 6451 |
+| No. Sensors | 4281 |
 | No. Automations | 154 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 18
 Binary sensors | 403
-Buttons | 221
+Buttons | 223
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 110
-Devices | 618
+Devices | 619
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -83,19 +83,19 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 0
-Media players | 39
+Media players | 40
 Numbers | 54
-Persistent notifications | 5
+Persistent notifications | 6
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4278
+Sensors | 4281
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 292
+Switches | 295
 Texts | 2
 Times | 0
 Text-to-speech | 1
