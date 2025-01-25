@@ -1,0 +1,55 @@
+---
+# template sensor to store which weather entities support hourly and daily forecasts
+trigger:
+  - platform: event
+    event_type: forecast_add_entity
+sensor:
+  - unique_id: d82efa90-1eeb-4b07-a093-8c6cc4ee55b4
+    name: Weather Forecast Entities
+    state: "{{ now().replace(microsecond=0).isoformat() }}"
+    attributes:
+      category: weather_combined
+      hourly: >
+        {% set a = 'hourly' %}
+        {% set type = trigger.event.data.type %}
+        {% set current = this.attributes[a] | default([], true) %}
+        {% if type == 'reset' %}
+          {{ [] }}
+        {% elif a != type %}
+          {{ current }}
+        {% else %}
+          {% set entity = trigger.event.data.entity %}
+          {{ current + [entity] }}
+        {% endif %}
+      daily: >
+        {% set a = 'daily' %}
+        {% set type = trigger.event.data.type %}
+        {% set current = this.attributes[a] | default([], true) %}
+        {% if type == 'reset' %}
+          {{ [] }}
+        {% elif a != type %}
+          {{ current }}
+        {% else %}
+          {% set entity = trigger.event.data.entity %}
+          {{ current + [entity] }}
+        {% endif %}
+      entities: >
+        {% set type = trigger.event.data.type %}
+        {% set current = this.attributes.entities | default([], true) %}
+        {% if type == 'reset' %}
+          {{ [] }}
+        {% else %}
+          {% set entity = trigger.event.data.entity %}
+          {% set entities = (current + [entity]) | unique | list %}
+          {% set ns = namespace(integrations=[], entities=[]) %}
+          {% for e in entities %}
+            {% set integration = device_attr(e, 'identifiers')| map(attribute='0') | join %}
+            {% if integration and integration not in ns.integrations %}
+              {% set ns.entities = ns.entities + [e] %}
+              {% set ns.integrations = ns.integrations + [integration] %}
+            {% elif not iif(integration) %}
+              {% set ns.entities = ns.entities + [e] %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.entities }}
+        {% endif %}

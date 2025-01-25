@@ -1,0 +1,29 @@
+---
+platform: mediarr
+plex: # Optional
+  host: 192.168.1.100
+  port: 32400
+  token: !secret plex_token
+  max_items: 10
+
+sonarr: # Optional
+  url: http://192.168.1.131:8989
+  api_key: !secret sonarr_apikey
+  max_items: 10
+  days_to_check: 60
+
+radarr: # Optional
+  url: http://192.168.1.131:7878
+  api_key: !secret radarr_apikey
+  max_items: 10
+
+trakt: # Optional
+  client_id: !secret trakt_clientid
+  client_secret: !secret trakt_clientsecret
+  tmdb_api_key: !secret tmdb_apikey # Required for posters
+  trending_type: both #
+
+tmdb: # Optional
+  api_key: !secret tmdb_apikey
+  trending_type: all # Options: movie, tv, all
+  max_items: 10

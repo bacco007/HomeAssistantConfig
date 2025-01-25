@@ -47,12 +47,12 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.1.3 |
-| No. Integrations | 220 |
-| No. Custom Integrations | 98 |
-| No. Entities | 6451 |
-| No. Sensors | 4281 |
-| No. Automations | 154 |
+| HA Version | 2025.1.4 |
+| No. Integrations | 219 |
+| No. Custom Integrations | 99 |
+| No. Entities | 5943 |
+| No. Sensors | 3806 |
+| No. Automations | 153 |
 
 <details>
 <summary>Expand Entity Breakdown</summary>
@@ -62,16 +62,16 @@ Type | Qty
 Air quality | 0
 Alarm control panels | 2
 Areas | 18
-Binary sensors | 403
-Buttons | 223
+Binary sensors | 400
+Buttons | 225
 Calendars | 84
 Cameras | 6
 Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 110
-Devices | 619
+Device trackers | 106
+Devices | 620
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -83,26 +83,26 @@ Input selects | 3
 Input texts | 3
 Lights | 13
 Locks | 0
-Media players | 40
-Numbers | 54
-Persistent notifications | 6
+Media players | 34
+Numbers | 52
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4281
+Sensors | 3806
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 295
+Switches | 294
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 327
+Update | 315
 Vacuums | 0
 Water heaters | 0
-Weather | 13
+Weather | 14
 Zones | 4
 </details>
 
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>663 Integrations</summary>
+<details><summary>651 Integrations</summary>
 
 | Name |
 | --- |
@@ -202,7 +202,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
-| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -381,15 +380,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
 | [lastfm.sensor](https://www.home-assistant.io/components/lastfm.sensor) |
 | [lg_thinq](https://www.home-assistant.io/components/lg_thinq) |
-| [lg_thinq.binary_sensor](https://www.home-assistant.io/components/lg_thinq.binary_sensor) |
-| [lg_thinq.climate](https://www.home-assistant.io/components/lg_thinq.climate) |
-| [lg_thinq.event](https://www.home-assistant.io/components/lg_thinq.event) |
-| [lg_thinq.fan](https://www.home-assistant.io/components/lg_thinq.fan) |
-| [lg_thinq.number](https://www.home-assistant.io/components/lg_thinq.number) |
-| [lg_thinq.select](https://www.home-assistant.io/components/lg_thinq.select) |
-| [lg_thinq.sensor](https://www.home-assistant.io/components/lg_thinq.sensor) |
-| [lg_thinq.switch](https://www.home-assistant.io/components/lg_thinq.switch) |
-| [lg_thinq.vacuum](https://www.home-assistant.io/components/lg_thinq.vacuum) |
 | [light](https://www.home-assistant.io/components/light) |
 | [llmvision](https://www.home-assistant.io/components/llmvision) |
 | [local_ip](https://www.home-assistant.io/components/local_ip) |
@@ -424,6 +414,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_extractor](https://www.home-assistant.io/components/media_extractor) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
 | [media_source](https://www.home-assistant.io/components/media_source) |
+| [mediarr](https://www.home-assistant.io/components/mediarr) |
+| [mediarr.sensor](https://www.home-assistant.io/components/mediarr.sensor) |
 | [met](https://www.home-assistant.io/components/met) |
 | [met.weather](https://www.home-assistant.io/components/met.weather) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
@@ -528,10 +520,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [qbittorrent.sensor](https://www.home-assistant.io/components/qbittorrent.sensor) |
 | [qbittorrent.switch](https://www.home-assistant.io/components/qbittorrent.switch) |
 | [qbittorrent_alt](https://www.home-assistant.io/components/qbittorrent_alt) |
-| [qbittorrent_alt.button](https://www.home-assistant.io/components/qbittorrent_alt.button) |
-| [qbittorrent_alt.number](https://www.home-assistant.io/components/qbittorrent_alt.number) |
-| [qbittorrent_alt.sensor](https://www.home-assistant.io/components/qbittorrent_alt.sensor) |
-| [qbittorrent_alt.switch](https://www.home-assistant.io/components/qbittorrent_alt.switch) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
 | [radarr.binary_sensor](https://www.home-assistant.io/components/radarr.binary_sensor) |
 | [radarr.calendar](https://www.home-assistant.io/components/radarr.calendar) |
@@ -784,7 +772,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>90 Custom Integrations</summary>
+<details><summary>91 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -834,6 +822,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.12.06] | Material Symbols for Home Assistant is a collection of 13,693 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  |  |[@yourusername](https://github.com/yourusername).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.4] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -880,7 +869,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.13] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
-<details><summary>66 Lovelace Plugins</summary>
+<details><summary>68 Lovelace Plugins</summary>
 
 | Name | Version | Description |
 | --- | --- | --- |
@@ -917,11 +906,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.6.0] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
+| [Mediarr Card](https://github.com/Vansmak/mediarr_card) |  [ve881608] | custom sonarr component for home assistant |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
 | [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.2.1] | Build a beautiful Home Assistant dashboard easily |
 | [My Cards Bundle](https://github.com/AnthonMS/my-cards) |  [v1.0.6] | Bundle of my custom Lovelace cards for Home Assistant. Includes: my-slider, my-slider-v2, my-button |
+| [Navbar Card](https://github.com/joseluis9595/lovelace-navbar-card) |  [v0.0.6] | Custom lovelace card that displays a bottom nav in mobile devices, and a side nav in desktop devices for easy navigation. |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -1032,7 +1023,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.1.3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.1.4-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml

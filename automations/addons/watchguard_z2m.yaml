@@ -1,18 +1,18 @@
 ---
 alias: "[Addon Watchguard] Zigbee2MQTT"
 description: ""
-trigger:
-  - platform: time_pattern
-    minutes: "*"
-condition:
+triggers:
+  - minutes: "*"
+    trigger: time_pattern
+conditions:
   - condition: state
-    entity_id: binary_sensor.zigbee2mqtt_running
-    state: "off"
+    entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
+    state: unavailable
     for:
       hours: 0
-      minutes: 0
+      minutes: 5
       seconds: 0
-action:
+actions:
   - repeat:
       until:
         - condition: state
@@ -28,26 +28,26 @@ action:
               entity_id: binary_sensor.zigbee2mqtt_running
               state: "off"
           then:
-            - service: hassio.addon_start
-              data:
+            - data:
                 addon: 45df7312_zigbee2mqtt
+              action: hassio.addon_start
             - delay:
                 hours: 0
                 minutes: 1
                 seconds: 0
                 milliseconds: 0
-            - service: homeassistant.update_entity
-              data: {}
+            - data: {}
               target:
                 entity_id: binary_sensor.zigbee2mqtt_running
+              action: homeassistant.update_entity
           else:
             - delay:
                 hours: 0
                 minutes: 0
                 seconds: 30
                 milliseconds: 0
-            - service: homeassistant.update_entity
-              data: {}
+            - data: {}
               target:
                 entity_id: binary_sensor.zigbee2mqtt_running
+              action: homeassistant.update_entity
 mode: single
