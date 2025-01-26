@@ -3,7 +3,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
+from custom_components.mediarr.discovery.tmdb import TMDB_ENDPOINTS
 from custom_components.mediarr.common.const import (
     CONF_MAX_ITEMS, 
     CONF_DAYS, 
@@ -56,11 +56,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     if "tmdb" in config:
         from .discovery.tmdb import TMDBMediarrSensor
-        sensors.append(TMDBMediarrSensor(
-            session,
-            config["tmdb"]["api_key"],
-            config["tmdb"].get("max_items", DEFAULT_MAX_ITEMS)
-        ))
+        for endpoint in TMDB_ENDPOINTS.keys():
+            sensors.append(TMDBMediarrSensor(
+                session,
+                config["tmdb"]["api_key"],
+                config["tmdb"].get("max_items", DEFAULT_MAX_ITEMS),
+                endpoint
+            ))
 
     if sensors:
         async_add_entities(sensors, True)
