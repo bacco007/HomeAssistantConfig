@@ -1,5 +1,7 @@
 {
   "common": {
+    "source_entity": "Source entity",
+    "source_device": "Source device",
     "remarks_smart_switch": "Este perfil só fornece valores da potência em standby.\nQuando você tem um aparelho que consome uma quantidade fixa de energia quando ativado, você pode informar esse valor no próximo passo do fluxo de configuração",
     "remarks_smart_dimmer": "This profile only provides standby power values. \n In the next step you can optionally provide the values of the connected light"
   },
@@ -92,6 +94,7 @@
           "create_utility_meters": "Criar medidores de utilidade",
           "disable_extended_attributes": "Desativar atributos estendidos",
           "disable_library_download": "Desativar download da biblioteca remota",
+          "discovery_exclude_device_types": "Discovery exclude device types",
           "force_update_frequency": "Forçar frequência de atualização",
           "ignore_unavailable_state": "Ignorar estado indisponível",
           "include_non_powercalc_sensors": "Incluir sensores não powercalc",
@@ -104,6 +107,7 @@
           "create_utility_meters": "Deixe o powercalc criar medidores de utilidade que ciclam diariamente, de hora em hora etc.",
           "disable_extended_attributes": "Desativar todos os atributos extras que o powercalc adiciona aos estados da energia, energia e entidade de grupo. Isso ajudará a manter o tamanho do banco de dados pequeno",
           "disable_library_download": "Desativar o recurso de download da biblioteca Powercalc",
+          "discovery_exclude_device_types": "Exclude device types from the discovery process",
           "force_update_frequency": "Intervalo em que o estado do sensor é atualizado, mesmo quando o valor de energia permanece o mesmo. Em segundos",
           "ignore_unavailable_state": "Manter os sensores do Powercalc disponíveis mesmo quando a entidade de origem estiver indisponível",
           "include_non_powercalc_sensors": "Controle se você deseja incluir sensores não powercalc em grupos"
@@ -202,7 +206,7 @@
         "data_description": {
           "confirm_autodisovered_model": "Se você optar por não confirmar, você mesmo pode inserir o fabricante e o modelo"
         },
-        "description": "O fabricante \"{manufacturer}\" e o modelo \"{model}\" foram detectados automaticamente para sua luz.{remarks}",
+        "description": "{source}\n\nO fabricante \"{manufacturer}\" e o modelo \"{model}\" foram detectados automaticamente para sua luz.{remarks}",
         "title": "Biblioteca"
       },
       "library_multi_profile": {
@@ -485,6 +489,7 @@
           "create_utility_meters": "Criar medidores de utilidade",
           "disable_extended_attributes": "Desativar atributos estendidos",
           "disable_library_download": "Desativar o download da biblioteca remota",
+          "discovery_exclude_device_types": "Discovery exclude device types",
           "force_update_frequency": "Forçar frequência de atualização",
           "ignore_unavailable_state": "Ignorar estado indisponível",
           "include_non_powercalc_sensors": "Incluir sensores não powercalc",
@@ -497,6 +502,7 @@
           "create_utility_meters": "Deixe que energia crie medidores utilitários, de ciclo diário, horário, etc.",
           "disable_extended_attributes": "Desativar todos os atributos extras que o powercalc adiciona aos estados de potência, energia e entidade de grupo. Isso ajudará a manter o tamanho do banco de dados pequeno",
           "disable_library_download": "Desativar o recurso de download da biblioteca Powercalc",
+          "discovery_exclude_device_types": "Exclude device types from the discovery process",
           "force_update_frequency": "Interval at which the sensor state is updated, even when the power value stays the same. In seconds",
           "ignore_unavailable_state": "Manter os sensores do Powercalc disponíveis mesmo quando a entidade de origem estiver indisponível",
           "include_non_powercalc_sensors": "Controle se você deseja incluir sensores não powercalc em grupos"

@@ -1,5 +1,7 @@
 {
   "common": {
+    "source_entity": "Source entity",
+    "source_device": "Source device",
     "remarks_smart_switch": "Tento profil poskytuje iba hodnoty spotreby energie v pohotovostnom režime. \n Keď máte spotrebič, ktorý po zapnutí spotrebúva pevné množstvo energie, môžete túto hodnotu zadať v ďalšom kroku konfiguračného postupu",
     "remarks_smart_dimmer": "Tento profil poskytuje iba hodnoty spotreby energie v pohotovostnom režime. \n V ďalšom kroku môžete voliteľne zadať hodnoty pripojeného svetla"
   },
@@ -92,6 +94,7 @@
           "create_utility_meters": "Vytvorte merače spotreby",
           "disable_extended_attributes": "Zakázať rozšírené atribúty",
           "disable_library_download": "Zakázať sťahovanie vzdialenej knižnice",
+          "discovery_exclude_device_types": "Discovery exclude device types",
           "force_update_frequency": "Vynútiť frekvenciu aktualizácie",
           "ignore_unavailable_state": "Ignorovať nedostupný stav",
           "include_non_powercalc_sensors": "Zahŕňa senzory bez powercalc",
@@ -104,6 +107,7 @@
           "create_utility_meters": "Nechajte powercalc vytvoriť merače spotreby, ktoré cyklujú denne, každú hodinu atď.",
           "disable_extended_attributes": "Vypnite všetky extra atribúty, ktoré powercalc pridáva k stavu energie, energie a skupiny. To pomôže udržať veľkosť databázy malú",
           "disable_library_download": "Vypnite funkciu sťahovania knižnice Powercalc",
+          "discovery_exclude_device_types": "Exclude device types from the discovery process",
           "force_update_frequency": "Interval, v ktorom sa aktualizuje stav snímača, aj keď hodnota výkonu zostáva rovnaká. V sekundách",
           "ignore_unavailable_state": "Udržujte senzory Powercalc dostupné, aj keď zdrojová entita nie je k dispozícii",
           "include_non_powercalc_sensors": "Ovládajte, či chcete do skupín zahrnúť senzory bez powercalc"
@@ -202,7 +206,7 @@
         "data_description": {
           "confirm_autodisovered_model": "Ak sa rozhodnete nepotvrdiť, môžete zadať výrobcu a model sami"
         },
-        "description": "Výrobca \"{manufacturer}\" a model \"{model}\" boli automaticky detekované pre vaše zariadenie.{remarks}",
+        "description": "{source}\n\nVýrobca \"{manufacturer}\" a model \"{model}\" boli automaticky detekované pre vaše zariadenie.{remarks}",
         "title": "Knižnica"
       },
       "library_multi_profile": {
@@ -485,6 +489,7 @@
           "create_utility_meters": "Vytvorte merače spotreby",
           "disable_extended_attributes": "Zakázať rozšírené atribúty",
           "disable_library_download": "Zakázať sťahovanie vzdialenej knižnice",
+          "discovery_exclude_device_types": "Discovery exclude device types",
           "force_update_frequency": "Vynútiť frekvenciu aktualizácie",
           "ignore_unavailable_state": "Ignorovať nedostupný stav",
           "include_non_powercalc_sensors": "Zahŕňa senzory bez powercalc",
@@ -497,6 +502,7 @@
           "create_utility_meters": "Nechajte powercalc vytvoriť merače spotreby, ktoré cyklujú denne, každú hodinu atď.",
           "disable_extended_attributes": "Zakážte všetky extra atribúty, ktoré powercalc pridáva k výkonu, energii a stavom entity skupiny. Pomôže to udržať veľkosť databázy malú",
           "disable_library_download": "Vypnite funkciu sťahovania knižnice Powercalc",
+          "discovery_exclude_device_types": "Exclude device types from the discovery process",
           "force_update_frequency": "Interval, v ktorom sa aktualizuje stav snímača, aj keď hodnota výkonu zostáva rovnaká. V sekundách",
           "ignore_unavailable_state": "Udržujte senzory Powercalc dostupné, aj keď zdrojová entita nie je k dispozícii",
           "include_non_powercalc_sensors": "Ovládajte, či chcete do skupín zahrnúť senzory bez powercalc"
@@ -601,7 +607,7 @@
       },
       "library_options": {
         "title": "Možnosti knižnice",
-        "description": "Momentálne je vybratý nasledujúci profil knižnice: \n výrobca: {výrobca}\n model: {model}\n\nAk chcete profil zmeniť, kliknite na tlačidlo Ďalej."
+        "description": "Momentálne je vybratý nasledujúci profil knižnice: \n výrobca: {manufacturer}\n model: {model}\n\nAk chcete profil zmeniť, kliknite na tlačidlo Ďalej."
       },
       "linear": {
         "title": "lineárne možnosti",
