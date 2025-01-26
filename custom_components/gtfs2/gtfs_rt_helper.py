@@ -75,7 +75,7 @@ def get_gtfs_feed_entities(url: str, headers, label: str):
     if response.status_code == 200:
         _LOGGER.debug("Successfully updated %s", label)
     else:
-        _LOGGER.debug("Updating %s, and got: %s for: %s", label, response.status_code, response.content)
+        _LOGGER.error("Trying to update %s, and got RT response: %s for: %s", label, response.status_code, response.content)
 
     if label == "alerts":
         _LOGGER.debug("Feed : %s", feed)
@@ -170,6 +170,11 @@ def get_rt_route_trip_statuses(self):
         url=self._trip_update_url, headers=self._headers, label="trip_data"
     )
     self._feed_entities = feed_entities
+    
+    if not feed_entities:
+        _LOGGER.debug("No proper RT feed entities: %s", feed_entities)
+        return {}
+
     _LOGGER.debug("Search departure times for route: %s, trip: %s, type: %s, direction: %s", self._route_id, self._trip_id, self._rt_group, self._direction)
     for entity in feed_entities:
 
