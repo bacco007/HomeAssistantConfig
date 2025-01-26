@@ -22,8 +22,14 @@ trakt: # Optional
   client_secret: !secret trakt_clientsecret
   tmdb_api_key: !secret tmdb_apikey # Required for posters
   trending_type: both #
+  max_items: 10
 
 tmdb: # Optional
   api_key: !secret tmdb_apikey
   trending_type: all # Options: movie, tv, all
   max_items: 10
+  trending: true # Default endpoint
+  now_playing: true # Optional
+  upcoming: true # Optional
+  on_air: true # Optional
+  airing_today: true # Optional

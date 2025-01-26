@@ -15,6 +15,40 @@ sensor:
         {#- Temporary #}
         {{expand('group.monitor_unavailable_entities')| map(attribute='entity_id') | list | sort}}
 
+  - name: "Unavailable Devices"
+    unique_id: unavailable_devices
+    icon: "{{ iif(states(this.entity_id)|int(-1) > 0, 'mdi:alert-circle', 'mdi:check-circle') }}"
+    state: >
+      {% set devices = state_attr(this.entity_id, 'devices') %}
+      {{ devices | count if devices != none else -1 }}
+    attributes:
+      devices: >
+        {%- set items = namespace(value=[]) %}
+        {%- for entity in expand(state_attr('group.monitor_unavailable_entities', 'entity_id')) %}
+        {%- set items.value = items.value + [device_attr(entity.entity_id, "name") ~ '|' ~ device_id(entity.entity_id) ~ '|' ~ entity.entity_id] %}
+        {%- endfor %}
+        {%- set items.value = items.value | sort %}
+        {%- set lastdev = namespace(id='') %}
+        {%- set lastname = namespace(value='') %}
+        {%- set devices = namespace(items=[]) %}
+        {%- set entities = namespace(items=[]) %}
+        {%- set device_entities = namespace(count=0) %}
+        {%- for item in items.value %}
+          {%- set device = item.split("|")[0] %}
+          {%- set device_id = item.split("|")[1] %}
+          {%- set entity =  item.split("|")[2] %}
+          {%- if device | lower == 'none' %}
+            {%- set entities.items = entities.items + [entity] %}
+          {%- elif lastdev.id != device_id and lastdev.id != "" %}
+            {%- set devices.items = devices.items + [lastname.value ~ ' [' ~ device_entities.count ~']'] %}
+            {%- set device_entities.count = 0 %}
+          {%- endif %}
+          {%- set lastdev.id = device_id %}
+          {%- set lastname.value = device %}
+          {%- set device_entities.count = device_entities.count + 1 %}
+        {%- endfor %}
+        {{ devices.items + entities.items }}
+
   - name: "Unknown/Unavailable/None Entities"
     unique_id: unk_una_none_entities
     icon: "{{ 'mdi:alert-circle' if states(this.entity_id)|int(0) > 0 else 'mdi:check-circle' }}"
