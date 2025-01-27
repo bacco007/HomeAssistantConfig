@@ -34,16 +34,16 @@ action:
       seconds: 10
       milliseconds: 0
 
-  - service: pyscript.download_gtfs
-    data:
-      url: https://api.transport.nsw.gov.au/v1/publictransport/timetables/complete/gtfs
-      filename: tfnsw.zip
+  # - service: pyscript.download_gtfs
+  #   data:
+  #     url: https://api.transport.nsw.gov.au/v1/publictransport/timetables/complete/gtfs
+  #     filename: tfnsw.zip
 
-  - delay:
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
+  # - delay:
+  #     hours: 0
+  #     minutes: 5
+  #     seconds: 0
+  #     milliseconds: 0
 
   - service: gtfs2.update_gtfs
     metadata: {}
@@ -69,16 +69,16 @@ action:
       check_source_dates: false
       api_key: x
 
-  - service: gtfs2.update_gtfs
-    metadata: {}
-    data:
-      extract_from: zip
-      url: na
-      file: tfnsw
-      clean_feed_info: true
-      api_key_location: not_applicable
-      api_key_name: x
-      check_source_dates: false
-      api_key: x
+  # - service: gtfs2.update_gtfs
+  #   metadata: {}
+  #   data:
+  #     extract_from: zip
+  #     url: na
+  #     file: tfnsw
+  #     clean_feed_info: true
+  #     api_key_location: not_applicable
+  #     api_key_name: x
+  #     check_source_dates: false
+  #     api_key: x
 
 mode: single
