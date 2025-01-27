@@ -72,10 +72,11 @@ def get_gtfs_feed_entities(url: str, headers, label: str):
     else:
         response = requests.get(url, headers=headers, timeout=20)
 
-    if response.status_code == 200:
+    if response.status_code == 200 and "Bad Gateway" not in response.text and "Not Found" not in response.text :
         _LOGGER.debug("Successfully updated %s", label)
     else:
-        _LOGGER.error("Trying to update %s, and got RT response: %s for: %s", label, response.status_code, response.content)
+        _LOGGER.error("Trying to update %s, and got RT response(code): %s with text: %s", label, response.status_code, response.text)
+        return None
 
     if label == "alerts":
         _LOGGER.debug("Feed : %s", feed)
