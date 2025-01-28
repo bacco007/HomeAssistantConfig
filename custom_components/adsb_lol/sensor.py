@@ -6,7 +6,7 @@ from typing import Any
 
 from homeassistant.helpers import entity_registry as er
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass, SensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
@@ -165,6 +165,7 @@ class ADSBPointSensor(CoordinatorEntity, SensorEntity):
             manufacturer="ADSB",
             model="ADSB",
         )
+        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attributes = self._update_attrs()
         self._attr_extra_state_attributes = self._attributes
 

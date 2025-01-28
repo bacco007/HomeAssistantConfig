@@ -6,6 +6,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant import config_entries
+from homeassistant.config_entries import ConfigFlow, OptionsFlow
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 from homeassistant.core import HomeAssistant, callback
@@ -143,17 +144,15 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                    
     @staticmethod
     @callback
-    def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
-    ) -> config_entries.OptionsFlow:
+    def async_get_options_flow(config_entry):
         """Create the options flow."""
         return ADSBOptionsFlowHandler(config_entry)
 
 
-class ADSBOptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+class ADSBOptionsFlowHandler(OptionsFlow):
+    def __init__(self, config_entry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
+        #self.config_entry = config_entry
         self._data: dict[str, str] = {}
         self._user_inputs: dict = {}
 
@@ -162,7 +161,7 @@ class ADSBOptionsFlowHandler(config_entries.OptionsFlow):
     ) -> FlowResult:
         """Manage the options."""
         if user_input is None:
-            entity_pictures = get_entity_pictures(self.hass, ICONS_PATH)
+            entity_pictures = await get_entity_pictures(self.hass, ICONS_PATH)
             if self.config_entry.data.get(CONF_EXTRACT_TYPE, None) != "point":
                 return self.async_show_form(
                     step_id="init",

@@ -58,10 +58,11 @@ def get_point_of_interest(self):
     return _response_h   
     
     
-def get_entity_pictures(hass, path) -> dict[str]:
+async def get_entity_pictures(hass, path) -> dict[str]:
     _LOGGER.debug(f"Getting icons for path: {path}")
     icon_dir = hass.config.path(path)
-    files = os.listdir(icon_dir)
+    files = await hass.async_add_executor_job(
+            os.listdir, icon_dir)
     entity_pictures = []
     for file in files:
         entity_pictures.append(file)      
