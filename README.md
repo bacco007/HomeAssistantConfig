@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.0b1 |
-| No. Integrations | 219 |
+| HA Version | 2025.2.0b2 |
+| No. Integrations | 220 |
 | No. Custom Integrations | 99 |
-| No. Entities | 6014 |
-| No. Sensors | 3854 |
+| No. Entities | 6024 |
+| No. Sensors | 3860 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3854
+Sensors | 3860
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>648 Integrations</summary>
+<details><summary>650 Integrations</summary>
 
 | Name |
 | --- |
@@ -359,6 +359,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ibeacon](https://www.home-assistant.io/components/ibeacon) |
 | [ibeacon.device_tracker](https://www.home-assistant.io/components/ibeacon.device_tracker) |
 | [ibeacon.sensor](https://www.home-assistant.io/components/ibeacon.sensor) |
+| [ics_calendar](https://www.home-assistant.io/components/ics_calendar) |
+| [ics_calendar.calendar](https://www.home-assistant.io/components/ics_calendar.calendar) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -810,7 +812,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.1] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v.3.1.4.4] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.4.4] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
-| [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.1] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
+| [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.2] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
@@ -874,13 +876,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.1-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.11] | Digital clock card for Home Assistant, highly customizable. |
+| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.11] | Customizable digital date/time card for Lovelace. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
 | [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.4.0] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.4] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
-| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.8.7] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
+| [Clock Weather Card](https://github.com/pkissling/clock-weather-card) |  [v2.8.8] | A Home Assistant Card indicating today's date/time, along with an iOS inspired weather forecast for the next days with animated icons |
 | [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards) |  [v0.7.0] | A custom Lovelace card that hides other cards behind a dropdown toggle |
 | [Compass Card](https://github.com/tomvanswam/compass-card) |  [v2.0.2] | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) |  [v1.3.6] | 📝 Templatable Lovelace Configurations |
@@ -1020,7 +1022,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.0b1-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.2.0b2-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
