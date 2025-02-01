@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.0b2 |
-| No. Integrations | 220 |
+| HA Version | 2025.2.0b3 |
+| No. Integrations | 221 |
 | No. Custom Integrations | 99 |
-| No. Entities | 6024 |
-| No. Sensors | 3860 |
+| No. Entities | 6034 |
+| No. Sensors | 3869 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3860
+Sensors | 3869
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>650 Integrations</summary>
+<details><summary>665 Integrations</summary>
 
 | Name |
 | --- |
@@ -766,6 +766,21 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube.sensor](https://www.home-assistant.io/components/youtube.sensor) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
+| [zha.alarm_control_panel](https://www.home-assistant.io/components/zha.alarm_control_panel) |
+| [zha.binary_sensor](https://www.home-assistant.io/components/zha.binary_sensor) |
+| [zha.button](https://www.home-assistant.io/components/zha.button) |
+| [zha.climate](https://www.home-assistant.io/components/zha.climate) |
+| [zha.cover](https://www.home-assistant.io/components/zha.cover) |
+| [zha.device_tracker](https://www.home-assistant.io/components/zha.device_tracker) |
+| [zha.fan](https://www.home-assistant.io/components/zha.fan) |
+| [zha.light](https://www.home-assistant.io/components/zha.light) |
+| [zha.lock](https://www.home-assistant.io/components/zha.lock) |
+| [zha.number](https://www.home-assistant.io/components/zha.number) |
+| [zha.select](https://www.home-assistant.io/components/zha.select) |
+| [zha.sensor](https://www.home-assistant.io/components/zha.sensor) |
+| [zha.siren](https://www.home-assistant.io/components/zha.siren) |
+| [zha.switch](https://www.home-assistant.io/components/zha.switch) |
+| [zha.update](https://www.home-assistant.io/components/zha.update) |
 | [zodiac](https://www.home-assistant.io/components/zodiac) |
 | [zodiac.sensor](https://www.home-assistant.io/components/zodiac.sensor) |
 | [zone](https://www.home-assistant.io/components/zone) |
@@ -800,7 +815,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.12] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
 | [Flightradar24](https://github.com/AlexandrErohin/home-assistant-flightradar24) |  [v1.23.0] | Flightradar24 integration for Home Assistant |[@AlexandrErohin](https://github.com/AlexandrErohin).|
 | [Fontawesome](https://github.com/thomasloven/hass-fontawesome) |  [v2.2.3] | 🔹 Use icons from fontawesome in home-assistant |[@thomasloven](https://github.com/thomasloven).|
-| [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2025.1.0] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
+| [Fuel Prices](https://github.com/pantherale0/ha-fuelprices) |  [v2025.1.1] | A generic and extensible integration with pyfuelprices to retrieve local (or remote) fuel price data. |[@pantherale0](https://github.com/pantherale0).|
 | [Generate Readme](https://github.com/custom-components/readme) |  [v0.5.0] | Use Jinja and data from Home Assistant to generate your README.md file |[@ludeeus](https://github.com/ludeeus).|
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
@@ -816,12 +831,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
-| [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.6] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
+| [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.7] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.12.06] | Material Symbols for Home Assistant is a collection of 13,693 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v1.0.1-initial] |  |[@yourusername](https://github.com/yourusername).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v1.5.2-tmdb] |  |[@vansmak](https://github.com/vansmak).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.4] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -864,7 +879,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Whats Up Docker Updates Monitor](https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor) |  [v0.5] | Basic integration for What's up Docker API |[@pveiga90](https://github.com/pveiga90).|
 | [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.2.1] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
-| [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.2.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
+| [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.3.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.13] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
 </details>
 
@@ -891,7 +906,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) |  [v1.0.0] | 🧹 Declutter your lovelace configuration with the help of this card |
 | [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) |  [v1.2.4] | A custom digital clock card for Home Assistant |
 | [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) |  | A modified version of the layout-card with an easier way to configure cards |
-| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.3.1] | Expander card for HomeAssistant |
+| [Expander Card](https://github.com/MelleD/lovelace-expander-card) |  [v2.3.2] | Expander card for HomeAssistant |
 | [Firemote Card](https://github.com/PRProd/HA-Firemote) |  [v4.1.8] | Apple TV, Amazon Fire TV, Chromecast, Homatics, NVIDIA Shield, onn., Roku, Xiaomi Mi, and Android TV remote control card for Home Assistant |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) |  [v0.7.8] | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flightradar24 Card](https://github.com/Springvar/home-assistant-flightradar24-card) |  [v0.0.11] | Custom card to use with Flightradar24 integration for Home Assistant |
@@ -905,7 +920,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.6.0] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
-| [Mediarr Card](https://github.com/Vansmak/mediarr_card) |  [v37d8f28] | custom sonarr component for home assistant |
+| [Mediarr Card](https://github.com/Vansmak/mediarr_card) |  [v1.5.1-tmdb] | custom sonarr component for home assistant |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
@@ -931,7 +946,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swiss Army Knife Custom Card](https://github.com/AmoebeLabs/swiss-army-knife-card) |  [v2.5.1] | The versatile custom Swiss Army Knife card for Home Assistant allows you to create your unique visualization using several graphical tools, styling options and animations. |
 | [Tabbed Card](https://github.com/kinghat/tabbed-card) |  [v0.3.2] | a custom card for home assistant that utilizes tabs to segregate individual cards. |
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.14] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
-| [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v1.0.3] | Temperature Hetmap for Home Assistant heatmap |
+| [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v1.0.4] | Temperature Hetmap for Home Assistant heatmap |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
 | [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.8] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
@@ -1022,7 +1037,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.0b2-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.2.0b3-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
