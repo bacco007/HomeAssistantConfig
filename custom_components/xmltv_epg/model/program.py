@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from .helper import get_child_as_text, is_none_or_whitespace
 
@@ -63,8 +63,8 @@ class TVProgram:
         end: datetime,
         title: str,
         description: str,
-        episode: str = None,
-        subtitle: str = None,
+        episode: str | None = None,
+        subtitle: str | None = None,
     ):
         """Initialize TV Program."""
         if end <= start:
@@ -140,7 +140,7 @@ class TVProgram:
         return title
 
     @classmethod
-    def from_xml(cls, xml: ET.Element) -> "TVProgram":
+    def from_xml(cls, xml: ET.Element) -> "TVProgram | None":
         """Initialize TV Program from XML Node, if possible.
 
         Cross-link is not done here, call cross_link_channel() after all programs are created.
@@ -166,6 +166,8 @@ class TVProgram:
         end = xml.attrib.get("stop")
         if is_none_or_whitespace(start) or is_none_or_whitespace(end):
             return None
+        start = cast(str, start)
+        end = cast(str, end)
 
         # parse start and end times
         try:
@@ -178,6 +180,7 @@ class TVProgram:
         channel_id = xml.attrib.get("channel")
         if is_none_or_whitespace(channel_id):
             return None
+        channel_id = cast(str, channel_id)
 
         # get and validate program info
         title = get_child_as_text(xml, "title")
@@ -187,6 +190,8 @@ class TVProgram:
 
         if is_none_or_whitespace(title) or is_none_or_whitespace(description):
             return None
+        title = cast(str, title)
+        description = cast(str, description)
 
         try:
             return cls(channel_id, start, end, title, description, episode, subtitle)

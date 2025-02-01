@@ -36,7 +36,7 @@ class XMLTVClient:
         """Fetch XMLTV Guide data."""
         try:
             # fetch data
-            response = await self._session.get(url=self._url, timeout=10)
+            response = await self._session.get(url=self._url)
             response.raise_for_status()
 
             if response.content_type in ["text/xml", "application/xml"]:

@@ -6,7 +6,7 @@ https://github.com/shadow578/homeassistant_xmltv-epg
 
 from __future__ import annotations
 
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -34,6 +34,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator = XMLTVDataUpdateCoordinator(
         hass=hass,
+        config_entry=entry,
         client=XMLTVClient(
             session=async_get_clientsession(hass),
             url=entry.data[CONF_HOST],
@@ -44,8 +45,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             OPT_ENABLE_UPCOMING_SENSOR, DEFAULT_ENABLE_UPCOMING_SENSOR
         ),
     )
-    # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-    await coordinator.async_config_entry_first_refresh()
+    if entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
+        # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
+        await coordinator.async_config_entry_first_refresh()
+    else:
+        # To fix deprecation warning (???)
+        # Detected that custom integration 'xmltv_epg' uses `async_config_entry_first_refresh`, which is only supported when entry state is ConfigEntryState.SETUP_IN_PROGRESS, but it is in state ConfigEntryState.LOADED
+        await coordinator.async_refresh()
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))

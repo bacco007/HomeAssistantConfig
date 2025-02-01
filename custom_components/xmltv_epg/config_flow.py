@@ -33,7 +33,7 @@ class XMLTVFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self,
         user_input: dict | None = None,
-    ) -> config_entries.FlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
@@ -80,12 +80,12 @@ class XMLTVFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if not guide:
             raise XMLTVClientCommunicationError("No data received")
 
-        return guide.generator_name
+        return guide.generator_name or ""
 
     @staticmethod
     def async_get_options_flow(config_entry: config_entries.ConfigEntry):
         """Get options flow handler."""
-        return XMLTVOptionsFlowHandler(config_entry)
+        return XMLTVOptionsFlowHandler()
 
 
 class XMLTVOptionsFlowHandler(config_entries.OptionsFlow):
@@ -93,19 +93,18 @@ class XMLTVOptionsFlowHandler(config_entries.OptionsFlow):
 
     VERSION = 1
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+    def __init__(self) -> None:
         """Initialize XMLTV options flow."""
-        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict | None = None
-    ) -> config_entries.FlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """XMLTV Options Flow."""
         return await self.async_step_menu(user_input)
 
     async def async_step_menu(
         self, user_input: dict | None = None
-    ) -> config_entries.FlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """XMLTV Options Flow."""
         if user_input is not None:
             return self.async_create_entry(

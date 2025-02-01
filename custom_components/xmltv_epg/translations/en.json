@@ -50,6 +50,9 @@
                     },
                     "subtitle": {
                         "name": "Subtitle"
+                    },
+                    "channel_program_known_until": {
+                        "name": "EPG available until"
                     }
                 }
             },

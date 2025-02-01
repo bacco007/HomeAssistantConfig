@@ -11,20 +11,22 @@ class TVGuide:
 
     TAG = "tv"
 
-    def __init__(self, generator_name: str = None, generator_url: str = None):
+    def __init__(
+        self, generator_name: str | None = None, generator_url: str | None = None
+    ):
         """Initialize TV Guide."""
         self.generator_name = generator_name
         self.generator_url = generator_url
 
-        self.channels = []
-        self.programs = []
+        self.channels: list[TVChannel] = []
+        self.programs: list[TVProgram] = []
 
-    def get_channel(self, channel_id: str) -> TVChannel:
+    def get_channel(self, channel_id: str) -> TVChannel | None:
         """Get channel by ID."""
         return next((c for c in self.channels if c.id == channel_id), None)
 
     @classmethod
-    def from_xml(cls, xml: ET.Element) -> "TVGuide":
+    def from_xml(cls, xml: ET.Element) -> "TVGuide | None":
         """Initialize TV Guide from XML Node, if possible.
 
         :param xml: XML Node

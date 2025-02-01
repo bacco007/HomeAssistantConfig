@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -27,7 +28,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     )
 
     # setup sensor for coordinator status
-    sensors = [XMLTVStatusSensor(coordinator, guide)]
+    sensors: list[SensorEntity] = [XMLTVStatusSensor(coordinator, guide)]
 
     # add current / upcoming program sensors for each channel
     for channel in guide.channels:
@@ -64,6 +65,8 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
         entity_id = f"sensor.{normalize_for_entity_id(channel.id)}_{translation_key}"
 
         return translation_key, entity_id
+
+    coordinator: XMLTVDataUpdateCoordinator
 
     def __init__(
         self,
@@ -114,6 +117,13 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
         duration_hours = int(duration_seconds // 3600)
         duration_minutes = int((duration_seconds % 3600) // 60)
 
+        # get last program end time
+        last_program = self._channel.get_last_program()
+        if last_program is not None:
+            channel_program_known_until = last_program.end
+        else:
+            channel_program_known_until = None
+
         return {
             "start": program.start,
             "end": program.end,
@@ -122,10 +132,11 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
             "description": program.description,
             "episode": program.episode,
             "subtitle": program.subtitle,
+            "channel_program_known_until": channel_program_known_until,
         }
 
     @property
-    def native_value(self) -> str:
+    def native_value(self) -> str | None:
         """Return the native value of the sensor."""
         guide: TVGuide = self.coordinator.data
 
@@ -169,12 +180,18 @@ class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
         :return: (translation_key, entity_id) tuple.
 
         """
+        assert guide.generator_name is not None, (
+            "XMLTVStatusSensor failed to create id, generator_name was None!"
+        )
+
         translation_key = "last_update"
         entity_id = (
             f"sensor.{normalize_for_entity_id(guide.generator_name)}_{translation_key}"
         )
 
         return translation_key, entity_id
+
+    coordinator: XMLTVDataUpdateCoordinator
 
     def __init__(self, coordinator: XMLTVDataUpdateCoordinator, guide: TVGuide) -> None:
         """Initialize the sensor class."""
@@ -217,7 +234,7 @@ class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
         }
 
     @property
-    def native_value(self) -> str:
+    def native_value(self) -> datetime | None:
         """Return the native value of the sensor."""
         coordinator: XMLTVDataUpdateCoordinator = self.coordinator
 
@@ -229,4 +246,7 @@ class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
         self._guide = guide
 
         # native value is last update time
-        return coordinator.last_update_time.astimezone()
+        value = coordinator.last_update_time
+        if value is not None:
+            return value.astimezone()
+        return None
