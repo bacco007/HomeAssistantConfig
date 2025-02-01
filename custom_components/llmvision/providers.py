@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
+import boto3
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from functools import partial
 import logging
 import inspect
+import json
 import re
 from .const import (
     DOMAIN,
@@ -22,6 +25,11 @@ from .const import (
     CONF_OLLAMA_HTTPS,
     CONF_CUSTOM_OPENAI_ENDPOINT,
     CONF_CUSTOM_OPENAI_API_KEY,
+    CONF_CUSTOM_OPENAI_DEFAULT_MODEL,
+    CONF_AWS_ACCESS_KEY_ID,
+    CONF_AWS_SECRET_ACCESS_KEY,
+    CONF_AWS_REGION_NAME,
+    CONF_AWS_DEFAULT_MODEL,
     VERSION_ANTHROPIC,
     ENDPOINT_OPENAI,
     ENDPOINT_AZURE,
@@ -57,6 +65,8 @@ class Request:
             return [Request.sanitize_data(item) for item in data]
         elif isinstance(data, str) and len(data) > 400 and data.count(' ') < 50:
             return '<long_string>'
+        elif isinstance(data, bytes) and len(data) > 400:
+            return '<long_bytes>'
         else:
             return data
 
@@ -86,6 +96,8 @@ class Request:
             return "Ollama"
         elif CONF_OPENAI_API_KEY in entry_data:
             return "OpenAI"
+        elif CONF_AWS_ACCESS_KEY_ID in entry_data:
+            return "AWS Bedrock"
 
         return None
 
@@ -178,17 +190,23 @@ class Request:
                 'port': port,
                 'https': https
             })
-            response_text = await provider_instance.vision_request(call)
-            if call.generate_title:
-                call.message = gen_title_prompt.format(response=response_text)
-                gen_title = await provider_instance.title_request(call)
 
         elif provider == 'Custom OpenAI':
-            api_key = config.get(CONF_CUSTOM_OPENAI_API_KEY, "")
+            api_key = config.get(CONF_CUSTOM_OPENAI_API_KEY)
             endpoint = config.get(
-                CONF_CUSTOM_OPENAI_ENDPOINT) + "/v1/chat/completions"
+                CONF_CUSTOM_OPENAI_ENDPOINT)
+            default_model=config.get(CONF_CUSTOM_OPENAI_DEFAULT_MODEL)
             provider_instance = OpenAI(
-                self.hass, api_key=api_key, endpoint=endpoint)
+                self.hass, api_key=api_key, endpoint={'base_url': endpoint}, default_model=default_model)
+
+        elif provider == 'AWS Bedrock':
+            model = call.model if call.model and call.model != "None" else config.get(CONF_AWS_DEFAULT_MODEL)
+            provider_instance = AWSBedrock(self.hass,
+                    aws_access_key_id=config.get(CONF_AWS_ACCESS_KEY_ID),
+                    aws_secret_access_key=config.get(CONF_AWS_SECRET_ACCESS_KEY),
+                    aws_region_name=config.get(CONF_AWS_REGION_NAME),
+                    model=model
+                )
 
         else:
             raise ServiceValidationError("invalid_provider")
@@ -280,7 +298,7 @@ class Provider(ABC):
 
     async def title_request(self, call) -> str:
         call.temperature = 0.1
-        call.max_tokens = 5
+        call.max_tokens = 10
         data = self._prepare_text_data(call)
         return await self._make_request(data)
 
@@ -327,9 +345,9 @@ class Provider(ABC):
 
 
 class OpenAI(Provider):
-    def __init__(self, hass, api_key="", endpoint={'base_url': ENDPOINT_OPENAI}):
+    def __init__(self, hass, api_key="", endpoint={'base_url': ENDPOINT_OPENAI}, default_model="gpt-4o-mini"):
         super().__init__(hass, api_key, endpoint=endpoint)
-        self.default_model = "gpt-4o-mini"
+        self.default_model=default_model
 
     def _generate_headers(self) -> dict:
         return {'Content-type': 'application/json',
@@ -337,9 +355,12 @@ class OpenAI(Provider):
 
     async def _make_request(self, data) -> str:
         headers = self._generate_headers()
-        response = await self._post(url=self.endpoint.get('base_url'), headers=headers, data=data)
-        response_text = response.get(
-            "choices")[0].get("message").get("content")
+        if isinstance(self.endpoint, dict):
+            url = self.endpoint.get('base_url')
+        else:
+            url = self.endpoint
+        response = await self._post(url=url, headers=headers, data=data)
+        response_text = response.get("choices")[0].get("message").get("content")
         return response_text
 
     def _prepare_vision_data(self, call) -> list:
@@ -372,7 +393,7 @@ class OpenAI(Provider):
         if self.api_key:
             headers = self._generate_headers()
             data = {
-                "model": "gpt-4o-mini",
+                "model": self.default_model,
                 "messages": [{"role": "user", "content": [{"type": "text", "text": "Hi"}]}],
                 "max_tokens": 1,
                 "temperature": 0.5
@@ -728,3 +749,111 @@ class Ollama(Provider):
         except Exception as e:
             _LOGGER.error(f"Error: {e}")
             raise ServiceValidationError('handshake_failed')
+
+class AWSBedrock(Provider):
+    def __init__(self, hass, aws_access_key_id, aws_secret_access_key, aws_region_name, model):
+        super().__init__(hass, )
+        self.default_model=model
+        self.aws_access_key_id=aws_access_key_id
+        self.aws_secret_access_key=aws_secret_access_key
+        self.aws_region=aws_region_name
+
+    def _generate_headers(self) -> dict:
+        return {'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + self.api_key}
+
+    async def _make_request(self, data) -> str:
+        response = await self.invoke_bedrock(model=self.default_model, data=data)
+        response_text = response.get("message").get("content")[0].get("text")
+        return response_text
+
+    async def invoke_bedrock(self, model, data) -> dict:
+        """Post data to url and return response data"""
+        _LOGGER.debug(f"AWS Bedrock request data: {Request.sanitize_data(data)}")
+
+        try:
+            _LOGGER.info(f"Invoking Bedrock model {model} in {self.aws_region}")
+            client = await self.hass.async_add_executor_job(
+                 partial(
+                    boto3.client,
+                    "bedrock-runtime",
+                    region_name=self.aws_region,
+                    aws_access_key_id=self.aws_access_key_id,
+                    aws_secret_access_key=self.aws_secret_access_key
+                )
+            )
+
+            # Invoke the model with the response stream
+            response = await self.hass.async_add_executor_job(
+                partial(
+                    client.converse,
+                    modelId=model,
+                    messages=data.get("messages"),
+                    inferenceConfig=data.get("inferenceConfig")
+            ))
+            _LOGGER.debug(f"AWS Bedrock call Response: {response}")
+
+        except Exception as e:
+            raise ServiceValidationError(f"Request failed: {e}")
+
+        if response["ResponseMetadata"]["HTTPStatusCode"] != 200:
+            frame = inspect.stack()[1]
+            provider = frame.frame.f_locals["self"].__class__.__name__.lower()
+            parsed_response = await self._resolve_error(response, provider)
+            raise ServiceValidationError(parsed_response)
+        else:
+            # get observability data
+            metrics = response.get("metrics")
+            latency = metrics.get("latencyMs")
+            token_usage = response.get("usage")
+            tokens_in = token_usage.get("inputTokens")
+            tokens_out = token_usage.get("outputTokens")
+            tokens_total = token_usage.get("totalTokens")
+            _LOGGER.info(f"AWS Bedrock call latency: {latency}ms inputTokens: {tokens_in} outputTokens: {tokens_out} totalTokens: {tokens_total}")
+            response_data = response.get("output")
+            _LOGGER.debug(f"AWS Bedrock call response data: {response_data}")
+            return response_data
+
+
+    def _prepare_vision_data(self, call) -> list:
+        _LOGGER.debug(f"Found model type `{call.model}` for AWS Bedrock call.")
+        # We need to generate the correct format for the respective models
+        data = {
+                "messages": [{"role": "user", "content": []}],
+                "inferenceConfig": {
+                    "maxTokens": call.max_tokens,
+                    "temperature": call.temperature
+                }
+            }
+
+        # Bedrock converse API wants the raw bytes of the image
+        import base64
+        for image, filename in zip(call.base64_images, call.filenames):
+            tag = ("Image " + str(call.base64_images.index(image) + 1)
+                ) if filename == "" else filename
+            data["messages"][0]["content"].append(
+                {"text": tag + ":"})
+            data["messages"][0]["content"].append({
+                "image": {
+                    "format": "jpeg",
+                    "source": {"bytes": base64.b64decode(image)}
+                    }
+                })
+        data["messages"][0]["content"].append({"text": call.message})
+        return data
+
+    def _prepare_text_data(self, call) -> list:
+        return {
+            "messages": [{"role": "user", "content": [{"text": call.message}]}],
+            "inferenceConfig": {
+                "maxTokens": call.max_tokens,
+                "temperature": call.temperature
+            }
+        }
+
+    async def validate(self) -> None | ServiceValidationError:
+        data = {
+            "messages": [{"role": "user", "content": [{"text": "Hi"}]}],
+            "inferenceConfig": {"maxTokens": 10, "temperature": 0.5}
+        }
+        await self.invoke_bedrock(model=self.default_model, data=data)

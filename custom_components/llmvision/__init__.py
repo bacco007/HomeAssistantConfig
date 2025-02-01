@@ -17,7 +17,12 @@ from .const import (
     CONF_OLLAMA_HTTPS,
     CONF_CUSTOM_OPENAI_ENDPOINT,
     CONF_CUSTOM_OPENAI_API_KEY,
+    CONF_CUSTOM_OPENAI_DEFAULT_MODEL,
     CONF_RETENTION_TIME,
+    CONF_AWS_ACCESS_KEY_ID,
+    CONF_AWS_SECRET_ACCESS_KEY,
+    CONF_AWS_REGION_NAME,
+    CONF_AWS_DEFAULT_MODEL,
     MESSAGE,
     REMEMBER,
     MODEL,
@@ -43,14 +48,12 @@ from .const import (
 from .calendar import SemanticIndex
 from .providers import Request
 from .media_handlers import MediaProcessor
-import os
 import re
 from datetime import timedelta
 from homeassistant.util import dt as dt_util
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import SupportsResponse
 from homeassistant.exceptions import ServiceValidationError
-from functools import partial
 import logging
 
 _LOGGER = logging.getLogger(__name__)
@@ -78,7 +81,12 @@ async def async_setup_entry(hass, entry):
     ollama_https = entry.data.get(CONF_OLLAMA_HTTPS)
     custom_openai_endpoint = entry.data.get(CONF_CUSTOM_OPENAI_ENDPOINT)
     custom_openai_api_key = entry.data.get(CONF_CUSTOM_OPENAI_API_KEY)
+    custom_openai_default_model = entry.data.get(CONF_CUSTOM_OPENAI_DEFAULT_MODEL)
     retention_time = entry.data.get(CONF_RETENTION_TIME)
+    aws_access_key_id = entry.data.get(CONF_AWS_ACCESS_KEY_ID)
+    aws_secret_access_key = entry.data.get(CONF_AWS_SECRET_ACCESS_KEY)
+    aws_region_name = entry.data.get(CONF_AWS_REGION_NAME)
+    aws_default_model = entry.data.get(CONF_AWS_DEFAULT_MODEL)
 
     # Ensure DOMAIN exists in hass.data
     if DOMAIN not in hass.data:
@@ -102,7 +110,12 @@ async def async_setup_entry(hass, entry):
         CONF_OLLAMA_HTTPS: ollama_https,
         CONF_CUSTOM_OPENAI_ENDPOINT: custom_openai_endpoint,
         CONF_CUSTOM_OPENAI_API_KEY: custom_openai_api_key,
-        CONF_RETENTION_TIME: retention_time
+        CONF_CUSTOM_OPENAI_DEFAULT_MODEL: custom_openai_default_model,
+        CONF_RETENTION_TIME: retention_time,
+        CONF_AWS_ACCESS_KEY_ID: aws_access_key_id,
+        CONF_AWS_SECRET_ACCESS_KEY: aws_secret_access_key,
+        CONF_AWS_REGION_NAME: aws_region_name,
+        CONF_AWS_DEFAULT_MODEL: aws_default_model,
     }
 
     # Filter out None values
@@ -114,9 +127,7 @@ async def async_setup_entry(hass, entry):
 
     # check if the entry is the calendar entry (has entry rentention_time)
     if filtered_entry_data.get(CONF_RETENTION_TIME) is not None:
-        # make sure 'llmvision' directory exists
-        await hass.loop.run_in_executor(None, partial(os.makedirs, "/llmvision", exist_ok=True))
-        # forward the calendar entity to the platform
+        # forward the calendar entity to the platform for setup
         await hass.config_entries.async_forward_entry_setups(entry, ["calendar"])
 
     return True
@@ -140,7 +151,15 @@ async def async_remove_entry(hass, entry):
 
 
 async def async_unload_entry(hass, entry) -> bool:
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, "calendar")
+    _LOGGER.debug(f"Unloading {entry.title} from hass.data")
+
+    # check if the entry is the calendar entry (has entry rentention_time)
+    if entry.data.get(CONF_RETENTION_TIME) is not None:
+        # unload the calendar
+        unload_ok = await hass.config_entries.async_unload_platforms(entry, ["calendar"])
+    else:
+        unload_ok = True
+
     return unload_ok
 
 
