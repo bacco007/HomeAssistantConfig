@@ -3,8 +3,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from custom_components.mediarr.discovery.tmdb import TMDB_ENDPOINTS
-from custom_components.mediarr.common.const import (
+from .discovery.tmdb import TMDB_ENDPOINTS
+from .common.const import (
     CONF_MAX_ITEMS, 
     CONF_DAYS, 
     DEFAULT_MAX_ITEMS, 
@@ -22,6 +22,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         plex_sensors = await PlexMediarrSensor.create_sensors(hass, config["plex"])
         sensors.extend(plex_sensors)
 
+    if "jellyfin" in config:
+        from .server.jellyfin import JellyfinMediarrSensor
+        jellyfin_sensors = await JellyfinMediarrSensor.create_sensors(hass, config["jellyfin"])
+        sensors.extend(jellyfin_sensors)
+
+    if "emby" in config:
+        from .server.emby import EmbyMediarrSensor
+        emby_sensors = await EmbyMediarrSensor.create_sensors(hass, config["emby"])
+        sensors.extend(emby_sensors)
+
     # Manager Sensors
     if "sonarr" in config:
         from .manager.sonarr import SonarrMediarrSensor
@@ -29,6 +39,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             session,
             config["sonarr"]["api_key"],
             config["sonarr"]["url"],
+            config["sonarr"].get("tmdb_api_key"),
             config["sonarr"].get("max_items", DEFAULT_MAX_ITEMS),
             config["sonarr"].get("days_to_check", DEFAULT_DAYS)
         ))
@@ -39,6 +50,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             session,
             config["radarr"]["api_key"],
             config["radarr"]["url"],
+            config["radarr"].get("tmdb_api_key"),
             config["radarr"].get("max_items", DEFAULT_MAX_ITEMS)
         ))
 
@@ -51,19 +63,22 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             config["trakt"]["client_secret"],
             config["trakt"].get("trending_type", "both"),
             config["trakt"].get("max_items", DEFAULT_MAX_ITEMS),
-            config["trakt"]["tmdb_api_key"]
+            config["trakt"].get("tmdb_api_key")
         ))
 
     if "tmdb" in config:
         from .discovery.tmdb import TMDBMediarrSensor
+        tmdb_config = config["tmdb"]
+        tmdb_api_key = tmdb_config.get("tmdb_api_key")  # Updated to use tmdb_api_key instead of api_key
+        
         for endpoint in TMDB_ENDPOINTS.keys():
-            sensors.append(TMDBMediarrSensor(
-                session,
-                config["tmdb"]["api_key"],
-                config["tmdb"].get("max_items", DEFAULT_MAX_ITEMS),
-                endpoint
-            ))
+            if tmdb_config.get(endpoint, False):  # Only create sensors for enabled endpoints
+                sensors.append(TMDBMediarrSensor(
+                    session,
+                    tmdb_api_key,
+                    tmdb_config.get("max_items", DEFAULT_MAX_ITEMS),
+                    endpoint
+                ))
 
     if sensors:
         async_add_entities(sensors, True)
-
