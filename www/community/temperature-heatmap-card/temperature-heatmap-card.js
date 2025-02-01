@@ -275,8 +275,8 @@ class TemperatureHeatmapCard extends LitElement {
            trend = trend + "<div style='"+vis_fog+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-fog'></ha-icon></div>";
            trend = trend + "<div style='"+vis_hail+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-hail'></ha-icon></div>";
            trend = trend + "<div style='"+vis_lightning+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-lightning'></ha-icon></div>";
-           trend = trend + "<div style='"+vis_lightning_rainy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:lightning-rainy'></ha-icon></div>";
-           trend = trend + "<div style='"+vis_partlycloudy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:partlycloudy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_lightning_rainy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-lightning-rainy'></ha-icon></div>";
+           trend = trend + "<div style='"+vis_partlycloudy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-partly-cloudy'></ha-icon></div>";
            trend = trend + "<div style='"+vis_pouring+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-pouring'></ha-icon></div>";
            trend = trend + "<div style='"+vis_rainy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-rainy'></ha-icon></div>";
            trend = trend + "<div style='"+vis_snowy+"'><ha-icon id='"+this.id+"forecastIcon"+pos+"cloudy' style='color:"+icona_color+"' icon='mdi:weather-snowy'></ha-icon></div>";
