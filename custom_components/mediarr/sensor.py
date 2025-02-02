@@ -79,6 +79,15 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                     tmdb_config.get("max_items", DEFAULT_MAX_ITEMS),
                     endpoint
                 ))
+    if "seer" in config:
+        from .discovery.seer import SeerMediarrSensor
+        sensors.append(SeerMediarrSensor(
+            session,
+            config["seer"]["api_key"],
+            config["seer"]["url"],
+            config["seer"].get("tmdb_api_key"),
+            config["seer"].get("max_items", DEFAULT_MAX_ITEMS)
+        ))
 
     if sensors:
         async_add_entities(sensors, True)

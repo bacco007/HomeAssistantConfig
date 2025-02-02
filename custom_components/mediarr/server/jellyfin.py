@@ -50,12 +50,6 @@ class JellyfinMediarrSensor(TMDBMediaSensor):
 
     async def _download_and_cache_image(self, url, item_id, image_type):
         """Download and cache an image from Jellyfin."""
-        cache_dir = Path(self.hass.config.path("www/mediarr/cache"))
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        
-        file_name = f"{item_id}_{image_type}.jpg"
-        cached_path = cache_dir / file_name
-
         try:
             headers = {
                 "Authorization": f'MediaBrowser Token="{self._jellyfin_token}"',
@@ -65,12 +59,21 @@ class JellyfinMediarrSensor(TMDBMediaSensor):
             async with async_timeout.timeout(10):
                 async with self._session.get(url, headers=headers) as response:
                     if response.status == 200:
+                        cache_dir = Path(self.hass.config.path("www/mediarr/cache"))
+                        cache_dir.mkdir(parents=True, exist_ok=True)
+                        
+                        file_name = f"{item_id}_{image_type}.jpg"
+                        cached_path = cache_dir / file_name
+                        
                         content = await response.read()
                         with open(cached_path, 'wb') as f:
                             f.write(content)
+                        _LOGGER.debug("Successfully cached image for %s: %s", item_id, image_type)
                         return f"/local/mediarr/cache/{file_name}"
+                    else:
+                        _LOGGER.warning("Failed to download image %s for %s: %s", image_type, item_id, response.status)
         except Exception as err:
-            _LOGGER.error("Error caching image: %s", err)
+            _LOGGER.error("Error caching image %s for %s: %s", image_type, item_id, err)
         return None
 
     def _clean_unused_images(self, current_ids):
@@ -83,7 +86,11 @@ class JellyfinMediarrSensor(TMDBMediaSensor):
             for image_file in cache_dir.glob("*.jpg"):
                 item_id = image_file.stem.split('_')[0]
                 if item_id not in current_ids:
-                    image_file.unlink(missing_ok=True)
+                    try:
+                        image_file.unlink()
+                        _LOGGER.debug("Removed unused image: %s", image_file.name)
+                    except Exception as err:
+                        _LOGGER.error("Error removing image %s: %s", image_file.name, err)
         except Exception as err:
             _LOGGER.error("Error cleaning cached images: %s", err)
 
@@ -97,6 +104,8 @@ class JellyfinMediarrSensor(TMDBMediaSensor):
             cached_poster = await self._download_and_cache_image(poster_url, item_id, "poster")
             cached_backdrop = await self._download_and_cache_image(backdrop_url, item_id, "backdrop")
             
+            if cached_poster or cached_backdrop:
+                _LOGGER.debug("Successfully cached images for item %s", item_id)
             return cached_poster, cached_backdrop, cached_backdrop
         except Exception as err:
             _LOGGER.error("Error getting Jellyfin images: %s", err)
@@ -168,10 +177,13 @@ class JellyfinMediarrSensor(TMDBMediaSensor):
                         clean_title = series_name.split('(')[0].strip()
                         tmdb_id = await self._search_tmdb(clean_title, None, 'tv')
                 
-                # Try TMDB images first, fall back to Jellyfin images
+                # Try TMDB images first
+                poster_url = backdrop_url = main_backdrop_url = None
                 if tmdb_id:
                     poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'tv')
-                if not tmdb_id or not (poster_url or backdrop_url or main_backdrop_url):
+                
+                # Fallback to Jellyfin images if needed
+                if not (poster_url and backdrop_url and main_backdrop_url):
                     poster_url, backdrop_url, main_backdrop_url = await self._get_jellyfin_images(item_id)
                 
                 return {
@@ -199,10 +211,13 @@ class JellyfinMediarrSensor(TMDBMediaSensor):
                         clean_title = title.split('(')[0].strip()
                         tmdb_id = await self._search_tmdb(clean_title, None, 'movie')
                 
-                # Try TMDB images first, fall back to Jellyfin images
+                # Try TMDB images first
+                poster_url = backdrop_url = main_backdrop_url = None
                 if tmdb_id:
                     poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'movie')
-                if not tmdb_id or not (poster_url or backdrop_url or main_backdrop_url):
+                
+                # Fallback to Jellyfin images if needed
+                if not (poster_url and backdrop_url and main_backdrop_url):
                     poster_url, backdrop_url, main_backdrop_url = await self._get_jellyfin_images(item_id)
                 
                 return {
