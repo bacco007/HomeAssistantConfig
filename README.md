@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.0b3 |
+| HA Version | 2025.2.0b6 |
 | No. Integrations | 221 |
 | No. Custom Integrations | 99 |
-| No. Entities | 6034 |
-| No. Sensors | 3869 |
+| No. Entities | 6044 |
+| No. Sensors | 3877 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 4
+Persistent notifications | 3
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3869
+Sensors | 3877
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>665 Integrations</summary>
+<details><summary>666 Integrations</summary>
 
 | Name |
 | --- |
@@ -303,6 +303,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [go2rtc](https://www.home-assistant.io/components/go2rtc) |
 | [google](https://www.home-assistant.io/components/google) |
 | [google.calendar](https://www.home-assistant.io/components/google.calendar) |
+| [google_drive](https://www.home-assistant.io/components/google_drive) |
 | [google_fit](https://www.home-assistant.io/components/google_fit) |
 | [google_fit.sensor](https://www.home-assistant.io/components/google_fit.sensor) |
 | [google_home](https://www.home-assistant.io/components/google_home) |
@@ -830,13 +831,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.2] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
-| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.4.0] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
+| [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
 | [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.7] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.12.06] | Material Symbols for Home Assistant is a collection of 13,693 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v1.5.2-tmdb] |  |[@vansmak](https://github.com/vansmak).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v2.6-betarr] |  |[@vansmak](https://github.com/vansmak).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.4] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -868,7 +869,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.5] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.13] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.6] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
-| [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.4] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
+| [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.5] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
 | [Unifi Insights](https://github.com/domalab/ha-unifi-insights) |  [v2025.01.22] | Home Assistant integration that uses the UniFi Network API to monitor and manage UniFi devices |[@domalab](https://github.com/domalab).|
 | [Unifi Site Manager](https://github.com/domalab/ha-unifi-site-manager) |  [v2025.01.22] | This integration allows you to monitor all UniFi sites from Home Assistant |[@domalab](https://github.com/domalab).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.1] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
@@ -920,7 +921,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode) |  [v6.6.0] | 🙈 Hides the Home Assistant header and/or sidebar |
 | [Layout Card](https://github.com/thomasloven/lovelace-layout-card) |  [v2.4.5] | 🔹 Get more control over the placement of lovelace cards. |
 | [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater) |  [v0.0.17] | Custom Lovelace card which allows Jinja2 templates to be applied to other cards |
-| [Mediarr Card](https://github.com/Vansmak/mediarr_card) |  [v1.5.1-tmdb] | custom sonarr component for home assistant |
+| [Mediarr Card](https://github.com/Vansmak/mediarr_card) |  [v1.5.1-tmdb] | custom component for home assistant |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
@@ -989,7 +990,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.4.0 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 2.0.0-2 |  | 45df7312 |
+| Zigbee2MQTT | 2.1.0-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.1 |  | 193f5383 |
 </details>
@@ -1037,7 +1038,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.0b3-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.2.0b6-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
