@@ -142,7 +142,11 @@ def get_next_departure(self):
         INNER JOIN routes route
                    ON route.route_id = trip.route_id 
         INNER JOIN agency agency
-                   ON agency.agency_id = route.agency_id                        
+                   ON route.agency_id = CASE 
+                    WHEN  route.agency_id = 'None'
+                    THEN route.agency_id 
+                    ELSE agency.agency_id
+                    END                  
 		WHERE {route_type_where}
         {start_station_where}
         {end_station_where}
@@ -197,7 +201,11 @@ def get_next_departure(self):
         INNER JOIN calendar_dates calendar_date_today
 				   ON trip.service_id = calendar_date_today.service_id
         INNER JOIN agency agency
-                   ON agency.agency_id = route.agency_id                        
+                   ON route.agency_id = CASE 
+                    WHEN route.agency_id = 'None'
+                    THEN route.agency_id 
+                    ELSE agency.agency_id
+                    END                     
 		WHERE {route_type_where}
         {start_station_where}
         {end_station_where}
