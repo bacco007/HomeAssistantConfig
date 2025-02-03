@@ -928,7 +928,11 @@ def get_local_stops_next_departures(self):
         INNER JOIN routes route
                    ON route.route_id = trip.route_id 
         INNER JOIN agency agency
-                   ON agency.agency_id = route.agency_id 
+                   ON route.agency_id = CASE 
+                    WHEN  route.agency_id = 'None'
+                    THEN route.agency_id 
+                    ELSE agency.agency_id
+                    END  
 		WHERE 
         trip.service_id not in (select service_id from calendar_dates where date = date(:now_offset) and exception_type = 2)
         and ((datetime(date(:now_offset) || ' ' || time(st.departure_time) ) between  datetime(:now_offset,:timerange_history) and  datetime(:now_offset,:timerange))
@@ -957,7 +961,11 @@ def get_local_stops_next_departures(self):
         INNER JOIN calendar_dates calendar_date_today
 				   ON trip.service_id = calendar_date_today.service_id
         INNER JOIN agency agency
-                   ON agency.agency_id = route.agency_id                    
+                   ON route.agency_id = CASE 
+                    WHEN  route.agency_id = 'None'
+                    THEN route.agency_id 
+                    ELSE agency.agency_id
+                    END                     
 		WHERE 
         today_cd = 1
         and ((datetime(date(:now_offset) || ' ' || time(st.departure_time) ) between  datetime(:now_offset,:timerange_history) and  datetime(:now_offset,:timerange))
