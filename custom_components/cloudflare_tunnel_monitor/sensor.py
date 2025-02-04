@@ -47,7 +47,7 @@ async def fetch_tunnels(api_key, account_id, hass, entry_id, retries=0):
     except aiohttp.ClientError as err:
         _LOGGER.error(f"Client error fetching data: {err}")
         raise UpdateFailed("Client error occurred while fetching data") from err
-    except async_timeout.TimeoutError:
+    except asyncio.TimeoutError:
         _LOGGER.error("Timeout error fetching data")
         raise UpdateFailed("Timeout error occurred while fetching data")
     except Exception as err:
