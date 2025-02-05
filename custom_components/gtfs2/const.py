@@ -288,6 +288,7 @@ CONF_REFRESH_INTERVAL = "refresh_interval"
 CONF_OFFSET = "offset"
 CONF_REAL_TIME = "real_time"
 CONF_SOURCE_TIMEZONE_CORRECTION = "source_timezone_correction"
+CONF_MAX_LOCAL_STOPS = "max_local_stops"
 
 # gtfs_rt specific
 CONF_API_KEY = "api_key"

@@ -96,6 +96,7 @@
       "stop_incorrect": "Start- und/oder Endziel falsch, möglicherweise kein Transport ‚heute‘ oder nicht in die gleiche Richtung, Protokolle prüfen",
       "generic_failure": "Gesamtfehler, Protokolle prüfen",
       "no_data_file": "Problem bei der Datenerfassung: URL falsch oder Dateiname nicht im richtigen Ordner",
+	  "stop_limit_reached": "Es wurde eine hohe Anzahl von Stopps für diesen Umkreis festgestellt. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Sie können die Limite auf eigenes Risiko ändern, bevor Sie den Umkreis ändern",
       "no_zip_file": "Problem bei der Datenerfassung: ZIP-Datei nicht im richtigen Ordner"
     },
     "abort": {
@@ -105,7 +106,7 @@
 	  "no_stops": "Problem bei der Datenerfassung: wahrscheinlich keine Stops für die gewählte Route",
       "no_data_file": "Problem bei der Datenerfassung: URL falsch oder Dateiname nicht im richtigen Ordner",
       "no_zip_file": "Problem bei der Datenerfassung: ZIP-Datei ist nicht im richtigen Ordner vorhanden. Beachten Sie, dass Groß- und Kleinschreibung berücksichtigt werden muss",
-	  "stop_limit_reached": "Für diesen Umkreis wurden mehr als 15 Haltestellen gefunden. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Bitte wählen Sie einen kleineren Radius",
+	  "stop_limit_reached": "Es wurde eine hohe Anzahl von Stopps für diesen Umkreis festgestellt. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Sie können die Limite auf eigenes Risiko ändern, bevor Sie den Umkreis ändern",
       "extracting": "Es werden (noch) Daten extrahiert, dies wird einige Zeit dauern [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
     }
   },
@@ -116,6 +117,7 @@
         "data": {
           "refresh_interval": "Datenaktualisierungsintervall (in Minuten)",
           "offset": "Offset in Minuten",
+		  "max_local_stops": "Limite der #Stopps, um mögliche Auswirkungen auf die Leistung zu vermeiden. \nErhöhung auf eigenes Risiko",
           "real_time": "Echtzeitintegration einrichten? \n (benötigt Daten aus derselben Quelle)",
           "local_stop_refresh_interval": "Datenaktualisierungsintervall (in Minuten)",
           "timerange": "Prüfung auf zukünftige Abfahrten ab ‚jetzt‘ (in Minuten: zwischen 15 und 120)",
@@ -136,7 +138,7 @@
       }
     },
 	"abort": {
-	  "stop_limit_reached": "Für diesen Umkreis wurden mehr als 15 Haltestellen gefunden. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Bitte wählen Sie einen kleineren Radius"
+	  "stop_limit_reached": "Es wurde eine hohe Anzahl von Stopps für diesen Umkreis festgestellt. \n Es besteht die Gefahr einer Beeinträchtigung der Systemleistung. \n Sie können die Limite auf eigenes Risiko ändern, bevor Sie den Umkreis ändern"
     }
   },
   "selector": {

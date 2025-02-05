@@ -155,7 +155,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                     self._data["alert"] = self._get_rt_alerts
                 except Exception as ex:  # pylint: disable=broad-except
                   _LOGGER.error("Error getting gtfs realtime data, for origin: %s with error: %s", data["origin"], ex)
-                  raise UpdateFailed(f"Error in getting start/end stop data: {ex}")
+                  return self._data
             else:
                 _LOGGER.debug("GTFS RT: RealTime = false, selected in entity options")            
         else:

@@ -105,7 +105,7 @@
 	  "no_data_file": "Problema de recopilación de datos: URL incorrecta o nombre de archivo que no está en la carpeta correcta",
 	  "no_stops": "Problema de recogida de datos: probablemente no hay paradas en la ruta seleccionada",
 	  "no_zip_file": "Problema con la recogida de datos: El archivo ZIP no existe en la carpeta correcta, tenga en cuenta que es sensible a las mayúsculas",
-	  "stop_limit_reached": "Más de 15 paradas encontradas para este radio. \n Arriesgando un impacto en el rendimiento del sistema. \n Por favor seleccione un radio más pequeño",
+	  "stop_limit_reached": "Se detectó una gran cantidad de paradas para este radio, \nlo que posiblemente afecte el rendimiento del sistema. \nPuedes cambiar el límite bajo tu propia responsabilidad antes de cambiar el radio",
 	  "extracting": "(Todavía) extrayendo datos, esto llevará tiempo [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
     }
   },
@@ -116,6 +116,7 @@
         "data": {
           "refresh_interval": "Intervalo de actualización de datos (en minutos)",
 		  "offset": "Offset en minutos",
+		  "max_local_stops": "Limite las #paradas para evitar un posible impacto en el rendimiento. \nAumentar bajo su propia responsabilidad",
 		  "real_time": "¿Integración en tiempo real? \n (necesita datos de la misma fuente)",
 		  "local_stop_refresh_interval": "Intervalo de actualización de datos (en minutos)",
           "timerange": "Comprobación de salidas en el futuro a partir de 'ahora' (en minutos: entre 15 y 120)",
@@ -136,7 +137,7 @@
       }
     },
 	"abort": {
-	  "stop_limit_reached": "Más de 15 paradas encontradas para este radio. \n Arriesgando un impacto en el rendimiento del sistema. \n Por favor seleccione un radio más pequeño"
+	  "stop_limit_reached": "Se detectó una gran cantidad de paradas para este radio, \nlo que posiblemente afecte el rendimiento del sistema. \nPuedes cambiar el límite bajo tu propia responsabilidad antes de cambiar el radio"
     }	
   },
   "selector": {

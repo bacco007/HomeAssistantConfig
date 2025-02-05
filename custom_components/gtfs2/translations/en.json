@@ -96,7 +96,6 @@
       "stop_incorrect": "Start and/or End destination incorrect, possibly no transport 'today' or not in same direction, check logs",
       "generic_failure": "Overall failure, check logs",
       "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
-	  "stop_limit_reached": "More than 15 stops found for this radius. \n Risking an impact on system performance. \n Please select a smaller radius",
 	  "no_zip_file": "Data collection issue: ZIP file not in the correct folder"
     },
     "abort": {
@@ -106,7 +105,7 @@
 	  "no_data_file": "Data collection issue: URL incorrect or filename not in the correct folder",
 	  "no_stops": "Data collection issue: probably no stops for the selected route",
 	  "no_zip_file": "Data collection issue: ZIP file not existing in the correct folder, note that it is capital-sensitive",
-	  "stop_limit_reached": "More than 15 stops found for this radius. \n Risking an impact on system performance. \n Please select a smaller radius",
+	  "stop_limit_reached": "Detected a high number of stops for this radius, \npossibly impacting system performance. \n You can change the limit at your own risk before changing the radius.",
 	  "extracting": "(Still) extracting data, this will take time [(docu)](https://github.com/vingerha/gtfs2/wiki/1.-Initial-setup:-the-static-data-source#performance)"
     }
   },
@@ -117,6 +116,7 @@
         "data": {
           "refresh_interval": "Data refresh interval (in minutes)",
 		  "offset": "Offset in minutes",
+		  "max_local_stops": "Limit #stops to avoid possible performance impact. \nIncrease at your own risk",
 		  "source_timezone_correction": "Correct source gtfs timezone (in hours)",
 		  "real_time": "Setup Realtime integration? \n (needs data from the same source)",
 		  "local_stop_refresh_interval": "Data refresh interval (in minutes)",
@@ -139,7 +139,7 @@
       }
     },
 	"abort": {
-	  "stop_limit_reached": "More than 15 stops found for this radius. \n Risking an impact on system performance. \n Please select a smaller radius"
+	  "stop_limit_reached": "Detected a high number of stops for this radius, \npossibly impacting system performance. \n You can change the limit at your own risk before changing the radius"
     }
   },
   "selector": {
