@@ -1,0 +1,137 @@
+"""Trakt user collections integration for Mediarr."""
+import logging
+from datetime import datetime, timedelta
+from ..common.sensor import MediarrSensor
+
+_LOGGER = logging.getLogger(__name__)
+
+TRAKT_USER_ENDPOINTS = {
+    'collection': ['collection/movies', 'collection/shows'],
+    'watched': ['watched/movies', 'watched/shows'],
+    'watchlist': ['watchlist/movies', 'watchlist/shows'],
+    'recommendations': ['recommendations/movies', 'recommendations/shows'],
+    'recently_watched': ['history/movies', 'history/shows'],
+    'upcoming': ['calendar/movies', 'calendar/my/shows']
+}
+
+class TraktUserMediarrSensor(MediarrSensor):
+    """Representation of a Trakt user collection sensor."""
+
+    def __init__(self, session, username, client_id, client_secret, endpoint, max_items, tmdb_api_key=None):
+        """Initialize the sensor."""
+        super().__init__()
+        self._session = session
+        self._username = username
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._endpoint = endpoint
+        self._max_items = max_items
+        self._tmdb_api_key = tmdb_api_key
+        self._name = f"Trakt User Mediarr {endpoint.replace('_', ' ').title()}"
+        self._access_token = None
+        self._headers = {
+            'Content-Type': 'application/json',
+            'trakt-api-version': '2',
+            'trakt-api-key': client_id
+        }
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def unique_id(self):
+        """Return the unique ID of the sensor."""
+        return f"trakt_user_mediarr_{self._endpoint}"
+
+    async def async_update(self):
+        """Update sensor state."""
+        try:
+            results = []
+            endpoints = TRAKT_USER_ENDPOINTS.get(self._endpoint, [])
+            
+            for endpoint in endpoints:
+                params = {}
+                if self._endpoint == 'upcoming':
+                    start_date = datetime.now().strftime('%Y-%m-%d')
+                    end_date = (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')
+                    params = {'start_date': start_date, 'end_date': end_date}
+                elif self._endpoint == 'recently_watched':
+                    params = {'limit': self._max_items}
+
+                async with self._session.get(
+                    f"https://api.trakt.tv/users/{self._username}/{endpoint}",
+                    headers=self._headers,
+                    params=params
+                ) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        
+                        for item in data:
+                            if 'movie' in item:
+                                media_item = item['movie']
+                                media_type = 'movie'
+                            elif 'show' in item:
+                                media_item = item['show']
+                                media_type = 'show'
+                            else:
+                                continue
+
+                            result = {
+                                'title': media_item.get('title'),
+                                'year': media_item.get('year'),
+                                'type': media_type,
+                                'collected_at': item.get('collected_at'),
+                                'last_watched_at': item.get('last_watched_at'),
+                                'updated_at': item.get('updated_at'),
+                                'ids': media_item.get('ids', {}),
+                                'tmdb_id': media_item.get('ids', {}).get('tmdb'),
+                                'imdb_id': media_item.get('ids', {}).get('imdb'),
+                                'trakt_id': media_item.get('ids', {}).get('trakt')
+                            }
+
+                            if self._tmdb_api_key and result['tmdb_id']:
+                                tmdb_data = await self._fetch_tmdb_data(
+                                    result['tmdb_id'],
+                                    'movie' if media_type == 'movie' else 'tv'
+                                )
+                                result.update(tmdb_data)
+
+                            results.append(result)
+
+            self._state = len(results)
+            self._attributes = {'data': results[:self._max_items]}
+            self._available = True
+
+        except Exception as err:
+            _LOGGER.error("Error updating Trakt user sensor: %s", err)
+            self._state = None
+            self._attributes = {'data': []}
+            self._available = False
+
+    async def _fetch_tmdb_data(self, tmdb_id, media_type):
+        """Fetch additional metadata from TMDB."""
+        try:
+            headers = {
+                'Authorization': f'Bearer {self._tmdb_api_key}',
+                'accept': 'application/json'
+            }
+            
+            async with self._session.get(
+                f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return {
+                        'poster': f"https://image.tmdb.org/t/p/w500{data.get('poster_path')}" if data.get('poster_path') else None,
+                        'backdrop': f"https://image.tmdb.org/t/p/original{data.get('backdrop_path')}" if data.get('backdrop_path') else None,
+                        'overview': data.get('overview'),
+                        'vote_average': data.get('vote_average'),
+                        'popularity': data.get('popularity')
+                    }
+                return {}
+        except Exception as err:
+            _LOGGER.error("Error fetching TMDB data: %s", err)
+            return {}

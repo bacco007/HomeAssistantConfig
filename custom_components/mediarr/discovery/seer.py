@@ -30,10 +30,10 @@ class SeerMediarrSensor(TMDBMediaSensor):
         """Fetch title and overview from TMDB."""
         try:
             url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}"
-            params = {'api_key': self._tmdb_api_key}
+            headers = {'Authorization': f'Bearer {self._tmdb_api_key}'}
             
             async with async_timeout.timeout(10):
-                async with self._session.get(url, params=params) as response:
+                async with self._session.get(url, headers=headers) as response:
                     if response.status == 200:
                         data = await response.json()
                         return {
@@ -67,37 +67,18 @@ class SeerMediarrSensor(TMDBMediaSensor):
                             tmdb_id = media.get('tmdbId')
                             media_type = 'movie' if is_movie else 'tv'
 
-                            # Fetch TMDB details
+                            # Always fetch TMDB details since we need the title
                             tmdb_details = await self._get_tmdb_details(tmdb_id, media_type) if tmdb_id else None
                             
-                            # Fetch images
+                            # Fetch images using parent class method
                             poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(
                                 tmdb_id, media_type
                             ) if tmdb_id else (None, None, None)
 
-                            # Get title and overview from the request data
-                            # Debug log the media object
-                            _LOGGER.debug("Media object: %s", media)
-                            
-                            title = None
-                            service_slug = media.get('externalServiceSlug', '')
-                            
-                            if is_movie:
-                                title = (media.get('title') or 
-                                       media.get('originalTitle') or 
-                                       (service_slug.replace('-', ' ').title() if service_slug else None))
-                            else:
-                                title = (media.get('name') or 
-                                       media.get('originalTitle') or 
-                                       (service_slug.replace('-', ' ').title() if service_slug else None))
-                            
-                            title = title or "Unknown"
-                            
-                            overview = media.get('overview', 'No description available.')
-                            year = media.get('releaseDate', '')[:4] if is_movie else media.get('firstAirDate', '')[:4]
-                            
-                            # Debug log what we found
-                            _LOGGER.debug("Processed title: %s, Media type: %s", title, media.get('mediaType'))
+                            # Get title from TMDB details
+                            title = tmdb_details.get('title', 'Unknown') if tmdb_details else 'Unknown'
+                            overview = tmdb_details.get('overview', 'No description available.') if tmdb_details else 'No description available.'
+                            year = tmdb_details.get('year', '') if tmdb_details else ''
 
                             # Fix date handling
                             requested_date = request.get('createdAt')
@@ -137,7 +118,6 @@ class SeerMediarrSensor(TMDBMediaSensor):
 
                             card_json.append(request_data)
 
-                        # Fallback if no requests found
                         if not card_json:
                             card_json.append({
                                 'title_default': '$title',

@@ -55,6 +55,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         ))
 
     # Discovery Sensors
+    
     if "trakt" in config:
         from .discovery.trakt import TraktMediarrSensor
         sensors.append(TraktMediarrSensor(
@@ -63,7 +64,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             config["trakt"]["client_secret"],
             config["trakt"].get("trending_type", "both"),
             config["trakt"].get("max_items", DEFAULT_MAX_ITEMS),
-            config["trakt"].get("tmdb_api_key")
+            config["trakt"]["tmdb_api_key"]
         ))
 
     if "tmdb" in config:

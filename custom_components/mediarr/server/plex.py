@@ -55,105 +55,101 @@ class PlexMediarrSensor(TMDBMediaSensor):
                 async with self._session.get(url, headers=headers) as response:
                     if response.status == 200:
                         xml_content = await response.text()
-                        return ET.fromstring(xml_content)
+                        tree = ET.fromstring(xml_content)
+                        videos = tree.findall(".//Video")
+                        _LOGGER.debug("Found %d items in Plex section %s", len(videos), section_id)
+                        return tree
                     else:
                         raise Exception(f"Failed to fetch recently added: {response.status}")
         except Exception as err:
             _LOGGER.error("Error fetching recently added: %s", err)
             return None
 
-    async def _get_metadata(self, rating_key):
-        """Fetch detailed metadata for an item."""
-        try:
-            url = f"{self._base_url}/library/metadata/{rating_key}"
-            headers = {"X-Plex-Token": self._token}
-            async with async_timeout.timeout(5):
-                async with self._session.get(url, headers=headers) as response:
-                    if response.status == 200:
-                        xml_content = await response.text()
-                        return ET.fromstring(xml_content)
-                    return None
-        except Exception as error:
-            _LOGGER.error("Error fetching metadata: %s", error)
-            return None
-
     async def _process_item(self, item):
-        """Process a single Plex item and get TMDB images."""
+        """Process a single Plex item and get TMDB images and metadata."""
         try:
+            added_at = item.get('addedAt', '0')
+            _LOGGER.debug("Processing Plex item added at: %s", added_at)
+            
             is_episode = item.get('type') == 'episode'
             
             if is_episode:
                 show_title = item.get('grandparentTitle', '')
-                episode_title = item.get('title', '')
-                season_number = item.get('parentIndex', '')
-                episode_number = item.get('index', '')
+                _LOGGER.debug("Processing episode of show: %s", show_title)
                 
+                # First try to get TMDB ID from Plex's own metadata
                 show_guid = item.get('grandparentGuid', '')
                 tmdb_id = None
-                
                 if show_guid and 'themoviedb://' in show_guid:
                     tmdb_id = show_guid.split('themoviedb://')[1].split('?')[0]
+                    _LOGGER.debug("Found TMDB ID from Plex: %s", tmdb_id)
                 
+                # Only search TMDB if we don't have an ID from Plex
                 if not tmdb_id:
-                    tmdb_id = await self._search_tmdb(
-                        show_title,
-                        None,
-                        'tv'
-                    )
+                    tmdb_id = await self._search_tmdb(show_title, None, 'tv')
+                    _LOGGER.debug("Found TMDB ID from search: %s", tmdb_id)
 
-                # Get different images for the show
-                poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'tv') if tmdb_id else (None, None, None)
-
-                number = f"S{int(season_number):02d}E{int(episode_number):02d}" if season_number and episode_number else str(episode_number)
-                air_date = self._format_date(item.get('originallyAvailableAt', 'Unknown'))
+                # Get images from TMDB
+                if tmdb_id:
+                    poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'tv')
+                    _LOGGER.debug("Retrieved TMDB images for show: %s", show_title)
+                else:
+                    poster_url = backdrop_url = main_backdrop_url = None
+                    _LOGGER.debug("No TMDB images found for show: %s", show_title)
 
                 return {
                     'title': str(show_title),
-                    'episode': str(episode_title),
-                    'release': air_date,
-                    'number': number,
+                    'episode': str(item.get('title', '')),
+                    'release': self._format_date(item.get('originallyAvailableAt', '')),
+                    'number': f"S{int(item.get('parentIndex', 0)):02d}E{int(item.get('index', 0)):02d}",
                     'runtime': str(int(item.get('duration', 0)) // 60000),
                     'genres': ', '.join(str(genre.get('tag', '')) for genre in item.findall('.//Genre')),
-                    'poster': str(poster_url or ""),  # Thumbnail in list
-                    'fanart': str(main_backdrop_url or backdrop_url or ""),  # Main display image
-                    'banner': str(backdrop_url or ""),  # Additional image if needed
-                    'flag': 1
+                    'poster': str(poster_url or ""),
+                    'fanart': str(main_backdrop_url or backdrop_url or ""),
+                    'banner': str(backdrop_url or ""),
+                    'flag': 1,
+                    'added_at': added_at
                 }
             else:
-                # Process movie
+                title = str(item.get('title', ''))
+                _LOGGER.debug("Processing movie: %s", title)
+                
+                # First try to get TMDB ID from Plex's own metadata
                 guid = item.get('guid', '')
                 tmdb_id = None
-                
                 if guid and 'themoviedb://' in guid:
                     tmdb_id = guid.split('themoviedb://')[1].split('?')[0]
+                    _LOGGER.debug("Found TMDB ID from Plex: %s", tmdb_id)
                 
+                # Only search TMDB if we don't have an ID from Plex
                 if not tmdb_id:
-                    tmdb_id = await self._search_tmdb(
-                        str(item.get('title', '')),
-                        item.get('year'),
-                        'movie'
-                    )
+                    tmdb_id = await self._search_tmdb(title, item.get('year'), 'movie')
+                    _LOGGER.debug("Found TMDB ID from search: %s", tmdb_id)
 
-                # Get different images for the movie
-                poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'movie') if tmdb_id else (None, None, None)
-                release_date = self._format_date(item.get('originallyAvailableAt', 'Unknown'))
+                # Get images from TMDB
+                if tmdb_id:
+                    poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'movie')
+                    _LOGGER.debug("Retrieved TMDB images for movie: %s", title)
+                else:
+                    poster_url = backdrop_url = main_backdrop_url = None
+                    _LOGGER.debug("No TMDB images found for movie: %s", title)
 
                 return {
-                    'title': str(item.get('title', 'Unknown')),
+                    'title': title,
                     'episode': str(item.get('summary', 'N/A')[:100] + '...' if item.get('summary') else 'N/A'),
-                    'release': release_date,
+                    'release': self._format_date(item.get('originallyAvailableAt', '')),
                     'number': str(item.get('year', '')),
                     'runtime': str(int(item.get('duration', 0)) // 60000),
                     'genres': ', '.join(str(genre.get('tag', '')) for genre in item.findall('.//Genre')),
-                    'poster': str(poster_url or ""),  # Thumbnail in list
-                    'fanart': str(main_backdrop_url or backdrop_url or ""),  # Main display image
-                    'banner': str(backdrop_url or ""),  # Additional image if needed
-                    'flag': 1
+                    'poster': str(poster_url or ""),
+                    'fanart': str(main_backdrop_url or backdrop_url or ""),
+                    'banner': str(backdrop_url or ""),
+                    'flag': 1,
+                    'added_at': added_at
                 }
-            
 
         except Exception as err:
-            _LOGGER.error("Error processing Plex item: %s", err)
+            _LOGGER.error("Error processing item: %s", err)
             return None
 
     async def async_update(self):
@@ -174,8 +170,12 @@ class PlexMediarrSensor(TMDBMediaSensor):
                 except Exception as section_err:
                     _LOGGER.error("Error updating section %s: %s", section_id, section_err)
 
-            recently_added.sort(key=lambda x: x.get('release', ''), reverse=True)
+            # Sort by added_at timestamp from Plex
+            recently_added.sort(key=lambda x: int(x.get('added_at', 0)), reverse=True)
+            _LOGGER.debug("Sorted %d items by Plex added date", len(recently_added))
+            
             card_json.extend(recently_added[:self._max_items])
+            _LOGGER.debug("Selected top %d items for display", len(card_json))
 
             if not card_json:
                 card_json.append({
