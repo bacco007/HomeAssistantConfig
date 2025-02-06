@@ -1,0 +1,18 @@
+{
+  "domain": "unifi_mqtt",
+  "name": "UniFi Device Info Integration",
+  "version": "1.0.1",
+  "documentation": "https://github.com/w1tw0lf/Unifi-Device-info",
+  "dependencies": [
+    "mqtt"
+  ],
+  "requirements": [
+    "pyunifi",
+    "pandas"
+  ],
+  "codeowners": [
+    "@w1tw0lf",
+    "@ingoldsby"
+  ],
+  "config_flow": true
+}
