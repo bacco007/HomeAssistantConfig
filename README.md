@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.0b9 |
+| HA Version | 2025.2.0 |
 | No. Integrations | 220 |
-| No. Custom Integrations | 99 |
-| No. Entities | 6056 |
-| No. Sensors | 3889 |
+| No. Custom Integrations | 100 |
+| No. Entities | 6062 |
+| No. Sensors | 3899 |
 | No. Automations | 153 |
 
 <details>
@@ -71,7 +71,7 @@ Covers | 0
 Dates | 0
 Date/times | 0
 Device trackers | 106
-Devices | 622
+Devices | 628
 Fans | 3
 Humidifiers | 0
 Images | 11
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3889
+Sensors | 3899
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -99,7 +99,7 @@ Switches | 296
 Texts | 2
 Times | 0
 Text-to-speech | 1
-Update | 314
+Update | 316
 Vacuums | 0
 Water heaters | 0
 Weather | 14
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>662 Integrations</summary>
+<details><summary>663 Integrations</summary>
 
 | Name |
 | --- |
@@ -702,6 +702,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi_insights.binary_sensor](https://www.home-assistant.io/components/unifi_insights.binary_sensor) |
 | [unifi_insights.button](https://www.home-assistant.io/components/unifi_insights.button) |
 | [unifi_insights.sensor](https://www.home-assistant.io/components/unifi_insights.sensor) |
+| [unifi_mqtt](https://www.home-assistant.io/components/unifi_mqtt) |
 | [unifi_site_manager](https://www.home-assistant.io/components/unifi_site_manager) |
 | [universal.media_player](https://www.home-assistant.io/components/universal.media_player) |
 | [untappd.sensor](https://www.home-assistant.io/components/untappd.sensor) |
@@ -783,7 +784,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
-<details><summary>91 Custom Integrations</summary>
+<details><summary>92 Custom Integrations</summary>
 
 | Name | Version | Description | Authors |
 | --- | --- | --- | --- |
@@ -828,12 +829,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
-| [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.7] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
+| [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.8] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2024.12.06] | Material Symbols for Home Assistant is a collection of 13,693 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v2.6-betarr] |  |[@vansmak](https://github.com/vansmak).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v2.75.1-beta] |  |[@vansmak](https://github.com/vansmak).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.4] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -846,7 +847,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.2] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
-| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.17.5] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
+| [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.17.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
@@ -866,6 +867,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Swatch Time](https://github.com/andrewjswan/SwatchTime) |  [v1.0.13] | Swatch / Internet Time for Home Assistant |[@andrewjswan](https://github.com/andrewjswan).|
 | [Team Tracker](https://github.com/vasqued2/ha-teamtracker) |  [v0.14.6] | Home Assistant integration that provides real-time scores in multiple professional (NBA, NFL, NHL, MLB, MLS, and more), college (NCAA), and international (soccer, golf, tennis, mma, racing) sports using ESPN APIs. |[@vasqued2](https://github.com/vasqued2).|
 | [Thermal Comfort](https://github.com/dolezsa/thermal_comfort) |  [v2.2.5] | Thermal Comfort sensor for HA (absolute humidity, heat index, dew point, thermal perception) |[@dolezsa](https://github.com/dolezsa).|
+| [Unifi Device Info](https://github.com/w1tw0lf/Unifi-Device-info) |  [v1.0.1] | Unifi device stats via API for home assistant |[@w1tw0lf](https://github.com/w1tw0lf), [@ingoldsby](https://github.com/ingoldsby).|
 | [Unifi Insights](https://github.com/domalab/ha-unifi-insights) |  [v2025.01.22] | Home Assistant integration that uses the UniFi Network API to monitor and manage UniFi devices |[@domalab](https://github.com/domalab).|
 | [Unifi Site Manager](https://github.com/domalab/ha-unifi-site-manager) |  [v2025.01.22] | This integration allows you to monitor all UniFi sites from Home Assistant |[@domalab](https://github.com/domalab).|
 | [Uptime Kuma](https://github.com/meichthys/uptime_kuma) |  [v2.3.1] | Uptime Kuma HACS integration |[@meichthys](https://github.com/meichthys), [@jayakornk](https://github.com/jayakornk).|
@@ -1034,7 +1036,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.0b9-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.2.0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
