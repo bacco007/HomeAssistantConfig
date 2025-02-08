@@ -76,7 +76,6 @@ async def async_setup_entry(hass, entry):
         for device in unifi_devices:
             # If the device is not a dictionary, log its value and skip processing it.
             if not isinstance(device, dict):
-                _LOGGER.error("Received device that is not a dictionary: %s", device)
                 continue
                 
             if not device.get("adopted"):
