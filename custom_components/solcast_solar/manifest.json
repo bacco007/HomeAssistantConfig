@@ -21,8 +21,7 @@
   "requirements": [
     "aiohttp>=3.8.5",
     "aiofiles>=23.2.0",
-    "datetime>=4.3",
-    "isodate>=0.6.1"
+    "datetime>=4.3"
   ],
-  "version": "v4.2.7"
+  "version": "v4.3.0"
 }

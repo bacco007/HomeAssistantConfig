@@ -6,23 +6,18 @@ import asyncio
 import contextlib
 from datetime import datetime as dt, timedelta
 import logging
-import time
-import traceback
 from typing import Any
 
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ServiceValidationError
-from homeassistant.helpers.event import async_track_utc_time_change
+from homeassistant.exceptions import ConfigEntryAuthFailed, ServiceValidationError
+from homeassistant.helpers.event import (
+    async_track_point_in_utc_time,
+    async_track_utc_time_change,
+)
 from homeassistant.helpers.sun import get_astral_event_next
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import (
-    DATE_FORMAT,
-    DOMAIN,
-    SENSOR_DEBUG_LOGGING,
-    SENSOR_UPDATE_LOGGING,
-    TIME_FORMAT,
-)
+from .const import DATE_FORMAT, DOMAIN, TIME_FORMAT
 from .solcastapi import SolcastApi
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,8 +48,9 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             version (str): The integration version from manifest.json.
 
         """
+        self.divisions: int = 0
         self.hass: HomeAssistant = hass
-        self.interval_just_passed: dt = None
+        self.interval_just_passed: dt
         self.solcast: SolcastApi = solcast
         self.tasks: dict[str, Any] = {}
         self.version: str = version
@@ -62,16 +58,17 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         self._date_changed: bool = False
         self._data_updated: bool = False
         self._intervals: list[dt] = []
-        self._last_day: dt = None
-        self._sunrise: dt = None
-        self._sunrise_tomorrow: dt = None
-        self._sunrise_yesterday: dt = None
-        self._sunset: dt = None
-        self._sunset_tomorrow: dt = None
-        self._sunset_yesterday: dt = None
+        self._last_day: int = dt.now(self.solcast.options.tz).day
+        self._sunrise: dt
+        self._sunrise_tomorrow: dt
+        self._sunrise_yesterday: dt
+        self._sunset: dt
+        self._sunset_tomorrow: dt
+        self._sunset_yesterday: dt
+        self._update_sequence: list = []
 
         # First list item is the sensor value method, additional items are only used for sensor attributes.
-        self.__get_value = {
+        self.__get_value: dict[str, list[dict[str, Any]]] = {
             "forecast_this_hour": [{"method": self.solcast.get_forecast_n_hour, "value": 0}],
             "forecast_next_hour": [{"method": self.solcast.get_forecast_n_hour, "value": 1}],
             "forecast_custom_hours": [{"method": self.solcast.get_forecast_custom_hours, "value": self.solcast.custom_hour_sensor}],
@@ -97,178 +94,142 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         super().__init__(hass, _LOGGER, name=DOMAIN)
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> dict[str, Any]:
         """Update data via library.
 
         Returns:
             list: Dampened forecast detail list of the sum of all site forecasts.
 
         """
+        # Check for re-authentication required
+        if self.solcast.reauth_required:
+            raise ConfigEntryAuthFailed(translation_domain=DOMAIN, translation_key="init_key_invalid")
+
         return self.solcast.get_data()
 
     async def setup(self) -> bool:
         """Set up time change tracking."""
-        self._last_day = dt.now(self.solcast.options.tz).day
-        try:
-            self.__auto_update_setup(init=True)
-            await self.__check_forecast_fetch()
+        self.__auto_update_setup(init=True)
+        await self.__check_forecast_fetch()
 
-            self.tasks["listeners"] = async_track_utc_time_change(
-                self.hass, self.update_integration_listeners, minute=range(0, 60, 5), second=0
-            )
-            self.tasks["check_fetch"] = async_track_utc_time_change(
-                self.hass, self.__check_forecast_fetch, minute=range(0, 60, 5), second=0
-            )
-            self.tasks["midnight_update"] = async_track_utc_time_change(
-                self.hass, self.__update_utc_midnight_usage_sensor_data, hour=0, minute=0, second=0
-            )
-            for timer in sorted(self.tasks):
-                _LOGGER.debug("Running task %s", timer)
-        except:  # noqa: E722
-            _LOGGER.error("Exception in setup: %s", traceback.format_exc())
-            return False
+        self.tasks["listeners"] = async_track_utc_time_change(
+            self.hass, self.update_integration_listeners, minute=range(0, 60, 5), second=0
+        )
+        self.tasks["check_fetch"] = async_track_utc_time_change(self.hass, self.__check_forecast_fetch, minute=range(0, 60, 5), second=0)
+        self.tasks["midnight_update"] = async_track_utc_time_change(
+            self.hass, self.__update_utc_midnight_usage_sensor_data, hour=0, minute=0, second=0
+        )
+        for timer in sorted(self.tasks):
+            _LOGGER.debug("Running task %s", timer)
+
         return True
 
-    async def update_integration_listeners(self, *args):
+    async def update_integration_listeners(self, *args) -> None:
         """Get updated sensor values."""
-        if SENSOR_UPDATE_LOGGING:
-            start_time = time.time()
-        try:
-            if SENSOR_DEBUG_LOGGING:
-                _LOGGER.debug("Update listeners")
 
-            current_day = dt.now(self.solcast.options.tz).day
-            self._date_changed = current_day != self._last_day
-            if self._date_changed:
-                _LOGGER.debug("Date has changed, recalculate splines and set up auto-updates")
-                self._last_day = current_day
-                await self.__update_midnight_spline_recalculate()
-                self.__auto_update_setup()
+        current_day = dt.now(self.solcast.options.tz).day
+        self._date_changed = current_day != self._last_day
+        if self._date_changed:
+            _LOGGER.debug("Date has changed, recalculate splines and set up auto-updates")
+            self._last_day = current_day
+            await self.__update_midnight_spline_recalculate()
+            self.__auto_update_setup()
 
-            await self.async_update_listeners()
-        except:  # noqa: E722
-            # _LOGGER.error("Exception in update_integration_listeners(): %s", traceback.format_exc())
-            pass
-        if SENSOR_UPDATE_LOGGING:
-            _LOGGER.debug("Update listeners took %.3f seconds", time.time() - start_time)
+        self.async_update_listeners()
 
-    async def __restart_time_track_midnight_update(self):
+    async def __restart_time_track_midnight_update(self) -> None:
         """Cancel and restart UTC time change tracker."""
-        try:
-            _LOGGER.warning("Restarting midnight UTC timer")
-            try:
-                self.tasks["midnight_update"]()  # Cancel the tracker
-                _LOGGER.debug("Cancelled task midnight_update")
-            except:  # noqa: E722
-                pass
-            self.tasks["midnight_update"] = async_track_utc_time_change(
-                self.hass, self.__update_utc_midnight_usage_sensor_data, hour=0, minute=0, second=0
+        _LOGGER.warning("Restarting midnight UTC timer")
+        if self.tasks.get("midnight_update"):
+            self.tasks["midnight_update"]()  # Cancel the tracker
+        _LOGGER.debug("Cancelled task midnight_update")
+        self.tasks["midnight_update"] = async_track_utc_time_change(
+            self.hass, self.__update_utc_midnight_usage_sensor_data, hour=0, minute=0, second=0
+        )
+        _LOGGER.debug("Started task midnight_update")
+
+    def set_next_update(self) -> None:
+        """Set the next forecast update message time."""
+        self.solcast.set_next_update(None)
+        if len(self._intervals) > 0:
+            next_update = self._intervals[0].astimezone(self.solcast.options.tz)
+            self.solcast.set_next_update(
+                next_update.strftime(TIME_FORMAT) if next_update.date() == dt.now().date() else next_update.strftime(DATE_FORMAT)
             )
-            _LOGGER.debug("Started task midnight_update")
-        except:  # noqa: E722
-            _LOGGER.error("Exception in __restart_time_track_midnight_update(): %s", traceback.format_exc())
 
-    async def __check_forecast_fetch(self, *args):
+    async def __fetch(self, *args) -> None:
+        if len(self._update_sequence) > 0:
+            task_name = f"pending_update_{self._update_sequence.pop(0):03}"
+            _LOGGER.info("Auto update forecast")
+            self._intervals.pop(0)
+            self.set_next_update()
+            await self.__forecast_update(completion=f"Completed task {task_name}")
+            if task_name in self.tasks:
+                self.tasks.pop(task_name)
+
+    async def __check_forecast_fetch(self, *args) -> None:
         """Check for an auto forecast update event."""
-        try:
-            if self.solcast.options.auto_update:
+        if self.solcast.options.auto_update:
+            if len(self._intervals) > 0:
+                _now = self.solcast.get_real_now_utc().replace(microsecond=0)
+                _from = _now.replace(minute=int(_now.minute / 5) * 5, second=0)
 
-                def set_next_update():
-                    if len(self._intervals) > 0:
-                        next_update = self._intervals[0].astimezone(self.solcast.options.tz)
-                        self.solcast.set_next_update(
-                            next_update.strftime(TIME_FORMAT)
-                            if next_update.date() == dt.now().date()
-                            else next_update.strftime(DATE_FORMAT)
-                        )
-                    else:
-                        self.solcast.set_next_update(None)
-
-                async def wait_for_fetch(update_in: int):
-                    try:
-                        task_name = f"pending_update_{update_in:03}"
-                        await asyncio.sleep(update_in)
-                        _LOGGER.info("Auto update forecast")
-                        self._intervals = self._intervals[1:]
-                        set_next_update()
-                        await self.__forecast_update(completion=f"Completed task {task_name}")
-                    except asyncio.CancelledError:
-                        _LOGGER.info("Auto update scheduled update cancelled")
-                    finally:
-                        with contextlib.suppress(Exception):
-                            self.tasks.pop(task_name)
-
-                if len(self._intervals) > 0:
-                    _now = self.solcast.get_real_now_utc().replace(microsecond=0)
-                    _from = _now.replace(minute=int(_now.minute / 5) * 5, second=0)
-
-                    pop_expired = []
-                    for index, interval in enumerate(self._intervals):
-                        if _from <= interval <= _from + timedelta(seconds=299):
-                            update_in = int((interval - _now).total_seconds())
+                pop_expired = []
+                for index, interval in enumerate(self._intervals):
+                    if _from <= interval < _from + timedelta(minutes=5):
+                        update_in = int((interval - _now).total_seconds())
+                        if update_in >= 0:
                             task_name = f"pending_update_{update_in:03}"
-                            if update_in >= 0:
-                                if self.tasks.get(task_name) is not None:
-                                    # The interval update is already tasked
-                                    _LOGGER.debug("Task %s already exists, ignoring", task_name)
-                                    continue
-                                _LOGGER.debug("Create task %s", task_name)
-                                self.tasks[task_name] = asyncio.create_task(wait_for_fetch(update_in))
-                            else:
-                                _LOGGER.debug("Not tasking %s", task_name)
-                        if interval < _from:
-                            pop_expired.append(index)
-                    # Remove expired intervals if any have been missed
-                    if len(pop_expired) > 0:
-                        _LOGGER.debug("Removing expired auto update intervals")
-                        self._intervals = [interval for i, interval in enumerate(self._intervals) if i not in pop_expired]
-                        set_next_update()
+                            _LOGGER.debug(
+                                "Create task %s to fire at %02d:%02d:%02d UTC", task_name, interval.hour, interval.minute, interval.second
+                            )
+                            self._update_sequence.append(update_in)
+                            self.tasks[task_name] = async_track_point_in_utc_time(
+                                self.hass,
+                                self.__fetch,
+                                interval,
+                            )
+                    if interval < _from:
+                        pop_expired.append(index)
+                # Remove expired intervals if any have been missed
+                if len(pop_expired) > 0:
+                    _LOGGER.debug("Removing expired auto update intervals")
+                    self._intervals = [interval for i, interval in enumerate(self._intervals) if i not in pop_expired]
+                    self.set_next_update()
 
-        except:  # noqa: E722
-            _LOGGER.error("Exception in __check_forecast_fetch(): %s", traceback.format_exc())
-
-    async def __update_utc_midnight_usage_sensor_data(self, *args):
+    async def __update_utc_midnight_usage_sensor_data(self, *args) -> None:
         """Reset tracked API usage at midnight UTC."""
-        try:
-            await self.solcast.reset_api_usage()
-            self._data_updated = True
-            await self.update_integration_listeners()
-            self._data_updated = False
-        except:  # noqa: E722
-            _LOGGER.error("Exception in __update_utc_midnight_usage_sensor_data(): %s", traceback.format_exc())
+        await self.solcast.reset_api_usage()
+        self._data_updated = True
+        await self.update_integration_listeners()
+        self._data_updated = False
 
-    async def __update_midnight_spline_recalculate(self):
+    async def __update_midnight_spline_recalculate(self) -> None:
         """Re-calculates splines at midnight local time."""
-        try:
-            await self.solcast.check_data_records()
-            await self.solcast.recalculate_splines()
-        except:  # noqa: E722
-            _LOGGER.error("Exception in __update_midnight_spline_recalculate(): %s", traceback.format_exc())
+        await self.solcast.check_data_records()
+        await self.solcast.recalculate_splines()
 
-    def __auto_update_setup(self, init: bool = False):
+    def __auto_update_setup(self, init: bool = False) -> None:
         """Set up of auto-updates."""
-        try:
-            match self.solcast.options.auto_update:
-                case 1:
-                    self.__get_sun_rise_set()
-                    self.__calculate_forecast_updates(init=init)
-                case 2:
-                    self._sunrise_yesterday = self.solcast.get_day_start_utc(future=-1)
-                    self._sunset_yesterday = self.solcast.get_day_start_utc()
-                    self._sunrise = self._sunset_yesterday
-                    self._sunset = self.solcast.get_day_start_utc(future=1)
-                    self._sunrise_tomorrow = self._sunset
-                    self._sunset_tomorrow = self.solcast.get_day_start_utc(future=2)
-                    self.__calculate_forecast_updates(init=init)
-                case _:
-                    pass
-        except:  # noqa: E722
-            _LOGGER.error("Exception in __auto_update_setup(): %s", traceback.format_exc())
+        match self.solcast.options.auto_update:
+            case 1:
+                self.__get_sun_rise_set()
+                self.__calculate_forecast_updates(init=init)
+            case 2:
+                self._sunrise_yesterday = self.solcast.get_day_start_utc(future=-1)
+                self._sunset_yesterday = self.solcast.get_day_start_utc()
+                self._sunrise = self._sunset_yesterday
+                self._sunset = self.solcast.get_day_start_utc(future=1)
+                self._sunrise_tomorrow = self._sunset
+                self._sunset_tomorrow = self.solcast.get_day_start_utc(future=2)
+                self.__calculate_forecast_updates(init=init)
+            case _:
+                pass
 
-    def __get_sun_rise_set(self):
+    def __get_sun_rise_set(self) -> None:
         """Get the sunrise and sunset times for today and tomorrow."""
 
-        def sun_rise_set(day_start):
+        def sun_rise_set(day_start) -> tuple[dt, dt]:
             sunrise = get_astral_event_next(self.hass, "sunrise", day_start).replace(microsecond=0)
             sunset = get_astral_event_next(self.hass, "sunset", day_start).replace(microsecond=0)
             return sunrise, sunset
@@ -282,77 +243,87 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             self._sunset.astimezone(self.solcast.options.tz).strftime("%H:%M:%S"),
         )
 
-    def __calculate_forecast_updates(self, init: bool = False):
+    def __calculate_forecast_updates(self, init: bool = False) -> None:
         """Calculate all automated forecast update UTC events for the day.
 
         This is an even spread between sunrise and sunset.
         """
-        try:
-            divisions = int(self.solcast.get_api_limit() / min(len(self.solcast.sites), 2))
+        self.divisions = int(self.solcast.get_api_limit() / min(len(self.solcast.sites), 2))
 
-            def get_intervals(sunrise: dt, sunset: dt, log=True):
-                intervals_yesterday = []
-                if sunrise == self._sunrise:
-                    seconds = int((self._sunset_yesterday - self._sunrise_yesterday).total_seconds())
-                    intervals_yesterday = [
-                        (self._sunrise_yesterday + timedelta(seconds=int(seconds / divisions * i))).replace(microsecond=0)
-                        for i in range(divisions)
-                    ]
-                seconds = (sunset - sunrise).total_seconds()
-                interval = seconds / divisions
-                intervals = intervals_yesterday + [
-                    (sunrise + timedelta(seconds=interval * i)).replace(microsecond=0) for i in range(divisions)
+        def get_intervals(sunrise: dt, sunset: dt, log=True):
+            intervals_yesterday = []
+            if sunrise == self._sunrise:
+                seconds = int((self._sunset_yesterday - self._sunrise_yesterday).total_seconds())
+                intervals_yesterday = [
+                    (self._sunrise_yesterday + timedelta(seconds=int(seconds / self.divisions * i))).replace(microsecond=0)
+                    for i in range(self.divisions)
                 ]
-                _now = self.solcast.get_real_now_utc()
-                for i in intervals:
-                    if i < _now:
-                        self.interval_just_passed = i
-                    else:
-                        break
-                intervals = [i for i in intervals if i > _now]
-                if log:
-                    _LOGGER.debug("Auto update total seconds: %d, divisions: %d, interval: %d seconds", seconds, divisions, interval)
-                    if init:
-                        _LOGGER.debug(
-                            "Auto update forecasts %s",
-                            "over 24 hours" if self.solcast.options.auto_update > 1 else "between sunrise and sunset",
-                        )
-                if sunrise == self._sunrise:
-                    if self.interval_just_passed in intervals_yesterday:
-                        just_passed = self.interval_just_passed.astimezone(self.solcast.options.tz).strftime(DATE_FORMAT)
-                    else:
-                        just_passed = self.interval_just_passed.astimezone(self.solcast.options.tz).strftime("%H:%M:%S")
-                    _LOGGER.debug("Previous auto update would have been at %s", just_passed)
-                return intervals
+            seconds = int((sunset - sunrise).total_seconds())
+            interval = seconds / self.divisions
+            intervals = intervals_yesterday + [
+                (sunrise + timedelta(seconds=interval * i)).replace(microsecond=0) for i in range(self.divisions)
+            ]
+            _now = self.solcast.get_real_now_utc()
+            for i in intervals:
+                if i < _now:
+                    self.interval_just_passed = i
+                else:
+                    break
+            intervals = [i for i in intervals if i > _now]
+            if log:
+                _LOGGER.debug("Auto update total seconds: %d, self.divisions: %d, interval: %d seconds", seconds, self.divisions, interval)
+                if init:
+                    _LOGGER.debug(
+                        "Auto update forecasts %s",
+                        "over 24 hours" if self.solcast.options.auto_update > 1 else "between sunrise and sunset",
+                    )
+            if sunrise == self._sunrise:
+                if self.interval_just_passed in intervals_yesterday:
+                    just_passed = self.interval_just_passed.astimezone(self.solcast.options.tz).strftime(DATE_FORMAT)
+                else:
+                    just_passed = self.interval_just_passed.astimezone(self.solcast.options.tz).strftime("%H:%M:%S")
+                _LOGGER.debug("Previous auto update would have been at %s", just_passed)
+                _LOGGER.debug("Previous auto update UTC %s", self.interval_just_passed.isoformat())
+            return intervals
 
-            def format_intervals(intervals):
-                return [
-                    i.astimezone(self.solcast.options.tz).strftime("%H:%M")
-                    if len(intervals) > 10
-                    else i.astimezone(self.solcast.options.tz).strftime("%H:%M:%S")
-                    for i in intervals
-                ]
+        def format_intervals(intervals) -> list[str]:
+            return [
+                i.astimezone(self.solcast.options.tz).strftime("%H:%M")
+                if len(intervals) > 10
+                else i.astimezone(self.solcast.options.tz).strftime("%H:%M:%S")
+                for i in intervals
+            ]
 
-            intervals_today = get_intervals(self._sunrise, self._sunset)
-            intervals_tomorrow = get_intervals(self._sunrise_tomorrow, self._sunset_tomorrow, log=False)
-            self._intervals = intervals_today + intervals_tomorrow
+        intervals_today = get_intervals(self._sunrise, self._sunset)
+        intervals_tomorrow = get_intervals(self._sunrise_tomorrow, self._sunset_tomorrow, log=False)
+        self._intervals = intervals_today + intervals_tomorrow
+        self.solcast.auto_update_divisions = self.divisions
 
-            if len(intervals_today) > 0:
-                _LOGGER.info(
-                    "Auto forecast update%s for today at %s",
-                    "s" if len(intervals_today) > 1 else "",
-                    ", ".join(format_intervals(intervals_today)),
-                )
-            if len(intervals_today) < divisions:  # Only log tomorrow if part-way though today, or today has no more updates
-                _LOGGER.info(
-                    "Auto forecast update%s for tomorrow at %s",
-                    "s" if len(intervals_tomorrow) > 1 else "",
-                    ", ".join(format_intervals(intervals_tomorrow)),
-                )
-        except:  # noqa: E722
-            _LOGGER.error("Exception in __calculate_forecast_updates(): %s", traceback.format_exc())
+        if len(intervals_today) > 0:
+            _LOGGER.info(
+                "Auto forecast update%s for today at %s",
+                "s" if len(intervals_today) > 1 else "",
+                ", ".join(format_intervals(intervals_today)),
+            )
+        if len(intervals_today) < self.divisions:
+            _LOGGER.info(
+                "Auto forecast update%s for tomorrow at %s",
+                "s" if len(intervals_tomorrow) > 1 else "",
+                ", ".join(format_intervals(intervals_tomorrow)),
+            )
 
-    async def __forecast_update(self, force: bool = False, completion: str = ""):
+    def _get_auto_update_details(self) -> dict[str, Any]:
+        """Return attributes for the last updated sensor."""
+
+        if self.solcast.options.auto_update > 0:
+            return {
+                "next_auto_update": self._intervals[0],
+                "auto_update_divisions": self.divisions,
+                "auto_update_queue": self._intervals[:48],
+            }
+        return {}
+
+    async def __forecast_update(self, force: bool = False, completion: str = "", need_history_hours: int = 0) -> None:
         """Get updated forecast data."""
 
         try:
@@ -363,52 +334,69 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 await self.solcast.reset_usage_cache()
                 await self.__restart_time_track_midnight_update()
 
-            # await self.solcast.get_weather()
-            await self.solcast.get_forecast_update(do_past=False, force=force)
+            await self.solcast.get_forecast_update(do_past_hours=need_history_hours, force=force)
+
             self._data_updated = True
             await self.update_integration_listeners()
             self._data_updated = False
+            await self.async_request_refresh()
+
             _LOGGER.debug(completion)
         finally:
             with contextlib.suppress(Exception):
                 # Clean up a task created by a service call action
                 self.tasks.pop("forecast_update")
 
-    async def service_event_update(self, **kwargs):
+    async def service_event_update(self, **kwargs) -> None:
         """Get updated forecast data when requested by a service call.
 
         Arguments:
             kwargs (dict): If a key of "ignore_auto_enabled" exists (regardless of the value), then the API counter will be incremented.
 
         Raises:
-            ServiceValidationError: Notify Home Assistant that an error has occurred, with translation.
+            ServiceValidationError: Notify Home Assistant that an error has occurred.
 
         """
-        if self.solcast.options.auto_update > 0 and "ignore_auto_enabled" not in kwargs:
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_force")
-        self.tasks["forecast_update"] = asyncio.create_task(
-            self.__forecast_update(completion="Completed task update" if not kwargs.get("completion") else kwargs["completion"])
-        )
+        if self.tasks.get("forecast_update") is None:
+            if self.solcast.reauth_required:
+                raise ConfigEntryAuthFailed(translation_domain=DOMAIN, translation_key="init_key_invalid")
 
-    async def service_event_force_update(self):
+            if self.solcast.options.auto_update > 0 and "ignore_auto_enabled" not in kwargs:
+                raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_force")
+            task = asyncio.create_task(
+                self.__forecast_update(
+                    completion="Completed task update" if not kwargs.get("completion") else kwargs["completion"],
+                    need_history_hours=kwargs.get("need_history_hours", 0),
+                )
+            )
+            self.tasks["forecast_update"] = task.cancel
+        else:
+            _LOGGER.warning("Forecast update already requested, ignoring")
+
+    async def service_event_force_update(self) -> None:
         """Force the update of forecast data when requested by a service call. Ignores API usage/limit counts.
 
         Raises:
-            ServiceValidationError: Notify Home Assistant that an error has occurred, with translation.
+            ServiceValidationError: Notify Home Assistant that an error has occurred.
 
         """
-        if self.solcast.options.auto_update == 0:
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_normal")
-        self.tasks["forecast_update"] = asyncio.create_task(self.__forecast_update(force=True, completion="Completed task force_update"))
+        if self.tasks.get("forecast_update") is None:
+            if self.solcast.reauth_required:
+                raise ConfigEntryAuthFailed(translation_domain=DOMAIN, translation_key="init_key_invalid")
 
-    async def service_event_delete_old_solcast_json_file(self):
+            if self.solcast.options.auto_update == 0:
+                raise ServiceValidationError(translation_domain=DOMAIN, translation_key="auto_use_normal")
+            task = asyncio.create_task(self.__forecast_update(force=True, completion="Completed task force_update"))
+            self.tasks["forecast_update"] = task.cancel
+        else:
+            _LOGGER.warning("Forecast update already requested, ignoring")
+
+    async def service_event_delete_old_solcast_json_file(self) -> None:
         """Delete the solcast.json file when requested by a service call."""
-        for task, cancel in self.solcast.tasks.items():
-            _LOGGER.debug("Cancelling solcastapi task %s", task)
-            cancel.cancel()
-        self.solcast.tasks = {}
-        if not await self.solcast.delete_solcast_file():
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key="remove_cache_failed")
+        await self.solcast.tasks_cancel()
+        await self.tasks_cancel_specific("forecast_update")
+        await self.hass.async_block_till_done()
+        await self.solcast.delete_solcast_file()
         self._data_updated = True
         await self.update_integration_listeners()
         self._data_updated = False
@@ -417,16 +405,16 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """Return forecast data requested by a service call."""
         return await self.solcast.get_forecast_list(*args)
 
-    def get_solcast_sites(self) -> dict[str, Any]:
+    def get_solcast_sites(self) -> list[Any]:
         """Return the active solcast sites.
 
         Returns:
-            dict[str, Any]: The presently known solcast.com sites.
+            list[Any]: The presently known solcast.com sites.
 
         """
         return self.solcast.sites
 
-    def get_energy_tab_data(self) -> dict[str, Any]:
+    def get_energy_tab_data(self) -> dict[str, Any] | None:
         """Return an energy dictionary.
 
         Returns:
@@ -444,7 +432,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """
         return self._data_updated
 
-    def set_data_updated(self, updated: bool):
+    def set_data_updated(self, updated: bool) -> None:
         """Set the state of the data updated flag.
 
         Arguments:
@@ -465,7 +453,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     def get_sensor_value(self, key: str = "") -> int | dt | float | str | bool | None:  # noqa: C901
         """Return the value of a sensor."""
 
-        def unit_adjusted(hard_limit):
+        def unit_adjusted(hard_limit) -> str:
             if hard_limit >= 1000000:
                 return f"{round(hard_limit/1000000, 1)} GW"
             if hard_limit >= 1000:
@@ -501,13 +489,17 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         if self.__get_value.get(key) is None:
             return None
-        ret = {}
+        ret: dict[str, Any] = {}
         for fetch in self.__get_value[key] if key not in NO_ATTRIBUTES else []:
-            ret |= (
+            to_return = (
                 self.solcast.get_forecast_attributes(fetch["method"], fetch.get("value", 0))
                 if fetch["method"] != self.solcast.get_forecast_day
                 else fetch["method"](fetch["value"])
             )
+            if to_return is not None:
+                ret.update(to_return)
+        if key == "lastupdated":
+            ret.update(self._get_auto_update_details())
         return ret
 
     def get_site_sensor_value(self, roof_id: str, key: str) -> float | None:
@@ -525,3 +517,18 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 return self.solcast.get_rooftop_site_extra_data(roof_id)
             case _:
                 return None
+
+    async def tasks_cancel(self) -> None:
+        """Cancel all tasks."""
+        for task, cancel in self.tasks.items():
+            _LOGGER.debug("Cancelling coordinator task %s", task)
+            cancel()
+        self.tasks = {}
+
+    async def tasks_cancel_specific(self, task: str) -> None:
+        """Cancel a specific task."""
+        cancel = self.tasks.get(task)
+        if cancel is not None:
+            _LOGGER.debug("Cancelling coordinator task %s", task)
+            cancel()
+            self.tasks.pop(task)

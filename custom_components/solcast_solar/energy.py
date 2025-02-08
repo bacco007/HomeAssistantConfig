@@ -29,9 +29,8 @@ async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str) ->
         _LOGGER.warning("Domain %s is not yet available to provide forecast data", DOMAIN)
         return None
 
-    coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][config_entry_id]
-
-    if coordinator is None:
+    entry = hass.config_entries.async_get_entry(config_entry_id)
+    if (coordinator := entry.runtime_data.coordinator) is None or not isinstance(entry.runtime_data.coordinator, SolcastUpdateCoordinator):
         return None
 
     return coordinator.get_energy_tab_data()

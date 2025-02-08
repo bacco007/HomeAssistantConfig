@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import datetime as dt
 from enum import Enum
 import logging
@@ -15,7 +14,6 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
     ATTR_IDENTIFIERS,
@@ -41,199 +39,229 @@ from .const import (
     SENSOR_UPDATE_LOGGING,
 )
 from .coordinator import SolcastUpdateCoordinator
+from .util import SolcastConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSORS: dict[str, SensorEntityDescription] = {
-    "total_kwh_forecast_today": SensorEntityDescription(
-        key="total_kwh_forecast_today",
-        translation_key="total_kwh_forecast_today",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        name="Forecast Today",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "peak_w_today": SensorEntityDescription(
-        key="peak_w_today",
-        translation_key="peak_w_today",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-        name="Peak Forecast Today",
-        icon="mdi:solar-power",
-        suggested_display_precision=0,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    "peak_w_time_today": SensorEntityDescription(
-        key="peak_w_time_today",
-        translation_key="peak_w_time_today",
-        name="Peak Time Today",
-        icon="mdi:clock",
-        device_class=SensorDeviceClass.TIMESTAMP,
-    ),
-    "forecast_this_hour": SensorEntityDescription(
-        key="forecast_this_hour",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        translation_key="forecast_this_hour",
-        name="Forecast This Hour",
-        icon="mdi:solar-power",
-        suggested_display_precision=0,
-    ),
-    "forecast_remaining_today": SensorEntityDescription(
-        key="get_remaining_today",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="get_remaining_today",
-        name="Forecast Remaining Today",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-    ),
-    "forecast_next_hour": SensorEntityDescription(
-        key="forecast_next_hour",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        translation_key="forecast_next_hour",
-        name="Forecast Next Hour",
-        icon="mdi:solar-power",
-        suggested_display_precision=0,
-    ),
-    "forecast_custom_hours": SensorEntityDescription(
-        key="forecast_custom_hours",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        translation_key="forecast_custom_hours",
-        name="Forecast Custom Hours",
-        icon="mdi:solar-power",
-        suggested_display_precision=0,
-    ),
-    "total_kwh_forecast_tomorrow": SensorEntityDescription(
-        key="total_kwh_forecast_tomorrow",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="total_kwh_forecast_tomorrow",
-        name="Forecast Tomorrow",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "peak_w_tomorrow": SensorEntityDescription(
-        key="peak_w_tomorrow",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-        translation_key="peak_w_tomorrow",
-        name="Peak Forecast Tomorrow",
-        icon="mdi:solar-power",
-        suggested_display_precision=0,
-    ),
-    "peak_w_time_tomorrow": SensorEntityDescription(
-        key="peak_w_time_tomorrow",
-        translation_key="peak_w_time_tomorrow",
-        name="Peak Time Tomorrow",
-        icon="mdi:clock",
-        device_class=SensorDeviceClass.TIMESTAMP,
-    ),
-    "api_counter": SensorEntityDescription(
-        key="api_counter",
-        translation_key="api_counter",
-        name="API Used",
-        icon="mdi:web-check",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    "api_limit": SensorEntityDescription(
-        key="api_limit",
-        translation_key="api_limit",
-        name="API Limit",
-        icon="mdi:web-check",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    "lastupdated": SensorEntityDescription(
-        key="lastupdated",
-        device_class=SensorDeviceClass.TIMESTAMP,
-        translation_key="lastupdated",
-        name="API Last Polled",
-        icon="mdi:clock",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    "total_kwh_forecast_d3": SensorEntityDescription(
-        key="total_kwh_forecast_d3",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="total_kwh_forecast_d3",
-        name="Forecast D3",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "total_kwh_forecast_d4": SensorEntityDescription(
-        key="total_kwh_forecast_d4",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="total_kwh_forecast_d4",
-        name="Forecast D4",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "total_kwh_forecast_d5": SensorEntityDescription(
-        key="total_kwh_forecast_d5",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="total_kwh_forecast_d5",
-        name="Forecast D5",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "total_kwh_forecast_d6": SensorEntityDescription(
-        key="total_kwh_forecast_d6",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="total_kwh_forecast_d6",
-        name="Forecast D6",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "total_kwh_forecast_d7": SensorEntityDescription(
-        key="total_kwh_forecast_d7",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        translation_key="total_kwh_forecast_d7",
-        name="Forecast D7",
-        icon="mdi:solar-power",
-        suggested_display_precision=2,
-        state_class=SensorStateClass.TOTAL,
-    ),
-    "power_now": SensorEntityDescription(
-        key="power_now",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-        translation_key="power_now",
-        name="Power Now",
-        suggested_display_precision=0,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    "power_now_30m": SensorEntityDescription(
-        key="power_now_30m",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-        translation_key="power_now_30m",
-        name="Power in 30 Minutes",
-        suggested_display_precision=0,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    "power_now_1hr": SensorEntityDescription(
-        key="power_now_1hr",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-        translation_key="power_now_1hr",
-        name="Power in 1 Hour",
-        suggested_display_precision=0,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # "weather_description": SensorEntityDescription(key="weather_description", translation_key="weather_description", icon="mdi:weather-partly-snowy-rainy",),
+SENSORS: dict[str, dict[str, Any]] = {
+    "api_counter": {
+        "description": SensorEntityDescription(
+            key="api_counter",
+            translation_key="api_counter",
+            name="API Used",
+            entity_category=EntityCategory.DIAGNOSTIC,
+        )
+    },
+    "api_limit": {
+        "description": SensorEntityDescription(
+            key="api_limit",
+            translation_key="api_limit",
+            name="API Limit",
+            entity_category=EntityCategory.DIAGNOSTIC,
+        )
+    },
+    "forecast_this_hour": {
+        "description": SensorEntityDescription(
+            key="forecast_this_hour",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+            translation_key="forecast_this_hour",
+            name="Forecast This Hour",
+            suggested_display_precision=0,
+        )
+    },
+    "forecast_custom_hours": {
+        "description": SensorEntityDescription(
+            key="forecast_custom_hours",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+            translation_key="forecast_custom_hours",
+            name="Forecast Custom Hours",
+            suggested_display_precision=0,
+        ),
+        "enabled_by_default": False,
+    },
+    "forecast_next_hour": {
+        "description": SensorEntityDescription(
+            key="forecast_next_hour",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+            translation_key="forecast_next_hour",
+            name="Forecast Next Hour",
+            suggested_display_precision=0,
+        )
+    },
+    "forecast_remaining_today": {
+        "description": SensorEntityDescription(
+            key="get_remaining_today",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="get_remaining_today",
+            name="Forecast Remaining Today",
+            suggested_display_precision=2,
+        )
+    },
+    "lastupdated": {
+        "description": SensorEntityDescription(
+            key="lastupdated",
+            device_class=SensorDeviceClass.TIMESTAMP,
+            translation_key="lastupdated",
+            name="API Last Polled",
+            entity_category=EntityCategory.DIAGNOSTIC,
+        )
+    },
+    "peak_w_time_today": {
+        "description": SensorEntityDescription(
+            key="peak_w_time_today",
+            translation_key="peak_w_time_today",
+            name="Peak Time Today",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        )
+    },
+    "peak_w_time_tomorrow": {
+        "description": SensorEntityDescription(
+            key="peak_w_time_tomorrow",
+            translation_key="peak_w_time_tomorrow",
+            name="Peak Time Tomorrow",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        )
+    },
+    "peak_w_today": {
+        "description": SensorEntityDescription(
+            key="peak_w_today",
+            translation_key="peak_w_today",
+            device_class=SensorDeviceClass.POWER,
+            native_unit_of_measurement=UnitOfPower.WATT,
+            name="Peak Forecast Today",
+            suggested_display_precision=0,
+            state_class=SensorStateClass.MEASUREMENT,
+        )
+    },
+    "peak_w_tomorrow": {
+        "description": SensorEntityDescription(
+            key="peak_w_tomorrow",
+            device_class=SensorDeviceClass.POWER,
+            native_unit_of_measurement=UnitOfPower.WATT,
+            translation_key="peak_w_tomorrow",
+            name="Peak Forecast Tomorrow",
+            suggested_display_precision=0,
+        )
+    },
+    "power_now": {
+        "description": SensorEntityDescription(
+            key="power_now",
+            device_class=SensorDeviceClass.POWER,
+            native_unit_of_measurement=UnitOfPower.WATT,
+            translation_key="power_now",
+            name="Power Now",
+            suggested_display_precision=0,
+            state_class=SensorStateClass.MEASUREMENT,
+        )
+    },
+    "power_now_1hr": {
+        "description": SensorEntityDescription(
+            key="power_now_1hr",
+            device_class=SensorDeviceClass.POWER,
+            native_unit_of_measurement=UnitOfPower.WATT,
+            translation_key="power_now_1hr",
+            name="Power in 1 Hour",
+            suggested_display_precision=0,
+            state_class=SensorStateClass.MEASUREMENT,
+        )
+    },
+    "power_now_30m": {
+        "description": SensorEntityDescription(
+            key="power_now_30m",
+            device_class=SensorDeviceClass.POWER,
+            native_unit_of_measurement=UnitOfPower.WATT,
+            translation_key="power_now_30m",
+            name="Power in 30 Minutes",
+            suggested_display_precision=0,
+            state_class=SensorStateClass.MEASUREMENT,
+        )
+    },
+    "total_kwh_forecast_d3": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_d3",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="total_kwh_forecast_d3",
+            name="Forecast D3",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        ),
+        "enabled_by_default": False,
+    },
+    "total_kwh_forecast_d4": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_d4",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="total_kwh_forecast_d4",
+            name="Forecast D4",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        ),
+        "enabled_by_default": False,
+    },
+    "total_kwh_forecast_d5": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_d5",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="total_kwh_forecast_d5",
+            name="Forecast D5",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        ),
+        "enabled_by_default": False,
+    },
+    "total_kwh_forecast_d6": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_d6",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="total_kwh_forecast_d6",
+            name="Forecast D6",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        ),
+        "enabled_by_default": False,
+    },
+    "total_kwh_forecast_d7": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_d7",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="total_kwh_forecast_d7",
+            name="Forecast D7",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        ),
+        "enabled_by_default": False,
+    },
+    "total_kwh_forecast_today": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_today",
+            translation_key="total_kwh_forecast_today",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            name="Forecast Today",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        )
+    },
+    "total_kwh_forecast_tomorrow": {
+        "description": SensorEntityDescription(
+            key="total_kwh_forecast_tomorrow",
+            device_class=SensorDeviceClass.ENERGY,
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            translation_key="total_kwh_forecast_tomorrow",
+            name="Forecast Tomorrow",
+            suggested_display_precision=2,
+            state_class=SensorStateClass.TOTAL,
+        )
+    },
 }
 
 
@@ -250,47 +278,45 @@ def get_sensor_update_policy(key: str) -> SensorUpdatePolicy:
     Some sensors update every five minutes (EVERY_TIME_INTERVAL), while others only update on startup or forecast fetch.
 
     Arguments:
-        key (str): The sensor name.
+        key (str): The sensor key.
 
     Returns:
         SensorUpdatePolicy: The update policy.
 
     """
-    match key:
-        case (
-            "forecast_this_hour"
-            | "forecast_next_hour"
-            | "forecast_custom_hours"
-            | "forecast_remaining_today"
-            | "get_remaining_today"
-            | "power_now"
-            | "power_now_30m"
-            | "power_now_1hr"
-        ):
-            return SensorUpdatePolicy.EVERY_TIME_INTERVAL
-        case _:
-            return SensorUpdatePolicy.DEFAULT
+    if key in (
+        "forecast_this_hour",
+        "forecast_next_hour",
+        "forecast_custom_hours",
+        "forecast_remaining_today",
+        "get_remaining_today",
+        "power_now",
+        "power_now_30m",
+        "power_now_1hr",
+    ):
+        return SensorUpdatePolicy.EVERY_TIME_INTERVAL
+    return SensorUpdatePolicy.DEFAULT
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: SolcastConfigEntry,
     async_add_entities: AddEntitiesCallback,
-):
+) -> None:
     """Set up a Solcast sensor.
 
     Arguments:
         hass (HomeAssistant): The Home Assistant instance.
-        entry (ConfigEntry): The integration entry instance, contains the configuration.
+        entry (SolcastConfigEntry): The integration entry instance, contains the configuration.
         async_add_entities (AddEntitiesCallback): The Home Assistant callback to add entities.
 
     """
 
-    coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = []
+    coordinator: SolcastUpdateCoordinator = entry.runtime_data.coordinator
+    entities: list[RooftopSensor | SolcastSensor] = []
 
     for sensor in SENSORS.values():
-        sen = SolcastSensor(coordinator, sensor, entry)
+        sen = SolcastSensor(coordinator, sensor["description"], entry, sensor.get("enabled_by_default", True))
         entities.append(sen)
 
     hard_limits = coordinator.solcast.options.hard_limit.split(",")
@@ -299,7 +325,6 @@ async def async_setup_entry(
             key="hard_limit",
             translation_key="hard_limit",
             name="Hard Limit Set",
-            icon="mdi:speedometer",
             entity_category=EntityCategory.DIAGNOSTIC,
         )
         sen = SolcastSensor(coordinator, k, entry)
@@ -312,29 +337,27 @@ async def async_setup_entry(
                 translation_placeholders={
                     "api_key": "*" * 6 + api_key[-6:],
                 },
-                icon="mdi:speedometer",
                 entity_category=EntityCategory.DIAGNOSTIC,
             )
             sen = SolcastSensor(coordinator, k, entry)
             entities.append(sen)
     for site in coordinator.get_solcast_sites():
-        k = RooftopSensorEntityDescription(
+        k = SensorEntityDescription(
             key=site["resource_id"],
+            translation_key="site_data",
             name=site["name"],
-            icon="mdi:home",
             device_class=SensorDeviceClass.ENERGY,
             native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
             suggested_display_precision=2,
-            rooftop_id=site["resource_id"],
         )
-        sen = RooftopSensor(
+        site_sen = RooftopSensor(
             key="site_data",
             coordinator=coordinator,
             entity_description=k,
             entry=entry,
+            rooftop_id=site["resource_id"],
         )
-
-        entities.append(sen)
+        entities.append(site_sen)
 
     async_add_entities(entities)
 
@@ -344,45 +367,39 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
 
     _attr_attribution = ATTRIBUTION
     _attr_has_entity_name = True
-    # _unrecorded_attributes = frozenset({MATCH_ALL}) # Large attributes now excluded dynamically in async_added_to_hass()
 
     def __init__(
         self,
         coordinator: SolcastUpdateCoordinator,
         entity_description: SensorEntityDescription,
-        entry: ConfigEntry,
+        entry: SolcastConfigEntry,
+        enabled_by_default: bool = True,
     ) -> None:
         """Initialise the sensor.
 
         Arguments:
             coordinator (SolcastUpdateCoordinator): The integration coordinator instance.
             entity_description (SensorEntityDescription): The details of the entity.
-            entry (ConfigEntry): The integration entry instance, contains the configuration.
+            entry (SolcastConfigEntry): The integration entry instance, contains the configuration.
+            enabled_by_default (bool): The default state of the sensor.
 
         """
         super().__init__(coordinator)
 
-        # No longer used. Was used to alter the custom X hour sensor friendly name.
-        # if entity_description.key == "forecast_custom_hours":
-        #    self._attr_translation_placeholders = {"forecast_custom_hours": f"{coordinator.solcast.custom_hour_sensor}"}
-
         self.entity_description = entity_description
-        self._coordinator = coordinator
-        self._update_policy = get_sensor_update_policy(entity_description.key)
-        self._attr_unique_id = f"{entity_description.key}"
-        self._attributes = {}
         self._attr_extra_state_attributes = {}
+        self._attr_unique_id = f"{entity_description.key}"
+        self._coordinator = coordinator
+        self._attr_entity_registry_enabled_default = enabled_by_default
+        self._sensor_data = None
+        self._update_policy = get_sensor_update_policy(entity_description.key)
 
         try:
-            self._sensor_data = self._coordinator.get_sensor_value(entity_description.key)
+            self._sensor_data = self._coordinator.get_sensor_value(self.entity_description.key)
         except Exception as e:  # noqa: BLE001
             _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
-            self._sensor_data = None
 
-        if self._sensor_data is None:
-            self._attr_available = False
-        else:
-            self._attr_available = True
+        self._attr_available = self._sensor_data is not None
 
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
@@ -394,24 +411,27 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             ATTR_CONFIGURATION_URL: "https://toolkit.solcast.com.au/",
         }
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Entity about to be added to hass, so set recorder excluded attributes."""
         await super().async_added_to_hass()
-        try:
-            if (
-                self.entity_id.startswith("sensor.solcast_pv_forecast_forecast_today")
-                or self.entity_id.startswith("sensor.solcast_pv_forecast_forecast_tomorrow")
-                or self.entity_id.startswith("sensor.solcast_pv_forecast_forecast_day")
-            ):
-                exclude = ["detailedForecast", "detailedHourly"]
-                if self._coordinator.solcast.options.attr_brk_site_detailed:
-                    for s in self._coordinator.solcast.sites:
-                        exclude.append("detailedForecast-" + s["resource_id"])
-                        exclude.append("detailedHourly-" + s["resource_id"])
-                self._state_info["unrecorded_attributes"] = self._state_info["unrecorded_attributes"] | frozenset(exclude)
-        except Exception as e:  # noqa: BLE001
-            _LOGGER.error("Exception setting excluded attributes: %s", e)
-            _LOGGER.error(traceback.format_exc())
+        if self.entity_id.startswith("sensor.solcast_pv_forecast_api_last_polled"):
+            self._state_info["unrecorded_attributes"] = frozenset(["next_auto_update", "auto_update_divisions", "auto_update_queue"])
+        elif (
+            self.entity_id.startswith("sensor.solcast_pv_forecast_forecast_today")
+            or self.entity_id.startswith("sensor.solcast_pv_forecast_forecast_tomorrow")
+            or self.entity_id.startswith("sensor.solcast_pv_forecast_forecast_day")
+        ):
+            exclude = ["detailedForecast", "detailedHourly"]
+            if self._coordinator.solcast.options.attr_brk_site_detailed:
+                for s in self._coordinator.solcast.sites:
+                    exclude.append("detailedForecast-" + s["resource_id"])
+                    exclude.append("detailedHourly-" + s["resource_id"])
+            self._state_info["unrecorded_attributes"] = self._state_info["unrecorded_attributes"] | frozenset(exclude)
+
+    @property
+    def available(self) -> bool:
+        """Return the availability of the sensor linked to the source sensor."""
+        return self._attr_available
 
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
@@ -421,18 +441,14 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             dict[str, Any] | None: The current attributes of a sensor.
 
         """
-        try:
-            return self._coordinator.get_sensor_extra_attributes(self.entity_description.key)
-        except Exception as e:  # noqa: BLE001
-            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
-            return None
+        return self._coordinator.get_sensor_extra_attributes(self.entity_description.key)
 
     @property
     def native_value(self) -> int | dt | float | str | bool | None:
         """Return the current value of the sensor.
 
         Returns:
-            int | dt | float | Any | str | bool | None: The current value of a sensor.
+            int | dt | float | str | bool | None: The current value of a sensor.
 
         """
         return self._sensor_data
@@ -455,7 +471,6 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         SensorUpdatePolicy.EVERY_TIME_INTERVAL), while the remaining sensors update after each
         forecast update or when the date changes.
         """
-
         if self._update_policy == SensorUpdatePolicy.DEFAULT and not (
             self._coordinator.get_date_changed() or self._coordinator.get_data_updated()
         ):
@@ -466,28 +481,13 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         except Exception as e:  # noqa: BLE001
             _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             self._sensor_data = None
-        if SENSOR_UPDATE_LOGGING:
-            _LOGGER.debug("Updating sensor %s to %s", self.entity_description.name, self._sensor_data)
+        finally:
+            if SENSOR_UPDATE_LOGGING:
+                _LOGGER.debug("Updating sensor %s to %s", self.entity_description.name, self._sensor_data)
 
-        if self._sensor_data is None:
-            self._attr_available = False
-        else:
-            self._attr_available = True
+        self._attr_available = self._sensor_data is not None
 
         self.async_write_ha_state()
-
-
-@dataclass
-class RooftopSensorEntityDescription(SensorEntityDescription):
-    """Representation of a rooftop entity description."""
-
-    key: str | None = None
-    name: str | None = None
-    icon: str | None = None
-    device_class: SensorDeviceClass = SensorDeviceClass.ENERGY
-    native_unit_of_measurement: UnitOfEnergy = UnitOfEnergy.KILO_WATT_HOUR
-    suggested_display_precision: int = 2
-    rooftop_id: str | None = None
 
 
 class RooftopSensor(CoordinatorEntity, SensorEntity):
@@ -501,7 +501,8 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         key: str,
         coordinator: SolcastUpdateCoordinator,
         entity_description: SensorEntityDescription,
-        entry: ConfigEntry,
+        entry: SolcastConfigEntry,
+        rooftop_id: str,
     ) -> None:
         """Initialise the sensor.
 
@@ -509,7 +510,8 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             key (str): The sensor name.
             coordinator (SolcastUpdateCoordinator): The integration coordinator instance.
             entity_description (SensorEntityDescription): The details of the entity.
-            entry (ConfigEntry): The integration entry instance, contains the configuration.
+            entry (SolcastConfigEntry): The integration entry instance, contains the configuration.
+            rooftop_id (str): The site name to use as the senor name.
 
         """
         super().__init__(coordinator)
@@ -517,16 +519,17 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         self.entity_description = entity_description
         self._key = key
         self._coordinator = coordinator
-        self._rooftop_id = entity_description.rooftop_id
-        self._attributes = {}
+        self._rooftop_id = rooftop_id  # entity_description.
         self._attr_extra_state_attributes = {}
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
+        self._sensor_data = None
 
         try:
             self._sensor_data = coordinator.get_site_sensor_value(self._rooftop_id, key)
         except Exception as e:  # noqa: BLE001
-            _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
-            self._sensor_data = None
+            _LOGGER.error("Unable to get sensor value: %s", e)
+
+        self._attr_available = self._sensor_data is not None
 
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
@@ -541,7 +544,12 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         self._unique_id = f"solcast_api_{entity_description.name}"
 
     @property
-    def name(self):
+    def available(self) -> bool:
+        """Return the availability of the sensor linked to the source sensor."""
+        return self._attr_available
+
+    @property
+    def name(self) -> str:
         """Return the name of the device.
 
         Returns:
@@ -551,17 +559,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         return f"{self.entity_description.name}"
 
     @property
-    def friendly_name(self):
-        """Return the friendly name of the device.
-
-        Returns:
-            str: The device friendly name, which is the same as device name.
-
-        """
-        return self.entity_description.name
-
-    @property
-    def unique_id(self):
+    def unique_id(self) -> str | None:
         """Return the unique ID of the sensor.
 
         Returns:
@@ -571,13 +569,14 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         return f"solcast_{self._unique_id}"
 
     @property
-    def extra_state_attributes(self):
-        """Return the state extra attributes of the sensor."""
-        try:
-            return self._coordinator.get_site_sensor_extra_attributes(self._rooftop_id, self._key)
-        except Exception as e:  # noqa: BLE001
-            _LOGGER.error("Unable to get sensor attributes: %s: %s", e, traceback.format_exc())
-            return None
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return the state extra attributes of the sensor.
+
+        Returns:
+            dict[str, Any] | None: The current attributes of a sensor.
+
+        """
+        return self._coordinator.get_site_sensor_extra_attributes(self._rooftop_id, self._key)
 
     @property
     def native_value(self) -> int | dt | float | str | bool | None:
@@ -599,10 +598,9 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         """
         return False
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Entity is added to Home Assistant."""
         await super().async_added_to_hass()
-        # self.async_on_remove(self._coordinator.async_add_listener(self._handle_coordinator_update))
 
     @callback
     def _handle_coordinator_update(self):
@@ -611,9 +609,13 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             return
         try:
             self._sensor_data = self._coordinator.get_site_sensor_value(self._rooftop_id, self._key)
-            if SENSOR_UPDATE_LOGGING:
-                _LOGGER.debug("Updating sensor %s to %s", self.entity_description.name, self._sensor_data)
         except Exception as e:  # noqa: BLE001
             _LOGGER.error("Unable to get sensor value: %s: %s", e, traceback.format_exc())
             self._sensor_data = None
+        finally:
+            if SENSOR_UPDATE_LOGGING:
+                _LOGGER.debug("Updating sensor %s to %s", self.entity_description.name, self._sensor_data)
+
+        self._attr_available = self._sensor_data is not None
+
         self.async_write_ha_state()
