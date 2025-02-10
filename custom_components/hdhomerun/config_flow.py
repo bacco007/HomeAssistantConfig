@@ -12,7 +12,23 @@ from urllib.parse import urlparse
 
 import voluptuous as vol
 from homeassistant import config_entries, data_entry_flow
-from homeassistant.components import ssdp
+
+# TODO: remove when bumping minimum version to 2025.2.x
+try:
+    from homeassistant.helpers.service_info.ssdp import (
+        SsdpServiceInfo,
+        ATTR_UPNP_MODEL_NAME,
+        ATTR_UPNP_SERIAL,
+        ATTR_UPNP_SERVICE_LIST,
+    )
+except ImportError:
+    from homeassistant.components.ssdp import (
+        SsdpServiceInfo,
+        ATTR_UPNP_MODEL_NAME,
+        ATTR_UPNP_SERIAL,
+        ATTR_UPNP_SERVICE_LIST,
+    )
+
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import callback
 from homeassistant.helpers import selector
@@ -353,24 +369,24 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         )
 
     async def async_step_ssdp(
-        self, discovery_info: ssdp.SsdpServiceInfo
+        self, discovery_info: SsdpServiceInfo
     ) -> data_entry_flow.FlowResult:
         """Manage the devices discovered by SSDP."""
         _LOGGER.debug(self.format("entered, discovery_info: %s"), discovery_info)
 
         # region #-- get the important information --#
         self._friendly_name = (
-            f"{discovery_info.upnp.get(ssdp.ATTR_UPNP_MODEL_NAME, '')} "
-            f"{discovery_info.upnp.get(ssdp.ATTR_UPNP_SERIAL, '')}"
+            f"{discovery_info.upnp.get(ATTR_UPNP_MODEL_NAME, '')} "
+            f"{discovery_info.upnp.get(ATTR_UPNP_SERIAL, '')}"
         )
-        service_list = discovery_info.upnp.get(ssdp.ATTR_UPNP_SERVICE_LIST, {}).get(
+        service_list = discovery_info.upnp.get(ATTR_UPNP_SERVICE_LIST, {}).get(
             "service"
         )
         if service_list:
             _LOGGER.debug(self.format("%s"), json.dumps(service_list))
             service = service_list[0]
             self._host = urlparse(url=service.get("controlURL", "")).hostname
-        serial: str = discovery_info.upnp.get(ssdp.ATTR_UPNP_SERIAL, "")
+        serial: str = discovery_info.upnp.get(ATTR_UPNP_SERIAL, "")
         # endregion
 
         # region #-- set a unique_id, update details if device has changed IP --#
