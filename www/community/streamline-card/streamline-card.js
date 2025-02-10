@@ -75,7 +75,7 @@ class StreamlineCardEditor extends HTMLElement {
   }
   setConfig(t) {
     const s = StreamlineCardEditor.formatConfig(t), [r] = Object.keys(this._templates), i = {};
-    i.type = s.type, i.template = s.template ?? r ?? "", i.variables = s.variables ?? {};
+    i.type = s.type, i.template = s.template ?? r ?? "", i.variables = s.variables ?? {}, s.grid_options && (i.grid_options = s.grid_options), s.visibility && (i.visibility = s.visibility);
     const n = this.setVariablesDefault(i);
     deepEqual(n, this._config) === !1 && (this._config = n, this.saveConfig(i)), this.render();
   }
@@ -212,7 +212,7 @@ const getPrefixFromHass = (e, a) => {
       let n;
       for (let l = 0; l < e[i].length; l += 1)
         if (typeof e[i][l] == "object")
-          evaluateJavascript(e[i][l], a);
+          evaluateJavascript(e[i][l], a, t);
         else if (i.endsWith("_javascript")) {
           s === void 0 && (s = getPrefixFromHass(a, t));
           const c = i.replace("_javascript", "");
@@ -230,7 +230,7 @@ const getPrefixFromHass = (e, a) => {
         else
           throw delete e[i.replace("_javascript", "")], n;
     } else if (typeof e[i] == "object")
-      evaluateJavascript(e[i], a);
+      evaluateJavascript(e[i], a, t);
     else if (i.endsWith("_javascript")) {
       s === void 0 && (s = getPrefixFromHass(a, t));
       const n = i.replace("_javascript", "");
@@ -275,7 +275,7 @@ function evaluateConfig(e, a, t) {
   }
   return s;
 }
-const version = "0.0.19";
+const version = "0.0.22";
 (async function e() {
   const a = window.loadCardHelpers ? await window.loadCardHelpers() : void 0;
   class t extends HTMLElement {
@@ -293,7 +293,7 @@ const version = "0.0.19";
       this._shadow = this.shadowRoot || this.attachShadow({ mode: "open" });
     }
     updateCardHass() {
-      this._isConnected && this._card && this._hass && (this._card.hass = this._hass);
+      (this._isConnected && this._card && this._hass || this._hass && this._card.hass === void 0) && (this._card.hass = this._hass);
     }
     updateCardEditMode() {
       this._isConnected && this._card && (this._card.editMode = this._editMode);
