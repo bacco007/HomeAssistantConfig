@@ -20,6 +20,8 @@ from homeassistant.components.bluetooth import (
 from homeassistant.components.bluetooth.api import _get_manager
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import MAJOR_VERSION as HA_VERSION_MAJ
+from homeassistant.const import MINOR_VERSION as HA_VERSION_MIN
 from homeassistant.core import (
     Event,
     EventStateChangedData,
@@ -41,6 +43,9 @@ from homeassistant.helpers import (
 )
 from homeassistant.helpers import (
     entity_registry as er,
+)
+from homeassistant.helpers import (
+    issue_registry as ir,
 )
 from homeassistant.helpers.device_registry import (
     EVENT_DEVICE_REGISTRY_UPDATED,
@@ -87,6 +92,7 @@ from .const import (
     PRUNE_TIME_DEFAULT,
     PRUNE_TIME_INTERVAL,
     PRUNE_TIME_IRK,
+    REPAIR_SCANNER_WITHOUT_AREA,
     SAVEOUT_COOLDOWN,
     SIGNAL_DEVICE_NEW,
     UPDATE_INTERVAL,
@@ -133,6 +139,9 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
         self.sensor_interval = entry.options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
 
+        # set some version flags
+        self.hass_version_min_2025_2 = HA_VERSION_MAJ > 2025 or (HA_VERSION_MAJ == 2025 and HA_VERSION_MIN >= 2)
+
         # match/replacement pairs for redacting addresses
         self.redactions: dict[str, str] = {}
         # Any remaining MAC addresses will be replaced with this. We define it here
@@ -159,6 +168,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
         self._entity_registry = er.async_get(self.hass)
         self._device_registry = dr.async_get(self.hass)
+
+        self._scanners_without_areas: list[str] | None = None  # Tracks any proxies that don't have an area assigned.
 
         # Track the list of Private BLE devices, noting their entity id
         # and current "last address".
@@ -1119,6 +1130,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         """
         _previous_scannerlist = [device.address for device in self.devices.values() if device.is_scanner]
         _purge_scanners = _previous_scannerlist.copy()
+        _scanners_without_areas = []
 
         # _LOGGER.error("Preserving %d current scanner entries", len(_previous_scannerlist))
 
@@ -1130,8 +1142,14 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         # scanner_devreg_mac: DeviceEntry from HA's *other* integrations, like ESPHome, Shelly.
         # scanner_b: BermudaDevice entry
 
-        # Evil: We're acessing private members of bt manager to do it since there's no API call for it.
-        self._hascanners = self._manager._connectable_scanners | self._manager._non_connectable_scanners  # noqa: SLF001
+        # TODO: Eventually replace this with a minver requirement in hacs.json.
+        if self.hass_version_min_2025_2:
+            # New api
+            self._hascanners = set(self._manager.async_current_scanners())
+        else:
+            # Evil: We're acessing private members of bt manager to do it since there's no API call for it.
+            self._hascanners = self._manager._connectable_scanners | self._manager._non_connectable_scanners  # noqa: SLF001
+
         for hascanner in self._hascanners:
             scanner_address = format_mac(hascanner.source).lower()
             # As of 2025.2.0 The bluetooth integration creates its own device entries
@@ -1217,12 +1235,37 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                     scanner_b.name,
                     areas,
                 )
+                _scanners_without_areas.append(scanner_b.name or scanner_b.address)
+                scanner_b.area_name = f"Invalid Area for {scanner_b.name}"
             scanner_b.is_scanner = True
 
         # Now un-tag any devices that are no longer scanners
         for address in _purge_scanners:
             self.devices[address].is_scanner = False
             update_scannerlist = True
+
+        if _scanners_without_areas != self._scanners_without_areas:
+            # the set has changed, or we have just started (since the one in self is defaulted to None)
+
+            # Clear any existing repair, because it's either resolved now (empty list) or we need to re-issue
+            # the repair in order to update the scanner list (re-calling doesn't update it).
+            ir.async_delete_issue(self.hass, DOMAIN, REPAIR_SCANNER_WITHOUT_AREA)
+
+            if len(_scanners_without_areas) != 0:
+                ir.async_create_issue(
+                    self.hass,
+                    DOMAIN,
+                    REPAIR_SCANNER_WITHOUT_AREA,
+                    translation_key=REPAIR_SCANNER_WITHOUT_AREA,
+                    translation_placeholders={
+                        "scannerlist": "".join(f"- {name}\n" for name in _scanners_without_areas),
+                    },
+                    severity=ir.IssueSeverity.ERROR,
+                    is_fixable=False,
+                )
+
+            # copy to self so we don't re-raise unless something changes in future.
+            self._scanners_without_areas = _scanners_without_areas
 
         # Because of the quick check-time and the checks we have on saving the config_entry,
         # we'll update on every call:

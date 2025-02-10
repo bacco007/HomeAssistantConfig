@@ -16,13 +16,16 @@ DOMAIN_DATA = f"{DOMAIN}_data"
 # that the component has been checked out from git, not pulled from
 # an officially built release. HACS will use the git tag (or the zip file,
 # either way it works).
-VERSION = "0.7.3"
+VERSION = "0.7.4"
 
 ATTRIBUTION = "Data provided by http://jsonplaceholder.typicode.com/"
 ISSUE_URL = "https://github.com/agittins/bermuda/issues"
 
 # Icons
 ICON = "mdi:format-quote-close"
+
+# Issue/repair translation keys. If you change these you MUST also update the key in the translations/xx.json files.
+REPAIR_SCANNER_WITHOUT_AREA = "scanner_without_area"
 
 # Device classes
 BINARY_SENSOR_DEVICE_CLASS = "connectivity"
