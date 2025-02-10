@@ -1,6 +1,6 @@
-## Inspired by Noctis theme by aaFFekopp
+## Inspired by geek_light which is inspired by Noctis theme by aaFFekopp
 
-geek_light:
+tbsmarthome:
   ########## Additions for my lovelace ##########
   # Colors
 
@@ -330,3 +330,4 @@ geek_light:
       :host {
         --ha-card-box-shadow: none;
       }
+
