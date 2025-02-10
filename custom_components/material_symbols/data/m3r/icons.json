@@ -324,6 +324,9 @@
         "name": "alarm-on"
     },
     {
+        "name": "alarm-pause"
+    },
+    {
         "name": "alarm-smart-wake"
     },
     {
@@ -436,6 +439,9 @@
     },
     {
         "name": "article"
+    },
+    {
+        "name": "article-person"
     },
     {
         "name": "article-shortcut"
@@ -2871,6 +2877,15 @@
         "name": "inbox-text"
     },
     {
+        "name": "inbox-text-asterisk"
+    },
+    {
+        "name": "inbox-text-person"
+    },
+    {
+        "name": "inbox-text-share"
+    },
+    {
         "name": "info"
     },
     {
@@ -3282,6 +3297,9 @@
         "name": "magnification-small"
     },
     {
+        "name": "magnify-docked"
+    },
+    {
         "name": "magnify-fullscreen"
     },
     {
@@ -3663,6 +3681,9 @@
         "name": "nfc"
     },
     {
+        "name": "nfc-off"
+    },
+    {
         "name": "night-shelter"
     },
     {
@@ -3754,6 +3775,9 @@
     },
     {
         "name": "notification-multiple"
+    },
+    {
+        "name": "notification-settings"
     },
     {
         "name": "notifications"
@@ -4201,6 +4225,9 @@
     },
     {
         "name": "playlist-add-circle"
+    },
+    {
+        "name": "plug-connect"
     },
     {
         "name": "podiatry"
@@ -5133,6 +5160,9 @@
         "name": "stack"
     },
     {
+        "name": "stack-group"
+    },
+    {
         "name": "stack-hexagon"
     },
     {
@@ -5220,7 +5250,22 @@
         "name": "styler"
     },
     {
+        "name": "stylus-brush"
+    },
+    {
+        "name": "stylus-fountain-pen"
+    },
+    {
+        "name": "stylus-highlighter"
+    },
+    {
         "name": "stylus-note"
+    },
+    {
+        "name": "stylus-pen"
+    },
+    {
+        "name": "stylus-pencil"
     },
     {
         "name": "subheader"
