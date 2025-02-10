@@ -46,7 +46,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -55,20 +54,21 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        components = await self.hass.async_add_executor_job(
+            get_default_config_components
+        )
+        selected_components = self.config_entry.options.get(
+            CONF_COMPONENTS_TO_DISABLE, []
+        )
+        selected_components = [c for c in selected_components if c in components]
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
                     vol.Optional(
                         CONF_COMPONENTS_TO_DISABLE,
-                        default=self.config_entry.options.get(
-                            CONF_COMPONENTS_TO_DISABLE, []
-                        ),
-                    ): cv.multi_select(
-                        await self.hass.async_add_executor_job(
-                            get_default_config_components
-                        )
-                    ),
+                        default=selected_components,
+                    ): cv.multi_select(components),
                 }
             ),
         )
