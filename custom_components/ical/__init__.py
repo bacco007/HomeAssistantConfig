@@ -276,11 +276,20 @@ class ICalEvents:
                 # Lets get all RRULE-generated events which will start 7 days before today and end before to_date
                 # to ensure we are catching (most) recurring events that might already have started.
                 try:
+                    # Convert dates to datetime if needed
+                    after_date = from_date - timedelta(days=7)
+                    if not isinstance(after_date, datetime):
+                        after_date = datetime.combine(after_date, datetime.min.time())
+                    if not isinstance(to_date, datetime):
+                        to_date = datetime.combine(to_date, datetime.max.time())
+
                     starts = start_rules.between(
-                        after=(from_date - timedelta(days=7)), before=to_date
+                        after=after_date,
+                        before=to_date
                     )
                     ends = end_rules.between(
-                        after=(from_date - timedelta(days=7)), before=to_date
+                        after=after_date,
+                        before=to_date
                     )
                 except Exception as e:
                     _LOGGER.error(
