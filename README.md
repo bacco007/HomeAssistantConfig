@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.1 |
+| HA Version | 2025.2.2 |
 | No. Integrations | 221 |
 | No. Custom Integrations | 100 |
-| No. Entities | 5944 |
-| No. Sensors | 3893 |
+| No. Entities | 5975 |
+| No. Sensors | 3920 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3893
+Sensors | 3920
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>666 Integrations</summary>
+<details><summary>667 Integrations</summary>
 
 | Name |
 | --- |
@@ -761,6 +761,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
 | [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
+| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -826,7 +827,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2025.2.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.1] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v.3.1.4.4] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.1.5.1] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.4.4] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.2] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -851,7 +852,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.2] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.4.8] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.17.6] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
-| [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
+| [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  [v1.1.2] | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
 | [Pyscript](https://github.com/custom-components/pyscript) |  [v1.6.1] | Pyscript adds rich Python scripting to HASS |[@craigbarratt](https://github.com/craigbarratt).|
 | [Qbittorrent Alt](https://github.com/chris-mc1/qBittorrent-hass) |  [v0.1.0] | Alternative qBittorrent integration for Home Assistant |[@chris-mc1](https://github.com/chris-mc1).|
@@ -1039,7 +1040,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.1-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.2.2-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
