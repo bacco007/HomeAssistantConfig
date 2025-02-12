@@ -145,7 +145,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
                 self._stop_sequence = self._data["next_departure"]["origin_stop_sequence"]
                 self._destination_id = data["destination"].split(": ")[0]
                 self._trip_id = self._data.get('next_departure', {}).get('trip_id', None) 
-                self._direction = data["direction"]
+                self._direction = self._data.get('next_departure', {}).get('trip_direction_id', data["direction"])
                 self._relative = False
                 try:
                     self._get_rt_alerts = await self.hass.async_add_executor_job(get_rt_alerts, self)
