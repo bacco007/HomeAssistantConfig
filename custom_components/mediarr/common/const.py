@@ -18,6 +18,8 @@ MANAGER_TYPES = ["sonarr", "radarr"]
 
 # Discovery Types
 DISCOVERY_TYPES = ["trakt", "tmdb"]
+# Seer Content Types
+SEER_CONTENT_TYPES = ["requests", "trending", "popular", "discover"]
 
 # Endpoints
 

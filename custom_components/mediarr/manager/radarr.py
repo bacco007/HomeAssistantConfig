@@ -1,19 +1,24 @@
-"""Radarr integration for Mediarr using TMDB images."""
+"""Radarr integration for Mediarr."""
+from ..common.sensor import MediarrSensor 
+from datetime import datetime, timedelta 
+import async_timeout 
 import logging
-from datetime import datetime
-import async_timeout
-from ..common.tmdb_sensor import TMDBMediaSensor
+
 
 _LOGGER = logging.getLogger(__name__)
 
-class RadarrMediarrSensor(TMDBMediaSensor):
-    def __init__(self, session, api_key, url, tmdb_api_key, max_items):
+class RadarrMediarrSensor(MediarrSensor):
+    def __init__(self, session, api_key, url, max_items, days_to_check):
         """Initialize the sensor."""
-        super().__init__(session, tmdb_api_key)
+        self._session = session
         self._radarr_api_key = api_key
         self._url = url.rstrip('/')
         self._max_items = max_items
+        self._days_to_check = days_to_check
         self._name = "Radarr Mediarr"
+        self._state = 0
+        
+        
 
     @property
     def name(self):
@@ -29,8 +34,8 @@ class RadarrMediarrSensor(TMDBMediaSensor):
         """Update the sensor."""
         try:
             headers = {'X-Api-Key': self._radarr_api_key}
-            _LOGGER.debug("Fetching Radarr data from %s", self._url)
             now = datetime.now().astimezone()
+            max_date = now + timedelta(days=self._days_to_check)
             
             async with async_timeout.timeout(10):
                 async with self._session.get(
@@ -38,19 +43,13 @@ class RadarrMediarrSensor(TMDBMediaSensor):
                     headers=headers
                 ) as response:
                     if response.status != 200:
-                        _LOGGER.error("Radarr API error: %s - Response: %s", 
-                                    response.status, await response.text())
                         raise Exception(f"Failed to connect to Radarr. Status: {response.status}")
                     
                     movies = await response.json()
-                    _LOGGER.debug("Received %d movies from Radarr", len(movies))
                     card_json = []
                     upcoming_movies = []
 
                     for movie in movies:
-                        if not movie.get('monitored', False) or movie.get('hasFile', False):
-                            continue
-
                         release_dates = []
                         for date_field, date_type in [
                             ('digitalRelease', 'Digital'),
@@ -64,37 +63,25 @@ class RadarrMediarrSensor(TMDBMediaSensor):
                                     )
                                     if not release_date.tzinfo:
                                         release_date = release_date.replace(tzinfo=now.tzinfo)
-                                    if release_date > now:
+                                    if now < release_date <= max_date:
                                         release_dates.append((date_type, release_date))
-                                except ValueError as e:
-                                    _LOGGER.warning("Error parsing date for movie %s: %s", 
-                                                movie.get('title', 'Unknown'), e)
+                                except ValueError:
                                     continue
 
                         if release_dates:
                             release_dates.sort(key=lambda x: x[1])
                             release_type, release_date = release_dates[0]
 
-                            # Get TMDB ID or search for it
-                            tmdb_id = movie.get('tmdbId')
-                            if not tmdb_id:
-                                tmdb_id = await self._search_tmdb(
-                                    movie['title'],
-                                    movie.get('year'),
-                                    'movie'
-                                )
-
-                            # Get TMDB images
-                            poster_url, backdrop_url, main_backdrop_url = await self._get_tmdb_images(tmdb_id, 'movie') if tmdb_id else (None, None, None)
-
+                            images = {img['coverType']: img['remoteUrl'] for img in movie.get('images', [])}
+                            
                             movie_data = {
                                 "title": str(movie["title"]),
                                 "release": f"{release_type} - {release_date.strftime('%Y-%m-%d')}",
                                 "aired": release_date.strftime("%Y-%m-%d"),
                                 "year": str(movie["year"]),
-                                "poster": str(poster_url or ""),  # Thumbnail in list
-                                "fanart": str(main_backdrop_url or backdrop_url or ""),  # Main display image
-                                "banner": str(backdrop_url or ""),  # Additional image if needed
+                                "poster": images.get('poster', ''),
+                                "fanart": images.get('fanart', ''),
+                                "banner": images.get('banner', ''),
                                 "genres": ", ".join(str(g) for g in movie.get("genres", [])[:3]),
                                 "runtime": str(movie.get("runtime", 0)),
                                 "rating": str(movie.get("ratings", {}).get("value", "")),

@@ -10,7 +10,6 @@ from .common.const import (
     DEFAULT_MAX_ITEMS, 
     DEFAULT_DAYS
 )
-
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up Mediarr sensors from YAML configuration."""
     session = async_get_clientsession(hass)
@@ -39,7 +38,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             session,
             config["sonarr"]["api_key"],
             config["sonarr"]["url"],
-            config["sonarr"].get("tmdb_api_key"),
             config["sonarr"].get("max_items", DEFAULT_MAX_ITEMS),
             config["sonarr"].get("days_to_check", DEFAULT_DAYS)
         ))
@@ -50,12 +48,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             session,
             config["radarr"]["api_key"],
             config["radarr"]["url"],
-            config["radarr"].get("tmdb_api_key"),
-            config["radarr"].get("max_items", DEFAULT_MAX_ITEMS)
+            config["radarr"].get("max_items", DEFAULT_MAX_ITEMS),
+            config["radarr"].get("days_to_check", DEFAULT_DAYS)
         ))
 
     # Discovery Sensors
-    
     if "trakt" in config:
         from .discovery.trakt import TraktMediarrSensor
         sensors.append(TraktMediarrSensor(
@@ -70,25 +67,73 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if "tmdb" in config:
         from .discovery.tmdb import TMDBMediarrSensor
         tmdb_config = config["tmdb"]
-        tmdb_api_key = tmdb_config.get("tmdb_api_key")  # Updated to use tmdb_api_key instead of api_key
+        tmdb_api_key = tmdb_config.get("tmdb_api_key")
         
         for endpoint in TMDB_ENDPOINTS.keys():
-            if tmdb_config.get(endpoint, False):  # Only create sensors for enabled endpoints
+            if tmdb_config.get(endpoint, False):
                 sensors.append(TMDBMediarrSensor(
                     session,
                     tmdb_api_key,
                     tmdb_config.get("max_items", DEFAULT_MAX_ITEMS),
                     endpoint
                 ))
+
     if "seer" in config:
         from .discovery.seer import SeerMediarrSensor
+        from .discovery.seer_discovery import SeerDiscoveryMediarrSensor
+        seer_config = config["seer"]
+        
+        # Create the original requests sensor
         sensors.append(SeerMediarrSensor(
             session,
-            config["seer"]["api_key"],
-            config["seer"]["url"],
-            config["seer"].get("tmdb_api_key"),
-            config["seer"].get("max_items", DEFAULT_MAX_ITEMS)
+            seer_config["api_key"],
+            seer_config["url"],
+            seer_config.get("tmdb_api_key"),
+            seer_config.get("max_items", DEFAULT_MAX_ITEMS)
         ))
+        
+        # Create additional discovery sensors if enabled
+        if seer_config.get("trending", False):
+            sensors.append(SeerDiscoveryMediarrSensor(
+                session,
+                seer_config["api_key"],
+                seer_config["url"],
+                seer_config.get("tmdb_api_key"),
+                seer_config.get("max_items", DEFAULT_MAX_ITEMS),
+                "trending"
+            ))
+            
+        if seer_config.get("popular_movies", False):
+            sensors.append(SeerDiscoveryMediarrSensor(
+                session,
+                seer_config["api_key"],
+                seer_config["url"],
+                seer_config.get("tmdb_api_key"),
+                seer_config.get("max_items", DEFAULT_MAX_ITEMS),
+                "popular_movies",
+                "movies"
+            ))
+            
+        if seer_config.get("popular_tv", False):
+            sensors.append(SeerDiscoveryMediarrSensor(
+                session,
+                seer_config["api_key"],
+                seer_config["url"],
+                seer_config.get("tmdb_api_key"),
+                seer_config.get("max_items", DEFAULT_MAX_ITEMS),
+                "popular_tv",
+                "tv"
+            ))
+            
+        if seer_config.get("discover", False):
+            sensors.append(SeerDiscoveryMediarrSensor(
+                session,
+                seer_config["api_key"],
+                seer_config["url"],
+                seer_config.get("tmdb_api_key"),
+                seer_config.get("max_items", DEFAULT_MAX_ITEMS),
+                "discover"
+            ))
 
     if sensors:
         async_add_entities(sensors, True)

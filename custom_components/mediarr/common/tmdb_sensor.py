@@ -140,6 +140,32 @@ class TMDBMediaSensor(MediarrSensor, ABC):
         except Exception as err:
             _LOGGER.error("Error searching TMDB for %s: %s", title, err)
             return None
+    async def _get_tmdb_details(self, tmdb_id, media_type):
+        """Fetch title and overview from TMDB."""
+        try:
+            if not tmdb_id:
+                return None
+                
+            cache_key = f"details_{media_type}_{tmdb_id}"
+            if cache_key in self._cache:
+                return self._cache[cache_key]
+
+            endpoint = f"{media_type}/{tmdb_id}"
+            data = await self._fetch_tmdb_data(endpoint)
+            
+            if data:
+                details = {
+                    'title': data.get('title' if media_type == 'movie' else 'name', 'Unknown'),
+                    'overview': data.get('overview', 'No description available.'),
+                    'year': data.get('release_date' if media_type == 'movie' else 'first_air_date', '')[:4]
+                }
+                self._cache[cache_key] = details
+                return details
+                
+            return None
+        except Exception as err:
+            _LOGGER.error("Error fetching TMDB details for %s: %s", tmdb_id, err)
+            return None
 
     @abstractmethod
     async def async_update(self):
