@@ -15,6 +15,7 @@ CONF_DAMPING_MORNING = "damping_morning"
 CONF_DAMPING_EVENING = "damping_evening"
 CONF_INVERTER_POWER = "inverter_power"
 CONF_EFFICIENCY_FACTOR = "efficiency_factor"
+CONF_MODEL = "model"
 
 ATTR_WATTS = "watts"
 ATTR_WH_PERIOD = "wh_period"

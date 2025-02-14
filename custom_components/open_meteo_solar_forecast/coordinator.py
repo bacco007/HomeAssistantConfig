@@ -9,7 +9,6 @@ from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-
 from open_meteo_solar_forecast import Estimate, OpenMeteoSolarForecast
 
 from .const import (
@@ -20,6 +19,7 @@ from .const import (
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
     CONF_INVERTER_POWER,
+    CONF_MODEL,
     CONF_MODULES_POWER,
     DOMAIN,
     LOGGER,
@@ -56,6 +56,7 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             efficiency_factor=entry.options[CONF_EFFICIENCY_FACTOR],
             damping_morning=entry.options.get(CONF_DAMPING_MORNING, 0.0),
             damping_evening=entry.options.get(CONF_DAMPING_EVENING, 0.0),
+            weather_model=entry.options.get(CONF_MODEL, "best_match"),
         )
 
         update_interval = timedelta(minutes=30)
