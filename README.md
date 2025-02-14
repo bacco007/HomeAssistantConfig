@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2025.2.3 |
-| No. Integrations | 220 |
+| No. Integrations | 219 |
 | No. Custom Integrations | 100 |
-| No. Entities | 5873 |
-| No. Sensors | 3927 |
+| No. Entities | 5947 |
+| No. Sensors | 3924 |
 | No. Automations | 153 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 18
 Binary sensors | 413
-Buttons | 211
+Buttons | 210
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -91,11 +91,11 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3927
+Sensors | 3924
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 245
+Switches | 242
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>666 Integrations</summary>
+<details><summary>653 Integrations</summary>
 
 | Name |
 | --- |
@@ -202,7 +202,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud.stt](https://www.home-assistant.io/components/cloud.stt) |
 | [cloud.tts](https://www.home-assistant.io/components/cloud.tts) |
 | [cloudflare_tunnel_monitor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor) |
-| [cloudflare_tunnel_monitor.sensor](https://www.home-assistant.io/components/cloudflare_tunnel_monitor.sensor) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [co2signal.sensor](https://www.home-assistant.io/components/co2signal.sensor) |
 | [command_line](https://www.home-assistant.io/components/command_line) |
@@ -361,6 +360,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ibeacon.device_tracker](https://www.home-assistant.io/components/ibeacon.device_tracker) |
 | [ibeacon.sensor](https://www.home-assistant.io/components/ibeacon.sensor) |
 | [ics_calendar](https://www.home-assistant.io/components/ics_calendar) |
+| [ics_calendar.calendar](https://www.home-assistant.io/components/ics_calendar.calendar) |
 | [illuminance](https://www.home-assistant.io/components/illuminance) |
 | [illuminance.sensor](https://www.home-assistant.io/components/illuminance.sensor) |
 | [image](https://www.home-assistant.io/components/image) |
@@ -381,15 +381,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
 | [lastfm.sensor](https://www.home-assistant.io/components/lastfm.sensor) |
 | [lg_thinq](https://www.home-assistant.io/components/lg_thinq) |
-| [lg_thinq.binary_sensor](https://www.home-assistant.io/components/lg_thinq.binary_sensor) |
-| [lg_thinq.climate](https://www.home-assistant.io/components/lg_thinq.climate) |
-| [lg_thinq.event](https://www.home-assistant.io/components/lg_thinq.event) |
-| [lg_thinq.fan](https://www.home-assistant.io/components/lg_thinq.fan) |
-| [lg_thinq.number](https://www.home-assistant.io/components/lg_thinq.number) |
-| [lg_thinq.select](https://www.home-assistant.io/components/lg_thinq.select) |
-| [lg_thinq.sensor](https://www.home-assistant.io/components/lg_thinq.sensor) |
-| [lg_thinq.switch](https://www.home-assistant.io/components/lg_thinq.switch) |
-| [lg_thinq.vacuum](https://www.home-assistant.io/components/lg_thinq.vacuum) |
 | [light](https://www.home-assistant.io/components/light) |
 | [llmvision](https://www.home-assistant.io/components/llmvision) |
 | [local_ip](https://www.home-assistant.io/components/local_ip) |
@@ -530,10 +521,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [qbittorrent.sensor](https://www.home-assistant.io/components/qbittorrent.sensor) |
 | [qbittorrent.switch](https://www.home-assistant.io/components/qbittorrent.switch) |
 | [qbittorrent_alt](https://www.home-assistant.io/components/qbittorrent_alt) |
-| [qbittorrent_alt.button](https://www.home-assistant.io/components/qbittorrent_alt.button) |
-| [qbittorrent_alt.number](https://www.home-assistant.io/components/qbittorrent_alt.number) |
-| [qbittorrent_alt.sensor](https://www.home-assistant.io/components/qbittorrent_alt.sensor) |
-| [qbittorrent_alt.switch](https://www.home-assistant.io/components/qbittorrent_alt.switch) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
 | [radarr.binary_sensor](https://www.home-assistant.io/components/radarr.binary_sensor) |
 | [radarr.calendar](https://www.home-assistant.io/components/radarr.calendar) |
@@ -828,23 +815,23 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.2] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
 | [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.1.5.1] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
 | [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.4.4] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
-| [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.2] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
+| [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.3] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) |  [v2.4.1] | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |[@mudape](https://github.com/mudape).|
-| [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.8] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
+| [Llm Vision](https://github.com/valentinfrlch/ha-llmvision) |  [v1.3.9] | Let Home Assistant see! |[@valentinfrlch](https://github.com/valentinfrlch).|
 | [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) |  [v0.1.2] | 🔹 Improve the lovelace yaml parser for Home Assistant ||
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2025.01.30] | Material Symbols for Home Assistant is a collection of 13,803 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v2.8.0] |  |[@vansmak](https://github.com/vansmak).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v2.85] |  |[@vansmak](https://github.com/vansmak).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.5] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
 | [Network Scanner](https://github.com/parvez/network_scanner) |  [v1.0.7] | This Home Assistant integration provides a network scanner that identifies all devices on your local network. Utilizing the provided IP range and MAC address mappings, it gives each identified device a user-friendly name and manufacturer information. |[@parvez](https://github.com/parvez).|
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) |  [v4.1.2] | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |[@zachowj](https://github.com/zachowj).|
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) |  [v0.20] | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |[@exxamalte](https://github.com/exxamalte).|
-| [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.17] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
+| [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.20] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v13.0.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
@@ -895,7 +882,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.11] | Customizable digital date/time card for Lovelace. |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
-| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.4.0] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.5.0-beta.2] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) |  [v3.4.4] | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) |  [v11] | 🔹A collection of tools for other lovelace plugins to use |
@@ -928,7 +915,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
 | [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.2.1] | Build a beautiful Home Assistant dashboard easily |
 | [My Cards Bundle](https://github.com/AnthonMS/my-cards) |  [v1.0.6] | Bundle of my custom Lovelace cards for Home Assistant. Includes: my-slider, my-slider-v2, my-button |
-| [Navbar Card](https://github.com/joseluis9595/lovelace-navbar-card) |  [v0.1.1] | Custom lovelace card that displays a bottom nav in mobile devices, and a side nav in desktop devices for easy navigation. |
+| [Navbar Card](https://github.com/joseluis9595/lovelace-navbar-card) |  [v0.2.0] | Custom lovelace card that displays a bottom nav in mobile devices, and a side nav in desktop devices for easy navigation. |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |

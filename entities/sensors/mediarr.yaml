@@ -5,17 +5,19 @@ plex: # Optional
   port: 32400
   token: !secret plex_token
   max_items: 10
+  tmdb_api_key: !secret tmdb_apikey
 
 sonarr: # Optional
   url: http://192.168.1.131:8989
   api_key: !secret sonarr_apikey
   max_items: 10
-  days_to_check: 60
+  days_to_check: 100
 
 radarr: # Optional
   url: http://192.168.1.131:7878
   api_key: !secret radarr_apikey
   max_items: 10
+  days_to_check: 365
 
 trakt: # Optional
   client_id: !secret trakt_clientid
