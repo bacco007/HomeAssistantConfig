@@ -40,6 +40,9 @@ logger:
       - "Trigger Update Coordinator: Executing step setting variables"
       - "Trigger Update Coordinator: Running script requires passing in a context"
       - "Trigger Update Coordinator: Running template script"
+      - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Weather entity '.*' does not support '.*' forecast"
+      - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Service call requested response data but did not match any entities"
+      - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Entity .* does not support this service."
     homeassistant.loader:
       - We found a custom integration'
     py.warnings:
@@ -52,10 +55,7 @@ logger:
       - "0 bytes read on a total of 32 expected bytes"
     hass_nabucasa.remote:
       - "Connection problem to snitun server"
-    homeassistant.helpers.script.trigger_update_coordinator:
-      - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Weather entity '.*' does not support '.*' forecast"
-      - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Service call requested response data but did not match any entities"
-      - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Entity .* does not support this service."
+
   logs:
     aioharmony.harmonyclient: fatal
     custom_components.aio_geojson_query: debug

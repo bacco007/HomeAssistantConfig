@@ -546,5 +546,3 @@ binary_sensor:
     availability: "{{ hourly is defined and hourly is list and hourly | count >= 3 }}"
     attributes:
       category: weather_combined
-
-
