@@ -1,4 +1,3 @@
-# mediarr/sensor.py
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -10,6 +9,7 @@ from .common.const import (
     DEFAULT_MAX_ITEMS, 
     DEFAULT_DAYS
 )
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up Mediarr sensors from YAML configuration."""
     session = async_get_clientsession(hass)
@@ -41,7 +41,15 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             config["sonarr"].get("max_items", DEFAULT_MAX_ITEMS),
             config["sonarr"].get("days_to_check", DEFAULT_DAYS)
         ))
-
+    if "sonarr2" in config:
+        from .manager.sonarr2 import Sonarr2MediarrSensor
+        sensors.append(Sonarr2MediarrSensor(
+            session,
+            config["sonarr2"]["api_key"],
+            config["sonarr2"]["url"],
+            config["sonarr2"].get("max_items", DEFAULT_MAX_ITEMS),
+            config["sonarr2"].get("days_to_check", DEFAULT_DAYS)
+        ))
     if "radarr" in config:
         from .manager.radarr import RadarrMediarrSensor
         sensors.append(RadarrMediarrSensor(
@@ -50,6 +58,15 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             config["radarr"]["url"],
             config["radarr"].get("max_items", DEFAULT_MAX_ITEMS),
             config["radarr"].get("days_to_check", DEFAULT_DAYS)
+        ))
+    if "radarr2" in config:
+        from .manager.radarr2 import Radarr2MediarrSensor
+        sensors.append(Radarr2MediarrSensor(
+            session,
+            config["radarr2"]["api_key"],
+            config["radarr2"]["url"],
+            config["radarr2"].get("max_items", DEFAULT_MAX_ITEMS),
+            config["radarr2"].get("days_to_check", DEFAULT_DAYS)
         ))
 
     # Discovery Sensors
@@ -79,7 +96,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 ))
 
     if "seer" in config:
-        from .discovery.seer import SeerMediarrSensor
+        from .services.seer import SeerMediarrSensor
         from .discovery.seer_discovery import SeerDiscoveryMediarrSensor
         seer_config = config["seer"]
         
@@ -102,7 +119,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 seer_config.get("max_items", DEFAULT_MAX_ITEMS),
                 "trending"
             ))
-            
+        
         if seer_config.get("popular_movies", False):
             sensors.append(SeerDiscoveryMediarrSensor(
                 session,
@@ -113,7 +130,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 "popular_movies",
                 "movies"
             ))
-            
+        
         if seer_config.get("popular_tv", False):
             sensors.append(SeerDiscoveryMediarrSensor(
                 session,
@@ -124,7 +141,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 "popular_tv",
                 "tv"
             ))
-            
+        
         if seer_config.get("discover", False):
             sensors.append(SeerDiscoveryMediarrSensor(
                 session,
@@ -136,4 +153,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             ))
 
     if sensors:
+        if "mediarr_sensors" not in hass.data:
+            hass.data["mediarr_sensors"] = []
+        hass.data["mediarr_sensors"].extend(sensors)
         async_add_entities(sensors, True)
+
+async def async_unload_platform(hass, config):
+    """Unload the platform."""
+    if "seer" in config and "mediarr_sensors" in hass.data:
+        sensors = hass.data["mediarr_sensors"]
+        seer_sensors = [s for s in sensors if hasattr(s, "get_request_info")]
+        for sensor in seer_sensors:
+            await sensor.async_will_remove_from_hass()
+        hass.data["mediarr_sensors"] = [s for s in sensors if s not in seer_sensors]

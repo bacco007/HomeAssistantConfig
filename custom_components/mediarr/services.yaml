@@ -1,0 +1,72 @@
+# services.yaml
+submit_movie_request:
+  description: Searches for a movie and requests the first result.
+  fields:
+    name:
+      description: Title of movie to request
+      example: "Avatar"
+      required: true
+      selector:
+        text:
+          type: text
+
+submit_tv_request:
+  description: Searches for a TV show and requests the specified seasons.
+  fields:
+    name:
+      description: Title of TV show to request
+      example: "Breaking Bad"
+      required: true
+      selector:
+        text:
+          type: text
+    season:
+      description: Which season(s) to request
+      example: "latest"
+      default: "latest"
+      required: false
+      selector:
+        select:
+          options:
+            - "first"
+            - "latest"
+            - "all"
+
+update_request:
+  description: Updates the status of a media request.
+  fields:
+    name:
+      description: Title of the media
+      example: "Avatar"
+      required: true
+      selector:
+        text:
+          type: text
+    type:
+      description: Type of media
+      example: "movie"
+      required: true
+      selector:
+        select:
+          options:
+            - "movie"
+            - "tv"
+    new_status:
+      description: New status for the request
+      example: "approve"
+      required: true
+      selector:
+        select:
+          options:
+            - "approve"
+            - "decline"
+            - "remove"
+    request_id:
+      description: ID of the request (optional, will use title if not provided)
+      example: 123
+      required: false
+      selector:
+        number:
+          min: 1
+          mode: box
+
