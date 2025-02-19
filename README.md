@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2025.2.4 |
-| No. Integrations | 220 |
+| No. Integrations | 221 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6035 |
-| No. Sensors | 3939 |
+| No. Entities | 6048 |
+| No. Sensors | 3951 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 6
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3939
+Sensors | 3951
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>658 Integrations</summary>
+<details><summary>667 Integrations</summary>
 
 | Name |
 | --- |
@@ -382,6 +382,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
 | [lastfm.sensor](https://www.home-assistant.io/components/lastfm.sensor) |
 | [lg_thinq](https://www.home-assistant.io/components/lg_thinq) |
+| [lg_thinq.binary_sensor](https://www.home-assistant.io/components/lg_thinq.binary_sensor) |
+| [lg_thinq.climate](https://www.home-assistant.io/components/lg_thinq.climate) |
+| [lg_thinq.event](https://www.home-assistant.io/components/lg_thinq.event) |
+| [lg_thinq.fan](https://www.home-assistant.io/components/lg_thinq.fan) |
+| [lg_thinq.number](https://www.home-assistant.io/components/lg_thinq.number) |
+| [lg_thinq.select](https://www.home-assistant.io/components/lg_thinq.select) |
+| [lg_thinq.sensor](https://www.home-assistant.io/components/lg_thinq.sensor) |
+| [lg_thinq.switch](https://www.home-assistant.io/components/lg_thinq.switch) |
+| [lg_thinq.vacuum](https://www.home-assistant.io/components/lg_thinq.vacuum) |
 | [light](https://www.home-assistant.io/components/light) |
 | [llmvision](https://www.home-assistant.io/components/llmvision) |
 | [local_ip](https://www.home-assistant.io/components/local_ip) |
@@ -829,7 +838,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2025.01.30] | Material Symbols for Home Assistant is a collection of 13,803 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v2.85] |  |[@vansmak](https://github.com/vansmak).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v3.0.1] |  |[@vansmak](https://github.com/vansmak).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.5] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
