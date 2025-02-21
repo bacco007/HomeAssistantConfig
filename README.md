@@ -1,6 +1,6 @@
 # 🏠 TBSmartHome - Home Assistant Configuration 🏠
 
-This is my [Home Assistant](https://www.home-assistant.io/) configuration - based on many of the other great configurations are out there (and listed below).  I live in ![Australia](http://flags.ox3.in/mini/au.png) so some of what you find here may not be relevent, or you may have access to better (and probably cheaper) ways.  It's very much a work-in-progress, but feel free to steal ideas or code to use for your own setup
+This is your [Home Assistant](https://www.home-assistant.io/) configuration - based on many of the other great configurations are out there (and listed below).  I live in ![Australia](http://flags.ox3.in/mini/au.png) so some of what you find here may not be relevent, or you may have access to better (and probably cheaper) ways.  It's very much a work-in-progress, but feel free to steal ideas or code to use for your own setup
 
 _Please :star: this repo if you find it useful_
 
