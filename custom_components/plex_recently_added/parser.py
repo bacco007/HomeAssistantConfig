@@ -1,8 +1,19 @@
 from xml.etree import ElementTree
 import os
+import hashlib
+from urllib.parse import urlparse
+import aiohttp
+import aiofiles
 import re
 import math
 from datetime import datetime
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CACHE_FOLDER = os.path.join(SCRIPT_DIR, "images_cache")
+os.makedirs(CACHE_FOLDER, exist_ok=True)
+
+import logging
+_LOGGER = logging.getLogger(__name__)
 
 def parse_library(root):
     output = []
@@ -19,7 +30,34 @@ def parse_library(root):
 
     return output
 
-def parse_data(data, max, base_url, token, identifier, section_key, images_base_url, is_all = False):
+def get_image_filename(url):
+    """Generate a unique filename from the URL while keeping the original extension."""
+    parsed_url = urlparse(url)
+    ext = os.path.splitext(parsed_url.path)[-1]
+    if not ext:
+        ext = ".jpg"
+    return hashlib.md5(url.encode()).hexdigest() + ext
+
+async def download_image(url):
+    """Download an image asynchronously and save it to the cache folder without blocking the event loop."""
+    filename = get_image_filename(url)
+    file_path = os.path.join(CACHE_FOLDER, filename)
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                async with aiofiles.open(file_path, "wb") as file:  # ✅ Non-blocking file write
+                    await file.write(await response.read())  # ✅ Async file writing
+                return filename
+    return None
+
+def cleanup_old_images(valid_filenames):
+    """Delete images that are not in the updated list."""
+    for filename in os.listdir(CACHE_FOLDER):
+        if filename not in valid_filenames:
+            os.remove(os.path.join(CACHE_FOLDER, filename))
+
+async def parse_data(data, max, base_url, token, identifier, section_key, images_base_url, is_all = False):
     if is_all:
         sorted_data = []
         for k in data.keys():
@@ -30,6 +68,7 @@ def parse_data(data, max, base_url, token, identifier, section_key, images_base_
         sorted_data = sorted(data, key=lambda i: i['addedAt'], reverse=True)[:max]
 
     output = []
+    valid_images = set()
     for item in sorted_data:
         media_type_map = {'movie': ('thumb', 'art'), 'episode': ('grandparentThumb', 'grandparentArt')}
         thumb_key, art_key = media_type_map.get(item['type'], ('thumb', 'grandparentArt'))
@@ -68,8 +107,20 @@ def parse_data(data, max, base_url, token, identifier, section_key, images_base_
         data_output["rating"] = ('\N{BLACK STAR} ' + str(item.get("rating"))) if int(float(item.get("rating", 0))) > 0 else ''
         data_output['summary'] = item.get('summary', '')
         data_output['trailer'] = item.get('trailer')
-        data_output["poster"] = (f'{images_base_url}?path={thumb}') if thumb else ""
-        data_output["fanart"] = (f'{images_base_url}?path={art}') if art else ""
+
+
+        thumb_filename = await download_image(f'{base_url}{thumb}?X-Plex-Token={token}')
+        if thumb_filename:
+            valid_images.add(thumb_filename)
+        data_output["poster"] = (f'{images_base_url}?filename={thumb_filename}') if thumb_filename else ""
+
+
+        art_filename = await download_image(f'{base_url}{art}?X-Plex-Token={token}')
+        if art_filename:
+            valid_images.add(art_filename)
+        data_output["fanart"] = (f'{images_base_url}?filename={art_filename}') if art_filename else ""
+
+
         data_output["deep_link"] = deep_link if identifier else None
 
         output.append(data_output)
