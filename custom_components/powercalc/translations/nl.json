@@ -325,7 +325,7 @@
         "data": {
           "sub_profile": "Sub profiel"
         },
-        "description": "Dit model heeft meerdere profielen. Selecteer de juiste voor je apparaat\n\n\"{entity_id}\"",
+        "description": "Dit model heeft meerdere profielen. Selecteer de juiste voor je apparaat\n\n\"{entity_id}\"{remarks}",
         "title": "Sub profiel configuratie"
       },
       "smart_switch": {
@@ -748,6 +748,10 @@
         }
       },
       "name": "Verhoog dagelijkste energiesensor"
+    },
+    "reload": {
+      "description": "Herlaad Powercalc configuratie en entiteiten",
+      "name": "Herladen"
     },
     "reset_energy": {
       "description": "Herstel een energiesensor naar 0 kWh.",

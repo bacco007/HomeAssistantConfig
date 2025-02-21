@@ -325,7 +325,7 @@
         "data": {
           "sub_profile": "Sous-profil"
         },
-        "description": "Ce modèle a plusieurs sous-profils. Sélectionnez celui qui convient à votre appareil",
+        "description": "Ce modèle a plusieurs sous-profils. Sélectionnez celui qui convient à votre appareil{remarks}",
         "title": "Configuration du sous-profil"
       },
       "smart_switch": {
@@ -748,6 +748,10 @@
         }
       },
       "name": "Augmenter le capteur d'énergie quotidien"
+    },
+    "reload": {
+      "description": "Reload Powercalc configuration and entities",
+      "name": "Reload"
     },
     "reset_energy": {
       "description": "Réinitialiser un capteur d'énergie à zéro kWh.",

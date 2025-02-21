@@ -325,7 +325,7 @@
         "data": {
           "sub_profile": "Sub profile"
         },
-        "description": "This device has a model with multiple sub profiles. Select one that corresponds to the following entity of this device:\n\n\"{entity_id}\"",
+        "description": "This device has a model with multiple sub profiles. Select one that corresponds to the following entity of this device:\n\n\"{entity_id}\"{remarks}",
         "title": "Sub profile config"
       },
       "smart_switch": {
@@ -748,6 +748,10 @@
         }
       },
       "name": "Increase daily energy sensor"
+    },
+    "reload": {
+      "description": "Reload Powercalc configuration and entities",
+      "name": "Reload"
     },
     "reset_energy": {
       "description": "Reset an energy sensor to zero kWh.",

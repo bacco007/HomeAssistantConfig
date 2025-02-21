@@ -325,7 +325,7 @@
         "data": {
           "sub_profile": "Subperfil"
         },
-        "description": "Este modelo tem vários subperfis. Selecione um adequado ao seu dispositivo\n\n\"{entity_id}\"",
+        "description": "Este modelo tem vários subperfis. Selecione um adequado ao seu dispositivo\n\n\"{entity_id}\"{remarks}",
         "title": "Configuração Subperfil"
       },
       "smart_switch": {
@@ -748,6 +748,10 @@
         }
       },
       "name": "Aumentar o sensor de consumo diário"
+    },
+    "reload": {
+      "description": "Reload Powercalc configuration and entities",
+      "name": "Reload"
     },
     "reset_energy": {
       "description": "Redefinir um sensor de consumo para zero kWh.",
