@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.4 |
-| No. Integrations | 221 |
+| HA Version | 2025.2.5 |
+| No. Integrations | 220 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6047 |
-| No. Sensors | 3951 |
+| No. Entities | 5988 |
+| No. Sensors | 3968 |
 | No. Automations | 153 |
 
 <details>
@@ -70,7 +70,7 @@ Climate | 2
 Covers | 0
 Dates | 0
 Date/times | 0
-Device trackers | 53
+Device trackers | 54
 Devices | 602
 Fans | 3
 Humidifiers | 0
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3951
+Sensors | 3968
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>667 Integrations</summary>
+<details><summary>666 Integrations</summary>
 
 | Name |
 | --- |
@@ -510,7 +510,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [plex.sensor](https://www.home-assistant.io/components/plex.sensor) |
 | [plex.update](https://www.home-assistant.io/components/plex.update) |
 | [plex_recently_added](https://www.home-assistant.io/components/plex_recently_added) |
-| [plex_recently_added.sensor](https://www.home-assistant.io/components/plex_recently_added.sensor) |
 | [pocketcasts.sensor](https://www.home-assistant.io/components/pocketcasts.sensor) |
 | [powercalc](https://www.home-assistant.io/components/powercalc) |
 | [powercalc.sensor](https://www.home-assistant.io/components/powercalc.sensor) |
@@ -850,7 +849,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v13.0.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
 | [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.2] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
-| [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.5.0] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
+| [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.5.2] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.17.7] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
 | [Prometheus Sensor](https://github.com/mweinelt/ha-prometheus-sensor) |  [v1.1.2] | Import 🔥 Prometheus query results into 🏡 Home Assistant 📈 |[@mweinelt](https://github.com/mweinelt).|
 | [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve) |  [v3.5.2] | Proxmox VE Custom Integration Home Assistant |[@dougiteixeira](https://github.com/dougiteixeira).|
@@ -951,7 +950,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.14] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v1.0.5] | Temperature Hetmap for Home Assistant heatmap |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
-| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.9] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
+| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.10] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v1.0.1] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
@@ -971,11 +970,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Version | Description | Repository |
 | --- | --- | --- | --- |
-| Advanced SSH & Web Terminal | 20.0.0 |  | a0d7b954 |
+| Advanced SSH & Web Terminal | 20.0.1 |  | a0d7b954 |
 | Browserless Chromium | 2.25.0 |  | db21ed7f |
 | Cloudflared | 5.2.9 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
-| ESPHome Device Builder | 2024.12.4 |  | 15ef4d2f |
+| ESPHome Device Builder | 2025.2.0 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
@@ -1040,7 +1039,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.4-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.2.5-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml

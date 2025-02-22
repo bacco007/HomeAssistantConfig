@@ -554,6 +554,7 @@ display:
     # reset_pin: 26
     # #model: 7.50inbv2
     # #model: 7.50in-bv2-rb
+
     model: 7.50in-bV3
     update_interval: never
     cs_pin:
@@ -565,7 +566,6 @@ display:
       inverted: True
     reset_pin: GPIO26
     reset_duration: 2ms
-    # model: 7.50in-bv3-bwr
     rotation: 180
     lambda: |-
       int xres = it.get_width();
