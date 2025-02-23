@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor.const import SensorDeviceClass
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS, CONF_NAME, STATE_UNKNOWN
+from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS, CONF_NAME, STATE_UNKNOWN, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from pyfuelprices.const import PROP_FUEL_LOCATION_SOURCE
@@ -41,13 +41,14 @@ async def async_setup_entry(
         ):
             if station["id"] not in found_entities:
                 entities.append(
-                    FeulStationTracker(
+                    FuelStationTracker(
                         coordinator=entry.runtime_data.coordinator,
                         fuel_station_id=station["id"],
                         entity_id="devicetracker",
                         source=station["props"][PROP_FUEL_LOCATION_SOURCE],
                         area=area[CONF_NAME],
-                        state_value=state_value
+                        state_value=state_value,
+                        config=entry
                     )
                 )
                 found_entities.append(station["id"])
@@ -62,12 +63,13 @@ async def async_setup_entry(
                     area=area[CONF_NAME],
                     fuel=area[CONF_CHEAPEST_SENSORS_FUEL_TYPE],
                     coords=(area[CONF_LATITUDE], area[CONF_LONGITUDE]),
-                    radius=area[CONF_RADIUS]
+                    radius=area[CONF_RADIUS],
+                    config=entry
                 ))
     async_add_entities(entities, True)
 
 
-class FeulStationTracker(FuelStationEntity, SensorEntity):
+class FuelStationTracker(FuelStationEntity, SensorEntity):
     """A fuel station entity."""
 
     @property
@@ -89,7 +91,7 @@ class FeulStationTracker(FuelStationEntity, SensorEntity):
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return extra state attributes."""
         return {
-            **self._fuel_station.__dict__(),
+            **self._fuel_station.__dict__,
             **self._get_fuels,
             "area": self.area
         }
@@ -97,6 +99,8 @@ class FeulStationTracker(FuelStationEntity, SensorEntity):
     @property
     def icon(self) -> str:
         """Return entity icon."""
+        if self._fuel_station.brand == "Pod Point":
+            return "mdi:battery-charging"
         return "mdi:gas-station"
 
     @property
@@ -148,7 +152,10 @@ class CheapestFuelSensor(CheapestFuelEntity, SensorEntity):
         )
         if len(data) >= (int(self._count)-1):
             self._last_update = datetime.now()
-            self._next_update = datetime.now() + timedelta(minutes=5)
+            self._next_update = datetime.now() + timedelta(minutes=self.config.options.get(
+                CONF_SCAN_INTERVAL, self.config.data.get(
+                    CONF_SCAN_INTERVAL, 1440)
+            ))
             if len(data) >= self._count:
                 self._cached_data = data[int(self._count)-1]
             else:

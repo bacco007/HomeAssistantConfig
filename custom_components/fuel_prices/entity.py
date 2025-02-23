@@ -4,17 +4,25 @@ from __future__ import annotations
 
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.config_entries import ConfigEntry
 
 from .coordinator import FuelPricesCoordinator
 
 
-class FuelStationEntity(CoordinatorEntity):
+class FuelPriceEntity:
+    """Top level entity type."""
+
+    config: ConfigEntry
+
+
+class FuelStationEntity(FuelPriceEntity, CoordinatorEntity):
     """Represents a fuel station."""
 
     def __init__(
-        self, coordinator: FuelPricesCoordinator, fuel_station_id, entity_id, source, area, state_value
+        self, coordinator: FuelPricesCoordinator, fuel_station_id, entity_id, source, area, state_value, config: ConfigEntry
     ) -> None:
         """Initialize."""
+        self.config = config
         super().__init__(coordinator)
         self.coordinator: FuelPricesCoordinator = coordinator
         self._fuel_station_id = fuel_station_id
@@ -36,13 +44,14 @@ class FuelStationEntity(CoordinatorEntity):
         return f"fuelprices_{self._fuel_station_id}_{self._entity_id}"
 
 
-class CheapestFuelEntity(Entity):
+class CheapestFuelEntity(FuelPriceEntity, Entity):
     """Represents a fuel."""
 
     def __init__(
-            self, coordinator: FuelPricesCoordinator, count: str, area: str, fuel: str, coords: tuple, radius: float):
+            self, coordinator: FuelPricesCoordinator, count: str, area: str, fuel: str, coords: tuple, radius: float, config: ConfigEntry):
         """Initialize."""
         self.coordinator: FuelPricesCoordinator = coordinator
+        self.config = config
         self._count = count
         self._area = area
         self._coords = coords

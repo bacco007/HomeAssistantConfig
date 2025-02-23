@@ -6,11 +6,11 @@ import aiohttp
 import aiofiles
 import re
 import math
-from datetime import datetime
+from datetime import datetime, timedelta
+from homeassistant.core import HomeAssistant
+from homeassistant.components.http.auth import async_sign_path
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CACHE_FOLDER = os.path.join(SCRIPT_DIR, "images_cache")
-os.makedirs(CACHE_FOLDER, exist_ok=True)
+from .const import TIMEOUT_MINUTES
 
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -30,34 +30,17 @@ def parse_library(root):
 
     return output
 
-def get_image_filename(url):
-    """Generate a unique filename from the URL while keeping the original extension."""
-    parsed_url = urlparse(url)
-    ext = os.path.splitext(parsed_url.path)[-1]
-    if not ext:
-        ext = ".jpg"
-    return hashlib.md5(url.encode()).hexdigest() + ext
+def extract_metadata_and_type(path):
+    pattern = re.compile(r"/library/metadata/(\d+)/(thumb|art)/(\d+)")
+    match = pattern.search(path)
+    
+    if match:
+        metadata_id = match.group(1)
+        art_type = match.group(2)
+        art_id = match.group(3)
+        return metadata_id, art_type, art_id
 
-async def download_image(url):
-    """Download an image asynchronously and save it to the cache folder without blocking the event loop."""
-    filename = get_image_filename(url)
-    file_path = os.path.join(CACHE_FOLDER, filename)
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            if response.status == 200:
-                async with aiofiles.open(file_path, "wb") as file:  # ✅ Non-blocking file write
-                    await file.write(await response.read())  # ✅ Async file writing
-                return filename
-    return None
-
-def cleanup_old_images(valid_filenames):
-    """Delete images that are not in the updated list."""
-    for filename in os.listdir(CACHE_FOLDER):
-        if filename not in valid_filenames:
-            os.remove(os.path.join(CACHE_FOLDER, filename))
-
-async def parse_data(data, max, base_url, token, identifier, section_key, images_base_url, is_all = False):
+def parse_data(hass: HomeAssistant, data, max, base_url, token, identifier, section_key, images_base_url, is_all = False):
     if is_all:
         sorted_data = []
         for k in data.keys():
@@ -109,16 +92,12 @@ async def parse_data(data, max, base_url, token, identifier, section_key, images
         data_output['trailer'] = item.get('trailer')
 
 
-        thumb_filename = await download_image(f'{base_url}{thumb}?X-Plex-Token={token}')
-        if thumb_filename:
-            valid_images.add(thumb_filename)
-        data_output["poster"] = (f'{images_base_url}?filename={thumb_filename}') if thumb_filename else ""
+        thumb_IDs = extract_metadata_and_type(thumb)
+        data_output["poster"] = async_sign_path(hass, f'{images_base_url}?metadata={thumb_IDs[0]}&thumb={thumb_IDs[2]}', timedelta(minutes=TIMEOUT_MINUTES)) if thumb_IDs else ""
 
 
-        art_filename = await download_image(f'{base_url}{art}?X-Plex-Token={token}')
-        if art_filename:
-            valid_images.add(art_filename)
-        data_output["fanart"] = (f'{images_base_url}?filename={art_filename}') if art_filename else ""
+        art_IDs = extract_metadata_and_type(art)
+        data_output["fanart"] = async_sign_path(hass, f'{images_base_url}?metadata={art_IDs[0]}&art={art_IDs[2]}', timedelta(minutes=TIMEOUT_MINUTES)) if art_IDs else ""
 
 
         data_output["deep_link"] = deep_link if identifier else None

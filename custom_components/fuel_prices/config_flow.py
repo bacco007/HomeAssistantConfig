@@ -3,13 +3,13 @@
 import logging
 from typing import Any
 
-from pyfuelprices.sources.mapping import SOURCE_MAP, COUNTRY_MAP
+from pyfuelprices.sources.mapping import FULL_COUNTRY_MAP, COUNTRY_MAP
 import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import selector
+from homeassistant.helpers import selector, entity_registry as er
 from homeassistant.helpers import config_validation as cv
 from homeassistant.core import callback
 from homeassistant.const import (
@@ -25,6 +25,21 @@ from . import FuelPricesConfigEntry
 from .const import DOMAIN, NAME, CONF_AREAS, CONF_SOURCES, CONF_STATE_VALUE, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSORS_COUNT, CONF_CHEAPEST_SENSORS_FUEL_TYPE
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def build_sources_list() -> list[selector.SelectOptionDict]:
+    """Build source configuration dict."""
+    sources = []
+    for country, srcs in FULL_COUNTRY_MAP.items():
+        for src in srcs:
+            label_val = src
+            if src not in COUNTRY_MAP.get(country, []):
+                label_val = f"{src} (beta)"
+            sources.append(selector.SelectOptionDict(
+                value=src, label=f"{country}: {label_val}"))
+    sources.sort(key=lambda x: x['label'])
+    return sources
+
 
 AREA_SCHEMA = vol.Schema(
     {
@@ -43,17 +58,7 @@ AREA_SCHEMA = vol.Schema(
         ): cv.latitude,
         vol.Inclusive(
             CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.longitude,
-        vol.Optional(CONF_CHEAPEST_SENSORS, default=False): selector.BooleanSelector(),
-        vol.Optional(CONF_CHEAPEST_SENSORS_COUNT, default=5): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                mode=selector.NumberSelectorMode.SLIDER,
-                min=1,
-                max=10,
-                step=1
-            )
-        ),
-        vol.Optional(CONF_CHEAPEST_SENSORS_FUEL_TYPE, default=""): selector.TextSelector(),
+        ): cv.longitude
     }
 )
 
@@ -64,7 +69,7 @@ SYSTEM_SCHEMA = vol.Schema(
         ): selector.SelectSelector(
             selector.SelectSelectorConfig(
                 mode=selector.SelectSelectorMode.DROPDOWN,
-                options=list(SOURCE_MAP),
+                options=build_sources_list(),
                 multiple=True,
             )
         ),
@@ -87,13 +92,19 @@ SYSTEM_SCHEMA = vol.Schema(
                 max=1440,
                 unit_of_measurement="m",
             )
-        ),
-        vol.Optional(
-            CONF_STATE_VALUE
-        ): selector.TextSelector(
-            selector.TextSelectorConfig(
-                multiline=False,
-                type=selector.TextSelectorType.TEXT
+        )
+    }
+)
+
+OPTIONS_AREA_SCHEMA = AREA_SCHEMA.extend(
+    {
+        vol.Optional(CONF_CHEAPEST_SENSORS, default=False): selector.BooleanSelector(),
+        vol.Optional(CONF_CHEAPEST_SENSORS_COUNT, default=5): selector.NumberSelector(
+            selector.NumberSelectorConfig(
+                mode=selector.NumberSelectorMode.SLIDER,
+                min=1,
+                max=10,
+                step=1
             )
         )
     }
@@ -103,7 +114,7 @@ SYSTEM_SCHEMA = vol.Schema(
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow."""
 
-    VERSION = 2
+    VERSION = 3
     configured_areas: list[dict] = []
     configured_sources = []
     configuring_area = {}
@@ -192,10 +203,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_NAME: user_input[CONF_NAME],
                     CONF_LATITUDE: user_input[CONF_LATITUDE],
                     CONF_LONGITUDE: user_input[CONF_LONGITUDE],
-                    CONF_RADIUS: user_input[CONF_RADIUS],
-                    CONF_CHEAPEST_SENSORS: user_input[CONF_CHEAPEST_SENSORS],
-                    CONF_CHEAPEST_SENSORS_COUNT: user_input[CONF_CHEAPEST_SENSORS_COUNT],
-                    CONF_CHEAPEST_SENSORS_FUEL_TYPE: user_input[CONF_CHEAPEST_SENSORS_FUEL_TYPE]
+                    CONF_RADIUS: user_input[CONF_RADIUS]
                 }
             )
             return await self.async_step_area_menu()
@@ -240,10 +248,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_NAME: user_input[CONF_NAME],
                     CONF_LATITUDE: user_input[CONF_LATITUDE],
                     CONF_LONGITUDE: user_input[CONF_LONGITUDE],
-                    CONF_RADIUS: user_input[CONF_RADIUS],
-                    CONF_CHEAPEST_SENSORS: user_input[CONF_CHEAPEST_SENSORS],
-                    CONF_CHEAPEST_SENSORS_COUNT: user_input[CONF_CHEAPEST_SENSORS_COUNT],
-                    CONF_CHEAPEST_SENSORS_FUEL_TYPE: user_input[CONF_CHEAPEST_SENSORS_FUEL_TYPE]
+                    CONF_RADIUS: user_input[CONF_RADIUS]
                 }
             )
             return await self.async_step_area_menu()
@@ -288,7 +293,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input[CONF_SOURCES] = COUNTRY_MAP.get(
                     self.hass.config.country)
             else:
-                user_input[CONF_SOURCES] = list(SOURCE_MAP)
+                user_input[CONF_SOURCES] = [
+                    k.value for k in build_sources_list()]
             user_input[CONF_AREAS] = self.configured_areas
             user_input[CONF_SCAN_INTERVAL] = self.interval
             user_input[CONF_TIMEOUT] = self.timeout
@@ -336,6 +342,24 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
             }
         )
 
+    def build_available_fuels_list(self) -> list:
+        """Build a list of available fuels according to data within entity registry."""
+        fuel_types = []
+        entities = er.async_entries_for_config_entry(
+            er.async_get(self.hass), self.config_entry.entry_id)
+        for entity in entities:
+            state = self.hass.states.get(entity.entity_id).attributes
+            for k in state.get("available_fuels", {}):
+                if k not in fuel_types:
+                    fuel_types.append(k)
+        return fuel_types
+
+    def build_compatible_sensor_states(self) -> list:
+        """Build a list of compatible sensor states for use in select controls."""
+        states = ["name"]
+        states.extend(self.build_available_fuels_list())
+        return states
+
     async def async_step_init(self, _: None = None):
         """User init option flow."""
         self.configured_areas = self.config_entry.options.get(
@@ -378,12 +402,25 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
             return await self.async_step_main_menu(None)
         return self.async_show_form(
             step_id="sources",
-            data_schema=self.add_suggested_values_to_schema(SYSTEM_SCHEMA, {
-                CONF_SOURCES: self.configured_sources,
-                CONF_TIMEOUT: self.timeout,
-                CONF_SCAN_INTERVAL: self.interval,
-                CONF_STATE_VALUE: self.state_value
-            }))
+            data_schema=self.add_suggested_values_to_schema(
+                SYSTEM_SCHEMA.extend({
+                    vol.Required(
+                        CONF_STATE_VALUE
+                    ): selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=self.build_compatible_sensor_states(),
+                            multiple=False,
+                            custom_value=True,
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                            sort=True
+                        )
+                    )
+                }), {
+                    CONF_SOURCES: self.configured_sources,
+                    CONF_TIMEOUT: self.timeout,
+                    CONF_SCAN_INTERVAL: self.interval,
+                    CONF_STATE_VALUE: self.state_value
+                }))
 
     async def async_step_area_menu(self, _: None = None) -> FlowResult:
         """Show the area menu."""
@@ -414,7 +451,21 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
             )
             return await self.async_step_area_menu()
         return self.async_show_form(
-            step_id="area_create", data_schema=AREA_SCHEMA, errors=errors
+            step_id="area_create", data_schema=OPTIONS_AREA_SCHEMA.extend(
+                {
+                    vol.Optional(
+                        CONF_CHEAPEST_SENSORS_FUEL_TYPE
+                    ): selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=self.build_available_fuels_list(),
+                            multiple=False,
+                            custom_value=False,
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                            sort=True
+                        )
+                    )
+                }
+            ), errors=errors
         )
 
     async def async_step_area_update_select(
@@ -464,7 +515,21 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
         return self.async_show_form(
             step_id="area_update",
             data_schema=self.add_suggested_values_to_schema(
-                AREA_SCHEMA, self.configuring_area),
+                OPTIONS_AREA_SCHEMA.extend(
+                    {
+                        vol.Optional(
+                            CONF_CHEAPEST_SENSORS_FUEL_TYPE
+                        ): selector.SelectSelector(
+                            selector.SelectSelectorConfig(
+                                options=self.build_available_fuels_list(),
+                                multiple=False,
+                                custom_value=False,
+                                mode=selector.SelectSelectorMode.DROPDOWN,
+                                sort=True
+                            )
+                        )
+                    }
+                ), self.configuring_area),
             errors=errors,
         )
 
@@ -502,7 +567,8 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
                 user_input[CONF_SOURCES] = COUNTRY_MAP.get(
                     self.hass.config.country)
             else:
-                user_input[CONF_SOURCES] = list(SOURCE_MAP)
+                user_input[CONF_SOURCES] = [
+                    k.value for k in build_sources_list()]
             user_input[CONF_AREAS] = self.configured_areas
             user_input[CONF_SCAN_INTERVAL] = self.interval
             user_input[CONF_TIMEOUT] = self.timeout

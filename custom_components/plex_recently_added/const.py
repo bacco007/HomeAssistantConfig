@@ -1,6 +1,7 @@
 from typing import Final
 
 DOMAIN: Final = "plex_recently_added"
+TIMEOUT_MINUTES: Final = 10
 
 
 DEFAULT_NAME: Final = 'Plex Recently Added'

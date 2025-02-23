@@ -44,7 +44,7 @@ class PlexOptionFlow(OptionsFlow):
                 CONF_EXCLUDE_KEYWORDS: user_input.get(CONF_EXCLUDE_KEYWORDS, []),
                 CONF_ON_DECK: user_input.get(CONF_ON_DECK, False),
             }
-            self._config_entry.data = updated_data
+            self.hass.config_entries.async_update_entry(self._config_entry, data=updated_data, minor_version=0, version=1)
 
             return self.async_create_entry(title="", data=updated_data)
 

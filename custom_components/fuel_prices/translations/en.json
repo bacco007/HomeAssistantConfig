@@ -81,6 +81,10 @@
                 "type": {
                     "name": "Fuel Type",
                     "description": "The fuel type to search for (such as E5, E10, B7, SDV)"
+                },
+                "source": {
+                    "name": "Data Source to search",
+                    "description": "The data source ID to search, defaults to 'any' for all data sources."
                 }
             }
         },
@@ -91,6 +95,10 @@
                 "location": {
                     "name": "Location",
                     "description": "The location of the area to search"
+                },
+                "source": {
+                    "name": "Data Source to search",
+                    "description": "The data source ID to search, defaults to 'any' for all data sources."
                 }
             }
         }

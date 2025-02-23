@@ -129,7 +129,7 @@ class PlexApi():
 
         data_out = {}
         for k in data.keys():
-            parsed_data = await parse_data(data[k], self._max, info_url, self._token, identifier, k, self._images_base_url, k == "all")
+            parsed_data = parse_data(self._hass, data[k], self._max, info_url, self._token, identifier, k, self._images_base_url, k == "all")
             
             # Ensure trailer URLs are correctly set for the "all" sensor
             if k == "all":

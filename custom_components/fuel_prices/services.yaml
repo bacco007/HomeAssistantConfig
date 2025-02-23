@@ -6,6 +6,11 @@ find_fuel_station:
       selector:
         location:
           radius: true
+    source:
+      required: false
+      selector:
+        text:
+          multiline: false
 find_fuels:
   fields:
     location:
@@ -15,6 +20,11 @@ find_fuels:
           radius: true
     type:
       required: true
+      selector:
+        text:
+          multiline: false
+    source:
+      required: false
       selector:
         text:
           multiline: false
