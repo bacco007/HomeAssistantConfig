@@ -6,6 +6,7 @@
 __pycache__
 deps
 www/custom-lovelace/upcoming-media-card
+custom_components/plex_recently_added/images_cache
 www/fonts
 icloud
 notebooks
