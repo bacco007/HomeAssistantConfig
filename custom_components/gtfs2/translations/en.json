@@ -235,6 +235,20 @@
 		  "description": "The entity for which you setup local stops"
 		}
 	  }
+	},
+	"extract_departures": {
+      "name": "Extract departures",
+      "description": "Extracts all next departures from your entity up-until tomorrow day end",
+      "fields": {
+        "config_entry": {
+          "name": "Route from which to extract",
+		  "description": "Select your start/stop configuration"
+		},
+		"from_time": {
+          "name": "The time after which departures are collected",
+		  "description": "The time after which you would like to receive the slots. \n If left empty then all future slots will be extracted for today/tomorrow. \n In yaml this has to be 24H format"
+		}
+	  }
 	}
   }
   }

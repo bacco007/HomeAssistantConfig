@@ -206,6 +206,20 @@
 		  "description": "La entidad para la que se configuran las paradas locales"
 		}
 	  }
+	},
+	"extract_departures": {
+      "name": "Extraer salidas",
+      "description": "Extrae todas las próximas salidas de su entidad hasta el final del día de mañana",
+      "fields": {
+        "config_entry": {
+          "name": "Ruta de la que extraer",
+		  "description": "Seleccione su configuración de inicio/parada"
+		},
+		"from_time": {
+          "name": "La hora a partir de la cual se recogen las salidas",
+		  "description": "El tiempo después del cual le gustaría recibir los espacios. \n Si se deja vacío, se extraerán todos los espacios futuros para hoy/mañana. \n En yaml este tiene que ser formato 24H"
+		}
+	  }
 	}
   }
   }

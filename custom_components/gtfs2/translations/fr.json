@@ -204,6 +204,20 @@
 		  "description": "L'entité choissi"
 		}
 	  }
+	},
+	"extract_departures": {
+      "name": "Extraire les départs",
+      "description": "Extrait tous les prochains départs de votre entité jusqu'à la fin de la journée de demain",
+      "fields": {
+        "config_entry": {
+          "name": "Itinéraire à partir duquel extraire",
+		  "description": "Select your start/stop configuration"
+		},
+		"from_time": {
+          "name": "L'heure après laquelle les départs sont récupérés",
+		  "description": "Le délai après lequel vous souhaitez recevoir les créneaux. \n S'ils sont laissés vides, tous les futurs emplacements seront extraits pour aujourd'hui/demain. \n En yaml, cela doit être au format 24H"
+		}
+	  }
 	}
   }
   }

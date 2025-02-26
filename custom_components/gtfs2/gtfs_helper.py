@@ -30,6 +30,7 @@ from .const import (
     DEFAULT_LOCAL_STOP_TIMERANGE_HISTORY,
     DEFAULT_LOCAL_STOP_RADIUS,
     DEFAULT_PATH_RT,
+    DEFAULT_PATH,
     ICON,
     ICONS,
     DOMAIN,
@@ -40,34 +41,34 @@ from .gtfs_rt_helper import get_rt_route_trip_statuses, get_gtfs_rt
 _LOGGER = logging.getLogger(__name__)
 
 
-def get_next_departure(self):
-    _LOGGER.debug("Get next departure with data: %s", self._data)
-    if check_extracting(self.hass, self._data['gtfs_dir'],self._data['file']):
+def get_next_departure(hass, _data):
+    _LOGGER.debug("Get next departure with data: %s", _data)
+    if check_extracting(hass, _data['gtfs_dir'],_data['file']):
         _LOGGER.debug("Cannot get next depurtures on this datasource as still unpacking: %s", self._data["file"])
         return {}
 
     """Get next departures from data."""
 
-    schedule = self._data["schedule"]
-    route_type = self._data["route_type"]
+    schedule = _data["schedule"]
+    route_type = _data["route_type"]
     
     # if type 2 (train) then filter on that and use name-like search 
     if route_type == "2":
         route_type_where = f"route_type in (2,100,101,102,103,104,105,106,107,108, 109,100,111,112,113,114,115,116,117)"
-        start_station_id = str(self._data['origin'])+'%'
-        end_station_id = str(self._data['destination'])+'%'
+        start_station_id = str(_data['origin'])+'%'
+        end_station_id = str(_data['destination'])+'%'
         start_station_where = f"AND start_station.stop_id in (select stop_id from stops where stop_name like :origin_station_id)"
         end_station_where = f"AND end_station.stop_id in (select stop_id from stops where stop_name like :end_station_id)"
         _LOGGER.debug("Setting up TRAIN Route for start/end : %s / %s ", start_station_id, end_station_id)
     else:
         route_type_where = "1=1"
-        start_station_id = self._data['origin'].split(': ')[0]
-        end_station_id = self._data['destination'].split(': ')[0]
+        start_station_id = _data['origin'].split(': ')[0]
+        end_station_id = _data['destination'].split(': ')[0]
         start_station_where = f"AND start_station.stop_id = :origin_station_id"
         end_station_where = f"AND end_station.stop_id = :end_station_id"
         _LOGGER.debug("Setting up Route for start/end : %s / %s ", start_station_id, end_station_id)
-    offset = self._data["offset"]
-    include_tomorrow = self._data["include_tomorrow"]
+    offset = _data["offset"]
+    include_tomorrow = _data["include_tomorrow"]
     now = dt_util.now().replace(tzinfo=None) + datetime.timedelta(minutes=offset)
     now_local_tz = dt_util.now() + datetime.timedelta(minutes=offset)
     now_date = now.strftime(dt_util.DATE_STR_FORMAT)
@@ -94,7 +95,7 @@ def get_next_departure(self):
         tomorrow_where = f"OR calendar.{tomorrow_name} = 1"
         tomorrow_order = f"calendar.{tomorrow_name} DESC,"
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = date('now','+1 day') )"
-        tomorrow_select2 = f"CASE WHEN date('now') < calendar_date_today.date THEN '1' else '0' END as tomorrow,"
+        tomorrow_select2 = f"CASE WHEN date('now') < calendar_date_today.date THEN 1 else 0 END as tomorrow,"
     sql_query = f"""
         SELECT trip.trip_id, trip.route_id,trip.trip_headsign, trip.direction_id,
                route.route_long_name,route.route_short_name,
@@ -251,20 +252,21 @@ def get_next_departure(self):
             idx = f"{idx_prefix} {row['origin_depart_time']}"
             timetable[idx] = {**row, **extras}
             today_last = idx
-            _LOGGER.debug("idx prefix: %s", idx_prefix)
+            _LOGGER.debug("idx prefix today: %s", idx_prefix)        
         if (
             "tomorrow" in row
             and row["tomorrow"] == 1
-            and tomorrow_date <= row["end_date"]
+            and ( tomorrow_date <= row["end_date"] or tomorrow_date == row["calendar_date"])
         ):
             extras = {"day": "tomorrow", "first": False, "last": None}
             if tomorrow_start is None:
                 tomorrow_start = row["origin_depart_date"]
                 extras["first"] = True
             if tomorrow_start == row["origin_depart_date"]:
-                idx = f"{tomorrow_date} {row['origin_depart_time']}"
-                timetable[idx] = {**row, **extras}
-
+                idx_prefix = tomorrow_date_local_tz
+            idx = f"{idx_prefix} {row['origin_depart_time']}"
+            timetable[idx] = {**row, **extras}
+            _LOGGER.debug("idx prefix tomorrow: %s", idx_prefix)
     # Flag last departures.
     for idx in filter(None, [yesterday_last, today_last]):
         timetable[idx]["last"] = True
@@ -286,11 +288,11 @@ def get_next_departure(self):
         return {}
 
     # Define timezone related attribs
-    if self.hass.config.time_zone is None:
+    if hass.config.time_zone is None:
         _LOGGER.error("Timezone is not set in Home Assistant configuration")
         timezone = "UTC"
     else:
-        timezone = dt_util.get_time_zone(self.hass.config.time_zone)
+        timezone = dt_util.get_time_zone(hass.config.time_zone)
         _LOGGER.debug("Timezone HA: %s",timezone)
     _LOGGER.debug("Default timezone: %s",timezone)
     _LOGGER.debug("Agency timezone: %s",item["agency_timezone"])
@@ -327,9 +329,7 @@ def get_next_departure(self):
             _LOGGER.debug("Adding departure: %s", upcoming)
             timetable_remaining.append(dt_util.as_utc(upcoming).isoformat())
     _LOGGER.debug("item reset: %s", item)        
-    _LOGGER.debug(
-        "Timetable Remaining Departures on this Start/Stop: %s", timetable_remaining
-    )
+    _LOGGER.debug("Timetable Remaining Departures on this Start/Stop: %s", timetable_remaining)
     if item == {}:
         data_returned = {        
         "gtfs_updated_at": dt_util.utcnow().isoformat(),
@@ -1147,4 +1147,67 @@ async def update_gtfs_local_stops(hass, data):
         reload = await hass.config_entries.async_reload(cf_entry)    
     return
     
- 
+async def get_route_departures(hass, data):
+    _LOGGER.debug("Getting route departures with data: %s", data)
+    config_entry = hass.config_entries.async_get_entry(data.get("config_entry",""))
+    cf_data = config_entry.data
+    cf_options = config_entry.options
+    _LOGGER.debug("config entry data: %s, options: %s", cf_data, cf_options)
+    
+    now = dt_util.now().replace(tzinfo=None)
+    now_date = now.strftime(dt_util.DATE_STR_FORMAT)
+    cutoff_today = datetime.datetime.strptime(now_date + ' ' + data.get('from_time','00:00:00'), "%Y-%m-%d %H:%M:%S")
+    tomorrow = now + datetime.timedelta(days=1)
+    tomorrow_date = tomorrow.strftime(dt_util.DATE_STR_FORMAT)
+    cutoff_tomorrow = datetime.datetime.strptime(tomorrow_date + ' ' + data.get('from_time','00:00:00'), "%Y-%m-%d %H:%M:%S")
+    _LOGGER.debug("Cutoff today: %s, cutoff tomorrow: %s", cutoff_today, cutoff_tomorrow)
+
+    _pygtfs = get_gtfs(
+            hass, DEFAULT_PATH, cf_data, False
+        ) 
+    
+    _data = {
+            "schedule": _pygtfs,
+            "origin": cf_data["origin"],
+            "destination": cf_data["destination"],
+            "offset": cf_options["offset"] if "offset" in cf_options else 0,
+            "include_tomorrow": True,
+            "gtfs_dir": DEFAULT_PATH,
+            "name": cf_data["name"],
+            "file": cf_data["file"],
+            "route_type": cf_data["route_type"],
+            "route": cf_data["route"],
+            "extracting": False,
+            "next_departure": {},
+            "next_departure_realtime_attr": {},
+            "alert": {}
+        }
+        
+    #if check_extracting(hass, _data['gtfs_dir'],_data['file']):    
+    #        _LOGGER.debug("Cannot update this sensor as still unpacking: %s", _data["file"])
+    #        return
+
+    departures = await hass.async_add_executor_job(
+                    get_next_departure, hass, _data
+                ) 
+                
+    _LOGGER.debug("Departures received: %s", departures["next_departures"])
+
+    today_departures = []
+    tomorrow_departures = []
+    for dt_string in departures["next_departures"]:
+        dt = datetime.datetime.fromisoformat(dt_string).replace(tzinfo=None)
+        dt_date = dt.strftime(dt_util.DATE_STR_FORMAT)
+        if dt_date == now_date and cutoff_today < dt:
+            today_departures.append(dt_string)
+        if dt_date == tomorrow_date and cutoff_tomorrow < dt:
+            tomorrow_departures.append(dt_string)
+     
+    _departures = {
+        "today": today_departures if len(today_departures) > 0 else [],
+        "tomorrow": tomorrow_departures if len(tomorrow_departures) > 0 else []
+    } 
+     
+    _LOGGER.debug("Departures returned: %s", _departures)   
+    
+    return _departures

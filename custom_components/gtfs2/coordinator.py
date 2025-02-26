@@ -107,7 +107,7 @@ class GTFSUpdateCoordinator(DataUpdateCoordinator):
 
             try:
                 self._data["next_departure"] = await self.hass.async_add_executor_job(
-                    get_next_departure, self
+                    get_next_departure, self.hass, self._data
                 )
                 self._data["gtfs_updated_at"] = dt_util.utcnow().isoformat()
             except Exception as ex:  # pylint: disable=broad-except

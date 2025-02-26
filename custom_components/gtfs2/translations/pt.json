@@ -167,6 +167,7 @@
       "header": "header: construir a chamada com cabeçalho/chave",
       "query_string": "query-string: para construir a chamada com query/chave"
     }
+  }
   },
   "services": {
     "update_gtfs": {
@@ -234,5 +235,20 @@
           "description": "A entidade para a qual configura as paragens locais"
         }
       }
-    }
-  }}}
+    },
+	"extract_departures": {
+      "name": "Extrair partidas",
+      "description": "Extrai todos os próximos jogos da tua entidade até ao final do dia de amanhã",
+      "fields": {
+        "config_entry": {
+          "name": "Rota a partir da qual extrair",
+		  "description": "Selecione a sua definição de início/paragem"
+		},
+		"from_time": {
+          "name": "O tempo após o qual as partidas são recolhidas",
+		  "description": "O tempo após o qual gostaria de receber os slots. \n Se for deixado em branco, todos os slots futuros serão extraídos para hoje/amanhã. \n No yaml, deve estar no formato 24H"
+		}
+	  }
+	}
+  }
+}

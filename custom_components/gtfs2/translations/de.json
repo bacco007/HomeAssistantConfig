@@ -207,6 +207,20 @@
           "description": "Die Entität, für die Sie lokale Stopps eingerichtet haben"
         }
       }
-    }
+    },
+	"extract_departures": {
+      "name": "Abfahrten extrahieren",
+      "description": "Extrahiert alle nächsten Abfahrten von Ihrer Entität bis zum morgigen Tagesende",
+      "fields": {
+        "config_entry": {
+          "name": "Route, von der extrahiert werden soll",
+		  "description": "Wählen Sie Ihre Start-/Stopp-Konfiguration"
+		},
+		"from_time": {
+          "name": "Die Zeit, nach der Abfahrten extrahiert werden",
+		  "description": "Der Zeitpunkt, nach dem Sie die Slots erhalten möchten. \n Wenn leer, werden alle zukünftigen Slots für heute/morgen extrahiert. \n In Yaml muss dies das 24-Stunden-Format sein"
+		}
+	  }
+	}
   }
 }

@@ -433,7 +433,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
         try:
             self._data["next_departure"] = await self.hass.async_add_executor_job(
-                get_next_departure, self
+                get_next_departure, self.hass, self._data
             )
         except Exception as ex:  # pylint: disable=broad-except
             _LOGGER.error(
