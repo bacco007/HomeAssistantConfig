@@ -31,6 +31,7 @@ def parse_library(root):
     return output
 
 def extract_metadata_and_type(path):
+    if not path: return None
     pattern = re.compile(r"/library/metadata/(\d+)/(thumb|art)/(\d+)")
     match = pattern.search(path)
     
