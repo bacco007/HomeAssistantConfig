@@ -1,0 +1,34 @@
+{
+    "config": {
+        "error": {
+            "invalid_config": "Validierung fehlgeschlagen. Prüfe bitte die IP-Adresse und stelle sicher, dass das WiCAN Protokoll auf 'auto_pid' eingestellt ist.",
+            "cannot_connect": "WiCAN Verbindungsfehler. Prüfe bitte die IP-Adresse.",
+            "unknown": "Validierung fehlgeschlagen. Unbekannter Fehler."
+        },
+        "step": {
+            "user": {
+                "title": "WiCAN Integration",
+                "description": "Trage die IP-Adresse des WiCAN Geräts ein. Sie sollte statisch oder im Router festgelegt sein, um Verbindungsprobleme zu vermeiden. Stelle bitte auch sicher, dass WiCAN als Protokoll 'auto_pid' verwendet. Falls du bei der Einrichtung Hilfe benötigst, findest du sie hier: https://github.com/jay-oswald/ha-wican.",
+                "data": {
+                    "ip_address": "WiCAN IP-Adresse",
+                    "scan_interval": "Aktualisierungsinterval in Sekunden [min: 5 Sek.]"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "WiCAN Integration",
+                "data": {
+                    "scan_interval": "Aktualisierungsinterval in Sekunden [min: 5 Sek.]"
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "cannot_connect": {
+            "message": "WiCAN Gerät aktuell nicht erreichbar. IP-Adresse: {ip_address}"
+        }
+    }
+}

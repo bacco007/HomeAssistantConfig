@@ -1,13 +1,34 @@
 {
     "config": {
+        "error": {
+            "invalid_config": "Failed validation, double check the IP, as well as check if you have protocol set to auto_pid",
+            "cannot_connect": "WiCAN Connection error, are you sure the IP is correct?",
+            "unknown": "WiCAN not validated, unknown error"
+        },
         "step": {
             "user": {
                 "title": "Config for WiCAN Integration",
-                "description": "Enter the IP Address for your WiCAN. Please make sure your protocol is also set to auto_pid",
+                "description": "Enter the IP-Address for your WiCAN device. It should be static or fixed in your router to avoid connection issues. Please also make sure your protocol is set to 'auto_pid'. If you need help setting it up, you can find it here: https://github.com/jay-oswald/ha-wican",
                 "data": {
-                    "ip": "WiCAN IP"
+                    "ip_address": "WiCAN IP-Address",
+                    "scan_interval": "Polling Interval in seconds [min: 5sec]"
                 }
             }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Config for WiCAN Integration",
+                "data": {
+                    "scan_interval": "Polling Interval in seconds [min: 5sec]"
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "cannot_connect": {
+            "message": "WiCAN device not available. IP-Address: {ip_address}"
         }
     }
 }
