@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.2.5 |
-| No. Integrations | 221 |
+| HA Version | 2025.3.0b0 |
+| No. Integrations | 220 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6047 |
-| No. Sensors | 3971 |
+| No. Entities | 5929 |
+| No. Sensors | 3987 |
 | No. Automations | 153 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 18
 Binary sensors | 413
-Buttons | 211
+Buttons | 210
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -85,17 +85,17 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 5
+Persistent notifications | 2
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3971
+Sensors | 3987
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 245
+Switches | 243
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>667 Integrations</summary>
+<details><summary>666 Integrations</summary>
 
 | Name |
 | --- |
@@ -749,7 +749,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [webostv.notify](https://www.home-assistant.io/components/webostv.notify) |
 | [websocket_api](https://www.home-assistant.io/components/websocket_api) |
 | [wican](https://www.home-assistant.io/components/wican) |
-| [wican.sensor](https://www.home-assistant.io/components/wican.sensor) |
 | [withings](https://www.home-assistant.io/components/withings) |
 | [withings.binary_sensor](https://www.home-assistant.io/components/withings.binary_sensor) |
 | [withings.calendar](https://www.home-assistant.io/components/withings.calendar) |
@@ -811,7 +810,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Default Config Disabler](https://github.com/tronikos/default_config_disabler) |  [v0.0.5] | Disables components from Home Assistant's default_config |[@tronikos](https://github.com/tronikos).|
 | [Device Tools](https://github.com/EuleMitKeule/device-tools) |  [v1.9.0] | Device Tools: Create, modify and merge your Home Assistant devices. |[@EuleMitKeule](https://github.com/EuleMitKeule).|
 | [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) |  [v0.6.2] |  |[@martinarva](https://github.com/martinarva).|
-| [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.5.0] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
+| [Dyson](https://github.com/libdyson-wg/ha-dyson) |  [v1.5.1] | Home Assistant custom integration for Wi-Fi connected Dyson devices |[@libdyson-wg](https://github.com/libdyson-wg), [@dotvezz](https://github.com/dotvezz).|
 | [Emsc Earthquake](https://github.com/febalci/ha_emsc_earthquake) |  | Home Assistant Custom Component for Near Realtime Notifications of Earthquakes from EMSC |[@your_github_handle](https://github.com/your_github_handle).|
 | [Eufy Security](https://github.com/fuatakgun/eufy_security) |  [v8.1.1] | Home Assistant integration to manage Eufy Security devices as cameras, home base stations, doorbells, motion and contact sensors. |[@fuatakgun](https://github.com/fuatakgun).|
 | [Feedparser](https://github.com/custom-components/feedparser) |  [v0.1.12] | 📰 RSS Feed Integration |[@iantrich](https://github.com/iantrich), [@ogajduse](https://github.com/ogajduse).|
@@ -827,8 +826,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2025.2.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) |  [v1.7.2] | an iCal Sensor for Home Assistant |[@Olen](https://github.com/Olen), [@TyBritten](https://github.com/TyBritten).|
-| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.1.6] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
-| [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.6] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3) |  [v3.1.6.1] | iCloud3 v3, iDevice Tracker - An advanced iDevice tracker that uses Apple iCloud account and HA Mobile App data for presence detection and location based automations. |[@gcobb321](https://github.com/gcobb321).|
+| [Icloud3 V3, Idevice Tracker, Dev Edition](https://github.com/gcobb321/icloud3_v3) |  [v3.1.6.1] | iCloud3 v3, iDevice Tracker, Development Version - This Repo/Version is used for development and testing of new and updated features. It is not the official release of iCloud3 v3, . |[@gcobb321](https://github.com/gcobb321).|
 | [Ics Calendar (Icalendar)](https://github.com/franc6/ics_calendar) |  [v5.1.3] | Provides an ICS (icalendar) platform for the Home Assistant calendar |[@franc6](https://github.com/franc6).|
 | [Illuminance](https://github.com/pnbruckner/ha-illuminance) |  [v5.6.1] | Home Assistant Illuminance Sensor |[@pnbruckner](https://github.com/pnbruckner).|
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) |  [v1.6.10] | Indoor Air Quality Sensor Component for Home Assistant |[@Limych](https://github.com/Limych).|
@@ -848,7 +847,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Open Meteo Solar Forecast](https://github.com/rany2/ha-open-meteo-solar-forecast) |  [v0.1.20] | Home Assistant Open-Meteo Solar Forecast Integration |[@rany2](https://github.com/rany2).|
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) |  [v2023.09.1] | OpenNEM Sensor for Home Assistant |[@bacco007](https://github.com/bacco007).|
 | [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor) |  [v13.0.0] | BLE monitor for passive BLE sensors |[@Ernst79](https://github.com/Ernst79), [@myhomeiot](https://github.com/myhomeiot).|
-| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.7] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
+| [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha) |  [v1.7.1] | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather |[@alexander0042](https://github.com/alexander0042).|
 | [Playstation Network](https://github.com/JackJPowell/hass-psn) |  [v0.7.2] | Home Assistant integration for the Playstation Network |[@jackjpowell](https://github.com/jackjpowell).|
 | [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) |  [v0.5.3] | ▶️ Plex component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Powercalc](https://github.com/bramstroker/homeassistant-powercalc) |  [v1.17.8] | Custom component to calculate estimated power consumption of lights and other appliances |[@bramstroker](https://github.com/bramstroker).|
@@ -864,7 +863,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.3.1] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.97] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.98] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.5] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -880,7 +879,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) |  [v0.6] | Home Assistant Sensor for WaterNSW Real Time Data |[@bacco007](https://github.com/bacco007).|
 | [Weatherflow Forecast And Sensor Integration](https://github.com/briis/weatherflow_forecast) |  [v1.0.13] | Home Assistant integration for WeatherFlow Forecast |[@briis](https://github.com/briis).|
 | [Whats Up Docker Updates Monitor](https://github.com/pveiga90/What-s-up-Docker-Updates-Monitor) |  [v0.5] | Basic integration for What's up Docker API |[@pveiga90](https://github.com/pveiga90).|
-| [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.2.1] |  |[@jay-oswald](https://github.com/jay-oswald).|
+| [Wican](https://github.com/jay-oswald/ha-wican) |  [v0.3.0] |  |[@jay-oswald](https://github.com/jay-oswald).|
 | [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index) |  [v1.1.0] | HACS World's Air Quality Index integration from waqi.info |[@pawkakol1](https://github.com/pawkakol1).|
 | [XMLTV EPG](https://github.com/shadow578/homeassistant_xmltv-epg) |  [v2.3.0] | XMLTV EPG for HomeAssisstant |[@shadow578](https://github.com/shadow578).|
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) |  [v1.2.13] | Home Assistant component which allows you to get stock updates from Yahoo finance. |[@iprak](https://github.com/iprak).|
@@ -894,7 +893,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive) |  [v10.0.1-beta.1] | An advanced calendar card for Home Assistant Lovelace. |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) |  [v1.13.0] | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) |  [v3.2.0] | Customizable Animated Bar card for Home Assistant Lovelace |
-| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.11] | Customizable digital date/time card for Lovelace. |
+| [Better Moment Card](https://github.com/ibz0q/better-moment-card) |  [v2025.01.11] | Digital date/time card for Lovelace 🕔 |
 | [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card) |  [v3.0.2] | A rain radar card using the new tiled images from the Australian BOM |
 | [Bubble Card](https://github.com/Clooos/Bubble-Card) |  [v2.5.0-beta.7] | Bubble Card is a minimalist card collection for Home Assistant with a nice pop-up touch. |
 | [Button Card](https://github.com/custom-cards/button-card) |  [v4.1.2] | ❇️ Lovelace button-card for home assistant |
@@ -985,11 +984,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.9 |  | a0d7b954 |
 | MariaDB | 2.7.2 |  | core |
 | Matter Server | 7.0.0 |  | core |
-| Music Assistant Server | 2.4.0 |  | d5369777 |
+| Music Assistant Server | 2.4.1 |  | d5369777 |
 | Node-RED | 19.0.2 |  | a0d7b954 |
 | OpenThread Border Router | 2.13.0 |  | core |
 | phpMyAdmin | 0.11.1 |  | a0d7b954 |
-| Samba share | 12.4.0 |  | core |
+| Samba share | 12.5.0 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
 | Zigbee2MQTT | 2.1.1-1 |  | 45df7312 |
@@ -1040,7 +1039,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.2.5-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.3.0b0-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
