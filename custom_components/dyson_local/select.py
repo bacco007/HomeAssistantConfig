@@ -45,10 +45,10 @@ OSCILLATION_MODE_STR_TO_ENUM = {
 }
 
 TILT_ENUM_TO_STR = {
-    Tilt.DEGREE_0: "0°",
-    Tilt.DEGREE_25: "25°",
-    Tilt.DEGREE_50: "50°",
-    Tilt.BREEZE: "Breeze",
+    0: "0°",
+    25: "25°",
+    50: "50°",
+    359: "Breeze",
 }
 
 TILT_STR_TO_ENUM = {
@@ -150,8 +150,8 @@ class DysonTiltSelect(DysonEntity, SelectEntity):
     """Tilt for supported models."""
 
     _attr_entity_category = EntityCategory.CONFIG
-    _attr_icon = "mdi:sync"
-    _attr_options = list(OSCILLATION_MODE_STR_TO_ENUM.keys())
+    _attr_icon = "mdi:acute-angle"
+    _attr_options = list(TILT_STR_TO_ENUM.keys())
 
     @property
     def current_option(self) -> str:
