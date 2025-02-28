@@ -143,11 +143,7 @@ def get_next_departure(hass, _data):
         INNER JOIN routes route
                    ON route.route_id = trip.route_id 
         INNER JOIN agency agency
-                   ON route.agency_id = CASE 
-                    WHEN  route.agency_id = 'None'
-                    THEN route.agency_id 
-                    ELSE agency.agency_id
-                    END                  
+                   ON route.agency_id = agency.agency_id                 
 		WHERE {route_type_where}
         {start_station_where}
         {end_station_where}
@@ -202,11 +198,7 @@ def get_next_departure(hass, _data):
         INNER JOIN calendar_dates calendar_date_today
 				   ON trip.service_id = calendar_date_today.service_id
         INNER JOIN agency agency
-                   ON route.agency_id = CASE 
-                    WHEN route.agency_id = 'None'
-                    THEN route.agency_id 
-                    ELSE agency.agency_id
-                    END                     
+                   ON route.agency_id = agency.agency_id                    
 		WHERE {route_type_where}
         {start_station_where}
         {end_station_where}
@@ -753,7 +745,16 @@ def check_datasource_index(hass, schedule, gtfs_dir, file):
     """    
     sql_add_index_5 = f"""
     create index gtfs2_routes_route_type on routes(route_type)
-    """      
+    """ 
+    sql_check_route_agency = f"""
+    SELECT count(*) as check_agency
+    FROM routes where agency_id='None'
+    """
+    sql_fix_route_agency = f"""
+    update routes set agency_id = (select agency_id from agency limit 1)
+        where agency_id='None'
+    """
+    
     result_1a = schedule.engine.connect().execute(
         text(sql_index_1),
         {"q": "q"},
@@ -815,7 +816,24 @@ def check_datasource_index(hass, schedule, gtfs_dir, file):
             result_5b = schedule.engine.connect().execute(
             text(sql_add_index_5),
             {"q": "q"},
-            )                 
+            )  
+    
+    result_6a = schedule.engine.connect().execute(
+        text(sql_check_route_agency),
+        {"q": "q"},  
+    )
+    for row_cursor in result_6a:
+        _LOGGER.debug("Agency 'None' in routes: %s", row_cursor._asdict())
+        if row_cursor._asdict()['check_agency'] > 0:
+            _LOGGER.warning("Fix missing agency_id in routes table")
+            conn = schedule.engine.connect()
+            result_6b = conn.execute(
+            text(sql_fix_route_agency),
+            {"q": "q"},
+            )
+            conn.commit()
+
+    
             
 def create_trip_geojson(self):
     # not in use, awaiting geojson in HA-core to cover this type of geometry
@@ -929,11 +947,7 @@ def get_local_stops_next_departures(self):
         INNER JOIN routes route
                    ON route.route_id = trip.route_id 
         INNER JOIN agency agency
-                   ON route.agency_id = CASE 
-                    WHEN  route.agency_id = 'None'
-                    THEN route.agency_id 
-                    ELSE agency.agency_id
-                    END  
+                   ON route.agency_id = agency.agency_id
 		WHERE 
         trip.service_id not in (select service_id from calendar_dates where date = date(:now_offset) and exception_type = 2)
         and ((datetime(date(:now_offset) || ' ' || time(st.departure_time) ) between  datetime(:now_offset,:timerange_history) and  datetime(:now_offset,:timerange))
@@ -962,11 +976,8 @@ def get_local_stops_next_departures(self):
         INNER JOIN calendar_dates calendar_date_today
 				   ON trip.service_id = calendar_date_today.service_id
         INNER JOIN agency agency
-                   ON route.agency_id = CASE 
-                    WHEN  route.agency_id = 'None'
-                    THEN route.agency_id 
-                    ELSE agency.agency_id
-                    END                     
+                   ON route.agency_id = agency.agency_id
+                 
 		WHERE 
         today_cd = 1
         and ((datetime(date(:now_offset) || ' ' || time(st.departure_time) ) between  datetime(:now_offset,:timerange_history) and  datetime(:now_offset,:timerange))
@@ -975,6 +986,7 @@ def get_local_stops_next_departures(self):
         )
         order by stop_id, tomorrow, departure_time
         """  # noqa: S608
+    _LOGGER.debug("sql: %s", sql_query)
     result = schedule.engine.connect().execute(
         text(sql_query),
         {
