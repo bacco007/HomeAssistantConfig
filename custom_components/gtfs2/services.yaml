@@ -128,7 +128,7 @@ update_gtfs_rt_local:
         
     rt_type:
       name: Indicate type of realtime data 
-      description: Select if you update from url or zip
+      description: Select type of realtime data from source
       required: true
       default: "trip_data"
       selector:
@@ -138,6 +138,14 @@ update_gtfs_rt_local:
             - "trip_data"
             - "vehicle_positions"   
             - "alerts"
+            
+    entity_for_siri:
+      name: SIRI RT Route
+      description: For SIRI realtime only (!) select your configuration
+      required: false
+      selector:
+        entity:
+          integration: "gtfs2"            
       
     debug_output:
       name: Save all to local file in readable format

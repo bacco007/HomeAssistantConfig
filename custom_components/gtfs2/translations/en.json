@@ -220,6 +220,14 @@
           "name": "Accept",
 		  "description": "Add application/protobuf to the header"
 		},
+		"rt_type": {
+          "name": "Indicate type of realtime data",
+		  "description": "Select type of realtime data from source"
+		},			
+		"entity_for_siri": {
+          "name": "SIRI RT Route",
+		  "description": "Experimental: SIRI format realtime only (!) select your configuration. see documentation > service"
+		},
 		"debug_output": {
           "name": "debug_output",
 		  "description": "Save to local file in readable format"
