@@ -47,11 +47,11 @@ _Stats as at 05:00, unknown_
 
 | Stat | Qty |
 | ---|--- |
-| HA Version | 2025.3.0b0 |
+| HA Version | 2025.3.0b1 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 100 |
-| No. Entities | 5929 |
-| No. Sensors | 3987 |
+| No. Entities | 6020 |
+| No. Sensors | 3995 |
 | No. Automations | 153 |
 
 <details>
@@ -63,7 +63,7 @@ Air quality | 0
 Alarm control panels | 2
 Areas | 18
 Binary sensors | 413
-Buttons | 210
+Buttons | 211
 Calendars | 84
 Cameras | 6
 Climate | 2
@@ -91,11 +91,11 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 3987
+Sensors | 3995
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
-Switches | 243
+Switches | 245
 Texts | 2
 Times | 0
 Text-to-speech | 1
@@ -821,7 +821,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Google Fit](https://github.com/YorkshireIoT/ha-google-fit) |  [v4.0.2] | Home Assistant Google Fit Custom Component |[@YorkshireIoT](https://github.com/YorkshireIoT).|
 | [Google Home](https://github.com/leikoilja/ha-google-home) |  [v1.12.1] | Home Assistant Google Home custom component |[@leikoilja](https://github.com/leikoilja), [@DurgNomis-drol](https://github.com/DurgNomis-drol), [@ArnyminerZ](https://github.com/ArnyminerZ), [@KapJI](https://github.com/KapJI).|
 | [Gtfs Realtime](https://github.com/bcpearce/homeassistant-gtfs-realtime) |  [v0.2.5] | Home Assistant Custom Integration for GTFS Realtime Data |[@bcpearce](https://github.com/bcpearce).|
-| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.5] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
+| [Gtfs2 For Homeassistant](https://github.com/vingerha/gtfs2) |  [v0.5.6.1] | Support GTFS in Home Assistant GUI-only |[@vingerha](https://github.com/vingerha).|
 | [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) |  [v2.0.5] | HACS gives you a powerful UI to handle downloads of all your custom needs. |[@ludeeus](https://github.com/ludeeus).|
 | [Hdhomerun](https://github.com/uvjim/hass_hdhomerun) |  [v2025.2.1] | Home Assistant integration for HDHomeRun |[@uvjim](https://github.com/uvjim).|
 | [Holidays](https://github.com/bruxy70/Holidays) |  [v1.9.10] | 📅 Custom Home Assistant integration for public holidays - also used for garbage_collection integration to automatically move scheduled events that fall on a public holiday (by an automation blueprint) |[@bruxy70](https://github.com/bruxy70).|
@@ -863,7 +863,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast Pv Forecast](https://github.com/BJReplay/ha-solcast-solar) |  [v4.3.1] | Solcast Integration for Home Assistant |[@BJReplay](https://github.com/BJReplay), [@autoSteve](https://github.com/autoSteve).|
 | [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) |  [v0.4.3] | 📺 Sonarr component to feed Upcoming Media Card. |[@maykar](https://github.com/maykar).|
 | [Spook 👻 Your Homie](https://github.com/frenck/spook) |  [v3.1.0] | A scary 👻 powerful toolbox 🧰 for Home Assistant 🏡 |[@frenck](https://github.com/frenck).|
-| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.98] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
+| [Spotifyplus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) |  [v1.0.99] | Home Assistant integration for Spotify Player control, services, and soundtouchplus integration support. |[@thlucas1](https://github.com/thlucas1).|
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) |  [v1.1.3] | Updated SQL integration for Home Assistant that supports JSON attributes |[@dgomes](https://github.com/dgomes), [@crowbarz](https://github.com/crowbarz).|
 | [Start Time](https://github.com/AlexxIT/StartTime) |  [v1.1.8] | Start Time sensor for Home Assistant |[@AlexxIT](https://github.com/AlexxIT).|
 | [Sun2](https://github.com/pnbruckner/ha-sun2) |  [v3.3.5] | Home Assistant Sun2 Sensor |[@pnbruckner](https://github.com/pnbruckner).|
@@ -950,7 +950,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card) |  [v0.14.14] | A Home Assistant frontend custom card that will display real-time updates for teams tracked with the ha-teamtracker integration.  Has custom in-game layouts for football, baseball, basketball, hockey, soccer, golf, tennis, racing, and mma. |
 | [Temperature Heatmap Card](https://github.com/zanac/temperature-heatmap-card) |  [v1.0.5] | Temperature Hetmap for Home Assistant heatmap |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) |  [v1.4.1] | 🔹 Display whatever you want in an entities card row. |
-| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.10] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
+| [Universal Remote Card](https://github.com/Nerwyn/android-tv-card) |  [v4.3.12] | A completely customizable universal remote card for Home Assistant. Supports multiple platforms out of the box. |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) |  [v0.16.0] | Minimalistic uptime card for Home Assistant Lovelace UI |
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v1.0.1] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
@@ -984,7 +984,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | JupyterLab | 0.15.9 |  | a0d7b954 |
 | MariaDB | 2.7.2 |  | core |
 | Matter Server | 7.0.0 |  | core |
-| Music Assistant Server | 2.4.1 |  | d5369777 |
+| Music Assistant Server | 2.4.2 |  | d5369777 |
 | Node-RED | 19.0.2 |  | a0d7b954 |
 | OpenThread Border Router | 2.13.0 |  | core |
 | phpMyAdmin | 0.11.1 |  | a0d7b954 |
@@ -1039,7 +1039,7 @@ Generated by the [custom readme integration](https://github.com/custom-component
 [home-assistant]: https://home-assistant.io
 
 [ha-version]: https://www.home-assistant.io/blog/categories/release-notes/
-[ha-version-shield]: https://img.shields.io/badge/2025.3.0b0-555555?style=flat-square&logo=home-assistant
+[ha-version-shield]: https://img.shields.io/badge/2025.3.0b1-555555?style=flat-square&logo=home-assistant
 
 [github-build-status-shield]: https://img.shields.io/github/actions/workflow/status/bacco007/HomeAssistantConfig/homeassistant.yaml?branch=master&style=flat-square&logo=github-actions&logoColor=838B95
 [github-build-status]: https://github.com/bacco007/HomeAssistantConfig/actions/workflows/homeassistant.yaml
