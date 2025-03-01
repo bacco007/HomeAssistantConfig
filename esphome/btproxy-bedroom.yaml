@@ -13,7 +13,7 @@ esphome:
   name: ${name}
   friendly_name: ${friendly_name}
   comment: ${esphome_comment}
-  min_version: 2024.6.0
+  min_version: 2025.2.1
   name_add_mac_suffix: true
   project:
     name: esphome.bluetooth-proxy
