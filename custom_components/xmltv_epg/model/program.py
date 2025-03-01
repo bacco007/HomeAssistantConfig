@@ -65,6 +65,7 @@ class TVProgram:
         description: str,
         episode: str | None = None,
         subtitle: str | None = None,
+        image_url: str | None = None,
     ):
         """Initialize TV Program."""
         if end <= start:
@@ -77,6 +78,7 @@ class TVProgram:
         self.description = description
         self.episode = episode
         self.subtitle = subtitle
+        self.image_url = image_url
 
         self.channel = None
 
@@ -193,7 +195,14 @@ class TVProgram:
         title = cast(str, title)
         description = cast(str, description)
 
+        # get optional icon url
+        icon = xml.find("icon")
+        if icon is not None:
+            icon = icon.attrib.get("src")
+
         try:
-            return cls(channel_id, start, end, title, description, episode, subtitle)
+            return cls(
+                channel_id, start, end, title, description, episode, subtitle, icon
+            )
         except ValueError:
             return None

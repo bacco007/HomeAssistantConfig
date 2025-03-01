@@ -43,9 +43,10 @@ class XMLTVClient:
                 # raw XML text, read as-is
                 data = await response.text()
 
-            elif response.content_type == "application/gzip" or "xml.gz" in str(
-                response.url
-            ):
+            elif response.content_type in [
+                "application/gzip",
+                "application/x-gzip",
+            ] or "xml.gz" in str(response.url):
                 # xml.gz file, read as binary and decompress
                 gzipped_data = await response.read()
 

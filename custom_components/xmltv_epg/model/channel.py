@@ -13,10 +13,12 @@ class TVChannel:
 
     TAG = "channel"
 
-    def __init__(self, id: str, name: str):
+    def __init__(self, id: str, name: str, icon_url: str | None = None):
         """Initialize TV Channel."""
         self.id = id
         self.name = name
+        self.icon_url = icon_url
+
         self.programs: list[TVProgram] = []
 
     def add_program(self, program: TVProgram):
@@ -81,4 +83,9 @@ class TVChannel:
         if len(name) > 4 and name[2] == ":" and name[3] == " ":  # 'XX: '
             name = name[4:]
 
-        return cls(id, name)
+        # get optional icon url
+        icon = xml.find("icon")
+        if icon is not None:
+            icon = icon.attrib.get("src")
+
+        return cls(id, name, icon)

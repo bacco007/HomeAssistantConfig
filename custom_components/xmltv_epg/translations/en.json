@@ -20,7 +20,9 @@
                 "data": {
                     "update_interval_hours": "Update Interval (hours)",
                     "program_lookahead_minutes": "Current Program Lookahead (minutes)",
-                    "enable_upcoming_sensor": "Enable Upcoming Program Sensor"
+                    "enable_upcoming_sensor": "Enable Upcoming Program Sensor",
+                    "enable_channel_icons": "Enable Image Entities for Channel Icons",
+                    "enable_program_images": "Enable Image Entities for Current and Upcoming Program"
                 }
             }
         }
@@ -28,7 +30,7 @@
     "entity": {
         "sensor": {
             "program_current": {
-                "name": "{channel_display_name} Current Program",
+                "name": "Current Program",
                 "state_attributes": {
                     "start": {
                         "name": "Starts at"
@@ -57,7 +59,7 @@
                 }
             },
             "program_upcoming": {
-                "name": "{channel_display_name} Upcoming Program",
+                "name": "Upcoming Program",
                 "state_attributes": {
                     "start": {
                         "name": "Starts at"
@@ -92,6 +94,17 @@
                         "name": "Generator URL"
                     }
                 }
+            }
+        },
+        "image": {
+            "program_image_current": {
+                "name": "Current Program Image"
+            },
+            "program_image_upcoming": {
+                "name": "Upcoming Program Image"
+            },
+            "channel_icon": {
+                "name": "Channel Icon"
             }
         }
     }

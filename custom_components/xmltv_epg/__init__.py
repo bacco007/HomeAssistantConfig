@@ -13,10 +13,14 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import XMLTVClient
 from .const import (
+    DEFAULT_ENABLE_CHANNEL_ICONS,
+    DEFAULT_ENABLE_PROGRAM_IMAGES,
     DEFAULT_ENABLE_UPCOMING_SENSOR,
     DEFAULT_PROGRAM_LOOKAHEAD,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
+    OPT_ENABLE_CHANNEL_ICONS,
+    OPT_ENABLE_PROGRAM_IMAGES,
     OPT_ENABLE_UPCOMING_SENSOR,
     OPT_PROGRAM_LOOKAHEAD,
     OPT_UPDATE_INTERVAL,
@@ -25,6 +29,7 @@ from .coordinator import XMLTVDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
+    Platform.IMAGE,
 ]
 
 
@@ -43,6 +48,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         lookahead=entry.options.get(OPT_PROGRAM_LOOKAHEAD, DEFAULT_PROGRAM_LOOKAHEAD),
         enable_upcoming_sensor=entry.options.get(
             OPT_ENABLE_UPCOMING_SENSOR, DEFAULT_ENABLE_UPCOMING_SENSOR
+        ),
+        enable_channel_icon=entry.options.get(
+            OPT_ENABLE_CHANNEL_ICONS, DEFAULT_ENABLE_CHANNEL_ICONS
+        ),
+        enable_program_image=entry.options.get(
+            OPT_ENABLE_PROGRAM_IMAGES, DEFAULT_ENABLE_PROGRAM_IMAGES
         ),
     )
     if entry.state == ConfigEntryState.SETUP_IN_PROGRESS:

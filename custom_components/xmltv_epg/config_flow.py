@@ -14,11 +14,15 @@ from .api import (
     XMLTVClientError,
 )
 from .const import (
+    DEFAULT_ENABLE_CHANNEL_ICONS,
+    DEFAULT_ENABLE_PROGRAM_IMAGES,
     DEFAULT_ENABLE_UPCOMING_SENSOR,
     DEFAULT_PROGRAM_LOOKAHEAD,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
     LOGGER,
+    OPT_ENABLE_CHANNEL_ICONS,
+    OPT_ENABLE_PROGRAM_IMAGES,
     OPT_ENABLE_UPCOMING_SENSOR,
     OPT_PROGRAM_LOOKAHEAD,
     OPT_UPDATE_INTERVAL,
@@ -143,6 +147,18 @@ class XMLTVOptionsFlowHandler(config_entries.OptionsFlow):
                         OPT_ENABLE_UPCOMING_SENSOR,
                         default=self.config_entry.options.get(
                             OPT_ENABLE_UPCOMING_SENSOR, DEFAULT_ENABLE_UPCOMING_SENSOR
+                        ),
+                    ): selector.BooleanSelector(),
+                    vol.Required(
+                        OPT_ENABLE_CHANNEL_ICONS,
+                        default=self.config_entry.options.get(
+                            OPT_ENABLE_CHANNEL_ICONS, DEFAULT_ENABLE_CHANNEL_ICONS
+                        ),
+                    ): selector.BooleanSelector(),
+                    vol.Required(
+                        OPT_ENABLE_PROGRAM_IMAGES,
+                        default=self.config_entry.options.get(
+                            OPT_ENABLE_PROGRAM_IMAGES, DEFAULT_ENABLE_PROGRAM_IMAGES
                         ),
                     ): selector.BooleanSelector(),
                 }

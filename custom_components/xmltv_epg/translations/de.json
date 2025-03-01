@@ -20,7 +20,9 @@
                 "data": {
                     "update_interval_hours": "Aktualisierungsintervall (Stunden)",
                     "program_lookahead_minutes": "Vorrausschauzeit für aktuelles Programm (Minuten)",
-                    "enable_upcoming_sensor": "Sensor für bevorstehendes Programm aktivieren"
+                    "enable_upcoming_sensor": "Sensor für bevorstehendes Programm aktivieren",
+                    "enable_channel_icons": "Bildentitäten für Kanalbilder aktivieren",
+                    "enable_program_images": "Bildentitäten für aktuelles und bevorstehendes Program aktivieren"
                 }
             }
         }
@@ -28,7 +30,7 @@
     "entity": {
         "sensor": {
             "program_current": {
-                "name": "{channel_display_name} aktuelles Programm",
+                "name": "aktuelles Programm",
                 "state_attributes": {
                     "start": {
                         "name": "Startet um"
@@ -57,7 +59,7 @@
                 }
             },
             "program_upcoming": {
-                "name": "{channel_display_name} bevorstehendes Programm",
+                "name": "bevorstehendes Programm",
                 "state_attributes": {
                     "start": {
                         "name": "Startet um"
@@ -92,6 +94,17 @@
                         "name": "Generator-URL"
                     }
                 }
+            }
+        },
+        "image": {
+            "program_image_current": {
+                "name": "aktuelles Programmbild"
+            },
+            "program_image_upcoming": {
+                "name": "bevorstehendes Programmbild"
+            },
+            "channel_icon": {
+                "name": "Kanalbild"
             }
         }
     }

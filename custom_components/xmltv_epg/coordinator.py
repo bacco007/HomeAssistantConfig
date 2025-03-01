@@ -35,11 +35,16 @@ class XMLTVDataUpdateCoordinator(DataUpdateCoordinator):
         update_interval: int,
         lookahead: int,
         enable_upcoming_sensor: bool,
+        enable_channel_icon: bool,
+        enable_program_image: bool,
     ) -> None:
         """Initialize."""
         self.client = client
         self._lookahead = timedelta(minutes=lookahead)
         self._enable_upcoming_sensor = enable_upcoming_sensor
+        self._enable_channel_icon = enable_channel_icon
+        self._enable_program_image = enable_program_image
+
         super().__init__(
             hass=hass,
             logger=LOGGER,
@@ -101,3 +106,13 @@ class XMLTVDataUpdateCoordinator(DataUpdateCoordinator):
     def enable_upcoming_sensor(self) -> bool:
         """Get enable upcoming sensor."""
         return self._enable_upcoming_sensor
+
+    @property
+    def enable_channel_icon(self) -> bool:
+        """Get enable channel icon entity."""
+        return self._enable_channel_icon
+
+    @property
+    def enable_program_image(self) -> bool:
+        """Get enable program image entities."""
+        return self._enable_program_image

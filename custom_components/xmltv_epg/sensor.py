@@ -14,7 +14,7 @@ from homeassistant.components.sensor import (
 from .const import DOMAIN, LOGGER
 from .coordinator import XMLTVDataUpdateCoordinator
 from .entity import XMLTVEntity
-from .helper import normalize_for_entity_id
+from .helper import normalize_for_entity_id, program_get_normalized_identification
 from .model import TVChannel, TVGuide
 
 
@@ -42,30 +42,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
     """XMLTV Channel Program Sensor class."""
 
-    @staticmethod
-    def get_normalized_identification(
-        channel: TVChannel, is_next: bool
-    ) -> tuple[str, str]:
-        """Return normalized identification information for a sensor for the given channel and upcoming status.
-
-        The identification information consists of the sensor entity_id and the translation_key.
-        For the entity_id, the channel id is normalized and cleaned up to form a valid entity_id.
-
-        Example:
-        - channel_id = 'DE: My Channel 1'
-        - is_next = True
-        => ('program_upcoming', 'sensor.de_my_channel_1_program_upcoming')
-
-        :param channel: The TV channel.
-        :param is_next: The upcoming status.
-        :return: (translation_key, entity_id) tuple.
-
-        """
-        translation_key = f"program_{'upcoming' if is_next else 'current'}"
-        entity_id = f"sensor.{normalize_for_entity_id(channel.id)}_{translation_key}"
-
-        return translation_key, entity_id
-
     coordinator: XMLTVDataUpdateCoordinator
 
     def __init__(
@@ -75,10 +51,10 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
         is_next: bool,
     ) -> None:
         """Initialize the sensor class."""
-        super().__init__(coordinator)
+        super().__init__(coordinator, channel)
 
-        translation_key, entity_id = self.get_normalized_identification(
-            channel, is_next
+        translation_key, entity_id = program_get_normalized_identification(
+            channel, is_next, "program_sensor"
         )
 
         self.entity_id = entity_id
@@ -96,14 +72,6 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
         self._is_next = is_next
 
         LOGGER.debug(f"Setup sensor '{self.entity_id}' for channel '{channel.id}'.")
-
-    @property
-    def translation_placeholders(self):
-        """Return the translation placeholders."""
-        if self._channel is None:
-            return None
-
-        return {"channel_display_name": self._channel.name}
 
     @property
     def extra_state_attributes(self):
@@ -195,7 +163,7 @@ class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
 
     def __init__(self, coordinator: XMLTVDataUpdateCoordinator, guide: TVGuide) -> None:
         """Initialize the sensor class."""
-        super().__init__(coordinator)
+        super().__init__(coordinator, None)
 
         translation_key, entity_id = self.get_normalized_identification(guide)
         self.entity_id = entity_id
