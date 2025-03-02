@@ -1952,6 +1952,9 @@ class NavbarCard extends LitElement {
     this._inEditDashboardMode = this.parentElement?.closest("hui-card-edit-mode") != null;
     this._inEditCardMode = homeAssistantRoot?.shadowRoot?.querySelector("hui-dialog-edit-card")?.shadowRoot?.querySelector("ha-dialog") != null;
     this._inPreviewMode = this.parentElement?.closest(".card > .preview") != null;
+    const style = document.createElement("style");
+    style.textContent = this.generateCustomStyles().cssText;
+    this.shadowRoot?.appendChild(style);
   }
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -1983,7 +1986,7 @@ class NavbarCard extends LitElement {
         throw new Error('Each route must have an "icon" property configured');
       }
       if (route.submenu == null && route.tap_action == null && route.url == null) {
-        throw new Error('Each route must either have a "url", "submenu" or a "tap_action" param');
+        throw new Error('Each route must have either "url", "submenu" or "tap_action" property configured');
       }
     });
     this._config = config;
@@ -2210,9 +2213,6 @@ class NavbarCard extends LitElement {
       return html``;
     }
     return html`
-      <style>
-        ${this.customStyles}
-      </style>
       <ha-card
         class="navbar ${editModeClassname} ${deviceModeClassName} ${desktopPositionClassname}">
         ${routes?.map(this._renderRoute).filter((x) => x != null)}
@@ -2220,9 +2220,12 @@ class NavbarCard extends LitElement {
       ${this._popup}
     `;
   }
-  get customStyles() {
+  generateCustomStyles() {
     const userStyles = this._config?.styles ? unsafeCSS(this._config.styles) : css``;
-    return [getDefaultStyles(), userStyles];
+    return css`
+      ${getDefaultStyles()}
+      ${userStyles}
+    `;
   }
 }
 __legacyDecorateClassTS([
