@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.3.0b2 |
 | No. Integrations | 219 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6033 |
-| No. Sensors | 4001 |
+| No. Entities | 6196 |
+| No. Sensors | 4163 |
 | No. Automations | 153 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4001
+Sensors | 4163
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -914,9 +914,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) |  [v0.12.1] | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) |  [v1.16.9] | Minimalistic media card for Home Assistant Lovelace UI |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) |  [v4.5.1] | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
-| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.3.0] | Build a beautiful Home Assistant dashboard easily |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) |  [v4.3.1] | Build a beautiful Home Assistant dashboard easily |
 | [My Cards Bundle](https://github.com/AnthonMS/my-cards) |  [v1.0.6] | Bundle of my custom Lovelace cards for Home Assistant. Includes: my-slider, my-slider-v2, my-button |
-| [Navbar Card](https://github.com/joseluis9595/lovelace-navbar-card) |  [v0.3.0] | Custom lovelace card that displays a bottom nav in mobile devices, and a side nav in desktop devices for easy navigation. |
+| [Navbar Card](https://github.com/joseluis9595/lovelace-navbar-card) |  [v0.3.1] | Custom lovelace card that displays a bottom nav in mobile devices, and a side nav in desktop devices for easy navigation. |
 | [Number Box](https://github.com/junkfix/numberbox-card) |  [v4.17] | Replace input_number sliders with plus and minus buttons |
 | [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row) |  [v2.2.0] | Adds highly configurable buttons that use actions and per-state styling. |
 | [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card) |  [v3.3.5] | Highly customisable Lovelace card to plot interactive graphs. Brings scrolling, zooming, and much more! |
@@ -979,7 +979,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Samba share | 12.5.0 |  | core |
 | Silicon Labs Multiprotocol | 2.4.5 |  | core |
 | SunGather | 0.1.4 |  | 7b536ee6 |
-| Zigbee2MQTT | 2.1.1-1 |  | 45df7312 |
+| Zigbee2MQTT | 2.1.2-1 |  | 45df7312 |
 | ZigStar Silicon Labs FW Flasher | 0.1.1 |  | 193f5383 |
 | ZigStar TI CC2652P/P7 FW Flasher | 0.4.1 |  | 193f5383 |
 </details>
