@@ -50,8 +50,8 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.3.0b3 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6216 |
-| No. Sensors | 4179 |
+| No. Entities | 6209 |
+| No. Sensors | 4174 |
 | No. Automations | 153 |
 
 <details>
@@ -91,7 +91,7 @@ Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4179
+Sensors | 4174
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -972,7 +972,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Browserless Chromium | 2.25.0 |  | db21ed7f |
 | Cloudflared | 5.2.10 |  | 9074a9fa |
 | DbStats | 0.5.11 |  | 8bce8ef4 |
-| ESPHome Device Builder | 2025.2.1 |  | 15ef4d2f |
+| ESPHome Device Builder | 2025.2.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
 | Glances | 0.21.1 |  | a0d7b954 |
