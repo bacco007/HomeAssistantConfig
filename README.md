@@ -50,7 +50,7 @@ _Stats as at 05:00, unknown_
 | HA Version | 2025.3.0b3 |
 | No. Integrations | 220 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6209 |
+| No. Entities | 6191 |
 | No. Sensors | 4174 |
 | No. Automations | 153 |
 
@@ -835,7 +835,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lunar Phase](https://github.com/ngocjohn/lunar-phase) |  [v0.2.2] | 🌘  Lunar Phase Integration for Home Assistant |[@ngocjohn](https://github.com/ngocjohn).|
 | [Material Symbols](https://github.com/beecho01/material-symbols) |  [v2025.01.30] | Material Symbols for Home Assistant is a collection of 13,803 Google Material Symbols for use within Home Assistant. It uses the icon-set produced and maintained by iconify. |[@beecho01](https://github.com/beecho01).|
 | [Measureit](https://github.com/danieldotnl/ha-measureit) |  [v0.8.2] | Measure anything in Home Assistant based on time and conditions. |[@danieldotnl](https://github.com/danieldotnl).|
-| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v3.0.1] |  |[@vansmak](https://github.com/vansmak).|
+| [Mediarr](https://github.com/Vansmak/mediarr_sensor) |  [v3.1.0] |  |[@vansmak](https://github.com/vansmak).|
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) |  [v1.19] | Monitor Docker containers from Home Assistant |[@ualex73](https://github.com/ualex73).|
 | [Multiscrape](https://github.com/danieldotnl/ha-multiscrape) |  [v8.0.5] | Home Assistant custom component for scraping (html, xml or json) multiple values (from a single HTTP request) with a separate sensor/attribute for each value. Support for (login) form-submit functionality. |[@danieldotnl](https://github.com/danieldotnl).|
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) |  [v2.5.0] | myjdownloader integration for home assistant |[@doudz](https://github.com/doudz), [@oribafi](https://github.com/oribafi).|
@@ -971,7 +971,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Advanced SSH & Web Terminal | 20.0.2 |  | a0d7b954 |
 | Browserless Chromium | 2.25.0 |  | db21ed7f |
 | Cloudflared | 5.2.10 |  | 9074a9fa |
-| DbStats | 0.5.11 |  | 8bce8ef4 |
+| DbStats | 0.5.12 |  | 8bce8ef4 |
 | ESPHome Device Builder | 2025.2.2 |  | 15ef4d2f |
 | eufy-security-ws | 1.9.1 |  | 402f1039 |
 | Get HACS | 1.3.1 |  | cb646a50 |
