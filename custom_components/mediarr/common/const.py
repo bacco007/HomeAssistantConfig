@@ -4,8 +4,8 @@ from datetime import timedelta
 # Sensor Configuration Constants
 CONF_MAX_ITEMS = "max_items"
 CONF_DAYS = "days_to_check"
-DEFAULT_MAX_ITEMS = 10
-DEFAULT_DAYS = 60
+DEFAULT_MAX_ITEMS = 45
+DEFAULT_DAYS = 90
 
 # Scan Interval
 SCAN_INTERVAL = timedelta(minutes=10)
