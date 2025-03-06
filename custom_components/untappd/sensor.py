@@ -35,6 +35,7 @@ ATTR_ABV = "abv"
 ATTR_BEER = "beer"
 ATTR_BREWERY = "brewery"
 ATTR_SCORE = "score"
+ATTR_VENUE = "venue"
 ATTR_TOTAL_BADGES = "total_badges"
 ATTR_TOTAL_BEERS = "total_beers"
 ATTR_TOTAL_CREATED_BEERS = "total_created_beers"
@@ -85,6 +86,7 @@ class UntappdCheckinSensor(Entity):
         self._total_friends = None
         self._total_photos = None
         self._abv = None
+        self._venue = None
         self._state = None
         self._picture = None
         self.update()
@@ -111,6 +113,7 @@ class UntappdCheckinSensor(Entity):
             self._beer = result["beer"]["beer_name"]
             self._brewery = result["brewery"]["brewery_name"]
             self._score = str(result["rating_score"])
+            self._venue = result["venue"]["venue_name"]
             self._picture = result["beer"]["beer_label"]
             self._abv = str(result["beer"]["beer_abv"]) + "%"
         result = self._untappd.get_info(self._apiid, self._apisecret, self._username)
@@ -148,6 +151,7 @@ class UntappdCheckinSensor(Entity):
             ATTR_BEER: self._beer,
             ATTR_BREWERY: self._brewery,
             ATTR_SCORE: self._score,
+            ATTR_VENUE: self._venue,
             ATTR_TOTAL_BADGES: self._total_badges,
             ATTR_TOTAL_BEERS: self._total_beers,
             ATTR_TOTAL_CHECKINS: self._total_checkins,
