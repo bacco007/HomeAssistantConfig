@@ -48,10 +48,10 @@ _Stats as at 05:00, unknown_
 | Stat | Qty |
 | ---|--- |
 | HA Version | 2025.3.0 |
-| No. Integrations | 218 |
+| No. Integrations | 220 |
 | No. Custom Integrations | 100 |
-| No. Entities | 6195 |
-| No. Sensors | 4178 |
+| No. Entities | 6207 |
+| No. Sensors | 4190 |
 | No. Automations | 153 |
 
 <details>
@@ -85,13 +85,13 @@ Lights | 13
 Locks | 0
 Media players | 35
 Numbers | 52
-Persistent notifications | 3
+Persistent notifications | 4
 Persons | 4
 Remotes | 7
 Scenes | 2
 Scripts | 84
 Selects | 57
-Sensors | 4178
+Sensors | 4190
 Sirens | 0
 Speech-to-text | 1
 Suns | 1
@@ -115,7 +115,7 @@ Zones | 4
 Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
 
 
-<details><summary>658 Integrations</summary>
+<details><summary>662 Integrations</summary>
 
 | Name |
 | --- |
@@ -268,6 +268,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [file_upload](https://www.home-assistant.io/components/file_upload) |
 | [filter.sensor](https://www.home-assistant.io/components/filter.sensor) |
 | [flightradar24](https://www.home-assistant.io/components/flightradar24) |
+| [flightradar24.device_tracker](https://www.home-assistant.io/components/flightradar24.device_tracker) |
+| [flightradar24.sensor](https://www.home-assistant.io/components/flightradar24.sensor) |
+| [flightradar24.switch](https://www.home-assistant.io/components/flightradar24.switch) |
+| [flightradar24.text](https://www.home-assistant.io/components/flightradar24.text) |
 | [folder.sensor](https://www.home-assistant.io/components/folder.sensor) |
 | [fontawesome](https://www.home-assistant.io/components/fontawesome) |
 | [forecast_solar](https://www.home-assistant.io/components/forecast_solar) |
@@ -658,6 +662,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [template.sensor](https://www.home-assistant.io/components/template.sensor) |
 | [template.switch](https://www.home-assistant.io/components/template.switch) |
 | [template.weather](https://www.home-assistant.io/components/template.weather) |
+| [text](https://www.home-assistant.io/components/text) |
 | [thermal_comfort](https://www.home-assistant.io/components/thermal_comfort) |
 | [thermal_comfort.sensor](https://www.home-assistant.io/components/thermal_comfort.sensor) |
 | [thread](https://www.home-assistant.io/components/thread) |
@@ -734,8 +739,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [weatherflow_cloud.sensor](https://www.home-assistant.io/components/weatherflow_cloud.sensor) |
 | [weatherflow_cloud.weather](https://www.home-assistant.io/components/weatherflow_cloud.weather) |
 | [weatherflow_forecast](https://www.home-assistant.io/components/weatherflow_forecast) |
-| [weatherflow_forecast.binary_sensor](https://www.home-assistant.io/components/weatherflow_forecast.binary_sensor) |
-| [weatherflow_forecast.sensor](https://www.home-assistant.io/components/weatherflow_forecast.sensor) |
 | [weatherflow_forecast.weather](https://www.home-assistant.io/components/weatherflow_forecast.weather) |
 | [webhook](https://www.home-assistant.io/components/webhook) |
 | [webostv](https://www.home-assistant.io/components/webostv) |
@@ -753,6 +756,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [worlds_air_quality_index.sensor](https://www.home-assistant.io/components/worlds_air_quality_index.sensor) |
 | [wud_getupdates](https://www.home-assistant.io/components/wud_getupdates) |
+| [wud_getupdates.sensor](https://www.home-assistant.io/components/wud_getupdates.sensor) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
 | [yahoofinance.sensor](https://www.home-assistant.io/components/yahoofinance.sensor) |
 | [youtube](https://www.home-assistant.io/components/youtube) |
@@ -947,7 +951,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) |  [v1.0.1] | 📐 Home Assistant Card: Group multiple cards into a single sleek card. |
 | [Weather Card](https://github.com/bramkragten/weather-card) |  [v1.5.0] | Weather Card with animated icons for Home Assistant Lovelace |
 | [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card) |  [v2.1.0] | A rain radar card using the tiled images from RainViewer |
-| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.11.1] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
+| [Week Planner Card](https://github.com/FamousWolf/week-planner-card) |  [v1.12.0] | Custom Home Assistant card displaying a responsive overview or multiple days with events from one of multiple calendars |
 | [Zigbee2Mqtt Networkmap Card](https://github.com/azuwis/zigbee2mqtt-networkmap) |  [v0.10.0] | Home Assistant Custom Card to show Zigbee2mqtt network map |
 </details><details><summary>3 Themes</summary>
 
