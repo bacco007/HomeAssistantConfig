@@ -11,3 +11,5 @@ sensor:
         {{state_attr('binary_sensor.livetrafficnsw_nearby_active_incident', 'count')|int(0)}}
       fires_near_me: >
         {{ states('sensor.nsw_rfs_alerts_near_me')|int(0)}}
+      hazardwatch: >
+        {{states('sensor.nswhazardwatch_current')|int(0)}}

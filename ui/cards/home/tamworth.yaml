@@ -56,6 +56,14 @@ cards:
         show_background: false
         show_name: false
         show_last_changed: false
+      - entity: sensor.tamworth_summary
+        icon: mdi:waves
+        show_attribute: true
+        attribute: hazardwatch
+        show_state: false
+        show_background: false
+        show_name: false
+        show_last_changed: false
     styles: |-
       .bubble-sub-button-1 {
           background-color: ${hass.states['sensor.tamworth_summary'].attributes.ee_outages >= 1 ? '#CD1015': 'transparent'} !important;
@@ -65,6 +73,9 @@ cards:
       }
       .bubble-sub-button-3 {
           background-color: ${hass.states['sensor.tamworth_summary'].attributes.fires_near_me >= 1 ? '#CD1015': 'transparent'} !important;
+      }
+      .bubble-sub-button-4 {
+          background-color: ${hass.states['sensor.tamworth_summary'].attributes.hazardwatch >= 1 ? '#CD1015': 'transparent'} !important;
       }
       .bubble-icon {
         opacity: 1;
