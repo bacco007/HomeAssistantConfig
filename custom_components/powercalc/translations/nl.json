@@ -402,6 +402,20 @@
     "deprecated_platform_yaml": {
       "description": "Configuratie middels `sensor->platform` is verouderd. Verander je configratie naar `powercalc->sensors`. Klik op 'Meer informatie' voor verder uitleg.",
       "title": "Powercalc YAML configuratie is verplaatst"
+    },
+    "sub_profile": {
+      "fix_flow": {
+        "step": {
+          "sub_profile": {
+            "description": "Dit model heeft meerdere profielen. Selecteer de juiste voor je apparaat\n\n\"{entity_id}\"{remarks}",
+            "title": "Selecteer het juiste subprofiel",
+            "data": {
+              "sub_profile": "Sub profiel"
+            }
+          }
+        }
+      },
+      "title": "Subprofiel selectie vereist voor {entry}"
     }
   },
   "options": {
