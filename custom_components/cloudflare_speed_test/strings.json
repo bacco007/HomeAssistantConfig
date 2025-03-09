@@ -1,0 +1,188 @@
+{
+  "entity": {
+    "sensor": {
+      "ip": {
+        "name": "IP address",
+        "state_attributes": {
+          "server_city": {
+            "name": "Server city"
+          },
+          "server_region": {
+            "name": "Server region"
+          },
+          "server_code": {
+            "name": "Server code"
+          }
+        }
+      },
+      "isp": {
+        "name": "ISP",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "latency": {
+        "name": "Latency",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "jitter": {
+        "name": "Jitter",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "100kb_down": {
+        "name": "100kB down",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "100kb_up": {
+        "name": "100kB up",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "1mb_down": {
+        "name": "1MB down",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "1mb_up": {
+        "name": "1MB up",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "10mb_down": {
+        "name": "10MB down",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "10mb_up": {
+        "name": "10MB up",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "25mb_down": {
+        "name": "25MB down",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "90th_percentile_down": {
+        "name": "90th percentile down",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      },
+      "90th_percentile_up": {
+        "name": "90th percentile up",
+        "state_attributes": {
+          "server_city": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_city::name%]"
+          },
+          "server_region": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_region::name%]"
+          },
+          "server_code": {
+            "name": "[%key:component::cloudflare_speed_test::entity::sensor::ip::state_attributes::server_code::name%]"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "entity": {
+    "sensor": {
+      "ip": {
+        "default": "mdi:ip-network"
+      },
+      "isp": {
+        "default": "mdi:web"
+      },
+      "latency": {
+        "default": "mdi:speedometer"
+      },
+      "jitter": {
+        "default": "mdi:speedometer"
+      },
+      "100kb_down": {
+        "default": "mdi:speedometer"
+      },
+      "100kb_up": {
+        "default": "mdi:speedometer"
+      },
+      "1mb_down": {
+        "default": "mdi:speedometer"
+      },
+      "1mb_up": {
+        "default": "mdi:speedometer"
+      },
+      "10mb_down": {
+        "default": "mdi:speedometer"
+      },
+      "10mb_up": {
+        "default": "mdi:speedometer"
+      },
+      "25mb_down": {
+        "default": "mdi:speedometer"
+      },
+      "90th_percentile_down": {
+        "default": "mdi:speedometer"
+      },
+      "90th_percentile_up": {
+        "default": "mdi:speedometer"
+      }
+    }
+  }
+}
