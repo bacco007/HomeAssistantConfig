@@ -58,14 +58,14 @@ logger:
 
   logs:
     aioharmony.harmonyclient: fatal
-    #custom_components.aio_geojson_query: debug
+    # custom_components.aio_geojson_query: debug
     custom_components.monitor_docker: fatal
     custom_components.monitor_docker.helpers: fatal
     homeassistant: fatal
     homeassistant.config: debug
-    #homeassistant.core: info
+    # homeassistant.core: info
     homeassistant.helpers.entity: error
-    #homeassistant.helpers.script: debug
+    # homeassistant.helpers.script: debug
     # homeassistant.loader: debug
     pychromecast.socket_client: fatal
     slixmpp.basexmpp: error
