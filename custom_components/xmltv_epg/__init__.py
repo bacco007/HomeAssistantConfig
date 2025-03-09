@@ -6,7 +6,7 @@ https://github.com/shadow578/homeassistant_xmltv-epg
 
 from __future__ import annotations
 
-from homeassistant.config_entries import ConfigEntry, ConfigEntryState
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -56,16 +56,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             OPT_ENABLE_PROGRAM_IMAGES, DEFAULT_ENABLE_PROGRAM_IMAGES
         ),
     )
-    if entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
-        # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-        await coordinator.async_config_entry_first_refresh()
-    else:
-        # To fix deprecation warning (???)
-        # Detected that custom integration 'xmltv_epg' uses `async_config_entry_first_refresh`, which is only supported when entry state is ConfigEntryState.SETUP_IN_PROGRESS, but it is in state ConfigEntryState.LOADED
-        await coordinator.async_refresh()
+
+    # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
+    await coordinator.async_config_entry_first_refresh()
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # listen for updates to the config entry to re-setup it
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    # FIXME for some reason, following the example for a coordinated single API poll, the
+    # sensors created in sensor.py don't display the data until the next refresh interval.
+    # causing a refresh manually after they are set up works around this issue.
+    # see https://developers.home-assistant.io/docs/integration_fetching_data/#coordinated-single-api-poll-for-data-for-all-entities
+    await coordinator.async_refresh()
 
     return True
 
@@ -79,5 +83,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
-    await async_unload_entry(hass, entry)
-    await async_setup_entry(hass, entry)
+    await hass.config_entries.async_reload(entry.entry_id)

@@ -10,7 +10,7 @@ from .coordinator import XMLTVDataUpdateCoordinator
 from .model import TVChannel, TVGuide
 
 
-class XMLTVEntity(CoordinatorEntity):
+class XMLTVEntity(CoordinatorEntity[XMLTVDataUpdateCoordinator]):
     """XMLTV Entity class."""
 
     def __init__(

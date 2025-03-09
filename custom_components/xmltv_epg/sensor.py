@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
 )
+from homeassistant.const import EntityCategory
+from homeassistant.core import callback
+
+from custom_components.xmltv_epg.model.program import TVProgram
 
 from .const import DOMAIN, LOGGER
 from .coordinator import XMLTVDataUpdateCoordinator
@@ -44,6 +47,10 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
 
     coordinator: XMLTVDataUpdateCoordinator
 
+    __channel: TVChannel
+    __program: TVProgram | None
+    __is_next: bool
+
     def __init__(
         self,
         coordinator: XMLTVDataUpdateCoordinator,
@@ -67,67 +74,76 @@ class XMLTVChannelSensor(XMLTVEntity, SensorEntity):
             icon="mdi:format-quote-close",
         )
 
-        self._channel = channel
-        self._program = None
-        self._is_next = is_next
+        self.__channel = channel
+        self.__program = None
+        self.__is_next = is_next
 
         LOGGER.debug(f"Setup sensor '{self.entity_id}' for channel '{channel.id}'.")
 
     @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        program = self._program
-        if program is None:
-            return None
+    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride] -- Entity.available and CoordinatorEntity.available are defined incompatible
+        """Return if entity is available."""
+        return XMLTVEntity.available.__get__(self)
 
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        guide: TVGuide = self.coordinator.data
+
+        # refresh channel from guide
+        channel = guide.get_channel(self.__channel.id)
+        if channel is None:
+            self._attr_native_value = None
+            self._attr_extra_state_attributes = {}
+
+            super()._handle_coordinator_update()
+            return
+
+        self.__channel = channel
+
+        now = self.coordinator.current_time
+
+        # get current or next program
+        self.__program = (
+            self.__channel.get_next_program(now)
+            if self.__is_next
+            else channel.get_current_program(now)
+        )
+        if self.__program is None:
+            self._attr_native_value = None
+            self._attr_extra_state_attributes = {}
+
+            super()._handle_coordinator_update()
+            return
+
+        # native value is full program title
+        self._attr_native_value = self.__program.full_title
+
+        # update state attributes
         # format duration to HH:MM
-        duration_seconds = program.duration.total_seconds()
+        duration_seconds = self.__program.duration.total_seconds()
         duration_hours = int(duration_seconds // 3600)
         duration_minutes = int((duration_seconds % 3600) // 60)
 
         # get last program end time
-        last_program = self._channel.get_last_program()
+        last_program = self.__channel.get_last_program()
         if last_program is not None:
             channel_program_known_until = last_program.end
         else:
             channel_program_known_until = None
 
-        return {
-            "start": program.start,
-            "end": program.end,
+        self._attr_extra_state_attributes = {
+            "start": self.__program.start,
+            "end": self.__program.end,
             "duration": f"{duration_hours:02d}:{duration_minutes:02d}",
-            "title": program.title,
-            "description": program.description,
-            "episode": program.episode,
-            "subtitle": program.subtitle,
+            "title": self.__program.title,
+            "description": self.__program.description,
+            "episode": self.__program.episode,
+            "subtitle": self.__program.subtitle,
             "channel_program_known_until": channel_program_known_until,
         }
 
-    @property
-    def native_value(self) -> str | None:
-        """Return the native value of the sensor."""
-        guide: TVGuide = self.coordinator.data
-
-        # refresh channel from guide
-        channel = guide.get_channel(self._channel.id)
-        if channel is None:
-            return None
-
-        self._channel = channel
-
-        now = self.coordinator.current_time
-
-        # get current or next program
-        self._program = (
-            self._channel.get_next_program(now)
-            if self._is_next
-            else channel.get_current_program(now)
-        )
-        if self._program is None:
-            return None
-
-        # native value is full program title
-        return self._program.full_title
+        super()._handle_coordinator_update()
 
 
 class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
@@ -161,6 +177,8 @@ class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
 
     coordinator: XMLTVDataUpdateCoordinator
 
+    __guide: TVGuide
+
     def __init__(self, coordinator: XMLTVDataUpdateCoordinator, guide: TVGuide) -> None:
         """Initialize the sensor class."""
         super().__init__(coordinator, None)
@@ -174,47 +192,52 @@ class XMLTVStatusSensor(XMLTVEntity, SensorEntity):
             key=translation_key,
             translation_key=translation_key,
             device_class=SensorDeviceClass.TIMESTAMP,
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
 
-        self._guide = guide
+        self.__guide = guide
 
         LOGGER.debug(
             f"Setup sensor '{self.entity_id}' for coordinator '{guide.generator_name}' status."
         )
 
     @property
-    def translation_placeholders(self):
-        """Return the translation placeholders."""
-        if self._guide is None:
-            return None
+    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride] -- Entity.available and CoordinatorEntity.available are defined incompatible
+        """Return if entity is available."""
+        return XMLTVEntity.available.__get__(self)
 
-        return {"generator_name": self._guide.generator_name}
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        if self._guide is None:
-            return None
-
-        return {
-            "generator_name": self._guide.generator_name,
-            "generator_url": self._guide.generator_url,
-        }
-
-    @property
-    def native_value(self) -> datetime | None:
-        """Return the native value of the sensor."""
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
         coordinator: XMLTVDataUpdateCoordinator = self.coordinator
 
         # refresh guide from coordinator
         guide: TVGuide = coordinator.data
         if guide is None:
-            return None
+            self._attr_native_value = None
+            self._attr_extra_state_attributes = {}
+            self._attr_translation_placeholders = {}
+            super()._handle_coordinator_update()
+            return
 
-        self._guide = guide
+        self.__guide = guide
 
         # native value is last update time
         value = coordinator.last_update_time
-        if value is not None:
-            return value.astimezone()
-        return None
+        self._attr_native_value = value.astimezone() if value is not None else None
+
+        # set extra state attributes
+        self._attr_extra_state_attributes = {
+            "last_update": value,
+            "generator_name": self.__guide.generator_name,
+            "generator_url": self.__guide.generator_url,
+        }
+
+        # set translation placeholders
+        self._attr_translation_placeholders = (
+            {"generator_name": self.__guide.generator_name}
+            if self.__guide.generator_name is not None
+            else {}
+        )
+
+        super()._handle_coordinator_update()
