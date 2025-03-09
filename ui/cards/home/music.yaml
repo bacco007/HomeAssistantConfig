@@ -217,6 +217,12 @@ cards:
                 action: toggle
               entity: script.sonos_favourites_virgin_radio_uk
               picture: /local/radioicons/virgin_radio_uk.png
+            - type: template
+              card_mod: *style
+              tap_action:
+                action: toggle
+              entity: script.sonos_favourites_virgin_radio_britpop_uk
+              picture: /local/radioicons/virgin_radio_britpop_uk.png
           alignment: justify
 
   - square: false

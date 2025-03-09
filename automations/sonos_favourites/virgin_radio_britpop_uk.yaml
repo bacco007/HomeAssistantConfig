@@ -1,0 +1,20 @@
+---
+alias: "[Sonos Favourites] Play Virgin Radio Britpop UK"
+description: Play Virgin Radio Britpop UK on Sonos
+id: sonos_favourites_play_virgin_radio_britpop_uk
+trigger:
+  - platform: webhook
+    webhook_id: sonos_virgin_radio_britpop_uk
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: script.toggle
+    target:
+      entity_id: script.sonos_favourites_virgin_radio_britpop_uk
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Virgin Radio Britpop UK"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip3 install soco
+pip3 install soco --break-system-packages
 
 python3 bin/sonos_favourites.py
 

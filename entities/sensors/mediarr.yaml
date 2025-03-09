@@ -5,7 +5,7 @@ plex: # Optional
   port: 32400
   token: !secret plex_token
   max_items: 10
-  tmdb_api_key: !secret tmdb_apitoken
+  #tmdb_api_key: !secret tmdb_apitoken
 
 sonarr: # Optional
   url: http://192.168.1.131:8989
@@ -22,16 +22,16 @@ radarr: # Optional
 trakt: # Optional
   client_id: !secret trakt_clientid
   client_secret: !secret trakt_clientsecret
-  tmdb_api_key: !secret tmdb_apitoken # Required for posters
+  #tmdb_api_key: !secret tmdb_apitoken # Required for posters
   trending_type: both #
   max_items: 10
 
-tmdb: # Optional
-  api_key: !secret tmdb_apitoken
-  trending_type: all # Options: movie, tv, all
-  max_items: 10
-  trending: true # Default endpoint
-  now_playing: true # Optional
-  upcoming: true # Optional
-  on_air: true # Optional
-  airing_today: true # Optional
+# tmdb: # Optional
+#   api_key: !secret tmdb_apitoken
+#   trending_type: all # Options: movie, tv, all
+#   max_items: 10
+#   trending: true # Default endpoint
+#   now_playing: true # Optional
+#   upcoming: true # Optional
+#   on_air: true # Optional
+#   airing_today: true # Optional
