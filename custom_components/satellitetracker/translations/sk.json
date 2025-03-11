@@ -1,0 +1,53 @@
+{
+  "title": "N2YO Sledovač satelitov",
+  "config": {
+    "step": {
+      "user": {
+        "description": "Na používanie tejto integrácie musíte získať API kľúč z https://n2yo.com/api.",
+        "data": {
+          "api_key": "Zadajte svoj N2YO.com API kľúč."
+        }
+      },
+      "type": {
+        "data": {
+          "type": "Vyberte typ senzorov ktoré chcete pridať. Satelit bude sledovať jednotlivý satelit, Poloha bude sledovať všetky satelity vo vašej zadanej polohe."
+        }
+      },
+      "location": {
+        "data": {
+          "name": "Zadajte názov pre túto polohu.",
+          "category": "Vyberte kategóriu satelitov ktoré chcete sledovať.",
+          "latitude": "Zadajte zemepisnú šírku (predvolená je vaša poloha Home Assistant).",
+          "longitude": "Zadajte zemepisnú dĺžku.",
+          "elevation": "Zadajte nadmorskú výšku od hladiny mora."
+        }
+      },
+      "satellite": {
+        "data": {
+          "name": "Zadajte názov satelitu.",
+          "sat_id": "Zadajte NORAD ID satelitu (predvolené je ISS).",
+          "latitude": "Zadajte zemepisnú šírku pre viditeľnosť (predvolená je vaša poloha Home Assistant).",
+          "longitude": "Zadajte zemepisnú dĺžku.",
+          "elevation": "Zadajte nadmorskú výšku od hladiny mora."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nemožno sa pripojiť k N2YO.com.",
+      "invalid_auth": "Neplatný API kľúč.",
+      "unknown": "Vyskytol sa neznámy problém."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Zadajte interval dotazovania v sekundách.",
+          "radius": "Zadajte polomer pre vaše senzory polohy nad hlavou.",
+          "min_visibility": "Zadajte minimálny čas viditeľnosti pre prechody satelitu v sekundách.",
+          "min_alert": "Zadajte minimálne stupne pre upozornenia na prechod."
+        }
+      }
+    }
+  }
+}
