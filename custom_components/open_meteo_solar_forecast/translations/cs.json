@@ -68,7 +68,7 @@
           "inverter_size": "Velikost měniče (W)",
           "modules_power": "Celkový špičkový výkon solárních modulů ve Wattech"
         },
-        "description": "Tyto hodnoty umožňují vyladit výsledky Forecast.Solar. Pokud některé pole není jasné, nahlédněte do dokumentace."
+        "description": "Tyto hodnoty umožňují vyladit výsledky Solar Forecast. Pokud některé pole není jasné, nahlédněte do dokumentace."
       }
     }
   }

@@ -24,7 +24,7 @@
           "damping": "Dušilni faktor: prilagoditev rezultatov zjutraj in zvečer",
           "inverter_size": "Velikost pretvornika (Watt)"
         },
-        "description": "Te vrednosti omogočajo prilagoditev rezultata Forecast.Solar. Če vam podatek ni jasen, si oglejte dokumentacijo."
+        "description": "Te vrednosti omogočajo prilagoditev rezultata Solar Forecast. Če vam podatek ni jasen, si oglejte dokumentacijo."
       }
     }
   }

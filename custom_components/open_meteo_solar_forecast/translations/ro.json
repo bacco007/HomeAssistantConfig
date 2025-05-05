@@ -61,7 +61,7 @@
           "damping": "Factor de atenuare: ajustează rezultatele dimineața și seara",
           "inverter_size": "Dimensiune invertor (Watt)"
         },
-        "description": "Aceste valori permit ajustarea rezultatului Forecast.Solar. Te rugăm să consulți documentația daca vreun câmp este neclar."
+        "description": "Aceste valori permit ajustarea rezultatului Solar Forecast. Te rugăm să consulți documentația daca vreun câmp este neclar."
       }
     }
   }

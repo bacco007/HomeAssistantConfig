@@ -99,7 +99,7 @@
           "inverter_power": "The capacity of your inverter in Watt",
           "model": "The weather model to use"
         },
-        "description": "These values allow tweaking the Forecast.Solar result. Please refer to the documentation if a field is unclear."
+        "description": "These values allow tweaking the Solar Forecast result. Please refer to the documentation if a field is unclear."
       }
     }
   }

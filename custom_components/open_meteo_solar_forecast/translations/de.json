@@ -68,7 +68,7 @@
           "inverter_size": "Wechselrichtergröße (Watt)",
           "modules_power": "Gesamt-Watt-Spitzenleistung deiner Solarmodule"
         },
-        "description": "Mit diesen Werten kann das Ergebnis von Forecast.Solar angepasst werden. Wenn ein Feld unklar ist, lies bitte in der Dokumentation nach."
+        "description": "Mit diesen Werten kann das Ergebnis von Solar Forecast angepasst werden. Wenn ein Feld unklar ist, lies bitte in der Dokumentation nach."
       }
     }
   }

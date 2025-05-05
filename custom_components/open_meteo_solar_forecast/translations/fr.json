@@ -67,7 +67,7 @@
           "inverter_size": "Taille de l'onduleur (en watts)",
           "modules_power": "Puissance de crête totale en watts de vos modules solaires"
         },
-        "description": "Ces valeurs permettent de peaufiner le résultat Forecast.Solar. Veuillez vous référer à la documentation si un champ n'est pas clair."
+        "description": "Ces valeurs permettent de peaufiner le résultat Solar Forecast. Veuillez vous référer à la documentation si un champ n'est pas clair."
       }
     }
   }

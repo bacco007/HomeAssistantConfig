@@ -68,7 +68,7 @@
           "inverter_size": "Potència de l'inversor (Watts)",
           "modules_power": "Potència màxima total dels panells solars"
         },
-        "description": "Aquests valors permeten ajustar els resultats de Forecast.Solar. Consulta la documentació si tens dubtes sobre algun camp."
+        "description": "Aquests valors permeten ajustar els resultats de Solar Forecast. Consulta la documentació si tens dubtes sobre algun camp."
       }
     }
   }

@@ -13,7 +13,7 @@ PLATFORMS = [Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Forecast.Solar from a config entry."""
+    """Set up Solar Forecast from a config entry."""
     coordinator = OpenMeteoSolarForecastDataUpdateCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 

@@ -69,7 +69,7 @@
           "modules power": "Potenza di picco totale in Watt dei tuoi moduli solari",
           "modules_power": "Picco totale di potenza dei tuoi moduli solari"
         },
-        "description": "Questi valori consentono di modificare il risultato di Forecast.Solar. Se un campo non è chiaro, consultare la documentazione."
+        "description": "Questi valori consentono di modificare il risultato di Solar Forecast. Se un campo non è chiaro, consultare la documentazione."
       }
     }
   }

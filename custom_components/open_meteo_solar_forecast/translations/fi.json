@@ -67,7 +67,7 @@
           "inverter_size": "Invertterin koko (W)",
           "modules_power": "Aurinkopaneelien kokonaisteho watteina"
         },
-        "description": "Nämä arvot mahdollistavat Forecast.Solar-tuloksen säätämisen. Katso dokumentaatiosta, jos jokin kenttä on epäselvä."
+        "description": "Nämä arvot mahdollistavat Solar Forecast-tuloksen säätämisen. Katso dokumentaatiosta, jos jokin kenttä on epäselvä."
       }
     }
   }

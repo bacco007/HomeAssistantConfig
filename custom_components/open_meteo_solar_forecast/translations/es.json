@@ -67,7 +67,7 @@
           "inverter_size": "Tamaño del inversor (vatios)",
           "modules_power": "Potencia pico total en vatios de tus módulos solares"
         },
-        "description": "Estos valores permiten modificar el resultado de Forecast.Solar. Por favor, consulta la documentación si un campo no está claro."
+        "description": "Estos valores permiten modificar el resultado de Solar Forecast. Por favor, consulta la documentación si un campo no está claro."
       }
     }
   }
