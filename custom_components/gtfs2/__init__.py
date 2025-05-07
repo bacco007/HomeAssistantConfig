@@ -11,7 +11,7 @@ from .const import DOMAIN, PLATFORMS, DEFAULT_PATH, DEFAULT_PATH_RT, DEFAULT_REF
 from homeassistant.const import CONF_HOST
 from .coordinator import GTFSUpdateCoordinator, GTFSLocalStopUpdateCoordinator
 import voluptuous as vol
-from .gtfs_helper import get_gtfs, update_gtfs_local_stops, get_route_departures
+from .gtfs_helper import get_gtfs, update_gtfs_local_stops, get_route_departures, get_trip_stops
 from .gtfs_rt_helper import get_gtfs_rt
 
 _LOGGER = logging.getLogger(__name__)
@@ -134,6 +134,12 @@ def setup(hass, config):
         _LOGGER.debug("Retrieving next departures with: %s", call.data)
         departures = await get_route_departures(hass, call.data)
         return departures
+        
+    async def extract_trip_stops(call):
+        """My GTFS Trip Stops service."""
+        _LOGGER.debug("Retrieving trip stops with: %s", call.data)
+        stops = await get_trip_stops(hass, call.data)
+        return stops       
 
     hass.services.register(
         DOMAIN, "update_gtfs", update_gtfs)
@@ -143,7 +149,8 @@ def setup(hass, config):
         DOMAIN, "update_gtfs_local_stops", update_local_stops)
     hass.services.register(
         DOMAIN, "extract_departures", extract_departures,supports_response=SupportsResponse.OPTIONAL)
-     
+    hass.services.register(
+        DOMAIN, "extract_trip_stops", extract_trip_stops,supports_response=SupportsResponse.OPTIONAL)     
     return True
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry):

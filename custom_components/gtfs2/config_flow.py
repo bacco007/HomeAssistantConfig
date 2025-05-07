@@ -47,7 +47,6 @@ from .const import (
     CONF_REFRESH_INTERVAL,
     CONF_OFFSET,
     CONF_REAL_TIME,
-    CONF_SOURCE_TIMEZONE_CORRECTION,
     ATTR_API_KEY_LOCATIONS,
     DEFAULT_MAX_LOCAL_STOPS,
     CONF_MAX_LOCAL_STOPS
@@ -275,7 +274,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
         if user_input is None:
             route_list = [
-                selector.SelectOptionDict(value=r, label=r.split('#')[1])
+                selector.SelectOptionDict(value=r, label=r.split('##')[1])
                 for r in get_route_list(self._pygtfs, self._user_inputs)
                 ]
             return self.async_show_form(
@@ -288,8 +287,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
                 errors=errors,
             )
-        user_input[CONF_ROUTE_TYPE] = user_input.get(CONF_ROUTE).split('#')[0] 
-        user_input[CONF_ROUTE] = user_input.get(CONF_ROUTE).split('#')[1].split(":")[0]   
+        user_input[CONF_ROUTE_TYPE] = user_input.get(CONF_ROUTE).split('##')[0] 
+        user_input[CONF_ROUTE] = user_input.get(CONF_ROUTE).split('##')[1].split(": (")[0]   
                
         self._user_inputs.update(user_input)
         _LOGGER.debug(f"UserInputs Route: {self._user_inputs}")
@@ -321,6 +320,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except:
                 _LOGGER.debug(f"Likely no stops for this route: {[CONF_ROUTE]}")
                 return self.async_abort(reason="no_stops")
+                
+        # when train route-type, use the names of the selected stops       
+        if self._user_inputs[CONF_ROUTE_TYPE] == '2':
+            user_input[CONF_ORIGIN] = user_input.get(CONF_ORIGIN).split(': ')[1].split(" (")[0] 
+            user_input[CONF_DESTINATION] = user_input.get(CONF_DESTINATION).split(': ')[1].split(" (")[0]  
+            
         self._user_inputs.update(user_input)
         _LOGGER.debug(f"UserInputs Stops: {self._user_inputs}")
         check_config = await self._check_config(self._user_inputs)
@@ -458,7 +463,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
         self._data: dict[str, str] = {}
         self._user_inputs: dict = {}
 
@@ -506,7 +510,6 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
             opt1_schema = {
                         vol.Optional(CONF_REFRESH_INTERVAL, default=self.config_entry.options.get(CONF_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL)): int,
                         vol.Optional(CONF_OFFSET, default=self.config_entry.options.get(CONF_OFFSET, DEFAULT_OFFSET)): int,
-                        vol.Optional(CONF_SOURCE_TIMEZONE_CORRECTION, default=self.config_entry.options.get(CONF_SOURCE_TIMEZONE_CORRECTION, 0)): int,
                         vol.Optional(CONF_REAL_TIME, default=self.config_entry.options.get(CONF_REAL_TIME)): selector.BooleanSelector()
                     }
             return self.async_show_form(
@@ -530,8 +533,8 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
                 data_schema=vol.Schema(
                     {
                         vol.Required(CONF_TRIP_UPDATE_URL, default=self.config_entry.options.get(CONF_TRIP_UPDATE_URL)): str,
-                        vol.Optional(CONF_API_KEY, default=self.config_entry.options.get(CONF_API_KEY)) : str,
-                        vol.Optional(CONF_API_KEY_NAME, default=self.config_entry.options.get(CONF_API_KEY_NAME,DEFAULT_API_KEY_NAME)) : str,
+                        vol.Optional(CONF_API_KEY, default=self.config_entry.options.get(CONF_API_KEY, '')) : cv.string,
+                        vol.Optional(CONF_API_KEY_NAME, default=self.config_entry.options.get(CONF_API_KEY_NAME,DEFAULT_API_KEY_NAME)) : cv.string,
                         vol.Required(CONF_API_KEY_LOCATION, default=self.config_entry.options.get(CONF_API_KEY_LOCATION,DEFAULT_API_KEY_LOCATION)) : selector.SelectSelector(selector.SelectSelectorConfig(options=ATTR_API_KEY_LOCATIONS, translation_key="api_key_location")),
                         vol.Optional(CONF_ACCEPT_HEADER_PB, default = self.config_entry.options.get(CONF_ACCEPT_HEADER_PB,False)): selector.BooleanSelector(),
                     },
@@ -545,9 +548,9 @@ class GTFSOptionsFlowHandler(config_entries.OptionsFlow):
                     {
                         vol.Required(CONF_TRIP_UPDATE_URL, default=self.config_entry.options.get(CONF_TRIP_UPDATE_URL)): str,
                         vol.Optional(CONF_VEHICLE_POSITION_URL, default=self.config_entry.options.get(CONF_VEHICLE_POSITION_URL,"")): str,
-                        vol.Optional(CONF_ALERTS_URL, default=self.config_entry.options.get(CONF_ALERTS_URL,"")): str,
-                        vol.Optional(CONF_API_KEY, default=self.config_entry.options.get(CONF_API_KEY)) : str,
-                        vol.Optional(CONF_API_KEY_NAME, default=self.config_entry.options.get(CONF_API_KEY_NAME,DEFAULT_API_KEY_NAME)) : str,
+                        vol.Optional(CONF_ALERTS_URL, default=self.config_entry.options.get(CONF_ALERTS_URL,"")): cv.string,
+                        vol.Optional(CONF_API_KEY, default=self.config_entry.options.get(CONF_API_KEY, '')) : cv.string,
+                        vol.Optional(CONF_API_KEY_NAME, default=self.config_entry.options.get(CONF_API_KEY_NAME,DEFAULT_API_KEY_NAME)) : cv.string,
                         vol.Required(CONF_API_KEY_LOCATION, default=self.config_entry.options.get(CONF_API_KEY_LOCATION,DEFAULT_API_KEY_LOCATION)) : selector.SelectSelector(selector.SelectSelectorConfig(options=ATTR_API_KEY_LOCATIONS, translation_key="api_key_location")),
                         vol.Optional(CONF_ACCEPT_HEADER_PB, default = self.config_entry.options.get(CONF_ACCEPT_HEADER_PB,False)): selector.BooleanSelector(),
                     },

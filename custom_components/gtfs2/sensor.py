@@ -422,6 +422,13 @@ class GTFSDepartureSensor(CoordinatorEntity, SensorEntity):
             self._attributes["next_departures_headsign"] = self._departure[
                 "next_departures_headsign"][:10] 
 
+        # Add next departures trips
+        prefix = "next_departures_trips"
+        self._attributes["next_departures_trips"] = []
+        if self._next_departures:
+            self._attributes["next_departures_trips"] = self._departure[
+                "next_departures_trip_id"][:10] 
+
         self._attributes["gtfs_updated_at"] = self.coordinator.data[
             "gtfs_updated_at"]
         
