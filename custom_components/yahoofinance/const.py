@@ -140,7 +140,7 @@ STRING_DATA_KEYS: Final = [
 ATTRIBUTION: Final = "Data provided by Yahoo Finance"
 BASE: Final = "https://query1.finance.yahoo.com/v7/finance/quote?symbols="
 
-INITIAL_URL: Final = "https://finance.yahoo.com/quote/NQ%3DF"
+INITIAL_URL: Final = "https://finance.yahoo.com/quote/NQ%3DF/"
 CONSENT_HOST: Final = "consent.yahoo.com"
 GET_CRUMB_URL: Final = "https://query2.finance.yahoo.com/v1/test/getcrumb"
 
@@ -148,15 +148,19 @@ INITIAL_REQUEST_HEADERS: Final = {
     "accept": "text/html,application/xhtml+xml,application/xml",
     "accept-language": "en-US,en;q=0.9",
 }
-""" Headers for INITIAL_URL. The limited headers are at attempt to avoid `Got more than 8190 byte` error. """
+""" Headers for INITIAL_URL. The limited headers are an attempt to avoid `Got more than 8190 byte` error. """
 
-REQUEST_HEADERS: Final = {
+USER_AGENTS_FOR_XHR: Final = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+    "Mozilla/5.0",
+]
+
+XHR_REQUEST_HEADERS: Final = {
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "accept-encoding": "gzip,deflate,br,zstd",
     "accept-language": "en-US,en;q=0.9",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
 }
-""" Headers for all other requests. """
+""" Headers for all XHR requests. """
 
 CONF_SYMBOLS: Final = "symbols"
 DEFAULT_CURRENCY: Final = "USD"

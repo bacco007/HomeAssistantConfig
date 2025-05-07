@@ -33,10 +33,11 @@ from .const import (
     MANUAL_SCAN_INTERVAL,
     NUMERIC_DATA_DEFAULTS,
     NUMERIC_DATA_GROUPS,
-    REQUEST_HEADERS,
     STRING_DATA_KEYS,
     TOO_MANY_CRUMB_RETRY_FAILURES_COUNT,
     TOO_MANY_CRUMB_RETRY_FAILURES_DELAY,
+    USER_AGENTS_FOR_XHR,
+    XHR_REQUEST_HEADERS,
 )
 
 REQUEST_TIMEOUT: Final = 10
@@ -49,6 +50,9 @@ class CrumbCoordinator:
 
     _instance = None
     """Static instance of CrumbCoordinator."""
+
+    preferred_user_agent = ""
+    """The preferred (last successeful) user agent."""
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize."""
@@ -207,43 +211,67 @@ class CrumbCoordinator:
 
         LOGGER.info("Accessing crumb page")
         websession = async_get_clientsession(self._hass)
+        timeout = aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)
+        last_status = 0
 
-        async with websession.get(
-            GET_CRUMB_URL,
-            headers=REQUEST_HEADERS,
-            timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
-            cookies=self.cookies,
-        ) as response:
-            LOGGER.debug("Crumb response status: %d, %s", response.status, response)
+        for user_agent in USER_AGENTS_FOR_XHR:
+            headers = {**XHR_REQUEST_HEADERS, "user-agent": user_agent}
 
-            if response.status == HTTPStatus.OK:
-                self.crumb = await response.text()
-                if not self.crumb:
-                    LOGGER.error("No crumb reported")
+            async with websession.get(
+                GET_CRUMB_URL, headers=headers, timeout=timeout, cookies=self.cookies
+            ) as response:
+                last_status = response.status
 
-                LOGGER.debug("Crumb page reported %s", self.crumb)
-                self._crumb_retry_count = 0
-                return self.crumb
+                if last_status == HTTPStatus.OK:
+                    self.preferred_user_agent = user_agent
 
-            LOGGER.error(
-                "Crumb request responded with status=%d, reason=%s",
-                response.status,
-                response.reason,
+                    self.crumb = await response.text()
+                    if not self.crumb:
+                        LOGGER.error("No crumb reported")
+
+                    LOGGER.info("Crumb page reported %s", self.crumb)
+                    self._crumb_retry_count = 0
+                    return self.crumb
+
+                # Try next user-agent for 429, stop trying for any other failures
+                if last_status == 429:
+                    LOGGER.info(
+                        "Crumb request responded with status 429 for '%s', re-trying with different agent",
+                        user_agent,
+                    )
+                else:
+                    LOGGER.error(
+                        "Crumb request responded with status=%d, reason=%s",
+                        last_status,
+                        response.reason,
+                    )
+
+                    break
+
+        self._crumb_retry_count = self._crumb_retry_count + 1
+
+        if self._crumb_retry_count > TOO_MANY_CRUMB_RETRY_FAILURES_COUNT:
+            self.retry_duration = TOO_MANY_CRUMB_RETRY_FAILURES_DELAY
+            LOGGER.info(
+                "Too many crumb failures, will retry after %d seconds",
+                self.retry_duration,
             )
 
-            self._crumb_retry_count = self._crumb_retry_count + 1
-
-            if self._crumb_retry_count > TOO_MANY_CRUMB_RETRY_FAILURES_COUNT:
-                self.retry_duration = TOO_MANY_CRUMB_RETRY_FAILURES_DELAY
-                self._crumb_retry_count = 0
-            elif response.status == 429:
+            self._crumb_retry_count = 0
+        else:
+            if last_status == 429:
                 # Ideally we would want to use the seconds passed back in the header
                 # for 429 but there seems to be no such value.
                 self.retry_duration = CRUMB_RETRY_DELAY_429
             else:
                 self.retry_duration = CRUMB_RETRY_DELAY
 
-            return None
+            LOGGER.info(
+                "Crumb failure, will retry after %d seconds",
+                self.retry_duration,
+            )
+
+        return None
 
     # async def parse_crumb_from_content(self, content: str) -> str:
     #     """Parse and update crumb from response content."""
@@ -402,18 +430,65 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Get the JSON data."""
 
         url = await self.build_request_url()
-        cookies = self._cc.cookies
-        LOGGER.debug("Requesting data from '%s'", url)
+
+        preferred_user_agent = self._cc.preferred_user_agent
+        if preferred_user_agent:
+            LOGGER.info(
+                "Requesting data request with the preferred agent '%s'",
+                preferred_user_agent,
+            )
+
+            [result_json, status] = await self._fetch_json(url, preferred_user_agent)
+
+            if status == HTTPStatus.OK:
+                return result_json
+
+            if status == 429:
+                LOGGER.info(
+                    "Data request responded with status 429 for '%s', re-trying other agents",
+                    preferred_user_agent,
+                )
+
+        for user_agent in USER_AGENTS_FOR_XHR:
+            # Skip if we have already tried the agent
+            if preferred_user_agent == user_agent:
+                continue
+
+            [result_json, status] = await self._fetch_json(url, user_agent)
+
+            if status == HTTPStatus.OK:
+                LOGGER.info("Successful data received for '%s'", user_agent)
+                return result_json
+
+            if status != 429:
+                break
+
+            LOGGER.info(
+                "Data request responded with status 429 for '%s', re-trying with different agent",
+                user_agent,
+            )
+
+        return None
+
+    async def _fetch_json(self, url, user_agent) -> tuple[dict, int]:
+        """Fetch JSON data with the specified user agent."""
+
+        headers = {**XHR_REQUEST_HEADERS, "user-agent": user_agent}
+        LOGGER.debug("Requesting data from '%s' with agent %s", url, user_agent)
 
         async with asyncio.timeout(REQUEST_TIMEOUT):
             response = await self.websession.get(
-                url, headers=REQUEST_HEADERS, cookies=cookies
+                url, headers=headers, cookies=self._cc.cookies
             )
+
+            # Try next user-agent for 429
+            if response.status == 429:
+                return [None, 429]
 
             result_json = await response.json()
 
             if response.status == HTTPStatus.OK:
-                return result_json
+                return [result_json, response.status]
 
             # Sample errors:
             #   {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Crumb'}}}
@@ -428,7 +503,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     finance_error_description,
                 ) = finance_error_code_tuple
 
-                LOGGER.error(
+                LOGGER.info(
                     "Received status %d (%s %s) for %s",
                     response.status,
                     finance_error_code,
@@ -442,14 +517,14 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     self._cc.reset()
 
             else:
-                LOGGER.error(
+                LOGGER.info(
                     "Received status %d for %s, result=%s",
                     response.status,
                     url,
                     result_json,
                 )
 
-        return None
+        return [None, response.status]
 
     async def build_request_url(self) -> str:
         """Build the request url."""
@@ -576,3 +651,8 @@ class ConsentData:
     """Url to navigate to after successful consent"""
     need_consent: bool = False
     """Consent is needed"""
+
+
+def debug_log_response(response: aiohttp.ClientResponse, title: str) -> None:
+    """Debug log the response."""
+    LOGGER.debug("%s: %d, %s", title, response.status, response.reason)
