@@ -20,7 +20,7 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateTyp
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
-from . import SymbolDefinition, convert_to_float
+from . import convert_to_float
 from .const import (
     ATTR_CURRENCY_SYMBOL,
     ATTR_DIVIDEND_DATE,
@@ -60,6 +60,7 @@ from .const import (
     PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION,
 )
 from .coordinator import YahooSymbolUpdateCoordinator
+from .dataclasses import SymbolDefinition
 
 ENTITY_ID_FORMAT = SENSOR_DOMAIN + "." + DOMAIN + "_{}"
 
