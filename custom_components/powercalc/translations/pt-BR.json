@@ -201,6 +201,13 @@
         "description": "Selecione todos os sensores de potência que fazem parte do consumo monitorado. Já é preenchido automaticamente, mas você pode ajustar manualmente",
         "title": "Selecione entidades de potência"
       },
+      "group_tracked_untracked_auto": {
+        "data": {
+          "exclude_entities": "Excluir entidades"
+        },
+        "description": "Excluir entidades específicas do grupo auto-rastreado",
+        "title": "Configuração de rastreamento automático"
+      },
       "library": {
         "data": {
           "confirm_autodisovered_model": "Confirmar modelo"
