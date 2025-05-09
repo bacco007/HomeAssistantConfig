@@ -216,4 +216,4 @@ CURRENCY_CODES: Final = {
     "xxx": "¤",
 }
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__package__)
