@@ -89,10 +89,10 @@ def get_next_departure(hass, _data):
     tomorrow_select = tomorrow_select2 = tomorrow_where = tomorrow_order = ""
     tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now'))"
     if include_tomorrow:
-        _LOGGER.debug("Include Tomorrow")
+        _LOGGER.debug("Includes Tomorrow")
         limit = int(limit / 2 * 3)
         tomorrow_name = tomorrow.strftime("%A").lower()
-        tomorrow_select = f"calendar.{tomorrow_name} AS tomorrow,"
+        tomorrow_select = f"( select calendar.{tomorrow_name} - ( select case when (select '1' from calendar_dates where service_id=trip.service_id and date = {tomorrow_date} and exception_type = 2 ) == '1' then '1' else '0' end) ) as tomorrow,"
         tomorrow_where = f"OR calendar.{tomorrow_name} = 1"
         tomorrow_order = f"calendar.{tomorrow_name} DESC,"
         tomorrow_calendar_date_where = f"AND (calendar_date_today.date = date('now') or calendar_date_today.date = date('now','+1 day') )"
@@ -124,7 +124,7 @@ def get_next_departure(hass, _data):
                destination_stop_time.stop_sequence AS dest_stop_sequence,
                destination_stop_time.timepoint AS dest_stop_timepoint,
                calendar.{yesterday.strftime("%A").lower()} AS yesterday,
-               calendar.{now.strftime("%A").lower()} AS today,
+               ( select calendar.{now.strftime("%A").lower()} - (  select case when (select '1' from calendar_dates where service_id=trip.service_id and date = date('now') and exception_type = 2 ) == '1' then '1' else '0' end  ) ) as today,
                {tomorrow_select}
                calendar.start_date AS start_date,
                calendar.end_date AS end_date,
@@ -151,7 +151,6 @@ def get_next_departure(hass, _data):
         AND origin_stop_sequence < dest_stop_sequence
         AND calendar.start_date <= date('now')
         AND calendar.end_date >= date('now')
-        AND trip.service_id not in (select service_id from calendar_dates where date = date('now') and exception_type = 2)
 		UNION ALL
 	    SELECT trip.trip_id, trip.route_id,trip.trip_headsign, trip.direction_id,
                route.route_long_name,route.route_short_name,
