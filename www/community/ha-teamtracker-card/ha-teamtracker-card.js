@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.15";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.16";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -3717,13 +3717,13 @@ const $1a7c5d625ead7579$export$c579ff79a032fc68 = (0, $def2de46b9306e8a$export$d
 
 .possession { opacity: var(--possession-opacity, 1); font-size: 2.5em; text-align: center; font-weight:900; }
 .divider { font-size: 2.5em; text-align: center; margin: 0 4px; }
-.name { font-size: 1.4em; margin-bottom: 4px; }
+.name { font-size: 1.4em; }
 .rank { display: var(--rank-display, inline); font-size:0.8em; }
 .record { font-size:1.0em; height 1.0em; }
 .timeouts-wrapper { margin: 0.4em auto; width: 70%; display: var(--timeouts-display, inline); }
 .timeout { height: 0.6em; border-radius: 0.3em; background-color: var(--timeout-color, #000000); border: var(--timeout-border, 1px) solid var(--timeout-border-color, #ffffff); width: 20%; display: inline-block; margin: 0.4em auto; position: relative; opacity: var(--timeout-opacity, 0.2); }
-.bases { display: var(--bases-display, inherit); font-size: 2.5em; text-align: center; font-weight:900; }
-.on-base { opacity: var(--on-base-opacity, 1); display: inline-block; }
+.bases { display: var(--bases-display, inherit); font-size: 2.5em; text-align: center; font-weight:900; line-height: 0.6; margin: 0; padding: 0; }
+.on-base { opacity: var(--on-base-opacity, 1); display: inline-block; line-height: 0.6; margin: 0; padding: 0; }
 .pitcher { opacity: 0.0; display: inline-block; }
 .in-row1 { font-size: 1em; height: 1em; margin: 6px 0 2px; }
 .in-row2 { ; font-size: 1em; height: 1em; margin: 6px 0 2px; }
