@@ -280,6 +280,7 @@ class HDHomerunTunerEntity(CoordinatorEntity):
             manufacturer=f"SiliconDust ({self.coordinator.data.discovery_method.name})",
             model=self.coordinator.data.model if self.coordinator.data else "",
             name=self._device_name,
+            via_device=(DOMAIN, self._config.unique_id),
         )
 
     @property
