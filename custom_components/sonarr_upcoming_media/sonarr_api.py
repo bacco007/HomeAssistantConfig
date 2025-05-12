@@ -34,20 +34,20 @@ class SonarrApi():
         self._ssl = ssl
         self._url_base = urlbase
 
-        self._address = 'http{0}://{1}:{2}/{3}api/v3/calendar?start={4}&end={5}&includeEpisodeImages=true&includeSeries=true'.format(
-                            's' if ssl else '', 
-                            host,
-                            port,
-                            "{}/".format(urlbase.strip('/')) if urlbase else urlbase,
-                            get_date(timezone(str(self._hass.config.time_zone))),
-                            get_date(timezone(str(self._hass.config.time_zone)), self._days)
-                            )
-
     def update(self):
         tz = timezone(str(self._hass.config.time_zone))
         start = get_date(tz)
+        end = get_date(tz, self._days)
+        address = 'http{0}://{1}:{2}/{3}api/v3/calendar?start={4}&end={5}&includeEpisodeImages=true&includeSeries=true'.format(
+                    's' if self._ssl else '', 
+                    self._host,
+                    self._port,
+                    "{}/".format(self._url_base.strip('/')) if self._url_base else self._url_base,
+                    start,
+                    end
+                    )
         try:
-            api = requests.get(self._address, headers={'X-Api-Key': self._api}, timeout=10)
+            api = requests.get(address, headers={'X-Api-Key': self._api}, timeout=10)
         except OSError:
             raise SonarrCannotBeReached
 
