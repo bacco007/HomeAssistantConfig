@@ -462,7 +462,12 @@ class TemperatureHeatmapCard extends LitElement {
       var TD69 = this.shadowRoot.getElementById(this.id+"td69")
       var TD6a = this.shadowRoot.getElementById(this.id+"td6a")
       var TD6b = this.shadowRoot.getElementById(this.id+"td6b")
-      if (DayNOW1 == this.Day6) {
+      var rightButton = this.shadowRoot.getElementById(this.id+"rightButton");
+      var tempNow = 0;
+      if (rightButton) {
+        if ((this.DayNOW == this.Day6) && (this.MonthNOW == this.Month6)) { tempNow = 1; }
+      }
+      if (DayNOW1 == this.Day6 && tempNow == 1) {
         if (_id == "td60" && nowHour == 0 && TD60) TD60.style.border = '4px dotted #000000';
         if (_id == "td61" && nowHour == 1 && TD61) TD61.style.border = '4px dotted #000000';
         if (_id == "td62" && nowHour == 2 && TD62) TD62.style.border = '4px dotted #000000';
@@ -968,7 +973,12 @@ class TemperatureHeatmapCard extends LitElement {
            if (lastTimeNow == "21") i = 10;
            if (lastTimeNow == "22") i = 11;
            if (lastTimeNow == "23") i = 11;
-           if (this.DayNOW == this.Day6) {
+           var rightButton = this.shadowRoot.getElementById(this.id+"rightButton");
+           var tempNow = 0;
+           if (rightButton) {
+              if ((this.DayNOW == this.Day6) && (this.MonthNOW == this.Month6)) { tempNow = 1; }
+           }
+           if (this.DayNOW == this.Day6 && tempNow == 1) {
               if (i > this.hourIndex) {
                   const entityId = this.config.entity;
                   const state = this.myhass.states[entityId];
