@@ -1,7 +1,7 @@
 """Constants for ProxmoxVE."""
 
-from enum import StrEnum
 import logging
+from enum import StrEnum
 
 DOMAIN = "proxmoxve"
 PROXMOX_CLIENTS = "proxmox_clients"
@@ -48,6 +48,7 @@ class ProxmoxType(StrEnum):
     Update = "update"
     Disk = "disk"
     Resources = "resources"
+    ZFS = "zfs"
 
 
 class ProxmoxCommand(StrEnum):

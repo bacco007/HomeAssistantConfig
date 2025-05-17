@@ -31,7 +31,21 @@
           "title": "Reauthenticate Integration",
           "data": {
             "password": "Password or token value",
-            "username": "Username"
+            "username": "Username",
+            "token_name": "Token name",
+            "realm": "Realm"
+          }
+        },
+        "reconfigure": {
+          "description": "Proxmox host information",
+          "data": {
+            "host": "Host",
+            "password": "Password or token value",
+            "token_name": "Token name",
+            "port": "Port",
+            "realm": "Realm",
+            "username": "Username",
+            "verify_ssl": "Verify SSL certificate"
           }
         }
       },
@@ -45,7 +59,8 @@
       "abort": {
         "already_configured": "Device is already configured",
         "no_resources": "No resources were returned for this instance.",
-        "reauth_successful": "Re-authentication was successful"
+        "reauth_successful": "Re-authentication was successful",
+        "reconfigure_successful": "Reconfiguration completed successfully."
       }
     },
     "issues": {
@@ -121,7 +136,7 @@
           "description": "Proxmox host information"
         },
         "change_expose": {
-          "description": "Select the Proxmox instance nodes ans Virtual Machines (QEMU) and Containers (LXC) you want to expose",
+          "description": "Select the Proxmox instance nodes and Virtual Machines (QEMU) and Containers (LXC) you want to expose",
           "data": {
             "lxc": "Linux Containers (LXC)",
             "nodes": "Nodes",
@@ -196,7 +211,7 @@
         },
         "wakeonlan": {
           "name": "Wake-on-LAN"
-        }  
+        }
       },
       "sensor": {
         "cpu_used": {
@@ -228,6 +243,21 @@
         },
         "life_left": {
           "name": "Life left"
+        },
+        "zfs_health": {
+          "name": "Health"
+        },
+        "zfs_free_perc": {
+          "name": "Free percentage"
+        },
+        "zfs_total": {
+          "name": "Total"
+        },
+        "zfs_used": {
+          "name": "Used"
+        },
+        "zfs_used_perc": {
+          "name": "Used percentage"
         },
         "lxc_on": {
           "name": "Containers running",

@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import dataclasses
+from typing import TYPE_CHECKING
 
-from homeassistant.helpers.typing import UndefinedType
+if TYPE_CHECKING:
+    from homeassistant.helpers.typing import UndefinedType
 
 
 @dataclasses.dataclass
@@ -86,6 +88,19 @@ class ProxmoxStorageData:
 
 
 @dataclasses.dataclass
+class ProxmoxZFSData:
+    """Data parsed from the Proxmox API for ZFS."""
+
+    type: str
+    node: str
+    name: str
+    health: str | UndefinedType
+    size: float | UndefinedType
+    alloc: float | UndefinedType
+    free: float | UndefinedType
+
+
+@dataclasses.dataclass
 class ProxmoxUpdateData:
     """Data parsed from the Proxmox API for Updates."""
 
@@ -102,6 +117,7 @@ class ProxmoxDiskData:
 
     type: str
     node: str
+    disk_id: str | None
     path: str
     serial: str | None
     model: str | None

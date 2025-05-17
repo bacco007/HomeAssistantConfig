@@ -3,31 +3,32 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Final
+from typing import TYPE_CHECKING, Final
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import UNDEFINED
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from . import COORDINATORS, DOMAIN, async_migrate_old_unique_ids, device_info
+from . import COORDINATORS, async_migrate_old_unique_ids, device_info
 from .const import (
     CONF_LXC,
     CONF_NODES,
     CONF_QEMU,
-    LOGGER,
     ProxmoxKeyAPIParse,
     ProxmoxType,
 )
 from .entity import ProxmoxEntity, ProxmoxEntityDescription
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.device_registry import DeviceInfo
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -102,7 +103,6 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up binary sensors."""
-
     async_add_entities(await async_setup_binary_sensors_nodes(hass, config_entry))
     async_add_entities(await async_setup_binary_sensors_qemu(hass, config_entry))
     async_add_entities(await async_setup_binary_sensors_lxc(hass, config_entry))
@@ -113,11 +113,10 @@ async def async_setup_binary_sensors_nodes(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up binary sensors."""
-
     sensors = []
     migrate_unique_id_disks = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = config_entry.runtime_data[COORDINATORS]
 
     for node in config_entry.data[CONF_NODES]:
         if f"{ProxmoxType.Node}_{node}" in coordinators:
@@ -172,6 +171,22 @@ async def async_setup_binary_sensors_nodes(
 
                 for description in PROXMOX_BINARYSENSOR_DISKS:
                     if getattr(coordinator_disk.data, description.key, False):
+                        migrate_unique_id_disks.append(
+                            {
+                                "old_unique_id": f"{config_entry.entry_id}_{coordinator_data.path}_{description.key}",
+                                "new_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_data.disk_id}_{description.key}",
+                            }
+                        )
+                        migrate_unique_id_disks.append(
+                            {
+                                "old_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_data.path}_{description.key}",
+                                "new_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_data.disk_id}_{description.key}",
+                            }
+                        )
+                        await async_migrate_old_unique_ids(
+                            hass, Platform.BINARY_SENSOR, migrate_unique_id_disks
+                        )
+
                         sensors.append(
                             create_binary_sensor(
                                 coordinator=coordinator_disk,
@@ -180,24 +195,14 @@ async def async_setup_binary_sensors_nodes(
                                     config_entry=config_entry,
                                     api_category=ProxmoxType.Disk,
                                     node=node,
-                                    resource_id=coordinator_data.path,
+                                    resource_id=coordinator_data.disk_id,
                                     cordinator_resource=coordinator_data,
                                 ),
                                 description=description,
-                                resource_id=f"{node}_{coordinator_data.path}",
+                                resource_id=f"{node}_{coordinator_data.disk_id}",
                                 config_entry=config_entry,
                             )
                         )
-                        migrate_unique_id_disks.append(
-                            {
-                                "old_unique_id": f"{config_entry.entry_id}_{coordinator_data.path}_{description.key}",
-                                "new_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_data.path}_{description.key}",
-                            }
-                        )
-
-    await async_migrate_old_unique_ids(
-        hass, Platform.BINARY_SENSOR, migrate_unique_id_disks
-    )
     return sensors
 
 
@@ -206,10 +211,9 @@ async def async_setup_binary_sensors_qemu(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up binary sensors."""
-
     sensors = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = config_entry.runtime_data[COORDINATORS]
 
     for vm_id in config_entry.data[CONF_QEMU]:
         if f"{ProxmoxType.QEMU}_{vm_id}" in coordinators:
@@ -246,10 +250,9 @@ async def async_setup_binary_sensors_lxc(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up binary sensors."""
-
     sensors = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = config_entry.runtime_data[COORDINATORS]
 
     for container_id in config_entry.data[CONF_LXC]:
         if f"{ProxmoxType.LXC}_{container_id}" in coordinators:
@@ -331,5 +334,4 @@ class ProxmoxBinarySensorEntity(ProxmoxEntity, BinarySensorEntity):
     @property
     def available(self) -> bool:
         """Return sensor availability."""
-
         return super().available and self.coordinator.data is not None
