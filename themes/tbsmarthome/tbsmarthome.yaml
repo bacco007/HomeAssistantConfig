@@ -114,7 +114,7 @@ tbsmarthome:
   ha-font-family-heading: "var(--primary-font-family)"
   ha-font-family-body: "var(--primary-font-family)"
   ha-font-family-code: 'Raleway,sans-serif'
-  ha-font-family-longform: 'Raleway,sans-serif's
+  ha-font-family-longform: 'Raleway,sans-serif'
   ha-card-header-font-family: "var(--primary-font-family)"
   # ha-font-size-scale: 1
   # ha-font-size-2xs: 0.625rem
