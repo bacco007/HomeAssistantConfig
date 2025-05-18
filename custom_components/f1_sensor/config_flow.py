@@ -1,5 +1,3 @@
-# custom_components/f1_sensor/config_flow.py
-
 from homeassistant import config_entries
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
@@ -49,14 +47,15 @@ class F1FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_reconfigure(self, user_input=None):
-        """Allow reconfiguration of the integration."""
         errors = {}
+
         if user_input is not None:
             entry = self._get_reconfigure_entry()
             return self.async_update_reload_and_abort(
                 entry,
                 data_updates=user_input,
             )
+
         entry = self._get_reconfigure_entry()
         current = entry.data
         data_schema = vol.Schema({
@@ -82,6 +81,7 @@ class F1FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 "season_results": "Season results",
             }),
         })
+
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=data_schema,

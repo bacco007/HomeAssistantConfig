@@ -1,5 +1,3 @@
-# custom_components/f1_sensor/sensor.py
-
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -8,10 +6,55 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import async_timeout
 import datetime
 
+
 from .const import DOMAIN
 
+# Yr symbol_code to MDI-ikoner
+SYMBOL_CODE_TO_MDI = {
+    "clearsky_day": "mdi:weather-sunny",
+    "clearsky_night": "mdi:weather-night",
+    "fair_day": "mdi:weather-partly-cloudy",
+    "fair_night": "mdi:weather-night-partly-cloudy",
+    "partlycloudy_day": "mdi:weather-partly-cloudy",
+    "partlycloudy_night": "mdi:weather-night-partly-cloudy",
+    "cloudy": "mdi:weather-cloudy",
+    "fog": "mdi:weather-fog",
+    "rainshowers_day": "mdi:weather-rainy",
+    "rainshowers_night": "mdi:weather-rainy",
+    "rainshowersandthunder_day": "mdi:weather-lightning-rainy",
+    "rainshowersandthunder_night": "mdi:weather-lightning-rainy",
+    "heavyrainshowers_day": "mdi:weather-pouring",
+    "heavyrainshowers_night": "mdi:weather-pouring",
+    "sleetshowers_day": "mdi:weather-snowy-rainy",
+    "sleetshowers_night": "mdi:weather-snowy-rainy",
+    "snowshowers_day": "mdi:weather-snowy",
+    "snowshowers_night": "mdi:weather-snowy",
+    "rain": "mdi:weather-pouring",
+    "heavyrain": "mdi:weather-pouring",
+    "heavyrainandthunder": "mdi:weather-lightning-rainy",
+    "sleet": "mdi:weather-snowy-rainy",
+    "snow": "mdi:weather-snowy",
+    "snowandthunder": "mdi:weather-snowy-heavy",
+    "rainandthunder": "mdi:weather-lightning-rainy",
+    "sleetandthunder": "mdi:weather-lightning-rainy",
+    "lightrainshowers_day": "mdi:weather-rainy",
+    "lightrainshowers_night": "mdi:weather-rainy",
+    "lightrainshowersandthunder_day": "mdi:weather-lightning-rainy",
+    "lightrainshowersandthunder_night": "mdi:weather-lightning-rainy",
+    "lightsleetshowers_day": "mdi:weather-snowy-rainy",
+    "lightsleetshowers_night": "mdi:weather-snowy-rainy",
+    "lightsnowshowers_day": "mdi:weather-snowy",
+    "lightsnowshowers_night": "mdi:weather-snowy",
+    "lightsnowshowersandthunder_day": "mdi:weather-lightning-snowy",
+    "lightsnowshowersandthunder_night": "mdi:weather-lightning-snowy",
+    "lightssleetshowersandthunder_day": "mdi:weather-lightning-snowy-rainy",
+    "lightssleetshowersandthunder_night": "mdi:weather-lightning-snowy-rainy",
+    "lightssnowshowersandthunder_day": "mdi:weather-lightning-snowy",
+    "lightssnowshowersandthunder_night": "mdi:weather-lightning-snowy",
+}
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    """Create sensors when the integration is added."""
+    """Create sensors when integration is added."""
     data = hass.data[DOMAIN][entry.entry_id]
     base = entry.data.get("sensor_name", "F1")
     enabled = entry.data.get("enabled_sensors", [])
@@ -41,7 +84,7 @@ class F1NextRaceSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._attr_name = sensor_name
         self._attr_unique_id = f"{sensor_name}_unique"
-        self._attr_icon = "mdi:flag-checkered"  # optional icon
+        self._attr_icon = "mdi:flag-checkered"
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
 
     def _get_next_race(self):
@@ -53,17 +96,15 @@ class F1NextRaceSensor(CoordinatorEntity, SensorEntity):
         now = datetime.datetime.now(datetime.timezone.utc)
 
         for race in races:
-            race_date_str = race.get("date")
-            race_time_str = race.get("time") or "00:00:00Z"
-            dt_str = f"{race_date_str}T{race_time_str}".replace("Z", "+00:00")
+            date = race.get("date")
+            time = race.get("time") or "00:00:00Z"
+            dt_str = f"{date}T{time}".replace("Z", "+00:00")
             try:
-                race_dt = datetime.datetime.fromisoformat(dt_str)
+                dt = datetime.datetime.fromisoformat(dt_str)
             except ValueError:
                 continue
-
-            if race_dt > now:
+            if dt > now:
                 return race
-
         return None
 
     def combine_date_time(self, date_str, time_str):
@@ -80,7 +121,6 @@ class F1NextRaceSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def state(self):
-        """Show the start time for the next race (ISO8601) in state."""
         next_race = self._get_next_race()
         if not next_race:
             return None
@@ -93,7 +133,7 @@ class F1NextRaceSensor(CoordinatorEntity, SensorEntity):
             return {}
 
         circuit = race.get("Circuit", {})
-        location = circuit.get("Location", {})
+        loc = circuit.get("Location", {})
 
         first_practice = race.get("FirstPractice", {})
         second_practice = race.get("SecondPractice", {})
@@ -111,10 +151,10 @@ class F1NextRaceSensor(CoordinatorEntity, SensorEntity):
             "circuit_id": circuit.get("circuitId"),
             "circuit_name": circuit.get("circuitName"),
             "circuit_url": circuit.get("url"),
-            "circuit_lat": location.get("lat"),
-            "circuit_long": location.get("long"),
-            "circuit_locality": location.get("locality"),
-            "circuit_country": location.get("country"),
+            "circuit_lat": loc.get("lat"),
+            "circuit_long": loc.get("long"),
+            "circuit_locality": loc.get("locality"),
+            "circuit_country": loc.get("country"),
 
             "race_start": self.combine_date_time(race.get("date"), race.get("time")),
             "first_practice_start": self.combine_date_time(first_practice.get("date"), first_practice.get("time")),
@@ -128,6 +168,7 @@ class F1NextRaceSensor(CoordinatorEntity, SensorEntity):
 
 class F1CurrentSeasonSensor(CoordinatorEntity, SensorEntity):
     """Sensor showing number of races this season."""
+
     def __init__(self, coordinator, sensor_name):
         super().__init__(coordinator)
         self._attr_name = sensor_name
@@ -151,6 +192,7 @@ class F1CurrentSeasonSensor(CoordinatorEntity, SensorEntity):
 
 class F1DriverStandingsSensor(CoordinatorEntity, SensorEntity):
     """Sensor for driver standings."""
+
     def __init__(self, coordinator, sensor_name):
         super().__init__(coordinator)
         self._attr_name = sensor_name
@@ -177,6 +219,7 @@ class F1DriverStandingsSensor(CoordinatorEntity, SensorEntity):
 
 class F1ConstructorStandingsSensor(CoordinatorEntity, SensorEntity):
     """Sensor for constructor standings."""
+
     def __init__(self, coordinator, sensor_name):
         super().__init__(coordinator)
         self._attr_name = sensor_name
@@ -203,6 +246,7 @@ class F1ConstructorStandingsSensor(CoordinatorEntity, SensorEntity):
 
 class F1WeatherSensor(CoordinatorEntity, SensorEntity):
     """Sensor for current and race-start weather."""
+
     def __init__(self, coordinator, sensor_name):
         super().__init__(coordinator)
         self._attr_name = sensor_name
@@ -237,19 +281,32 @@ class F1WeatherSensor(CoordinatorEntity, SensorEntity):
             return
         curr = times[0].get("data", {}).get("instant", {}).get("details", {})
         self._current = self._extract(curr)
+        current_symbol = times[0] \
+            .get("data", {}) \
+            .get("next_1_hours", {}) \
+            .get("summary", {}) \
+            .get("symbol_code")
+        current_icon = SYMBOL_CODE_TO_MDI.get(current_symbol, self._attr_icon)
+        self._attr_icon = current_icon
         start_iso = F1NextRaceSensor(self.coordinator, "").combine_date_time(race.get("date"), race.get("time")) if race else None
         self._race = {k: None for k in self._current}
         if start_iso:
             start_dt = datetime.datetime.fromisoformat(start_iso)
             same_day = [t for t in times if datetime.datetime.fromisoformat(t["time"]).date() == start_dt.date()]
-        if same_day:
-            closest = min(same_day, key=lambda t: abs(datetime.datetime.fromisoformat(t["time"]) - start_dt))
-            data_entry = closest.get("data", {})
-            instant_details = data_entry.get("instant", {}).get("details", {})
-            precip_1h = data_entry.get("next_1_hours", {}).get("details", {}).get("precipitation_amount", 0)
-            rd = dict(instant_details)
-            rd["precipitation_amount"] = precip_1h
-            self._race = self._extract(rd)
+            if same_day:
+                closest = min(same_day, key=lambda t: abs(datetime.datetime.fromisoformat(t["time"]) - start_dt))
+                data_entry = closest.get("data", {})
+                instant_details = data_entry.get("instant", {}).get("details", {})
+                precip_1h = data_entry.get("next_1_hours", {}).get("details", {}).get("precipitation_amount", 0)
+                rd = dict(instant_details)
+                rd["precipitation_amount"] = precip_1h
+                self._race = self._extract(rd)
+                race_symbol = data_entry \
+                    .get("next_1_hours", {}) \
+                    .get("summary", {}) \
+                    .get("symbol_code")
+                race_icon = SYMBOL_CODE_TO_MDI.get(race_symbol)
+                self._race["weather_icon"] = race_icon
         self.async_write_ha_state()
 
     def _extract(self, d):
@@ -292,6 +349,7 @@ class F1WeatherSensor(CoordinatorEntity, SensorEntity):
 
 class F1LastRaceSensor(CoordinatorEntity, SensorEntity):
     """Sensor for results of the latest race."""
+
     def __init__(self, coordinator, sensor_name):
         super().__init__(coordinator)
         self._attr_name = sensor_name
@@ -313,7 +371,7 @@ class F1LastRaceSensor(CoordinatorEntity, SensorEntity):
         if not races:
             return {}
         race = races[0]
-        # Helper to filter result entries
+
         def _clean_result(r):
             return {
                 "number": r.get("number"),
@@ -331,16 +389,18 @@ class F1LastRaceSensor(CoordinatorEntity, SensorEntity):
                     "name": r.get("Constructor", {}).get("name"),
                 }
             }
-        cleaned = [_clean_result(r) for r in race.get("Results", [])]
+
+        results = [_clean_result(r) for r in race.get("Results", [])]
         return {
             "round": race.get("round"),
             "race_name": race.get("raceName"),
-            "results": cleaned
+            "results": results
         }
 
 
 class F1SeasonResultsSensor(CoordinatorEntity, SensorEntity):
     """Sensor for entire season's results."""
+
     def __init__(self, coordinator, sensor_name):
         super().__init__(coordinator)
         self._attr_name = sensor_name
@@ -354,8 +414,8 @@ class F1SeasonResultsSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        races_raw = self.coordinator.data.get("MRData", {}).get("RaceTable", {}).get("Races", [])
-        # Helper to filter result entries
+        races = self.coordinator.data.get("MRData", {}).get("RaceTable", {}).get("Races", [])
+
         def _clean_result(r):
             return {
                 "number": r.get("number"),
@@ -373,12 +433,14 @@ class F1SeasonResultsSensor(CoordinatorEntity, SensorEntity):
                     "name": r.get("Constructor", {}).get("name"),
                 }
             }
-        cleaned_races = []
-        for race in races_raw:
-            cleaned_results = [_clean_result(r) for r in race.get("Results", [])]
-            cleaned_races.append({
+
+        cleaned = []
+        for race in races:
+            results = [_clean_result(r) for r in race.get("Results", [])]
+            cleaned.append({
                 "round": race.get("round"),
                 "race_name": race.get("raceName"),
-                "results": cleaned_results
+                "results": results
             })
-        return {"races": cleaned_races}
+        return {"races": cleaned}
+
