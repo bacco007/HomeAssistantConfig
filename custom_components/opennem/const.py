@@ -1,9 +1,9 @@
 """ OpenNEM Constants"""
 # API
-API_ENDPOINT = "https://data.opennem.org.au/v3/stats/au/NEM/{}/power/7d.json"
-API_ENDPOINT_NEM = "https://data.opennem.org.au/v3/stats/au/NEM/power/7d.json"
-API_ENDPOINT_WA = "https://data.opennem.org.au/v3/stats/au/WEM/power/7d.json"
-API_ENDPOINT_AU = "https://data.opennem.org.au/v3/stats/au/AU/power/7d.json"
+API_ENDPOINT = "https://data.openelectricity.org.au/v3/stats/au/NEM/{}/power/7d.json"
+API_ENDPOINT_NEM = "https://data.openelectricity.org.au/v3/stats/au/NEM/power/7d.json"
+API_ENDPOINT_WA = "https://data.openelectricity.org.au/v3/stats/au/WEM/power/7d.json"
+API_ENDPOINT_AU = "https://data.openelectricity.org.au/v3/stats/au/AU/power/7d.json"
 API_ENDPOINT_EM = "https://api.opennem.org.au/stats/emissionfactor/network/NEM"
 API_ENDPOINT_FLOW = "https://api.opennem.org.au/stats/flow/network/NEM"
 
