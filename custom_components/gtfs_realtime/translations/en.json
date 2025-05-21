@@ -77,7 +77,7 @@
         "data": {
           "gtfs_provider_id": "GTFS Provider"
         },
-        "description": "Select GTFS Provider"
+        "description": "Select a GTFS Provider. The Providers here are included in the 'feeds.json' file in this repository. They are compiled from publicly available APIs, and the user agrees to comply with a given provider's Terms and Conditions."
       }
     }
   },
