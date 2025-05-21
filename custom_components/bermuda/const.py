@@ -4,7 +4,10 @@
 from __future__ import annotations
 
 import logging
+from enum import Enum
 from typing import Final
+
+from homeassistant.const import Platform
 
 from .log_spam_less import BermudaLogSpamLess
 
@@ -16,7 +19,7 @@ DOMAIN_DATA = f"{DOMAIN}_data"
 # that the component has been checked out from git, not pulled from
 # an officially built release. HACS will use the git tag (or the zip file,
 # either way it works).
-VERSION = "0.8.1"
+VERSION = "0.8.2"
 
 ATTRIBUTION = "Data provided by http://jsonplaceholder.typicode.com/"
 ISSUE_URL = "https://github.com/agittins/bermuda/issues"
@@ -31,24 +34,21 @@ REPAIR_SCANNER_WITHOUT_AREA = "scanner_without_area"
 BINARY_SENSOR_DEVICE_CLASS = "connectivity"
 
 # Platforms
-BINARY_SENSOR = "binary_sensor"
-BUTTON = "button"
-SENSOR = "sensor"
-SWITCH = "switch"
-DEVICE_TRACKER = "device_tracker"
-NUMBER = "number"
-# PLATFORMS = [BINARY_SENSOR, SENSOR, SWITCH]
-PLATFORMS = [SENSOR, DEVICE_TRACKER, NUMBER]
+PLATFORMS = [
+    Platform.SENSOR,
+    Platform.DEVICE_TRACKER,
+    Platform.NUMBER,
+    # Platform.BUTTON,
+    # Platform.SWITCH,
+    # Platform.BINARY_SENSOR
+]
 
 # Should probably retreive this from the component, but it's in "DOMAIN" *shrug*
 DOMAIN_PRIVATE_BLE_DEVICE = "private_ble_device"
 
 # Signal names we are using:
 SIGNAL_DEVICE_NEW = f"{DOMAIN}-device-new"
-
-DISTANCE_TIMEOUT = 30  # seconds to wait before marking a sensor distance measurement
-# as unknown/none/stale/away. Separate from device_tracker.
-DISTANCE_INFINITE = 999  # arbitrary distance for infinite/unknown rssi range
+SIGNAL_SCANNERS_CHANGED = f"{DOMAIN}-scanners-changed"
 
 UPDATE_INTERVAL = 1.05  # Seconds between bluetooth data processing cycles
 # Note: this is separate from the CONF_UPDATE_INTERVAL which allows the
@@ -63,6 +63,13 @@ LOGSPAM_INTERVAL = 22
 # value in seconds is how long we wait between emitting a particular error message
 # when encountering it - primarily for our update loop.
 
+DISTANCE_TIMEOUT = 30  # seconds to wait before marking a sensor distance measurement
+# as unknown/none/stale/away. Separate from device_tracker.
+DISTANCE_INFINITE = 999  # arbitrary distance for infinite/unknown rssi range
+
+AREA_MAX_AD_AGE: Final = max(DISTANCE_TIMEOUT / 3, UPDATE_INTERVAL * 2)
+# Adverts older than this can not win an area contest.
+
 # Beacon-handling constants. Source devices are tracked by MAC-address and are the
 # originators of beacon-like data. We then create a "meta-device" for the beacon's
 # uuid. Other non-static-mac protocols should use this method as well, by adding their
@@ -73,15 +80,41 @@ METADEVICE_TYPE_PRIVATE_BLE_SOURCE: Final = "private_ble_src"  # current (random
 METADEVICE_PRIVATE_BLE_DEVICE: Final = "private_ble_device"  # meta-device create to track private ble device
 
 METADEVICE_SOURCETYPES: Final = {METADEVICE_TYPE_IBEACON_SOURCE, METADEVICE_TYPE_PRIVATE_BLE_SOURCE}
+METADEVICE_DEVICETYPES: Final = {METADEVICE_IBEACON_DEVICE, METADEVICE_PRIVATE_BLE_DEVICE}
 
 # Bluetooth Device Address Type - classify MAC addresses
 BDADDR_TYPE_UNKNOWN: Final = "bd_addr_type_unknown"  # uninitialised
 BDADDR_TYPE_OTHER: Final = "bd_addr_other"  # Default 48bit MAC
-BDADDR_TYPE_PRIVATE_RESOLVABLE: Final = "bd_addr_private_resolvable"
+BDADDR_TYPE_RANDOM_RESOLVABLE: Final = "bd_addr_random_resolvable"
+BDADDR_TYPE_RANDOM_UNRESOLVABLE: Final = "bd_addr_random_unresolvable"
+BDADDR_TYPE_RANDOM_STATIC: Final = "bd_addr_random_static"
 BDADDR_TYPE_NOT_MAC48: Final = "bd_addr_not_mac48"
 # Non-bluetooth address types - for our metadevice entries
 ADDR_TYPE_IBEACON: Final = "addr_type_ibeacon"
 ADDR_TYPE_PRIVATE_BLE_DEVICE: Final = "addr_type_private_ble_device"
+
+
+class IrkTypes(Enum):
+    """
+    Enum of IRK Types.
+
+    Values used to mark if a device matches a known IRK, or is yet to be checked.
+    Since IRK's are 16-bytes (128bits) long and the spec requires that IRKs be validated
+    against https://doi.org/10.6028/NIST.SP.800-22r1a we can be confident that our use of
+    some short ints must not be capable of matching any valid IRK as they would fail
+    most of the required tests (such as longest run of ones)
+
+    If the irk field does not match any of these values, then it is a valid IRK.
+    """
+
+    ADRESS_NOT_EVALUATED = bytes.fromhex("0000")  # default
+    NOT_RESOLVABLE_ADDRESS = bytes.fromhex("0001")  # address is not a resolvable private address.
+    NO_KNOWN_IRK_MATCH = bytes.fromhex("0002")  # none of the known keys match this address.
+
+    @classmethod
+    def unresolved(cls) -> list[bytes]:
+        return [bytes(k.value) for k in IrkTypes.__members__.values()]
+
 
 # Device entry pruning. Letting the gathered list of devices grow forever makes the
 # processing loop slower. It doesn't seem to have as much impact on memory, but it
@@ -103,7 +136,7 @@ PRUNE_TIME_INTERVAL = 180  # Every 3m, prune stale devices
 PRUNE_TIME_DEFAULT = 86400  # Max age of regular device entries (1day)
 PRUNE_TIME_UNKNOWN_IRK = 240  # Resolvable Private addresses change often, prune regularly.
 # see Bluetooth Core Spec, Vol3, Part C, Appendix A, Table A.1: Defined GAP timers
-PRUNE_TIME_KNOWN_IRK = 960  # spec "recommends" 15 min max address age. Round up to 16 :-)
+PRUNE_TIME_KNOWN_IRK: Final[int] = 16 * 60  # spec "recommends" 15 min max address age. Round up to 16 :-)
 
 SAVEOUT_COOLDOWN = 10  # seconds to delay before re-trying config entry save.
 

@@ -13,12 +13,13 @@
   "config_flow": true,
   "dependencies": [
     "bluetooth_adapters",
-    "device_tracker"
+    "device_tracker",
+    "private_ble_device"
   ],
   "documentation": "https://github.com/agittins/bermuda",
   "integration_type": "device",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/agittins/bermuda/issues",
   "requirements": [],
-  "version": "0.8.1"
+  "version": "0.8.2"
 }
