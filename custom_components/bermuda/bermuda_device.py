@@ -24,7 +24,7 @@ from homeassistant.components.bluetooth import (
     BluetoothServiceInfoBleak,
 )
 from homeassistant.components.private_ble_device import coordinator as pble_coordinator
-from homeassistant.const import STATE_HOME, STATE_NOT_HOME, STATE_UNAVAILABLE
+from homeassistant.const import STATE_HOME, STATE_NOT_HOME
 from homeassistant.core import callback
 from homeassistant.util import slugify
 
@@ -99,7 +99,7 @@ class BermudaDevice(dict):
         self.area_distance: float | None = None  # how far this dev is from that area
         self.area_rssi: float | None = None  # rssi from closest scanner
         self.area_scanner: BermudaAdvert | None = None  # currently closest BermudaScanner
-        self.zone: str = STATE_UNAVAILABLE  # STATE_HOME or STATE_NOT_HOME
+        self.zone: str = STATE_NOT_HOME  # STATE_HOME or STATE_NOT_HOME
         self.manufacturer: str | None = None
         self._hascanner: BaseHaRemoteScanner | BaseHaScanner | None = None  # HA's scanner
         self._is_scanner: bool = False
@@ -287,9 +287,10 @@ class BermudaDevice(dict):
         if scannerstamp > self.last_seen:
             self.last_seen = scannerstamp
         elif self.last_seen - scannerstamp > 0.8:  # For some reason small future-offsets are common.
-            _LOGGER.warning(
-                "Scanner stamps for %s should not go backwards. new %f < last %f",
+            _LOGGER.debug(
+                "Scanner stamp for %s went backwards %.2fs. new %f < last %f",
                 self.name,
+                self.last_seen - scannerstamp,
                 scannerstamp,
                 self.last_seen,
             )

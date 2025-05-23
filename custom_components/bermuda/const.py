@@ -19,7 +19,7 @@ DOMAIN_DATA = f"{DOMAIN}_data"
 # that the component has been checked out from git, not pulled from
 # an officially built release. HACS will use the git tag (or the zip file,
 # either way it works).
-VERSION = "0.8.2"
+VERSION = "0.8.4"
 
 ATTRIBUTION = "Data provided by http://jsonplaceholder.typicode.com/"
 ISSUE_URL = "https://github.com/agittins/bermuda/issues"
@@ -137,6 +137,8 @@ PRUNE_TIME_DEFAULT = 86400  # Max age of regular device entries (1day)
 PRUNE_TIME_UNKNOWN_IRK = 240  # Resolvable Private addresses change often, prune regularly.
 # see Bluetooth Core Spec, Vol3, Part C, Appendix A, Table A.1: Defined GAP timers
 PRUNE_TIME_KNOWN_IRK: Final[int] = 16 * 60  # spec "recommends" 15 min max address age. Round up to 16 :-)
+
+PRUNE_TIME_REDACTIONS: Final[int] = 10 * 60  # when to discard redaction data
 
 SAVEOUT_COOLDOWN = 10  # seconds to delay before re-trying config entry save.
 

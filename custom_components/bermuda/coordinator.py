@@ -20,7 +20,6 @@ from homeassistant.const import MINOR_VERSION as HA_VERSION_MIN
 from homeassistant.const import Platform
 from homeassistant.core import (
     Event,
-    HassJob,
     HomeAssistant,
     ServiceCall,
     ServiceResponse,
@@ -47,7 +46,6 @@ from homeassistant.helpers.device_registry import (
     EventDeviceRegistryUpdatedData,
 )
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util.dt import get_age, now
 
@@ -85,6 +83,7 @@ from .const import (
     PRUNE_TIME_DEFAULT,
     PRUNE_TIME_INTERVAL,
     PRUNE_TIME_KNOWN_IRK,
+    PRUNE_TIME_REDACTIONS,
     PRUNE_TIME_UNKNOWN_IRK,
     REPAIR_SCANNER_WITHOUT_AREA,
     SAVEOUT_COOLDOWN,
@@ -159,9 +158,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         )
         self._redact_generic_sub = r"\g<start>:xx:xx:xx:xx:\g<end>"
 
-        self._has_purged = False
-        self._purge_task = hass.loop.call_soon_threadsafe(hass.async_create_task, self.purge_redactions(hass))
-        self.stamp_redactions_updated: float = 0
+        self.stamp_redactions_expiry: float | None = None
 
         self.update_in_progress: bool = False  # A lock to guard against huge backlogs / slow processing
         self.stamp_last_update: float = 0  # Last time we ran an update, from monotonic_time_coarse()
@@ -219,6 +216,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         # First time around we freshen the restored scanner info by
         # forcing a scan of the captured info.
         self._scanner_init_pending = True
+
+        self._seed_configured_devices_done = False
 
         # First time go through the private ble devices to see if there's
         # any there for us to track.
@@ -699,17 +698,20 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             # (this prevents them from restoring at startup as "Unavailable" if they
             # are not currently visible, and will instead show as "Unknown" for
             # sensors and "Away" for device_trackers).
-            if self.stamp_last_update == 0:
-                # First run, let's do it.
-                for _source_address in self.options.get(CONF_DEVICES, []):
-                    self._get_or_create_device(_source_address)
+            #
+            # This isn't working right if it runs once. Bodge it for now (cost is low)
+            # and sort it out when moving to device-based restoration (ie using DR/ER
+            # to decide what devices to track and deprecating CONF_DEVICES)
+            #
+            # if not self._seed_configured_devices_done:
+            for _source_address in self.options.get(CONF_DEVICES, []):
+                self._get_or_create_device(_source_address)
+            self._seed_configured_devices_done = True
 
             # Trigger creation of any new entities
             #
             # The devices are all updated now (and any new scanners and beacons seen have been added),
             # so let's ensure any devices that we create sensors for are set up ready to go.
-            # We don't do this sooner because we need to ensure we have every active scanner
-            # already loaded up.
             for address, device in self.devices.items():
                 if device.create_sensor:
                     if not device.create_all_done:
@@ -792,6 +794,12 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         nowstamp = self.stamp_last_prune = monotonic_time_coarse()
         stamp_known_irk = nowstamp - PRUNE_TIME_KNOWN_IRK
         stamp_unknown_irk = nowstamp - PRUNE_TIME_UNKNOWN_IRK
+
+        # Prune redaction data
+        if self.stamp_redactions_expiry is not None and self.stamp_redactions_expiry < nowstamp:
+            _LOGGER.debug("Clearing redaction data (%d items)", len(self.redactions))
+            self.redactions.clear()
+            self.stamp_redactions_expiry = None
 
         # Prune any IRK MACs that have expired
         self.irk_manager.async_prune()
@@ -1112,6 +1120,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
             # Keep track of whether we want to recalculate the name fields at the end.
             _want_name_update = False
+            _sources_to_remove = []
 
             for source_address in metadevice.metadevice_sources:
                 # Get the BermudaDevice holding those adverts
@@ -1119,22 +1128,23 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                 # it causes a binge/purge cycle during pruning since it has no adverts on it.
                 source_device = self._get_device(source_address)
                 if source_device is None:
-                    # No ads current in the backend for this one, it will show up
-                    # when it shows up.
-                    _LOGGER_SPAM_LESS.debug(
-                        f"metaNoAdsFor_{metadevice.address}_{source_address}",
-                        "Metadevice %s: no adverts for source MAC %s found during update_metadevices",
-                        metadevice.__repr__(),
-                        source_address,
-                    )
-
+                    # No ads current in the backend for this one. Not an issue, the mac might be old
+                    # or now showing up yet.
+                    # _LOGGER_SPAM_LESS.debug(
+                    #     f"metaNoAdsFor_{metadevice.address}_{source_address}",
+                    #     "Metadevice %s: no adverts for source MAC %s found during update_metadevices",
+                    #     metadevice.__repr__(),
+                    #     source_address,
+                    # )
                     continue
 
                 if (
                     METADEVICE_IBEACON_DEVICE in metadevice.metadevice_type
                     and metadevice.beacon_unique_id != source_device.beacon_unique_id
                 ):
-                    # iBeacons (specifically Bluecharms) change uuid on movement.
+                    # This source device no longer has the same ibeacon uuid+maj+min as
+                    # the metadevice has.
+                    # Some iBeacons (specifically Bluecharms) change uuid on movement.
                     #
                     # This source device has changed its uuid, so we won't track it against
                     # this metadevice any more / for now, and we will also remove
@@ -1146,9 +1156,15 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                     # in an Android 15+), since the old source device will still be a match.
                     # and will be subject to the nomal DEVTRACK_TIMEOUT.
                     #
-                    for key_address, key_scanner in metadevice.adverts:
+                    _LOGGER.debug(
+                        "Source %s for metadev %s changed iBeacon identifiers, severing", source_device, metadevice
+                    )
+                    for key_address, key_scanner in list(metadevice.adverts):
                         if key_address == source_device.address:
                             del metadevice.adverts[(key_address, key_scanner)]
+                    if source_device.address in metadevice.metadevice_sources:
+                        # Remove this source from the list once we're done iterating on it
+                        _sources_to_remove.append(source_device.address)
                     continue  # to next metadevice_source
 
                 # Copy every ADVERT_TUPLE into our metadevice
@@ -1208,6 +1224,9 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                     ):
                         metadevice[key] = val
                         # _want_name_update = True
+            # Done iterating sources, remove any to be dropped
+            for source in _sources_to_remove:
+                metadevice.metadevice_sources.remove(source)
             if _want_name_update:
                 metadevice.make_name()
 
@@ -1890,7 +1909,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             address = non_lower_address.lower()
             if address not in self.redactions:
                 i += 1
-                self.redactions[address] = f"{address[:2]}::SCANNER_{i}::{address[-2:]}"
+                for altmac in mac_explode_formats(address):
+                    self.redactions[altmac] = f"{address[:2]}::SCANNER_{i}::{address[-2:]}"
         _LOGGER.debug("Redact scanners: %ss, %d items", monotonic_time_coarse() - _stamp, len(self.redactions))
         # CONFIGURED DEVICES
         for non_lower_address in self.options.get(CONF_DEVICES, []):
@@ -1902,7 +1922,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                     # Raw uuid in advert
                     self.redactions[address.split("_")[0]] = f"{address[:4]}::CFG_iBea_{i}_{address[32:]}::"
                 elif len(address) == 17:
-                    self.redactions[address] = f"{address[:2]}::CFG_MAC_{i}::{address[-2:]}"
+                    for altmac in mac_explode_formats(address):
+                        self.redactions[altmac] = f"{address[:2]}::CFG_MAC_{i}::{address[-2:]}"
                 else:
                     # Don't know what it is, but not a mac.
                     self.redactions[address] = f"CFG_OTHER_{1}_{address}"
@@ -1920,7 +1941,8 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
                     # Raw uuid in advert
                     self.redactions[address.split("_")[0]] = f"{address[:4]}::OTHER_iBea_{i}_{address[32:]}::"
                 elif len(address) == 17:  # a MAC
-                    self.redactions[address] = f"{address[:2]}::OTHER_MAC_{i}::{address[-2:]}"
+                    for altmac in mac_explode_formats(address):
+                        self.redactions[altmac] = f"{address[:2]}::OTHER_MAC_{i}::{address[-2:]}"
                 else:
                     # Don't know what it is.
                     self.redactions[address] = f"OTHER_{i}_{address}"
@@ -1930,31 +1952,9 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.warning("Redaction list update took %.3f seconds, has %d items", _elapsed, len(self.redactions))
         else:
             _LOGGER.debug("Redaction list update took %.3f seconds, has %d items", _elapsed, len(self.redactions))
+        self.stamp_redactions_expiry = monotonic_time_coarse() + PRUNE_TIME_REDACTIONS
 
-    async def purge_redactions(self, hass: HomeAssistant):
-        """Empty redactions and free up some memory."""
-        self.redactions = {}
-        self._purge_task = async_call_later(
-            hass,
-            8 * 60 * 60,
-            lambda _: HassJob(
-                hass.loop.call_soon_threadsafe(hass.async_create_task, self.purge_redactions(hass)),
-                cancel_on_shutdown=True,
-            ),
-        )
-        self._has_purged = True
-
-    async def stop_purging(self):
-        """Stop purging. There might be a better way to do this?."""
-        if self._purge_task:
-            if self._has_purged:
-                self._purge_task()  # This cancels the async_call_later task
-                self._purge_task = None
-            else:
-                self._purge_task.cancel()
-                self._purge_task = None
-
-    def redact_data(self, data, first_run=True):
+    def redact_data(self, data, first_recursion=True):
         """
         Wash any collection of data of any MAC addresses.
 
@@ -1962,27 +1962,25 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         washes any remaining mac-like addresses. This routine is recursive,
         so if you're changing it bear that in mind!
         """
-        if first_run:
+        if first_recursion:
             # On first/outer call, refresh the redaction list to ensure
             # we don't let any new addresses slip through. Might be expensive
             # on first call, but will be much cheaper for subsequent calls.
             self.redaction_list_update()
-            first_run = False
-        if isinstance(data, str):
-            data = data.lower()
+            first_recursion = False
+
+        if isinstance(data, str):  # Base Case
+            datalower = data.lower()
             # the end of the recursive wormhole, do the actual work:
-            if data in self.redactions:
-                # Full string match, easy...
-                data = self.redactions[data]
+            if datalower in self.redactions:
+                # Full string match, a quick short-circuit
+                data = self.redactions[datalower]
             else:
                 # Search for any of the redaction strings in the data.
-                for find_mac, fix in list(self.redactions.items()):
-                    # Include variants of MAC address
-                    for find in mac_explode_formats(find_mac):
-                        if find in data:
-                            self.redactions[data] = data.replace(find, fix)
-                            data = self.redactions[data]
-                            break
+                for find, fix in list(self.redactions.items()):
+                    if find in datalower:
+                        data = datalower.replace(find, fix)
+                        # don't break out because there might be multiple fixes required.
             # redactions done, now replace any remaining MAC addresses
             # We are only looking for xx:xx:xx... format.
             return self._redact_generic_re.sub(self._redact_generic_sub, data)
@@ -1990,5 +1988,5 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             return {self.redact_data(k, False): self.redact_data(v, False) for k, v in data.items()}
         elif isinstance(data, list):
             return [self.redact_data(v, False) for v in data]
-        else:
+        else:  # Base Case
             return data
