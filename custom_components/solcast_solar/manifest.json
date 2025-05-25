@@ -23,5 +23,5 @@
     "aiofiles>=23.2.0",
     "datetime>=4.3"
   ],
-  "version": "v4.3.4"
+  "version": "v4.3.5"
 }

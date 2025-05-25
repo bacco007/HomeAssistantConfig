@@ -24,7 +24,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     SelectOptionDict,
-    SelectSelector,
+    SelectSelector,  # pyright: ignore[reportUnknownVariableType]
     SelectSelectorConfig,
     SelectSelectorMode,
 )
@@ -53,6 +53,7 @@ from .const import (
     TITLE,
 )
 from .solcastapi import ConnectionOptions, SolcastApi
+from .util import SitesStatus
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -151,7 +152,14 @@ async def validate_sites(hass: HomeAssistant, user_input: dict[str, Any]) -> tup
     solcast = SolcastApi(session, options, hass)
     solcast.headers = get_session_headers(await get_version(hass))
 
-    return await solcast.test_api_key()
+    status, message, api_key_in_error = await solcast.get_sites_and_usage(prior_crash=False, use_cache=False)
+    if status != 200:
+        if status in (401, 403):
+            return status, f"Bad API key, {message} returned for {api_key_in_error}"
+        return status, f"Error {message} for API key {api_key_in_error}"
+    if solcast.sites_status == SitesStatus.NO_SITES:
+        return 404, f"No sites for the API key {api_key_in_error} are configured at solcast.com"
+    return 200, ""
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -178,7 +186,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
 
     async def async_step_reauth(self, entry: Mapping[str, Any]) -> ConfigFlowResult:
         """Set a new API key."""
-        self.entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+        self.entry = self.hass.config_entries.async_get_entry(self.context.get("entry_id", ""))
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
@@ -223,7 +231,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
 
     async def async_step_reconfigure(self, entry: Mapping[str, Any]) -> ConfigFlowResult:
         """Reconfigure API key, limit and auto-update."""
-        self.entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+        self.entry = self.hass.config_entries.async_get_entry(self.context.get("entry_id", ""))
         return await self.async_step_reconfigure_confirm()
 
     async def async_step_reconfigure_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
@@ -234,6 +242,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             api_key, api_count, abort = validate_api_key(user_input)
+            api_quota = "10"
             if abort is not None:
                 errors["base"] = abort
             if not errors:
@@ -293,6 +302,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             api_key, api_count, abort = validate_api_key(user_input)
+            api_quota = "10"
             if abort is not None:
                 errors["base"] = abort
             if not errors:
@@ -300,7 +310,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                 if abort is not None:
                     errors["base"] = abort
             if not errors:
-                options = {
+                options: dict[str, Any] = {
                     CONF_API_KEY: api_key,
                     API_QUOTA: api_quota,
                     AUTO_UPDATE: int(user_input[AUTO_UPDATE]),
@@ -368,7 +378,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
             self.hass.data[DOMAIN].pop("presumed_dead")
             await self.hass.config_entries.async_reload(self._entry.entry_id)
 
-    async def async_step_init(self, user_input: dict | None = None) -> ConfigFlowResult:
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Initialise main options flow step.
 
         Arguments:
@@ -406,7 +416,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                     hard_limit = user_input[HARD_LIMIT_API]
                     if hard_limit == "0":  # Hard limit can be disabled by setting to zero or 100
                         hard_limit = "100.0"
-                    to_set = []
+                    to_set: list[str] = []
                     for h in hard_limit.split(","):
                         h = h.strip()
                         if not h.replace(".", "", 1).isdigit():
