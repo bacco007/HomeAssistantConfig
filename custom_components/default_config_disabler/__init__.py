@@ -2,93 +2,136 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
 
+import homeassistant.components.default_config as ha_default_config
+from homeassistant.config import YAML_CONFIG_FILE
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
-from homeassistant.core import DOMAIN as HA_DOMAIN, HomeAssistant
-from homeassistant.helpers.event import async_track_point_in_time
-import homeassistant.util.dt as dt_util
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv, issue_registry as ir
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.setup import async_setup_component
 
-from .const import CONF_COMPONENTS_TO_DISABLE, SERVICE_HOMEASSISTANT_RESTART
-from .helpers import (
-    backup_original_default_config_manifest,
-    load_default_config_manifest,
-    load_original_default_config_manifest,
-    restore_original_default_config_manifest,
-    save_default_config_manifest,
-)
+from .const import CONF_COMPONENTS_TO_DISABLE, DOMAIN
+from .helpers import get_default_config_components
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
+_RESTART_LOG_MESSAGE = "Restart Home Assistant to apply changes"
+_ISSUE_RESTART_REQUIRED = "restart_required"
+
+
+_DEFAULT_CONFIG_ENABLED = """
+default_config:
+"""
+
+_DEFAULT_CONFIG_DISABLED = """
+# default_config:
+"""
+
+
+def _create_restart_issue(hass: HomeAssistant) -> None:
+    ir.async_create_issue(
+        hass,
+        DOMAIN,
+        _ISSUE_RESTART_REQUIRED,
+        is_fixable=True,
+        severity=ir.IssueSeverity.WARNING,
+        translation_key=_ISSUE_RESTART_REQUIRED,
+    )
+
+
+def _delete_restart_issue(hass: HomeAssistant) -> None:
+    ir.async_delete_issue(hass, DOMAIN, _ISSUE_RESTART_REQUIRED)
+
+
+def _update_default_config(hass: HomeAssistant, disable: bool) -> bool:
+    """Update configuration.yaml to enable/disable default_config."""
+    updated = False
+
+    config_path = hass.config.path(YAML_CONFIG_FILE)
+    with open(config_path, encoding="utf-8") as config_file:
+        config_raw = config_file.read()
+    old = _DEFAULT_CONFIG_ENABLED if disable else _DEFAULT_CONFIG_DISABLED
+    new = _DEFAULT_CONFIG_DISABLED if disable else _DEFAULT_CONFIG_ENABLED
+    if old in config_raw:
+        config_raw = config_raw.replace(old, new)
+        with open(config_path, "w", encoding="utf-8") as config_file:
+            config_file.write(config_raw)
+        updated = True
+
+    return updated
+
+
+async def _async_disable_default_config(hass: HomeAssistant) -> None:
+    _LOGGER.debug("Disabling default_config in configuration.yaml")
+    updated = await hass.async_add_executor_job(_update_default_config, hass, True)
+    if updated:
+        _LOGGER.warning("Disabled default_config. %s", _RESTART_LOG_MESSAGE)
+        _create_restart_issue(hass)
+    else:
+        _LOGGER.debug("default_config is already disabled in configuration.yaml")
+
+
+async def _async_enable_default_config(hass: HomeAssistant) -> None:
+    _LOGGER.debug("Enabling default_config in configuration.yaml")
+    updated = await hass.async_add_executor_job(_update_default_config, hass, False)
+    if updated:
+        _LOGGER.warning("Enabled default_config. %s", _RESTART_LOG_MESSAGE)
+        _create_restart_issue(hass)
+    else:
+        _LOGGER.debug("default_config is already enabled in configuration.yaml")
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the integration."""
+    _LOGGER.debug("Setting up default_config_disabler")
+    if "default_config" in config:
+        await _async_disable_default_config(hass)
+        return True
+
+    _delete_restart_issue(hass)
+    # Setup the default_config dependencies in its manifest except those that are disabled
+    _LOGGER.debug("Getting default_config dependencies")
+    components = await hass.async_add_executor_job(get_default_config_components)
+    _LOGGER.debug("Got default_config dependencies: %s", components)
+    disabled_components = []
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        disabled_components.extend(entry.options.get(CONF_COMPONENTS_TO_DISABLE, []))
+    _LOGGER.debug("Setting up dependencies except: %s", disabled_components)
+    for component in components:
+        if component in disabled_components:
+            continue
+        await async_setup_component(hass, component, config)
+    _LOGGER.debug("Setup of default_config dependencies complete")
+
+    # Setup any components that are conditionally loaded by default_config
+    # and are not in the dependencies of its manifest.
+    # This is currently empty but in the past this used to conditionally setup
+    # e.g. backup for non hassio installations, stream for supported installations, etc.
+    await ha_default_config.async_setup(hass, config)
+
+    _LOGGER.debug("Setup default_config_disabler complete")
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Default Config Disabler from a config entry."""
-    disabled_components = entry.options.get(CONF_COMPONENTS_TO_DISABLE, [])
-
-    def _disable_components() -> bool:
-        backup_original_default_config_manifest()
-
-        new_manifest = load_original_default_config_manifest()
-        for disabled_component in disabled_components:
-            if disabled_component in new_manifest["dependencies"]:
-                new_manifest["dependencies"].remove(disabled_component)
-
-        current_manifest = load_default_config_manifest()
-
-        if new_manifest == current_manifest:
-            return False
-
-        save_default_config_manifest(new_manifest)
-        return True
-
-    if not await hass.async_add_executor_job(_disable_components):
-        _LOGGER.info(
-            "Components: %s are already removed from default_config",
-            disabled_components,
-        )
-    else:
-        _LOGGER.warning(
-            "Components: %s were removed from default_config", disabled_components
-        )
-        _LOGGER.warning("Restarting Home Assistant to use the updated default_config")
-        await hass.services.async_call(HA_DOMAIN, SERVICE_HOMEASSISTANT_RESTART)
-
-        async def on_started(event):
-            _LOGGER.warning(
-                "HA started. Restarting Home Assistant to use the updated default_config"
-            )
-            await hass.services.async_call(HA_DOMAIN, SERVICE_HOMEASSISTANT_RESTART)
-
-            async def delayed_started(event):
-                _LOGGER.warning(
-                    "HA started a while ago. Restarting Home Assistant to use the updated default_config"
-                )
-                await hass.services.async_call(HA_DOMAIN, SERVICE_HOMEASSISTANT_RESTART)
-
-            for minutes in (1, 2, 4, 8, 16):
-                async_track_point_in_time(
-                    hass,
-                    delayed_started,
-                    dt_util.now() + timedelta(minutes=minutes),
-                )
-
-        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, on_started)
-
+    """Set up entry."""
+    _LOGGER.debug("Setting up default_config_disabler entry")
+    await _async_disable_default_config(hass)
     entry.async_on_unload(entry.add_update_listener(update_listener))
-
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    if await hass.async_add_executor_job(restore_original_default_config_manifest):
-        _LOGGER.warning("Restarting Home Assistant to use the original default_config")
-        await hass.services.async_call(HA_DOMAIN, SERVICE_HOMEASSISTANT_RESTART)
+    _LOGGER.debug("Unloading default_config_disabler entry")
+    await _async_enable_default_config(hass)
     return True
 
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Handle options update."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    _LOGGER.warning("Updated disabled components. %s", _RESTART_LOG_MESSAGE)
+    _create_restart_issue(hass)

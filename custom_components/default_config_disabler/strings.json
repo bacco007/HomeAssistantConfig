@@ -17,5 +17,18 @@
         }
       }
     }
+  },
+  "issues": {
+    "restart_required": {
+      "title": "Home Assistant Restart Required",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Restart Home Assistant",
+            "description": "The Default Config Disabler has made changes to your Home Assistant configuration that require a restart.\n\nSelect submit to restart Home Assistant now."
+          }
+        }
+      }
+    }
   }
 }
