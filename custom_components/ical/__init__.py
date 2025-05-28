@@ -135,7 +135,8 @@ class ICalEvents:
         if text is not None:
             # Some calendars are for some reason filled with NULL-bytes.
             # They break the parsing, so we get rid of them
-            event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))
+            loop = asyncio.get_running_loop()
+            event_list = await loop.run_in_executor(None, icalendar.Calendar.from_ical, text.replace("\x00", ""))
             start_of_events = dt_util.start_of_local_day()
             end_of_events = dt_util.start_of_local_day() + timedelta(days=self.days)
 
