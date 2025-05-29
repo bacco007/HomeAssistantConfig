@@ -1,4 +1,4 @@
-from homeassistant.config_entries import ConfigEntry, SOURCE_IMPORT
+from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .sensor import DOMAIN, StartTime
@@ -15,7 +15,5 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
-    hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-        config_entry, 'sensor'
-    ))
+    await hass.config_entries.async_forward_entry_setups(config_entry, ["sensor"])
     return True
