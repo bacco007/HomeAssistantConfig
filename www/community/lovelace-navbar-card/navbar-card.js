@@ -1542,7 +1542,7 @@ var NODE_MODE4 = false;
 var global4 = NODE_MODE4 ? globalThis : window;
 var slotAssignedElements = ((_a4 = global4.HTMLSlotElement) === null || _a4 === undefined ? undefined : _a4.prototype.assignedElements) != null ? (slot, opts) => slot.assignedElements(opts) : (slot, opts) => slot.assignedNodes(opts).filter((node) => node.nodeType === Node.ELEMENT_NODE);
 // package.json
-var version = "0.9.0";
+var version = "0.10.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t;
@@ -2362,6 +2362,11 @@ class NavbarCard extends LitElement {
         hapticFeedback();
       }
       fireDOMEvent(this, "hass-toggle-menu", { bubbles: true, composed: true });
+    } else if (action?.action === "navigate-back") {
+      if (actionType === "tap") {
+        hapticFeedback();
+      }
+      window.history.back();
     } else if (action != null) {
       if (actionType === "tap") {
         hapticFeedback();
