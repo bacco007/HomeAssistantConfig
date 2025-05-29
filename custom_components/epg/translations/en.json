@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "file_name": "File Name (Or Generated File Code)",
+          "full_schedule": "Track Full Schedule (2 Days)",
+          "generated": "Generated File Code"
+        },
+        "description": "Enter the file name as displayed on the [Open EPG website](https://www.open-epg.com/app/index.php). Or specify a generated file code if applicable."
+      },
+      "channels": {
+        "data": {
+          "channels": "Select Channels"
+        },
+        "description": "Choose the channels you want to track from the available list below."
+      }
+    },
+    "error": {
+      "no_channels": "No channels were found. Please verify the file name or generated code and try again.",
+      "invalid_file_name": "The file name appears to be invalid. Please double-check and try again. Visit the [Open EPG website](https://www.open-epg.com/app/index.php), click on 'Guides by Country' in the top menu, and search for the correct file."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "file_name": "File Name (Or Generated File Code) do not change!",
+          "full_schedule": "Track Full Schedule (2 Days)",
+          "generated": "Generated File Code"
+        },
+        "description": "Enter the file name as displayed on the [Open EPG website](https://www.open-epg.com/app/index.php). Or specify a generated file code if applicable."
+      },
+      "channels": {
+        "data": {
+          "channels": "Select Channels"
+        },
+        "description": "Choose the channels you want to track from the available list below."
+      }
+    },
+    "error": {
+      "no_channels": "No channels were found. Please verify the file name or generated code and try again."
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "domain": "epg",
+  "name": "HA-EPG",
+  "codeowners": ["@yohaybn"],
+  "config_flow": true,
+  "documentation": "https://github.com/yohaybn/HomeAssistant-EPG",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/yohaybn/HomeAssistant-EPG/issues",
+  "requirements": ["beautifulsoup4", "lxml"],
+  "version": "2.6.4"
+}
