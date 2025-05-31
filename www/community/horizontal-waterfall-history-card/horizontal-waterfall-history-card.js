@@ -24,7 +24,7 @@ class WaterfallHistoryCard extends HTMLElement {
         max_label: 'Max',
         hours_ago: 'h',
         minutes_ago: 'min',
-        now: 'Maintenant',
+        now: 'Actuel',
       }
     };
 
@@ -59,8 +59,8 @@ class WaterfallHistoryCard extends HTMLElement {
       show_labels: config.show_labels !== false,
       show_min_max: config.show_min_max || false,
       unit: config.unit || null,
-      columns: config.columns || 12,
-      compact: config.compact || false
+      compact: config.compact || false,
+      columns: config.columns || 12
     };
 
      this._historyRefreshInterval = ((this.config.hours / this.config.intervals) * 60 * 60 * 1000) / 2; // take lenght of interval divided by 2 for refresh all history 
@@ -90,7 +90,7 @@ class WaterfallHistoryCard extends HTMLElement {
   
     const valueElem = this.shadowRoot.querySelector('.current-value');
     if (valueElem) {
-      valueElem.textContent = `${current}${this.unit}`;
+      valueElem.textContent = `${current.toFixed(1)}${this.unit}`;
     }
   
     const bars = this.shadowRoot.querySelectorAll('.bar-segment');
@@ -113,30 +113,30 @@ class WaterfallHistoryCard extends HTMLElement {
     const startTime = new Date(endTime - this.config.hours * 60 * 60 * 1000);
 
     const cacheKey = `waterfall-history-${this.config.entity}`;
-    const cached = JSON.parse(sessionStorage.getItem(cacheKey));
+    const cached = JSON.parse(localStorage.getItem(cacheKey));
 
     if (cached && cached.data && endTime.getTime() - cached.datetime < this._historyRefreshInterval) {
         this.renderCard(cached.data, entity);
         return;
     }
-    
+
     try {
       const history = await this._hass.callApi('GET',
         `history/period/${startTime.toISOString()}?filter_entity_id=${this.config.entity}&end_time=${endTime.toISOString()}&significant_changes_only=1&minimal_response&no_attributes&skip_initial_state`
       );
-      const intervals = this.config.intervals;
-      const timeStep = (this.config.hours * 60 * 60 * 1000) / intervals;
-      const processedData = this.processHistoryData(history[0], intervals, timeStep);
       if (history && history[0]) {
-         try {
-          sessionStorage.setItem(cacheKey, JSON.stringify({data : processedData, datetime:endTime.getTime()}));
+
+        const intervals = this.config.intervals;
+        const timeStep = (this.config.hours * 60 * 60 * 1000) / intervals;
+        const processedData = this.processHistoryData(history[0], intervals, timeStep);
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify({data : processedData, datetime:endTime.getTime()}));
         } catch (error) {
           console.error('Error save history cache :', error);
         }
         this.renderCard(processedData, entity);
-        this.renderCard(history[0], entity);
       } else {
-        this.renderCard([], entity); // gérer cas sans historique
+        this.renderCard([], entity);
       }
     } catch (error) {
       console.error('Error fetching history:', error);
@@ -147,14 +147,13 @@ class WaterfallHistoryCard extends HTMLElement {
   renderCard(processedData, currentEntity) {
     const current = parseFloat(currentEntity.state);
     const intervals = this.config.intervals;
-    
     processedData.push(current);
-    
+
     const minValForScale = this.config.min_value ?? Math.min(...processedData.filter(v => v !== null));
     const maxValForScale = this.config.max_value ?? Math.max(...processedData.filter(v => v !== null));
 
-    const actualMin = Math.min(...processedData.filter(v => v !== null));
-    const actualMax = Math.max(...processedData.filter(v => v !== null));
+    const actualMin = Math.min(...processedData.filter(v => v !== null && !isNaN(v)));
+    const actualMax = Math.max(...processedData.filter(v => v !== null && !isNaN(v)));
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -224,8 +223,9 @@ class WaterfallHistoryCard extends HTMLElement {
         .min-max-label {
           font-size: 11px;
           color: var(--secondary-text-color, gray);
-          margin-top: ${this.config.compact ? "-18px" : "4px"};
+          margin-top: ${this.config.compact ? "-17px" : "4px"};
           text-align: center;
+          margin-right: ${this.config.compact ? "15px" : "0px"};
         }
 
         .gradient-overlay {
@@ -241,10 +241,11 @@ class WaterfallHistoryCard extends HTMLElement {
 
       <div class="card-header">
         <span>${this.config.title}</span>
-        ${this.config.show_current ? `<span class="current-value">${current}${this.unit}</span>` : ''}
+        ${this.config.show_current ? `<span class="current-value">${current.toFixed(1)}${this.unit}</span>` : ''}
       </div>
 
       <div class="waterfall-container">
+      
         ${processedData.map((value, index) => {
           const color = this.getColorForValue(value);
           return `<div class="bar-segment"
@@ -264,11 +265,10 @@ class WaterfallHistoryCard extends HTMLElement {
 
       ${this.config.show_min_max ? `
         <div class="min-max-label">
-          ${this.t('min_label')}: ${actualMin.toFixed(1)}${this.unit} - ${this.t('max_label')}: ${actualMax.toFixed(1)}${this.unit}
+          ${this.config.compact ? '' : this.t('min_label') + ':'} ${actualMin.toFixed(1)}${this.unit} - ${this.config.compact ? '' : this.t('max_label') + ':'} ${actualMax.toFixed(1)}${this.unit}
         </div>
       ` : ''}
     `;
-
     this.shadowRoot.host.style.cursor = 'pointer';
     this.shadowRoot.host.onclick = () => this.openMoreInfo();
   }
@@ -277,11 +277,11 @@ class WaterfallHistoryCard extends HTMLElement {
     const processed = new Array(intervals).fill(null);
     const now = Date.now();
     const startTime = now - (this.config.hours * 60 * 60 * 1000);
+    let previousValue = null;
 
     historyData.forEach(point => {
       const pointTime = new Date(point.last_changed || point.last_updated).getTime();
       const timeDiff = pointTime - startTime;
-
       if (timeDiff >= 0) {
         const bucketIndex = Math.floor(timeDiff / timeStep);
         if (bucketIndex >= 0 && bucketIndex < intervals) {
