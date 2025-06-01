@@ -1,0 +1,16 @@
+{
+  "domain": "neo_watcher",
+  "name": "NEO Watcher",
+  "codeowners": [
+    "@danq8"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/danq8/neo_watcher",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/danq8/neo_watcher/issues",
+  "requirements": [
+    "aiohttp"
+  ],
+  "version": "1.0.0"
+}
