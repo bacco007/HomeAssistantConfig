@@ -28,6 +28,7 @@ class F1FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     "weather",
                     "last_race_results",
                     "season_results",
+                    "race_week",
                 ]
             ): cv.multi_select({
                 "next_race": "Next race",
@@ -37,6 +38,7 @@ class F1FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 "weather": "Weather",
                 "last_race_results": "Last race results",
                 "season_results": "Season results",
+                "race_week": "Race week",
             }),
         })
 
@@ -70,6 +72,7 @@ class F1FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     "weather",
                     "last_race_results",
                     "season_results",
+                    "race_week",
                 ])
             ): cv.multi_select({
                 "next_race": "Next race",
@@ -79,6 +82,7 @@ class F1FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 "weather": "Weather",
                 "last_race_results": "Last race results",
                 "season_results": "Season results",
+                "race_week": "Race week",
             }),
         })
 

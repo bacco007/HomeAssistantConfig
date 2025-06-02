@@ -9,7 +9,7 @@ import datetime
 
 from .const import DOMAIN
 
-# Yr symbol_code to MDI-ikoner
+
 SYMBOL_CODE_TO_MDI = {
     "clearsky_day": "mdi:weather-sunny",
     "clearsky_night": "mdi:weather-night",
@@ -67,6 +67,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         "weather": (F1WeatherSensor, data["race_coordinator"]),
         "last_race_results": (F1LastRaceSensor, data["last_race_coordinator"]),
         "season_results": (F1SeasonResultsSensor, data["season_results_coordinator"]),
+        # "last_qualifying": (F1LastQualifyingSensor, data["last_qualifying_coordinator"]),
+        "race_week": (F1RaceWeekSensor, data["race_coordinator"]),
     }
 
     sensors = []
@@ -301,11 +303,13 @@ class F1WeatherSensor(CoordinatorEntity, SensorEntity):
                 rd = dict(instant_details)
                 rd["precipitation_amount"] = precip_1h
                 self._race = self._extract(rd)
-                race_symbol = data_entry \
-                    .get("next_1_hours", {}) \
-                    .get("summary", {}) \
-                    .get("symbol_code")
-                race_icon = SYMBOL_CODE_TO_MDI.get(race_symbol)
+                forecast_block = (
+                    data_entry.get("next_1_hours")
+                    or data_entry.get("next_6_hours")
+                    or data_entry.get("next_12_hours", {})
+                )
+                race_symbol = forecast_block.get("summary", {}).get("symbol_code")
+                race_icon = SYMBOL_CODE_TO_MDI.get(race_symbol, self._attr_icon)
                 self._race["weather_icon"] = race_icon
         self.async_write_ha_state()
 
@@ -443,4 +447,60 @@ class F1SeasonResultsSensor(CoordinatorEntity, SensorEntity):
                 "results": results
             })
         return {"races": cleaned}
+
+
+# --- F1RaceWeekSensor ---
+class F1RaceWeekSensor(CoordinatorEntity, SensorEntity):
+    """Sensor that returns True if it's race week, else False. Extra attribute: days until next race."""
+
+    def __init__(self, coordinator, sensor_name):
+        super().__init__(coordinator)
+        self._attr_name = sensor_name
+        self._attr_unique_id = f"{sensor_name}_unique"
+        self._attr_icon = "mdi:calendar-range"
+
+    def _get_next_race(self):
+        data = self.coordinator.data
+        if not data:
+            return None, None
+
+        races = data.get("MRData", {}).get("RaceTable", {}).get("Races", [])
+        now = datetime.datetime.now(datetime.timezone.utc)
+
+        for race in races:
+            date = race.get("date")
+            time = race.get("time") or "00:00:00Z"
+            dt_str = f"{date}T{time}".replace("Z", "+00:00")
+            try:
+                dt = datetime.datetime.fromisoformat(dt_str)
+            except ValueError:
+                continue
+            if dt > now:
+                return dt, race
+        return None, None
+
+    @property
+    def state(self):
+        next_race_dt, _ = self._get_next_race()
+        if not next_race_dt:
+            return False
+        now = datetime.datetime.now(datetime.timezone.utc)
+        start_of_week = now - datetime.timedelta(days=now.weekday())
+        end_of_week = start_of_week + datetime.timedelta(days=6, hours=23, minutes=59, seconds=59)
+        return start_of_week.date() <= next_race_dt.date() <= end_of_week.date()
+
+    @property
+    def extra_state_attributes(self):
+        next_race_dt, race = self._get_next_race()
+        now = datetime.datetime.now(datetime.timezone.utc)
+        days = None
+        race_name = None
+        if next_race_dt:
+            delta = next_race_dt.date() - now.date()
+            days = delta.days
+            race_name = race.get("raceName") if race else None
+        return {
+            "days_until_next_race": days,
+            "next_race_name": race_name
+        }
 
