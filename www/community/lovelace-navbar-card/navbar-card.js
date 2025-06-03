@@ -1542,7 +1542,7 @@ var NODE_MODE4 = false;
 var global4 = NODE_MODE4 ? globalThis : window;
 var slotAssignedElements = ((_a4 = global4.HTMLSlotElement) === null || _a4 === undefined ? undefined : _a4.prototype.assignedElements) != null ? (slot, opts) => slot.assignedElements(opts) : (slot, opts) => slot.assignedNodes(opts).filter((node) => node.nodeType === Node.ELEMENT_NODE);
 // package.json
-var version = "0.10.0";
+var version = "0.10.1";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t;
@@ -1624,6 +1624,15 @@ var getNavbarTemplates = () => {
     return lovelacePanel.lovelace.config["navbar-templates"];
   }
   return null;
+};
+var forceResetRipple = (element) => {
+  const ripples = element?.shadowRoot?.querySelectorAll("md-ripple");
+  if (ripples) {
+    ripples.forEach((ripple) => {
+      const surface = ripple?.shadowRoot?.querySelector(".surface");
+      surface?.classList?.remove("hovered");
+    });
+  }
 };
 
 // src/styles.ts
@@ -1972,6 +1981,7 @@ class NavbarCard extends LitElement {
   tapTimeoutId = null;
   connectedCallback() {
     super.connectedCallback();
+    forceResetRipple(this);
     this._location = window.location.pathname;
     window.addEventListener("resize", this._checkDesktop);
     this._checkDesktop();
@@ -2127,7 +2137,7 @@ class NavbarCard extends LitElement {
 
         <div class="button ${isActive ? "active" : ""}">
           ${this._getRouteIcon(route, isActive)}
-          <ha-ripple></ha-ripple>
+          <md-ripple></md-ripple>
         </div>
         ${this._shouldShowLabels(false) ? html`<div class="label ${isActive ? "active" : ""}">
               ${processTemplate(this.hass, route.label) ?? " "}
@@ -2147,7 +2157,7 @@ class NavbarCard extends LitElement {
     } else {
       this._popup = null;
     }
-    window.removeEventListener("keydown", this._handleClosePopupListener);
+    window.removeEventListener("keydown", this._onPopupKeyDownListener);
   };
   _getPopupStyles(anchorRect, position) {
     const windowWidth = window.innerWidth;
@@ -2212,14 +2222,13 @@ class NavbarCard extends LitElement {
     const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this._isDesktop ? "mobile" : this._config?.desktop?.position ?? DEFAULT_DESKTOP_POSITION);
     this._popup = html`
       <div
-        class="navbar-popup-backdrop"
-        @click=${() => this._closePopup()}></div>
+        class="navbar-popup-backdrop"</div>
       <div
         class="
           navbar-popup
           ${popupDirectionClassName}
           ${labelPositionClassName}
-          ${this._isDesktop ? "desktop" : ""}
+          ${this._isDesktop ? "desktop" : "mobile"}
         "
         style="${style}">
         ${popupItems.map((popupItem, index) => {
@@ -2245,7 +2254,8 @@ class NavbarCard extends LitElement {
                     style="background-color: ${popupItem.badge?.color || "red"};"></div>` : html``}
 
               <div class="button">
-                ${this._getRouteIcon(popupItem, false)}<ha-ripple></ha-ripple>
+                ${this._getRouteIcon(popupItem, false)}
+                <md-ripple></md-ripple>
               </div>
               ${this._shouldShowLabels(true) ? html`<div class="label">
                     ${processTemplate(this.hass, popupItem.label) ?? " "}
@@ -2262,9 +2272,19 @@ class NavbarCard extends LitElement {
         backdrop.classList.add("visible");
       }
     });
-    window.addEventListener("keydown", this._handleClosePopupListener);
+    window.addEventListener("keydown", this._onPopupKeyDownListener);
+    setTimeout(() => {
+      const backdrop = this.shadowRoot?.querySelector(".navbar-popup-backdrop");
+      if (backdrop) {
+        backdrop.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this._closePopup();
+        });
+      }
+    }, 400);
   };
-  _handleClosePopupListener = (e) => {
+  _onPopupKeyDownListener = (e) => {
     if (e.key === "Escape" && this._popup) {
       e.preventDefault();
       this._closePopup();
@@ -2349,13 +2369,7 @@ class NavbarCard extends LitElement {
         if (actionType === "tap") {
           hapticFeedback();
         }
-        if (actionType === "tap") {
-          setTimeout(() => {
-            this._openPopup(popupItems, target);
-          }, 100);
-        } else {
-          this._openPopup(popupItems, target);
-        }
+        this._openPopup(popupItems, target);
       }
     } else if (action?.action === "toggle-menu") {
       if (actionType === "tap") {
