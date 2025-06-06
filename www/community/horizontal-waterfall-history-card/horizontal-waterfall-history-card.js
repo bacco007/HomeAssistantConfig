@@ -60,21 +60,22 @@ class WaterfallHistoryCard extends HTMLElement {
       show_min_max: config.show_min_max || false,
       unit: config.unit || null,
       compact: config.compact || false,
-      columns: config.columns || 12
+      columns: config.columns || 12,
+      digits: typeof config.digits === 'number' ? config.digits : 1 // New: number of digits after decimal point
     };
 
-     this._historyRefreshInterval = ((this.config.hours / this.config.intervals) * 60 * 60 * 1000) / 2; // take lenght of interval divided by 2 for refresh all history 
+    this._historyRefreshInterval = ((this.config.hours / this.config.intervals) * 60 * 60 * 1000) / 2; // take lenght of interval divided by 2 for refresh all history
   }
 
   set hass(hass) {
     this._hass = hass;
     if (hass.language) {
-      this.language = hass.language.split('-')[0]; 
+      this.language = hass.language.split('-')[0];
     }
     const entity = hass.states[this.config.entity];
     if (!entity) return;
     this._current = parseFloat(entity.state);
-  
+
     const now = Date.now();
     if (now - this._lastHistoryFetch > this._historyRefreshInterval) {
       this._lastHistoryFetch = now;
@@ -87,18 +88,20 @@ class WaterfallHistoryCard extends HTMLElement {
   updateCurrentValue() {
     const current = this._current;
     if (!this.shadowRoot || !this.config.show_current) return;
-  
+
     const valueElem = this.shadowRoot.querySelector('.current-value');
     if (valueElem) {
-      valueElem.textContent = `${current.toFixed(1)}${this.unit}`;
+      // Use this.config.digits for toFixed()
+      valueElem.textContent = `${current.toFixed(this.config.digits)}${this.unit}`;
     }
-  
+
     const bars = this.shadowRoot.querySelectorAll('.bar-segment');
     if (bars.length > 0) {
       const lastBar = bars[bars.length - 1];
       if (lastBar && current != null) {
         lastBar.style.backgroundColor = this.getColorForValue(current);
-        lastBar.setAttribute('title', `${current.toFixed(1)}${this.unit} - ${this.t('now')}`);
+        // Use this.config.digits for toFixed()
+        lastBar.setAttribute('title', `${current.toFixed(this.config.digits)}${this.unit} - ${this.t('now')}`);
       }
     }
   }
@@ -158,19 +161,25 @@ class WaterfallHistoryCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          display: block;
-          background: var(--card-background-color, white);
-          border-radius: var(--border-radius, 4px);
-          box-shadow: var(--box-shadow, 0 2px 4px rgba(0,0,0,0.1));
           padding: 16px;
-          font-family: var(--primary-font-family, sans-serif);
           cursor: pointer;
+          background: var(--ha-card-background, var(--card-background-color, #fff));
+          backdrop-filter: var(--ha-card-backdrop-filter, none);
+          box-shadow: var(--ha-card-box-shadow, none);
+          box-sizing: border-box;
+          border-radius: var(--ha-card-border-radius, 12px);
+          border-width: var(--ha-card-border-width, 1px);
+          border-style: solid;
+          border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
+          color: var(--primary-text-color);
+          display: block;
+          position: relative;
         }
 
         .card-header {
-          font-size: ${this.config.compact ? "14px" : "16px"};
+          font-size: ${this.config.compact ? "12px" : "16px"};
           font-weight: 500;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           color: var(--primary-text-color, black);
           display: flex;
           justify-content: space-between;
@@ -178,7 +187,7 @@ class WaterfallHistoryCard extends HTMLElement {
         }
 
         .current-value {
-          font-size: ${this.config.compact ? "14px" : "18px"};
+          font-size: ${this.config.compact ? "12px" : "18px"};
           font-weight: bold;
           color: var(--primary-text-color, black);
         }
@@ -186,10 +195,13 @@ class WaterfallHistoryCard extends HTMLElement {
         .waterfall-container {
           position: relative;
           height: ${this.config.height}px;
-          border-radius: 4px;
+          border-radius: 2px;
           overflow: hidden;
           display: flex;
-          margin: ${this.config.compact ? "-10px" : "8px"} 8px 0 0;
+          /* Adjusted margin-right to align with card header.
+             The host has 16px padding. By setting margin-right to 0px
+             when compact, the bars will extend fully within that padding. */
+          margin: ${this.config.compact ? "-10px" : "8px"} ${this.config.compact ? "0px" : "8px"} 0 0;
         }
 
         .bar-segment {
@@ -216,10 +228,6 @@ class WaterfallHistoryCard extends HTMLElement {
           margin-top: ${this.config.compact ? "0px" : "4px"};
         }
 
-        .time-label {
-          opacity: 0.7;
-        }
-
         .min-max-label {
           font-size: 11px;
           color: var(--secondary-text-color, gray);
@@ -241,16 +249,16 @@ class WaterfallHistoryCard extends HTMLElement {
 
       <div class="card-header">
         <span>${this.config.title}</span>
-        ${this.config.show_current ? `<span class="current-value">${current.toFixed(1)}${this.unit}</span>` : ''}
+        ${this.config.show_current ? `<span class="current-value">${current.toFixed(this.config.digits)}${this.unit}</span>` : ''}
       </div>
 
       <div class="waterfall-container">
-      
+
         ${processedData.map((value, index) => {
           const color = this.getColorForValue(value);
           return `<div class="bar-segment"
                       style="background-color: ${color};"
-                      title="${this.getTimeLabel(index, intervals)} : ${value !== null ? value.toFixed(1) + this.unit : this.t('error_loading_data')}">
+                      title="${this.getTimeLabel(index, intervals)} : ${value !== null ? value.toFixed(this.config.digits) + this.unit : this.t('error_loading_data')}">
                   </div>`;
         }).join('')}
         <div class="gradient-overlay"></div>
@@ -265,7 +273,7 @@ class WaterfallHistoryCard extends HTMLElement {
 
       ${this.config.show_min_max ? `
         <div class="min-max-label">
-          ${this.config.compact ? '' : this.t('min_label') + ':'} ${actualMin.toFixed(1)}${this.unit} - ${this.config.compact ? '' : this.t('max_label') + ':'} ${actualMax.toFixed(1)}${this.unit}
+          ${this.config.compact ? '' : this.t('min_label') + ':'} ${actualMin.toFixed(this.config.digits)}${this.unit} - ${this.config.compact ? '' : this.t('max_label') + ':'} ${actualMax.toFixed(this.config.digits)}${this.unit}
         </div>
       ` : ''}
     `;
@@ -425,6 +433,7 @@ class WaterfallHistoryCard extends HTMLElement {
       intervals: 48,
       show_min_max: true,
       gradient: false,
+      digits: 1,
       thresholds: [
         { value: 60, color: '#4FC3F7' },
         { value: 70, color: '#81C784' },
