@@ -1,4 +1,6 @@
 # Service definitions for UniFi Insights
+
+# Core services
 refresh_data:
   name: Refresh Data
   description: Force an immediate refresh of UniFi Insights data.
@@ -24,5 +26,125 @@ restart_device:
       name: Device ID
       description: The ID of the device to restart.
       required: true
+      selector:
+        text:
+
+# UniFi Protect Chime services
+set_chime_volume:
+  name: Set Chime Volume
+  description: Set the volume level for a UniFi Protect chime.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    volume:
+      name: Volume
+      description: Chime volume level (0-100)
+      required: true
+      example: 80
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+    camera_id:
+      name: Camera ID
+      description: Optional camera ID to set volume for specific camera
+      required: false
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+
+play_chime_ringtone:
+  name: Play Chime Ringtone
+  description: Play a ringtone on a UniFi Protect chime.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    ringtone_id:
+      name: Ringtone ID
+      description: Optional ringtone ID to play (uses current setting if not specified)
+      required: false
+      example: "default"
+      selector:
+        select:
+          options:
+            - "default"
+            - "mechanical"
+            - "digital"
+            - "christmas"
+            - "traditional"
+            - "custom1"
+            - "custom2"
+
+set_chime_ringtone:
+  name: Set Chime Ringtone
+  description: Set the ringtone for a UniFi Protect chime.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    ringtone_id:
+      name: Ringtone ID
+      description: Ringtone to set
+      required: true
+      example: "default"
+      selector:
+        select:
+          options:
+            - "default"
+            - "mechanical"
+            - "digital"
+            - "christmas"
+            - "traditional"
+            - "custom1"
+            - "custom2"
+    camera_id:
+      name: Camera ID
+      description: Optional camera ID to set ringtone for specific camera
+      required: false
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+
+set_chime_repeat_times:
+  name: Set Chime Repeat Times
+  description: Set the number of times a chime repeats when triggered.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    repeat_times:
+      name: Repeat Times
+      description: Number of times to repeat the chime (1-10)
+      required: true
+      example: 3
+      selector:
+        number:
+          min: 1
+          max: 10
+          step: 1
+    camera_id:
+      name: Camera ID
+      description: Optional camera ID to set repeat times for specific camera
+      required: false
+      example: "60e9c8c0e3e4b8001a123456"
       selector:
         text:

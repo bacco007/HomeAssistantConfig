@@ -8,7 +8,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_VERIFY_SSL
 
-from .api import UnifiInsightsClient, UnifiInsightsAuthError, UnifiInsightsConnectionError
+from .unifi_network_api import UnifiInsightsClient, UnifiInsightsAuthError, UnifiInsightsConnectionError
 from .const import DEFAULT_API_HOST, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -32,12 +32,12 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                     host=user_input.get(CONF_HOST, DEFAULT_API_HOST),
                     verify_ssl=user_input.get(CONF_VERIFY_SSL, False),
                 )
-                
+
                 # Validate the API key
                 if await api.async_validate_api_key():
                     await self.async_set_unique_id(user_input[CONF_API_KEY])
                     self._abort_if_unique_id_configured()
-                    
+
                     return self.async_create_entry(
                         title="UniFi Insights",
                         data={
@@ -46,9 +46,9 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                             CONF_VERIFY_SSL: user_input.get(CONF_VERIFY_SSL, False),
                         },
                     )
-                
+
                 errors[CONF_API_KEY] = "invalid_auth"
-                
+
             except UnifiInsightsAuthError:
                 errors[CONF_API_KEY] = "invalid_auth"
             except UnifiInsightsConnectionError:

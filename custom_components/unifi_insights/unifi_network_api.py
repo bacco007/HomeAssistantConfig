@@ -1,4 +1,4 @@
-"""UniFi Insights API Client."""
+"""UniFi Network API Client."""
 from __future__ import annotations
 
 import asyncio
@@ -92,7 +92,7 @@ class UnifiInsightsRequestCache:
 
 
 class UnifiInsightsClient:
-    """UniFi Insights API client."""
+    """UniFi Network API client."""
 
     def __init__(
         self,
@@ -102,13 +102,12 @@ class UnifiInsightsClient:
         session: ClientSession | None = None,
         verify_ssl: bool = False,
     ) -> None:
-        """Initialize the API client."""
-        _LOGGER.debug("Initializing UniFi Insights API client with host: %s", host)
-        self._hass = hass
+        """Initialize the UniFi Network API client."""
+        _LOGGER.debug("Initializing UniFi Network API client with host: %s", host)
         self._api_key = api_key
         self._host = host
         self._verify_ssl = verify_ssl
-        
+
         if session:
             self._session = session
         else:
@@ -116,15 +115,15 @@ class UnifiInsightsClient:
                 hass,
                 verify_ssl=verify_ssl,
             )
-        
+
         self._request_lock = asyncio.Lock()
         self._backoff = UnifiInsightsBackoff()
         self._cache = UnifiInsightsRequestCache()
-        _LOGGER.info("UniFi Insights API client initialized")
+        _LOGGER.info("UniFi Network API client initialized")
 
     @property
     def host(self) -> str:
-        """Return the host address for the UniFi Insights system."""
+        """Return the host address for the UniFi Network system."""
         return self._host
 
     async def _request(
@@ -136,7 +135,7 @@ class UnifiInsightsClient:
     ) -> dict[str, Any]:
         """Make an API request."""
         cache_key = f"{method}_{endpoint}_{str(kwargs)}" if use_cache else None
-        
+
         if use_cache:
             cached = self._cache.get(cache_key)
             if cached is not None:
@@ -184,13 +183,13 @@ class UnifiInsightsClient:
                             raise UnifiInsightsConnectionError(
                                 f"Server error: {resp.status}"
                             )
-                        
+
                         resp.raise_for_status()
-                        
+
                         try:
                             response_data = await resp.json()
                             _LOGGER.debug(
-                                "Processed response from %s: %s", 
+                                "Processed response from %s: %s",
                                 endpoint,
                                 json.dumps(response_data, indent=2)
                             )
@@ -224,7 +223,7 @@ class UnifiInsightsClient:
         try:
             response = await self._request("GET", "/v1/sites", use_cache=True)
             sites = response.get("data", [])
-            
+
             # Log sites data
             _LOGGER.debug(
                 "Sites data structure:\n%s",
@@ -235,7 +234,7 @@ class UnifiInsightsClient:
                     "meta": site.get("meta", {})
                 } for site in sites], indent=2)
             )
-            
+
             _LOGGER.info("Successfully retrieved %d sites", len(sites))
             return sites
         except Exception as err:
@@ -252,7 +251,7 @@ class UnifiInsightsClient:
         try:
             response = await self._request("GET", f"/v1/sites/{site_id}/devices")
             devices = response.get("data", [])
-            
+
             # Log each device's data structure
             for device in devices:
                 _LOGGER.debug(
@@ -297,7 +296,7 @@ class UnifiInsightsClient:
         )
         try:
             response = await self._request(
-                "GET", 
+                "GET",
                 f"/v1/sites/{site_id}/devices/{device_id}"
             )
             _LOGGER.debug(
@@ -329,7 +328,7 @@ class UnifiInsightsClient:
                 "GET",
                 f"/v1/sites/{site_id}/devices/{device_id}/statistics/latest"
             )
-            
+
             # Log complete statistics data
             _LOGGER.debug(
                 "Complete statistics for device %s: %s",
@@ -349,9 +348,9 @@ class UnifiInsightsClient:
             raise
 
     async def async_get_clients(
-        self, 
-        site_id: str, 
-        offset: int = 0, 
+        self,
+        site_id: str,
+        offset: int = 0,
         limit: int = 25
     ) -> list[dict[str, Any]]:
         """Get all clients for a site with pagination."""
@@ -363,23 +362,23 @@ class UnifiInsightsClient:
         )
         try:
             response = await self._request(
-                "GET", 
+                "GET",
                 f"/v1/sites/{site_id}/clients",
                 params={"offset": offset, "limit": limit}
             )
             clients = response.get("data", [])
             total_count = response.get("totalCount", 0)
-            
+
             # If we have more clients than our current limit, fetch the rest
             if total_count > offset + limit:
                 next_offset = offset + limit
                 more_clients = await self.async_get_clients(
-                    site_id, 
-                    offset=next_offset, 
+                    site_id,
+                    offset=next_offset,
                     limit=limit
                 )
                 clients.extend(more_clients)
-            
+
             _LOGGER.debug(
                 "Retrieved %d clients for site %s",
                 len(clients),
