@@ -1654,8 +1654,9 @@ function xt(e, t, r, n, a) {
     var v = Zt(f(0, 1));
     o.push(v, v);
   }
-  var h = () => 1 - n, _ = e.animate(o, { duration: u });
+  var h = () => 1 - n, _ = e.animate(o, { duration: u, fill: "forwards" });
   return _.onfinish = () => {
+    _.cancel();
     var y = (r == null ? void 0 : r.t()) ?? 1 - n;
     r == null || r.abort();
     var p = n - y, E = (
@@ -2312,7 +2313,7 @@ customElements.define("expander-card", Vr(Ai, { hass: {}, config: {} }, [], [], 
     this.config = { ...Ct, ...r };
   }
 }));
-const Ni = "2.4.0";
+const Ni = "2.4.1";
 console.info(
   `%c  Expander-Card 
 %c Version ${Ni}`,
