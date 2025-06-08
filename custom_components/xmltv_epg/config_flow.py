@@ -79,6 +79,7 @@ class XMLTVFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         client = XMLTVClient(
             session=async_create_clientsession(self.hass),
             url=url,
+            logger=LOGGER,
         )
         guide = await client.async_get_data()
         if not guide:
