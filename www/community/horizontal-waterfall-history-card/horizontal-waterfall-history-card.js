@@ -59,6 +59,7 @@ class WaterfallHistoryCard extends HTMLElement {
       show_labels: config.show_labels !== false,
       show_min_max: config.show_min_max || false,
       unit: config.unit || null,
+      icon: config.icon || null,
       compact: config.compact || false,
       columns: config.columns || 12,
       digits: typeof config.digits === 'number' ? config.digits : 1 // New: number of digits after decimal point
@@ -186,6 +187,12 @@ class WaterfallHistoryCard extends HTMLElement {
           align-items: center;
         }
 
+        .card-header ha-icon {
+          --mdc-icon-size : ${this.config.compact ? "12px" : "16px"};
+          position:relative;
+          top: -1px;
+        }
+        
         .current-value {
           font-size: ${this.config.compact ? "12px" : "18px"};
           font-weight: bold;
@@ -248,8 +255,10 @@ class WaterfallHistoryCard extends HTMLElement {
       </style>
 
       <div class="card-header">
-        <span>${this.config.title}</span>
-        ${this.config.show_current ? `<span class="current-value">${current.toFixed(this.config.digits)}${this.unit}</span>` : ''}
+        <span>
+          ${this.icon ? `<ha-icon icon="${this.icon}"></ha-icon> ` : ''}${this.config.title}
+        </span>
+        ${this.config.show_current ? `<span class="current-value">${current.toFixed(1)}${this.unit}</span>` : ''}
       </div>
 
       <div class="waterfall-container">
@@ -346,8 +355,11 @@ class WaterfallHistoryCard extends HTMLElement {
   }
 
   get unit() {
-    const entity = this._hass?.states?.[this.config.entity];
-    return this.config.unit ?? entity?.attributes?.unit_of_measurement ?? '';
+    return this.config.unit ?? this._hass?.states?.[this.config.entity]?.attributes?.unit_of_measurement ?? '';
+  }
+
+  get icon() {
+    return this.config.icon ?? this._hass?.states?.[this.config.entity]?.attributes?.icon ?? '';
   }
 
   interpolateColor(color1, color2, factor) {
