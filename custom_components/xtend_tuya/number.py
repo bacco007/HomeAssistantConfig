@@ -17,7 +17,7 @@ from .util import (
     merge_device_descriptors
 )
 
-from .const import TUYA_DISCOVERY_NEW, XTDPCode
+from .const import TUYA_DISCOVERY_NEW, XTDPCode, CROSS_CATEGORY_DEVICE_DESCRIPTOR
 from .multi_manager.multi_manager import (
     XTConfigEntry,
     MultiManager,
@@ -33,7 +33,14 @@ from .entity import (
 
 class XTNumberEntityDescription(TuyaNumberEntityDescription):
     """Describe an Tuya number entity."""
-    pass
+    def get_entity_instance(self, 
+                            device: XTDevice, 
+                            device_manager: MultiManager, 
+                            description: XTNumberEntityDescription
+                            ) -> XTNumberEntity:
+        return XTNumberEntity(device=device, 
+                              device_manager=device_manager, 
+                              description=description)
 
 TEMPERATURE_SENSORS:  tuple[XTNumberEntityDescription, ...] = (
     XTNumberEntityDescription(
@@ -584,7 +591,7 @@ async def async_setup_entry(
         merged_descriptors = merge_device_descriptors(merged_descriptors, new_descriptor)
 
     @callback
-    def async_discover_device(device_map) -> None:
+    def async_discover_device(device_map, restrict_dpcode: str | None = None) -> None:
         """Discover and add a discovered Tuya number."""
         if hass_data.manager is None:
             return
@@ -594,9 +601,15 @@ async def async_setup_entry(
             if device := hass_data.manager.device_map.get(device_id):
                 if descriptions := merged_descriptors.get(device.category):
                     entities.extend(
-                        XTNumberEntity(device, hass_data.manager, XTNumberEntityDescription(**description.__dict__))
+                        XTNumberEntity.get_entity_instance(description, device, hass_data.manager)
                         for description in descriptions
-                        if description.key in device.status
+                        if description.key in device.status and (restrict_dpcode is None or restrict_dpcode == description.key)
+                    )
+                if descriptions := merged_descriptors.get(CROSS_CATEGORY_DEVICE_DESCRIPTOR):
+                    entities.extend(
+                        XTNumberEntity.get_entity_instance(description, device, hass_data.manager)
+                        for description in descriptions
+                        if description.key in device.status and (restrict_dpcode is None or restrict_dpcode == description.key)
                     )
 
         async_add_entities(entities)
@@ -624,3 +637,9 @@ class XTNumberEntity(XTEntity, TuyaNumberEntity):
         self.device = device
         self.device_manager = device_manager
         self.entity_description = description
+    
+    @staticmethod
+    def get_entity_instance(description: XTNumberEntityDescription, device: XTDevice, device_manager: MultiManager) -> XTNumberEntity:
+        if hasattr(description, "get_entity_instance") and callable(getattr(description, "get_entity_instance")):
+            return description.get_entity_instance(device, device_manager, description)
+        return XTNumberEntity(device, device_manager, XTNumberEntityDescription(**description.__dict__))

@@ -14,6 +14,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from .const import (
     TUYA_DISCOVERY_NEW,
+    CROSS_CATEGORY_DEVICE_DESCRIPTOR,
 )
 from .util import (
     merge_device_descriptors,
@@ -30,7 +31,15 @@ from .entity import (
 @dataclass(frozen=True)
 class XTTimeEntityDescription(TimeEntityDescription):
     """Describes a Tuya time."""
-    pass
+
+    def get_entity_instance(self, 
+                            device: XTDevice, 
+                            device_manager: MultiManager, 
+                            description: XTTimeEntityDescription
+                            ) -> XTTimeEntity:
+        return XTTimeEntity(device=device, 
+                              device_manager=device_manager, 
+                              description=description)
 
 TIMES: dict[str, tuple[XTTimeEntityDescription, ...]] = {
     
@@ -50,7 +59,7 @@ async def async_setup_entry(
         merged_descriptors = merge_device_descriptors(merged_descriptors, new_descriptor)
 
     @callback
-    def async_discover_device(device_map) -> None:
+    def async_discover_device(device_map, restrict_dpcode: str | None = None) -> None:
         """Discover and add a discovered Tuya binary sensor."""
         if hass_data.manager is None:
             return
@@ -60,9 +69,15 @@ async def async_setup_entry(
             if device := hass_data.manager.device_map.get(device_id):
                 if descriptions := merged_descriptors.get(device.category):
                     entities.extend(
-                        XTTimeEntity(device, hass_data.manager, description)
+                        XTTimeEntity.get_entity_instance(description, device, hass_data.manager)
                         for description in descriptions
-                        if description.key in device.status
+                        if description.key in device.status and (restrict_dpcode is None or restrict_dpcode == description.key)
+                    )
+                if descriptions := merged_descriptors.get(CROSS_CATEGORY_DEVICE_DESCRIPTOR):
+                    entities.extend(
+                        XTTimeEntity.get_entity_instance(description, device, hass_data.manager)
+                        for description in descriptions
+                        if description.key in device.status and (restrict_dpcode is None or restrict_dpcode == description.key)
                     )
         
         async_add_entities(entities)
@@ -101,3 +116,8 @@ class XTTimeEntity(XTEntity, TimeEntity): # type: ignore
         """Change the time."""
         raise NotImplementedError
     
+    @staticmethod
+    def get_entity_instance(description: XTTimeEntityDescription, device: XTDevice, device_manager: MultiManager) -> XTTimeEntity:
+        if hasattr(description, "get_entity_instance") and callable(getattr(description, "get_entity_instance")):
+            return description.get_entity_instance(device, device_manager, description)
+        return XTTimeEntity(device, device_manager, XTTimeEntityDescription(**description.__dict__))

@@ -20,7 +20,7 @@ from .multi_manager.multi_manager import (
     MultiManager,
     XTDevice,
 )
-from .const import TUYA_DISCOVERY_NEW, XTDPCode, LOGGER
+from .const import TUYA_DISCOVERY_NEW, XTDPCode, LOGGER, CROSS_CATEGORY_DEVICE_DESCRIPTOR
 from .ha_tuya_integration.tuya_integration_imports import (
     TuyaBinarySensorEntity,
     TuyaBinarySensorEntityDescription,
@@ -36,8 +36,14 @@ class XTBinarySensorEntityDescription(TuyaBinarySensorEntityDescription):
     # This DPCode represent the online status of a device
     device_online: bool = False
 
-    """ def __init__(self, *args, **kwargs):
-        super(XTBinarySensorEntityDescription, self).__init__(*args, **kwargs) """
+    def get_entity_instance(self, 
+                            device: XTDevice, 
+                            device_manager: MultiManager, 
+                            description: XTBinarySensorEntityDescription
+                            ) -> XTBinarySensorEntity:
+        return XTBinarySensorEntity(device=device, 
+                              device_manager=device_manager, 
+                              description=description)
 
 
 # Commonly used sensors
@@ -153,7 +159,7 @@ async def async_setup_entry(
         merged_descriptors = merge_device_descriptors(merged_descriptors, new_descriptor)
 
     @callback
-    def async_discover_device(device_map) -> None:
+    def async_discover_device(device_map, restrict_dpcode: str | None = None) -> None:
         """Discover and add a discovered Tuya binary sensor."""
         entities: list[XTBinarySensorEntity] = []
         device_ids = [*device_map]
@@ -164,11 +170,16 @@ async def async_setup_entry(
                 if descriptions := merged_descriptors.get(device.category):
                     for description in descriptions:
                         dpcode = description.dpcode or description.key
-                        if dpcode in device.status:
+                        if dpcode in device.status and (restrict_dpcode is None or restrict_dpcode == description.key):
                             entities.append(
-                                XTBinarySensorEntity(
-                                    device, hass_data.manager, XTBinarySensorEntityDescription(**description.__dict__)
-                                )
+                                XTBinarySensorEntity.get_entity_instance(description, device, hass_data.manager)
+                            )
+                if descriptions := merged_descriptors.get(CROSS_CATEGORY_DEVICE_DESCRIPTOR):
+                    for description in descriptions:
+                        dpcode = description.dpcode or description.key
+                        if dpcode in device.status and (restrict_dpcode is None or restrict_dpcode == description.key):
+                            entities.append(
+                                XTBinarySensorEntity.get_entity_instance(description, device, hass_data.manager)
                             )
 
         async_add_entities(entities)
@@ -213,3 +224,9 @@ class XTBinarySensorEntity(XTEntity, TuyaBinarySensorEntity):
         """Call when entity about to be added to hass."""
         await super().async_added_to_hass()
         self.is_on #Update the online status if needed
+    
+    @staticmethod
+    def get_entity_instance(description: XTBinarySensorEntityDescription, device: XTDevice, device_manager: MultiManager) -> XTBinarySensorEntity:
+        if hasattr(description, "get_entity_instance") and callable(getattr(description, "get_entity_instance")):
+            return description.get_entity_instance(device, device_manager, description)
+        return XTBinarySensorEntity(device, device_manager, XTBinarySensorEntityDescription(**description.__dict__))
