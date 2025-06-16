@@ -1,3 +1,15 @@
+
+const threshold_default_number = [
+  { value: 60, color: '#4FC3F7' },  // cold
+  { value: 70, color: '#81C784' },  // cool
+  { value: 80, color: '#FFB74D' },  // warm
+  { value: 100, color: '#FF8A65' }  // hot
+];
+const threshold_default_boolean = [
+  { value: 0, color: '#4FC3F7' },  // cold
+  { value: 1, color: '#FF8A65' },  // hot
+];
+
 class WaterfallHistoryCard extends HTMLElement {
   constructor() {
     super();
@@ -48,12 +60,7 @@ class WaterfallHistoryCard extends HTMLElement {
       height: config.height || 60,
       min_value: config.min_value || null,
       max_value: config.max_value || null,
-      thresholds: config.thresholds || [
-        { value: 60, color: '#4FC3F7' },  // cold
-        { value: 70, color: '#81C784' },  // cool
-        { value: 80, color: '#FFB74D' },  // warm
-        { value: 100, color: '#FF8A65' }  // hot
-      ],
+      thresholds: config.thresholds || null,
       gradient: config.gradient || false,
       show_current: config.show_current !== false,
       show_labels: config.show_labels !== false,
@@ -68,17 +75,6 @@ class WaterfallHistoryCard extends HTMLElement {
       card_mod: config.card_mod || {},
     };
 
-    customElements.whenDefined("card-mod").then((cardMod) => {
-      cardMod.applyToElement(
-        this,
-        "card",
-        this.config.card_mod,
-        {},
-        true,
-        'waterfall-history-card'
-      )
-    });
-
     this._historyRefreshInterval = ((this.config.hours / this.config.intervals) * 60 * 60 * 1000) / 2; // take lenght of interval divided by 2 for refresh all history
   }
 
@@ -89,7 +85,7 @@ class WaterfallHistoryCard extends HTMLElement {
     }
     const entity = hass.states[this.config.entity];
     if (!entity) return;
-    this._current = parseFloat(entity.state);
+    this._current = this.parseState(entity.state);
 
     const now = Date.now();
     if (now - this._lastHistoryFetch > this._historyRefreshInterval) {
@@ -106,8 +102,7 @@ class WaterfallHistoryCard extends HTMLElement {
 
     const valueElem = this.shadowRoot.querySelector('.current-value');
     if (valueElem) {
-      // Use this.config.digits for toFixed()
-      valueElem.textContent = `${current.toFixed(this.config.digits)}${this.unit}`;
+      valueElem.textContent = this.displayState(current);
     }
 
     const bars = this.shadowRoot.querySelectorAll('.bar-segment');
@@ -116,7 +111,7 @@ class WaterfallHistoryCard extends HTMLElement {
       if (lastBar && current != null) {
         lastBar.style.backgroundColor = this.getColorForValue(current);
         // Use this.config.digits for toFixed()
-        lastBar.setAttribute('title', `${current.toFixed(this.config.digits)}${this.unit} - ${this.t('now')}`);
+        lastBar.setAttribute('title', `${this.displayState(current)} - ${this.t('now')}`);
       }
     }
   }
@@ -163,15 +158,14 @@ class WaterfallHistoryCard extends HTMLElement {
   }
 
   renderCard(processedData, currentEntity) {
-    const current = parseFloat(currentEntity.state);
+    const current = this.parseState(currentEntity.state);
     const intervals = this.config.intervals;
     processedData.push(current);
 
     const minValForScale = this.config.min_value ?? Math.min(...processedData.filter(v => v !== null));
     const maxValForScale = this.config.max_value ?? Math.max(...processedData.filter(v => v !== null));
 
-    const actualMin = Math.min(...processedData.filter(v => v !== null && !isNaN(v)));
-    const actualMax = Math.max(...processedData.filter(v => v !== null && !isNaN(v)));
+    const [actualMin, actualMax] = this.getMinMax(processedData);
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -272,7 +266,7 @@ class WaterfallHistoryCard extends HTMLElement {
         <span>
           ${this.icon ? `<ha-icon icon="${this.icon}"></ha-icon> ` : ''}${this.config.title}
         </span>
-        ${this.config.show_current ? `<span class="current-value">${current.toFixed(1)}${this.unit}</span>` : ''}
+        ${this.config.show_current ? `<span class="current-value">${this.displayState(current)}</span>` : ''}
       </div>
 
       <div class="waterfall-container">
@@ -281,7 +275,7 @@ class WaterfallHistoryCard extends HTMLElement {
           const color = this.getColorForValue(value);
           return `<div class="bar-segment"
                       style="background-color: ${color};"
-                      title="${this.getTimeLabel(index, intervals)} : ${value !== null ? value.toFixed(this.config.digits) + this.unit : this.t('error_loading_data')}">
+                      title="${this.getTimeLabel(index, intervals)} : ${value !== null ? this.displayState(value) : this.t('error_loading_data')}">
                   </div>`;
         }).join('')}
         <div class="gradient-overlay"></div>
@@ -296,19 +290,29 @@ class WaterfallHistoryCard extends HTMLElement {
 
       ${this.config.show_min_max ? `
         <div class="min-max-label">
-          ${this.config.compact ? '' : this.t('min_label') + ':'} ${actualMin.toFixed(this.config.digits)}${this.unit} - ${this.config.compact ? '' : this.t('max_label') + ':'} ${actualMax.toFixed(this.config.digits)}${this.unit}
+          ${this.config.compact ? '' : this.t('min_label') + ':'} ${this.displayState(actualMin)} - ${this.config.compact ? '' : this.t('max_label') + ':'} ${this.displayState(actualMax)}
         </div>
       ` : ''}
     `;
     this.shadowRoot.host.style.cursor = 'pointer';
     this.shadowRoot.host.onclick = () => this.openMoreInfo();
+
+    customElements.whenDefined("card-mod").then((cardMod) => {
+      cardMod.applyToElement(
+        this,
+        "card",
+        this.config.card_mod,
+        {},
+        true,
+        'waterfall-history-card'
+      )
+    });
   }
 
   processHistoryData(historyData, intervals, timeStep) {
     const processed = new Array(intervals).fill(this.config.default_value);
     const now = Date.now();
     const startTime = now - (this.config.hours * 60 * 60 * 1000);
-    let previousValue = null;
 
     historyData.forEach(point => {
       const pointTime = new Date(point.last_changed || point.last_updated).getTime();
@@ -316,10 +320,7 @@ class WaterfallHistoryCard extends HTMLElement {
       if (timeDiff >= 0) {
         const bucketIndex = Math.floor(timeDiff / timeStep);
         if (bucketIndex >= 0 && bucketIndex < intervals) {
-          const value = parseFloat(point.state);
-          if (!isNaN(value)) {
-            processed[bucketIndex] = value;
-          }
+          processed[bucketIndex] = this.parseState(point.state);
         }
       }
     });
@@ -339,12 +340,60 @@ class WaterfallHistoryCard extends HTMLElement {
     return processed;
   }
 
+  getMinMax(data) {
+    let min = Infinity;
+    let max = -Infinity;
+    for (const d of data) {
+      if (d === null) continue;
+      if (d > max) max = d;
+      if (d < min) min = d;
+    }
+    return [min, max];
+  }
+
+  parseState(state) {
+    if (typeof state === 'number') {
+      return state;
+    }
+
+    if (typeof state === 'string') {
+      if (state === 'off') return false;
+      if (state === 'on') return true;
+
+      const casted = parseFloat(state);
+      if (!Number.isNaN(casted)) {
+        return casted;
+      }
+    }
+
+    // No idea what to do, fall back to default.
+    return this.config.default_value;
+  }
+
+  displayState(state) {
+    if (state === true) return 'on';
+    if (state === false) return 'off';
+
+    if (typeof state === 'number') {
+      return state.toFixed(this.config.digits) + this.unit;
+    }
+
+    return state + this.unit;
+  }
+
   getColorForValue(value) {
     if (value === null) return '#666666';
     if (isNaN(value)) return '#666666';
 
-    const thresholds = this.config.thresholds;
-    if (!thresholds || thresholds.length === 0) return '#666666';
+    let thresholds = this.config.thresholds;
+    if (!thresholds) {
+      if (typeof value === 'boolean') thresholds = threshold_default_boolean;
+      else thresholds = threshold_default_number;
+    }
+    if (thresholds.length === 0) return '#666666';
+
+    if (value === false) value = 0;
+    if (value === true) value = 1;
 
     if (!this.config.gradient) {
       for (let i = thresholds.length - 1; i >= 0; i--) {
@@ -460,12 +509,7 @@ class WaterfallHistoryCard extends HTMLElement {
       show_min_max: true,
       gradient: false,
       digits: 1,
-      thresholds: [
-        { value: 60, color: '#4FC3F7' },
-        { value: 70, color: '#81C784' },
-        { value: 80, color: '#FFB74D' },
-        { value: 100, color: '#FF8A65' }
-      ]
+      thresholds: threshold_default_number,
     };
   }
 }
