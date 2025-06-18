@@ -1,0 +1,20 @@
+{
+  "domain": "docker_status",
+  "name": "Docker status",
+  "codeowners": [
+    "@kgn3400"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/kgn3400/docker_status",
+  "homekit": {},
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/kgn3400/docker_status/issues",
+  "requirements": [
+    "docker==7.1.0",
+    "paramiko"
+  ],
+  "ssdp": [],
+  "version": "1.0.21",
+  "zeroconf": []
+}

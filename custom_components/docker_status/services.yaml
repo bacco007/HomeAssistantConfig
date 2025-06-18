@@ -1,0 +1,12 @@
+# Service ID
+update:
+# Service name as shown in UI
+#name: Update
+# Description of the service
+#description: Refresh docker information
+# Service ID
+prune_images:
+# Service name as shown in UI
+#name: Prune images
+# Description of the service
+#description: Remove unused docker

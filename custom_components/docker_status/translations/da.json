@@ -1,0 +1,104 @@
+{
+  "title": "Docker status",
+  "entity_component": {
+    "_": {
+      "name": "Docker status"
+    }
+  },
+  "config": {
+    "abort": {
+      "already_configured": "Enheden er allerede konfigureret"
+    },
+    "error": {
+      "base_url_error": "Docker-motoren kunne ikke nås.",
+      "sensor_name_error": "Miljøsensornavn eksisterer allerede"
+    },
+    "step": {
+      "sensor": {
+        "data": {
+          "docker_env_sensor_name": "Docker-miljøsensornavn",
+          "docker_engine_url": "Url",
+          "check_for_images_updates": "Tjek for opdateringer af image"
+        },
+        "data_description": {
+          "docker_env_sensor_name": "Venligt navn på miljøsensor",
+          "docker_engine_url": "Docker-motor url"
+        }
+      },
+      "user": {
+        "data": {
+          "docker_base_name": "Konfiguration navn",
+          "docker_base_name_use_in_sensor_name": "Brug konfigurations navn i sensor navne",
+          "scan_interval": "Skan interval",
+          "check_for_updated_images_hours": "Tjek for opdateringer af image"
+        },
+        "data_description": {
+          "docker_base_name": "Navn på Konfiguration",
+          "scan_interval": "Tid imellem skanninger",
+          "check_for_updated_images_hours": "Søg efter opdateringer af image"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "base_url_error": "Docker-motoren kunne ikke nås.",
+      "sensor_name_error": "Miljøsensornavn eksisterer allerede"
+    },
+    "step": {
+      "add_docker_sensor": {
+        "data": {
+          "docker_env_sensor_name": "Docker-miljøsensornavn",
+          "docker_engine_url": "Url",
+          "check_for_images_updates": "Tjek for opdateringer af image"
+        },
+        "data_description": {
+          "docker_env_sensor_name": "Venligt navn på miljøsensor",
+          "docker_engine_url": "Docker-motor url"
+        }
+      },
+      "edit_docker_sensor": {
+        "data": {
+          "docker_env_sensor_name": "Docker-miljøsensornavn",
+          "docker_engine_url": "Url",
+          "check_for_images_updates": "Tjek for opdateringer af image"
+        },
+        "data_description": {
+          "docker_env_sensor_name": "Venligt navn på miljøsensor",
+          "docker_engine_url": "Docker-motor url"
+        }
+      },
+      "init": {
+        "menu_options": {
+          "add_docker_sensor": "Tilføj Docker sensor",
+          "remove_docker_sensor": "Fjern Docker sensor",
+          "docker_base_setup": "Docker base konfiguration",
+          "select_edit_docker_sensor": "Konfigurer Docker sensor"
+        }
+      },
+      "docker_base_setup": {
+        "data": {
+          "docker_base_name": "Konfiguration navn",
+          "docker_base_name_use_in_sensor_name": "Brug konfigurations navn i sum sensor navne",
+          "scan_interval": "Skan interval",
+          "check_for_updated_images_hours": "Tjek for opdateringer af image"
+        },
+        "data_description": {
+          "docker_base_name": "Navn på Konfiguration",
+          "scan_interval": "Tid imellem skanninger",
+          "check_for_updated_images_hours": "Søg efter opdateringer af image"
+        }
+      }
+    }
+  },
+  "services": {
+    "update": {
+      "description": "Opdater docker status information.",
+      "name": "Opdater"
+    },
+    "prune_images": {
+      "description": "Prune ubrugte docker images.",
+      "name": "Prune images"
+    }
+  }
+}

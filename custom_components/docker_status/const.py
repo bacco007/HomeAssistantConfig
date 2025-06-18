@@ -1,0 +1,55 @@
+"""Constants for Scrape integration."""
+
+from __future__ import annotations
+
+from logging import Logger, getLogger
+
+LOGGER: Logger = getLogger(__name__)
+
+DOMAIN = "docker_status"
+TRANSLATION_KEY = DOMAIN
+DOMAIN_NAME = "Docker status"
+DEFAULT_SCAN_INTERVAL = 5
+DEFAULT_CHECK_FOR_UPDATED_IMAGES = 6
+
+CONF_DOCKER_BASE_NAME = "docker_base_name"
+CONF_DOCKER_BASE_NAME_USE_IN_SENSOR_NAME = "docker_base_name_use_in_sensor_name"
+CONF_DOCKER_ENGINE_URL = "docker_engine_url"
+CONF_DOCKER_ENV_SENSOR_NAME = "docker_env_sensor_name"
+CONF_CHECK_FOR_UPDATED_IMAGES_HOURS = "check_for_updated_images_hours"
+CONF_INDEX = "index"
+CONF_SENSORS = "sensors"
+CONF_CHECK_FOR_IMAGES_UPDATES = "check_for_images_updates"
+
+SENSOR_CONTAINERS_RUNNING = "Containers running"
+SENSOR_CONTAINERS_STOPPED = "Containers stopped"
+SENSOR_CONTAINERS_CPU_PERCENT = "Containers CPU %"
+SENSOR_CONTAINERS_MEMORY_USAGE = "Containers mem. usage"
+SENSOR_IMAGES = "Images"
+SENSOR_IMAGES_UNUSED = "Images unused"
+SENSOR_IMAGES_DANGLING = "Images dangling"
+SENSOR_VOLUMES = "Volumes"
+SENSOR_VOLUMES_UNUSED = "Volumes unused"
+
+
+DOCKER_SENSORS = [
+    SENSOR_CONTAINERS_RUNNING,
+    SENSOR_CONTAINERS_STOPPED,
+    SENSOR_CONTAINERS_CPU_PERCENT,
+    SENSOR_CONTAINERS_MEMORY_USAGE,
+    SENSOR_IMAGES,
+    SENSOR_IMAGES_UNUSED,
+    SENSOR_IMAGES_DANGLING,
+    SENSOR_VOLUMES,
+    SENSOR_VOLUMES_UNUSED,
+]
+
+DOCKER_SENSORS_SUM = [
+    SENSOR_CONTAINERS_RUNNING,
+    SENSOR_CONTAINERS_STOPPED,
+    SENSOR_IMAGES,
+    SENSOR_IMAGES_UNUSED,
+    SENSOR_IMAGES_DANGLING,
+    SENSOR_VOLUMES,
+    SENSOR_VOLUMES_UNUSED,
+]
