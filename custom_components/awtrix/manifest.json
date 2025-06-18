@@ -1,13 +1,12 @@
 {
   "domain": "awtrix",
-  "name": "Awtrix tools and notification",
+  "name": "Awtrix",
+  "after_dependencies": ["mqtt"],
+  "codeowners": ["@miguelangellv"],
   "config_flow": true,
-  "codeowners": ["@10der"],
-  "integration_type": "service",
-  "dependencies": [],
-  "documentation": "https://github.com/10der/homeassistant-custom_components-awtrix/blob/main/README.md",
+  "documentation": "https://github.com/MiguelAngelLV/ha-awtrix",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/10der/homeassistant-custom_components-awtrix/issues",
+  "issue_tracker": "https://github.com/MiguelAngelLV/ha-awtrix/issues",
   "requirements": [],
-  "version": "0.3.21"
+  "version": "0.6"
 }

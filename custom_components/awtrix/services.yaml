@@ -1,1 +1,899 @@
-# Empty file, AWTRIX services are dynamically created (user-defined services)
+settings:
+  name: Configure Awtrix Parameters
+  description: Configure various parameters of the Awtrix display through MQTT.
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to configure.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    ATIME:
+      name: "App Display Duration"
+      description: "Duration (in seconds) an app is displayed."
+      example: 7
+      selector:
+        number:
+          min: 1
+          mode: box
+    TEFF:
+      name: "App Transition Effect"
+      description: "Choose between app transition effects (0-10)."
+      example: 1
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Random
+            - value: "1"
+              label: Slide
+            - value: "2"
+              label: Dim
+            - value: "3"
+              label: Zoom
+            - value: "4"
+              label: Rotate
+            - value: "5"
+              label: Pixelate
+            - value: "6"
+              label: Curtain
+            - value: "7"
+              label: Ripple
+            - value: "8"
+              label: Blink
+            - value: "9"
+              label: Reload
+            - value: "10"
+              label: Fade
+    TSPEED:
+      name: "App Transition Speed"
+      description: "Time (in milliseconds) taken for the transition to the next app."
+      example: 500
+      selector:
+        number:
+          min: 1
+          mode: box
+    TCOL:
+      name: "Global Text Color"
+      description: "Global text color for the display."
+      example: "#FFFFFF"
+      selector:
+        color_rgb: {}
+    TMODE:
+      name: "Time App Style"
+      description: "Changes the style of the time app (0-6)."
+      example: 1
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Time + Weekday
+            - value: "1"
+              label: Icon1 + Time + Weekday
+            - value: "2"
+              label: Icon1 + Weekday + Time
+            - value: "3"
+              label: Icon2 + Time + Weekday
+            - value: "4"
+              label: Icon2 + Weekday + Time
+            - value: "5"
+              label: Time
+            - value: "6"
+              label: Binary
+    CHCOL:
+      name: "Calendar Header Color"
+      description: "Color of the calendar header in the time app."
+      example: "#FF0000"
+      selector:
+        color_rgb: {}
+    CBCOL:
+      name: "Calendar Body Color"
+      description: "Color of the calendar body in the time app."
+      example: "#FFFFFF"
+      selector:
+        color_rgb: {}
+    CTCOL:
+      name: "Calendar Text Color"
+      description: "Text color for the calendar in the time app."
+      example: "#000000"
+      selector:
+        color_rgb: {}
+    WD:
+      name: "Weekday Display"
+      description: "Enable or disable the weekday display."
+      example: true
+      selector:
+        boolean: {}
+    WDCA:
+      name: "Active Weekday Color"
+      description: "Color for active weekdays."
+      example: "#00FF00"
+      selector:
+        color_rgb: {}
+    WDCI:
+      name: "Inactive Weekday Color"
+      description: "Color for inactive weekdays."
+      example: "#888888"
+      selector:
+        color_rgb: {}
+    BRI:
+      name: "Matrix Brightness"
+      description: "Brightness of the matrix (0-255)."
+      example: 128
+      selector:
+        number:
+          min: 0
+          max: 255
+          mode: slider
+    ABRI:
+      name: "Automatic Brightness Control"
+      description: "Enable or disable automatic brightness adjustment."
+      example: true
+      selector:
+        boolean: {}
+    ATRANS:
+      name: "Automatic App Transition"
+      description: "Enable or disable automatic switching to the next app."
+      example: true
+      selector:
+        boolean: {}
+    CCORRECTION:
+      name: "Color Correction"
+      description: "Adjust the color correction for the matrix (RGB values)."
+      example: "[255, 255, 255]"
+      selector:
+        object: {}
+    CTEMP:
+      name: "Color Temperature"
+      description: "Set the color temperature for the matrix (RGB values)."
+      example: "[255, 180, 150]"
+      selector:
+        object: {}
+    TFORMAT:
+      name: "Time Format"
+      description: "Format for the time display. Check: https://blueforcer.github.io/awtrix3/#/api?id=available-time-formats"
+      example: "HH:mm"
+      selector:
+        text: {}
+    DFORMAT:
+      name: "Date Format"
+      description: "Format for the date display. Check: https://blueforcer.github.io/awtrix3/#/api?id=available-date-formats"
+      example: "DD/MM/YYYY"
+      selector:
+        text: {}
+    SOM:
+      name: "Start Week on Monday"
+      description: "Enable or disable starting the week on Monday."
+      example: true
+      selector:
+        boolean: {}
+    CEL:
+      name: "Celsius Temperature"
+      description: "Display temperature in Celsius (false for Fahrenheit)."
+      example: true
+      selector:
+        boolean: {}
+    BLOCKN:
+      name: "Block Physical Navigation Keys"
+      description: "Block physical navigation keys but still send input via MQTT."
+      example: false
+      selector:
+        boolean: {}
+    UPPERCASE:
+      name: "Uppercase Text"
+      description: "Display text in uppercase."
+      example: true
+      selector:
+        boolean: {}
+    TIME_COL:
+      name: "Time App Text Color"
+      description: "Text color for the time app. Use 0 for global text color."
+      example: "#00FF00"
+      selector:
+        color_rgb: {}
+    DATE_COL:
+      name: "Date App Text Color"
+      description: "Text color for the date app. Use 0 for global text color."
+      example: "#FF8800"
+      selector:
+        color_rgb: {}
+    TEMP_COL:
+      name: "Temperature App Text Color"
+      description: "Text color for the temperature app. Use 0 for global text color."
+      example: "#00FFFF"
+      selector:
+        color_rgb: {}
+    HUM_COL:
+      name: "Humidity App Text Color"
+      description: "Text color for the humidity app. Use 0 for global text color."
+      example: "#8888FF"
+      selector:
+        color_rgb: {}
+    BAT_COL:
+      name: "Battery App Text Color"
+      description: "Text color for the battery app. Use 0 for global text color."
+      example: "#FF00FF"
+      selector:
+        color_rgb: {}
+    SSPEED:
+      name: "Scroll Speed"
+      description: "Modification percentage for the original scroll speed."
+      example: 100
+      selector:
+        number:
+          min: 1
+          mode: box
+    TIM:
+      name: "Enable Time App"
+      description: "Enable or disable the native time app (requires reboot)."
+      example: true
+      selector:
+        boolean: {}
+    DAT:
+      name: "Enable Date App"
+      description: "Enable or disable the native date app (requires reboot)."
+      example: true
+      selector:
+        boolean: {}
+    HUM:
+      name: "Enable Humidity App"
+      description: "Enable or disable the native humidity app (requires reboot)."
+      example: true
+      selector:
+        boolean: {}
+    TEMP:
+      name: "Enable Temperature App"
+      description: "Enable or disable the native temperature app (requires reboot)."
+      example: true
+      selector:
+        boolean: {}
+    BAT:
+      name: "Enable Battery App"
+      description: "Enable or disable the native battery app (requires reboot)."
+      example: true
+      selector:
+        boolean: {}
+    MATP:
+      name: "Enable Matrix"
+      description: "Enable or disable the matrix without power animation."
+      example: true
+      selector:
+        boolean: {}
+    VOL:
+      name: "Buzzer Volume"
+      description: "Set the volume for the buzzer and DFPlayer (0-30)."
+      example: 10
+      selector:
+        number:
+          min: 0
+          max: 30
+          mode: box
+    OVERLAY:
+      name: "Global Overlay Effect"
+      description: "Set a global effect overlay (cannot be used with app-specific overlays)."
+      example: "clear"
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - clear
+            - snow
+            - rain
+            - drizzle
+            - storm
+            - thunder
+            - frost
+
+notification:
+  name: Display Custom notification
+  description: Send a custom message to the Awtrix display.
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to send the notification to.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    text:
+      name: "Message Text"
+      description: "The text to display on the matrix."
+      example: "Hello, Awtrix!"
+      selector:
+        text: {}
+    duration:
+      name: "Display Duration"
+      description: "Time (in seconds) to display the notification."
+      example: 5
+      selector:
+        number:
+          min: 1
+          mode: box
+    icon:
+      name: "Icon"
+      description: "ID or filename of an icon to display."
+      example: "weather_sun"
+      selector:
+        text: {}
+    textCase:
+      name: "Text Case"
+      description: "Convert text case."
+      example: 0
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Global setting
+            - value: "1"
+              label: Uppercase
+            - value: "2"
+              label: No transform
+    topText:
+      name: "Top Text"
+      description: "If enabled, draws the text on top."
+      example: false
+      selector:
+        boolean: {}
+    textOffset:
+      name: "Text Offset"
+      description: "Sets an offset for the text's starting position."
+      example: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    center:
+      name: "Center Text"
+      description: "Centers short, non-scrollable text."
+      example: true
+      selector:
+        boolean: {}
+    color:
+      name: "Color"
+      description: "Color of the text or charts."
+      example: "#FFFFFF"
+      selector:
+        color_rgb: {}
+    gradient:
+      name: "Gradient Colors"
+      description: "Applies a gradient using two colors."
+      example: ["#FF0000", "#0000FF"]
+      selector:
+        object: {}
+    blinkText:
+      name: "Blink Interval"
+      description: "Blinks the text at the given interval (ms)."
+      example: 500
+      selector:
+        number:
+          min: 0
+          mode: box
+    fadeText:
+      name: "Fade Interval"
+      description: "Fades text on and off at the given interval (ms)."
+      example: 700
+      selector:
+        number:
+          min: 0
+          mode: box
+    background:
+      name: "Background Color"
+      description: "Sets the background color."
+      example: "#000000"
+      selector:
+        color_rgb: {}
+    rainbow:
+      name: "Rainbow Effect"
+      description: "Applies an animated rainbow effect to the text."
+      example: false
+      selector:
+        boolean: {}
+    pushIcon:
+      name: "Icon Behavior"
+      description: "0 = static, 1 = moves once, 2 = reappears."
+      example: 0
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Static
+            - value: "1"
+              label: Moves once
+            - value: "2"
+              label: Reappears
+    repeat:
+      name: "Repeat Scroll"
+      description: "Number of times the text scrolls (-1 for infinite)."
+      example: -1
+      selector:
+        number:
+          min: -1
+          mode: box
+    hold:
+      name: "Hold Notification"
+      description: "Keeps the notification on screen until dismissed."
+      example: false
+      selector:
+        boolean: {}
+    stack:
+      name: "Stack Notifications"
+      description: "If disabled, replaces the current notification immediately."
+      example: true
+      selector:
+        boolean: {}
+    sound:
+      name: "Sound File"
+      description: "Filename of the RTTTL or MP3 file to play."
+      example: "alert"
+      selector:
+        text: {}
+    rtttl:
+      name: "RTTTL Sound String"
+      description: "RTTTL formatted sound string to play."
+      example: "d=4,o=5,b=100:c,d,e,f,g,a,b"
+      selector:
+        text: {}
+    loopSound:
+      name: "Loop Sound"
+      description: "Repeats the sound as long as the notification is active."
+      example: false
+      selector:
+        boolean: {}
+    bar:
+      name: "Bar Graph Data"
+      description: "Draws a bar graph with up to 16 values: [ 10, 20, 30, 40 ]"
+      example: [10, 20, 30, 40]
+      selector:
+        object: {}
+    line:
+      name: "Line Chart Data"
+      description: "Draws a line chart with up to 16 values: [ 5, 15, 25, 35 ]"
+      example: [5, 15, 25, 35]
+      selector:
+        object: {}
+    autoscale:
+      name: "Autoscale Graph"
+      description: "Enables autoscaling for bar and line charts."
+      example: true
+      selector:
+        boolean: {}
+    barBC:
+      name: "Bar Background Color"
+      description: "Color of the bar graph background."
+      example: "#222222"
+      selector:
+        color_rgb: {}
+    progress:
+      name: "Progress Value"
+      description: "Displays a progress bar (0-100)."
+      example: 50
+      selector:
+        number:
+          min: 0
+          max: 100
+          mode: slider
+    progressC:
+      name: "Progress Bar Color"
+      description: "Color of the progress bar."
+      example: "#00FF00"
+      selector:
+        color_rgb: {}
+    progressBC:
+      name: "Progress Bar Background"
+      description: "Color of the progress bar background."
+      example: "#333333"
+      selector:
+        color_rgb: {}
+    draw:
+      name: "Draw a custom image"
+      description: "Array of drawing instructions. Each object represents a drawing command. https://blueforcer.github.io/awtrix3/#/api?id=drawing-instructions"
+      example: '{"draw":[ {"dc": [28, 4, 3, "#FF0000"]}, {"dr": [20, 4, 4, 4, "#0000FF"]}, {"dt": [0, 0, "Hello", "#00FF00"]} ]}'
+      selector:
+        text:
+          multiline: true
+    wakeup:
+      name: "Wake Up Matrix"
+      description: "If off, wakes up the matrix during the notification."
+      example: false
+      selector:
+        boolean: {}
+    noScroll:
+      name: "Disable Scrolling"
+      description: "Prevents text from scrolling."
+      example: false
+      selector:
+        boolean: {}
+    clients:
+      name: "Forward to Clients"
+      description: "Send this notification to other Awtrix devices."
+      example: ["prefix1", "prefix2"]
+      selector:
+        object: {}
+    scrollSpeed:
+      name: "Scroll Speed"
+      description: "Percentage of the original scroll speed."
+      example: 100
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    effect:
+      name: "Background Effect"
+      description: "Effect to display in the background."
+      example: "fire"
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - BrickBreaker
+            - Checkerboard
+            - Fireworks
+            - PingPong
+            - Radar
+            - Ripple
+            - Snake
+            - TwinklingStars
+            - TheaterChase
+            - ColorWaves
+            - SwirlOut
+            - SwirlIn
+            - LookingEyes
+            - Matrix
+            - Pacifica
+            - Plasma
+            - PlasmaCloud
+            - MovingLine
+            - Fade
+    effectSettings:
+      name: "Effect Settings"
+      description: "Settings for color and speed of the effect."
+      example: '{ "effect":"Plasma",  "effectSettings":{ "speed":3, "palette":"Rainbow", "blend":true }}'
+      selector:
+        object: {}
+    overlay:
+      name: "Overlay Effect"
+      description: "Sets an overlay effect."
+      example: "clear"
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - clear
+            - snow
+            - rain
+            - drizzle
+            - storm
+            - thunder
+            - frost
+
+custom_app:
+  name: Display Custom app
+  description: Send a custom message to the Awtrix display.
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to update the custom app.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    app:
+      name: App Name
+      required: true
+      description: The name of the custom app to update.
+      selector:
+        text: {}
+    save:
+      name: "Save to Flash"
+      description: "Saves the custom app to flash memory."
+      example: false
+      selector:
+        boolean: {}
+    text:
+      name: "Message Text"
+      description: "The text to display on the matrix."
+      example: "Hello, Awtrix!"
+      selector:
+        text: {}
+    icon:
+      name: "Icon"
+      description: "ID or filename of an icon to display."
+      example: "weather_sun"
+      selector:
+        text: {}
+    textCase:
+      name: "Text Case"
+      description: "Convert text case."
+      example: 0
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Global setting
+            - value: "1"
+              label: Uppercase
+            - value: "2"
+              label: No transform
+    topText:
+      name: "Top Text"
+      description: "If enabled, draws the text on top."
+      example: false
+      selector:
+        boolean: {}
+    textOffset:
+      name: "Text Offset"
+      description: "Sets an offset for the text's starting position."
+      example: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    center:
+      name: "Center Text"
+      description: "Centers short, non-scrollable text."
+      example: true
+      selector:
+        boolean: {}
+    color:
+      name: "Color"
+      description: "Color of the text or charts."
+      example: "#FFFFFF"
+      selector:
+        color_rgb: {}
+    gradient:
+      name: "Gradient Colors"
+      description: "Applies a gradient using two colors."
+      example: ["#FF0000", "#0000FF"]
+      selector:
+        object: {}
+    blinkText:
+      name: "Blink Interval"
+      description: "Blinks the text at the given interval (ms)."
+      example: 500
+      selector:
+        number:
+          min: 0
+          mode: box
+    fadeText:
+      name: "Fade Interval"
+      description: "Fades text on and off at the given interval (ms)."
+      example: 700
+      selector:
+        number:
+          min: 0
+          mode: box
+    background:
+      name: "Background Color"
+      description: "Sets the background color."
+      example: "#000000"
+      selector:
+        color_rgb: {}
+    rainbow:
+      name: "Rainbow Effect"
+      description: "Applies an animated rainbow effect to the text."
+      example: false
+      selector:
+        boolean: {}
+    pushIcon:
+      name: "Icon Behavior"
+      description: "0 = static, 1 = moves once, 2 = reappears."
+      example: 0
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Static
+            - value: "1"
+              label: Moves once
+            - value: "2"
+              label: Reappears
+    repeat:
+      name: "Repeat Scroll"
+      description: "Number of times the text scrolls (-1 for infinite)."
+      example: -1
+      selector:
+        number:
+          min: -1
+          mode: box
+    duration:
+      name: "Display Duration"
+      description: "Time (in seconds) to display the app."
+      example: 5
+      selector:
+        number:
+          min: 1
+          mode: box
+    bar:
+      name: "Bar Graph Data"
+      description: "Draws a bar graph with up to 16 values: [ 10, 20, 30, 40 ]"
+      example: [10, 20, 30, 40]
+      selector:
+        object: {}
+    line:
+      name: "Line Chart Data"
+      description: "Draws a line chart with up to 16 values: [ 5, 15, 25, 35 ]"
+      example: [5, 15, 25, 35]
+      selector:
+        object: {}
+    autoscale:
+      name: "Autoscale Graph"
+      description: "Enables autoscaling for bar and line charts."
+      example: true
+      selector:
+        boolean: {}
+    barBC:
+      name: "Bar Background Color"
+      description: "Color of the bar graph background."
+      example: "#222222"
+      selector:
+        color_rgb: {}
+    progress:
+      name: "Progress Value"
+      description: "Displays a progress bar (0-100)."
+      example: 50
+      selector:
+        number:
+          min: 0
+          max: 100
+          mode: slider
+    progressC:
+      name: "Progress Bar Color"
+      description: "Color of the progress bar."
+      example: "#00FF00"
+      selector:
+        color_rgb: {}
+    progressBC:
+      name: "Progress Bar Background"
+      description: "Color of the progress bar background."
+      example: "#333333"
+      selector:
+        color_rgb: {}
+    pos:
+      name: "Custom Page Position"
+      description: "Defines the position of the custom page in the loop."
+      example: 2
+      selector:
+        number:
+          min: 0
+          mode: box
+    draw:
+      name: "Draw a custom image"
+      description: "Array of drawing instructions. Each object represents a drawing command. https://blueforcer.github.io/awtrix3/#/api?id=drawing-instructions"
+      example: '{"draw":[ {"dc": [28, 4, 3, "#FF0000"]}, {"dr": [20, 4, 4, 4, "#0000FF"]}, {"dt": [0, 0, "Hello", "#00FF00"]} ]}'
+      selector:
+        text:
+          multiline: true
+    lifetime:
+      name: "App Lifetime"
+      description: "Removes the app if no update is received within this time (seconds)."
+      example: 10
+      selector:
+        number:
+          min: 0
+          mode: box
+    lifetimeMode:
+      name: "Lifetime Mode"
+      description: "0 = deletes the app, 1 = marks it as stale."
+      example: 0
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - value: "0"
+              label: Deletes the app
+            - value: "1"
+              label: Mark it as stale
+    noScroll:
+      name: "Disable Scrolling"
+      description: "Prevents text from scrolling."
+      example: false
+      selector:
+        boolean: {}
+    scrollSpeed:
+      name: "Scroll Speed"
+      description: "Percentage of the original scroll speed."
+      example: 100
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    effect:
+      name: "Background Effect"
+      description: "Effect to display in the background."
+      example: "fire"
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - BrickBreaker
+            - Checkerboard
+            - Fireworks
+            - PingPong
+            - Radar
+            - Ripple
+            - Snake
+            - TwinklingStars
+            - TheaterChase
+            - ColorWaves
+            - SwirlOut
+            - SwirlIn
+            - LookingEyes
+            - Matrix
+            - Pacifica
+            - Plasma
+            - PlasmaCloud
+            - MovingLine
+            - Fade
+    effectSettings:
+      name: "Effect Settings"
+      description: "Settings for color and speed of the effect."
+      example: '{ "effect":"Plasma",  "effectSettings":{ "speed":3, "palette":"Rainbow", "blend":true }}'
+      selector:
+        object: {}
+    overlay:
+      name: "Overlay Effect"
+      description: "Sets an overlay effect."
+      example: "clear"
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - clear
+            - snow
+            - rain
+            - drizzle
+            - storm
+            - thunder
+            - frost
+
+delete_custom_app:
+  name: Delete Custom app
+  description: Remove custom app from the Awtrix device.
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to delete the custom app.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    app:
+      name: App Name
+      required: true
+      description: The name of the custom app to delete.
+      selector:
+        text: {}
+
+deep_sleep:
+  name: Deep Sleep
+  description: "Send the board in deep sleep mode (turns off the matrix as well), good for saving battery life."
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to put into deep sleep mode.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    sleep:
+      name: Seconds to sleep
+      description: "Number of seconds to sleep"
+      example: 120
+      selector:
+        number:
+          min: 1
+          mode: box

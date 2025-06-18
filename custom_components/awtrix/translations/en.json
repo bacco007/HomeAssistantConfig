@@ -1,0 +1,11 @@
+{
+  "config": {
+    "error": {
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "single_instance_allowed": "Only one instance of this integration is allowed."
+    },
+    "step": {}
+  }
+}

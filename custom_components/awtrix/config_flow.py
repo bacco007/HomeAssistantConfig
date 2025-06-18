@@ -1,27 +1,39 @@
-"""Config flow to configure the Moon integration."""
+"""Config flow for Awtrix integration."""
+
 from __future__ import annotations
 
-from typing import Any
+import logging
+from typing import TYPE_CHECKING, Any, Self
 
-from homeassistant.config_entries import ConfigFlow
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant import config_entries
+from typing_extensions import override
 
-from .const import DOMAIN
+from .const import (
+    DOMAIN,
+)
+
+if TYPE_CHECKING:
+    from homeassistant.data_entry_flow import FlowResult
+
+_LOGGER = logging.getLogger(__name__)
 
 
-class AwtrixConfigFlow(ConfigFlow, domain=DOMAIN):
+class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Awtrix."""
 
-    VERSION = 1
+    VERSION = 2
+    single_instance_allowed = True
 
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """Handle a flow initialized by the user."""
-        if self._async_current_entries():
-            return self.async_abort(reason="single_instance_allowed")
+    def __init__(self) -> None:
+        """Initialize values."""
+        self._errors = None
 
-        if user_input is not None:
-            return self.async_create_entry(title="awtrix", data={})
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Config flow for Awtrix."""
+        self._errors = {}
 
-        return self.async_show_form(step_id="user")
+        return self.async_create_entry(title="Awtrix", data={})
+
+    @override
+    def is_matching(self, other_flow: Self) -> bool:
+        return False

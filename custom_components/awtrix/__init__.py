@@ -1,111 +1,103 @@
-"""Support for Awtrix time."""
+"""Awtrix."""
 
 from __future__ import annotations
 
-from functools import partial
+import json
 import logging
+from typing import TYPE_CHECKING
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_NAME, Platform
-from homeassistant.core import HomeAssistant, ServiceCall
-from homeassistant.helpers import (
-    device_registry as dr,
-    discovery,
-    entity_registry as er,
-)
-from homeassistant.helpers.service import async_set_service_schema
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components import mqtt
+from homeassistant.const import Platform
+from homeassistant.helpers.entity_registry import async_entries_for_device, async_get
 
-from .awtrix import AwtrixTime
-from .const import (
-    CONF_DEVICE,
-    DATA_CONFIG_ENTRIES,
-    DOMAIN,
-    SERVICE_TO_FIELDS,
-    SERVICE_TO_SCHEMA,
-    SERVICES,
-)
+from .const import DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant, ServiceCall
 
 _LOGGER = logging.getLogger(__name__)
 
+PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR]
 
-async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
-    """Set up from a config entry."""
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+
+async def async_setup(hass: HomeAssistant, _: dict):
+    """Awtrix integration setup."""
+
+    async def update_settings(call: ServiceCall):
+        device = call.data.get("device")
+        payload = json.dumps(call.data)
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/settings", payload)
+
+    async def notification(call: ServiceCall):
+        device = call.data.get("device")
+        payload = json.dumps(call.data)
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/notify", payload)
+
+    async def custom_app(call: ServiceCall):
+        device = call.data.get("device")
+        app = call.data.get("app")
+        payload = json.dumps(call.data)
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/custom/{app}", payload)
+
+    async def delete_custom_app(call: ServiceCall):
+        device = call.data.get("device")
+        app = call.data.get("app")
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/custom/{app}", "")
+
+    async def deep_sleep(call: ServiceCall):
+        device = call.data.get("device")
+        payload = json.dumps(call.data)
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/sleep", payload)
+
+    hass.services.async_register(DOMAIN, "settings", update_settings)
+    hass.services.async_register(DOMAIN, "notification", notification)
+    hass.services.async_register(DOMAIN, "custom_app", custom_app)
+    hass.services.async_register(DOMAIN, "delete_custom_app", delete_custom_app)
+    hass.services.async_register(DOMAIN, "deep_sleep", deep_sleep)
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Unload a config entry."""
-
+async def async_setup_entry(_: HomeAssistant, __: ConfigEntry) -> bool:
+    """Initialise entry configuration."""
     return True
 
 
-async def async_setup(hass, config):
-    """Set up the Awtrix."""
+async def async_unload_entry(_: HomeAssistant, __: ConfigEntry) -> bool:
+    """Remove entry after unload component."""
+    return True
 
-    async def service_handler(entry_data, service, call: ServiceCall) -> None:
-        """Handle service call."""
 
-        device = AwtrixTime(hass, entry_data[CONF_DEVICE])
-        func = getattr(device, service)
-        if func:
-            await func(call.data)
+async def _get_prefix(hass, device_id: str) -> str | None:
+    entity_registry = async_get(hass)
+    entities = async_entries_for_device(entity_registry, device_id, True)
 
-    def build_service_name(entry_name, service) -> str:
-        """Build a service name for a node."""
-        return f"{entry_name.replace('-', '_')}_{service}"
+    for e in entities:
+        if e.original_name == "Device topic":
+            return hass.states.get(e.entity_id).state
 
-    devices = []
+    return None
 
-    device_registry = dr.async_get(hass)
-    entity_registry = er.async_get(hass)
 
-    for device in device_registry.devices.values():
-        ha_device_name = device.name_by_user or device.name
-        if device.manufacturer == 'Blueforcer':
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old config entries."""
+    version = entry.version
+    if version < 2:
+        if entry.title == "Atriwx":
+            hass.config_entries.async_update_entry(entry, title="Awtrix", version=2)
 
-            device_entities = er.async_entries_for_device(
-                entity_registry,
-                device_id=device.id,
-                include_disabled_entities=False,
-            )
-
-            for entry in device_entities:
-                if 'device_topic' in entry.entity_id:
-                    devices.append({CONF_NAME: ha_device_name,
-                                   CONF_DEVICE: entry.entity_id})
-
-    hass.data[DOMAIN] = {
-        DATA_CONFIG_ENTRIES: devices
-    }
-
-    for device_conf in devices:
-        hass.async_create_task(
-            discovery.async_load_platform(
-                hass, Platform.NOTIFY, DOMAIN, device_conf, config)
-        )
-        for service in SERVICES:
-            service_name = build_service_name(device_conf[CONF_NAME], service)
-
-            hass.services.async_register(
-                DOMAIN,
-                service_name,
-                partial(service_handler, device_conf, service),
-                schema=SERVICE_TO_SCHEMA[service]
-            )
-
-            # Register the service description
-            async_set_service_schema(
-                hass,
-                DOMAIN,
-                service_name,
-                {
-                    "description": (
-                        f"Calls the service {service_name} of the node AWTRIX"
-                    ),
-                    "fields": SERVICE_TO_FIELDS[service],
-                },
-            )
-
-    # Return boolean to indicate that initialization was successfully.
     return True
