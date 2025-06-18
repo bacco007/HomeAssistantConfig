@@ -35,6 +35,7 @@ from .const import (
     CONF_GTFS_PROVIDER,
     CONF_GTFS_PROVIDER_ID,
     CONF_GTFS_STATIC_DATA,
+    CONF_USE_LOCAL_FEEDS,
     CONF_MINOR_VERSION,
     CONF_ROUTE_ICONS,
     CONF_ROUTE_IDS,
@@ -64,17 +65,18 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         self.hub_config: dict[str, Any] = {}
 
     @staticmethod
-    async def _get_feeds():
+    async def _get_feeds(use_local: bool = False):
         # try to get the data from the develop branch, it may be more up to date
-        async with aiohttp.ClientSession() as session:
-            async with session.get(FEEDS_URL) as response:
-                if response.status >= 200 and response.status < 400:
-                    GtfsRealtimeConfigFlow.feeds = json.loads(await response.text())
-                    return
-        # fallback to getting the data from the local feeds.json
-        _LOGGER.info(
-            "Failed to fetch feeds from GitHub, falling back to local feeds.json"
-        )
+        if not use_local:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(FEEDS_URL) as response:
+                    if response.status >= 200 and response.status < 400:
+                        GtfsRealtimeConfigFlow.feeds = json.loads(await response.text())
+                        return
+            # fallback to getting the data from the local feeds.json
+            _LOGGER.info(
+                "Failed to fetch feeds from GitHub, falling back to local feeds.json"
+            )
         async with await aopen_file(
             "custom_components/gtfs_realtime/feeds.json", "rb"
         ) as f:
@@ -84,11 +86,14 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         """User initiated Config Flow."""
         errors = {}
+        use_local_feeds_only: bool = False
         if user_input is not None:
             if CONF_GTFS_PROVIDER_ID in user_input:
                 return await self.async_step_choose_static_and_realtime_feeds(
                     user_input
                 )
+            elif CONF_USE_LOCAL_FEEDS in user_input:
+                use_local_feeds_only = bool(user_input[CONF_USE_LOCAL_FEEDS])
             else:
                 errors["base"] = "unexpected_user_input"
 
@@ -96,7 +101,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
         # file so it may be kept up to date without requiring updates to this repository.
         # It can also be monkey patched to support testing.
         try:
-            await GtfsRealtimeConfigFlow._get_feeds()
+            await GtfsRealtimeConfigFlow._get_feeds(use_local_feeds_only)
         except Exception as e:
             # do not allow errors to propagate, this is for convenience
             _LOGGER.error("failed_preconfigured_feeds")
