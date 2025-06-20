@@ -148,7 +148,7 @@ class DockerSensor(ComponentEntity, SensorEntity):
     # ------------------------------------------------------
     async def async_update(self) -> None:
         """Update the entity. Only used by the generic entity update service."""
-        await self.coordinator.request_refresh()
+        await self.coordinator.async_request_refresh()
 
     # ------------------------------------------------------
     async def async_added_to_hass(self) -> None:
@@ -243,7 +243,7 @@ class DockerSensorSum(ComponentEntity, SensorEntity):
     # ------------------------------------------------------
     async def async_update(self) -> None:
         """Update the entity. Only used by the generic entity update service."""
-        await self.coordinator.request_refresh()
+        await self.coordinator.async_request_refresh()
 
     # ------------------------------------------------------
     async def async_added_to_hass(self) -> None:

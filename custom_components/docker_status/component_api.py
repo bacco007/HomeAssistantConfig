@@ -87,13 +87,13 @@ class ComponentApi:
         """Update via service."""
 
         # await self.async_update_sensors_data()
-        await self.coordinator.request_refresh()
+        await self.coordinator.async_request_refresh()
 
     # -------------------------------------------------------------------
     async def async_prune_images_service(self, call: ServiceCall) -> None:
         """Prune via service."""
         await self.prune_images()
-        await self.coordinator.request_refresh()
+        await self.coordinator.async_request_refresh()
 
     # -------------------------------------------------------------------
     async def async_update(self) -> None:
