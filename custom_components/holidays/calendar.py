@@ -156,7 +156,7 @@ class Holidays(CalendarEntity, RestoreEntity):
         return DeviceInfo(
             identifiers={(const.DOMAIN, self.unique_id)},
             name=self._attr_name,
-            manufacturer="bruxy70",
+            manufacturer="ifflanb",
         )
 
     @property
