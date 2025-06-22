@@ -104,7 +104,7 @@ font:
 
 output:
   - platform: ledc
-    pin: GPIO27
+    pin: GPIO21
     id: backlight_pwm
 
   - platform: ledc
