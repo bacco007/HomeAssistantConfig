@@ -74,8 +74,8 @@ class WaterfallHistoryCard extends HTMLElement {
 
       card_mod: config.card_mod || {},
     };
-
     this._historyRefreshInterval = ((this.config.hours / this.config.intervals) * 60 * 60 * 1000) / 2; // take lenght of interval divided by 2 for refresh all history
+    this.config._hash = simpleHash(JSON.stringify(this.config));
   }
 
   set hass(hass) {
@@ -122,39 +122,75 @@ class WaterfallHistoryCard extends HTMLElement {
     const entity = this._hass.states[this.config.entity];
     if (!entity) return;
 
-    const endTime = new Date();
-    const startTime = new Date(endTime - this.config.hours * 60 * 60 * 1000);
-
     const cacheKey = `waterfall-history-${this.config.entity}`;
-    const cached = JSON.parse(localStorage.getItem(cacheKey));
+    const cached = this.getCachedData(cacheKey);
 
-    if (cached && cached.data && endTime.getTime() - cached.datetime < this._historyRefreshInterval) {
-        this.renderCard(cached.data, entity);
-        return;
+    if (cached[this.config._hash]?.data) {
+      // Render from cache
+      this.renderCard(cached[this.config._hash].data, entity);
+      return;
     }
 
+    const endTime = new Date();
+    const startTime = new Date(endTime - this.config.hours * 60 * 60 * 1000);
+    let history;
     try {
-      const history = await this._hass.callApi('GET',
+      history = await this._hass.callApi('GET',
         `history/period/${startTime.toISOString()}?filter_entity_id=${this.config.entity}&end_time=${endTime.toISOString()}&significant_changes_only=1&minimal_response&no_attributes&skip_initial_state`
       );
-      if (history && history[0]) {
-
-        const intervals = this.config.intervals;
-        const timeStep = (this.config.hours * 60 * 60 * 1000) / intervals;
-        const processedData = this.processHistoryData(history[0], intervals, timeStep);
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify({data : processedData, datetime:endTime.getTime()}));
-        } catch (error) {
-          console.error('Error save history cache :', error);
-        }
-        this.renderCard(processedData, entity);
-      } else {
-        this.renderCard([], entity);
-      }
     } catch (error) {
       console.error('Error fetching history:', error);
       this.renderError();
+      return;
     }
+
+    if (!history || !history[0]) {
+      this.renderCard([], entity);
+      return;
+    }
+
+    const intervals = this.config.intervals;
+    const timeStep = (this.config.hours * 60 * 60 * 1000) / intervals;
+    const processedData = this.processHistoryData(history[0], intervals, timeStep);
+
+    cached[this.config._hash] = {
+      data: processedData,
+      expiresAt: endTime.getTime() + this._historyRefreshInterval,
+    };
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify(cached));
+    } catch (error) {
+      console.error('Error save history cache :', error);
+    }
+
+    this.renderCard(processedData, entity);
+  }
+
+  getCachedData(cacheKey) {
+    const cached = JSON.parse(localStorage.getItem(cacheKey));
+
+    if (!cached) {
+      // No data
+      return {};
+    }
+
+    if (cached.datetime) {
+      // Cache is from version 0.7.1 or below
+      // Remove this check in a future version
+      localStorage.removeItem(cacheKey);
+      return {};
+    }
+
+    // Check for any stale data. Prevents cache from getting uncontrollably big.
+    const now = new Date();
+    for (const [hash, val] of Object.entries(cached)) {
+      if (now.getTime() > val.expiresAt) {
+        // Stale, remove data
+        delete cached[hash];
+      }
+    }
+
+    return cached;
   }
 
   renderCard(processedData, currentEntity) {
@@ -528,3 +564,17 @@ console.info(
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray'
 );
+
+/**
+ * Insecure hash
+ * Source: https://gist.github.com/aculich/2dabf4c1368fb5a5a30095be81c8863d
+ */
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash &= hash; // Convert to 32bit integer
+  }
+  return new Uint32Array([hash])[0].toString(36);
+};
