@@ -338,8 +338,7 @@ class ReactiveElement extends HTMLElement {
       return (_a3 = c.hostConnected) === null || _a3 === undefined ? undefined : _a3.call(c);
     });
   }
-  enableUpdating(_requestedUpdate) {
-  }
+  enableUpdating(_requestedUpdate) {}
   disconnectedCallback() {
     var _a2;
     (_a2 = this.__controllers) === null || _a2 === undefined || _a2.forEach((c) => {
@@ -467,8 +466,7 @@ class ReactiveElement extends HTMLElement {
       this._$didUpdate(changedProperties);
     }
   }
-  willUpdate(_changedProperties) {
-  }
+  willUpdate(_changedProperties) {}
   _$didUpdate(changedProperties) {
     var _a2;
     (_a2 = this.__controllers) === null || _a2 === undefined || _a2.forEach((c) => {
@@ -504,10 +502,8 @@ class ReactiveElement extends HTMLElement {
     }
     this.__markUpdated();
   }
-  updated(_changedProperties) {
-  }
-  firstUpdated(_changedProperties) {
-  }
+  updated(_changedProperties) {}
+  firstUpdated(_changedProperties) {}
 }
 _e = finalized;
 ReactiveElement[_e] = true;
@@ -1542,7 +1538,7 @@ var NODE_MODE4 = false;
 var global4 = NODE_MODE4 ? globalThis : window;
 var slotAssignedElements = ((_a4 = global4.HTMLSlotElement) === null || _a4 === undefined ? undefined : _a4.prototype.assignedElements) != null ? (slot, opts) => slot.assignedElements(opts) : (slot, opts) => slot.assignedNodes(opts).filter((node) => node.nodeType === Node.ELEMENT_NODE);
 // package.json
-var version = "0.10.1";
+var version = "0.11.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t;
@@ -1736,11 +1732,7 @@ var ROUTE_STYLES = css`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: filter 0.2s ease;
     --icon-primary-color: var(--state-inactive-color);
-  }
-  .route:hover {
-    filter: brightness(1.2);
   }
 
   /* Button styling */
@@ -2296,7 +2288,9 @@ class NavbarCard extends LitElement {
     if (route.hold_action) {
       this.holdTriggered = false;
       this.holdTimeoutId = window.setTimeout(() => {
-        hapticFeedback();
+        if (this._shouldTriggerHaptic("hold")) {
+          hapticFeedback();
+        }
         this.holdTriggered = true;
       }, HOLD_ACTION_DELAY);
     }
@@ -2366,23 +2360,23 @@ class NavbarCard extends LitElement {
       if (!popupItems) {
         console.error("No popup items found for route:", route);
       } else {
-        if (actionType === "tap") {
+        if (this._shouldTriggerHaptic(actionType)) {
           hapticFeedback();
         }
         this._openPopup(popupItems, target);
       }
     } else if (action?.action === "toggle-menu") {
-      if (actionType === "tap") {
+      if (this._shouldTriggerHaptic(actionType)) {
         hapticFeedback();
       }
       fireDOMEvent(this, "hass-toggle-menu", { bubbles: true, composed: true });
     } else if (action?.action === "navigate-back") {
-      if (actionType === "tap") {
+      if (this._shouldTriggerHaptic(actionType, true)) {
         hapticFeedback();
       }
       window.history.back();
     } else if (action != null) {
-      if (actionType === "tap") {
+      if (this._shouldTriggerHaptic(actionType)) {
         hapticFeedback();
       }
       fireDOMEvent(this, "hass-action", { bubbles: true, composed: true }, {
@@ -2392,6 +2386,9 @@ class NavbarCard extends LitElement {
         }
       });
     } else if (actionType === "tap" && route.url) {
+      if (this._shouldTriggerHaptic(actionType, true)) {
+        hapticFeedback();
+      }
       de(this, route.url);
     }
   };
@@ -2424,6 +2421,28 @@ class NavbarCard extends LitElement {
       ${getDefaultStyles()}
       ${userStyles}
     `;
+  }
+  _shouldTriggerHaptic(actionType, isNavigation = false) {
+    const hapticConfig = this._config?.haptic;
+    if (typeof hapticConfig === "boolean") {
+      return hapticConfig;
+    }
+    if (!hapticConfig) {
+      return !isNavigation;
+    }
+    if (isNavigation) {
+      return hapticConfig.url ?? false;
+    }
+    switch (actionType) {
+      case "tap":
+        return hapticConfig.tap_action ?? false;
+      case "hold":
+        return hapticConfig.hold_action ?? false;
+      case "double_tap":
+        return hapticConfig.double_tap_action ?? false;
+      default:
+        return false;
+    }
   }
 }
 __legacyDecorateClassTS([
