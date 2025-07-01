@@ -14,6 +14,7 @@ from homeassistant.helpers import discovery
 from homeassistant.helpers import entity_registry as er
 from psnawp_api.core.psnawp_exceptions import PSNAWPAuthenticationError
 from psnawp_api.psnawp import PSNAWP
+from pyrate_limiter import Duration, Rate
 
 from .const import DOMAIN, PSN_API, PSN_COORDINATOR, CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES
 from .coordinator import PsnCoordinator
@@ -33,7 +34,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     try:
         npsso = entry.data.get("npsso")
-        psn = PSNAWP(npsso)
+        rate = Rate(300, Duration.MINUTE * 15)
+        psn = PSNAWP(npsso, rate_limit=rate)
     except PSNAWPAuthenticationError as error:
         raise ConfigEntryAuthFailed(error) from error
     except Exception as ex:
@@ -74,11 +76,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         - Migrates old unique ID's from old sensors and media players to the new unique ID's
         """
         if entry.domain == Platform.SENSOR and entry.unique_id == "psn_psn_status":
-            new = f"{coordinator.data.get("username").lower()}_psn_status"
+            new = f"{coordinator.data.get('username').lower()}_psn_status"
             return {"new_unique_id": entry.unique_id.replace("psn_psn_status", new)}
 
         if entry.domain == Platform.SENSOR and entry.unique_id == "psn_psn_trophies":
-            new = f"{coordinator.data.get("username").lower()}_psn_trophy_level"
+            new = f"{coordinator.data.get('username').lower()}_psn_trophy_level"
             return {"new_unique_id": entry.unique_id.replace("psn_psn_trophies", new)}
         if entry.domain == Platform.MEDIA_PLAYER and entry.unique_id == "PS5_console":
             new = f"{coordinator.data.get('username').lower()}_{coordinator.data.get('platform').get('platform').lower()}_console"
@@ -146,7 +148,7 @@ def _remove_option_sensor(
         entity_id = entity_registry.async_get_entity_id(
             "sensor",
             DOMAIN,
-            f"{coordinator.data.get("username").lower()}_psn_about_me_attr",
+            f"{coordinator.data.get('username').lower()}_psn_about_me_attr",
         )
         if entity_id:
             entity_registry.async_remove(entity_id)

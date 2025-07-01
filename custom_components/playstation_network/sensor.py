@@ -35,6 +35,14 @@ def get_ps_plus_status(coordinator_data: any) -> str:
     return "Inactive"
 
 
+def get_genres_as_string(coordinator_data: any) -> str:
+    """Convert a list of genres to a comma-separated string."""
+    genres = coordinator_data.get("genres", [])
+    if not genres:
+        return "Unknown"
+    return ", ".join(genre for genre in genres if genre).casefold().title()
+
+
 def get_status(coordinator_data: any) -> str:
     """Returns online status"""
     match coordinator_data.get("platform").get("onlineStatus"):
@@ -58,6 +66,7 @@ def get_status_attr(coordinator_data: any) -> dict[str, str]:
         "name": None,
         "description": None,
         "platform": None,
+        "genres": None,
         "content_rating": None,
         "play_count": None,
         "play_duration": None,
@@ -86,6 +95,8 @@ def get_status_attr(coordinator_data: any) -> dict[str, str]:
         title_trophies = coordinator_data.get("title_trophies", {})
 
         attrs["name"] = title.get("name", "").title()
+        genres = title.get("genres", []) + title.get("subGenres", [])
+        attrs["genres"] = [item for item in genres if item != "N/A"]
 
         description = ""
         for desc in title.get("descriptions", [""]):
@@ -245,6 +256,16 @@ PSN_ADDITIONAL_SENSOR: tuple[PsnSensorEntityDescription, ...] = (
         has_entity_name=True,
         unique_id="psn_title_description_attr",
         value_fn=lambda data: data.get("description"),
+    ),
+    PsnSensorEntityDescription(
+        key="genres",
+        native_unit_of_measurement=None,
+        name="Genres",
+        icon="mdi:shape-plus-outline",
+        entity_registry_enabled_default=True,
+        has_entity_name=True,
+        unique_id="psn_title_genre_attr",
+        value_fn=get_genres_as_string,
     ),
     PsnSensorEntityDescription(
         key="content_rating",
@@ -413,7 +434,7 @@ class PsnSensor(PSNEntity, SensorEntity):
         """Initialize PSN Sensor."""
         super().__init__(coordinator)
         self._attr_unique_id = (
-            f"{coordinator.data.get("username").lower()}_{description.unique_id}"
+            f"{coordinator.data.get('username').lower()}_{description.unique_id}"
         )
         self._attr_name = description.name
         self.entity_description = description
@@ -453,7 +474,7 @@ class PsnAttributeSensor(PSNEntity, SensorEntity):
         """Initialize PSN Sensor."""
         super().__init__(coordinator)
         self._attr_unique_id = (
-            f"{coordinator.data.get("username").lower()}_{description.unique_id}"
+            f"{coordinator.data.get('username').lower()}_{description.unique_id}"
         )
         self._attr_name = description.name
         self.entity_description = description

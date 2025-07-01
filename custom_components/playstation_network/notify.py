@@ -7,7 +7,7 @@ import logging
 from homeassistant.components.notify import ATTR_TARGET, BaseNotificationService
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from psnawp_api.core.psnawp_exceptions import PSNAWPNotFound
+from psnawp_api.core.psnawp_exceptions import PSNAWPNotFoundError
 
 from .const import DOMAIN, PSN_API
 
@@ -49,7 +49,7 @@ class PsnNotificationService(BaseNotificationService):
                     lambda: self.psn.user(online_id=user)
                 )
                 user_list.append(individual)
-            except PSNAWPNotFound as err:
+            except PSNAWPNotFoundError as err:
                 _LOGGER.error("User not found: %s", user)
                 raise err
 

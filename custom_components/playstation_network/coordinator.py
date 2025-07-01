@@ -58,7 +58,7 @@ class PsnCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         try:
             self.data["username"] = self.user.online_id
             self.data["profile"] = await self.hass.async_add_executor_job(
-                lambda: self.user.profile()
+                self.user.profile
             )
             self.data["presence"] = await self.hass.async_add_executor_job(
                 self.user.get_presence
@@ -93,7 +93,11 @@ class PsnCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             ):
                 title_id = self.data["title_metadata"].get("npTitleId")
                 title = await self.hass.async_add_executor_job(
-                    lambda: self.api.game_title(title_id, "me")
+                    lambda: self.api.game_title(
+                        title_id=title_id,
+                        platform=self.data["title_metadata"]["format"],
+                        account_id="me",
+                    )
                 )
                 ## Attempt to pull details with user's country and language code
                 self.data["title_details"] = await self.hass.async_add_executor_job(

@@ -18,6 +18,7 @@ from homeassistant.exceptions import (
 from homeassistant.helpers import entity_registry as er, device_registry as dr
 from psnawp_api.core.psnawp_exceptions import PSNAWPAuthenticationError
 from psnawp_api.psnawp import PSNAWP
+from pyrate_limiter import Duration, Rate
 
 from .const import DOMAIN, CONF_EXPOSE_ATTRIBUTES_AS_ENTITIES
 from .coordinator import PsnCoordinator
@@ -34,7 +35,8 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     """
     try:
         npsso = data.get("npsso")
-        psn = PSNAWP(npsso)
+        rate = Rate(300, Duration.MINUTE * 15)
+        psn = PSNAWP(npsso, rate_limit=rate)
     except PSNAWPAuthenticationError as error:
         raise ConfigEntryAuthFailed(error) from error
     except Exception as ex:
