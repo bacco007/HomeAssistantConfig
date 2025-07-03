@@ -11,6 +11,18 @@
       "regular": "https://cdn.mbta.com/MBTA_GTFS.zip"
     }
   },
+  "mta_marc_train": {
+    "name": "MTA MARC Train",
+    "realtime_feeds": {
+      "alerts": "https://feeds.mta.maryland.gov/alerts.pb",
+      "trip_update": "https://mdotmta-gtfs-rt.s3.amazonaws.com/MARC+RT/marc-tu.pb",
+      "vehicle_positions": "https://mdotmta-gtfs-rt.s3.amazonaws.com/MARC+RT/marc-vp.pb"
+    },
+    "requires_auth_header": false,
+    "static_feeds": {
+      "regular": "https://feeds.mta.maryland.gov/gtfs/marc"
+    }
+  },
   "nyc_00_subway": {
     "name": "NYC Subway",
     "realtime_feeds": {
