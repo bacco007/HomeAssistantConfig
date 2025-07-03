@@ -21,17 +21,15 @@ class AviationWeatherCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            # Name of the data. For logging purposes.
             name=config_entry.title,
             config_entry=config_entry,
             update_interval=COORDINATOR_UPDATE_INTERVAL,
-            # Set always_update to `False` if the data returned from the
-            # api can be compared via `__eq__` to avoid duplicate updates
-            # being dispatched to listeners
             always_update=True,
         )
+        self._hass = hass
         self._icao = config_entry.data.get("icao_id")
         self._metar = avwx.Metar(self._icao)
+        self.units = None
 
     async def _async_setup(self):
         """Set up the coordinator.
@@ -42,6 +40,10 @@ class AviationWeatherCoordinator(DataUpdateCoordinator):
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
+        _LOGGER.debug("Setting up aviation weather coordinator for %s", self._icao)
+
+        await self._metar.async_update()
+        self.units = self._metar.units
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -49,5 +51,8 @@ class AviationWeatherCoordinator(DataUpdateCoordinator):
         This is the place to pre-process the data to lookup tables
         so entities can quickly look up their data.
         """
+        _LOGGER.debug("Updating aviation weather data for %s", self._icao)
+
         await self._metar.async_update()
+        self.units = self._metar.units
         return self._metar.data
