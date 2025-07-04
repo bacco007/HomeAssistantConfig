@@ -97,10 +97,11 @@ class Channel:
 
         now = self._time_zone.localize(datetime.now())
         utc_offset = now.utcoffset().total_seconds() / 60 / 60
+        now = now + timedelta(hours=utc_offset)
         for programme in self._programmes:
             # add timezone offset to fix issue with start date is wrong day
             _start_date = (programme._start + timedelta(hours=utc_offset)).date()
-            if programme._start >= now and _start_date == datetime.today().date():
+            if programme._start >= now and _start_date == now.date():
                 obj = {}
                 obj["title"] = programme.title
                 obj["desc"] = programme.desc
@@ -145,6 +146,8 @@ class Channel:
 
     def get_current_programme(self) -> Programme:
         now = self._time_zone.localize(datetime.now())
+        utc_offset = now.utcoffset().total_seconds() / 60 / 60
+        now = now + timedelta(hours=utc_offset)
         return next(
             (
                 programme

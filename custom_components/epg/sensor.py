@@ -46,8 +46,7 @@ class EpgDataUpdateCoordinator(DataUpdateCoordinator[Guide | None]):
         self._guide: Guide | None = None
 
         # Define the update interval
-        update_interval = timedelta(minutes=1)  # <--- Set your desired interval here
-
+        update_interval = timedelta(minutes=1)
         super().__init__(
             hass,
             _LOGGER,
@@ -70,7 +69,7 @@ class EpgDataUpdateCoordinator(DataUpdateCoordinator[Guide | None]):
         _LOGGER.debug("Coordinator: Starting data update")
         file_name = self.config_options.get("file_name")
         generated = self.config_options.get("generated", False)
-        selected_channels = self.config_options.get("selected_channels", [])
+        selected_channels = "ALL" if generated else self.config_options.get("selected_channels", [])
         file_path = self.config_options.get("file_path")
         time_zone = await self.hass.async_add_executor_job(
             pytz.timezone, self.hass.config.time_zone
