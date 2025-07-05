@@ -1,0 +1,31 @@
+---
+alias: "[Zigbee2MQTT] Restart if lights unavailable"
+id: z2m_restart_no_lights
+triggers:
+  - trigger: state
+    entity_id:
+      - light.office_lamp
+      - light.bedroom_lamp
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+conditions: []
+actions:
+  - action: hassio.addon_restart
+    metadata: {}
+    data:
+      addon: 45df7312_zigbee2mqtt
+  - action: notify.alert
+    data:
+      title: Zigbee2MQTT Restarted
+      message: >-
+        Zigbee2MQTT connectivity has stopped, addon has been restarted
+      data:
+        tag: watchguard_z2m
+        notification_id: watchguard_z2m
+        push:
+          badge: 1
+          sound: none
+mode: single

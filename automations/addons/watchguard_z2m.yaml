@@ -1,26 +1,30 @@
 ---
 alias: "[Addon Watchguard] Zigbee2MQTT"
 description: ""
-trigger:
-  - platform: time_pattern
-    minutes: "/5"
-condition:
-  - condition: state
-    entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
-    state: "off"
-action:
-  - service: hassio.addon_restart
-    data:
+mode: single
+triggers:
+  - minutes: /5
+    trigger: time_pattern
+conditions:
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
+        state: "off"
+      - condition: state
+        entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
+        state: unavailable
+actions:
+  - data:
       addon: 45df7312_zigbee2mqtt
+    action: hassio.addon_restart
   - action: notify.alert
     data:
       title: Zigbee2MQTT Restarted
-      message: >-
-        Zigbee2MQTT connectivity has stopped, addon has been restarted
+      message: Zigbee2MQTT connectivity has stopped, addon has been restarted
       data:
         tag: watchguard_z2m
         notification_id: watchguard_z2m
         push:
           badge: 1
           sound: none
-mode: single
