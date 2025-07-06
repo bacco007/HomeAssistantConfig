@@ -73,43 +73,43 @@ sports_card:
         entities:
           - entity: "[[calendar]]"
         days_to_show: 365
-        max_events_to_show: 3
-        show_past_events: false
-        language: en
-        time_24h: true
-        show_end_time: true
-        show_month: true
-        start_date: "today"
-        remove_location_country: false
-        show_time: true # Generally show time, if not configured otherwise
-        show_location: true # Generally show location, if not configured otherwise
-        show_single_allday_time: false # Hides time row from all single-day all-day events
+        compact_events_to_show: 3
+        filter_duplicates: true
+        split_multiday_events: true
         day_spacing: 5px
+        event_spacing: 5px
+        max_height: 200px
         weekday_font_size: 10px
         day_font_size: 16px
         month_font_size: 10px
+        show_past_events: true
+        show_countdown: true
+        show_progress_bar: true
         event_font_size: 12px
+        show_single_allday_time: false
+        time_24h: true
         time_font_size: 11px
         location_font_size: 11px
-        time_location_icon_size: 11px
-        event_background_opacity: 5 # Enable semi-transparent backgrounds (0-100 scale)
-        vertical_line_width: 2px # Slightly increase vertical line width
-        event_spacing: 5px # Adjust vertical spacing between calendar events
-        refresh_interval: 15
-        max_height: "200px"
-        refresh_on_navigate: false
-        day_separator_width: "1px" # Line between days
-        day_separator_color: "#03a9f430"
-        week_separator_width: "2px" # Line between weeks
-        week_separator_color: "#03a9f480"
-        month_separator_width: "3px" # Line between months
-        month_separator_color: "#03a9f4"
-        show_countdown: true
+        weather:
+          position: date
+          date:
+            show_conditions: true
+            show_high_temp: true
+            show_low_temp: false
+            icon_size: 14px
+            font_size: 12px
+            color: var(--primary-text-color)
+          event:
+            show_conditions: true
+            show_temp: true
+            icon_size: 14px
+            font_size: 12px
+            color: var(--primary-text-color)
         tap_action:
           action: expand
-        # hold_action:
-        #   action: navigate
-        #   navigation_path: calendar
+        refresh_interval: 120
+        refresh_on_navigate: false
+        time_location_icon_size: 11px
         card_mod:
           style: |
             ha-card {

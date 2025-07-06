@@ -1,0 +1,103 @@
+[
+  {
+    "name": "Spotify DJ",
+    "subtitle": "Various Artists",
+    "image_url": "https://lexicon-assets.spotifycdn.com/miscellaneous/2024/DJ-CoverArt-300.jpg",
+    "uri": "spotify:playlist:37i9dQZF1EYkqdzj48dyYq",
+    "type": "playlist"
+  },
+  {
+    "name": "Daily Mix 1 (Playlist)",
+    "subtitle": "Various Artists",
+    "image_url": "https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebcd3f796bd7ea49ed7615a550/1/en/default",
+    "uri": "spotify:playlist:37i9dQZF1E39vTG3GurFPW",
+    "type": "playlist"
+  },
+  {
+    "name": "Mercy Me (Artist)",
+    "subtitle": "Artist",
+    "image_url": "https://i.scdn.co/image/ab67616d0000b27316c019c87a927829804caf0b",
+    "uri": "spotify:artist:6APm8EjxOHSYM5B4i3vT3q",
+    "type": "artist"
+  },
+  {
+    "name": "Unseen: The Lion and the Lamb (Album)",
+    "subtitle": "Seventh Day Slumber",
+    "image_url": "https://i.scdn.co/image/ab67616d0000b2734bfd0e91bf806bc73d736cfd",
+    "uri": "spotify:album:0LhYYU14RU6IPQ9vVMu3Yk",
+    "type": "album"
+  },
+  {
+    "name": "I Still Believe (Track)",
+    "subtitle": "Building 429",
+    "image_url": "https://i.scdn.co/image/ab67616d0000b27391efaaa4c9b4b311ddc428b0",
+    "uri": "spotify:track:3EtOah8NqZ1FqpQR837v0z",
+    "type": "track"
+  },
+  {
+    "name": "The Ramsey Show (Podcast)",
+    "subtitle": "Podcast",
+    "image_url": "https://i.scdn.co/image/ab6765630000ba8a2ace5767b603de7ee32657de",
+    "uri": "spotify:show:5exfRPDNCBHmntEkJrlLmX",
+    "type": "show"
+  },
+  {
+    "name": "Don't Let Others Try To Define Your Success (Podcast Episode)",
+    "subtitle": "The Ramsey Show",
+    "image_url": "https://i.scdn.co/image/ab6765630000ba8a2ace5767b603de7ee32657de",
+    "uri": "spotify:episode:1sVbvs5emEiMYiNgZKu9UT",
+    "type": "episode"
+  },
+  {
+    "name": "Elfstones of Shannara (Audiobook)",
+    "subtitle": "Terry Brooks",
+    "image_url": "https://i.scdn.co/image/ab676663000022a8d0264ae7ad91341a2859b281",
+    "uri": "spotify:show:74aydHJKgYz3AIq3jjBSv1",
+    "type": "show"
+  },
+  {
+    "name": "Chapter 2 (Audiobook Episode)",
+    "subtitle": "Elfstones of Shannara",
+    "image_url": "https://i.scdn.co/image/ab676663000022a8d0264ae7ad91341a2859b281",
+    "uri": "spotify:episode:7sVra5uQv7ce9KFXY7lCzJ",
+    "type": "episode"
+  },
+  {
+    "name": "My Track Favorites",
+    "subtitle": "Not Shuffled",
+    "image_url": "https://t.scdn.co/images/728ed47fc1674feb95f7ac20236eb6d7.jpeg",
+    "type": "trackfavorites",
+    "shuffle": false
+  },
+  {
+    "name": "Section Filter",
+    "subtitle": "Playlist Favorites",
+    "image_url": "https://t.scdn.co/media/original/genre-images-square-274x274_5e50d72b846a198fcd2ca9b3aef5f0c8_274x274.jpg",
+    "filter_section": "playlistfavorites",
+    "filter_criteria": "my updated",
+    "type": "filtersection"
+  },
+  {
+    "name": "I Wanna Rock!",
+    "subtitle": "Recommended",
+    "image_url": "https://t.scdn.co/images/728ed47fc1674feb95f7ac20236eb6d7.jpeg",
+    "type": "recommendations",
+    "recommendations": {
+      "seed_genres": "rock,hard-rock,rock-n-roll",
+      "min_loudness": -9.201,
+      "min_time_signature": 4,
+      "min_energy": 0.975
+    }
+  },
+  {
+    "name": "Wind Down Piano",
+    "subtitle": "Recommended",
+    "image_url": "https://t.scdn.co/images/728ed47fc1674feb95f7ac20236eb6d7.jpeg",
+    "type": "recommendations",
+    "recommendations": {
+      "seed_artists": "3jdODvx7rIdq0UGU7BOVR3",
+      "seed_genres": "piano",
+      "min_energy": 0.175
+    }
+  }
+]
