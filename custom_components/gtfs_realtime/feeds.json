@@ -51,6 +51,7 @@
       "vehicle_positions": "https://gtfsrt.prod.obanyc.com/vehiclePositions?key="
     },
     "requires_auth_header": false,
+    "route_icons": "https://raw.githubusercontent.com/bcpearce/homeassistant-gtfs-realtime/main/resources/NYCT_Bus/{}.svg",
     "static_feeds": {
       "bronx": "http://web.mta.info/developers/data/nyct/bus/google_transit_bronx.zip",
       "brooklyn": "http://web.mta.info/developers/data/nyct/bus/google_transit_brooklyn.zip",
@@ -84,6 +85,7 @@
       "alerts": "http://nycferry.connexionz.net/rtt/public/utility/gtfsrealtime.aspx/alert",
       "trip_update": "http://nycferry.connexionz.net/rtt/public/utility/gtfsrealtime.aspx/tripupdate"
     },
+    "route_icons": "https://raw.githubusercontent.com/bcpearce/homeassistant-gtfs-realtime/main/resources/NYC_Ferry/{}.png?raw=true",
     "static_feeds": {
       "regular": "http://nycferry.connexionz.net/rtt/public/utility/gtfs.aspx"
     }

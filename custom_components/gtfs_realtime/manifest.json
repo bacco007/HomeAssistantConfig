@@ -13,5 +13,5 @@
   "requirements": [
     "gtfs_station_stop==0.9.4"
   ],
-  "version": "0.2.9"
+  "version": "0.2.10"
 }

@@ -153,25 +153,34 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
         time_to_arrivals = sorted(self.station_stop.get_time_to_arrivals())
         self._arrival_detail = {}
         if len(time_to_arrivals) > self._idx:
+            schedule = self.coordinator.data.schedule
+
             time_to_arrival: Arrival = time_to_arrivals[self._idx]
-            self._attr_native_value = max(
-                time_to_arrival.time, 0
-            )  # do not allow negative numbers
+
+            # Do not allow negative numbers
+            self._attr_native_value = max(time_to_arrival.time, 0)
+
+            # It's possible the route ID is empty, in that case, get it from the trips database
+            # The remaining attributes will be filled below
+            if not time_to_arrival.route:
+                trip_info = schedule.trip_info_ds.get_close_match(time_to_arrival.trip)
+                if trip_info is not None:
+                    time_to_arrival.route = trip_info.route_id
+
             self._arrival_detail[ROUTE_ID] = time_to_arrival.route
-            self._arrival_detail[HEADSIGN] = (
-                self.coordinator.data.schedule.get_trip_headsign(time_to_arrival.trip)
+
+            self._arrival_detail[HEADSIGN] = schedule.get_trip_headsign(
+                time_to_arrival.trip
             )
             self._arrival_detail[TRIP_ID] = time_to_arrival.trip
-            self._arrival_detail[ROUTE_COLOR] = (
-                self.coordinator.data.schedule.get_route_color(time_to_arrival.route)
+            self._arrival_detail[ROUTE_COLOR] = schedule.get_route_color(
+                time_to_arrival.route
             )
-            self._arrival_detail[ROUTE_TEXT_COLOR] = (
-                self.coordinator.data.schedule.get_route_text_color(
-                    time_to_arrival.route
-                )
+            self._arrival_detail[ROUTE_TEXT_COLOR] = schedule.get_route_text_color(
+                time_to_arrival.route
             )
-            self._arrival_detail[ROUTE_TYPE] = (
-                self.coordinator.data.schedule.get_route_type(time_to_arrival.route)
+            self._arrival_detail[ROUTE_TYPE] = schedule.get_route_type(
+                time_to_arrival.route
             )
         else:
             self._attr_native_value = None

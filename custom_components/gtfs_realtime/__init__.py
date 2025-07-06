@@ -98,7 +98,9 @@ async def async_migrate_entry(
         new_data[CONF_STATIC_SOURCES_UPDATE_FREQUENCY] = {}
         for uri in new_data[CONF_GTFS_STATIC_DATA]:
             _LOGGER.debug(
-                f"Static data source {uri} set to update on interval of {timedelta(seconds=CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT)}"
+                "Static data source %s set to update on interval of %s",
+                uri,
+                timedelta(seconds=CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT),
             )
             new_data[CONF_STATIC_SOURCES_UPDATE_FREQUENCY][uri] = {
                 "hours": CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT

@@ -44,11 +44,13 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
         gtfs_static_zip: Iterable[os.PathLike] | os.PathLike = list[os.PathLike],
         *,
         gtfs_provider: str | None = None,
-        static_timedelta: dict[os.PathLike, timedelta] = {},
+        static_timedelta: dict[os.PathLike, timedelta] | None = None,
         route_icons: str | None = None,
         **kwargs,
     ) -> None:
         """Initialize the GTFS Update Coordinator to notify all entities upon poll."""
+        if static_timedelta is None:
+            static_timedelta = {}
         self.realtime_timedelta: timedelta = kwargs.get(
             "realtime_timedelta", timedelta(seconds=60)
         )
@@ -68,9 +70,9 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
         self.static_update_targets: set[os.PathLike] = set(gtfs_static_zip)
         self.last_static_update: dict[os.PathLike, datetime] = {}
         _LOGGER.debug("Setup GTFS Realtime Update Coordinator")
-        _LOGGER.debug(f"Realtime GTFS update interval {self.realtime_timedelta}")
+        _LOGGER.debug("Realtime GTFS update interval %s", self.realtime_timedelta)
         for uri, delta in self.static_timedelta.items():
-            _LOGGER.info(f"Static GTFS update interval for {uri} is {delta}")
+            _LOGGER.info("Static GTFS update interval for %s is %s", uri, delta)
 
     async def _async_update_data(self) -> GtfsUpdateData:
         """Fetch data from API endpoint."""
@@ -103,6 +105,6 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
             )
 
         for target in self.static_update_targets:
-            _LOGGER.debug(f"GTFS Static Feed {target} updated")
+            _LOGGER.debug("GTFS Static Feed %s updated", target)
             self.last_static_update[target] = datetime.now()
         self.static_update_targets.clear()
