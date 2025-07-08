@@ -30,15 +30,12 @@ from homeassistant.helpers.selector import (
 from homeassistant.util.uuid import random_uuid_hex
 
 from .const import (
-    CONF_CHECK_FOR_IMAGES_UPDATES,
-    CONF_CHECK_FOR_UPDATED_IMAGES_HOURS,
     CONF_DOCKER_BASE_NAME,
     CONF_DOCKER_BASE_NAME_USE_IN_SENSOR_NAME,
     CONF_DOCKER_ENGINE_URL,
     CONF_DOCKER_ENV_SENSOR_NAME,
     CONF_INDEX,
     CONF_SENSORS,
-    DEFAULT_CHECK_FOR_UPDATED_IMAGES,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
@@ -222,19 +219,10 @@ DOCKER_BASE_SETUP = {
             min=5, step=1, mode=NumberSelectorMode.BOX, unit_of_measurement="Minutes"
         )
     ),
-    vol.Required(
-        CONF_CHECK_FOR_UPDATED_IMAGES_HOURS,
-        default=DEFAULT_CHECK_FOR_UPDATED_IMAGES,
-    ): NumberSelector(
-        NumberSelectorConfig(
-            min=1, step=1, mode=NumberSelectorMode.BOX, unit_of_measurement="Hours"
-        )
-    ),
 }
 
 DOCKER_SENSOR_SETUP = {
     vol.Required(CONF_DOCKER_ENGINE_URL): TextSelector(),
-    vol.Required(CONF_CHECK_FOR_IMAGES_UPDATES, default=True): cv.boolean,
 }
 
 

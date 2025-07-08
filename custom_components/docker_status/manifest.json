@@ -12,9 +12,12 @@
   "issue_tracker": "https://github.com/kgn3400/docker_status/issues",
   "requirements": [
     "docker==7.1.0",
-    "paramiko"
+    "paramiko",
+    "jsonpickle",
+    "aiofiles",
+    "orjson"
   ],
   "ssdp": [],
-  "version": "1.0.22",
+  "version": "1.0.23",
   "zeroconf": []
 }
