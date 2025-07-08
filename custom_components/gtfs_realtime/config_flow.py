@@ -7,9 +7,8 @@ from typing import Any
 
 import aiohttp
 from anyio import open_file as aopen_file
-from gtfs_station_stop.route_info import RouteInfoDataset
-from gtfs_station_stop.static_dataset import async_factory
-from gtfs_station_stop.station_stop_info import LocationType, StationStopInfoDataset
+from gtfs_station_stop.station_stop_info import LocationType
+from gtfs_station_stop.schedule import GtfsSchedule
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.data_entry_flow import SectionConfig, section
 import homeassistant.helpers.config_validation as cv
@@ -63,6 +62,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         """Initialize config flow."""
         self.hub_config: dict[str, Any] = {}
+        self.schedule: GtfsSchedule = GtfsSchedule()
 
     @staticmethod
     async def _get_feeds(use_local: bool = False):
@@ -72,16 +72,31 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
                 async with session.get(FEEDS_URL) as response:
                     if response.status >= 200 and response.status < 400:
                         GtfsRealtimeConfigFlow.feeds = json.loads(await response.text())
-                        return
-            # fallback to getting the data from the local feeds.json
-            _LOGGER.info(
-                "Failed to fetch feeds from GitHub, falling back to local feeds.json"
-            )
-        async with await aopen_file(
-            "custom_components/gtfs_realtime/feeds.json", "rb"
-        ) as f:
-            content: bytes = await f.read()
-            GtfsRealtimeConfigFlow.feeds = json.loads(content)
+                    else:
+                        # fallback to getting the data from the local feeds.json
+                        _LOGGER.warning(
+                            "Failed to fetch feeds from GitHub, HTTP status code %d, falling back to local feeds.json",
+                            response.status,
+                        )
+                        use_local = True
+        if use_local:
+            async with await aopen_file(
+                "custom_components/gtfs_realtime/feeds.json", "rb"
+            ) as f:
+                content: bytes = await f.read()
+                GtfsRealtimeConfigFlow.feeds = json.loads(content)
+
+        # Add user_feeds.json if it exists
+        try:
+            async with await aopen_file(
+                "custom_components/gtfs_realtime/user_feeds.json", "rb"
+            ) as f:
+                content: bytes = await f.read()
+                GtfsRealtimeConfigFlow.feeds |= json.loads(content)
+            _LOGGER.debug("Loaded additional feeds from user_feeds.json file")
+        except FileNotFoundError:
+            # this is fine, not required
+            _LOGGER.debug("No user_feeds.json file provided for additional feeds")
 
     async def async_step_user(self, user_input=None):
         """User initiated Config Flow."""
@@ -214,31 +229,31 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
     async def _get_route_options(
         self, headers: dict[str, str] | None = None
     ) -> list[SelectOptionDict]:
-        route_db = await async_factory(
-            RouteInfoDataset, *self.hub_config[CONF_GTFS_STATIC_DATA], headers=headers
+        await self.schedule.async_update_schedule(
+            *self.hub_config[CONF_GTFS_STATIC_DATA], headers=headers
         )
+        route_ds = self.schedule.route_info_ds
         return [
             SelectOptionDict(
                 value=k,
-                label=f"{k}: {route_db.route_infos[k].long_name or route_db.route_infos[k].short_name}",
+                label=f"{k}: {route_ds.route_infos[k].long_name or route_ds.route_infos[k].short_name}",
             )
-            for k in route_db.route_infos.keys()
+            for k in route_ds.route_infos.keys()
         ]
 
     async def _get_stop_options(
         self, headers: dict[str, str] | None = None
     ) -> list[SelectOptionDict]:
-        ssi_db = await async_factory(
-            StationStopInfoDataset,
-            *self.hub_config[CONF_GTFS_STATIC_DATA],
-            headers=headers,
+        await self.schedule.async_update_schedule(
+            *self.hub_config[CONF_GTFS_STATIC_DATA], headers=headers
         )
+        ssi_ds = self.schedule.station_stop_info_ds
         return [
             SelectOptionDict(
                 value=k,
                 label=f"{v.name} {f' - {v.desc}' if v.desc is not None else ''} ({v.id})",
             )
-            for k, v in ssi_db.station_stop_infos.items()
+            for k, v in ssi_ds.station_stop_infos.items()
             if v.location_type == LocationType.STOP
         ]
 

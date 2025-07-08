@@ -90,6 +90,18 @@
       "regular": "http://nycferry.connexionz.net/rtt/public/utility/gtfs.aspx"
     }
   },
+  "philadelphia_septa": {
+    "name": "Philadelphia - SEPTA (Rail and Bus)",
+    "realtime_feeds": {
+      "alerts_bus": "https://www3.septa.org/gtfsrt/septa-pa-us/Service/rtServiceAlerts.pb",
+      "alerts_rail": "https://www3.septa.org/gtfsrt/septarail-pa-us/Service/rtServiceAlerts.pb",
+      "trip_update_bus": "https://www3.septa.org/gtfsrt/septa-pa-us/Trip/rtTripUpdates.pb",
+      "trip_update_rail": "https://www3.septa.org/gtfsrt/septarail-pa-us/Trip/rtTripUpdates.pb"
+    },
+    "static_feeds": {
+      "nested": "https://www3.septa.org/developer/gtfs_public.zip"
+    }
+  },
   "sf_bart": {
     "name": "Bay Area Rapid Transit",
     "realtime_feeds": {
@@ -227,6 +239,20 @@
     },
     "static_feeds": {
       "public_transit_for_realtime_sydneytrains": "https://api.transport.nsw.gov.au/v1/gtfs/schedule/sydneytrains"
+    }
+  },
+  "transport_victoria": {
+    "name": "Transport Victoria",
+    "auth_hint": "Ocp-Apim-Subscription-Key: [your key here]",
+    "realtime_feeds": {
+      "alerts_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-servicealerts",
+      "trip_update_metro_bus": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrobus-tripupdates",
+      "trip_update_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-tripupdates",
+      "vehicle_positions_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-vehicleposition-updates"
+    },
+    "requires_auth_header": true,
+    "static_feeds": {
+      "nested": "https://opendata.transport.vic.gov.au/dataset/3f4e292e-7f8a-4ffe-831f-1953be0fe448/resource/aeee08cf-6da4-4206-b6b4-202ad488401f/download/gtfs.zip"
     }
   },
   "vancouver_translink": {
