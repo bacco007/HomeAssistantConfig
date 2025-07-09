@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "0.8.0";
+var VERSION = "1.0.0";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -593,7 +593,7 @@ class FlexTableCard extends HTMLElement {
         // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
         var css_styles = {
             ".type-custom-flex-table-card":
-                                        "min-width: fit-content;",
+                                        "overflow: auto;",
             "table":                    `width: 100%; padding: 16px; ${cfg.selectable ? "user-select: text;" : ""} `,
             "thead th":                 "height: 1em;",
             "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; position: relative; overflow: hidden; ",
@@ -846,6 +846,14 @@ class FlexTableCard extends HTMLElement {
 
             _fireEvent(obj, action_type, actionConfig);
         }
+
+        function _handle_fire_dom_event(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: getRefs(col[action_type], row.data, elem.cells)
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
         function _handle_action(obj, action_type, elem, row, col) {
             let action;
             switch (action_type) {
@@ -881,13 +889,16 @@ class FlexTableCard extends HTMLElement {
                 case "assist":
                     _handle_assist(obj, action_type, elem, row, col);
                     break;
+                case "fire-dom-event":
+                    _handle_fire_dom_event(obj, action_type, elem, row, col);
+                    break;
                 case "edit":
                     _handle_edit(obj, action_type, elem, row, col);
                     break;
                 case "none":
                     break;
                 default:
-                    throw new Error(`Expected one of none, toggle, more-info, perform-action, url, navigate, assist, but received: ${action["action"]}`)
+                    throw new Error(`Expected one of none, toggle, more-info, perform-action, url, navigate, assist, fire-dom-event, but received: ${action["action"]}`);
             }
         }
 
@@ -1238,6 +1249,12 @@ class FlexTableCard extends HTMLElement {
 
     getCardSize() {
         return this.card_height;
+    }
+
+    getGridOptions() {
+        return {
+            columns: "full",
+        };
     }
 }
 
