@@ -100,5 +100,11 @@
       "description": "Prune unused docker images.",
       "name": "Prune images"
     }
+  },
+  "issues": {
+    "connection_error": {
+      "description": "It looks like Docker engine url `{url}` is not reachable`. \n\n Please fix this problem.",
+      "title": "Docker status: Engine connection error"
+    }
   }
 }

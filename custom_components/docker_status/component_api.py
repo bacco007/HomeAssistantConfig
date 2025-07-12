@@ -1,7 +1,7 @@
 """Component api."""
 
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any
 
 import docker
@@ -13,6 +13,7 @@ from docker.models.volumes import Volume
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -20,6 +21,7 @@ from .const import (
     CONF_DOCKER_ENV_SENSOR_NAME,
     CONF_SENSORS,
     DOMAIN,
+    DOMAIN_NAME,
     LOGGER,
     SENSOR_CONTAINERS_CPU_PERCENT,
     SENSOR_CONTAINERS_MEMORY_USAGE,
@@ -30,6 +32,7 @@ from .const import (
     SENSOR_IMAGES_UNUSED,
     SENSOR_VOLUMES,
     SENSOR_VOLUMES_UNUSED,
+    TRANSLATION_KEY_CONNECTION_ERROR,
 )
 from .hass_util import async_hass_add_executor_job
 
@@ -44,6 +47,7 @@ class DockerData:
         """Docker data."""
         self.sensor_name: str = sensor_name
         self.engine_url: str = engine_url
+        self.connection_error: bool = False
 
         self.client: docker.DockerClient
         self.values: dict[str, int | float] = {}
@@ -81,6 +85,36 @@ class ComponentApi:
             "prune_images",
             self.async_prune_images_service,
         )
+
+    # ------------------------------------------------------------------
+    async def async_init(self) -> None:
+        """Init."""
+        config = dict(self.entry.options)
+
+        for sensor in config[CONF_SENSORS]:
+            tmp_data = DockerData(
+                sensor.get(CONF_DOCKER_ENV_SENSOR_NAME),
+                sensor.get(CONF_DOCKER_ENGINE_URL),
+            )
+
+            tmp_data.values[SENSOR_CONTAINERS_CPU_PERCENT] = 0.0
+            tmp_data.values_uom[SENSOR_CONTAINERS_CPU_PERCENT] = "%"
+
+            tmp_data.values[SENSOR_CONTAINERS_MEMORY_USAGE] = 0.0
+            tmp_data.values_uom[SENSOR_CONTAINERS_MEMORY_USAGE] = "B"
+
+            try:
+                tmp_data.client = await self.docker_client(tmp_data.engine_url)
+
+            except errors.DockerException:
+                LOGGER.error("Error creating docker client url %s", tmp_data.engine_url)
+                tmp_data.connection_error = True
+                self.create_issue(
+                    TRANSLATION_KEY_CONNECTION_ERROR,
+                    {"url": tmp_data.engine_url},
+                )
+
+            self.env_sensors[tmp_data.sensor_name] = tmp_data
 
     # -------------------------------------------------------------------
     async def async_update_service(self, call: ServiceCall) -> None:
@@ -124,6 +158,9 @@ class ComponentApi:
         """Update data."""
 
         for env_sensor in self.env_sensors.values():
+            if env_sensor.connection_error:
+                continue
+
             containers: list[Container] = await self.list_containers(env_sensor)
 
             await self.async_update_container_data(env_sensor, containers, get_job_info)
@@ -303,31 +340,6 @@ class ComponentApi:
         return docker.DockerClient(base_url)
 
     # ------------------------------------------------------------------
-    async def async_init(self) -> None:
-        """Init."""
-        config = dict(self.entry.options)
-
-        for sensor in config[CONF_SENSORS]:
-            tmp_data = DockerData(
-                sensor.get(CONF_DOCKER_ENV_SENSOR_NAME),
-                sensor.get(CONF_DOCKER_ENGINE_URL),
-            )
-
-            tmp_data.values[SENSOR_CONTAINERS_CPU_PERCENT] = 0.0
-            tmp_data.values_uom[SENSOR_CONTAINERS_CPU_PERCENT] = "%"
-
-            tmp_data.values[SENSOR_CONTAINERS_MEMORY_USAGE] = 0.0
-            tmp_data.values_uom[SENSOR_CONTAINERS_MEMORY_USAGE] = "B"
-
-            try:
-                tmp_data.client = await self.docker_client(tmp_data.engine_url)
-
-            except errors.DockerException as exc:
-                LOGGER.exception("Error creating docker client %s", exc)
-
-            self.env_sensors[tmp_data.sensor_name] = tmp_data
-
-    # ------------------------------------------------------------------
     def get_value(self, env_sensor_name: str, sensor_type: str) -> int | float:
         """Get value."""
         return self.env_sensors[env_sensor_name].values.get(sensor_type, 0)
@@ -374,3 +386,22 @@ class ComponentApi:
             return {"Unused": self.env_sensors[env_sensor_name].volumes_unused}
 
         return {}
+
+    # ------------------------------------------------------------------
+    def create_issue(
+        self,
+        translation_key: str,
+        translation_placeholders: dict,
+    ) -> None:
+        """Create issue on."""
+
+        ir.async_create_issue(
+            self.hass,
+            DOMAIN,
+            DOMAIN_NAME + datetime.now().isoformat(),
+            issue_domain=DOMAIN,
+            is_fixable=False,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key=translation_key,
+            translation_placeholders=translation_placeholders,
+        )

@@ -100,5 +100,11 @@
       "description": "Prune ubrugte docker images.",
       "name": "Prune images"
     }
+  },
+  "issues": {
+    "connection_error": {
+      "description": "Det ser ud til at Docker engine url `{url}` ikke er tilgængelig`. \n\n Venligst ret dette problem.",
+      "title": "Docker status: Engine forbindelses fejl"
+    }
   }
 }

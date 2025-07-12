@@ -7,10 +7,13 @@ from logging import Logger, getLogger
 LOGGER: Logger = getLogger(__name__)
 
 DOMAIN = "docker_status"
-TRANSLATION_KEY = DOMAIN
+
 DOMAIN_NAME = "Docker status"
 DEFAULT_SCAN_INTERVAL = 5
 DEFAULT_CHECK_FOR_UPDATED_IMAGES = 6
+
+TRANSLATION_KEY = DOMAIN
+TRANSLATION_KEY_CONNECTION_ERROR = "connection_error"
 
 CONF_DOCKER_BASE_NAME = "docker_base_name"
 CONF_DOCKER_BASE_NAME_USE_IN_SENSOR_NAME = "docker_base_name_use_in_sensor_name"
