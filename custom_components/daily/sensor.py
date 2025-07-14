@@ -152,6 +152,9 @@ class DailySensor(DailySensorEntity):
                     self.coordinator.input_sensor
                 )
             )
+            # Set state to 0 as fallback and update HA state
+            self._state = 0
+            self.hass.add_job(self.async_write_ha_state)
 
     @property
     def name(self):
