@@ -9,7 +9,7 @@ var __legacyDecorateClassTS = function(decorators, target, key, desc) {
   return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-// node_modules/lit/node_modules/@lit/reactive-element/css-tag.js
+// node_modules/@lit/reactive-element/css-tag.js
 var t = globalThis;
 var e = t.ShadowRoot && (t.ShadyCSS === undefined || t.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype;
 var s = Symbol();
@@ -35,6 +35,16 @@ class n {
   }
 }
 var r = (t2) => new n(typeof t2 == "string" ? t2 : t2 + "", undefined, s);
+var i = (t2, ...e2) => {
+  const o2 = t2.length === 1 ? t2[0] : e2.reduce((e3, s2, o3) => e3 + ((t3) => {
+    if (t3._$cssResult$ === true)
+      return t3.cssText;
+    if (typeof t3 == "number")
+      return t3;
+    throw Error("Value passed to 'css' function must be a 'css' function result: " + t3 + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
+  })(s2) + t2[o3 + 1], t2[0]);
+  return new n(o2, t2, s);
+};
 var S = (s2, o2) => {
   if (e)
     s2.adoptedStyleSheets = o2.map((t2) => t2 instanceof CSSStyleSheet ? t2 : t2.styleSheet);
@@ -51,7 +61,7 @@ var c = e ? (t2) => t2 : (t2) => t2 instanceof CSSStyleSheet ? ((t3) => {
   return r(e2);
 })(t2) : t2;
 
-// node_modules/lit/node_modules/@lit/reactive-element/reactive-element.js
+// node_modules/@lit/reactive-element/reactive-element.js
 var { is: i2, defineProperty: e2, getOwnPropertyDescriptor: h, getOwnPropertyNames: r2, getOwnPropertySymbols: o2, getPrototypeOf: n2 } = Object;
 var a = globalThis;
 var c2 = a.trustedTypes;
@@ -280,7 +290,7 @@ class y extends HTMLElement {
 }
 y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[d("elementProperties")] = new Map, y[d("finalized")] = new Map, p?.({ ReactiveElement: y }), (a.reactiveElementVersions ??= []).push("2.1.0");
 
-// node_modules/lit/node_modules/lit-html/lit-html.js
+// node_modules/lit-html/lit-html.js
 var t2 = globalThis;
 var i3 = t2.trustedTypes;
 var s2 = i3 ? i3.createPolicy("lit-html", { createHTML: (t3) => t3 }) : undefined;
@@ -548,579 +558,29 @@ class z {
 }
 var j = t2.litHtmlPolyfillSupport;
 j?.(N, R), (t2.litHtmlVersions ??= []).push("3.3.0");
-
-// node_modules/lit-element/node_modules/@lit/reactive-element/css-tag.js
-var t3 = globalThis;
-var e4 = t3.ShadowRoot && (t3.ShadyCSS === undefined || t3.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype;
-var s3 = Symbol();
-var o4 = new WeakMap;
-
-class n4 {
-  constructor(t4, e5, o5) {
-    if (this._$cssResult$ = true, o5 !== s3)
-      throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
-    this.cssText = t4, this.t = e5;
+var B = (t3, i4, s3) => {
+  const e4 = s3?.renderBefore ?? i4;
+  let h3 = e4._$litPart$;
+  if (h3 === undefined) {
+    const t4 = s3?.renderBefore ?? null;
+    e4._$litPart$ = h3 = new R(i4.insertBefore(l2(), t4), t4, undefined, s3 ?? {});
   }
-  get styleSheet() {
-    let t4 = this.o;
-    const s4 = this.t;
-    if (e4 && t4 === undefined) {
-      const e5 = s4 !== undefined && s4.length === 1;
-      e5 && (t4 = o4.get(s4)), t4 === undefined && ((this.o = t4 = new CSSStyleSheet).replaceSync(this.cssText), e5 && o4.set(s4, t4));
-    }
-    return t4;
-  }
-  toString() {
-    return this.cssText;
-  }
-}
-var r4 = (t4) => new n4(typeof t4 == "string" ? t4 : t4 + "", undefined, s3);
-var i4 = (t4, ...e5) => {
-  const o5 = t4.length === 1 ? t4[0] : e5.reduce((e6, s4, o6) => e6 + ((t5) => {
-    if (t5._$cssResult$ === true)
-      return t5.cssText;
-    if (typeof t5 == "number")
-      return t5;
-    throw Error("Value passed to 'css' function must be a 'css' function result: " + t5 + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
-  })(s4) + t4[o6 + 1], t4[0]);
-  return new n4(o5, t4, s3);
+  return h3._$AI(t3), h3;
 };
-var S3 = (s4, o5) => {
-  if (e4)
-    s4.adoptedStyleSheets = o5.map((t4) => t4 instanceof CSSStyleSheet ? t4 : t4.styleSheet);
-  else
-    for (const e5 of o5) {
-      const o6 = document.createElement("style"), n5 = t3.litNonce;
-      n5 !== undefined && o6.setAttribute("nonce", n5), o6.textContent = e5.cssText, s4.appendChild(o6);
-    }
-};
-var c4 = e4 ? (t4) => t4 : (t4) => t4 instanceof CSSStyleSheet ? ((t5) => {
-  let e5 = "";
-  for (const s4 of t5.cssRules)
-    e5 += s4.cssText;
-  return r4(e5);
-})(t4) : t4;
-
-// node_modules/lit-element/node_modules/@lit/reactive-element/reactive-element.js
-var { is: i5, defineProperty: e5, getOwnPropertyDescriptor: h3, getOwnPropertyNames: r5, getOwnPropertySymbols: o5, getPrototypeOf: n5 } = Object;
-var a3 = globalThis;
-var c5 = a3.trustedTypes;
-var l3 = c5 ? c5.emptyScript : "";
-var p3 = a3.reactiveElementPolyfillSupport;
-var d3 = (t4, s4) => t4;
-var u3 = { toAttribute(t4, s4) {
-  switch (s4) {
-    case Boolean:
-      t4 = t4 ? l3 : null;
-      break;
-    case Object:
-    case Array:
-      t4 = t4 == null ? t4 : JSON.stringify(t4);
-  }
-  return t4;
-}, fromAttribute(t4, s4) {
-  let i6 = t4;
-  switch (s4) {
-    case Boolean:
-      i6 = t4 !== null;
-      break;
-    case Number:
-      i6 = t4 === null ? null : Number(t4);
-      break;
-    case Object:
-    case Array:
-      try {
-        i6 = JSON.parse(t4);
-      } catch (t5) {
-        i6 = null;
-      }
-  }
-  return i6;
-} };
-var f3 = (t4, s4) => !i5(t4, s4);
-var b3 = { attribute: true, type: String, converter: u3, reflect: false, useDefault: false, hasChanged: f3 };
-Symbol.metadata ??= Symbol("metadata"), a3.litPropertyMetadata ??= new WeakMap;
-
-class y3 extends HTMLElement {
-  static addInitializer(t4) {
-    this._$Ei(), (this.l ??= []).push(t4);
-  }
-  static get observedAttributes() {
-    return this.finalize(), this._$Eh && [...this._$Eh.keys()];
-  }
-  static createProperty(t4, s4 = b3) {
-    if (s4.state && (s4.attribute = false), this._$Ei(), this.prototype.hasOwnProperty(t4) && ((s4 = Object.create(s4)).wrapped = true), this.elementProperties.set(t4, s4), !s4.noAccessor) {
-      const i6 = Symbol(), h4 = this.getPropertyDescriptor(t4, i6, s4);
-      h4 !== undefined && e5(this.prototype, t4, h4);
-    }
-  }
-  static getPropertyDescriptor(t4, s4, i6) {
-    const { get: e6, set: r6 } = h3(this.prototype, t4) ?? { get() {
-      return this[s4];
-    }, set(t5) {
-      this[s4] = t5;
-    } };
-    return { get: e6, set(s5) {
-      const h4 = e6?.call(this);
-      r6?.call(this, s5), this.requestUpdate(t4, h4, i6);
-    }, configurable: true, enumerable: true };
-  }
-  static getPropertyOptions(t4) {
-    return this.elementProperties.get(t4) ?? b3;
-  }
-  static _$Ei() {
-    if (this.hasOwnProperty(d3("elementProperties")))
-      return;
-    const t4 = n5(this);
-    t4.finalize(), t4.l !== undefined && (this.l = [...t4.l]), this.elementProperties = new Map(t4.elementProperties);
-  }
-  static finalize() {
-    if (this.hasOwnProperty(d3("finalized")))
-      return;
-    if (this.finalized = true, this._$Ei(), this.hasOwnProperty(d3("properties"))) {
-      const t5 = this.properties, s4 = [...r5(t5), ...o5(t5)];
-      for (const i6 of s4)
-        this.createProperty(i6, t5[i6]);
-    }
-    const t4 = this[Symbol.metadata];
-    if (t4 !== null) {
-      const s4 = litPropertyMetadata.get(t4);
-      if (s4 !== undefined)
-        for (const [t5, i6] of s4)
-          this.elementProperties.set(t5, i6);
-    }
-    this._$Eh = new Map;
-    for (const [t5, s4] of this.elementProperties) {
-      const i6 = this._$Eu(t5, s4);
-      i6 !== undefined && this._$Eh.set(i6, t5);
-    }
-    this.elementStyles = this.finalizeStyles(this.styles);
-  }
-  static finalizeStyles(s4) {
-    const i6 = [];
-    if (Array.isArray(s4)) {
-      const e6 = new Set(s4.flat(1 / 0).reverse());
-      for (const s5 of e6)
-        i6.unshift(c4(s5));
-    } else
-      s4 !== undefined && i6.push(c4(s4));
-    return i6;
-  }
-  static _$Eu(t4, s4) {
-    const i6 = s4.attribute;
-    return i6 === false ? undefined : typeof i6 == "string" ? i6 : typeof t4 == "string" ? t4.toLowerCase() : undefined;
-  }
-  constructor() {
-    super(), this._$Ep = undefined, this.isUpdatePending = false, this.hasUpdated = false, this._$Em = null, this._$Ev();
-  }
-  _$Ev() {
-    this._$ES = new Promise((t4) => this.enableUpdating = t4), this._$AL = new Map, this._$E_(), this.requestUpdate(), this.constructor.l?.forEach((t4) => t4(this));
-  }
-  addController(t4) {
-    (this._$EO ??= new Set).add(t4), this.renderRoot !== undefined && this.isConnected && t4.hostConnected?.();
-  }
-  removeController(t4) {
-    this._$EO?.delete(t4);
-  }
-  _$E_() {
-    const t4 = new Map, s4 = this.constructor.elementProperties;
-    for (const i6 of s4.keys())
-      this.hasOwnProperty(i6) && (t4.set(i6, this[i6]), delete this[i6]);
-    t4.size > 0 && (this._$Ep = t4);
-  }
-  createRenderRoot() {
-    const t4 = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
-    return S3(t4, this.constructor.elementStyles), t4;
-  }
-  connectedCallback() {
-    this.renderRoot ??= this.createRenderRoot(), this.enableUpdating(true), this._$EO?.forEach((t4) => t4.hostConnected?.());
-  }
-  enableUpdating(t4) {}
-  disconnectedCallback() {
-    this._$EO?.forEach((t4) => t4.hostDisconnected?.());
-  }
-  attributeChangedCallback(t4, s4, i6) {
-    this._$AK(t4, i6);
-  }
-  _$ET(t4, s4) {
-    const i6 = this.constructor.elementProperties.get(t4), e6 = this.constructor._$Eu(t4, i6);
-    if (e6 !== undefined && i6.reflect === true) {
-      const h4 = (i6.converter?.toAttribute !== undefined ? i6.converter : u3).toAttribute(s4, i6.type);
-      this._$Em = t4, h4 == null ? this.removeAttribute(e6) : this.setAttribute(e6, h4), this._$Em = null;
-    }
-  }
-  _$AK(t4, s4) {
-    const i6 = this.constructor, e6 = i6._$Eh.get(t4);
-    if (e6 !== undefined && this._$Em !== e6) {
-      const t5 = i6.getPropertyOptions(e6), h4 = typeof t5.converter == "function" ? { fromAttribute: t5.converter } : t5.converter?.fromAttribute !== undefined ? t5.converter : u3;
-      this._$Em = e6, this[e6] = h4.fromAttribute(s4, t5.type) ?? this._$Ej?.get(e6) ?? null, this._$Em = null;
-    }
-  }
-  requestUpdate(t4, s4, i6) {
-    if (t4 !== undefined) {
-      const e6 = this.constructor, h4 = this[t4];
-      if (i6 ??= e6.getPropertyOptions(t4), !((i6.hasChanged ?? f3)(h4, s4) || i6.useDefault && i6.reflect && h4 === this._$Ej?.get(t4) && !this.hasAttribute(e6._$Eu(t4, i6))))
-        return;
-      this.C(t4, s4, i6);
-    }
-    this.isUpdatePending === false && (this._$ES = this._$EP());
-  }
-  C(t4, s4, { useDefault: i6, reflect: e6, wrapped: h4 }, r6) {
-    i6 && !(this._$Ej ??= new Map).has(t4) && (this._$Ej.set(t4, r6 ?? s4 ?? this[t4]), h4 !== true || r6 !== undefined) || (this._$AL.has(t4) || (this.hasUpdated || i6 || (s4 = undefined), this._$AL.set(t4, s4)), e6 === true && this._$Em !== t4 && (this._$Eq ??= new Set).add(t4));
-  }
-  async _$EP() {
-    this.isUpdatePending = true;
-    try {
-      await this._$ES;
-    } catch (t5) {
-      Promise.reject(t5);
-    }
-    const t4 = this.scheduleUpdate();
-    return t4 != null && await t4, !this.isUpdatePending;
-  }
-  scheduleUpdate() {
-    return this.performUpdate();
-  }
-  performUpdate() {
-    if (!this.isUpdatePending)
-      return;
-    if (!this.hasUpdated) {
-      if (this.renderRoot ??= this.createRenderRoot(), this._$Ep) {
-        for (const [t6, s5] of this._$Ep)
-          this[t6] = s5;
-        this._$Ep = undefined;
-      }
-      const t5 = this.constructor.elementProperties;
-      if (t5.size > 0)
-        for (const [s5, i6] of t5) {
-          const { wrapped: t6 } = i6, e6 = this[s5];
-          t6 !== true || this._$AL.has(s5) || e6 === undefined || this.C(s5, undefined, i6, e6);
-        }
-    }
-    let t4 = false;
-    const s4 = this._$AL;
-    try {
-      t4 = this.shouldUpdate(s4), t4 ? (this.willUpdate(s4), this._$EO?.forEach((t5) => t5.hostUpdate?.()), this.update(s4)) : this._$EM();
-    } catch (s5) {
-      throw t4 = false, this._$EM(), s5;
-    }
-    t4 && this._$AE(s4);
-  }
-  willUpdate(t4) {}
-  _$AE(t4) {
-    this._$EO?.forEach((t5) => t5.hostUpdated?.()), this.hasUpdated || (this.hasUpdated = true, this.firstUpdated(t4)), this.updated(t4);
-  }
-  _$EM() {
-    this._$AL = new Map, this.isUpdatePending = false;
-  }
-  get updateComplete() {
-    return this.getUpdateComplete();
-  }
-  getUpdateComplete() {
-    return this._$ES;
-  }
-  shouldUpdate(t4) {
-    return true;
-  }
-  update(t4) {
-    this._$Eq &&= this._$Eq.forEach((t5) => this._$ET(t5, this[t5])), this._$EM();
-  }
-  updated(t4) {}
-  firstUpdated(t4) {}
-}
-y3.elementStyles = [], y3.shadowRootOptions = { mode: "open" }, y3[d3("elementProperties")] = new Map, y3[d3("finalized")] = new Map, p3?.({ ReactiveElement: y3 }), (a3.reactiveElementVersions ??= []).push("2.1.0");
-// node_modules/lit-element/node_modules/lit-html/lit-html.js
-var t4 = globalThis;
-var i6 = t4.trustedTypes;
-var s4 = i6 ? i6.createPolicy("lit-html", { createHTML: (t5) => t5 }) : undefined;
-var e6 = "$lit$";
-var h4 = `lit$${Math.random().toFixed(9).slice(2)}$`;
-var o6 = "?" + h4;
-var n6 = `<${o6}>`;
-var r6 = document;
-var l4 = () => r6.createComment("");
-var c6 = (t5) => t5 === null || typeof t5 != "object" && typeof t5 != "function";
-var a4 = Array.isArray;
-var u4 = (t5) => a4(t5) || typeof t5?.[Symbol.iterator] == "function";
-var d4 = `[ 	
-\f\r]`;
-var f4 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g;
-var v2 = /-->/g;
-var _2 = />/g;
-var m2 = RegExp(`>|${d4}(?:([^\\s"'>=/]+)(${d4}*=${d4}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g");
-var p4 = /'/g;
-var g2 = /"/g;
-var $2 = /^(?:script|style|textarea|title)$/i;
-var y4 = (t5) => (i7, ...s5) => ({ _$litType$: t5, strings: i7, values: s5 });
-var x2 = y4(1);
-var b4 = y4(2);
-var w2 = y4(3);
-var T2 = Symbol.for("lit-noChange");
-var E2 = Symbol.for("lit-nothing");
-var A2 = new WeakMap;
-var C2 = r6.createTreeWalker(r6, 129);
-function P2(t5, i7) {
-  if (!a4(t5) || !t5.hasOwnProperty("raw"))
-    throw Error("invalid template strings array");
-  return s4 !== undefined ? s4.createHTML(i7) : i7;
-}
-var V2 = (t5, i7) => {
-  const s5 = t5.length - 1, o7 = [];
-  let r7, l5 = i7 === 2 ? "<svg>" : i7 === 3 ? "<math>" : "", c7 = f4;
-  for (let i8 = 0;i8 < s5; i8++) {
-    const s6 = t5[i8];
-    let a5, u5, d5 = -1, y5 = 0;
-    for (;y5 < s6.length && (c7.lastIndex = y5, u5 = c7.exec(s6), u5 !== null); )
-      y5 = c7.lastIndex, c7 === f4 ? u5[1] === "!--" ? c7 = v2 : u5[1] !== undefined ? c7 = _2 : u5[2] !== undefined ? ($2.test(u5[2]) && (r7 = RegExp("</" + u5[2], "g")), c7 = m2) : u5[3] !== undefined && (c7 = m2) : c7 === m2 ? u5[0] === ">" ? (c7 = r7 ?? f4, d5 = -1) : u5[1] === undefined ? d5 = -2 : (d5 = c7.lastIndex - u5[2].length, a5 = u5[1], c7 = u5[3] === undefined ? m2 : u5[3] === '"' ? g2 : p4) : c7 === g2 || c7 === p4 ? c7 = m2 : c7 === v2 || c7 === _2 ? c7 = f4 : (c7 = m2, r7 = undefined);
-    const x3 = c7 === m2 && t5[i8 + 1].startsWith("/>") ? " " : "";
-    l5 += c7 === f4 ? s6 + n6 : d5 >= 0 ? (o7.push(a5), s6.slice(0, d5) + e6 + s6.slice(d5) + h4 + x3) : s6 + h4 + (d5 === -2 ? i8 : x3);
-  }
-  return [P2(t5, l5 + (t5[s5] || "<?>") + (i7 === 2 ? "</svg>" : i7 === 3 ? "</math>" : "")), o7];
-};
-
-class N2 {
-  constructor({ strings: t5, _$litType$: s5 }, n7) {
-    let r7;
-    this.parts = [];
-    let c7 = 0, a5 = 0;
-    const u5 = t5.length - 1, d5 = this.parts, [f5, v3] = V2(t5, s5);
-    if (this.el = N2.createElement(f5, n7), C2.currentNode = this.el.content, s5 === 2 || s5 === 3) {
-      const t6 = this.el.content.firstChild;
-      t6.replaceWith(...t6.childNodes);
-    }
-    for (;(r7 = C2.nextNode()) !== null && d5.length < u5; ) {
-      if (r7.nodeType === 1) {
-        if (r7.hasAttributes())
-          for (const t6 of r7.getAttributeNames())
-            if (t6.endsWith(e6)) {
-              const i7 = v3[a5++], s6 = r7.getAttribute(t6).split(h4), e7 = /([.?@])?(.*)/.exec(i7);
-              d5.push({ type: 1, index: c7, name: e7[2], strings: s6, ctor: e7[1] === "." ? H2 : e7[1] === "?" ? I2 : e7[1] === "@" ? L2 : k2 }), r7.removeAttribute(t6);
-            } else
-              t6.startsWith(h4) && (d5.push({ type: 6, index: c7 }), r7.removeAttribute(t6));
-        if ($2.test(r7.tagName)) {
-          const t6 = r7.textContent.split(h4), s6 = t6.length - 1;
-          if (s6 > 0) {
-            r7.textContent = i6 ? i6.emptyScript : "";
-            for (let i7 = 0;i7 < s6; i7++)
-              r7.append(t6[i7], l4()), C2.nextNode(), d5.push({ type: 2, index: ++c7 });
-            r7.append(t6[s6], l4());
-          }
-        }
-      } else if (r7.nodeType === 8)
-        if (r7.data === o6)
-          d5.push({ type: 2, index: c7 });
-        else {
-          let t6 = -1;
-          for (;(t6 = r7.data.indexOf(h4, t6 + 1)) !== -1; )
-            d5.push({ type: 7, index: c7 }), t6 += h4.length - 1;
-        }
-      c7++;
-    }
-  }
-  static createElement(t5, i7) {
-    const s5 = r6.createElement("template");
-    return s5.innerHTML = t5, s5;
-  }
-}
-function S4(t5, i7, s5 = t5, e7) {
-  if (i7 === T2)
-    return i7;
-  let h5 = e7 !== undefined ? s5._$Co?.[e7] : s5._$Cl;
-  const o7 = c6(i7) ? undefined : i7._$litDirective$;
-  return h5?.constructor !== o7 && (h5?._$AO?.(false), o7 === undefined ? h5 = undefined : (h5 = new o7(t5), h5._$AT(t5, s5, e7)), e7 !== undefined ? (s5._$Co ??= [])[e7] = h5 : s5._$Cl = h5), h5 !== undefined && (i7 = S4(t5, h5._$AS(t5, i7.values), h5, e7)), i7;
-}
-
-class M2 {
-  constructor(t5, i7) {
-    this._$AV = [], this._$AN = undefined, this._$AD = t5, this._$AM = i7;
-  }
-  get parentNode() {
-    return this._$AM.parentNode;
-  }
-  get _$AU() {
-    return this._$AM._$AU;
-  }
-  u(t5) {
-    const { el: { content: i7 }, parts: s5 } = this._$AD, e7 = (t5?.creationScope ?? r6).importNode(i7, true);
-    C2.currentNode = e7;
-    let h5 = C2.nextNode(), o7 = 0, n7 = 0, l5 = s5[0];
-    for (;l5 !== undefined; ) {
-      if (o7 === l5.index) {
-        let i8;
-        l5.type === 2 ? i8 = new R2(h5, h5.nextSibling, this, t5) : l5.type === 1 ? i8 = new l5.ctor(h5, l5.name, l5.strings, this, t5) : l5.type === 6 && (i8 = new z2(h5, this, t5)), this._$AV.push(i8), l5 = s5[++n7];
-      }
-      o7 !== l5?.index && (h5 = C2.nextNode(), o7++);
-    }
-    return C2.currentNode = r6, e7;
-  }
-  p(t5) {
-    let i7 = 0;
-    for (const s5 of this._$AV)
-      s5 !== undefined && (s5.strings !== undefined ? (s5._$AI(t5, s5, i7), i7 += s5.strings.length - 2) : s5._$AI(t5[i7])), i7++;
-  }
-}
-
-class R2 {
-  get _$AU() {
-    return this._$AM?._$AU ?? this._$Cv;
-  }
-  constructor(t5, i7, s5, e7) {
-    this.type = 2, this._$AH = E2, this._$AN = undefined, this._$AA = t5, this._$AB = i7, this._$AM = s5, this.options = e7, this._$Cv = e7?.isConnected ?? true;
-  }
-  get parentNode() {
-    let t5 = this._$AA.parentNode;
-    const i7 = this._$AM;
-    return i7 !== undefined && t5?.nodeType === 11 && (t5 = i7.parentNode), t5;
-  }
-  get startNode() {
-    return this._$AA;
-  }
-  get endNode() {
-    return this._$AB;
-  }
-  _$AI(t5, i7 = this) {
-    t5 = S4(this, t5, i7), c6(t5) ? t5 === E2 || t5 == null || t5 === "" ? (this._$AH !== E2 && this._$AR(), this._$AH = E2) : t5 !== this._$AH && t5 !== T2 && this._(t5) : t5._$litType$ !== undefined ? this.$(t5) : t5.nodeType !== undefined ? this.T(t5) : u4(t5) ? this.k(t5) : this._(t5);
-  }
-  O(t5) {
-    return this._$AA.parentNode.insertBefore(t5, this._$AB);
-  }
-  T(t5) {
-    this._$AH !== t5 && (this._$AR(), this._$AH = this.O(t5));
-  }
-  _(t5) {
-    this._$AH !== E2 && c6(this._$AH) ? this._$AA.nextSibling.data = t5 : this.T(r6.createTextNode(t5)), this._$AH = t5;
-  }
-  $(t5) {
-    const { values: i7, _$litType$: s5 } = t5, e7 = typeof s5 == "number" ? this._$AC(t5) : (s5.el === undefined && (s5.el = N2.createElement(P2(s5.h, s5.h[0]), this.options)), s5);
-    if (this._$AH?._$AD === e7)
-      this._$AH.p(i7);
-    else {
-      const t6 = new M2(e7, this), s6 = t6.u(this.options);
-      t6.p(i7), this.T(s6), this._$AH = t6;
-    }
-  }
-  _$AC(t5) {
-    let i7 = A2.get(t5.strings);
-    return i7 === undefined && A2.set(t5.strings, i7 = new N2(t5)), i7;
-  }
-  k(t5) {
-    a4(this._$AH) || (this._$AH = [], this._$AR());
-    const i7 = this._$AH;
-    let s5, e7 = 0;
-    for (const h5 of t5)
-      e7 === i7.length ? i7.push(s5 = new R2(this.O(l4()), this.O(l4()), this, this.options)) : s5 = i7[e7], s5._$AI(h5), e7++;
-    e7 < i7.length && (this._$AR(s5 && s5._$AB.nextSibling, e7), i7.length = e7);
-  }
-  _$AR(t5 = this._$AA.nextSibling, i7) {
-    for (this._$AP?.(false, true, i7);t5 && t5 !== this._$AB; ) {
-      const i8 = t5.nextSibling;
-      t5.remove(), t5 = i8;
-    }
-  }
-  setConnected(t5) {
-    this._$AM === undefined && (this._$Cv = t5, this._$AP?.(t5));
-  }
-}
-
-class k2 {
-  get tagName() {
-    return this.element.tagName;
-  }
-  get _$AU() {
-    return this._$AM._$AU;
-  }
-  constructor(t5, i7, s5, e7, h5) {
-    this.type = 1, this._$AH = E2, this._$AN = undefined, this.element = t5, this.name = i7, this._$AM = e7, this.options = h5, s5.length > 2 || s5[0] !== "" || s5[1] !== "" ? (this._$AH = Array(s5.length - 1).fill(new String), this.strings = s5) : this._$AH = E2;
-  }
-  _$AI(t5, i7 = this, s5, e7) {
-    const h5 = this.strings;
-    let o7 = false;
-    if (h5 === undefined)
-      t5 = S4(this, t5, i7, 0), o7 = !c6(t5) || t5 !== this._$AH && t5 !== T2, o7 && (this._$AH = t5);
-    else {
-      const e8 = t5;
-      let n7, r7;
-      for (t5 = h5[0], n7 = 0;n7 < h5.length - 1; n7++)
-        r7 = S4(this, e8[s5 + n7], i7, n7), r7 === T2 && (r7 = this._$AH[n7]), o7 ||= !c6(r7) || r7 !== this._$AH[n7], r7 === E2 ? t5 = E2 : t5 !== E2 && (t5 += (r7 ?? "") + h5[n7 + 1]), this._$AH[n7] = r7;
-    }
-    o7 && !e7 && this.j(t5);
-  }
-  j(t5) {
-    t5 === E2 ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t5 ?? "");
-  }
-}
-
-class H2 extends k2 {
-  constructor() {
-    super(...arguments), this.type = 3;
-  }
-  j(t5) {
-    this.element[this.name] = t5 === E2 ? undefined : t5;
-  }
-}
-
-class I2 extends k2 {
-  constructor() {
-    super(...arguments), this.type = 4;
-  }
-  j(t5) {
-    this.element.toggleAttribute(this.name, !!t5 && t5 !== E2);
-  }
-}
-
-class L2 extends k2 {
-  constructor(t5, i7, s5, e7, h5) {
-    super(t5, i7, s5, e7, h5), this.type = 5;
-  }
-  _$AI(t5, i7 = this) {
-    if ((t5 = S4(this, t5, i7, 0) ?? E2) === T2)
-      return;
-    const s5 = this._$AH, e7 = t5 === E2 && s5 !== E2 || t5.capture !== s5.capture || t5.once !== s5.once || t5.passive !== s5.passive, h5 = t5 !== E2 && (s5 === E2 || e7);
-    e7 && this.element.removeEventListener(this.name, this, s5), h5 && this.element.addEventListener(this.name, this, t5), this._$AH = t5;
-  }
-  handleEvent(t5) {
-    typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, t5) : this._$AH.handleEvent(t5);
-  }
-}
-
-class z2 {
-  constructor(t5, i7, s5) {
-    this.element = t5, this.type = 6, this._$AN = undefined, this._$AM = i7, this.options = s5;
-  }
-  get _$AU() {
-    return this._$AM._$AU;
-  }
-  _$AI(t5) {
-    S4(this, t5);
-  }
-}
-var j2 = t4.litHtmlPolyfillSupport;
-j2?.(N2, R2), (t4.litHtmlVersions ??= []).push("3.3.0");
-var B = (t5, i7, s5) => {
-  const e7 = s5?.renderBefore ?? i7;
-  let h5 = e7._$litPart$;
-  if (h5 === undefined) {
-    const t6 = s5?.renderBefore ?? null;
-    e7._$litPart$ = h5 = new R2(i7.insertBefore(l4(), t6), t6, undefined, s5 ?? {});
-  }
-  return h5._$AI(t5), h5;
-};
-
 // node_modules/lit-element/lit-element.js
-var s5 = globalThis;
+var s3 = globalThis;
 
-class i7 extends y3 {
+class i4 extends y {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = undefined;
   }
   createRenderRoot() {
-    const t5 = super.createRenderRoot();
-    return this.renderOptions.renderBefore ??= t5.firstChild, t5;
+    const t3 = super.createRenderRoot();
+    return this.renderOptions.renderBefore ??= t3.firstChild, t3;
   }
-  update(t5) {
-    const r7 = this.render();
-    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(t5), this._$Do = B(r7, this.renderRoot, this.renderOptions);
+  update(t3) {
+    const r4 = this.render();
+    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(t3), this._$Do = B(r4, this.renderRoot, this.renderOptions);
   }
   connectedCallback() {
     super.connectedCallback(), this._$Do?.setConnected(true);
@@ -1129,72 +589,72 @@ class i7 extends y3 {
     super.disconnectedCallback(), this._$Do?.setConnected(false);
   }
   render() {
-    return T2;
+    return T;
   }
 }
-i7._$litElement$ = true, i7["finalized"] = true, s5.litElementHydrateSupport?.({ LitElement: i7 });
-var o7 = s5.litElementPolyfillSupport;
-o7?.({ LitElement: i7 });
-(s5.litElementVersions ??= []).push("4.2.0");
-// node_modules/lit/node_modules/@lit/reactive-element/decorators/custom-element.js
-var t5 = (t6) => (e7, o8) => {
-  o8 !== undefined ? o8.addInitializer(() => {
-    customElements.define(t6, e7);
-  }) : customElements.define(t6, e7);
+i4._$litElement$ = true, i4["finalized"] = true, s3.litElementHydrateSupport?.({ LitElement: i4 });
+var o4 = s3.litElementPolyfillSupport;
+o4?.({ LitElement: i4 });
+(s3.litElementVersions ??= []).push("4.2.0");
+// node_modules/@lit/reactive-element/decorators/custom-element.js
+var t3 = (t4) => (e4, o5) => {
+  o5 !== undefined ? o5.addInitializer(() => {
+    customElements.define(t4, e4);
+  }) : customElements.define(t4, e4);
 };
-// node_modules/lit/node_modules/@lit/reactive-element/decorators/property.js
-var o8 = { attribute: true, type: String, converter: u, reflect: false, hasChanged: f };
-var r7 = (t6 = o8, e7, r8) => {
-  const { kind: n7, metadata: i8 } = r8;
-  let s6 = globalThis.litPropertyMetadata.get(i8);
-  if (s6 === undefined && globalThis.litPropertyMetadata.set(i8, s6 = new Map), n7 === "setter" && ((t6 = Object.create(t6)).wrapped = true), s6.set(r8.name, t6), n7 === "accessor") {
-    const { name: o9 } = r8;
-    return { set(r9) {
-      const n8 = e7.get.call(this);
-      e7.set.call(this, r9), this.requestUpdate(o9, n8, t6);
-    }, init(e8) {
-      return e8 !== undefined && this.C(o9, undefined, t6, e8), e8;
+// node_modules/@lit/reactive-element/decorators/property.js
+var o5 = { attribute: true, type: String, converter: u, reflect: false, hasChanged: f };
+var r4 = (t4 = o5, e4, r5) => {
+  const { kind: n4, metadata: i5 } = r5;
+  let s4 = globalThis.litPropertyMetadata.get(i5);
+  if (s4 === undefined && globalThis.litPropertyMetadata.set(i5, s4 = new Map), n4 === "setter" && ((t4 = Object.create(t4)).wrapped = true), s4.set(r5.name, t4), n4 === "accessor") {
+    const { name: o6 } = r5;
+    return { set(r6) {
+      const n5 = e4.get.call(this);
+      e4.set.call(this, r6), this.requestUpdate(o6, n5, t4);
+    }, init(e5) {
+      return e5 !== undefined && this.C(o6, undefined, t4, e5), e5;
     } };
   }
-  if (n7 === "setter") {
-    const { name: o9 } = r8;
-    return function(r9) {
-      const n8 = this[o9];
-      e7.call(this, r9), this.requestUpdate(o9, n8, t6);
+  if (n4 === "setter") {
+    const { name: o6 } = r5;
+    return function(r6) {
+      const n5 = this[o6];
+      e4.call(this, r6), this.requestUpdate(o6, n5, t4);
     };
   }
-  throw Error("Unsupported decorator location: " + n7);
+  throw Error("Unsupported decorator location: " + n4);
 };
-function n7(t6) {
-  return (e7, o9) => typeof o9 == "object" ? r7(t6, e7, o9) : ((t7, e8, o10) => {
-    const r8 = e8.hasOwnProperty(o10);
-    return e8.constructor.createProperty(o10, t7), r8 ? Object.getOwnPropertyDescriptor(e8, o10) : undefined;
-  })(t6, e7, o9);
+function n4(t4) {
+  return (e4, o6) => typeof o6 == "object" ? r4(t4, e4, o6) : ((t5, e5, o7) => {
+    const r5 = e5.hasOwnProperty(o7);
+    return e5.constructor.createProperty(o7, t5), r5 ? Object.getOwnPropertyDescriptor(e5, o7) : undefined;
+  })(t4, e4, o6);
 }
-// node_modules/lit/node_modules/@lit/reactive-element/decorators/state.js
-function r8(r9) {
-  return n7({ ...r9, state: true, attribute: false });
+// node_modules/@lit/reactive-element/decorators/state.js
+function r5(r6) {
+  return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.12.0";
+var version = "0.12.2";
 
 // node_modules/custom-card-helpers/dist/index.m.js
-var t6;
-var r9;
-(function(e8) {
-  e8.language = "language", e8.system = "system", e8.comma_decimal = "comma_decimal", e8.decimal_comma = "decimal_comma", e8.space_comma = "space_comma", e8.none = "none";
-})(t6 || (t6 = {})), function(e8) {
-  e8.language = "language", e8.system = "system", e8.am_pm = "12", e8.twenty_four = "24";
-}(r9 || (r9 = {}));
-var $3 = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]);
-var ne = function(e8, t7, r10, n8) {
-  n8 = n8 || {}, r10 = r10 == null ? {} : r10;
-  var i8 = new Event(t7, { bubbles: n8.bubbles === undefined || n8.bubbles, cancelable: Boolean(n8.cancelable), composed: n8.composed === undefined || n8.composed });
-  return i8.detail = r10, e8.dispatchEvent(i8), i8;
+var t4;
+var r6;
+(function(e5) {
+  e5.language = "language", e5.system = "system", e5.comma_decimal = "comma_decimal", e5.decimal_comma = "decimal_comma", e5.space_comma = "space_comma", e5.none = "none";
+})(t4 || (t4 = {})), function(e5) {
+  e5.language = "language", e5.system = "system", e5.am_pm = "12", e5.twenty_four = "24";
+}(r6 || (r6 = {}));
+var $2 = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]);
+var ne = function(e5, t5, r7, n5) {
+  n5 = n5 || {}, r7 = r7 == null ? {} : r7;
+  var i5 = new Event(t5, { bubbles: n5.bubbles === undefined || n5.bubbles, cancelable: Boolean(n5.cancelable), composed: n5.composed === undefined || n5.composed });
+  return i5.detail = r7, e5.dispatchEvent(i5), i5;
 };
 var ie = new Set(["call-service", "divider", "section", "weblink", "cast", "select"]);
-var de = function(e8, t7, r10) {
-  r10 === undefined && (r10 = false), r10 ? history.replaceState(null, "", t7) : history.pushState(null, "", t7), ne(window, "location-changed", { replace: r10 });
+var de = function(e5, t5, r7) {
+  r7 === undefined && (r7 = false), r7 ? history.replaceState(null, "", t5) : history.pushState(null, "", t5), ne(window, "location-changed", { replace: r7 });
 };
 
 // src/types.ts
@@ -1219,8 +679,8 @@ var processBadgeTemplate = (hass, template) => {
   try {
     const func = new Function("states", `return ${template}`);
     return func(hass.states);
-  } catch (e8) {
-    console.error(`NavbarCard: Error evaluating badge template: ${e8}`);
+  } catch (e5) {
+    console.error(`NavbarCard: Error evaluating badge template: ${e5}`);
     return false;
   }
 };
@@ -1236,8 +696,8 @@ var processTemplate = (hass, template) => {
     const cleanTemplate = template.replace(/\[\[\[|\]\]\]/g, "");
     const func = new Function("states", "user", "hass", cleanTemplate);
     return func(hass.states, hass.user, hass);
-  } catch (e8) {
-    console.error(`NavbarCard: Error evaluating template: ${e8}`);
+  } catch (e5) {
+    console.error(`NavbarCard: Error evaluating template: ${e5}`);
     return template;
   }
 };
@@ -1260,17 +720,17 @@ var getNavbarTemplates = () => {
   return null;
 };
 var forceResetRipple = (target) => {
-  const ripple = target?.querySelector("md-ripple");
-  if (ripple != null) {
+  const rippleElements = target?.querySelectorAll("ha-ripple");
+  rippleElements.forEach((ripple) => {
     setTimeout(() => {
-      ripple.shadowRoot?.querySelector(".surface")?.classList?.remove("hovered");
-      ripple.shadowRoot?.querySelector(".surface")?.classList?.remove("pressed");
+      ripple.hovered = false;
+      ripple.pressed = false;
     }, 10);
-  }
+  });
 };
 
 // src/styles.ts
-var HOST_STYLES = i4`
+var HOST_STYLES = i`
   :host {
     --navbar-background-color: var(--card-background-color);
     --navbar-route-icon-size: 24px;
@@ -1284,7 +744,7 @@ var HOST_STYLES = i4`
     --navbar-popup-index: 901;
   }
 `;
-var NAVBAR_STYLES = i4`
+var NAVBAR_STYLES = i`
   .navbar {
     background: var(--navbar-background-color);
     border-radius: 0px;
@@ -1358,7 +818,7 @@ var NAVBAR_STYLES = i4`
     transform: translate(0, -50%);
   }
 `;
-var ROUTE_STYLES = i4`
+var ROUTE_STYLES = i`
   .route {
     cursor: pointer;
     max-width: 60px;
@@ -1375,6 +835,7 @@ var ROUTE_STYLES = i4`
 
   /* Button styling */
   .button {
+    position: relative;
     height: 36px;
     width: 100%;
     border-radius: 16px;
@@ -1418,21 +879,21 @@ var ROUTE_STYLES = i4`
 
   /* Badge styling */
   .badge {
-    border-radius: 999px;
-    width: 12px;
-    height: 12px;
     position: absolute;
     top: 0;
     right: 0;
+    border-radius: 999px;
+    width: 12px;
+    height: 12px;
   }
   .badge.with-counter {
-    min-width: 16px;
-    width: auto !important;
-    padding: 0px 2px;
-    height: 16px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    height: 16px;
+    width: auto !important;
+    min-width: 16px;
+    padding: 0px 2px;
     font-weight: bold;
     font-size: 11px;
     line-height: 11px;
@@ -1448,7 +909,7 @@ var ROUTE_STYLES = i4`
     height: 100%;
   }
 `;
-var POPUP_STYLES = i4`
+var POPUP_STYLES = i`
   /****************************************/
   /* Backdrop */
   /****************************************/
@@ -1584,7 +1045,7 @@ var POPUP_STYLES = i4`
   }
 `;
 var getDefaultStyles = () => {
-  return i4`
+  return i`
     ${HOST_STYLES}
     ${NAVBAR_STYLES}
     ${ROUTE_STYLES}
@@ -1605,51 +1066,51 @@ var isValidInt = (value) => {
   }
   return true;
 };
-var hue2rgb = (p5, q, t7) => {
-  if (t7 < 0)
-    t7 += 1;
-  if (t7 > 1)
-    t7 -= 1;
-  if (t7 < 1 / 6)
-    return p5 + (q - p5) * 6 * t7;
-  if (t7 < 1 / 2)
+var hue2rgb = (p3, q, t5) => {
+  if (t5 < 0)
+    t5 += 1;
+  if (t5 > 1)
+    t5 -= 1;
+  if (t5 < 1 / 6)
+    return p3 + (q - p3) * 6 * t5;
+  if (t5 < 1 / 2)
     return q;
-  if (t7 < 2 / 3)
-    return p5 + (q - p5) * (2 / 3 - t7) * 6;
-  return p5;
+  if (t5 < 2 / 3)
+    return p3 + (q - p3) * (2 / 3 - t5) * 6;
+  return p3;
 };
-var complementaryRGBColor = (r10, g3, b5) => {
-  if (Math.max(r10, g3, b5) == Math.min(r10, g3, b5)) {
-    return { r: 255 - r10, g: 255 - g3, b: 255 - b5 };
+var complementaryRGBColor = (r7, g2, b3) => {
+  if (Math.max(r7, g2, b3) == Math.min(r7, g2, b3)) {
+    return { r: 255 - r7, g: 255 - g2, b: 255 - b3 };
   } else {
-    r10 /= 255, g3 /= 255, b5 /= 255;
-    const max = Math.max(r10, g3, b5), min = Math.min(r10, g3, b5);
-    let h5 = 0;
-    const l5 = (max + min) / 2;
-    const d5 = max - min;
-    const s6 = l5 > 0.5 ? d5 / (2 - max - min) : d5 / (max + min);
+    r7 /= 255, g2 /= 255, b3 /= 255;
+    const max = Math.max(r7, g2, b3), min = Math.min(r7, g2, b3);
+    let h3 = 0;
+    const l3 = (max + min) / 2;
+    const d3 = max - min;
+    const s4 = l3 > 0.5 ? d3 / (2 - max - min) : d3 / (max + min);
     switch (max) {
-      case r10:
-        h5 = (g3 - b5) / d5 + (g3 < b5 ? 6 : 0);
+      case r7:
+        h3 = (g2 - b3) / d3 + (g2 < b3 ? 6 : 0);
         break;
-      case g3:
-        h5 = (b5 - r10) / d5 + 2;
+      case g2:
+        h3 = (b3 - r7) / d3 + 2;
         break;
-      case b5:
-        h5 = (r10 - g3) / d5 + 4;
+      case b3:
+        h3 = (r7 - g2) / d3 + 4;
         break;
     }
-    h5 = Math.round(h5 * 60 + 180) % 360;
-    h5 /= 360;
-    const q = l5 < 0.5 ? l5 * (1 + s6) : l5 + s6 - l5 * s6;
-    const p5 = 2 * l5 - q;
-    r10 = hue2rgb(p5, q, h5 + 1 / 3);
-    g3 = hue2rgb(p5, q, h5);
-    b5 = hue2rgb(p5, q, h5 - 1 / 3);
+    h3 = Math.round(h3 * 60 + 180) % 360;
+    h3 /= 360;
+    const q = l3 < 0.5 ? l3 * (1 + s4) : l3 + s4 - l3 * s4;
+    const p3 = 2 * l3 - q;
+    r7 = hue2rgb(p3, q, h3 + 1 / 3);
+    g2 = hue2rgb(p3, q, h3);
+    b3 = hue2rgb(p3, q, h3 - 1 / 3);
     return {
-      r: Math.round(r10 * 255),
-      g: Math.round(g3 * 255),
-      b: Math.round(b5 * 255)
+      r: Math.round(r7 * 255),
+      g: Math.round(g2 * 255),
+      b: Math.round(b3 * 255)
     };
   }
 };
@@ -1688,14 +1149,14 @@ class Color {
     }
   }
   _readColorFromDOM(color) {
-    const d5 = document.createElement("div");
-    d5.style.color = color;
-    document.body.appendChild(d5);
-    const parsedColor = window.getComputedStyle(d5).color;
+    const d3 = document.createElement("div");
+    d3.style.color = color;
+    document.body.appendChild(d3);
+    const parsedColor = window.getComputedStyle(d3).color;
     this._parseRGBString(parsedColor);
   }
   _parseColorArray(data) {
-    const colorArray = data.map((x3) => parseInt(x3));
+    const colorArray = data.map((x2) => parseInt(x2));
     if (colorArray.length < 3) {
       throw Error(`Invalid array format color string: "${data}"
 Supported formats: [r,g,b] | [r,g,b,a]`);
@@ -1754,25 +1215,25 @@ Supported formats: [r,g,b] | [r,g,b,a]`);
     return this;
   }
   complementary() {
-    const { r: r10, g: g3, b: b5 } = complementaryRGBColor(this.r, this.g, this.b);
-    return new Color([r10, g3, b5, this.a]);
+    const { r: r7, g: g2, b: b3 } = complementaryRGBColor(this.r, this.g, this.b);
+    return new Color([r7, g2, b3, this.a]);
   }
   shade(percent) {
-    let R3 = this.r * (100 + percent) / 100;
+    let R2 = this.r * (100 + percent) / 100;
     let G = this.g * (100 + percent) / 100;
     let B2 = this.b * (100 + percent) / 100;
-    R3 = R3 < 255 ? R3 : 255;
+    R2 = R2 < 255 ? R2 : 255;
     G = G < 255 ? G : 255;
     B2 = B2 < 255 ? B2 : 255;
-    R3 = Math.round(R3);
+    R2 = Math.round(R2);
     G = Math.round(G);
     B2 = Math.round(B2);
-    const brightness = Math.round((R3 * 299 + G * 587 + B2 * 114) / 1000);
+    const brightness = Math.round((R2 * 299 + G * 587 + B2 * 114) / 1000);
     if (brightness == 0)
       return this.complementary();
     if (brightness < 80 && percent < 100)
       return this.shade(percent + 50);
-    return new Color([R3, G, B2]);
+    return new Color([R2, G, B2]);
   }
   contrastingColor() {
     return new Color(this.luma() >= 165 ? "#000" : "#fff");
@@ -1811,14 +1272,13 @@ var PROPS_TO_FORCE_UPDATE = [
   "_inEditDashboardMode",
   "_inEditCardMode",
   "_inPreviewMode",
-  "_location",
   "_popup"
 ];
 var DEFAULT_DESKTOP_POSITION = "bottom" /* bottom */;
 var DOUBLE_TAP_DELAY = 250;
 var HOLD_ACTION_DELAY = 500;
 
-class NavbarCard extends i7 {
+class NavbarCard extends i4 {
   holdTimeoutId = null;
   holdTriggered = false;
   pointerStartX = 0;
@@ -1829,7 +1289,6 @@ class NavbarCard extends i7 {
   connectedCallback() {
     super.connectedCallback();
     forceResetRipple(this);
-    this._location = window.location.pathname;
     window.addEventListener("resize", this._checkDesktop);
     this._checkDesktop();
     const homeAssistantRoot = document.querySelector("body > home-assistant");
@@ -1944,10 +1403,10 @@ class NavbarCard extends i7 {
     };
   }
   _getRouteIcon(route, isActive) {
-    return route.image ? x2`<img
+    return route.image ? x`<img
           class="image ${isActive ? "active" : ""}"
           src="${isActive && route.image_selected ? route.image_selected : route.image}"
-          alt="${route.label || ""}" />` : x2`<ha-icon
+          alt="${route.label || ""}" />` : x`<ha-icon
           class="icon ${isActive ? "active" : ""}"
           icon="${isActive && route.icon_selected ? route.icon_selected : route.icon}"></ha-icon>`;
   }
@@ -1962,11 +1421,33 @@ class NavbarCard extends i7 {
     const hasCount = count != null;
     const backgroundColor = processTemplate(this.hass, route.badge?.color) ?? "red";
     const contrastingColor = processTemplate(this.hass, route.badge?.textColor) ?? new Color(backgroundColor).contrastingColor().hex();
-    return showBadge ? x2`<div
+    return showBadge ? x`<div
           class="badge ${isRouteActive ? "active" : ""} ${hasCount ? "with-counter" : ""}"
           style="background-color: ${backgroundColor}; color: ${contrastingColor}">
           ${count}
-        </div>` : x2``;
+        </div>` : x``;
+  }
+  _shouldTriggerHaptic(actionType, isNavigation = false) {
+    const hapticConfig = this._config?.haptic;
+    if (typeof hapticConfig === "boolean") {
+      return hapticConfig;
+    }
+    if (!hapticConfig) {
+      return !isNavigation;
+    }
+    if (isNavigation) {
+      return hapticConfig.url ?? false;
+    }
+    switch (actionType) {
+      case "tap":
+        return hapticConfig.tap_action ?? false;
+      case "hold":
+        return hapticConfig.hold_action ?? false;
+      case "double_tap":
+        return hapticConfig.double_tap_action ?? false;
+      default:
+        return false;
+    }
   }
   _shouldShowLabels = (isSubmenu) => {
     const config = this._isDesktop ? this._config?.desktop?.show_labels : this._config?.mobile?.show_labels;
@@ -1978,26 +1459,29 @@ class NavbarCard extends i7 {
     this._isDesktop = (window.innerWidth ?? 0) >= (this._config?.desktop?.min_width ?? 768);
   };
   _renderRoute = (route) => {
-    const isActive = route.selected != null ? processTemplate(this.hass, route.selected) : this._location == route.url;
+    const isActive = route.selected != null ? processTemplate(this.hass, route.selected) : window.location.pathname == route.url;
     if (processTemplate(this.hass, route.hidden)) {
       return null;
     }
-    return x2`
+    return x`
       <div
         class="route ${isActive ? "active" : ""}"
-        @pointerdown=${(e8) => this._handlePointerDown(e8, route)}
-        @pointermove=${(e8) => this._handlePointerMove(e8, route)}
-        @pointerup=${(e8) => this._handlePointerUp(e8, route)}
-        @pointercancel=${(e8) => this._handlePointerMove(e8, route)}>
-        ${this._renderBadge(route, isActive)}
-
+        @mouseenter=${(e5) => this._handleMouseEnter(e5, route)}
+        @mousemove=${(e5) => this._handleMouseMove(e5, route)}
+        @mouseleave=${(e5) => this._handleMouseLeave(e5, route)}
+        @pointerdown=${(e5) => this._handlePointerDown(e5, route)}
+        @pointermove=${(e5) => this._handlePointerMove(e5, route)}
+        @pointerup=${(e5) => this._handlePointerUp(e5, route)}
+        @pointercancel=${(e5) => this._handlePointerMove(e5, route)}>
         <div class="button ${isActive ? "active" : ""}">
           ${this._getRouteIcon(route, isActive)}
-          <md-ripple></md-ripple>
+          <ha-ripple></ha-ripple>
         </div>
-        ${this._shouldShowLabels(false) ? x2`<div class="label ${isActive ? "active" : ""}">
+
+        ${this._shouldShowLabels(false) ? x`<div class="label ${isActive ? "active" : ""}">
               ${processTemplate(this.hass, route.label) ?? " "}
-            </div>` : x2``}
+            </div>` : x``}
+        ${this._renderBadge(route, isActive)}
       </div>
     `;
   };
@@ -2020,7 +1504,7 @@ class NavbarCard extends i7 {
     switch (position) {
       case "top":
         return {
-          style: i4`
+          style: i`
             top: ${anchorRect.top + anchorRect.height}px;
             left: ${anchorRect.x}px;
           `,
@@ -2029,7 +1513,7 @@ class NavbarCard extends i7 {
         };
       case "left":
         return {
-          style: i4`
+          style: i`
             top: ${anchorRect.top}px;
             left: ${anchorRect.x + anchorRect.width}px;
           `,
@@ -2038,7 +1522,7 @@ class NavbarCard extends i7 {
         };
       case "right":
         return {
-          style: i4`
+          style: i`
             top: ${anchorRect.top}px;
             right: ${windowWidth - anchorRect.x}px;
           `,
@@ -2050,7 +1534,7 @@ class NavbarCard extends i7 {
       default:
         if (anchorRect.x > windowWidth / 2) {
           return {
-            style: i4`
+            style: i`
               top: ${anchorRect.top}px;
               right: ${windowWidth - anchorRect.x - anchorRect.width}px;
             `,
@@ -2059,7 +1543,7 @@ class NavbarCard extends i7 {
           };
         } else {
           return {
-            style: i4`
+            style: i`
               top: ${anchorRect.top}px;
               left: ${anchorRect.left}px;
             `,
@@ -2076,7 +1560,7 @@ class NavbarCard extends i7 {
     }
     const anchorRect = target.getBoundingClientRect();
     const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this._isDesktop ? "mobile" : this._config?.desktop?.position ?? DEFAULT_DESKTOP_POSITION);
-    this._popup = x2`
+    this._popup = x`
       <div
         class="navbar-popup-backdrop"</div>
       <div
@@ -2091,25 +1575,24 @@ class NavbarCard extends i7 {
       if (processTemplate(this.hass, popupItem.hidden)) {
         return null;
       }
-      return x2`<div
+      return x`<div
               class="
               popup-item 
               ${popupDirectionClassName}
               ${labelPositionClassName}
             "
               style="--index: ${index}"
-              @click=${(e8) => this._handlePointerUp(e8, popupItem, true)}>
-              ${this._renderBadge(popupItem, false)}
-
+              @click=${(e5) => this._handlePointerUp(e5, popupItem, true)}>
               <div class="button">
                 ${this._getRouteIcon(popupItem, false)}
                 <md-ripple></md-ripple>
               </div>
-              ${this._shouldShowLabels(true) ? x2`<div class="label">
+              ${this._shouldShowLabels(true) ? x`<div class="label">
                     ${processTemplate(this.hass, popupItem.label) ?? " "}
-                  </div>` : x2``}
+                  </div>` : x``}
+              ${this._renderBadge(popupItem, false)}
             </div>`;
-    }).filter((x3) => x3 != null)}
+    }).filter((x2) => x2 != null)}
       </div>
     `;
     requestAnimationFrame(() => {
@@ -2124,23 +1607,38 @@ class NavbarCard extends i7 {
     setTimeout(() => {
       const backdrop = this.shadowRoot?.querySelector(".navbar-popup-backdrop");
       if (backdrop) {
-        backdrop.addEventListener("click", (e8) => {
-          e8.preventDefault();
-          e8.stopPropagation();
+        backdrop.addEventListener("click", (e5) => {
+          e5.preventDefault();
+          e5.stopPropagation();
           this._closePopup();
         });
       }
     }, 400);
   };
-  _onPopupKeyDownListener = (e8) => {
-    if (e8.key === "Escape" && this._popup) {
-      e8.preventDefault();
+  _onPopupKeyDownListener = (e5) => {
+    if (e5.key === "Escape" && this._popup) {
+      e5.preventDefault();
       this._closePopup();
     }
   };
-  _handlePointerDown = (e8, route) => {
-    this.pointerStartX = e8.clientX;
-    this.pointerStartY = e8.clientY;
+  _handleMouseEnter = (e5, _route) => {
+    const ripple = e5.currentTarget.querySelector("ha-ripple");
+    if (ripple)
+      ripple.hovered = true;
+  };
+  _handleMouseMove = (e5, _route) => {
+    const ripple = e5.currentTarget.querySelector("ha-ripple");
+    if (ripple)
+      ripple.hovered = true;
+  };
+  _handleMouseLeave = (e5, _route) => {
+    const ripple = e5.currentTarget.querySelector("ha-ripple");
+    if (ripple)
+      ripple.hovered = false;
+  };
+  _handlePointerDown = (e5, route) => {
+    this.pointerStartX = e5.clientX;
+    this.pointerStartY = e5.clientY;
     if (route.hold_action) {
       this.holdTriggered = false;
       this.holdTimeoutId = window.setTimeout(() => {
@@ -2151,12 +1649,12 @@ class NavbarCard extends i7 {
       }, HOLD_ACTION_DELAY);
     }
   };
-  _handlePointerMove = (e8, _route) => {
+  _handlePointerMove = (e5, _route) => {
     if (!this.holdTimeoutId) {
       return;
     }
-    const moveX = Math.abs(e8.clientX - this.pointerStartX);
-    const moveY = Math.abs(e8.clientY - this.pointerStartY);
+    const moveX = Math.abs(e5.clientX - this.pointerStartX);
+    const moveY = Math.abs(e5.clientY - this.pointerStartY);
     if (moveX > 10 || moveY > 10) {
       if (this.holdTimeoutId !== null) {
         clearTimeout(this.holdTimeoutId);
@@ -2164,15 +1662,15 @@ class NavbarCard extends i7 {
       }
     }
   };
-  _handlePointerUp = (e8, route, isPopup = false) => {
+  _handlePointerUp = (e5, route, isPopup = false) => {
     if (this.holdTimeoutId !== null) {
       clearTimeout(this.holdTimeoutId);
       this.holdTimeoutId = null;
     }
-    const currentTarget = e8.currentTarget;
+    const currentTarget = e5.currentTarget;
     const currentTime = new Date().getTime();
     const timeDiff = currentTime - this.lastTapTime;
-    const isDoubleTap = timeDiff < DOUBLE_TAP_DELAY && e8.target === this.lastTapTarget;
+    const isDoubleTap = timeDiff < DOUBLE_TAP_DELAY && e5.target === this.lastTapTarget;
     if (isDoubleTap && route.double_tap_action) {
       if (this.tapTimeoutId !== null) {
         clearTimeout(this.tapTimeoutId);
@@ -2187,7 +1685,7 @@ class NavbarCard extends i7 {
       this.lastTapTarget = null;
     } else {
       this.lastTapTime = currentTime;
-      this.lastTapTarget = e8.target;
+      this.lastTapTarget = e5.target;
       this._handleTapAction(currentTarget, route, isPopup);
     }
     this.holdTriggered = false;
@@ -2236,12 +1734,14 @@ class NavbarCard extends i7 {
       if (this._shouldTriggerHaptic(actionType)) {
         hapticFeedback();
       }
-      fireDOMEvent(this, "hass-action", { bubbles: true, composed: true }, {
-        action: actionType,
-        config: {
-          [`${actionType}_action`]: action
-        }
-      });
+      setTimeout(() => {
+        fireDOMEvent(this, "hass-action", { bubbles: true, composed: true }, {
+          action: actionType,
+          config: {
+            [`${actionType}_action`]: action
+          }
+        });
+      }, 10);
     } else if (actionType === "tap" && route.url) {
       if (this._shouldTriggerHaptic(actionType, true)) {
         hapticFeedback();
@@ -2251,7 +1751,7 @@ class NavbarCard extends i7 {
   };
   render() {
     if (!this._config) {
-      return x2``;
+      return x``;
     }
     const { routes, desktop, mobile } = this._config;
     const { position: desktopPosition, hidden: desktopHidden } = desktop ?? {};
@@ -2262,77 +1762,66 @@ class NavbarCard extends i7 {
     const deviceModeClassName = this._isDesktop ? "desktop" : "mobile";
     const editModeClassname = isEditMode ? "edit-mode" : "";
     if (!isEditMode && (this._isDesktop && !!processTemplate(this.hass, desktopHidden) || !this._isDesktop && !!processTemplate(this.hass, mobileHidden))) {
-      return x2``;
+      return x``;
     }
-    return x2`
+    return x`
       <ha-card
         class="navbar ${editModeClassname} ${deviceModeClassName} ${desktopPositionClassname}">
-        ${routes?.map(this._renderRoute).filter((x3) => x3 != null)}
+        ${routes?.map(this._renderRoute).filter((x2) => x2 != null)}
       </ha-card>
       ${this._popup}
     `;
   }
   generateCustomStyles() {
-    const userStyles = this._config?.styles ? r4(this._config.styles) : i4``;
-    return i4`
+    const userStyles = this._config?.styles ? r(this._config.styles) : i``;
+    return i`
       ${getDefaultStyles()}
       ${userStyles}
     `;
   }
-  _shouldTriggerHaptic(actionType, isNavigation = false) {
-    const hapticConfig = this._config?.haptic;
-    if (typeof hapticConfig === "boolean") {
-      return hapticConfig;
-    }
-    if (!hapticConfig) {
-      return !isNavigation;
-    }
-    if (isNavigation) {
-      return hapticConfig.url ?? false;
-    }
-    switch (actionType) {
-      case "tap":
-        return hapticConfig.tap_action ?? false;
-      case "hold":
-        return hapticConfig.hold_action ?? false;
-      case "double_tap":
-        return hapticConfig.double_tap_action ?? false;
-      default:
-        return false;
-    }
-  }
 }
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "hass", undefined);
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_config", undefined);
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_isDesktop", undefined);
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_inEditDashboardMode", undefined);
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_inEditCardMode", undefined);
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_inPreviewMode", undefined);
 __legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_lastRender", undefined);
 __legacyDecorateClassTS([
-  r8()
-], NavbarCard.prototype, "_location", undefined);
-__legacyDecorateClassTS([
-  r8()
+  r5()
 ], NavbarCard.prototype, "_popup", undefined);
 NavbarCard = __legacyDecorateClassTS([
-  t5("navbar-card")
+  t3("navbar-card")
 ], NavbarCard);
-console.info(`%c navbar-card %c ${version} `, "background-color: #555;      padding: 6px 4px;      color: #fff;      text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3);       border-radius: 10px 0 0 10px;", "background-color: #00abd1;       padding: 6px 4px;      color: #fff;      text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3);       border-radius: 0 10px 10px 0;");
+console.info(`%c navbar-card%cv${version} `, `background-color: #555;
+      padding: 6px 8px;
+      padding-right: 6px;
+      color: #fff;
+      font-weight: 800;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3); 
+      border-radius: 16px 0 0 16px;`, `background-color:rgb(0, 135, 197);
+      padding: 6px 8px;
+      padding-left: 6px;
+      color: #fff;
+      font-weight: 800;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3); 
+      border-radius: 0 16px 16px 0;`);
 export {
   NavbarCard
 };
