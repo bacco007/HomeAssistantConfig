@@ -1,15 +1,25 @@
 DOMAIN = "aus_space_weather"
 
-# List of supported locations for the K index
+# List of supported locations for the K index.
+# Referenced from https://sws-data.sws.bom.gov.au/api-docs#get-k-index
 LOCATIONS = [
     "Australian region",
-    "Hobart",
+    "Alice Springs",
     "Canberra",
-    "Sydney",
-    "Melbourne",
-    "Brisbane",
-    "Perth",
-    "Adelaide",
+    "Cocos Island",
+    "Narrabri",
     "Darwin",
-    "Alice Springs"
+    "Hobart",
+    "Launceston",
+    "Learmonth",
+    "Melbourne",
+    "Norfolk Island",
+    "Perth",
+    "Sydney",
+    "Townsville",
+    # Antarctic region
+    "Casey",
+    "Davis",
+    "Macquarie Island",
+    "Mawson"
 ]
