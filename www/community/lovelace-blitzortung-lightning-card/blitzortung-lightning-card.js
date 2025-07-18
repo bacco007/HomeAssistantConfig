@@ -47,51 +47,51 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t$2=globalThis,e$4=t$2.ShadowRoot&&(void 0===t$2.ShadyCSS||t$2.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$2=Symbol(),o$5=new WeakMap;let n$3 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$2)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$4&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$5.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$5.set(s,t));}return t}toString(){return this.cssText}};const r$4=t=>new n$3("string"==typeof t?t:t+"",void 0,s$2),i$4=(t,...e)=>{const o=1===t.length?t[0]:e.reduce(((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1]),t[0]);return new n$3(o,t,s$2)},S$1=(s,o)=>{if(e$4)s.adoptedStyleSheets=o.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet));else for(const e of o){const o=document.createElement("style"),n=t$2.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$2=e$4?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$4(e)})(t):t;
+const t$2=globalThis,e$3=t$2.ShadowRoot&&(void 0===t$2.ShadyCSS||t$2.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$2=Symbol(),o$5=new WeakMap;let n$4 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$2)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$3&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$5.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$5.set(s,t));}return t}toString(){return this.cssText}};const r$4=t=>new n$4("string"==typeof t?t:t+"",void 0,s$2),i$5=(t,...e)=>{const o=1===t.length?t[0]:e.reduce(((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1]),t[0]);return new n$4(o,t,s$2)},S$1=(s,o)=>{if(e$3)s.adoptedStyleSheets=o.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet));else for(const e of o){const o=document.createElement("style"),n=t$2.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$2=e$3?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$4(e)})(t):t;
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const{is:i$3,defineProperty:e$3,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$3,getOwnPropertySymbols:o$4,getPrototypeOf:n$2}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$3(t,s),b={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$3(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$2(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$3(t),...o$4(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((t=>t(this)));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach((t=>t.hostConnected?.()));}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach((t=>t.hostDisconnected?.()));}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i){if(void 0!==t){const e=this.constructor,h=this[t];if(i??=e.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(e._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach((t=>t.hostUpdate?.())),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach((t=>t.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach((t=>this._$ET(t,this[t]))),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.1");
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const t$1=globalThis,i$2=t$1.trustedTypes,s$1=i$2?i$2.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$3="?"+h,n$1=`<${o$3}>`,r$2=document,l=()=>r$2.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),A=new WeakMap,C=r$2.createTreeWalker(r$2,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L$1:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$2?i$2.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$3)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$2.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$2).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$2,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E||null==t||""===t?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$2.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E?t=E:t!==E&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E);}}let L$1 = class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E)===T)return;const s=this._$AH,e=t===E&&s!==E||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E&&(s===E||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}};class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$1.litHtmlPolyfillSupport;j?.(N,R),(t$1.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const s=globalThis;let i$1 = class i extends y$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=B(r,this.renderRoot,this.renderOptions);}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(true);}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(false);}render(){return T}};i$1._$litElement$=true,i$1["finalized"]=true,s.litElementHydrateSupport?.({LitElement:i$1});const o$2=s.litElementPolyfillSupport;o$2?.({LitElement:i$1});(s.litElementVersions??=[]).push("4.2.1");
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const o$1={attribute:true,type:String,converter:u$1,reflect:false,hasChanged:f$1},r$1=(t=o$1,e,r)=>{const{kind:n,metadata:i}=r;let s=globalThis.litPropertyMetadata.get(i);if(void 0===s&&globalThis.litPropertyMetadata.set(i,s=new Map),"setter"===n&&((t=Object.create(t)).wrapped=true),s.set(r.name,t),"accessor"===n){const{name:o}=r;return {set(r){const n=e.get.call(this);e.set.call(this,r),this.requestUpdate(o,n,t);},init(e){return void 0!==e&&this.C(o,void 0,t,e),e}}}if("setter"===n){const{name:o}=r;return function(r){const n=this[o];e.call(this,r),this.requestUpdate(o,n,t);}}throw Error("Unsupported decorator location: "+n)};function n(t){return (e,o)=>"object"==typeof o?r$1(t,e,o):((t,e,o)=>{const r=e.hasOwnProperty(o);return e.constructor.createProperty(o,t),r?Object.getOwnPropertyDescriptor(e,o):void 0})(t,e,o)}
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function r(r){return n({...r,state:true,attribute:false})}
+ */const{is:i$4,defineProperty:e$2,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$3,getOwnPropertySymbols:o$4,getPrototypeOf:n$3}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$4(t,s),b={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$2(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$3(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$3(t),...o$4(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((t=>t(this)));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach((t=>t.hostConnected?.()));}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach((t=>t.hostDisconnected?.()));}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i){if(void 0!==t){const e=this.constructor,h=this[t];if(i??=e.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(e._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach((t=>t.hostUpdate?.())),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach((t=>t.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach((t=>this._$ET(t,this[t]))),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.1");
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t={CHILD:2},e$1=t=>(...e)=>({_$litDirective$:t,values:e});class i{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i){this._$Ct=t,this._$AM=e,this._$Ci=i;}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}}
+const t$1=globalThis,i$3=t$1.trustedTypes,s$1=i$3?i$3.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$1="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$3="?"+h,n$2=`<${o$3}>`,r$2=document,l=()=>r$2.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),A=new WeakMap,C=r$2.createTreeWalker(r$2,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$2:d>=0?(o.push(a),s.slice(0,d)+e$1+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$1)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L$1:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$3?i$3.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$3)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$2.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$2).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$2,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E||null==t||""===t?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$2.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E?t=E:t!==E&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E);}}let L$1 = class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E)===T)return;const s=this._$AH,e=t===E&&s!==E||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E&&(s===E||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}};class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$1.litHtmlPolyfillSupport;j?.(N,R),(t$1.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */class e extends i{constructor(i){if(super(i),this.it=E,i.type!==t.CHILD)throw Error(this.constructor.directiveName+"() can only be used in child bindings")}render(r){if(r===E||null==r)return this._t=void 0,this.it=r;if(r===T)return r;if("string"!=typeof r)throw Error(this.constructor.directiveName+"() called with a non-string value");if(r===this.it)return this._t;this.it=r;const s=[r];return s.raw=s,this._t={_$litType$:this.constructor.resultType,strings:s,values:[]}}}e.directiveName="unsafeHTML",e.resultType=1;const o=e$1(e);
+ */const s=globalThis;let i$2 = class i extends y$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=B(r,this.renderRoot,this.renderOptions);}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(true);}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(false);}render(){return T}};i$2._$litElement$=true,i$2["finalized"]=true,s.litElementHydrateSupport?.({LitElement:i$2});const o$2=s.litElementPolyfillSupport;o$2?.({LitElement:i$2});(s.litElementVersions??=[]).push("4.2.1");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const o$1={attribute:true,type:String,converter:u$1,reflect:false,hasChanged:f$1},r$1=(t=o$1,e,r)=>{const{kind:n,metadata:i}=r;let s=globalThis.litPropertyMetadata.get(i);if(void 0===s&&globalThis.litPropertyMetadata.set(i,s=new Map),"setter"===n&&((t=Object.create(t)).wrapped=true),s.set(r.name,t),"accessor"===n){const{name:o}=r;return {set(r){const n=e.get.call(this);e.set.call(this,r),this.requestUpdate(o,n,t);},init(e){return void 0!==e&&this.C(o,void 0,t,e),e}}}if("setter"===n){const{name:o}=r;return function(r){const n=this[o];e.call(this,r),this.requestUpdate(o,n,t);}}throw Error("Unsupported decorator location: "+n)};function n$1(t){return (e,o)=>"object"==typeof o?r$1(t,e,o):((t,e,o)=>{const r=e.hasOwnProperty(o);return e.constructor.createProperty(o,t),r?Object.getOwnPropertyDescriptor(e,o):void 0})(t,e,o)}
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function r(r){return n$1({...r,state:true,attribute:false})}
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t={ATTRIBUTE:1},e=t=>(...e)=>({_$litDirective$:t,values:e});let i$1 = class i{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i){this._$Ct=t,this._$AM=e,this._$Ci=i;}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}};
+
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const n="important",i=" !"+n,o=e(class extends i$1{constructor(t$1){if(super(t$1),t$1.type!==t.ATTRIBUTE||"style"!==t$1.name||t$1.strings?.length>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(t){return Object.keys(t).reduce(((e,r)=>{const s=t[r];return null==s?e:e+`${r=r.includes("-")?r:r.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${s};`}),"")}update(e,[r]){const{style:s}=e.element;if(void 0===this.ft)return this.ft=new Set(Object.keys(r)),this.render(r);for(const t of this.ft)null==r[t]&&(this.ft.delete(t),t.includes("-")?s.removeProperty(t):s[t]=null);for(const t in r){const e=r[t];if(null!=e){this.ft.add(t);const r="string"==typeof e&&e.endsWith(i);t.includes("-")||r?s.setProperty(t,r?e.slice(0,-11):e,r?n:""):s[t]=e;}}return T}});
 
 function ascending$1(a, b) {
   return a == null || b == null ? NaN : a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
@@ -2325,20 +2325,7 @@ function select(selector) {
       : new Selection([[selector]], root);
 }
 
-var sampleStrikes = [
-	{
-		distance: 50,
-		azimuth: 45,
-		latitude: 0.3185,
-		longitude: 0.3185
-	},
-	{
-		distance: 30,
-		azimuth: 270,
-		latitude: 0,
-		longitude: -0.2696
-	}
-];
+var sampleStrikes = [{distance:45,azimuth:176},{distance:22,azimuth:60},{distance:19,azimuth:65},{distance:27,azimuth:58},{distance:15,azimuth:62},{distance:24,azimuth:63},{distance:38,azimuth:67},{distance:35,azimuth:59},{distance:12,azimuth:61},{distance:17,azimuth:64},{distance:48,azimuth:270}];
 
 // Clamps a value between an upper and lower bound.
 // We use ternary operators because it makes the minified code
@@ -2723,227 +2710,15 @@ class HexColorPicker extends HexBase {
 }
 customElements.define('hex-color-picker', HexColorPicker);
 
-const styles$3 = i$4`.card-config{display:flex;flex-direction:column;gap:16px;padding:16px}ha-entity-picker:not(:defined),ha-select,ha-textfield{background-color:var(--mdc-text-field-fill-color,#f5f5f5);border-radius:4px;display:block;height:56px}ha-entity-picker,ha-formfield{display:block}ha-entity-picker:not(:last-child),ha-formfield:not(:last-child),ha-select:not(:last-child),ha-textfield:not(:last-child){margin-bottom:12px}.color-input-wrapper{position:relative}.color-picker-popup{background-color:var(--card-background-color,#fff);border:1px solid var(--divider-color);border-radius:8px;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);left:0;padding:8px;position:absolute;top:100%;z-index:10}.color-picker-popup hex-color-picker{height:200px;width:200px}.clear-button{color:var(--secondary-text-color)}.section{border:1px solid var(--divider-color);border-radius:4px;margin-bottom:16px;padding:12px}h3,h4{color:var(--primary-text-color);margin:0 0 8px;padding:0}h3{font-size:16px}h3,h4{font-weight:500}h4{color:var(--secondary-text-color);font-size:14px;margin-top:12px}`;
+const styles$3 = i$5`.card-config{display:flex;flex-direction:column;gap:16px;padding:16px}ha-entity-picker:not(:defined),ha-select,ha-textfield{background-color:var(--mdc-text-field-fill-color,#f5f5f5);border-radius:4px;display:block;height:56px}ha-entity-picker,ha-formfield{display:block}ha-entity-picker:not(:last-child),ha-formfield:not(:last-child),ha-select:not(:last-child),ha-textfield:not(:last-child){margin-bottom:12px}.color-input-wrapper{position:relative}.color-picker-popup{background-color:var(--card-background-color,#fff);border:1px solid var(--divider-color);border-radius:8px;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);left:0;padding:8px;position:absolute;top:100%;z-index:10}.color-picker-popup hex-color-picker{height:200px;width:200px}.clear-button{color:var(--secondary-text-color)}.section{border:1px solid var(--divider-color);border-radius:4px;margin-bottom:16px;padding:12px}h3,h4{color:var(--primary-text-color);margin:0 0 8px;padding:0}h3{font-size:16px}h3,h4{font-weight:500}h4{color:var(--secondary-text-color);font-size:14px;margin-top:12px}`;
 
-var card$3 = {
-	distance: "Entfernung",
-	direction: "Richtung",
-	default_title: "⚡ Blitzortung",
-	no_strikes_message: "Keine kürzlichen Blitzeinschläge erkannt.",
-	directions: {
-		N: "N",
-		NNE: "NNO",
-		NE: "NO",
-		ENE: "ONO",
-		E: "O",
-		ESE: "OSO",
-		SE: "SO",
-		SSE: "SSO",
-		S: "S",
-		SSW: "SSW",
-		SW: "SW",
-		WSW: "WSW",
-		W: "W",
-		WNW: "WNW",
-		NW: "NW",
-		NNW: "NNW"
-	},
-	tooltips: {
-		just_now: "Gerade eben",
-		minutes_ago: "Vor {minutes} Min.",
-		distance: "Entfernung",
-		direction: "Richtung",
-		time: "Zeit"
-	}
-};
-var editor$3 = {
-	title: "Titel (Optional)",
-	distance_entity: "Entfernungs-Entität",
-	counter_entity: "Blitzanzahl-Entität",
-	azimuth_entity: "Azimut-Entität",
-	radar_max_distance: "Radar max. Entfernung (Optional)",
-	grid_color: "Radar Gitterfarbe (Optional)",
-	font_color: "Schriftfarbe (Optional)",
-	strike_color: "Radar Blitzfarbe (Optional)",
-	show_history_chart: "Verlaufsdiagramm anzeigen",
-	history_chart_period: "Verlaufsdiagramm-Zeitraum",
-	show_map: "Karte anzeigen",
-	sections: {
-		core: "Hauptentitäten",
-		radar: "Radar-Einstellungen",
-		appearance: "Erscheinungsbild",
-		features: "Funktionen"
-	}
-};
-var de = {
-	card: card$3,
-	editor: editor$3
-};
+var card$3={distance:"Entfernung",direction:"Richtung",default_title:"⚡ Blitzortung",no_strikes_message:"Keine kürzlichen Blitzeinschläge erkannt.",last_strike_time:"Letzter Einschlag: {time}",directions:{N:"N",NNE:"NNO",NE:"NO",ENE:"ONO",E:"O",ESE:"OSO",SE:"SO",SSE:"SSO",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Richtung",distance:"Entfernung",time:"Zeit"}};var editor$3={title:"Titel (Optional)",distance_entity:"Entfernungs-Entität",counter_entity:"Blitzanzahl-Entität",azimuth_entity:"Azimut-Entität",radar_max_distance:"Radar max. Entfernung (Optional)",grid_color:"Radar Gitterfarbe (Optional)",font_color:"Schriftfarbe (Optional)",strike_color:"Radar Blitzfarbe (Optional)",show_history_chart:"Verlaufsdiagramm anzeigen",history_chart_period:"Verlaufsdiagramm-Zeitraum",show_map:"Karte anzeigen",sections:{core:"Hauptentitäten",radar:"Radar-Einstellungen",appearance:"Erscheinungsbild",features:"Funktionen"}};var de = {card:card$3,editor:editor$3};
 
-var card$2 = {
-	distance: "Distance",
-	direction: "Direction",
-	default_title: "⚡ Lightning localization",
-	no_strikes_message: "No recent lightning strikes detected.",
-	directions: {
-		N: "N",
-		NNE: "NNE",
-		NE: "NE",
-		ENE: "ENE",
-		E: "E",
-		ESE: "ESE",
-		SE: "SE",
-		SSE: "SSE",
-		S: "S",
-		SSW: "SSW",
-		SW: "SW",
-		WSW: "WSW",
-		W: "W",
-		WNW: "WNW",
-		NW: "NW",
-		NNW: "NNW"
-	},
-	tooltips: {
-		just_now: "Just now",
-		minutes_ago: "{minutes} min ago",
-		distance: "Distance",
-		direction: "Direction",
-		time: "Time"
-	}
-};
-var editor$2 = {
-	title: "Title (Optional)",
-	distance_entity: "Distance Entity",
-	counter_entity: "Lightning Counter Entity",
-	azimuth_entity: "Azimuth Entity",
-	radar_max_distance: "Radar Max Distance (Optional)",
-	grid_color: "Radar Grid Color (Optional)",
-	font_color: "Font Color (Optional)",
-	strike_color: "Radar Strike Color (Optional)",
-	show_history_chart: "Show History Chart",
-	history_chart_period: "History Chart Period",
-	show_map: "Show Map",
-	sections: {
-		core: "Core Entities",
-		radar: "Radar Settings",
-		appearance: "Appearance",
-		features: "Features"
-	}
-};
-var en = {
-	card: card$2,
-	editor: editor$2
-};
+var card$2={distance:"Distance",direction:"Direction",default_title:"⚡ Lightning localization",no_strikes_message:"No lightning strikes detected recently.",last_strike_time:"Last strike: {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Direction",distance:"Distance",time:"Time"}};var editor$2={title:"Title (Optional)",distance_entity:"Distance Entity",counter_entity:"Lightning Counter Entity",azimuth_entity:"Azimuth Entity",radar_max_distance:"Radar Max Distance (Optional)",grid_color:"Radar Grid Color (Optional)",font_color:"Font Color (Optional)",strike_color:"Radar Strike Color (Optional)",show_history_chart:"Show History Chart",history_chart_period:"History Chart Period",show_map:"Show Map",sections:{core:"Core Entities",radar:"Radar Settings",appearance:"Appearance",features:"Features"}};var en = {card:card$2,editor:editor$2};
 
-var card$1 = {
-	distance: "Distance",
-	direction: "Direction",
-	default_title: "⚡ Localisation des éclairs",
-	no_strikes_message: "Aucun impact de foudre récent détecté.",
-	directions: {
-		N: "N",
-		NNE: "NNE",
-		NE: "NE",
-		ENE: "ENE",
-		E: "E",
-		ESE: "ESE",
-		SE: "SE",
-		SSE: "SSE",
-		S: "S",
-		SSW: "SSO",
-		SW: "SO",
-		WSW: "OSO",
-		W: "O",
-		WNW: "ONO",
-		NW: "NO",
-		NNW: "NNO"
-	},
-	tooltips: {
-		just_now: "À l'instant",
-		minutes_ago: "Il y a {minutes} min",
-		distance: "Distance",
-		direction: "Direction",
-		time: "Heure"
-	}
-};
-var editor$1 = {
-	title: "Titre (Optionnel)",
-	distance_entity: "Entité de distance",
-	counter_entity: "Entité de comptage de la foudre",
-	azimuth_entity: "Entité d'azimut",
-	radar_max_distance: "Distance max. du radar (Optionnel)",
-	grid_color: "Couleur de la grille du radar (Optionnel)",
-	font_color: "Couleur de la police (Optionnel)",
-	strike_color: "Couleur des éclairs du radar (Optionnel)",
-	show_history_chart: "Afficher l'historique",
-	history_chart_period: "Période de l'historique",
-	show_map: "Afficher la carte",
-	sections: {
-		core: "Entités principales",
-		radar: "Paramètres du radar",
-		appearance: "Apparence",
-		features: "Fonctionnalités"
-	}
-};
-var fr = {
-	card: card$1,
-	editor: editor$1
-};
+var card$1={distance:"Distance",direction:"Direction",default_title:"⚡ Localisation des éclairs",no_strikes_message:"Aucun impact de foudre récent détecté.",last_strike_time:"Dernier impact : {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSO",SW:"SO",WSW:"OSO",W:"O",WNW:"ONO",NW:"NO",NNW:"NNO"},tooltips:{direction:"Direction",distance:"Distance",time:"Heure"}};var editor$1={title:"Titre (Optionnel)",distance_entity:"Entité de distance",counter_entity:"Entité de comptage de la foudre",azimuth_entity:"Entité d'azimut",radar_max_distance:"Distance max. du radar (Optionnel)",grid_color:"Couleur de la grille du radar (Optionnel)",font_color:"Couleur de la police (Optionnel)",strike_color:"Couleur des éclairs du radar (Optionnel)",show_history_chart:"Afficher l'historique",history_chart_period:"Période de l'historique",show_map:"Afficher la carte",sections:{core:"Entités principales",radar:"Paramètres du radar",appearance:"Apparence",features:"Fonctionnalités"}};var fr = {card:card$1,editor:editor$1};
 
-var card = {
-	distance: "Дистанция",
-	direction: "Направление",
-	default_title: "⚡ Локализация молний",
-	no_strikes_message: "Недавних ударов молнии не обнаружено.",
-	directions: {
-		N: "С",
-		NNE: "ССВ",
-		NE: "СВ",
-		ENE: "ВСВ",
-		E: "В",
-		ESE: "ВЮВ",
-		SE: "ЮВ",
-		SSE: "ЮЮВ",
-		S: "Ю",
-		SSW: "ЮЮЗ",
-		SW: "ЮЗ",
-		WSW: "ЗЮЗ",
-		W: "З",
-		WNW: "ЗСЗ",
-		NW: "СЗ",
-		NNW: "ССЗ"
-	},
-	tooltips: {
-		just_now: "Только что",
-		minutes_ago: "{minutes} мин. назад",
-		distance: "Расстояние",
-		direction: "Направление",
-		time: "Время"
-	}
-};
-var editor = {
-	title: "Название (Опционально)",
-	distance_entity: "Расстояние",
-	counter_entity: "Счетчик ударов молний",
-	azimuth_entity: "Направление",
-	radar_max_distance: "Максимальная дальность радара (Опционально)",
-	grid_color: "Цвет сетки радара (Опционально)",
-	font_color: "Цвет шрифта (Опционально)",
-	strike_color: "Цвет удара молний на радаре (Опционально)",
-	show_history_chart: "Показывать график истории",
-	history_chart_period: "Период графика истории",
-	show_map: "Показать карту",
-	sections: {
-		core: "Основные сущности",
-		radar: "Настройки радара",
-		appearance: "Внешний вид",
-		features: "Функции"
-	}
-};
-var ru = {
-	card: card,
-	editor: editor
-};
+var card={distance:"Дистанция",direction:"Направление",default_title:"⚡ Локализация молний",no_strikes_message:"Недавних ударов молнии не обнаружено.",last_strike_time:"Последний удар: {time}",directions:{N:"С",NNE:"ССВ",NE:"СВ",ENE:"ВСВ",E:"В",ESE:"ВЮВ",SE:"ЮВ",SSE:"ЮЮВ",S:"Ю",SSW:"ЮЮЗ",SW:"ЮЗ",WSW:"ЗЮЗ",W:"З",WNW:"ЗСЗ",NW:"СЗ",NNW:"ССЗ"},tooltips:{direction:"Направление",distance:"Расстояние",time:"Время"}};var editor={title:"Название (Опционально)",distance_entity:"Расстояние",counter_entity:"Счетчик ударов молний",azimuth_entity:"Направление",radar_max_distance:"Максимальная дальность радара (Опционально)",grid_color:"Цвет сетки радара (Опционально)",font_color:"Цвет шрифта (Опционально)",strike_color:"Цвет удара молний на радаре (Опционально)",show_history_chart:"Показывать график истории",history_chart_period:"Период графика истории",show_map:"Показать карту",sections:{core:"Основные сущности",radar:"Настройки радара",appearance:"Внешний вид",features:"Функции"}};var ru = {card:card,editor:editor};
 
 const translations = {
     de,
@@ -2977,7 +2752,7 @@ function localize(hass, key, placeholders = {}) {
     return key;
 }
 
-class BlitzortungLightningCardEditor extends i$1 {
+class BlitzortungLightningCardEditor extends i$2 {
     constructor() {
         super(...arguments);
         this._colorPickerOpenFor = null;
@@ -3252,7 +3027,7 @@ class BlitzortungLightningCardEditor extends i$1 {
 }
 BlitzortungLightningCardEditor.styles = styles$3;
 __decorate([
-    n({ attribute: false })
+    n$1({ attribute: false })
 ], BlitzortungLightningCardEditor.prototype, "hass", void 0);
 __decorate([
     r()
@@ -3262,6 +3037,43 @@ __decorate([
 ], BlitzortungLightningCardEditor.prototype, "_colorPickerOpenFor", void 0);
 customElements.define('blitzortung-lightning-card-editor', BlitzortungLightningCardEditor);
 
+/**
+ * Converts degrees to radians.
+ * @param degrees The angle in degrees.
+ * @returns The angle in radians.
+ */
+function toRad(degrees) {
+    return (degrees * Math.PI) / 180;
+}
+/**
+ * Converts radians to degrees.
+ * @param radians The angle in radians.
+ * @returns The angle in degrees.
+ */
+function toDeg(radians) {
+    return (radians * 180) / Math.PI;
+}
+/**
+ * Calculates the destination point given a starting point, distance, and bearing.
+ * @param lat1 Latitude of the starting point.
+ * @param lon1 Longitude of the starting point.
+ * @param distanceKm Distance to the destination in kilometers.
+ * @param bearingDeg Bearing in degrees from the north.
+ * @returns An object with latitude and longitude of the destination point.
+ */
+function destinationPoint(lat1, lon1, distanceKm, bearingDeg) {
+    const R = 6371; // Earth radius in km
+    const δ = distanceKm / R; // angular distance
+    const θ = toRad(bearingDeg);
+    const φ1 = toRad(lat1);
+    const λ1 = toRad(lon1);
+    const φ2 = Math.asin(Math.sin(φ1) * Math.cos(δ) + Math.cos(φ1) * Math.sin(δ) * Math.cos(θ));
+    const λ2 = λ1 + Math.atan2(Math.sin(θ) * Math.sin(δ) * Math.cos(φ1), Math.cos(δ) - Math.sin(φ1) * Math.sin(φ2));
+    return {
+        latitude: toDeg(φ2),
+        longitude: toDeg(λ2),
+    };
+}
 /**
  * Calculates the azimuth (bearing) from one geographic point to another.
  * @param lat1 Latitude of the starting point.
@@ -3276,9 +3088,9 @@ function calculateAzimuth(lat1, lon1, lat2, lon2) {
     const dLon = toRad(lon2 - lon1);
     const y = Math.sin(dLon) * Math.cos(toRad(lat2));
     const x = Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) - Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(dLon);
-    let brng = Math.atan2(y, x);
-    brng = toDeg(brng);
-    return (brng + 360) % 360;
+    let bearing = Math.atan2(y, x);
+    bearing = toDeg(bearing);
+    return (bearing + 360) % 360;
 }
 /**
  * Converts an angle in degrees to a compass direction string (e.g., 'NNE').
@@ -3316,11 +3128,11 @@ function getDirection(hass, angle) {
     return localize(hass, `component.blc.card.directions.${key}`);
 }
 
-const styles$2 = i$4`.content-container{align-items:center;display:flex;justify-content:space-around;padding-bottom:16px}.no-strikes-message{color:var(--secondary-text-color);padding:16px;text-align:center}.info p{margin:4px 0}.radar-chart{position:relative}.compass,.radar-chart{height:220px;width:220px}.compass-pointer{transform-origin:50% 50%;transition:transform .5s ease-in-out}.clickable-entity{cursor:pointer}.warning{color:var(--error-color)}.custom-tooltip{background-color:var(--ha-card-background,var(--card-background-color,#fff));border:1px solid var(--divider-color);border-radius:var(--ha-card-border-radius,4px);box-shadow:0 2px 5px rgba(0,0,0,.2);font-size:12px;left:0;line-height:1.4;padding:8px;pointer-events:none;position:absolute;top:0;white-space:nowrap;z-index:1000}.custom-tooltip strong{color:var(--primary-text-color)}`;
+const styles$2 = i$5`.content-container{align-items:center;display:flex;justify-content:space-around;padding-bottom:16px}.no-strikes-message{color:var(--secondary-text-color);padding:16px;text-align:center}.info p{margin:4px 0}.radar-chart{position:relative}.compass,.radar-chart{height:220px;width:220px}.compass-pointer{transform-origin:50% 50%;transition:transform .5s ease-in-out}.clickable-entity{cursor:pointer}.no-strikes-message p:last-child{margin-bottom:0}.no-strikes-message .clickable-entity{color:var(--primary-color);text-decoration:underline}.warning{color:var(--error-color)}.custom-tooltip{background-color:var(--ha-card-background,var(--card-background-color,#fff));border:1px solid var(--divider-color);border-radius:var(--ha-card-border-radius,4px);box-shadow:0 2px 5px rgba(0,0,0,.2);font-size:12px;left:0;line-height:1.4;padding:8px;pointer-events:none;position:absolute;top:0;white-space:nowrap;z-index:1000}.custom-tooltip strong{color:var(--primary-text-color)}`;
 
-const styles$1 = i$4`.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{left:0;position:absolute;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:transparent}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{height:1600px;-webkit-transform-origin:0 0;width:1600px}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-height:none!important;max-width:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-height:none!important;max-width:none!important;padding:0;width:auto}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{-moz-box-sizing:border-box;box-sizing:border-box;height:0;width:0;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{height:1px;width:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{pointer-events:visiblePainted;pointer-events:auto;position:relative;z-index:800}.leaflet-bottom,.leaflet-top{pointer-events:none;position:absolute;z-index:1000}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{clear:both;float:left}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{background:hsla(0,0%,100%,.5);border:2px dotted #38f}.leaflet-container{font-family:Helvetica Neue,Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{border-radius:4px;box-shadow:0 1px 5px rgba(0,0,0,.65)}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;color:#000;display:block;height:26px;line-height:26px;text-align:center;text-decoration:none;width:26px}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom:none;border-bottom-left-radius:4px;border-bottom-right-radius:4px}.leaflet-bar a.leaflet-disabled{background-color:#f4f4f4;color:#bbb;cursor:default}.leaflet-touch .leaflet-bar a{height:30px;line-height:30px;width:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:700 18px Lucida Console,Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{background:#fff;border-radius:5px;box-shadow:0 1px 5px rgba(0,0,0,.4)}.leaflet-control-layers-toggle{background-image:url(images/layers.png);height:36px;width:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(images/layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{height:44px;width:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{background:#fff;color:#333;padding:6px 10px 6px 6px}.leaflet-control-layers-scrollbar{overflow-x:hidden;overflow-y:scroll;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{border-top:1px solid #ddd;height:0;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(images/marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:hsla(0,0%,100%,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{color:#333;line-height:1.4;padding:0 5px}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;height:.6669em;vertical-align:baseline!important;width:1em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{background:hsla(0,0%,100%,.8);border:2px solid #777;border-top:none;-moz-box-sizing:border-box;box-sizing:border-box;line-height:1.1;padding:2px 5px 1px;text-shadow:1px 1px #fff;white-space:nowrap}.leaflet-control-scale-line:not(:first-child){border-bottom:none;border-top:2px solid #777;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{background-clip:padding-box;border:2px solid rgba(0,0,0,.2)}.leaflet-popup{margin-bottom:20px;position:absolute;text-align:center}.leaflet-popup-content-wrapper{border-radius:12px;padding:1px;text-align:left}.leaflet-popup-content{font-size:13px;font-size:1.08333em;line-height:1.3;margin:13px 24px 13px 20px;min-height:1px}.leaflet-popup-content p{margin:1.3em 0}.leaflet-popup-tip-container{height:20px;left:50%;margin-left:-20px;margin-top:-1px;overflow:hidden;pointer-events:none;position:absolute;width:40px}.leaflet-popup-tip{height:17px;margin:-10px auto 0;padding:1px;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);width:17px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;box-shadow:0 3px 14px rgba(0,0,0,.4);color:#333}.leaflet-container a.leaflet-popup-close-button{background:transparent;border:none;color:#757575;font:16px/24px Tahoma,Verdana,sans-serif;height:24px;position:absolute;right:0;text-align:center;text-decoration:none;top:0;width:24px}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{-ms-filter:"progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";filter:progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678,M12=0.70710678,M21=-0.70710678,M22=0.70710678);margin:0 auto;width:24px}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{background-color:#fff;border:1px solid #fff;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.4);color:#222;padding:6px;pointer-events:none;position:absolute;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;white-space:nowrap}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{background:transparent;border:6px solid transparent;content:"";pointer-events:none;position:absolute}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{border-top-color:#fff;bottom:0;margin-bottom:-12px}.leaflet-tooltip-bottom:before{border-bottom-color:#fff;margin-left:-6px;margin-top:-12px;top:0}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{margin-top:-6px;top:50%}.leaflet-tooltip-left:before{border-left-color:#fff;margin-right:-12px;right:0}.leaflet-tooltip-right:before{border-right-color:#fff;left:0;margin-left:-12px}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}`;
+const styles$1 = i$5`.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{left:0;position:absolute;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:transparent}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{height:1600px;-webkit-transform-origin:0 0;width:1600px}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-height:none!important;max-width:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-height:none!important;max-width:none!important;padding:0;width:auto}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{-moz-box-sizing:border-box;box-sizing:border-box;height:0;width:0;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{height:1px;width:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{pointer-events:visiblePainted;pointer-events:auto;position:relative;z-index:800}.leaflet-bottom,.leaflet-top{pointer-events:none;position:absolute;z-index:1000}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{clear:both;float:left}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{background:hsla(0,0%,100%,.5);border:2px dotted #38f}.leaflet-container{font-family:Helvetica Neue,Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{border-radius:4px;box-shadow:0 1px 5px rgba(0,0,0,.65)}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;color:#000;display:block;height:26px;line-height:26px;text-align:center;text-decoration:none;width:26px}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom:none;border-bottom-left-radius:4px;border-bottom-right-radius:4px}.leaflet-bar a.leaflet-disabled{background-color:#f4f4f4;color:#bbb;cursor:default}.leaflet-touch .leaflet-bar a{height:30px;line-height:30px;width:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:700 18px Lucida Console,Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{background:#fff;border-radius:5px;box-shadow:0 1px 5px rgba(0,0,0,.4)}.leaflet-control-layers-toggle{background-image:url(images/layers.png);height:36px;width:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(images/layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{height:44px;width:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{background:#fff;color:#333;padding:6px 10px 6px 6px}.leaflet-control-layers-scrollbar{overflow-x:hidden;overflow-y:scroll;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{border-top:1px solid #ddd;height:0;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(images/marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:hsla(0,0%,100%,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{color:#333;line-height:1.4;padding:0 5px}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;height:.6669em;vertical-align:baseline!important;width:1em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{background:hsla(0,0%,100%,.8);border:2px solid #777;border-top:none;-moz-box-sizing:border-box;box-sizing:border-box;line-height:1.1;padding:2px 5px 1px;text-shadow:1px 1px #fff;white-space:nowrap}.leaflet-control-scale-line:not(:first-child){border-bottom:none;border-top:2px solid #777;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{background-clip:padding-box;border:2px solid rgba(0,0,0,.2)}.leaflet-popup{margin-bottom:20px;position:absolute;text-align:center}.leaflet-popup-content-wrapper{border-radius:12px;padding:1px;text-align:left}.leaflet-popup-content{font-size:13px;font-size:1.08333em;line-height:1.3;margin:13px 24px 13px 20px;min-height:1px}.leaflet-popup-content p{margin:1.3em 0}.leaflet-popup-tip-container{height:20px;left:50%;margin-left:-20px;margin-top:-1px;overflow:hidden;pointer-events:none;position:absolute;width:40px}.leaflet-popup-tip{height:17px;margin:-10px auto 0;padding:1px;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);width:17px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;box-shadow:0 3px 14px rgba(0,0,0,.4);color:#333}.leaflet-container a.leaflet-popup-close-button{background:transparent;border:none;color:#757575;font:16px/24px Tahoma,Verdana,sans-serif;height:24px;position:absolute;right:0;text-align:center;text-decoration:none;top:0;width:24px}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{-ms-filter:"progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";filter:progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678,M12=0.70710678,M21=-0.70710678,M22=0.70710678);margin:0 auto;width:24px}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{background-color:#fff;border:1px solid #fff;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.4);color:#222;padding:6px;pointer-events:none;position:absolute;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;white-space:nowrap}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{background:transparent;border:6px solid transparent;content:"";pointer-events:none;position:absolute}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{border-top-color:#fff;bottom:0;margin-bottom:-12px}.leaflet-tooltip-bottom:before{border-bottom-color:#fff;margin-left:-6px;margin-top:-12px;top:0}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{margin-top:-6px;top:50%}.leaflet-tooltip-left:before{border-left-color:#fff;margin-right:-12px;right:0}.leaflet-tooltip-right:before{border-right-color:#fff;left:0;margin-left:-12px}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}`;
 
-const styles = i$4`.leaflet-map{border:1px solid var(--divider-color,#e0e0e0);border-radius:var(--ha-card-border-radius,4px);height:300px;overflow:hidden;z-index:0}.leaflet-home-marker,.leaflet-strike-marker{align-items:center;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.4);display:flex;height:24px;justify-content:center;width:24px}.leaflet-home-marker{background-color:var(--primary-color);color:#fff}.leaflet-strike-marker{background-color:var(--warning-color,#ffc107);color:var(--text-primary-color-dark,#000)}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.7);transform:scale(1)}70%{box-shadow:0 0 10px 20px rgba(255,193,7,0);transform:scale(1.5)}to{box-shadow:0 0 0 0 rgba(255,193,7,0);transform:scale(1)}}.leaflet-strike-marker.new-strike{animation:pulse 1.5s ease-out}`;
+const styles = i$5`.leaflet-map{border:1px solid var(--divider-color,#e0e0e0);border-radius:var(--ha-card-border-radius,4px);height:300px;overflow:hidden;z-index:0}.leaflet-home-marker,.leaflet-strike-marker{align-items:center;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.4);display:flex;height:24px;justify-content:center;width:24px}.leaflet-home-marker{background-color:var(--primary-color);color:#fff}.leaflet-strike-marker{background-color:var(--warning-color,#ffc107);color:var(--text-primary-color-dark,#000)}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.7);transform:scale(1)}70%{box-shadow:0 0 10px 20px rgba(255,193,7,0);transform:scale(1.5)}to{box-shadow:0 0 0 0 rgba(255,193,7,0);transform:scale(1)}}.leaflet-strike-marker.new-strike{animation:pulse 1.5s ease-out}`;
 
 const GEO_LOCATION_PREFIX = 'geo_location.lightning_strike_';
 const BLITZORTUNG_SOURCE = 'blitzortung';
@@ -3331,12 +3143,18 @@ const HISTORY_CHART_WIDTH = 280;
 const HISTORY_CHART_HEIGHT = 100;
 const HISTORY_CHART_MARGIN = { top: 15, right: 5, bottom: 20, left: 30 };
 const NEW_STRIKE_CLASS = 'new-strike';
-console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.1.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
-class BlitzortungLightningCard extends i$1 {
+console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.2.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+class BlitzortungLightningCard extends i$2 {
     constructor() {
         super(...arguments);
-        this._tooltip = { visible: false, content: '', x: 0, y: 0 };
+        this._tooltip = {
+            visible: false,
+            content: E,
+            x: 0,
+            y: 0,
+        };
         this._historyData = [];
+        this._lastStrikeFromHistory = null;
         this._map = undefined;
         this._markers = undefined;
         this._strikeMarkers = new Map();
@@ -3348,7 +3166,8 @@ class BlitzortungLightningCard extends i$1 {
                 // settle before we force a redraw. This prevents issues with animations
                 setTimeout(() => {
                     if (this.isConnected && this._config) {
-                        this._renderRadarChart(this._getRecentStrikes());
+                        const strikes = this._getStrikesToShow();
+                        this._renderRadarChart(strikes);
                         this._renderHistoryChart();
                         if (this._map) {
                             this._map.invalidateSize();
@@ -3358,15 +3177,12 @@ class BlitzortungLightningCard extends i$1 {
             }
         };
     }
-    set lovelace(lovelace) {
-        this._lovelace = lovelace;
-    }
     setConfig(config) {
         if (!config) {
             throw new Error('Invalid configuration');
         }
         if (!config.distance || !config.counter || !config.azimuth) {
-            throw new Error('Please define distance, count, and azimuth in your card configuration.');
+            throw new Error('Please define distance, counter, and azimuth in your card configuration.');
         }
         this._config = config;
     }
@@ -3417,26 +3233,29 @@ class BlitzortungLightningCard extends i$1 {
         this._sampleStrikes = sampleStrikes.map((strike, index) => ({
             distance: strike.distance,
             azimuth: strike.azimuth,
-            timestamp: now - (index + 1) * 300000,
-            latitude: this.hass.config.latitude + strike.latitude,
-            longitude: this.hass.config.longitude + strike.longitude,
+            timestamp: now - (index + 1) * 60000,
+            latitude: destinationPoint(this.hass.config.latitude, this.hass.config.longitude, strike.distance, strike.azimuth)
+                .latitude,
+            longitude: destinationPoint(this.hass.config.latitude, this.hass.config.longitude, strike.distance, strike.azimuth).longitude,
         }));
         return this._sampleStrikes;
     }
+    _getStrikesToShow() {
+        const recentStrikes = this._getRecentStrikes();
+        return recentStrikes.length === 0 && this._editMode ? this._getSampleStrikes() : recentStrikes;
+    }
     // New: Get recent strikes from geo_location entities
-    _getRecentStrikes(sample = false) {
+    _getRecentStrikes() {
         const now = Date.now();
         const maxAge = this._historyMaxAgeMs;
         const oldestTimestamp = now - maxAge;
-        if (sample) {
-            return this._getSampleStrikes();
-        }
         const homeCoords = this._getHomeCoordinates();
         if (!homeCoords)
             return [];
         const { lat: homeLat, lon: homeLon } = homeCoords; // Cannot calculate azimuth without a home location.
         return Object.values(this.hass.states)
-            .filter((entity) => entity.entity_id.startsWith(GEO_LOCATION_PREFIX) &&
+            .filter((entity) => entity &&
+            entity.entity_id.startsWith(GEO_LOCATION_PREFIX) &&
             entity.attributes.source === BLITZORTUNG_SOURCE &&
             entity.attributes.latitude != null &&
             entity.attributes.longitude != null)
@@ -3455,26 +3274,23 @@ class BlitzortungLightningCard extends i$1 {
             .filter((strike) => strike.timestamp > oldestTimestamp && !isNaN(strike.distance))
             .sort((a, b) => b.timestamp - a.timestamp);
     }
-    _formatTimeAgo(timestamp) {
-        const now = Date.now();
-        const seconds = Math.floor((now - timestamp) / 1000);
-        if (seconds < 60) {
-            return localize(this.hass, 'component.blc.card.tooltips.just_now');
-        }
-        const minutes = Math.floor(seconds / 60);
-        return localize(this.hass, 'component.blc.card.tooltips.minutes_ago', { minutes });
-    }
     _getStrikeTooltipContent(strike, distanceUnit) {
         // Always show a direction, fallback to 0 (North) if azimuth is undefined
         const direction = getDirection(this.hass, typeof strike.azimuth === 'number' && !isNaN(strike.azimuth) ? strike.azimuth : 0);
-        const timeAgo = this._formatTimeAgo(strike.timestamp);
+        const relativeTimeEl = x `<ha-relative-time
+      .hass=${this.hass}
+      .datetime=${new Date(strike.timestamp)}
+    ></ha-relative-time>`;
         const distanceLabel = localize(this.hass, 'component.blc.card.tooltips.distance');
         const directionLabel = localize(this.hass, 'component.blc.card.tooltips.direction');
         const timeLabel = localize(this.hass, 'component.blc.card.tooltips.time');
-        return `
-      <strong>${distanceLabel}:</strong> ${strike.distance.toFixed(1)} ${distanceUnit}<br>
-      <strong>${directionLabel}:</strong> ${typeof strike.azimuth === 'number' && !isNaN(strike.azimuth) ? strike.azimuth.toFixed(0) : 0}° ${direction}<br>
-      <strong>${timeLabel}:</strong> ${timeAgo}
+        return x `
+      <strong>${distanceLabel}:</strong> ${strike.distance.toFixed(1)} ${distanceUnit}<br />
+      <strong>${directionLabel}:</strong> ${typeof strike.azimuth === 'number' && !isNaN(strike.azimuth)
+            ? strike.azimuth.toFixed(0)
+            : 0}°
+      ${direction}<br />
+      <strong>${timeLabel}:</strong> ${relativeTimeEl}
     `;
     }
     _showTooltip(event, strike, distanceUnit) {
@@ -3491,12 +3307,15 @@ class BlitzortungLightningCard extends i$1 {
         // Position relative to the card's top-left corner
         const x = clientX - cardRect.left;
         const y = clientY - cardRect.top;
+        // Check if tooltip is near the right edge, if so, position it to the bottom left
+        const tooltipGoesLeft = x > cardRect.width - 100; // 100px is a rough estimate of tooltip width
+        const xOffset = tooltipGoesLeft ? -115 : 0;
         // Add a small offset to prevent the tooltip from flickering by being under the cursor
-        this._tooltip = { ...this._tooltip, x: x + 15, y: y + 15 };
+        this._tooltip = { ...this._tooltip, x: x + xOffset, y: y + 15 };
     }
     _hideTooltip() {
         if (this._tooltip.visible) {
-            this._tooltip = { ...this._tooltip, visible: false };
+            this._tooltip = { ...this._tooltip, visible: false, content: E };
         }
     }
     _renderCompass(azimuth, distance, distanceUnit, count) {
@@ -3969,6 +3788,61 @@ class BlitzortungLightningCard extends i$1 {
             .text((d) => (d > 0 ? d : '')) // Only show text if count is > 0
             .attr('y', (d) => yScale(d) - 4); // Position it 4px above the bar
     }
+    async _updateLastStrikeTime() {
+        const entityId = this._config.counter;
+        if (!entityId)
+            return;
+        const now = new Date();
+        // Look back 7 days, which should be sufficient and is a common retention period.
+        const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        // We make the API call as explicit as possible to avoid issues with default behaviors.
+        // - `end_time` is specified to ensure we get data up to now.
+        // - `significant_changes_only=0` is added to get all state changes, including
+        //   those that might be filtered out by default on long history queries.
+        // - `minimal_response` is removed as it might be causing issues with incomplete data returns.
+        const url = `history/period/${start.toISOString()}?end_time=${now.toISOString()}&filter_entity_id=${entityId}&no_attributes&significant_changes_only=0`;
+        try {
+            // The response contains the full entity object, but we only need last_changed and state.
+            const historyData = await this.hass.callApi('GET', url);
+            if (!historyData || !Array.isArray(historyData[0]) || historyData[0].length < 1) {
+                // If no history, fallback to the entity's last_changed
+                const counterEntity = this.hass.states[entityId];
+                this._lastStrikeFromHistory = counterEntity?.last_changed ? new Date(counterEntity.last_changed) : null;
+                return;
+            }
+            const sortedHistory = historyData[0]
+                .map((entry) => ({
+                timestamp: new Date(entry.last_changed).getTime(),
+                value: Number(entry.state),
+            }))
+                .filter((entry) => !isNaN(entry.value)) // Filter out 'unavailable' etc.
+                .sort((a, b) => a.timestamp - b.timestamp);
+            if (sortedHistory.length < 2) {
+                // Not enough data to find an increase, use the latest available point or fallback.
+                const counterEntity = this.hass.states[entityId];
+                const lastHistoryTimestamp = sortedHistory.length === 1 ? new Date(sortedHistory[0].timestamp) : null;
+                this._lastStrikeFromHistory =
+                    lastHistoryTimestamp ?? (counterEntity?.last_changed ? new Date(counterEntity.last_changed) : null);
+                return;
+            }
+            for (let i = sortedHistory.length - 1; i > 0; i--) {
+                if (sortedHistory[i].value > sortedHistory[i - 1].value) {
+                    this._lastStrikeFromHistory = new Date(sortedHistory[i].timestamp);
+                    return;
+                }
+            }
+            // If no increase was found in the history, it means the value has been constant or decreasing.
+            // We can fallback to the entity's last_changed as a last resort.
+            const counterEntity = this.hass.states[entityId];
+            this._lastStrikeFromHistory = counterEntity?.last_changed ? new Date(counterEntity.last_changed) : null;
+        }
+        catch (err) {
+            console.error('Error fetching history for last strike time:', err);
+            // Fallback in case of API error
+            const counterEntity = this.hass.states[entityId];
+            this._lastStrikeFromHistory = counterEntity?.last_changed ? new Date(counterEntity.last_changed) : null;
+        }
+    }
     _destroyMap() {
         if (this._map) {
             this._map.remove();
@@ -4009,9 +3883,7 @@ class BlitzortungLightningCard extends i$1 {
         // Invalidate size after the container is rendered and sized.
         // This is crucial for maps inside flex/grid containers.
         setTimeout(() => this._map?.invalidateSize(), 0);
-        const recentStrikes = this._getRecentStrikes();
-        const isInEditMode = this._editMode;
-        const strikesToShow = recentStrikes.length === 0 && isInEditMode ? this._getSampleStrikes() : recentStrikes;
+        const strikesToShow = this._getStrikesToShow();
         this._updateMapMarkers(strikesToShow); // Initial marker update
     }
     _renderMap() {
@@ -4061,9 +3933,16 @@ class BlitzortungLightningCard extends i$1 {
         }
         // If visuals need updating, calculate strikes once and pass them down.
         if (shouldUpdateVisuals) {
-            const recentStrikes = this._getRecentStrikes();
-            const isInEditMode = this._editMode;
-            const strikesToShow = recentStrikes.length === 0 && isInEditMode ? this._getSampleStrikes() : recentStrikes;
+            const strikesToShow = this._getStrikesToShow();
+            if (strikesToShow.length === 0 && !this._editMode) {
+                // No recent strikes, let's find the last one from history.
+                // We only need to do this if the counter entity has changed, or on first load.
+                const oldHass = changedProperties.get('hass');
+                const counterEntityChanged = !oldHass || oldHass.states[this._config.counter] !== this.hass.states[this._config.counter];
+                if (counterEntityChanged) {
+                    this._updateLastStrikeTime();
+                }
+            }
             if (this._config?.show_map && this._map) {
                 // Pass the potentially sampled strikes to the map
                 this._updateMapMarkers(strikesToShow);
@@ -4098,26 +3977,22 @@ class BlitzortungLightningCard extends i$1 {
         const count = this.hass.states[this._config.counter]?.state ?? 'N/A';
         const azimuth = this.hass.states[this._config.azimuth]?.state ?? 'N/A';
         const title = this._config.title ?? localize(this.hass, 'component.blc.card.default_title');
-        const recentStrikes = this._getRecentStrikes();
+        const strikesToShow = this._getStrikesToShow();
         const historyBuckets = this._config.show_history_chart ? this._processHistoryData() : [];
         const hasHistoryToShow = historyBuckets.some((c) => c > 0);
-        // If there are no real strikes and we are in edit mode, show sample strikes.
-        // Otherwise, use the actual strikes data.
         const isInEditMode = this._editMode;
-        // This variable is used to decide whether to render the map container at all.
-        // The actual marker rendering with sample data is handled in updated() and _initMap().
-        const strikesToShow = recentStrikes.length === 0 && isInEditMode ? this._getSampleStrikes() : recentStrikes;
         return x `
       <ha-card .header=${title}>
         <div class="card-content">
-          ${recentStrikes.length > 0 || isInEditMode
-            ? x ` <div class="content-container">
+          ${strikesToShow.length > 0
+            ? x `<div class="content-container">
                 ${this._renderCompass(azimuth, distance, distanceUnit, count)}
                 <div class="radar-chart"></div>
               </div>`
             : x `
-                <div class="no-strikes-message" style="color: ${this._config.font_color ?? this._config.grid_color}">
-                  ${localize(this.hass, 'component.blc.card.no_strikes_message')}
+                <div class="no-strikes-message">
+                  <p>${localize(this.hass, 'component.blc.card.no_strikes_message')}</p>
+                  ${this._lastStrikeFromHistory ? this._renderLastStrikeInfo() : ''}
                 </div>
               `}
           ${this._config.show_history_chart && (hasHistoryToShow || isInEditMode)
@@ -4127,11 +4002,34 @@ class BlitzortungLightningCard extends i$1 {
         </div>
         ${this._tooltip.visible
             ? x `<div class="custom-tooltip" style="transform: translate(${this._tooltip.x}px, ${this._tooltip.y}px);">
-              ${o(this._tooltip.content)}
+              ${this._tooltip.content}
             </div>`
             : ''}
       </ha-card>
     `;
+    }
+    _renderLastStrikeInfo() {
+        const counterEntity = this.hass.states[this._config.counter];
+        if (!counterEntity || !this._lastStrikeFromHistory) {
+            return undefined;
+        }
+        // The ha-relative-time element will produce the full "time ago" string.
+        const relativeTimeEl = x `
+      <ha-relative-time .hass=${this.hass} .datetime=${this._lastStrikeFromHistory}></ha-relative-time>
+    `;
+        const localizedTemplate = localize(this.hass, 'component.blc.card.last_strike_time', { time: '%%TIME%%' });
+        const [before, after] = localizedTemplate.split('%%TIME%%');
+        const linkStyles = {
+            color: this._config.font_color ?? 'var(--primary-color)',
+        };
+        const link = x `<a
+      class="clickable-entity"
+      style=${o(linkStyles)}
+      data-entity-id="${this._config.counter}"
+      @click=${this._handleEntityClick}
+      >${relativeTimeEl}</a
+    >`;
+        return x `<p>${before}${link}${after ?? ''}</p>`;
     }
     getCardSize() {
         // 1 unit = 50px.
@@ -4166,7 +4064,7 @@ class BlitzortungLightningCard extends i$1 {
 // Provides a default configuration for the card in the UI editor
 BlitzortungLightningCard.styles = [styles$1, styles$2, styles];
 __decorate([
-    n({ attribute: false })
+    n$1({ attribute: false })
 ], BlitzortungLightningCard.prototype, "hass", void 0);
 __decorate([
     r()
@@ -4177,6 +4075,9 @@ __decorate([
 __decorate([
     r()
 ], BlitzortungLightningCard.prototype, "_historyData", void 0);
+__decorate([
+    r()
+], BlitzortungLightningCard.prototype, "_lastStrikeFromHistory", void 0);
 customElements.define('blitzortung-lightning-card', BlitzortungLightningCard);
 // Define properties on the class constructor to avoid TypeScript conflicts with Function.name
 Object.defineProperties(BlitzortungLightningCard, {
