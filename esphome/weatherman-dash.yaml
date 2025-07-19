@@ -64,8 +64,8 @@ api:
   password: ""
 
 ota:
-  platform: esphome
-  password: ""
+  - platform: esphome  # Your existing OTA method
+  - platform: web_server  # Add this for web-based OTA uploads
   
 wifi:
   ssid: !secret wifi_ssid
