@@ -8,9 +8,10 @@
     "documentation": "https://github.com/vigonotion/hass-simpleicons",
     "domain": "simpleicons",
     "iot_class": "local_polling",
+    "issue_tracker": "https://github.com/vigonotion/hass-simpleicons/issues",
     "name": "Simple Icons",
     "requirements": [
-        "simplepycons==1!13.17.0"
+        "simplepycons==1!15.3.0"
     ],
-    "version": "v2.3.1"
+    "version": "v2.4.0"
 }
