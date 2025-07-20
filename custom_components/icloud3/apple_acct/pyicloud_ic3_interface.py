@@ -225,6 +225,7 @@ def log_into_apple_acct_restart_icloud3():
     for conf_apple_acct in Gb.conf_apple_accounts:
         username   = conf_apple_acct[CONF_USERNAME]
         password   = Gb.PyiCloud_password_by_username[username]
+        apple_server_location = conf_apple_acct[CONF_SERVER_LOCATION]
         locate_all_devices = conf_apple_acct[CONF_LOCATE_ALL]
 
         if is_empty(username) or is_empty(password):
@@ -236,8 +237,9 @@ def log_into_apple_acct_restart_icloud3():
         if valid_upw is False:
             valid_upw = Gb.ValidateAppleAcctUPW.validate_username_password(username, password)
 
+        # Fix to original v2.3.2
         if valid_upw:
-            log_into_apple_account(username, password, locate_all_devices)
+            log_into_apple_account(username, password, apple_server_location, locate_all_devices)
 
             results_msg += f"{CRLF_DOT}{username}, Login Successful)"
 
