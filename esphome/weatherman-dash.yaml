@@ -5,6 +5,7 @@ substitutions:
                     # none, error, warn, info, debug (default), verbose, very_verbose
 
   esphome_name: "weatherman-dash"
+  esp_name: "weatherman-dash"
   node_name: "weathermandash"
   esphome_friendly_name: Weatherman Dashboard
   esphome_board: esp32dev # ESP32-D0WDQ6(version 1)
@@ -182,7 +183,9 @@ switch:
 text_sensor:
   # Expose ESPHome version as sensor.
   - platform: version
-    name: Version
+    name: "${esp_name} ESPHome Version"
+    entity_category: diagnostic
+    hide_timestamp: true      
 
   # Expose WiFi information as sensor.
   - platform: wifi_info
@@ -192,6 +195,33 @@ text_sensor:
     ssid:
       id: network_ssid
       name: SSID
+
+  - platform: wifi_info
+    ip_address:
+      name: "${esp_name} IP Address"
+      id: ip_address
+      icon: "mdi:server-network"
+      entity_category: diagnostic
+    ssid:
+      name: "${esp_name} Connected SSID"
+      id: ssid
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    bssid:
+      name: "${esp_name} Connected BSSID"
+      id: bssid
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    mac_address:
+      name: "${esp_name} WiFi Mac Address"
+      id: macaddress
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    scan_results:
+      name: "${esp_name} Latest Scan Results"
+      id: wifiscanresults
+      icon: mdi:wifi
+      entity_category: diagnostic
 
   - platform: sun
     id: sunrise
