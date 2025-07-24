@@ -2325,7 +2325,7 @@ function select(selector) {
       : new Selection([[selector]], root);
 }
 
-var sampleStrikes = [{distance:45,azimuth:176},{distance:22,azimuth:60},{distance:19,azimuth:65},{distance:27,azimuth:58},{distance:15,azimuth:62},{distance:24,azimuth:63},{distance:38,azimuth:67},{distance:35,azimuth:59},{distance:12,azimuth:61},{distance:17,azimuth:64},{distance:48,azimuth:270}];
+var sampleStrikes = [{distance:45.156545465458,azimuth:176},{distance:22,azimuth:60},{distance:19,azimuth:65},{distance:27,azimuth:58},{distance:15,azimuth:62},{distance:24,azimuth:63},{distance:38,azimuth:67},{distance:35,azimuth:59},{distance:12,azimuth:61},{distance:17,azimuth:64},{distance:48,azimuth:270}];
 
 // Clamps a value between an upper and lower bound.
 // We use ternary operators because it makes the minified code
@@ -2712,19 +2712,22 @@ customElements.define('hex-color-picker', HexColorPicker);
 
 const styles$3 = i$5`.card-config{display:flex;flex-direction:column;gap:16px;padding:16px}ha-entity-picker:not(:defined),ha-select,ha-textfield{background-color:var(--mdc-text-field-fill-color,#f5f5f5);border-radius:4px;display:block;height:56px}ha-entity-picker,ha-formfield{display:block}ha-entity-picker:not(:last-child),ha-formfield:not(:last-child),ha-select:not(:last-child),ha-textfield:not(:last-child){margin-bottom:12px}.color-input-wrapper{position:relative}.color-picker-popup{background-color:var(--card-background-color,#fff);border:1px solid var(--divider-color);border-radius:8px;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);left:0;padding:8px;position:absolute;top:100%;z-index:10}.color-picker-popup hex-color-picker{height:200px;width:200px}.clear-button{color:var(--secondary-text-color)}.section{border:1px solid var(--divider-color);border-radius:4px;margin-bottom:16px;padding:12px}h3,h4{color:var(--primary-text-color);margin:0 0 8px;padding:0}h3{font-size:16px}h3,h4{font-weight:500}h4{color:var(--secondary-text-color);font-size:14px;margin-top:12px}`;
 
-var card$3={distance:"Entfernung",direction:"Richtung",default_title:"⚡ Blitzortung",no_strikes_message:"Keine kürzlichen Blitzeinschläge erkannt.",last_strike_time:"Letzter Einschlag: {time}",directions:{N:"N",NNE:"NNO",NE:"NO",ENE:"ONO",E:"O",ESE:"OSO",SE:"SO",SSE:"SSO",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Richtung",distance:"Entfernung",time:"Zeit"}};var editor$3={title:"Titel (Optional)",distance_entity:"Entfernungs-Entität",counter_entity:"Blitzanzahl-Entität",azimuth_entity:"Azimut-Entität",radar_max_distance:"Radar max. Entfernung (Optional)",grid_color:"Radar Gitterfarbe (Optional)",font_color:"Schriftfarbe (Optional)",strike_color:"Radar Blitzfarbe (Optional)",show_history_chart:"Verlaufsdiagramm anzeigen",history_chart_period:"Verlaufsdiagramm-Zeitraum",show_map:"Karte anzeigen",sections:{core:"Hauptentitäten",radar:"Radar-Einstellungen",appearance:"Erscheinungsbild",features:"Funktionen"}};var de = {card:card$3,editor:editor$3};
+var card$4={distance:"Entfernung",direction:"Richtung",default_title:"⚡ Blitzortung",no_strikes_message:"Keine kürzlichen Blitzeinschläge erkannt.",last_strike_time:"Letzter Einschlag: {time}",directions:{N:"N",NNE:"NNO",NE:"NO",ENE:"ONO",E:"O",ESE:"OSO",SE:"SO",SSE:"SSO",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Richtung",distance:"Entfernung",time:"Zeit"}};var editor$4={title:"Titel (Optional)",distance_entity:"Entfernungs-Entität",counter_entity:"Blitzanzahl-Entität",azimuth_entity:"Azimut-Entität",radar_max_distance:"Radar max. Entfernung (Optional)",grid_color:"Radar Gitterfarbe (Optional)",font_color:"Schriftfarbe (Optional)",strike_color:"Radar Blitzfarbe (Optional)",show_history_chart:"Verlaufsdiagramm anzeigen",history_chart_period:"Verlaufsdiagramm-Zeitraum",show_map:"Karte anzeigen",sections:{core:"Hauptentitäten",radar:"Radar-Einstellungen",appearance:"Erscheinungsbild",features:"Funktionen"}};var de = {card:card$4,editor:editor$4};
 
-var card$2={distance:"Distance",direction:"Direction",default_title:"⚡ Lightning localization",no_strikes_message:"No lightning strikes detected recently.",last_strike_time:"Last strike: {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Direction",distance:"Distance",time:"Time"}};var editor$2={title:"Title (Optional)",distance_entity:"Distance Entity",counter_entity:"Lightning Counter Entity",azimuth_entity:"Azimuth Entity",radar_max_distance:"Radar Max Distance (Optional)",grid_color:"Radar Grid Color (Optional)",font_color:"Font Color (Optional)",strike_color:"Radar Strike Color (Optional)",show_history_chart:"Show History Chart",history_chart_period:"History Chart Period",show_map:"Show Map",sections:{core:"Core Entities",radar:"Radar Settings",appearance:"Appearance",features:"Features"}};var en = {card:card$2,editor:editor$2};
+var card$3={distance:"Distance",direction:"Direction",default_title:"⚡ Lightning localization",no_strikes_message:"No lightning strikes detected recently.",last_strike_time:"Last strike: {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Direction",distance:"Distance",time:"Time"}};var editor$3={title:"Title (Optional)",distance_entity:"Distance Entity",counter_entity:"Lightning Counter Entity",azimuth_entity:"Azimuth Entity",radar_max_distance:"Radar Max Distance (Optional)",grid_color:"Radar Grid Color (Optional)",font_color:"Font Color (Optional)",strike_color:"Radar Strike Color (Optional)",show_history_chart:"Show History Chart",history_chart_period:"History Chart Period",show_map:"Show Map",sections:{core:"Core Entities",radar:"Radar Settings",appearance:"Appearance",features:"Features"}};var en = {card:card$3,editor:editor$3};
 
-var card$1={distance:"Distance",direction:"Direction",default_title:"⚡ Localisation des éclairs",no_strikes_message:"Aucun impact de foudre récent détecté.",last_strike_time:"Dernier impact : {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSO",SW:"SO",WSW:"OSO",W:"O",WNW:"ONO",NW:"NO",NNW:"NNO"},tooltips:{direction:"Direction",distance:"Distance",time:"Heure"}};var editor$1={title:"Titre (Optionnel)",distance_entity:"Entité de distance",counter_entity:"Entité de comptage de la foudre",azimuth_entity:"Entité d'azimut",radar_max_distance:"Distance max. du radar (Optionnel)",grid_color:"Couleur de la grille du radar (Optionnel)",font_color:"Couleur de la police (Optionnel)",strike_color:"Couleur des éclairs du radar (Optionnel)",show_history_chart:"Afficher l'historique",history_chart_period:"Période de l'historique",show_map:"Afficher la carte",sections:{core:"Entités principales",radar:"Paramètres du radar",appearance:"Apparence",features:"Fonctionnalités"}};var fr = {card:card$1,editor:editor$1};
+var card$2={distance:"Distance",direction:"Direction",default_title:"⚡ Localisation des éclairs",no_strikes_message:"Aucun impact de foudre récent détecté.",last_strike_time:"Dernier impact : {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSO",SW:"SO",WSW:"OSO",W:"O",WNW:"ONO",NW:"NO",NNW:"NNO"},tooltips:{direction:"Direction",distance:"Distance",time:"Heure"}};var editor$2={title:"Titre (Optionnel)",distance_entity:"Entité de distance",counter_entity:"Entité de comptage de la foudre",azimuth_entity:"Entité d'azimut",radar_max_distance:"Distance max. du radar (Optionnel)",grid_color:"Couleur de la grille du radar (Optionnel)",font_color:"Couleur de la police (Optionnel)",strike_color:"Couleur des éclairs du radar (Optionnel)",show_history_chart:"Afficher l'historique",history_chart_period:"Période de l'historique",show_map:"Afficher la carte",sections:{core:"Entités principales",radar:"Paramètres du radar",appearance:"Apparence",features:"Fonctionnalités"}};var fr = {card:card$2,editor:editor$2};
 
-var card={distance:"Дистанция",direction:"Направление",default_title:"⚡ Локализация молний",no_strikes_message:"Недавних ударов молнии не обнаружено.",last_strike_time:"Последний удар: {time}",directions:{N:"С",NNE:"ССВ",NE:"СВ",ENE:"ВСВ",E:"В",ESE:"ВЮВ",SE:"ЮВ",SSE:"ЮЮВ",S:"Ю",SSW:"ЮЮЗ",SW:"ЮЗ",WSW:"ЗЮЗ",W:"З",WNW:"ЗСЗ",NW:"СЗ",NNW:"ССЗ"},tooltips:{direction:"Направление",distance:"Расстояние",time:"Время"}};var editor={title:"Название (Опционально)",distance_entity:"Расстояние",counter_entity:"Счетчик ударов молний",azimuth_entity:"Направление",radar_max_distance:"Максимальная дальность радара (Опционально)",grid_color:"Цвет сетки радара (Опционально)",font_color:"Цвет шрифта (Опционально)",strike_color:"Цвет удара молний на радаре (Опционально)",show_history_chart:"Показывать график истории",history_chart_period:"Период графика истории",show_map:"Показать карту",sections:{core:"Основные сущности",radar:"Настройки радара",appearance:"Внешний вид",features:"Функции"}};var ru = {card:card,editor:editor};
+var card$1={distance:"Дистанция",direction:"Направление",default_title:"⚡ Локализация молний",no_strikes_message:"Недавних ударов молнии не обнаружено.",last_strike_time:"Последний удар: {time}",directions:{N:"С",NNE:"ССВ",NE:"СВ",ENE:"ВСВ",E:"В",ESE:"ВЮВ",SE:"ЮВ",SSE:"ЮЮВ",S:"Ю",SSW:"ЮЮЗ",SW:"ЮЗ",WSW:"ЗЮЗ",W:"З",WNW:"ЗСЗ",NW:"СЗ",NNW:"ССЗ"},tooltips:{direction:"Направление",distance:"Расстояние",time:"Время"}};var editor$1={title:"Название (Опционально)",distance_entity:"Расстояние",counter_entity:"Счетчик ударов молний",azimuth_entity:"Направление",radar_max_distance:"Максимальная дальность радара (Опционально)",grid_color:"Цвет сетки радара (Опционально)",font_color:"Цвет шрифта (Опционально)",strike_color:"Цвет удара молний на радаре (Опционально)",show_history_chart:"Показывать график истории",history_chart_period:"Период графика истории",show_map:"Показать карту",sections:{core:"Основные сущности",radar:"Настройки радара",appearance:"Внешний вид",features:"Функции"}};var ru = {card:card$1,editor:editor$1};
+
+var card={distance:"Razdalja",direction:"Smer",default_title:"⚡ Lokacije udarcev strel",no_strikes_message:"V zadnjem času ni zaznanih udarcev strel",last_strike_time:"Zadnji udarec strele: {time}",directions:{N:"S",NNE:"SSV",NE:"SV",ENE:"VSV",E:"V",ESE:"VJV",SE:"JV",SSE:"JJV",S:"J",SSW:"JJZ",SW:"JZ",WSW:"ZJZ",W:"Z",WNW:"ZSZ",NW:"SZ",NNW:"SSZ"},tooltips:{direction:"Smer",distance:"Razdalja",time:"Čas"}};var editor={title:"Naslov (opcijsko)",distance_entity:"Entiteta razdalje",counter_entity:"Entiteta števca",azimuth_entity:"Entiteta azimuta",radar_max_distance:"Maks. razdalja radarja (opcijsko)",grid_color:"Barva radarske mreže (opcijsko)",font_color:"Barva pisave (opcijsko)",strike_color:"Barva zadetka na radarju (opcijsko)",show_history_chart:"Pokaži graf zgodovine",history_chart_period:"Trajanje zgodovine",show_map:"Pokaži zemljevid",sections:{core:"Osnovne nastavitve",radar:"Nastavitve radarja",appearance:"Izgled",features:"Dodatne funkcije"}};var si = {card:card,editor:editor};
 
 const translations = {
     de,
     en,
     fr,
     ru,
+    si,
 };
 const typedTranslations = translations;
 function _getTranslation(language, keys) {
@@ -3132,7 +3135,7 @@ const styles$2 = i$5`.content-container{align-items:center;display:flex;justify-
 
 const styles$1 = i$5`.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{left:0;position:absolute;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:transparent}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{height:1600px;-webkit-transform-origin:0 0;width:1600px}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-height:none!important;max-width:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-height:none!important;max-width:none!important;padding:0;width:auto}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{-moz-box-sizing:border-box;box-sizing:border-box;height:0;width:0;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{height:1px;width:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{pointer-events:visiblePainted;pointer-events:auto;position:relative;z-index:800}.leaflet-bottom,.leaflet-top{pointer-events:none;position:absolute;z-index:1000}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{clear:both;float:left}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{background:hsla(0,0%,100%,.5);border:2px dotted #38f}.leaflet-container{font-family:Helvetica Neue,Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{border-radius:4px;box-shadow:0 1px 5px rgba(0,0,0,.65)}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;color:#000;display:block;height:26px;line-height:26px;text-align:center;text-decoration:none;width:26px}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom:none;border-bottom-left-radius:4px;border-bottom-right-radius:4px}.leaflet-bar a.leaflet-disabled{background-color:#f4f4f4;color:#bbb;cursor:default}.leaflet-touch .leaflet-bar a{height:30px;line-height:30px;width:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:700 18px Lucida Console,Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{background:#fff;border-radius:5px;box-shadow:0 1px 5px rgba(0,0,0,.4)}.leaflet-control-layers-toggle{background-image:url(images/layers.png);height:36px;width:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(images/layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{height:44px;width:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{background:#fff;color:#333;padding:6px 10px 6px 6px}.leaflet-control-layers-scrollbar{overflow-x:hidden;overflow-y:scroll;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{border-top:1px solid #ddd;height:0;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(images/marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:hsla(0,0%,100%,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{color:#333;line-height:1.4;padding:0 5px}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;height:.6669em;vertical-align:baseline!important;width:1em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{background:hsla(0,0%,100%,.8);border:2px solid #777;border-top:none;-moz-box-sizing:border-box;box-sizing:border-box;line-height:1.1;padding:2px 5px 1px;text-shadow:1px 1px #fff;white-space:nowrap}.leaflet-control-scale-line:not(:first-child){border-bottom:none;border-top:2px solid #777;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{background-clip:padding-box;border:2px solid rgba(0,0,0,.2)}.leaflet-popup{margin-bottom:20px;position:absolute;text-align:center}.leaflet-popup-content-wrapper{border-radius:12px;padding:1px;text-align:left}.leaflet-popup-content{font-size:13px;font-size:1.08333em;line-height:1.3;margin:13px 24px 13px 20px;min-height:1px}.leaflet-popup-content p{margin:1.3em 0}.leaflet-popup-tip-container{height:20px;left:50%;margin-left:-20px;margin-top:-1px;overflow:hidden;pointer-events:none;position:absolute;width:40px}.leaflet-popup-tip{height:17px;margin:-10px auto 0;padding:1px;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);width:17px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;box-shadow:0 3px 14px rgba(0,0,0,.4);color:#333}.leaflet-container a.leaflet-popup-close-button{background:transparent;border:none;color:#757575;font:16px/24px Tahoma,Verdana,sans-serif;height:24px;position:absolute;right:0;text-align:center;text-decoration:none;top:0;width:24px}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{-ms-filter:"progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";filter:progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678,M12=0.70710678,M21=-0.70710678,M22=0.70710678);margin:0 auto;width:24px}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{background-color:#fff;border:1px solid #fff;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.4);color:#222;padding:6px;pointer-events:none;position:absolute;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;white-space:nowrap}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{background:transparent;border:6px solid transparent;content:"";pointer-events:none;position:absolute}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{border-top-color:#fff;bottom:0;margin-bottom:-12px}.leaflet-tooltip-bottom:before{border-bottom-color:#fff;margin-left:-6px;margin-top:-12px;top:0}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{margin-top:-6px;top:50%}.leaflet-tooltip-left:before{border-left-color:#fff;margin-right:-12px;right:0}.leaflet-tooltip-right:before{border-right-color:#fff;left:0;margin-left:-12px}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}`;
 
-const styles = i$5`.leaflet-map{border:1px solid var(--divider-color,#e0e0e0);border-radius:var(--ha-card-border-radius,4px);height:300px;overflow:hidden;z-index:0}.leaflet-home-marker,.leaflet-strike-marker{align-items:center;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.4);display:flex;height:24px;justify-content:center;width:24px}.leaflet-home-marker{background-color:var(--primary-color);color:#fff}.leaflet-strike-marker{background-color:var(--warning-color,#ffc107);color:var(--text-primary-color-dark,#000)}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.7);transform:scale(1)}70%{box-shadow:0 0 10px 20px rgba(255,193,7,0);transform:scale(1.5)}to{box-shadow:0 0 0 0 rgba(255,193,7,0);transform:scale(1)}}.leaflet-strike-marker.new-strike{animation:pulse 1.5s ease-out}`;
+const styles = i$5`@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.7);transform:scale(1)}70%{box-shadow:0 0 10px 20px rgba(255,193,7,0);transform:scale(1.5)}to{box-shadow:0 0 0 0 rgba(255,193,7,0);transform:scale(1)}}.leaflet-map{border:1px solid var(--divider-color,#e0e0e0);border-radius:var(--ha-card-border-radius,4px);height:300px;overflow:hidden;z-index:0}.leaflet-map.interaction-disabled{cursor:default;pointer-events:none}.leaflet-home-marker,.leaflet-strike-marker{align-items:center;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.4);display:flex;height:24px;justify-content:center;width:24px}.leaflet-home-marker{background-color:var(--primary-color);color:#fff}.leaflet-strike-marker{background-color:var(--warning-color,#ffc107);color:var(--text-primary-color-dark,#000)}.leaflet-strike-marker-wrapper.new-strike .leaflet-strike-marker{animation:pulse 1.5s ease-out}.leaflet-control a.recenter-button.active{background-color:var(--primary-color);color:#fff}`;
 
 const GEO_LOCATION_PREFIX = 'geo_location.lightning_strike_';
 const BLITZORTUNG_SOURCE = 'blitzortung';
@@ -3143,7 +3146,7 @@ const HISTORY_CHART_WIDTH = 280;
 const HISTORY_CHART_HEIGHT = 100;
 const HISTORY_CHART_MARGIN = { top: 15, right: 5, bottom: 20, left: 30 };
 const NEW_STRIKE_CLASS = 'new-strike';
-console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.2.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.2.2 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 class BlitzortungLightningCard extends i$2 {
     constructor() {
         super(...arguments);
@@ -3155,17 +3158,23 @@ class BlitzortungLightningCard extends i$2 {
         };
         this._historyData = [];
         this._lastStrikeFromHistory = null;
+        this._displayedSampleStrikes = [];
         this._map = undefined;
         this._markers = undefined;
         this._strikeMarkers = new Map();
         this._newestStrikeTimestamp = null;
         this._editMode = false;
+        this._userInteractedWithMap = false;
+        this._programmaticMapChange = false;
         this._handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
                 // The tab has become visible. A small timeout allows the browser to
                 // settle before we force a redraw. This prevents issues with animations
                 setTimeout(() => {
                     if (this.isConnected && this._config) {
+                        if (this._editMode) {
+                            this._startSampleStrikeAnimation();
+                        }
                         const strikes = this._getStrikesToShow();
                         this._renderRadarChart(strikes);
                         this._renderHistoryChart();
@@ -3174,6 +3183,12 @@ class BlitzortungLightningCard extends i$2 {
                         }
                     }
                 }, 100); // 100ms delay is a safe value
+            }
+            else {
+                // Tab is not visible, stop animation to save resources
+                if (this._editMode) {
+                    this._stopSampleStrikeAnimation();
+                }
             }
         };
     }
@@ -3194,6 +3209,8 @@ class BlitzortungLightningCard extends i$2 {
     disconnectedCallback() {
         super.disconnectedCallback();
         document.removeEventListener('visibilitychange', this._handleVisibilityChange);
+        this._stopSampleStrikeAnimation();
+        this._destroyMap();
     }
     /**
      * Called when the card is in edit mode.
@@ -3201,7 +3218,39 @@ class BlitzortungLightningCard extends i$2 {
      */
     set editMode(editMode) {
         this._editMode = editMode;
-        this.requestUpdate();
+        if (editMode) {
+            this._userInteractedWithMap = false; // Reset to show auto-zoom animation
+            this._startSampleStrikeAnimation();
+        }
+        else {
+            this._stopSampleStrikeAnimation();
+            this._displayedSampleStrikes = [];
+        }
+        this.requestUpdate(); // Request an update to re-render with the new mode
+    }
+    _startSampleStrikeAnimation() {
+        this._stopSampleStrikeAnimation();
+        this._displayedSampleStrikes = [];
+        const allSampleStrikes = [...this._getSampleStrikes()].reverse(); // Oldest first
+        let index = 0;
+        const addStrike = () => {
+            if (!this._editMode || index >= allSampleStrikes.length) {
+                this._stopSampleStrikeAnimation();
+                return;
+            }
+            // Add one strike at a time, keeping the array sorted newest first
+            this._displayedSampleStrikes = [allSampleStrikes[index], ...this._displayedSampleStrikes];
+            index++;
+        };
+        // Add first strike immediately to start the animation
+        addStrike();
+        this._sampleStrikeTimer = window.setInterval(addStrike, 2000); // Add a new strike every 2 seconds
+    }
+    _stopSampleStrikeAnimation() {
+        if (this._sampleStrikeTimer) {
+            clearInterval(this._sampleStrikeTimer);
+            this._sampleStrikeTimer = undefined;
+        }
     }
     static getConfigElement() {
         // The editor element itself will handle waiting for any necessary components.
@@ -3242,7 +3291,10 @@ class BlitzortungLightningCard extends i$2 {
     }
     _getStrikesToShow() {
         const recentStrikes = this._getRecentStrikes();
-        return recentStrikes.length === 0 && this._editMode ? this._getSampleStrikes() : recentStrikes;
+        if (this._editMode && recentStrikes.length === 0) {
+            return this._displayedSampleStrikes;
+        }
+        return recentStrikes;
     }
     // New: Get recent strikes from geo_location entities
     _getRecentStrikes() {
@@ -3319,12 +3371,6 @@ class BlitzortungLightningCard extends i$2 {
         }
     }
     _renderCompass(azimuth, distance, distanceUnit, count) {
-        if (this._editMode && (isNaN(Number(count)) || Number(count) === 0)) {
-            const firstStrike = sampleStrikes[0];
-            distance = String(firstStrike.distance);
-            count = '11'; // Keep a sample count
-            azimuth = String(firstStrike.azimuth);
-        }
         const angle = Number.parseFloat(azimuth);
         if (isNaN(angle)) {
             return '';
@@ -3427,6 +3473,32 @@ class BlitzortungLightningCard extends i$2 {
       </div>
     `;
     }
+    _autoZoomMap(bounds, homeCoords) {
+        if (!this._map || this._userInteractedWithMap) {
+            return;
+        }
+        const L = this._leaflet;
+        let zoomFunc = null;
+        if (bounds.isValid()) {
+            zoomFunc = () => this._map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+        else if (this._map.getZoom() === 0 && homeCoords) {
+            const { lat: homeLat, lon: homeLon } = homeCoords;
+            zoomFunc = () => this._map.setView([homeLat, homeLon], 10);
+        }
+        if (zoomFunc) {
+            const mapContainer = this._map.getContainer();
+            this._programmaticMapChange = true;
+            L.DomUtil.addClass(mapContainer, 'interaction-disabled');
+            this._map.once('moveend', () => {
+                this._programmaticMapChange = false;
+                if (this._map) {
+                    L.DomUtil.removeClass(mapContainer, 'interaction-disabled');
+                }
+            });
+            zoomFunc();
+        }
+    }
     async _updateMapMarkers(strikes) {
         if (!this._map)
             return;
@@ -3437,12 +3509,9 @@ class BlitzortungLightningCard extends i$2 {
         const distanceUnit = this.hass.states[this._config.distance]?.attributes.unit_of_measurement ?? 'km';
         const bounds = L.latLngBounds([]);
         // Home marker
-        const homeZone = this.hass.states['zone.home'];
-        let homeLat = this.hass.config.latitude;
-        let homeLon = this.hass.config.longitude;
-        if (homeZone?.attributes.latitude && homeZone?.attributes.longitude) {
-            homeLat = homeZone.attributes.latitude;
-            homeLon = homeZone.attributes.longitude;
+        const homeCoords = this._getHomeCoordinates();
+        if (homeCoords) {
+            const { lat: homeLat, lon: homeLon } = homeCoords;
             if (!this._homeMarker) {
                 const homeIcon = L.divIcon({
                     html: `<div class="leaflet-home-marker"><ha-icon icon="mdi:home"></ha-icon></div>`,
@@ -3452,7 +3521,7 @@ class BlitzortungLightningCard extends i$2 {
                 });
                 this._homeMarker = L.marker([homeLat, homeLon], {
                     icon: homeIcon,
-                    title: homeZone?.attributes.friendly_name || 'Home',
+                    title: this.hass.states['zone.home']?.attributes.friendly_name || 'Home',
                     zIndexOffset: 0,
                 }).addTo(this._markers);
             }
@@ -3462,38 +3531,14 @@ class BlitzortungLightningCard extends i$2 {
             bounds.extend(this._homeMarker.getLatLng());
         }
         else if (this._homeMarker) {
-            this._markers.removeLayer(this._homeMarker);
+            this._markers?.removeLayer(this._homeMarker);
             this._homeMarker = undefined;
         }
         // Strikes (newest first, up to 100)
         const mapStrikes = strikes.slice(0, 100);
         const newStrikeTimestamps = new Set(mapStrikes.map((s) => s.timestamp));
         const currentNewestStrike = mapStrikes.length > 0 ? mapStrikes[0] : null;
-        // Remove old markers that are no longer in the list
-        this._strikeMarkers.forEach((marker, timestamp) => {
-            if (!newStrikeTimestamps.has(timestamp)) {
-                this._markers?.removeLayer(marker);
-                this._strikeMarkers.delete(timestamp);
-            }
-        });
-        // Update class on old "newest" strike if there's a new one
-        if (currentNewestStrike &&
-            currentNewestStrike.timestamp !== this._newestStrikeTimestamp &&
-            this._newestStrikeTimestamp) {
-            const oldNewestMarker = this._strikeMarkers.get(this._newestStrikeTimestamp);
-            if (oldNewestMarker) {
-                const oldIcon = oldNewestMarker.getIcon();
-                const oldHtml = oldIcon?.options.html;
-                // Check if the icon's HTML is a string and contains the 'new-strike' class before replacing
-                if (typeof oldHtml === 'string' && oldHtml.includes(` ${NEW_STRIKE_CLASS}`)) {
-                    const newIcon = L.divIcon({
-                        ...oldIcon.options,
-                        html: oldHtml.replace(` ${NEW_STRIKE_CLASS}`, ''),
-                    });
-                    oldNewestMarker.setIcon(newIcon);
-                }
-            }
-        }
+        const previousNewestTimestamp = this._newestStrikeTimestamp;
         // Add new markers and update existing ones
         mapStrikes.forEach((strike, index) => {
             const isNewest = index === 0;
@@ -3501,8 +3546,8 @@ class BlitzortungLightningCard extends i$2 {
             if (!this._strikeMarkers.has(strike.timestamp)) {
                 // This is a new strike to be added to the map
                 const strikeIcon = L.divIcon({
-                    html: `<div class="leaflet-strike-marker${isNewest ? ` ${NEW_STRIKE_CLASS}` : ''}"><ha-icon icon="mdi:flash"></ha-icon></div>`,
-                    className: '',
+                    html: `<div class="leaflet-strike-marker"><ha-icon icon="mdi:flash"></ha-icon></div>`,
+                    className: 'leaflet-strike-marker-wrapper', // A wrapper for positioning to avoid transform conflicts
                     iconSize: [24, 24],
                     iconAnchor: [12, 12],
                 });
@@ -3525,16 +3570,30 @@ class BlitzortungLightningCard extends i$2 {
             // Extend bounds for all strikes in the current view
             bounds.extend([strike.latitude, strike.longitude]);
         });
+        // Remove old markers that are no longer in the list
+        this._strikeMarkers.forEach((marker, timestamp) => {
+            if (!newStrikeTimestamps.has(timestamp)) {
+                this._markers?.removeLayer(marker);
+                this._strikeMarkers.delete(timestamp);
+            }
+        });
+        // Update the 'new-strike' class for the newest marker
+        if (currentNewestStrike?.timestamp !== previousNewestTimestamp) {
+            // Remove class from the previously newest marker
+            if (previousNewestTimestamp) {
+                this._strikeMarkers.get(previousNewestTimestamp)?.getElement()?.classList.remove(NEW_STRIKE_CLASS);
+            }
+            // Add class to the new newest marker
+            const newMarker = currentNewestStrike ? this._strikeMarkers.get(currentNewestStrike.timestamp) : undefined;
+            // We need to wait for the next frame to ensure the marker has been positioned by Leaflet
+            // before we add the animation class. This prevents the animation from starting at the top-left corner.
+            if (newMarker) {
+                requestAnimationFrame(() => newMarker.getElement()?.classList.add(NEW_STRIKE_CLASS));
+            }
+        }
         // Update the newest strike timestamp
         this._newestStrikeTimestamp = currentNewestStrike ? currentNewestStrike.timestamp : null;
-        const homeCoords = this._getHomeCoordinates();
-        if (bounds.isValid()) {
-            this._map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
-        }
-        else if (this._map.getZoom() === 0 && homeCoords) {
-            const { lat: homeLat, lon: homeLon } = homeCoords;
-            this._map.setView([homeLat, homeLon], 10);
-        }
+        this._autoZoomMap(bounds, homeCoords);
     }
     _renderRadarChart(strikes) {
         const radarContainer = this.shadowRoot?.querySelector('.radar-chart');
@@ -3851,6 +3910,8 @@ class BlitzortungLightningCard extends i$2 {
             this._strikeMarkers.clear();
             this._homeMarker = undefined;
             this._newestStrikeTimestamp = null;
+            this._recenterButton = undefined;
+            this._userInteractedWithMap = false;
         }
     }
     async _getLeaflet() {
@@ -3873,18 +3934,69 @@ class BlitzortungLightningCard extends i$2 {
             ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
         this._map = L.map(mapContainer, {
-            zoomControl: false, // ha-map doesn't show it by default
+            zoomControl: true,
         });
         L.tileLayer(tileUrl, {
             attribution: tileAttribution,
             maxZoom: 19,
         }).addTo(this._map);
         this._markers = L.layerGroup().addTo(this._map);
+        // Listen for user interaction to disable auto-zoom
+        this._map.on('zoomstart movestart dragstart', () => {
+            // If the flag is set, it's a programmatic change, so we don't mark it as user interaction.
+            // The flag will be reset on 'moveend' after the programmatic change is complete.
+            if (!this._programmaticMapChange) {
+                this._userInteractedWithMap = true;
+            }
+        });
+        // Add a recenter button
+        const recenterControl = L.Control.extend({
+            options: {
+                position: 'topleft',
+            },
+            onAdd: () => {
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                const link = L.DomUtil.create('a', 'recenter-button', container);
+                this._recenterButton = link;
+                link.innerHTML = `<ha-icon icon="mdi:crosshairs-gps"></ha-icon>`;
+                link.href = '#';
+                link.title = 'Recenter Map';
+                link.setAttribute('role', 'button');
+                link.setAttribute('aria-label', 'Recenter Map');
+                L.DomEvent.on(link, 'click', L.DomEvent.stop).on(link, 'click', () => {
+                    this._userInteractedWithMap = false;
+                    const strikesToShow = this._getStrikesToShow();
+                    this._updateMapMarkers(strikesToShow);
+                });
+                return container;
+            },
+        });
+        this._map.addControl(new recenterControl());
         // Invalidate size after the container is rendered and sized.
         // This is crucial for maps inside flex/grid containers.
-        setTimeout(() => this._map?.invalidateSize(), 0);
-        const strikesToShow = this._getStrikesToShow();
-        this._updateMapMarkers(strikesToShow); // Initial marker update
+        setTimeout(() => {
+            if (this._map) {
+                this._map.invalidateSize();
+                // Now that the map is sized, do the initial update.
+                const strikesToShow = this._getStrikesToShow();
+                this._updateMapMarkers(strikesToShow);
+                this._updateRecenterButtonState();
+            }
+        }, 0);
+    }
+    _updateRecenterButtonState() {
+        if (!this._recenterButton || !this._leaflet) {
+            return;
+        }
+        const L = this._leaflet;
+        if (this._userInteractedWithMap) {
+            L.DomUtil.removeClass(this._recenterButton, 'active');
+            this._recenterButton.title = 'Recenter map and enable auto-zoom';
+        }
+        else {
+            L.DomUtil.addClass(this._recenterButton, 'active');
+            this._recenterButton.title = 'Auto-zoom enabled';
+        }
     }
     _renderMap() {
         if (!this._config.show_map) {
@@ -3905,18 +4017,48 @@ class BlitzortungLightningCard extends i$2 {
             this.dispatchEvent(event);
         }
     }
+    _getCompassDisplayData() {
+        const strikesToShow = this._getStrikesToShow();
+        const distanceEntity = this.hass.states[this._config.distance];
+        const distanceUnit = distanceEntity?.attributes.unit_of_measurement ?? 'km';
+        // In edit mode with no real data, use the animated sample strikes to populate the compass.
+        const useSampleData = this._editMode && strikesToShow.length > 0 && this._getRecentStrikes().length === 0;
+        if (useSampleData) {
+            const newestSampleStrike = strikesToShow[0];
+            return {
+                distance: newestSampleStrike.distance.toFixed(1),
+                azimuth: String(Math.round(newestSampleStrike.azimuth)),
+                count: String(strikesToShow.length),
+                distanceUnit,
+            };
+        }
+        const distanceState = distanceEntity?.state;
+        const distanceValue = distanceState ? parseFloat(distanceState) : NaN;
+        return {
+            distance: !isNaN(distanceValue) ? distanceValue.toFixed(1) : (distanceState ?? 'N/A'),
+            count: this.hass.states[this._config.counter]?.state ?? 'N/A',
+            azimuth: this.hass.states[this._config.azimuth]?.state ?? 'N/A',
+            distanceUnit,
+        };
+    }
     updated(changedProperties) {
         super.updated(changedProperties);
         if (!this._config) {
             return;
         }
+        if (changedProperties.has('_userInteractedWithMap')) {
+            this._updateRecenterButtonState();
+        }
         const hassChanged = changedProperties.has('hass');
         const configChanged = changedProperties.has('_config');
-        const shouldUpdateVisuals = hassChanged || configChanged;
+        const sampleStrikesChanged = this._editMode && changedProperties.has('_displayedSampleStrikes');
+        const shouldUpdateVisuals = hassChanged || configChanged || sampleStrikesChanged;
+        let mapJustInitialized = false;
         // Handle map visibility and theme changes first
         if (this._config?.show_map) {
             if (!this._map) {
                 this._initMap();
+                mapJustInitialized = true;
             }
             else if (hassChanged) {
                 const oldHass = changedProperties.get('hass');
@@ -3932,7 +4074,7 @@ class BlitzortungLightningCard extends i$2 {
             this._destroyMap();
         }
         // If visuals need updating, calculate strikes once and pass them down.
-        if (shouldUpdateVisuals) {
+        if (shouldUpdateVisuals && !mapJustInitialized) {
             const strikesToShow = this._getStrikesToShow();
             if (strikesToShow.length === 0 && !this._editMode) {
                 // No recent strikes, let's find the last one from history.
@@ -3971,13 +4113,9 @@ class BlitzortungLightningCard extends i$2 {
         if (!this.hass || !this._config) {
             return x ``;
         }
-        const distanceEntity = this.hass.states[this._config.distance];
-        const distance = distanceEntity?.state ?? 'N/A';
-        const distanceUnit = distanceEntity?.attributes.unit_of_measurement ?? 'km';
-        const count = this.hass.states[this._config.counter]?.state ?? 'N/A';
-        const azimuth = this.hass.states[this._config.azimuth]?.state ?? 'N/A';
         const title = this._config.title ?? localize(this.hass, 'component.blc.card.default_title');
         const strikesToShow = this._getStrikesToShow();
+        const { azimuth, distance, distanceUnit, count } = this._getCompassDisplayData();
         const historyBuckets = this._config.show_history_chart ? this._processHistoryData() : [];
         const hasHistoryToShow = historyBuckets.some((c) => c > 0);
         const isInEditMode = this._editMode;
@@ -4078,6 +4216,12 @@ __decorate([
 __decorate([
     r()
 ], BlitzortungLightningCard.prototype, "_lastStrikeFromHistory", void 0);
+__decorate([
+    r()
+], BlitzortungLightningCard.prototype, "_displayedSampleStrikes", void 0);
+__decorate([
+    r()
+], BlitzortungLightningCard.prototype, "_userInteractedWithMap", void 0);
 customElements.define('blitzortung-lightning-card', BlitzortungLightningCard);
 // Define properties on the class constructor to avoid TypeScript conflicts with Function.name
 Object.defineProperties(BlitzortungLightningCard, {
