@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.12.2";
+var version = "0.12.3";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -684,6 +684,14 @@ var processBadgeTemplate = (hass, template) => {
     return false;
   }
 };
+var generateHash = (str) => {
+  let hash = 0;
+  for (let i5 = 0;i5 < str.length; i5++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i5);
+  }
+  return hash.toString();
+};
+var templateFunctionCache = new Map;
 var processTemplate = (hass, template) => {
   if (!template || !hass)
     return template;
@@ -694,7 +702,12 @@ var processTemplate = (hass, template) => {
   }
   try {
     const cleanTemplate = template.replace(/\[\[\[|\]\]\]/g, "");
-    const func = new Function("states", "user", "hass", cleanTemplate);
+    const hashedTemplate = generateHash(cleanTemplate);
+    let func = templateFunctionCache.get(hashedTemplate);
+    if (!func) {
+      func = new Function("states", "user", "hass", cleanTemplate);
+      templateFunctionCache.set(hashedTemplate, func);
+    }
     return func(hass.states, hass.user, hass);
   } catch (e5) {
     console.error(`NavbarCard: Error evaluating template: ${e5}`);
@@ -1116,6 +1129,7 @@ var complementaryRGBColor = (r7, g2, b3) => {
 };
 
 class Color {
+  static colorCache = new Map;
   r = 0;
   g = 0;
   b = 0;
@@ -1147,6 +1161,13 @@ class Color {
     } else {
       throw Error(`Format not supported for color: "${typeof data}"`);
     }
+  }
+  static from(color) {
+    const normalizedColor = color.toLowerCase().trim();
+    if (!this.colorCache.has(normalizedColor)) {
+      this.colorCache.set(normalizedColor, new Color(normalizedColor));
+    }
+    return this.colorCache.get(normalizedColor);
   }
   _readColorFromDOM(color) {
     const d3 = document.createElement("div");
@@ -1266,14 +1287,6 @@ window.customCards.push({
   preview: true,
   description: "Card with a full-width bottom nav on mobile and a flexible nav on desktop that can be placed on any side of the screen."
 });
-var PROPS_TO_FORCE_UPDATE = [
-  "_config",
-  "_isDesktop",
-  "_inEditDashboardMode",
-  "_inEditCardMode",
-  "_inPreviewMode",
-  "_popup"
-];
 var DEFAULT_DESKTOP_POSITION = "bottom" /* bottom */;
 var DOUBLE_TAP_DELAY = 250;
 var HOLD_ACTION_DELAY = 500;
@@ -1344,17 +1357,6 @@ class NavbarCard extends i4 {
     });
     this._config = config;
   }
-  shouldUpdate(changedProperties) {
-    for (const propName of changedProperties.keys()) {
-      if (PROPS_TO_FORCE_UPDATE.includes(propName)) {
-        return true;
-      }
-      if (propName === "hass") {
-        return true;
-      }
-    }
-    return false;
-  }
   static getStubConfig() {
     return {
       routes: [
@@ -1411,21 +1413,28 @@ class NavbarCard extends i4 {
           icon="${isActive && route.icon_selected ? route.icon_selected : route.icon}"></ha-icon>`;
   }
   _renderBadge(route, isRouteActive) {
-    let showBadge = false;
-    if (route.badge?.show) {
-      showBadge = processTemplate(this.hass, route.badge?.show);
-    } else if (route.badge?.template) {
-      showBadge = processBadgeTemplate(this.hass, route.badge?.template);
+    if (!route.badge) {
+      return x``;
     }
-    const count = processTemplate(this.hass, route.badge?.count) ?? null;
+    let showBadge = false;
+    if (route.badge.show !== undefined) {
+      showBadge = processTemplate(this.hass, route.badge.show);
+    } else if (route.badge.template) {
+      showBadge = processBadgeTemplate(this.hass, route.badge.template);
+    }
+    if (!showBadge) {
+      return x``;
+    }
+    const count = processTemplate(this.hass, route.badge.count) ?? null;
     const hasCount = count != null;
-    const backgroundColor = processTemplate(this.hass, route.badge?.color) ?? "red";
-    const contrastingColor = processTemplate(this.hass, route.badge?.textColor) ?? new Color(backgroundColor).contrastingColor().hex();
-    return showBadge ? x`<div
-          class="badge ${isRouteActive ? "active" : ""} ${hasCount ? "with-counter" : ""}"
-          style="background-color: ${backgroundColor}; color: ${contrastingColor}">
-          ${count}
-        </div>` : x``;
+    const backgroundColor = processTemplate(this.hass, route.badge.color) ?? "red";
+    const textColor = processTemplate(this.hass, route.badge.textColor);
+    const contrastingColor = textColor ?? Color.from(backgroundColor).contrastingColor().hex();
+    return x`<div
+      class="badge ${isRouteActive ? "active" : ""} ${hasCount ? "with-counter" : ""}"
+      style="background-color: ${backgroundColor}; color: ${contrastingColor}">
+      ${count}
+    </div>`;
   }
   _shouldTriggerHaptic(actionType, isNavigation = false) {
     const hapticConfig = this._config?.haptic;
@@ -1460,9 +1469,11 @@ class NavbarCard extends i4 {
   };
   _renderRoute = (route) => {
     const isActive = route.selected != null ? processTemplate(this.hass, route.selected) : window.location.pathname == route.url;
-    if (processTemplate(this.hass, route.hidden)) {
+    const isHidden = processTemplate(this.hass, route.hidden);
+    if (isHidden) {
       return null;
     }
+    const label = this._shouldShowLabels(false) ? processTemplate(this.hass, route.label) ?? " " : null;
     return x`
       <div
         class="route ${isActive ? "active" : ""}"
@@ -1478,9 +1489,7 @@ class NavbarCard extends i4 {
           <ha-ripple></ha-ripple>
         </div>
 
-        ${this._shouldShowLabels(false) ? x`<div class="label ${isActive ? "active" : ""}">
-              ${processTemplate(this.hass, route.label) ?? " "}
-            </div>` : x``}
+        ${label ? x`<div class="label ${isActive ? "active" : ""}">${label}</div>` : x``}
         ${this._renderBadge(route, isActive)}
       </div>
     `;
@@ -1561,8 +1570,7 @@ class NavbarCard extends i4 {
     const anchorRect = target.getBoundingClientRect();
     const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this._isDesktop ? "mobile" : this._config?.desktop?.position ?? DEFAULT_DESKTOP_POSITION);
     this._popup = x`
-      <div
-        class="navbar-popup-backdrop"</div>
+      <div class="navbar-popup-backdrop"></div>
       <div
         class="
           navbar-popup
@@ -1572,9 +1580,11 @@ class NavbarCard extends i4 {
         "
         style="${style}">
         ${popupItems.map((popupItem, index) => {
-      if (processTemplate(this.hass, popupItem.hidden)) {
+      const isHidden = processTemplate(this.hass, popupItem.hidden);
+      if (isHidden) {
         return null;
       }
+      const label = this._shouldShowLabels(true) ? processTemplate(this.hass, popupItem.label) ?? " " : null;
       return x`<div
               class="
               popup-item 
@@ -1587,9 +1597,7 @@ class NavbarCard extends i4 {
                 ${this._getRouteIcon(popupItem, false)}
                 <md-ripple></md-ripple>
               </div>
-              ${this._shouldShowLabels(true) ? x`<div class="label">
-                    ${processTemplate(this.hass, popupItem.label) ?? " "}
-                  </div>` : x``}
+              ${label ? x`<div class="label">${label}</div>` : x``}
               ${this._renderBadge(popupItem, false)}
             </div>`;
     }).filter((x2) => x2 != null)}
@@ -1761,7 +1769,9 @@ class NavbarCard extends i4 {
     const desktopPositionClassname = mapStringToEnum(DesktopPosition, desktopPosition) ?? DEFAULT_DESKTOP_POSITION;
     const deviceModeClassName = this._isDesktop ? "desktop" : "mobile";
     const editModeClassname = isEditMode ? "edit-mode" : "";
-    if (!isEditMode && (this._isDesktop && !!processTemplate(this.hass, desktopHidden) || !this._isDesktop && !!processTemplate(this.hass, mobileHidden))) {
+    const isDesktopHidden = processTemplate(this.hass, desktopHidden);
+    const isMobileHidden = processTemplate(this.hass, mobileHidden);
+    if (!isEditMode && (this._isDesktop && !!isDesktopHidden || !this._isDesktop && !!isMobileHidden)) {
       return x``;
     }
     return x`
