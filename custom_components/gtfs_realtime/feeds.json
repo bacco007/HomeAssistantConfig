@@ -1,4 +1,16 @@
 {
+  "adelaide_metro": {
+    "name": "Adelaide Metro \u2013 Department for Infrastructure and Transport, South Australia",
+    "disclaimer": "https://www.adelaidemetro.com.au/developer-info",
+    "realtime_feeds": {
+      "alerts": "https://gtfs.adelaidemetro.com.au/v1/realtime/service_alerts",
+      "trip_update": "https://gtfs.adelaidemetro.com.au/v1/realtime/trip_updates",
+      "vehicle_positions": "https://gtfs.adelaidemetro.com.au/v1/realtime/vehicle_positions"
+    },
+    "static_feeds": {
+      "latest": "https://gtfs.adelaidemetro.com.au/v1/static/latest/google_transit.zip"
+    }
+  },
   "boston_mbta": {
     "name": "Boston MBTA",
     "realtime_feeds": {
@@ -9,6 +21,66 @@
     "requires_auth_header": false,
     "static_feeds": {
       "regular": "https://cdn.mbta.com/MBTA_GTFS.zip"
+    }
+  },
+  "ct_transit": {
+    "name": "CT transit (Connecticut DOT)",
+    "description": "Shore Line East, Hartford Line, and Hartford-New Haven-Stamford-New Britain-Waterbury-Meriden",
+    "disclaimer": "View GTFS Data Terms of Use at https://www.cttransit.com/about/developers/terms-of-use IF YOU DO NOT AGREE TO THESE TERMS, DO NOT ACCESS OR DOWNLOAD THE DATA.",
+    "realtime_feeds": {
+      "alerts": "https://cttprdtmgtfs.ctttrpcloud.com/TMGTFSRealTimeWebService/Alert/Alerts.pb",
+      "trip_updates": "https://cttprdtmgtfs.ctttrpcloud.com/TMGTFSRealTimeWebService/TripUpdate/TripUpdates.pb",
+      "vehicle_positions": "https://cttprdtmgtfs.ctttrpcloud.com/TMGTFSRealTimeWebService/Vehicle/VehiclePositions.pb"
+    },
+    "requires_auth_header": false,
+    "static_feeds": {
+      "hartford_line": "https://ctrides.com/hlgtfs.zip",
+      "hartford_new_haven_stamford_new_britain_waterbury_meriden": "https://www.cttransit.com/sites/default/files/gtfs/googlect_transit.zip",
+      "shore_line_east": "https://content.amtrak.com/content/gtfs/GTFS.zip"
+    }
+  },
+  "denver_rtd": {
+    "name": "Denver RTD",
+    "disclaimer": "You must read and agree to the License Agreement (https://rtd-denver.com/open-records/open-spatial-information/gtfs-realtime-license-agreement) before you download the data.",
+    "realtime_feeds": {
+      "alerts": "https://www.rtd-denver.com/files/gtfs-rt/Alerts.pb",
+      "trip_update": "https://www.rtd-denver.com/files/gtfs-rt/TripUpdate.pb",
+      "vehicle_positions": "https://www.rtd-denver.com/files/gtfs-rt/VehiclePosition.pb"
+    },
+    "requires_auth_header": false,
+    "static_feeds": {
+      "bus": "https://www.rtd-denver.com/files/gtfs/RTD_Denver_Direct_Operated_Motorbus_GTFS.zip",
+      "commuter_rail": "https://www.rtd-denver.com/files/gtfs/RTD_Denver_Direct_Operated_Commuter_Rail_GTFS.zip",
+      "flex": "https://www.rtd-denver.com/files/gtfs/google_transit_flex.zip",
+      "light_rail": "https://www.rtd-denver.com/files/gtfs/RTD_Denver_Direct_Operated_Light_Rail_GTFS.zip",
+      "purchased_bus": "https://www.rtd-denver.com/files/gtfs/RTD_Denver_Direct_Purchased_Transportation_Motorbus_GTFS.zip",
+      "purchased_rail": "https://www.rtd-denver.com/files/gtfs/RTD_Denver_Purchased_Transportation_Commuter_Rail_GTFS.zip",
+      "regular": "https://www.rtd-denver.com/files/gtfs/google_transit.zip"
+    }
+  },
+  "houston_metro": {
+    "name": "Houston METRO",
+    "auth_hint": "Ocp-Apim-Subscription-Key: [Subscription Key]",
+    "realtime_feeds": {
+      "alerts": "https://api.ridemetro.org/v2alertspb/alerts.pb",
+      "trip_update": "https://api.ridemetro.org/GtfsRealtime/TripUpdates"
+    },
+    "requires_auth_header": true,
+    "static_feeds": {
+      "regular": "https://metro.resourcespace.com/pages/download.php?ref=4835&size=&ext=zip&k=&alternative=-1&iaccept=off&usage=-1&usagecomment=&email="
+    }
+  },
+  "la_metro": {
+    "name": "Los Angeles Metro",
+    "auth_hint": "Authorization: [Swiftly API Key]",
+    "realtime_feeds": {
+      "alerts": "https://api.goswift.ly/real-time/lametro/gtfs-rt-alerts/v2",
+      "trip_updates": "https://api.goswift.ly/real-time/lametro/gtfs-rt-trip-updates"
+    },
+    "requires_auth_header": true,
+    "static_feeds": {
+      "bus": "https://gitlab.com/LACMTA/gtfs_bus/raw/master/gtfs_bus.zip",
+      "rail": "https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip"
     }
   },
   "mta_marc_train": {
@@ -244,6 +316,7 @@
   "transport_victoria": {
     "name": "Transport Victoria",
     "auth_hint": "Ocp-Apim-Subscription-Key: [your key here]",
+    "disclaimer": "See terms of use at https://data-exchange.vicroads.vic.gov.au/terms_of_use",
     "realtime_feeds": {
       "alerts_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-servicealerts",
       "trip_update_metro_bus": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrobus-tripupdates",

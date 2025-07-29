@@ -46,11 +46,11 @@
         },
         "data_description": {
           "auth_header": "Must be in the form '[Authorization Type]: [authorization string]'. For example, this could be 'X-Api-Key: [the api key]' or 'Authorization: apikey [the api key]'. Not all auth types are supported.",
-          "gtfs_static_data": "GTFS static feed zip file. Can be local file or URL from your provider.",
+          "gtfs_static_data": "GTFS static feed zip file. Include the URL(s) for static schedule data. Note this is required to merge trip and stop info with realtime data.",
           "route_icons": "URL to a route-icons provider containing an svg image file for a given route.  The string can contain up to 3 str.format() compatible formatters for [route_id], [route_color], and [route_text_color] respectively. If your provider gives these colors as HTML hex, you may need to add an html-escaped '#' preceeding the input.",
           "url_endpoints": "Feed URLs for realtime GTFS Data"
         },
-        "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance.\n\n{disclaimer}"
+        "description": "This form will be pre-populated if you selected a provider in the previous step. Feeds you do not require can be removed to improve sensor update performance.\n\nNote that most datasets require at least one static data feed to provide schedule data.\n\n{disclaimer}"
       },
       "reconfigure": {
         "title": "Reconfigure GTFS parameters.",
