@@ -1405,6 +1405,49 @@ function linear() {
   return linearish(scale);
 }
 
+function transformPow(exponent) {
+  return function(x) {
+    return x < 0 ? -Math.pow(-x, exponent) : Math.pow(x, exponent);
+  };
+}
+
+function transformSqrt(x) {
+  return x < 0 ? -Math.sqrt(-x) : Math.sqrt(x);
+}
+
+function transformSquare(x) {
+  return x < 0 ? -x * x : x * x;
+}
+
+function powish(transform) {
+  var scale = transform(identity$1, identity$1),
+      exponent = 1;
+
+  function rescale() {
+    return exponent === 1 ? transform(identity$1, identity$1)
+        : exponent === 0.5 ? transform(transformSqrt, transformSquare)
+        : transform(transformPow(exponent), transformPow(1 / exponent));
+  }
+
+  scale.exponent = function(_) {
+    return arguments.length ? (exponent = +_, rescale()) : exponent;
+  };
+
+  return linearish(scale);
+}
+
+function pow() {
+  var scale = powish(transformer());
+
+  scale.copy = function() {
+    return copy(scale, pow()).exponent(scale.exponent());
+  };
+
+  initRange.apply(scale, arguments);
+
+  return scale;
+}
+
 var xhtml = "http://www.w3.org/1999/xhtml";
 
 var namespaces = {
@@ -2710,17 +2753,17 @@ class HexColorPicker extends HexBase {
 }
 customElements.define('hex-color-picker', HexColorPicker);
 
-const styles$3 = i$5`.card-config{display:flex;flex-direction:column;gap:16px;padding:16px}ha-entity-picker:not(:defined),ha-select,ha-textfield{background-color:var(--mdc-text-field-fill-color,#f5f5f5);border-radius:4px;display:block;height:56px}ha-entity-picker,ha-formfield{display:block}ha-entity-picker:not(:last-child),ha-formfield:not(:last-child),ha-select:not(:last-child),ha-textfield:not(:last-child){margin-bottom:12px}.color-input-wrapper{position:relative}.color-picker-popup{background-color:var(--card-background-color,#fff);border:1px solid var(--divider-color);border-radius:8px;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);left:0;padding:8px;position:absolute;top:100%;z-index:10}.color-picker-popup hex-color-picker{height:200px;width:200px}.clear-button{color:var(--secondary-text-color)}.section{border:1px solid var(--divider-color);border-radius:4px;margin-bottom:16px;padding:12px}h3,h4{color:var(--primary-text-color);margin:0 0 8px;padding:0}h3{font-size:16px}h3,h4{font-weight:500}h4{color:var(--secondary-text-color);font-size:14px;margin-top:12px}`;
+const styles$3 = i$5`.color-input-wrapper{position:relative}.color-picker-popup{background-color:var(--card-background-color,#fff);border:1px solid var(--divider-color);border-radius:8px;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);left:0;padding:8px;position:absolute;top:100%;z-index:10}.color-picker-popup hex-color-picker{height:200px;width:200px}.clear-button,.help-icon{color:var(--secondary-text-color)}.help-icon{cursor:pointer}.help-text{background-color:rgba(0,0,0,.05);border-radius:4px;color:var(--secondary-text-color);font-size:12px;line-height:1.4;margin-bottom:12px;margin-top:8px;padding:8px}.help-text a{color:var(--primary-color);text-decoration:none}.card-config{display:flex;flex-direction:column;gap:16px;padding:16px}ha-entity-picker:not(:defined),ha-select,ha-textfield{background-color:var(--mdc-text-field-fill-color,#f5f5f5);border-radius:4px;display:block;height:56px}ha-entity-picker,ha-formfield{display:block;margin-top:12px}ha-entity-picker:not(:last-child),ha-formfield:not(:last-child),ha-select:not(:last-child){margin-bottom:12px}.section{border:1px solid var(--divider-color);border-radius:4px;margin-bottom:16px;padding:12px}.section-header{align-items:center;display:flex;justify-content:space-between}.section-header h3{margin-bottom:0}h3,h4{color:var(--primary-text-color);margin:0 0 8px;padding:0}h3:not(:first-child),h4:not(:first-child){margin-top:12px}h3{font-size:16px}h3,h4{font-weight:500}h4{color:var(--secondary-text-color);font-size:14px;margin-top:12px}`;
 
-var card$4={distance:"Entfernung",direction:"Richtung",default_title:"⚡ Blitzortung",no_strikes_message:"Keine kürzlichen Blitzeinschläge erkannt.",last_strike_time:"Letzter Einschlag: {time}",directions:{N:"N",NNE:"NNO",NE:"NO",ENE:"ONO",E:"O",ESE:"OSO",SE:"SO",SSE:"SSO",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Richtung",distance:"Entfernung",time:"Zeit"}};var editor$4={title:"Titel (Optional)",distance_entity:"Entfernungs-Entität",counter_entity:"Blitzanzahl-Entität",azimuth_entity:"Azimut-Entität",radar_max_distance:"Radar max. Entfernung (Optional)",grid_color:"Radar Gitterfarbe (Optional)",font_color:"Schriftfarbe (Optional)",strike_color:"Radar Blitzfarbe (Optional)",show_history_chart:"Verlaufsdiagramm anzeigen",history_chart_bar_color:"Balkenfarbe des Verlaufsdiagramms",history_chart_period:"Zeitraum des Verlaufsdiagramms",history_chart_period_options:{"1h":"1 Stunde","15m":"15 Minuten"},show_map:"Karte anzeigen",sections:{core:"Hauptentitäten",radar:"Radar-Einstellungen",appearance:"Erscheinungsbild",features:"Funktionen"}};var de = {card:card$4,editor:editor$4};
+var card$4={distance:"Entfernung",direction:"Richtung",default_title:"⚡ Blitzortung",no_strikes_message:"Keine kürzlichen Blitzeinschläge erkannt.",last_strike_time:"Letzter Einschlag: {time}",directions:{N:"N",NNE:"NNO",NE:"NO",ENE:"ONO",E:"O",ESE:"OSO",SE:"SO",SSE:"SSO",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Richtung",distance:"Entfernung",time:"Zeit"}};var editor$4={title:"Titel (Optional)",distance_entity:"Entfernungs-Entität",counter_entity:"Blitzanzahl-Entität",azimuth_entity:"Azimut-Entität",radar_max_distance:"Radar max. Entfernung (Optional)",auto_radar_max_distance:"Automatische Radar-Entfernung",radar_period:"Radar-Zeitraum",radar_help_1:"Für die beste visuelle Darstellung, stellen Sie die 'Radar max. Entfernung' auf den gleichen Wert wie den 'Blitz-Erkennungsradius' aus Ihren ",radar_help_link:"Blitzortung-Integrationseinstellungen",radar_help_2:". Nach dem Öffnen der Einstellungen, klicken Sie auf das ⚙️-Symbol, um Ihre Konfiguration zu sehen.",toggle_help:"Hilfetext ein-/ausblenden",grid_color:"Radar Gitterfarbe (Optional)",font_color:"Schriftfarbe (Optional)",strike_color:"Radar Blitzfarbe (Optional)",show_history_chart:"Verlaufsdiagramm anzeigen",history_chart_bar_color:"Balkenfarbe des Verlaufsdiagramms",history_chart_period:"Zeitraum des Verlaufsdiagramms",period_options:{"1h":"1 Stunde","15m":"15 Minuten","30m":"30 Minuten"},show_map:"Karte anzeigen",map_theme_mode:"Karten-Theme",map_theme_mode_options:{auto:"Automatisch",light:"Hell",dark:"Dunkel"},sections:{core:"Hauptentitäten",radar:"Radar-Einstellungen",appearance:"Erscheinungsbild",features:"Funktionen"}};var de = {card:card$4,editor:editor$4};
 
-var card$3={distance:"Distance",direction:"Direction",default_title:"⚡ Lightning localization",no_strikes_message:"No lightning strikes detected recently.",last_strike_time:"Last strike: {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Direction",distance:"Distance",time:"Time"}};var editor$3={title:"Title (Optional)",distance_entity:"Distance Entity",counter_entity:"Lightning Counter Entity",azimuth_entity:"Azimuth Entity",radar_max_distance:"Radar Max Distance (Optional)",grid_color:"Radar Grid Color (Optional)",font_color:"Font Color (Optional)",strike_color:"Radar Strike Color (Optional)",show_history_chart:"Show History Chart",history_chart_bar_color:"History Chart Bar Color",history_chart_period:"History Chart Period",history_chart_period_options:{"1h":"1 Hour","15m":"15 Minutes"},show_map:"Show Map",sections:{core:"Core Entities",radar:"Radar Settings",appearance:"Appearance",features:"Features"}};var en = {card:card$3,editor:editor$3};
+var card$3={distance:"Distance",direction:"Direction",default_title:"⚡ Lightning localization",no_strikes_message:"No lightning strikes detected recently.",last_strike_time:"Last strike: {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSW",SW:"SW",WSW:"WSW",W:"W",WNW:"WNW",NW:"NW",NNW:"NNW"},tooltips:{direction:"Direction",distance:"Distance",time:"Time"}};var editor$3={title:"Title (Optional)",distance_entity:"Distance Entity",counter_entity:"Lightning Counter Entity",azimuth_entity:"Azimuth Entity",radar_max_distance:"Radar Max Distance (Optional)",auto_radar_max_distance:"Automatic Radar Distance",radar_period:"Radar Period",radar_help_1:"For the best visual experience, set the 'Radar Max Distance' to the same value as the 'Lightning detection radius' from your ",radar_help_link:"Blitzortung integration settings",radar_help_2:". After opening the settings, click the ⚙️ icon to see your configuration.",toggle_help:"Toggle help text",grid_color:"Radar Grid Color (Optional)",font_color:"Font Color (Optional)",strike_color:"Radar Strike Color (Optional)",show_history_chart:"Show History Chart",history_chart_bar_color:"History Chart Bar Color",history_chart_period:"History Chart Period",period_options:{"15m":"15 Minutes","30m":"30 Minutes","1h":"1 Hour"},map_theme_mode:"Map Theme",map_theme_mode_options:{auto:"Auto",light:"Light",dark:"Dark"},show_map:"Show Map",sections:{core:"Core Entities",radar:"Radar Settings",appearance:"Appearance",features:"Features"}};var en = {card:card$3,editor:editor$3};
 
-var card$2={distance:"Distance",direction:"Direction",default_title:"⚡ Localisation des éclairs",no_strikes_message:"Aucun impact de foudre récent détecté.",last_strike_time:"Dernier impact : {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSO",SW:"SO",WSW:"OSO",W:"O",WNW:"ONO",NW:"NO",NNW:"NNO"},tooltips:{direction:"Direction",distance:"Distance",time:"Heure"}};var editor$2={title:"Titre (Optionnel)",distance_entity:"Entité de distance",counter_entity:"Entité de comptage de la foudre",azimuth_entity:"Entité d'azimut",radar_max_distance:"Distance max. du radar (Optionnel)",grid_color:"Couleur de la grille du radar (Optionnel)",font_color:"Couleur de la police (Optionnel)",strike_color:"Couleur des éclairs du radar (Optionnel)",show_history_chart:"Afficher l'historique",history_chart_bar_color:"Couleur des barres du graphique d'historique",history_chart_period:"Période du graphique d'historique",history_chart_period_options:{"1h":"1 heure","15m":"15 minutes"},show_map:"Afficher la carte",sections:{core:"Entités principales",radar:"Paramètres du radar",appearance:"Apparence",features:"Fonctionnalités"}};var fr = {card:card$2,editor:editor$2};
+var card$2={distance:"Distance",direction:"Direction",default_title:"⚡ Localisation des éclairs",no_strikes_message:"Aucun impact de foudre récent détecté.",last_strike_time:"Dernier impact : {time}",directions:{N:"N",NNE:"NNE",NE:"NE",ENE:"ENE",E:"E",ESE:"ESE",SE:"SE",SSE:"SSE",S:"S",SSW:"SSO",SW:"SO",WSW:"OSO",W:"O",WNW:"ONO",NW:"NO",NNW:"NNO"},tooltips:{direction:"Direction",distance:"Distance",time:"Heure"}};var editor$2={title:"Titre (Optionnel)",distance_entity:"Entité de distance",counter_entity:"Entité de comptage de la foudre",azimuth_entity:"Entité d'azimut",radar_max_distance:"Distance max. du radar (Optionnel)",auto_radar_max_distance:"Distance radar automatique",radar_period:"Période du radar",radar_help_1:"Pour une expérience visuelle optimale, il est recommandé de définir la 'Distance max. du radar' sur la même valeur que le 'Rayon de détection de la foudre' dans vos ",radar_help_link:"paramètres d'intégration Blitzortung",radar_help_2:". Après avoir ouvert les paramètres, cliquez sur l'icône ⚙️ pour voir votre configuration.",toggle_help:"Afficher/masquer le texte d'aide",grid_color:"Couleur de la grille du radar (Optionnel)",font_color:"Couleur de la police (Optionnel)",strike_color:"Couleur des éclairs du radar (Optionnel)",show_history_chart:"Afficher l'historique",history_chart_bar_color:"Couleur des barres du graphique d'historique",history_chart_period:"Période du graphique d'historique",period_options:{"15m":"15 minutes","30m":"30 minutes","1h":"1 heure"},show_map:"Afficher la carte",map_theme_mode:"Thème de la carte",map_theme_mode_options:{auto:"Automatique",light:"Clair",dark:"Sombre"},sections:{core:"Entités principales",radar:"Paramètres du radar",appearance:"Apparence",features:"Fonctionnalités"}};var fr = {card:card$2,editor:editor$2};
 
-var card$1={distance:"Дистанция",direction:"Направление",default_title:"⚡ Локализация молний",no_strikes_message:"Недавних ударов молнии не обнаружено.",last_strike_time:"Последний удар: {time}",directions:{N:"С",NNE:"ССВ",NE:"СВ",ENE:"ВСВ",E:"В",ESE:"ВЮВ",SE:"ЮВ",SSE:"ЮЮВ",S:"Ю",SSW:"ЮЮЗ",SW:"ЮЗ",WSW:"ЗЮЗ",W:"З",WNW:"ЗСЗ",NW:"СЗ",NNW:"ССЗ"},tooltips:{direction:"Направление",distance:"Расстояние",time:"Время"}};var editor$1={title:"Название (Опционально)",distance_entity:"Расстояние",counter_entity:"Счетчик ударов молний",azimuth_entity:"Направление",radar_max_distance:"Максимальная дальность радара (Опционально)",grid_color:"Цвет сетки радара (Опционально)",font_color:"Цвет шрифта (Опционально)",strike_color:"Цвет удара молний на радаре (Опционально)",show_history_chart:"Показывать график истории",history_chart_bar_color:"Цвет столбцов графика истории",history_chart_period:"Период графика истории",history_chart_period_options:{"1h":"1 час","15m":"15 минут"},show_map:"Показать карту",sections:{core:"Основные сущности",radar:"Настройки радара",appearance:"Внешний вид",features:"Функции"}};var ru = {card:card$1,editor:editor$1};
+var card$1={distance:"Дистанция",direction:"Направление",default_title:"⚡ Локализация молний",no_strikes_message:"Недавних ударов молнии не обнаружено.",last_strike_time:"Последний удар: {time}",directions:{N:"С",NNE:"ССВ",NE:"СВ",ENE:"ВСВ",E:"В",ESE:"ВЮВ",SE:"ЮВ",SSE:"ЮЮВ",S:"Ю",SSW:"ЮЮЗ",SW:"ЮЗ",WSW:"ЗЮЗ",W:"З",WNW:"ЗСЗ",NW:"СЗ",NNW:"ССЗ"},tooltips:{direction:"Направление",distance:"Расстояние",time:"Время"}};var editor$1={title:"Название (Опционально)",distance_entity:"Расстояние",counter_entity:"Счетчик ударов молний",azimuth_entity:"Направление",radar_max_distance:"Максимальная дальность радара (Опционально)",auto_radar_max_distance:"Автоматическое расстояние радара",radar_period:"Период радара",radar_help_1:"Для наилучшего визуального отображения рекомендуется установить 'Максимальную дальность радара' на то же значение, что и 'Радиус обнаружения молний' в ваших ",radar_help_link:"настройках интеграции Blitzortung",radar_help_2:". После открытия настроек, нажмите на значок ⚙️, чтобы увидеть вашу конфигурацию.",toggle_help:"Показать/скрыть текст справки",grid_color:"Цвет сетки радара (Опционально)",font_color:"Цвет шрифта (Опционально)",strike_color:"Цвет удара молний на радаре (Опционально)",show_history_chart:"Показывать график истории",history_chart_bar_color:"Цвет столбцов графика истории",history_chart_period:"Период графика истории",period_options:{"15m":"15 минут","30m":"30 минут","1h":"1 час"},show_map:"Показать карту",map_theme_mode:"Тема карты",map_theme_mode_options:{auto:"Авто",light:"Светлая",dark:"Темная"},sections:{core:"Основные сущности",radar:"Настройки радара",appearance:"Внешний вид",features:"Функции"}};var ru = {card:card$1,editor:editor$1};
 
-var card={distance:"Razdalja",direction:"Smer",default_title:"⚡ Lokacije udarcev strel",no_strikes_message:"V zadnjem času ni zaznanih udarcev strel",last_strike_time:"Zadnji udarec strele: {time}",directions:{N:"S",NNE:"SSV",NE:"SV",ENE:"VSV",E:"V",ESE:"VJV",SE:"JV",SSE:"JJV",S:"J",SSW:"JJZ",SW:"JZ",WSW:"ZJZ",W:"Z",WNW:"ZSZ",NW:"SZ",NNW:"SSZ"},tooltips:{direction:"Smer",distance:"Razdalja",time:"Čas"}};var editor={title:"Naslov (opcijsko)",distance_entity:"Entiteta razdalje",counter_entity:"Entiteta števca",azimuth_entity:"Entiteta azimuta",radar_max_distance:"Maks. razdalja radarja (opcijsko)",grid_color:"Barva radarske mreže (opcijsko)",font_color:"Barva pisave (opcijsko)",strike_color:"Barva zadetka na radarju (opcijsko)",show_history_chart:"Pokaži graf zgodovine",history_chart_bar_color:"Barva stolpcev grafa zgodovine",history_chart_period:"Trajanje zgodovine",history_chart_period_options:{"1h":"1 ura","15m":"15 minut"},show_map:"Pokaži zemljevid",sections:{core:"Osnovne nastavitve",radar:"Nastavitve radarja",appearance:"Izgled",features:"Dodatne funkcije"}};var si = {card:card,editor:editor};
+var card={distance:"Razdalja",direction:"Smer",default_title:"⚡ Lokacije udarcev strel",no_strikes_message:"V zadnjem času ni zaznanih udarcev strel",last_strike_time:"Zadnji udarec strele: {time}",directions:{N:"S",NNE:"SSV",NE:"SV",ENE:"VSV",E:"V",ESE:"VJV",SE:"JV",SSE:"JJV",S:"J",SSW:"JJZ",SW:"JZ",WSW:"ZJZ",W:"Z",WNW:"ZSZ",NW:"SZ",NNW:"SSZ"},tooltips:{direction:"Smer",distance:"Razdalja",time:"Čas"}};var editor={title:"Naslov (opcijsko)",distance_entity:"Entiteta razdalje",counter_entity:"Entiteta števca",azimuth_entity:"Entiteta azimuta",radar_max_distance:"Maks. razdalja radarja (opcijsko)",auto_radar_max_distance:"Samodejna razdalja radarja",radar_period:"Obdobje radarja",radar_help_1:"Za najboljšo vizualno izkušnjo je priporočljivo, da 'Maks. razdaljo radarja' nastavite na enako vrednost kot 'Radij zaznavanja strel' v vaših ",radar_help_link:"nastavitvah integracije Blitzortung",radar_help_2:". Po odprtju nastavitev, kliknite ikono ⚙️, da si ogledate svojo konfiguracijo.",toggle_help:"Prikaži/skrij besedilo pomoči",grid_color:"Barva radarske mreže (opcijsko)",font_color:"Barva pisave (opcijsko)",strike_color:"Barva zadetka na radarju (opcijsko)",show_history_chart:"Pokaži graf zgodovine",history_chart_bar_color:"Barva stolpcev grafa zgodovine",history_chart_period:"Trajanje zgodovine",period_options:{"15m":"15 minut","30m":"30 minut","1h":"1 ura"},show_map:"Pokaži zemljevid",map_theme_mode:"Tema zemljevida",map_theme_mode_options:{auto:"Samodejno",light:"Svetla",dark:"Temna"},sections:{core:"Osnovne nastavitve",radar:"Nastavitve radarja",appearance:"Izgled",features:"Dodatne funkcije"}};var si = {card:card,editor:editor};
 
 const translations = {
     de,
@@ -2759,6 +2802,7 @@ class BlitzortungLightningCardEditor extends i$2 {
     constructor() {
         super(...arguments);
         this._colorPickerOpenFor = null;
+        this._radarHelpVisible = false;
         this._handleOutsideClick = (e) => {
             if (!this._colorPickerOpenFor)
                 return;
@@ -2809,6 +2853,9 @@ class BlitzortungLightningCardEditor extends i$2 {
             this._colorPickerOpenFor = null;
         }
     }
+    _toggleRadarHelp() {
+        this._radarHelpVisible = !this._radarHelpVisible;
+    }
     _valueChanged(ev) {
         // Stop the event from bubbling up to Lovelace, which can cause race conditions.
         ev.stopPropagation();
@@ -2828,8 +2875,22 @@ class BlitzortungLightningCardEditor extends i$2 {
             value = target.value;
         }
         const configKey = target.configValue;
+        if (configKey === 'auto_radar_max_distance') {
+            const newConfig = { ...this._config };
+            if (value) {
+                // When auto is on, set it to true and remove manual distance
+                newConfig.auto_radar_max_distance = true;
+                delete newConfig.radar_max_distance;
+            }
+            else {
+                // When auto is off, remove the key to use the default (false)
+                delete newConfig.auto_radar_max_distance;
+            }
+            this._fireConfigChanged(newConfig);
+            return;
+        }
         const newConfig = { ...this._config };
-        if (value === '' || value === null || value === false) {
+        if (value === '' || value === null || value === false || value === 'auto') {
             // For empty strings or null, remove the key from the config.
             // This is useful for optional fields like title, map, and zoom.
             delete newConfig[configKey];
@@ -2838,8 +2899,11 @@ class BlitzortungLightningCardEditor extends i$2 {
             // Cast to any to handle dynamic key assignment
             newConfig[configKey] = target.type === 'number' ? Number(value) : value;
         }
+        this._fireConfigChanged(newConfig);
+    }
+    _fireConfigChanged(config) {
         const event = new CustomEvent('config-changed', {
-            detail: { config: newConfig },
+            detail: { config },
             bubbles: true,
             composed: true,
         });
@@ -2976,10 +3040,14 @@ class BlitzortungLightningCardEditor extends i$2 {
         ];
         const radarFields = [
             {
-                configValue: 'radar_max_distance',
-                label: 'component.blc.editor.radar_max_distance',
-                type: 'textfield',
-                attributes: { type: 'number' },
+                configValue: 'radar_period',
+                label: 'component.blc.editor.radar_period',
+                type: 'select',
+                options: [
+                    { value: '15m', label: localize(this.hass, 'component.blc.editor.period_options.15m') },
+                    { value: '30m', label: localize(this.hass, 'component.blc.editor.period_options.30m') },
+                    { value: '1h', label: localize(this.hass, 'component.blc.editor.period_options.1h') },
+                ],
             },
         ];
         const appearanceFields = [
@@ -2999,7 +3067,39 @@ class BlitzortungLightningCardEditor extends i$2 {
         </div>
 
         <div class="section">
-          <h3>${localize(this.hass, 'component.blc.editor.sections.radar')}</h3>
+          <div class="section-header">
+            <h3>${localize(this.hass, 'component.blc.editor.sections.radar')}</h3>
+            <ha-icon
+              class="help-icon"
+              icon="mdi:help-circle-outline"
+              @click=${this._toggleRadarHelp}
+              title=${localize(this.hass, 'component.blc.editor.toggle_help')}
+            ></ha-icon>
+          </div>
+          ${this._radarHelpVisible
+            ? x `<div class="help-text">
+                ${localize(this.hass, 'component.blc.editor.radar_help_1')}
+                <a href="/config/integrations/integration/blitzortung" target="_blank" rel="noopener noreferrer">
+                  ${localize(this.hass, 'component.blc.editor.radar_help_link')} </a
+                >${localize(this.hass, 'component.blc.editor.radar_help_2')}
+              </div>`
+            : ''}
+          <ha-formfield .label=${localize(this.hass, 'component.blc.editor.auto_radar_max_distance')}>
+            <ha-switch
+              .checked=${this._config.auto_radar_max_distance === true}
+              .configValue=${'auto_radar_max_distance'}
+              @change=${this._valueChanged}
+            >
+            </ha-switch>
+          </ha-formfield>
+          ${this._config.auto_radar_max_distance !== true
+            ? this._renderField({
+                configValue: 'radar_max_distance',
+                label: 'component.blc.editor.radar_max_distance',
+                type: 'textfield',
+                attributes: { type: 'number' },
+            })
+            : ''}
           ${radarFields.map((field) => this._renderField(field))}
         </div>
 
@@ -3023,16 +3123,27 @@ class BlitzortungLightningCardEditor extends i$2 {
                 label: 'component.blc.editor.history_chart_period',
                 type: 'select',
                 options: [
-                    { value: '1h', label: localize(this.hass, 'component.blc.editor.history_chart_period_options.1h') },
-                    {
-                        value: '15m',
-                        label: localize(this.hass, 'component.blc.editor.history_chart_period_options.15m'),
-                    },
+                    { value: '1h', label: localize(this.hass, 'component.blc.editor.period_options.1h') },
+                    { value: '15m', label: localize(this.hass, 'component.blc.editor.period_options.15m') },
                 ],
             })}
               `
             : ''}
           ${this._renderField(featureFields[1])}
+          ${this._config.show_map
+            ? x `
+                ${this._renderField({
+                configValue: 'map_theme_mode',
+                label: 'component.blc.editor.map_theme_mode',
+                type: 'select',
+                options: [
+                    { value: 'auto', label: localize(this.hass, 'component.blc.editor.map_theme_mode_options.auto') },
+                    { value: 'light', label: localize(this.hass, 'component.blc.editor.map_theme_mode_options.light') },
+                    { value: 'dark', label: localize(this.hass, 'component.blc.editor.map_theme_mode_options.dark') },
+                ],
+            })}
+              `
+            : ''}
         </div>
       </div>
     `;
@@ -3048,6 +3159,9 @@ __decorate([
 __decorate([
     r()
 ], BlitzortungLightningCardEditor.prototype, "_colorPickerOpenFor", void 0);
+__decorate([
+    r()
+], BlitzortungLightningCardEditor.prototype, "_radarHelpVisible", void 0);
 customElements.define('blitzortung-lightning-card-editor', BlitzortungLightningCardEditor);
 
 /**
@@ -3156,7 +3270,7 @@ const HISTORY_CHART_WIDTH = 280;
 const HISTORY_CHART_HEIGHT = 115;
 const HISTORY_CHART_MARGIN = { top: 15, right: 5, bottom: 35, left: 30 };
 const NEW_STRIKE_CLASS = 'new-strike';
-console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.2.3 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.3.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 class BlitzortungLightningCard extends i$2 {
     constructor() {
         super(...arguments);
@@ -3171,6 +3285,8 @@ class BlitzortungLightningCard extends i$2 {
         this._displayedSampleStrikes = [];
         this._map = undefined;
         this._markers = undefined;
+        this._compassAngle = 0;
+        this._compassAngleInitialized = false;
         this._strikeMarkers = new Map();
         this._newestStrikeTimestamp = null;
         this._editMode = false;
@@ -3241,15 +3357,21 @@ class BlitzortungLightningCard extends i$2 {
     _startSampleStrikeAnimation() {
         this._stopSampleStrikeAnimation();
         this._displayedSampleStrikes = [];
-        const allSampleStrikes = [...this._getSampleStrikes()].reverse(); // Oldest first
+        const allSampleStrikes = [...this._getSampleStrikes()].reverse(); // Oldest first.
         let index = 0;
         const addStrike = () => {
             if (!this._editMode || index >= allSampleStrikes.length) {
                 this._stopSampleStrikeAnimation();
                 return;
             }
-            // Add one strike at a time, keeping the array sorted newest first
-            this._displayedSampleStrikes = [allSampleStrikes[index], ...this._displayedSampleStrikes];
+            // Create a new array with the new strike at the beginning
+            const newStrikes = [allSampleStrikes[index], ...this._displayedSampleStrikes];
+            // Re-calculate all timestamps to simulate aging
+            const now = Date.now();
+            this._displayedSampleStrikes = newStrikes.map((strike, strikeIndex) => ({
+                ...strike,
+                timestamp: now - strikeIndex * 60000, // 1 minute older for each previous strike
+            }));
             index++;
         };
         // Add first strike immediately to start the animation
@@ -3267,12 +3389,44 @@ class BlitzortungLightningCard extends i$2 {
         // We return it immediately to prevent deadlocks.
         return document.createElement('blitzortung-lightning-card-editor');
     }
+    willUpdate(changedProperties) {
+        if (!this._config)
+            return;
+        if (changedProperties.has('hass') || changedProperties.has('_config')) {
+            const newAzimuthState = this.hass.states[this._config.azimuth];
+            if (newAzimuthState) {
+                const newAngle = Number.parseFloat(newAzimuthState.state);
+                if (!isNaN(newAngle)) {
+                    if (!this._compassAngleInitialized) {
+                        this._compassAngle = newAngle;
+                        this._compassAngleInitialized = true;
+                    }
+                    else {
+                        const diff = newAngle - this._compassAngle;
+                        // This calculates the shortest angle difference, which can be negative or positive.
+                        const shortestAngleDiff = (((diff % 360) + 540) % 360) - 180;
+                        this._compassAngle += shortestAngleDiff;
+                    }
+                }
+            }
+        }
+    }
     get _historyMaxAgeMs() {
         const period = this._config.history_chart_period ?? '1h';
         if (period === '15m') {
             return 15 * 60 * 1000;
         }
         return 60 * 60 * 1000; // 1h
+    }
+    get _radarMaxAgeMs() {
+        const period = this._config.radar_period ?? '30m';
+        if (period === '15m') {
+            return 15 * 60 * 1000;
+        }
+        if (period === '1h') {
+            return 60 * 60 * 1000;
+        }
+        return 30 * 60 * 1000; // 30m
     }
     _getHomeCoordinates() {
         const homeZone = this.hass.states['zone.home'];
@@ -3285,22 +3439,19 @@ class BlitzortungLightningCard extends i$2 {
         return null;
     }
     _getSampleStrikes() {
-        if (this._sampleStrikes)
-            return this._sampleStrikes;
         const homeCoords = this._getHomeCoordinates();
         if (!homeCoords)
             return [];
-        const now = Date.now();
-        this._sampleStrikes = sampleStrikes.map((strike, index) => {
+        const strikes = sampleStrikes.map((strike) => {
             const dest = destinationPoint(homeCoords.lat, homeCoords.lon, strike.distance, strike.azimuth);
             return {
                 ...strike,
-                timestamp: now - (index + 1) * 60000,
+                timestamp: 0, // Placeholder, will be set dynamically in the animation
                 latitude: dest.latitude,
                 longitude: dest.longitude,
             };
         });
-        return this._sampleStrikes;
+        return strikes;
     }
     _getStrikesToShow() {
         const recentStrikes = this._getRecentStrikes();
@@ -3312,8 +3463,7 @@ class BlitzortungLightningCard extends i$2 {
     // New: Get recent strikes from geo_location entities
     _getRecentStrikes() {
         const now = Date.now();
-        const maxAge = this._historyMaxAgeMs;
-        const oldestTimestamp = now - maxAge;
+        const oldestTimestamp = now - this._radarMaxAgeMs;
         const homeCoords = this._getHomeCoordinates();
         if (!homeCoords)
             return [];
@@ -3380,19 +3530,19 @@ class BlitzortungLightningCard extends i$2 {
             this._tooltip = { ...this._tooltip, visible: false, content: E };
         }
     }
-    _renderCompass(azimuth, distance, distanceUnit, count) {
-        const angle = Number.parseFloat(azimuth);
-        if (isNaN(angle)) {
+    _renderCompass(rotationAngle, azimuth, distance, distanceUnit, count) {
+        const azimuthValue = Number.parseFloat(azimuth);
+        if (isNaN(azimuthValue)) {
             return '';
         }
         const gridColor = this._config.grid_color ?? 'var(--primary-text-color)';
         const strikeColor = this._config.strike_color ?? 'var(--error-color)';
-        const directionText = getDirection(this.hass, angle);
+        const directionText = getDirection(this.hass, azimuthValue);
         return x `
       <div class="compass">
         <svg viewBox="0 0 100 100" role="img" aria-labelledby="compass-title">
           <!-- Compass Rose Background -->
-          <title id="compass-title">Compass showing lightning direction at ${angle} degrees</title>
+          <title id="compass-title">Compass showing lightning direction at ${azimuthValue} degrees</title>
           <circle cx="50" cy="50" r="42" stroke=${gridColor} stroke-width="0.5" fill="none" opacity="0.3" />
 
           <!-- Cardinal Points -->
@@ -3438,7 +3588,7 @@ class BlitzortungLightningCard extends i$2 {
           </text>
 
           <!-- Pointer Arrow -->
-          <g class="compass-pointer" style="transform: rotate(${angle}deg);">
+          <g class="compass-pointer" style="transform: rotate(${rotationAngle}deg);">
             <path d="M 50 10 L 53 19.6 L 47 19.6 Z" fill=${strikeColor} />
           </g>
 
@@ -3609,13 +3759,17 @@ class BlitzortungLightningCard extends i$2 {
         const radarContainer = this.shadowRoot?.querySelector('.radar-chart');
         if (!radarContainer)
             return;
+        const now = Date.now();
+        const maxAge = this._radarMaxAgeMs;
+        const halfMaxAge = now - maxAge / 2;
+        const endOfLife = now - maxAge;
         const chartRadius = Math.min(RADAR_CHART_WIDTH, RADAR_CHART_HEIGHT) / 2 - RADAR_CHART_MARGIN;
         const distanceEntity = this.hass.states[this._config.distance];
         const distanceUnit = distanceEntity?.attributes.unit_of_measurement ?? 'km';
-        const maxDistance = this._config.radar_max_distance ?? max(strikes, (d) => d.distance) ?? 100;
+        const autoRadar = this._config.auto_radar_max_distance === true;
+        const maxDistance = autoRadar ? (max(strikes, (d) => d.distance) ?? 100) : (this._config.radar_max_distance ?? 100);
         const rScale = linear().domain([0, maxDistance]).range([0, chartRadius]);
-        const opacityDomainEnd = Math.max(1, strikes.length - 1);
-        const opacityScale = linear().domain([0, opacityDomainEnd]).range([1, 0.15]);
+        const opacityScale = pow().exponent(0.7).domain([now, halfMaxAge, endOfLife]).range([1, 0.25, 0]).clamp(true);
         const svgRoot = select(radarContainer)
             .selectAll('svg')
             .data([null])
@@ -3680,18 +3834,18 @@ class BlitzortungLightningCard extends i$2 {
             .join((enter) => enter
             .append('circle')
             .attr('class', (d, i) => 'strike-dot' + (i === 0 ? ' new-strike-dot' : ''))
-            .style('cursor', 'pointer')
-            .style('fill', (d, i) => (i === 0 ? '#FF0000' : (this._config.strike_color ?? 'var(--error-color)')))
-            .attr('r', 3)
-            .style('fill-opacity', (d, i) => opacityScale(i)), (update) => update
+            .style('fill', this._config.strike_color ?? 'var(--error-color)')
+            .style('fill-opacity', (d) => opacityScale(d.timestamp))
+            .attr('r', 3), (update) => update
             .attr('class', (d, i) => 'strike-dot' + (i === 0 ? ' new-strike-dot' : ''))
-            .style('fill', (d, i) => (i === 0 ? '#FF0000' : (this._config.strike_color ?? 'var(--error-color)')))
-            .attr('r', 3)
-            .style('fill-opacity', (d, i) => opacityScale(i)), (exit) => exit.remove());
+            .style('fill', this._config.strike_color ?? 'var(--error-color)')
+            .style('fill-opacity', (d) => opacityScale(d.timestamp))
+            .attr('r', 3), (exit) => exit.remove());
         // Set position and tooltip for all dots (new and updated)
         strikeDots
             .attr('cx', (d) => rScale(d.distance) * Math.cos((d.azimuth - 90) * (Math.PI / 180)))
             .attr('cy', (d) => rScale(d.distance) * Math.sin((d.azimuth - 90) * (Math.PI / 180)))
+            .style('cursor', 'pointer')
             .on('mouseover', (event, d) => {
             this._showTooltip(event, d, distanceUnit);
         })
@@ -3714,10 +3868,12 @@ class BlitzortungLightningCard extends i$2 {
         const historyData = await this.hass.callApi('GET', url);
         if (!Array.isArray(historyData) || !Array.isArray(historyData[0]))
             return [];
-        return historyData[0].map((entry) => ({
+        return historyData[0]
+            .map((entry) => ({
             timestamp: new Date(entry.last_changed).getTime(),
             value: Number(entry.state),
-        }));
+        }))
+            .filter((entry) => !isNaN(entry.value));
     }
     _processHistoryData() {
         const period = this._config.history_chart_period ?? '1h';
@@ -3959,7 +4115,16 @@ class BlitzortungLightningCard extends i$2 {
             return;
         }
         const L = await this._getLeaflet();
-        const darkMode = this.hass?.themes?.darkMode ?? false;
+        let darkMode;
+        if (this._config.map_theme_mode === 'dark') {
+            darkMode = true;
+        }
+        else if (this._config.map_theme_mode === 'light') {
+            darkMode = false;
+        }
+        else {
+            darkMode = this.hass?.themes?.darkMode ?? false;
+        }
         const tileUrl = darkMode
             ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
             : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -4095,7 +4260,8 @@ class BlitzortungLightningCard extends i$2 {
             }
             else if (hassChanged) {
                 const oldHass = changedProperties.get('hass');
-                if (oldHass && this.hass.themes?.darkMode !== oldHass.themes?.darkMode) {
+                // Only re-init map on theme change if theme is not overridden
+                if (oldHass && !this._config.map_theme_mode && this.hass.themes?.darkMode !== oldHass.themes?.darkMode) {
                     this._destroyMap();
                     this._initMap();
                     // initMap already updates visuals, so we can skip the next block for this update cycle
@@ -4106,20 +4272,23 @@ class BlitzortungLightningCard extends i$2 {
         else if (this._map) {
             this._destroyMap();
         }
-        // If visuals need updating, calculate strikes once and pass them down.
-        if (shouldUpdateVisuals && !mapJustInitialized) {
+        // If visuals need updating, re-render things.
+        if (shouldUpdateVisuals) {
             const strikesToShow = this._getStrikesToShow();
             if (strikesToShow.length === 0 && !this._editMode) {
                 // No recent strikes, let's find the last one from history.
-                // We only need to do this if the counter entity has changed, or on first load.
-                const oldHass = changedProperties.get('hass');
-                const counterEntityChanged = !oldHass || oldHass.states[this._config.counter] !== this.hass.states[this._config.counter];
-                if (counterEntityChanged) {
-                    this._updateLastStrikeTime();
+                // We only need to do this if the counter entity has changed.
+                if (hassChanged) {
+                    const oldHass = changedProperties.get('hass');
+                    const counterEntityChanged = !oldHass || oldHass.states[this._config.counter] !== this.hass.states[this._config.counter];
+                    if (counterEntityChanged) {
+                        this._updateLastStrikeTime();
+                    }
                 }
             }
-            if (this._config?.show_map && this._map) {
-                // Pass the potentially sampled strikes to the map
+            // The map is updated either by _initMap or here.
+            // If it was just initialized, we don't need to update it again.
+            if (this._config?.show_map && this._map && !mapJustInitialized) {
                 this._updateMapMarkers(strikesToShow);
             }
             if (this.shadowRoot?.querySelector('.radar-chart')) {
@@ -4132,9 +4301,14 @@ class BlitzortungLightningCard extends i$2 {
             const oldCount = oldHass?.states[this._config.counter]?.state;
             const newCount = this.hass.states[this._config.counter]?.state;
             // Only fetch history if the config changed or a new strike was detected.
-            if (changedProperties.has('_config') || (oldHass && oldCount !== newCount)) {
-                this._fetchCountHistory().then((data) => {
+            if (configChanged || (oldHass && oldCount !== newCount)) {
+                this._fetchCountHistory()
+                    .then((data) => {
                     this._historyData = data;
+                })
+                    .catch((err) => {
+                    console.error('Error fetching history for chart:', err);
+                    this._historyData = []; // Clear data on error to prevent rendering stale info
                 });
             }
             if (this.shadowRoot?.querySelector('.history-chart')) {
@@ -4157,7 +4331,7 @@ class BlitzortungLightningCard extends i$2 {
         <div class="card-content">
           ${strikesToShow.length > 0
             ? x `<div class="content-container">
-                ${this._renderCompass(azimuth, distance, distanceUnit, count)}
+                ${this._renderCompass(this._compassAngle, azimuth, distance, distanceUnit, count)}
                 <div class="radar-chart"></div>
               </div>`
             : x `
@@ -4252,6 +4426,9 @@ __decorate([
 __decorate([
     r()
 ], BlitzortungLightningCard.prototype, "_displayedSampleStrikes", void 0);
+__decorate([
+    r()
+], BlitzortungLightningCard.prototype, "_compassAngle", void 0);
 __decorate([
     r()
 ], BlitzortungLightningCard.prototype, "_userInteractedWithMap", void 0);
