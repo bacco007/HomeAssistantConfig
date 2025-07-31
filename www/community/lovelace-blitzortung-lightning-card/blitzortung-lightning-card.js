@@ -2368,7 +2368,7 @@ function select(selector) {
       : new Selection([[selector]], root);
 }
 
-var sampleStrikes = [{distance:45.156545465458,azimuth:176},{distance:22,azimuth:60},{distance:19,azimuth:65},{distance:27,azimuth:58},{distance:15,azimuth:62},{distance:24,azimuth:63},{distance:38,azimuth:67},{distance:35,azimuth:59},{distance:12,azimuth:61},{distance:17,azimuth:64},{distance:48,azimuth:270}];
+var sampleStrikes = [{distance:45.156545465458,azimuth:176},{distance:22,azimuth:1},{distance:19,azimuth:359},{distance:27,azimuth:58},{distance:15,azimuth:62},{distance:24,azimuth:63},{distance:38,azimuth:67},{distance:35,azimuth:59},{distance:12,azimuth:61},{distance:17,azimuth:64},{distance:48,azimuth:270}];
 
 // Clamps a value between an upper and lower bound.
 // We use ternary operators because it makes the minified code
@@ -3270,10 +3270,11 @@ const HISTORY_CHART_WIDTH = 280;
 const HISTORY_CHART_HEIGHT = 115;
 const HISTORY_CHART_MARGIN = { top: 15, right: 5, bottom: 35, left: 30 };
 const NEW_STRIKE_CLASS = 'new-strike';
-console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.3.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c BLITZORTUNG-LIGHTNING-CARD %c v1.3.1 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 class BlitzortungLightningCard extends i$2 {
     constructor() {
         super(...arguments);
+        this._compassAngle = undefined;
         this._tooltip = {
             visible: false,
             content: E,
@@ -3285,8 +3286,6 @@ class BlitzortungLightningCard extends i$2 {
         this._displayedSampleStrikes = [];
         this._map = undefined;
         this._markers = undefined;
-        this._compassAngle = 0;
-        this._compassAngleInitialized = false;
         this._strikeMarkers = new Map();
         this._newestStrikeTimestamp = null;
         this._editMode = false;
@@ -3392,21 +3391,26 @@ class BlitzortungLightningCard extends i$2 {
     willUpdate(changedProperties) {
         if (!this._config)
             return;
-        if (changedProperties.has('hass') || changedProperties.has('_config')) {
-            const newAzimuthState = this.hass.states[this._config.azimuth];
-            if (newAzimuthState) {
-                const newAngle = Number.parseFloat(newAzimuthState.state);
-                if (!isNaN(newAngle)) {
-                    if (!this._compassAngleInitialized) {
-                        this._compassAngle = newAngle;
-                        this._compassAngleInitialized = true;
-                    }
-                    else {
-                        const diff = newAngle - this._compassAngle;
-                        // This calculates the shortest angle difference, which can be negative or positive.
-                        const shortestAngleDiff = (((diff % 360) + 540) % 360) - 180;
-                        this._compassAngle += shortestAngleDiff;
-                    }
+        const hassChanged = changedProperties.has('hass');
+        const configChanged = changedProperties.has('_config');
+        const sampleStrikesChanged = this._editMode && changedProperties.has('_displayedSampleStrikes');
+        const shouldUpdateAngle = hassChanged || configChanged || sampleStrikesChanged;
+        if (shouldUpdateAngle) {
+            const { azimuth } = this._getCompassDisplayData();
+            const newAzimuth = parseFloat(azimuth);
+            if (!isNaN(newAzimuth)) {
+                if (this._compassAngle === undefined) {
+                    this._compassAngle = newAzimuth;
+                }
+                else {
+                    const currentAngle = this._compassAngle;
+                    const normalizedCurrentAngle = ((currentAngle % 360) + 360) % 360;
+                    let diff = newAzimuth - normalizedCurrentAngle;
+                    if (diff > 180)
+                        diff -= 360;
+                    else if (diff < -180)
+                        diff += 360;
+                    this._compassAngle += diff;
                 }
             }
         }
@@ -3530,19 +3534,20 @@ class BlitzortungLightningCard extends i$2 {
             this._tooltip = { ...this._tooltip, visible: false, content: E };
         }
     }
-    _renderCompass(rotationAngle, azimuth, distance, distanceUnit, count) {
-        const azimuthValue = Number.parseFloat(azimuth);
-        if (isNaN(azimuthValue)) {
+    _renderCompass(azimuth, distance, distanceUnit, count, displayAngle) {
+        const angle = Number.parseFloat(azimuth);
+        if (isNaN(angle)) {
             return '';
         }
+        const rotationAngle = displayAngle ?? angle;
         const gridColor = this._config.grid_color ?? 'var(--primary-text-color)';
         const strikeColor = this._config.strike_color ?? 'var(--error-color)';
-        const directionText = getDirection(this.hass, azimuthValue);
+        const directionText = getDirection(this.hass, angle);
         return x `
       <div class="compass">
         <svg viewBox="0 0 100 100" role="img" aria-labelledby="compass-title">
           <!-- Compass Rose Background -->
-          <title id="compass-title">Compass showing lightning direction at ${azimuthValue} degrees</title>
+          <title id="compass-title">Compass showing lightning direction at ${angle} degrees</title>
           <circle cx="50" cy="50" r="42" stroke=${gridColor} stroke-width="0.5" fill="none" opacity="0.3" />
 
           <!-- Cardinal Points -->
@@ -4331,7 +4336,7 @@ class BlitzortungLightningCard extends i$2 {
         <div class="card-content">
           ${strikesToShow.length > 0
             ? x `<div class="content-container">
-                ${this._renderCompass(this._compassAngle, azimuth, distance, distanceUnit, count)}
+                ${this._renderCompass(azimuth, distance, distanceUnit, count, this._compassAngle)}
                 <div class="radar-chart"></div>
               </div>`
             : x `
@@ -4416,6 +4421,9 @@ __decorate([
 ], BlitzortungLightningCard.prototype, "_config", void 0);
 __decorate([
     r()
+], BlitzortungLightningCard.prototype, "_compassAngle", void 0);
+__decorate([
+    r()
 ], BlitzortungLightningCard.prototype, "_tooltip", void 0);
 __decorate([
     r()
@@ -4426,9 +4434,6 @@ __decorate([
 __decorate([
     r()
 ], BlitzortungLightningCard.prototype, "_displayedSampleStrikes", void 0);
-__decorate([
-    r()
-], BlitzortungLightningCard.prototype, "_compassAngle", void 0);
 __decorate([
     r()
 ], BlitzortungLightningCard.prototype, "_userInteractedWithMap", void 0);
