@@ -58,6 +58,21 @@
       "regular": "https://www.rtd-denver.com/files/gtfs/google_transit.zip"
     }
   },
+  "exo_quebec": {
+    "name": "Exo (Quebec / Montreal)",
+    "auth_hint": "Ocp-Apim-Subscription-Key: [Subscription Key]",
+    "disclaimer": "By accessing our data files, you acknowledge that you have read and understood the terms of the user licence (CC-BY) [https://www.donneesquebec.ca/licence/#cc-by] and that you agree to be bound by them.",
+    "realtime_feeds": {
+      "alerts_citcrc": "https://exo.chrono-saeiv.com/api/opendata/v1/CITCRC/alert",
+      "alerts_trains": "https://exo.chrono-saeiv.com/api/opendata/v1/trains/alert",
+      "trip_update_citcrc": "https://exo.chrono-saeiv.com/api/opendata/v1/CITCRC/tripupdate",
+      "trip_update_trains": "https://exo.chrono-saeiv.com/api/opendata/v1/trains/tripupdate"
+    },
+    "static_feeds": {
+      "citcrc": "https://exo.quebec/xdata/citcrc/google_transit.zip",
+      "trains": "https://exo.quebec/xdata/trains/google_transit.zip"
+    }
+  },
   "houston_metro": {
     "name": "Houston METRO",
     "auth_hint": "Ocp-Apim-Subscription-Key: [Subscription Key]",

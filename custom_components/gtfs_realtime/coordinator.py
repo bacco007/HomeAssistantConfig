@@ -13,6 +13,7 @@ from gtfs_station_stop.schedule import GtfsSchedule, async_build_schedule
 from gtfs_station_stop.station_stop import StationStop
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT, DOMAIN
 
@@ -64,6 +65,7 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
         self.kwargs = kwargs
         self.gtfs_provider = gtfs_provider
         self.hub: FeedSubject = feed_subject
+        self.hub.max_api_calls_per_second = 1  # rate limit
         self.gtfs_update_data = GtfsUpdateData()
         self.gtfs_static_zip: Iterable[os.PathLike] | os.PathLike = gtfs_static_zip
         self.route_icons = route_icons
@@ -85,7 +87,7 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
             )
         }
         await self.async_update_static_data()
-        await self.hub.async_update()
+        await self.hub.async_update(async_get_clientsession(self.hass))
         return self.gtfs_update_data
 
     async def async_update_static_data(self, clear_old_data=False):
@@ -97,11 +99,11 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
 
         if self.gtfs_update_data.schedule == GtfsSchedule():
             self.gtfs_update_data.schedule = await async_build_schedule(
-                *self.static_update_targets, **self.kwargs
+                *self.static_update_targets, session=None, **self.kwargs
             )
         else:
             await self.gtfs_update_data.schedule.async_update_schedule(
-                *self.static_update_targets, **self.kwargs
+                *self.static_update_targets, session=None, **self.kwargs
             )
 
         for target in self.static_update_targets:

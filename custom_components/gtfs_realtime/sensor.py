@@ -1,6 +1,7 @@
 """Platform for sensor integration."""
 
 from __future__ import annotations
+import logging
 
 from gtfs_station_stop.arrival import Arrival
 from gtfs_station_stop.route_info import RouteType
@@ -39,6 +40,8 @@ from .coordinator import GtfsRealtimeCoordinator
 PLATFORM_SCHEMA = SENSOR_PLATFORM_SCHEMA.extend(
     {vol.Required(STOP_ID): cv.string, vol.Optional(CONF_ARRIVAL_LIMIT, default=4): int}
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -150,7 +153,10 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
 
     def update(self) -> None:
         """Update state from coordinator data."""
-        time_to_arrivals = sorted(self.station_stop.get_time_to_arrivals())
+        stop_times_ds = self.coordinator.gtfs_update_data.schedule.stop_times_ds
+        time_to_arrivals = sorted(
+            self.station_stop.get_time_to_arrivals(stop_times_dataset=stop_times_ds)
+        )
         self._arrival_detail = {}
         if len(time_to_arrivals) > self._idx:
             schedule = self.coordinator.data.schedule
@@ -158,7 +164,9 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
             time_to_arrival: Arrival = time_to_arrivals[self._idx]
 
             # Do not allow negative numbers
-            self._attr_native_value = max(time_to_arrival.time, 0)
+            self._attr_native_value = time_to_arrival.time and max(
+                time_to_arrival.time, 0
+            )
 
             # It's possible the route ID is empty, in that case, get it from the trips database
             # The remaining attributes will be filled below
@@ -188,5 +196,13 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordainator."""
-        self.update()
-        super()._handle_coordinator_update()
+        try:
+            self.update()
+            super()._handle_coordinator_update()
+        except:
+            _LOGGER.error(
+                "Exception occurred updating %s provided by %s",
+                self.name,
+                self.coordinator.gtfs_provider,
+            )
+            raise
