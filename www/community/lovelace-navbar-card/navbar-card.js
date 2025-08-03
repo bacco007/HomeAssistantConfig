@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.12.3";
+var version = "0.13.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -692,8 +692,13 @@ var generateHash = (str) => {
   return hash.toString();
 };
 var templateFunctionCache = new Map;
-var processTemplate = (hass, template) => {
-  if (!template || !hass)
+var extractAccessibleStateVariables = (navbar) => {
+  return {
+    isDesktop: navbar._isDesktop ?? false
+  };
+};
+var processTemplate = (hass, navbar, template) => {
+  if (!template)
     return template;
   if (typeof template !== "string")
     return template;
@@ -705,10 +710,10 @@ var processTemplate = (hass, template) => {
     const hashedTemplate = generateHash(cleanTemplate);
     let func = templateFunctionCache.get(hashedTemplate);
     if (!func) {
-      func = new Function("states", "user", "hass", cleanTemplate);
+      func = new Function("states", "user", "hass", "navbar", cleanTemplate);
       templateFunctionCache.set(hashedTemplate, func);
     }
-    return func(hass.states, hass.user, hass);
+    return func(hass.states, hass.user, hass, extractAccessibleStateVariables(navbar));
   } catch (e5) {
     console.error(`NavbarCard: Error evaluating template: ${e5}`);
     return template;
@@ -1405,12 +1410,16 @@ class NavbarCard extends i4 {
     };
   }
   _getRouteIcon(route, isActive) {
-    return route.image ? x`<img
+    const icon = processTemplate(this.hass, this, route.icon);
+    const image = processTemplate(this.hass, this, route.image);
+    const iconSelected = processTemplate(this.hass, this, route.icon_selected);
+    const imageSelected = processTemplate(this.hass, this, route.image_selected);
+    return image ? x`<img
           class="image ${isActive ? "active" : ""}"
-          src="${isActive && route.image_selected ? route.image_selected : route.image}"
+          src="${isActive && imageSelected ? imageSelected : image}"
           alt="${route.label || ""}" />` : x`<ha-icon
           class="icon ${isActive ? "active" : ""}"
-          icon="${isActive && route.icon_selected ? route.icon_selected : route.icon}"></ha-icon>`;
+          icon="${isActive && iconSelected ? iconSelected : icon}"></ha-icon>`;
   }
   _renderBadge(route, isRouteActive) {
     if (!route.badge) {
@@ -1418,17 +1427,17 @@ class NavbarCard extends i4 {
     }
     let showBadge = false;
     if (route.badge.show !== undefined) {
-      showBadge = processTemplate(this.hass, route.badge.show);
+      showBadge = processTemplate(this.hass, this, route.badge.show);
     } else if (route.badge.template) {
       showBadge = processBadgeTemplate(this.hass, route.badge.template);
     }
     if (!showBadge) {
       return x``;
     }
-    const count = processTemplate(this.hass, route.badge.count) ?? null;
+    const count = processTemplate(this.hass, this, route.badge.count) ?? null;
     const hasCount = count != null;
-    const backgroundColor = processTemplate(this.hass, route.badge.color) ?? "red";
-    const textColor = processTemplate(this.hass, route.badge.textColor);
+    const backgroundColor = processTemplate(this.hass, this, route.badge.color) ?? "red";
+    const textColor = processTemplate(this.hass, this, route.badge.textColor);
     const contrastingColor = textColor ?? Color.from(backgroundColor).contrastingColor().hex();
     return x`<div
       class="badge ${isRouteActive ? "active" : ""} ${hasCount ? "with-counter" : ""}"
@@ -1468,12 +1477,12 @@ class NavbarCard extends i4 {
     this._isDesktop = (window.innerWidth ?? 0) >= (this._config?.desktop?.min_width ?? 768);
   };
   _renderRoute = (route) => {
-    const isActive = route.selected != null ? processTemplate(this.hass, route.selected) : window.location.pathname == route.url;
-    const isHidden = processTemplate(this.hass, route.hidden);
+    const isActive = route.selected != null ? processTemplate(this.hass, this, route.selected) : window.location.pathname == route.url;
+    const isHidden = processTemplate(this.hass, this, route.hidden);
     if (isHidden) {
       return null;
     }
-    const label = this._shouldShowLabels(false) ? processTemplate(this.hass, route.label) ?? " " : null;
+    const label = this._shouldShowLabels(false) ? processTemplate(this.hass, this, route.label) ?? " " : null;
     return x`
       <div
         class="route ${isActive ? "active" : ""}"
@@ -1580,11 +1589,11 @@ class NavbarCard extends i4 {
         "
         style="${style}">
         ${popupItems.map((popupItem, index) => {
-      const isHidden = processTemplate(this.hass, popupItem.hidden);
+      const isHidden = processTemplate(this.hass, this, popupItem.hidden);
       if (isHidden) {
         return null;
       }
-      const label = this._shouldShowLabels(true) ? processTemplate(this.hass, popupItem.label) ?? " " : null;
+      const label = this._shouldShowLabels(true) ? processTemplate(this.hass, this, popupItem.label) ?? " " : null;
       return x`<div
               class="
               popup-item 
@@ -1769,8 +1778,8 @@ class NavbarCard extends i4 {
     const desktopPositionClassname = mapStringToEnum(DesktopPosition, desktopPosition) ?? DEFAULT_DESKTOP_POSITION;
     const deviceModeClassName = this._isDesktop ? "desktop" : "mobile";
     const editModeClassname = isEditMode ? "edit-mode" : "";
-    const isDesktopHidden = processTemplate(this.hass, desktopHidden);
-    const isMobileHidden = processTemplate(this.hass, mobileHidden);
+    const isDesktopHidden = processTemplate(this.hass, this, desktopHidden);
+    const isMobileHidden = processTemplate(this.hass, this, mobileHidden);
     if (!isEditMode && (this._isDesktop && !!isDesktopHidden || !this._isDesktop && !!isMobileHidden)) {
       return x``;
     }
