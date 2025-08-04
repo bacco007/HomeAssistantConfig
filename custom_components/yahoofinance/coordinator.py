@@ -516,7 +516,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
                 # Reset crumb so that it gets recalculated
                 if finance_error_code == "Unauthorized":
-                    LOGGER.log("Resetting crumbs")
+                    LOGGER.info("Resetting crumbs")
                     self._cc.reset()
 
             else:
