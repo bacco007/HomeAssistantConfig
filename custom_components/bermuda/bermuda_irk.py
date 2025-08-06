@@ -10,6 +10,7 @@ from bleak.backends.device import BLEDevice
 from bluetooth_data_tools import get_cipher_for_irk, monotonic_time_coarse, resolve_private_address
 from habluetooth import BluetoothServiceInfoBleak
 from homeassistant.components.bluetooth import BluetoothChange
+from homeassistant.const import MAJOR_VERSION, MINOR_VERSION
 
 from .const import _LOGGER, DOMAIN, PRUNE_TIME_KNOWN_IRK, IrkTypes
 
@@ -48,12 +49,14 @@ class BermudaIrkManager:
             # Save new irk and cipher
             self._irks[irk] = cipher = get_cipher_for_irk(irk)
             # Check any previously unknown MACs for matches and update them.
-            retestable = [IrkTypes.ADRESS_NOT_EVALUATED, IrkTypes.NO_KNOWN_IRK_MATCH, IrkTypes.NOT_RESOLVABLE_ADDRESS]
 
             macs.extend(
                 macirk.mac
                 for macirk in self._macs.values()
-                if macirk.irk in retestable and self._validate_mac_irk(macirk.mac, irk, cipher) not in retestable
+                if (
+                    macirk.irk in IrkTypes.unresolved()
+                    and self._validate_mac_irk(macirk.mac, irk, cipher) not in IrkTypes.unresolved()
+                )
             )
 
             _LOGGER.debug("New IRK %s... matches %d of %d existing MACs", irk.hex()[:4], len(macs), len(self._macs))
@@ -66,13 +69,8 @@ class BermudaIrkManager:
         By default only the resolved MACs will be returned, but setting
         resolved=False will return all learned MACs.
         """
-        unresolved: list[bytes] = [
-            IrkTypes.ADRESS_NOT_EVALUATED.value,
-            IrkTypes.NO_KNOWN_IRK_MATCH.value,
-            IrkTypes.NOT_RESOLVABLE_ADDRESS.value,
-        ]
         if resolved:
-            return {macirk.mac: macirk for macirk in self._macs.values() if macirk.irk not in unresolved}
+            return {macirk.mac: macirk for macirk in self._macs.values() if macirk.irk not in IrkTypes.unresolved()}
         # otherwise, all of 'em
         return self._macs.copy()
 
@@ -90,7 +88,7 @@ class BermudaIrkManager:
         expired_count = len(expired)
         _LOGGER.debug("BermudaIrks expired %d of %d MACs from cache", expired_count, expired_count + len(self._macs))
 
-    def check_mac(self, address) -> bytes:
+    def check_mac(self, address: str) -> bytes:
         """
         Checks if the MAC is a match against any known IRKs.
 
@@ -125,7 +123,8 @@ class BermudaIrkManager:
             result = self._validate_mac_irk(address, irk, cipher)
             if result == irk:
                 return irk
-        return IrkTypes.NO_KNOWN_IRK_MATCH.value
+        # Failed to match anything, we should save it so we know.
+        return self._update_saved_mac(address, IrkTypes.NO_KNOWN_IRK_MATCH.value)
 
     def _validate_mac_irk(self, address: str, irk: bytes, cipher: Cipher | None) -> bytes:
         """
@@ -149,7 +148,7 @@ class BermudaIrkManager:
             self.fire_callbacks(irk, address)
             return result
         if int(address[0], 16) & 0x04:
-            _LOGGER.debug("IRK Failed to match %s against %s", address, irk.hex())
+            _LOGGER.debug("IRK does not resolve %s with %s", address, irk.hex()[:4])
             return self._update_saved_mac(address, IrkTypes.NO_KNOWN_IRK_MATCH.value)
         else:
             return self._update_saved_mac(address, IrkTypes.NOT_RESOLVABLE_ADDRESS.value)
@@ -182,7 +181,18 @@ class BermudaIrkManager:
         so that we can fake the PrivateBleDevice callbacks for an easy win.
         """
         # Create bare-shell classes to satisfy the callback signature
-        bledevice = BLEDevice(mac, "", None, 0)
+        # v1.0.1 Jul 1 2025 restores kwargs (but not rssi)
+        # v1.0.0 jun 29 2025 (pretty sure) removes rssi and kwargs from BLEDevice.__init__()
+        #
+        # TODO: Set HA_MINVER to 2025.8 at some point, and remove the bogus rssi param.
+        # FIXME: Ideally though, fix this so we aren't using bt's callbacks.
+
+        # HA version when BLEDevice went from 4+ params to 3 (bleak 1.0.0, 1.0.1)
+        if MAJOR_VERSION > 2025 or (MAJOR_VERSION == 2025 and MINOR_VERSION >= 8):
+            bledevice = BLEDevice(mac, "", None)  # type: ignore
+        else:
+            # Include the rssi if we are on an older release.
+            bledevice = BLEDevice(mac, "", None, 0)  # type: ignore
         service_info = BluetoothServiceInfoBleak("", mac, 0, {}, {}, [], DOMAIN, bledevice, None, False, False, 0)
 
         if callbacks := self._irk_callbacks.get(irk):

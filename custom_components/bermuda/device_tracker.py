@@ -61,7 +61,7 @@ async def async_setup_entry(
     entry.async_on_unload(async_dispatcher_connect(hass, SIGNAL_DEVICE_NEW, device_new))
 
     # Now we must tell the co-ord to do initial refresh, so that it will call our callback.
-    await coordinator.async_config_entry_first_refresh()
+    # await coordinator.async_config_entry_first_refresh()
 
 
 class BermudaDeviceTracker(BermudaEntity, BaseTrackerEntity):
@@ -82,7 +82,7 @@ class BermudaDeviceTracker(BermudaEntity, BaseTrackerEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, Any]:
         """Return extra state attributes for this device."""
-        _scannername = self._device.area_scanner.name if self._device.area_scanner is not None else None
+        _scannername = self._device.area_advert.name if self._device.area_advert is not None else None
         return {"scanner": _scannername, "area": self._device.area_name}
 
     @property

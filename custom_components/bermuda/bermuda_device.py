@@ -26,6 +26,8 @@ from homeassistant.components.bluetooth import (
 from homeassistant.components.private_ble_device import coordinator as pble_coordinator
 from homeassistant.const import STATE_HOME, STATE_NOT_HOME
 from homeassistant.core import callback
+from homeassistant.helpers import area_registry as ar
+from homeassistant.helpers import floor_registry as fr
 from homeassistant.util import slugify
 
 from .bermuda_advert import BermudaAdvert
@@ -44,11 +46,13 @@ from .const import (
     CONF_DEVTRACK_TIMEOUT,
     DEFAULT_DEVTRACK_TIMEOUT,
     DOMAIN,
+    ICON_DEFAULT_AREA,
+    ICON_DEFAULT_FLOOR,
     METADEVICE_IBEACON_DEVICE,
     METADEVICE_PRIVATE_BLE_DEVICE,
     METADEVICE_TYPE_IBEACON_SOURCE,
 )
-from .util import mac_norm
+from .util import mac_math_offset, mac_norm
 
 if TYPE_CHECKING:
     from bleak.backends.scanner import AdvertisementData
@@ -91,20 +95,33 @@ class BermudaDevice(dict):
         self.unique_id: str | None = _address  # mac address formatted.
         self.address_type = BDADDR_TYPE_UNKNOWN
 
+        self.ar = ar.async_get(self._coordinator.hass)
+        self.fr = fr.async_get(self._coordinator.hass)
+
+        self.area: ar.AreaEntry | None = None
         self.area_id: str | None = None
         self.area_name: str | None = None
+        self.area_icon: str = ICON_DEFAULT_AREA
         self.area_last_seen: str | None = None
         self.area_last_seen_id: str | None = None
+        self.area_last_seen_icon: str = ICON_DEFAULT_AREA
 
         self.area_distance: float | None = None  # how far this dev is from that area
         self.area_rssi: float | None = None  # rssi from closest scanner
-        self.area_scanner: BermudaAdvert | None = None  # currently closest BermudaScanner
+        self.area_advert: BermudaAdvert | None = None  # currently closest BermudaScanner
+
+        self.floor: fr.FloorEntry | None = None
+        self.floor_id: str | None = None
+        self.floor_name: str | None = None
+        self.floor_icon: str = ICON_DEFAULT_FLOOR
+        self.floor_level: str | None = None
+
         self.zone: str = STATE_NOT_HOME  # STATE_HOME or STATE_NOT_HOME
         self.manufacturer: str | None = None
         self._hascanner: BaseHaRemoteScanner | BaseHaScanner | None = None  # HA's scanner
         self._is_scanner: bool = False
         self._is_remote_scanner: bool | None = None
-        self._stamps: dict[str, float] = {}
+        self.stamps: dict[str, float] = {}
         self.metadevice_type: set = set()
         self.metadevice_sources: list[str] = []  # list of MAC addresses that have/should match this beacon
         self.beacon_unique_id: str | None = None  # combined uuid_major_minor for *really* unique id
@@ -232,7 +249,10 @@ class BermudaDevice(dict):
             # Actual object has not changed, we're good.
             return
 
-        _want_update = self._hascanner is None  # Don't screw this up or you'll get an infinite loop.
+        # If we don't already have a self._hascanner, then this must be our
+        # first initialisation. Otherwise we're just updating with a (potentially) new
+        # hascanner.
+        _first_init = self._hascanner is None
 
         self._hascanner = ha_scanner
         self._is_scanner = True
@@ -243,28 +263,216 @@ class BermudaDevice(dict):
             self._is_remote_scanner = False
         self._coordinator.scanner_list_add(self)
 
+        # Find the relevant device entries in HA for this scanner and apply the names, addresses etc
+        self.async_as_scanner_resolve_device_entries()
+
         # Call the per-update processor as well, but only
-        # if this is our first ha_scanner (ie, it didn't call us!)
-        # Don't screw this up or you'll get an infinite loop.
-        if _want_update:
+        # if this is our first ha_scanner.
+        # This is because we must avoid an infinite loop in the case
+        # where the scanner_update might call us.
+        if _first_init:
             self.async_as_scanner_update(ha_scanner)
 
-    def async_as_scanner_resolve_devicereg(self):
-        """
-        Perform the hoop-leaping to join this ha_scanner to the device_registry.
+    def async_as_scanner_resolve_device_entries(self):
+        """From the known MAC address, resolve any relevant device entries and names etc."""
+        # As of 2025.2.0 The bluetooth integration creates its own device entries
+        # for all HaScanners, not just local adaptors. So since there are two integration
+        # pages where a user might apply an area setting (eg, the bluetooth page or the shelly/esphome pages)
+        # we should check both to see if the user has applied an area (or name) anywhere, and
+        # prefer the bluetooth one if both are set.
 
-        This is important (and non-trivial) because:
-        - A scanner may have many MAC addresses (WIFI-STA, WIFI-AP, Ethernet, BLE)
-          and HA / ESPHome have used different ones over time as ID.
-        - We want to find the device under which to put our entities
-        - We need to find the Area assigned to each scanner, which is further
-          complicated by *both* ESPHome/Shelly and Bluetooth having their own
-          device entries, and this fact has changed over time.
+        # espressif devices have a base_mac
+        # https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/misc_system_api.html#local-mac-addresses
+        # base_mac (WiFi STA), +1 (AP), +2 (BLE), +3 (Ethernet)
+        # Also possible for them to use LocalMAC, where the AP and Ether MACs are derived from STA and BLE
+        # MACs, with first octet having bitvalue0x2 set, or if it was already, bitvalue0x4 XORd
+        #
+        # core Bluetooth now reports the BLE MAC address, while ESPHome (and maybe Shelly?) use
+        # the ethernet or wifi MAC for their connection links. We want both devices (if present) so that
+        # we can let the user apply name and area settings to either device.
 
-        So we need to do some gymnastics to resolve the possible addresses and
-        also the multiple devices over which a user may have initially (or subsequently)
-        set their preferences.
-        """
+        if self._hascanner is None:
+            _LOGGER.warning("Scanner %s has no ha_scanner, can not resolve devices.", self.__repr__())
+            return
+
+        # scanner_ha: BaseHaScanner from HA's bluetooth backend
+        # scanner_devreg_bt: DeviceEntry from HA's device_registry from Bluetooth integration
+        # scanner_devreg_mac: DeviceEntry from HA's *other* integrations, like ESPHome, Shelly.
+
+        connlist = set()  # For macthing against device_registry connections
+        maclist = set()  # For matching against device_registry identifier
+
+        # The device registry devices for the bluetooth and ESPHome/Shelly devices.
+        scanner_devreg_bt = None
+        scanner_devreg_mac = None
+        scanner_devreg_mac_address = None
+        scanner_devreg_bt_address = None
+
+        # We don't know which address is being reported/used. So create the full
+        # range of possible addresses, and see what we find in the device registry,
+        # on the *assumption* that there won't be overlap between devices.
+        for offset in range(-3, 3):
+            if (altmac := mac_math_offset(self.address, offset)) is not None:
+                connlist.add(("bluetooth", altmac.upper()))
+                connlist.add(("mac", altmac))
+                maclist.add(altmac)
+
+        # Requires 2025.3
+        devreg_devices = self._coordinator.dr.devices.get_entries(None, connections=connlist)
+        devreg_count = 0  # can't len() an iterable.
+        devreg_stringlist = ""  # for debug logging
+        for devreg_device in devreg_devices:
+            devreg_count += 1
+            # _LOGGER.debug("DevregScanner: %s", devreg_device)
+            devreg_stringlist += f"** {devreg_device.name_by_user or devreg_device.name}\n"
+            for conn in devreg_device.connections:
+                if conn[0] == "bluetooth":
+                    # Bluetooth component's device!
+                    scanner_devreg_bt = devreg_device
+                    scanner_devreg_bt_address = conn[1].lower()
+                if conn[0] == "mac":
+                    # ESPHome, Shelly
+                    scanner_devreg_mac = devreg_device
+                    scanner_devreg_mac_address = conn[1]
+
+        if devreg_count not in (1, 2, 3):
+            # We expect just the bt, or bt and another like esphome/shelly, or
+            # two bt's and shelly/esphome, the second bt being the alternate
+            # MAC address.
+            _LOGGER_SPAM_LESS.warning(
+                f"multimatch_devreg_{self._hascanner.source}",
+                "Unexpectedly got %d device registry matches for %s: %s\n",
+                devreg_count,
+                self._hascanner.name,
+                devreg_stringlist,
+            )
+
+        if scanner_devreg_bt is None and scanner_devreg_mac is None:
+            _LOGGER_SPAM_LESS.error(
+                f"scanner_not_in_devreg_{self.address:s}",
+                "Failed to find scanner %s (%s) in Device Registry",
+                self._hascanner.name,
+                self._hascanner.source,
+            )
+            return
+
+        # We found the device entry and have created our scannerdevice,
+        # now update any fields that might be new from the device reg.
+        # First clear the existing to make prioritising the bt/mac matches
+        # easier (feel free to refactor, bear in mind we prefer bt first)
+        _area_id = None
+
+        _bt_name = None
+        _mac_name = None
+        _bt_name_by_user = None
+        _mac_name_by_user = None
+
+        if scanner_devreg_bt is not None:
+            _area_id = scanner_devreg_bt.area_id
+            self.entry_id = scanner_devreg_bt.id
+            _bt_name_by_user = scanner_devreg_bt.name_by_user
+            _bt_name = scanner_devreg_bt.name
+        if scanner_devreg_mac is not None:
+            # Only apply if the bt device entry hasn't been applied:
+            _area_id = _area_id or scanner_devreg_mac.area_id
+            self.entry_id = self.entry_id or scanner_devreg_mac.id
+            _mac_name = scanner_devreg_mac.name
+            _mac_name_by_user = scanner_devreg_mac.name_by_user
+
+        # As of ESPHome 2025.3.0 (via aioesphomeapi 29.3.1) ESPHome proxies now
+        # report their BLE MAC address instead of their WIFI MAC in the hascanner
+        # details.
+        # To work around breaking the existing distance_to entities, retain the
+        # ESPHome / Shelly integration's MAC as the unique_id
+        self.unique_id = scanner_devreg_mac_address or scanner_devreg_bt_address or self._hascanner.source
+        self.address_ble_mac = scanner_devreg_bt_address or scanner_devreg_mac_address or self._hascanner.source
+        self.address_wifi_mac = scanner_devreg_mac_address
+
+        # Populate the possible metadevice source MACs so that we capture any
+        # data the scanner is sending (Shelly's already send broadcasts, and
+        # future ESPHome Bermuda templates will, too). We can't easily tell
+        # if our base address is the wifi mac, ble mac or ether mac, so whack
+        # 'em all in and let the loop sort it out.
+        for mac in (
+            self.address_ble_mac,  # BLE mac, if known
+            mac_math_offset(self.address_wifi_mac, 2),  # WIFI+2=BLE
+            mac_math_offset(self.address_wifi_mac, -1),  # ETHER-1=BLE
+        ):
+            if (
+                mac is not None
+                and mac not in self.metadevice_sources
+                and mac != self.address  # because it won't need to be a metadevice
+            ):
+                self.metadevice_sources.append(mac)
+
+        # Bluetooth integ names scanners by address, so prefer the source integration's
+        # autogenerated name over that.
+        self.name_devreg = _mac_name or _bt_name
+        # Bluetooth device reg is newer, so use the user-given name there if it exists.
+        self.name_by_user = _bt_name_by_user or _mac_name_by_user
+        # Apply any name changes.
+        self.make_name()
+
+        self._update_area_and_floor(_area_id)
+
+    def _update_area_and_floor(self, area_id: str | None):
+        """Given an area_id, update the area and floor properties."""
+        if area_id is None:
+            self.area = None
+            self.area_id = None
+            self.area_name = None
+            self.area_icon = ICON_DEFAULT_AREA
+            self.floor = None
+            self.floor_id = None
+            self.floor_name = None
+            self.floor_icon = ICON_DEFAULT_FLOOR
+            self.floor_level = None
+            return
+
+        # Look up areas
+        if area := self.ar.async_get_area(area_id):
+            self.area = area
+            self.area_id = area_id
+            self.area_name = area.name
+            self.area_icon = area.icon or ICON_DEFAULT_AREA
+            self.floor_id = area.floor_id
+            if self.floor_id is not None:
+                self.floor = self.fr.async_get_floor(self.floor_id)
+                if self.floor is not None:
+                    self.floor_name = self.floor.name
+                    self.floor_icon = self.floor.icon or ICON_DEFAULT_FLOOR
+                    self.floor_level = self.floor_level
+                else:
+                    # floor_id was invalid
+                    _LOGGER_SPAM_LESS.warning(
+                        f"floor_id invalid for {self.__repr__()}",
+                        "Update of area for %s has invalid floor_id of %s",
+                        self.__repr__(),
+                        self.floor_id,
+                    )
+                    self.floor_id = None
+                    self.floor_name = "Invalid Floor ID"
+                    self.floor_icon = ICON_DEFAULT_FLOOR
+                    self.floor_level = None
+            else:
+                # Floor_id is none
+                self.floor = None
+                self.floor_name = None
+                self.floor_icon = ICON_DEFAULT_FLOOR
+        else:
+            _LOGGER_SPAM_LESS.warning(
+                f"no_area_on_update{self.name}",
+                "Setting area of %s with invalid area id of %s",
+                self.__repr__(),
+                area_id,
+            )
+            self.area = None
+            self.area_name = f"Invalid Area for {self.name}"
+            self.area_icon = ICON_DEFAULT_AREA
+            self.floor = None
+            self.floor_id = None
+            self.floor_name = None
+            self.floor_icon = ICON_DEFAULT_FLOOR
 
     def async_as_scanner_update(self, ha_scanner: BaseHaScanner):
         """
@@ -317,6 +525,16 @@ class BermudaDevice(dict):
         itself does not provide stamps (such as usb Bluetooth / BlueZ devices).
         """
         if self.is_remote_scanner:
+            if self.stamps is None:
+                _LOGGER_SPAM_LESS.debug(
+                    f"remote_no_stamps{self.address}", "Remote Scanner %s has no stamps dict", self.__repr__()
+                )
+                return None
+            if len(self.stamps) == 0:
+                _LOGGER_SPAM_LESS.debug(
+                    f"remote_stamps_empty{self.address}", "Remote scanner %s has an empty stamps dict", self.__repr__()
+                )
+                return None
             try:
                 return self.stamps[address.upper()]
             except (KeyError, AttributeError):
@@ -403,28 +621,27 @@ class BermudaDevice(dict):
             # new measurement(s) immediately.
             self.ref_power_changed = monotonic_time_coarse()
 
-    def apply_scanner_selection(self, closest_scanner: BermudaAdvert | None):
+    def apply_scanner_selection(self, bermuda_advert: BermudaAdvert | None):
         """
-        Given a DeviceScanner entry, apply the distance and area attributes
+        Given a BermudaAdvert entry, apply the distance and area attributes
         from it to this device.
 
         Used to apply a "winning" scanner's data to the device for setting closest Area.
         """
         old_area = self.area_name
-        if closest_scanner is not None and closest_scanner.rssi_distance is not None:
+        if bermuda_advert is not None and bermuda_advert.rssi_distance is not None:
             # We found a winner
-            self.area_scanner = closest_scanner
-            self.area_id = closest_scanner.area_id
-            self.area_name = closest_scanner.area_name
-            self.area_distance = closest_scanner.rssi_distance
-            self.area_rssi = closest_scanner.rssi
-            self.area_last_seen = closest_scanner.area_name
-            self.area_last_seen_id = closest_scanner.area_id
+            self.area_advert = bermuda_advert
+            self._update_area_and_floor(bermuda_advert.area_id)
+            self.area_distance = bermuda_advert.rssi_distance
+            self.area_rssi = bermuda_advert.rssi
+            self.area_last_seen = self.area_name
+            self.area_last_seen_id = self.area_id
+            self.area_last_seen_icon = self.area_icon
         else:
             # Not close to any scanners, or closest scanner has timed out!
-            self.area_scanner = None
-            self.area_id = None
-            self.area_name = None
+            self.area_advert = None
+            self._update_area_and_floor(None)
             self.area_distance = None
             self.area_rssi = None
 
@@ -504,7 +721,7 @@ class BermudaDevice(dict):
             # If we're a metadevice we should never be in this function.
             _LOGGER_SPAM_LESS.error(
                 f"meta_{self.address}_{advert_tuple}",
-                "Calling process_advertisement on a metadevices (%s) is a bug. Advert tuple: (%s)",
+                "Calling process_advertisement on a metadevice (%s) is a bug. Advert tuple: (%s)",
                 self.__repr__(),
                 advert_tuple,
             )
@@ -512,7 +729,7 @@ class BermudaDevice(dict):
 
         if advert_tuple in self.adverts:
             # Device already exists, update it
-            self.adverts[advert_tuple].update_advertisement(advertisementdata)
+            self.adverts[advert_tuple].update_advertisement(advertisementdata, scanner_device)
             device_advert = self.adverts[advert_tuple]
         else:
             # Create it
@@ -522,9 +739,6 @@ class BermudaDevice(dict):
                 self.options,
                 scanner_device,
             )
-            # On first creation, we also want to copy our ref_power to it (but not afterwards,
-            # since a metadevice might take over that role later)
-            device_advert.ref_power = self.ref_power
 
         # Let's see if we should update our last_seen based on this...
         if device_advert.stamp is not None and self.last_seen < device_advert.stamp:
@@ -596,7 +810,17 @@ class BermudaDevice(dict):
         """Convert class to serialisable dict for dump_devices."""
         out = {}
         for var, val in vars(self).items():
-            if val in [self._coordinator, self._hascanner]:
+            if val is None:
+                # Catch the Nones first, as otherwise they might match some other objects below if
+                # they are None (like self._hascanner), which will prevent them showing at all.
+                out[var] = val
+                continue
+            if val in [self._coordinator, self.floor, self.area, self.ar, self.fr]:
+                # Objects to ignore completely.
+                continue
+            if val in [self._hascanner, self.area, self.floor, self.ar, self.fr]:
+                if hasattr(val, "__repr__"):
+                    out[var] = val.__repr__()
                 continue
             if val is self.adverts:
                 advertout = {}

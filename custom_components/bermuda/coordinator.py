@@ -39,6 +39,9 @@ from homeassistant.helpers import (
     entity_registry as er,
 )
 from homeassistant.helpers import (
+    floor_registry as fr,
+)
+from homeassistant.helpers import (
     issue_registry as ir,
 )
 from homeassistant.helpers.device_registry import (
@@ -91,7 +94,7 @@ from .const import (
     SIGNAL_SCANNERS_CHANGED,
     UPDATE_INTERVAL,
 )
-from .util import mac_explode_formats, mac_math_offset, mac_norm
+from .util import mac_explode_formats, mac_norm
 
 if TYPE_CHECKING:
     from habluetooth import BluetoothServiceInfoBleak
@@ -187,8 +190,11 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         self._scanners: set[BermudaDevice] = set()  # Set of all in self.devices that is_scanner=True
         self.irk_manager = BermudaIrkManager()
 
-        self._entity_registry = er.async_get(self.hass)
-        self._device_registry = dr.async_get(self.hass)
+        self.ar = ar.async_get(self.hass)
+        self.er = er.async_get(self.hass)
+        self.dr = dr.async_get(self.hass)
+        self.fr = fr.async_get(self.hass)
+        self.have_floors: bool = self.init_floors()
 
         self._scanners_without_areas: list[str] | None = None  # Tracks any proxies that don't have an area assigned.
 
@@ -263,26 +269,6 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         self.devices: dict[str, BermudaDevice] = {}
         # self.updaters: dict[str, BermudaPBDUCoordinator] = {}
 
-        self.area_reg = ar.async_get(hass)
-
-        # *** I don't think we need to do this, we generate the scanner list in realtime now,
-        # and we react to device registry changes.
-        #
-        # Restore the scanners saved in config entry data. We maintain
-        # a list of known scanners so we can
-        # restore the sensor states even if we don't have a full set of
-        # scanner receipts in the discovery data.
-        # self.scanner_list: list[str] = []
-        # if hasattr(entry, "data"):
-        #     for address, saved in entry.data.get(CONFDATA_SCANNERS, {}).items():
-        #         scanner = self._get_or_create_device(address)
-        #         for key, value in saved.items():
-        #             if key != "options":
-        #                 # We don't restore the options, since they may have changed.
-        #                 # the get_or_create will have grabbed the current ones.
-        #                 setattr(scanner, key, value)
-        #         self.scanner_list.append(address)
-
         # Register the dump_devices service
         hass.services.async_register(
             DOMAIN,
@@ -316,6 +302,16 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
     @property
     def get_scanners(self) -> set[BermudaDevice]:
         return self._scanners
+
+    def init_floors(self) -> bool:
+        """Check if the system has floors configured, and enable sensors."""
+        _have_floors: bool = False
+        for area in self.ar.async_list_areas():
+            if area.floor_id is not None:
+                _have_floors = True
+                break
+        _LOGGER.debug("Have_floors is %s", _have_floors)
+        return _have_floors
 
     def scanner_list_add(self, scanner_device: BermudaDevice):
         self._scanner_list.add(scanner_device.address)
@@ -377,7 +373,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             _name = self.company_uuids[uuid]
             _generic = False
         else:
-            return None, None
+            return (None, None)
         return (_name, _generic)
 
     async def async_load_manufacturer_ids(self):
@@ -402,38 +398,6 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             # Ensure that an issue reading these files (which are optional, really) doesn't stop the whole show.
             self._waitingfor_load_manufacturer_ids = False
 
-    # AJG 2025-04-23 - This is probably no longer necessary, since we now hook a callback
-    # directly in Private_ble_devices to get updates on new MAC addresses.
-    # The device_registry events should cover anything else we need.
-    # @callback
-    # def handle_state_changes(self, ev: Event[EventStateChangedData]):
-    #     """Watch for new mac addresses on private ble devices and act."""
-    #     if ev.event_type == EVENT_STATE_CHANGED:
-    #         event_entity = ev.data.get("entity_id", "invalid_event_entity")
-    #         if event_entity in self.pb_state_sources:
-    #             # It's a state change of an entity we are tracking.
-    #             new_state = ev.data.get("new_state")
-    #             if new_state:
-    #                 # _LOGGER.debug("New state change! %s", new_state)
-    #                 # check new_state.attributes.assumed_state
-    #                 if hasattr(new_state, "attributes"):
-    #                     new_address = new_state.attributes.get("current_address")
-    #                     if new_address is not None and new_address.lower() != self.pb_state_sources[event_entity]:
-    #                         _LOGGER.debug(
-    #                             "Have a new source address for %s, %s",
-    #                             event_entity,
-    #                             new_address,
-    #                         )
-    #                         self.pb_state_sources[event_entity] = new_address.lower()
-    #                         # Flag that we need new pb checks, and work them out:
-    #                         self._do_private_device_init = True
-    #                         # If no sensors have yet been configured, the coordinator
-    #                         # won't be getting polled for fresh data. Since we have
-    #                         # found something, we should get it to do that.
-    #                         # No longer using async_config_entry_first_refresh as it
-    #                         # breaks
-    #                         self.hass.add_job(self.async_refresh())
-
     @callback
     def handle_devreg_changes(self, ev: Event[EventDeviceRegistryUpdatedData]):
         """
@@ -442,16 +406,29 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         This catches area changes (on scanners) and any new/changed
         Private BLE Devices.
         """
-        _LOGGER.debug(
-            "Device registry has changed. ev: %s",
-            ev,
-        )
-        if ev.data["action"] in {"create", "update"}:
-            device_entry = self._device_registry.async_get(ev.data["device_id"])
-            # if this is an "update" we also get a "changes" dict, but we don't
-            # bother with it yet.
+        if ev.data["action"] == "update":
+            _LOGGER.debug("Device registry UPDATE. ev: %s changes: %s", ev, ev.data["changes"])
+        else:
+            _LOGGER.debug("Device registry has changed. ev: %s", ev)
 
-            if device_entry is not None:
+        device_id = ev.data.get("device_id")
+
+        if ev.data["action"] in {"create", "update"}:
+            if device_id is None:
+                _LOGGER.error("Received Device Registry create/update without a device_id. ev.data: %s", ev.data)
+                return
+
+            # First look for any of our devices that have a stored id on them, it'll be quicker.
+            for device in self.devices.values():
+                if device.entry_id == device_id:
+                    # We matched, most likely a scanner.
+                    if device.is_scanner:
+                        self._refresh_scanners(force=True)
+                        return
+            # Didn't match an existing, work through the connections etc.
+
+            # Pull up the device registry entry for the device_id
+            if device_entry := self.dr.async_get(ev.data["device_id"]):
                 # Work out if it's a device that interests us and respond appropriately.
                 for conn_type, _conn_id in device_entry.connections:
                     if conn_type == "private_ble_device":
@@ -482,7 +459,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         elif ev.data["action"] == "remove":
             device_found = False
             for scanner in self.get_scanners:
-                if scanner.entry_id == ev.data["device_id"]:
+                if scanner.entry_id == device_id:
                     _LOGGER.debug(
                         "Scanner %s removed, trigger update of scanners",
                         scanner.name,
@@ -669,6 +646,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         try:  # so we can still clean up update_in_progress
             nowstamp = monotonic_time_coarse()
 
+            # The main "get all adverts from the backend" part.
             result_gather_adverts = self._async_gather_advert_data()
 
             self.update_metadevices()
@@ -966,7 +944,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
             # pb here means "private ble device"
             pb_entries = self.hass.config_entries.async_entries(DOMAIN_PRIVATE_BLE_DEVICE, include_disabled=False)
             for pb_entry in pb_entries:
-                pb_entities = self._entity_registry.entities.get_entries_for_config_entry_id(pb_entry.entry_id)
+                pb_entities = self.er.entities.get_entries_for_config_entry_id(pb_entry.entry_id)
                 # This will be a list of entities for a given private ble device,
                 # let's pull out the device_tracker one, since it has the state
                 # info we need.
@@ -980,7 +958,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
                         # Grab the device entry (for the name, mostly)
                         if pb_entity.device_id is not None:
-                            pb_device = self._device_registry.async_get(pb_entity.device_id)
+                            pb_device = self.dr.async_get(pb_entity.device_id)
                         else:
                             pb_device = None
 
@@ -1246,7 +1224,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         Will return None if the area id does *not* resolve to a single
         known area name.
         """
-        areas = self.area_reg.async_get_area(area_id)
+        areas = self.ar.async_get_area(area_id)
         if hasattr(areas, "name"):
             return getattr(areas, "name", "invalid_area")
         return None
@@ -1327,7 +1305,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
     def _refresh_area_by_min_distance(self, device: BermudaDevice):
         """Very basic Area setting by finding closest proxy to a given device."""
         # The current area_scanner (which might be None) is the one to beat.
-        closest_advert: BermudaAdvert | None = device.area_scanner
+        closest_advert: BermudaAdvert | None = device.area_advert
 
         _max_radius = self.options.get(CONF_MAX_RADIUS, DEFAULT_MAX_RADIUS)
         nowstamp = monotonic_time_coarse()
@@ -1519,7 +1497,7 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
 
         _superchatty = False
 
-        if device.area_scanner != closest_advert and tests.reason is not None:
+        if device.area_advert != closest_advert and tests.reason is not None:
             device.diag_area_switch = tests.sensortext()
 
         # Apply the newly-found closest scanner (or apply None if we didn't find one)
@@ -1545,14 +1523,6 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
           - the scanner set has changed or
           - force=True or
           - self._force_full_scanner_init=True
-
-        This function also saves out the scanners list to the
-        config entry, but only if has changed *AND* we haven't tried to do so in the
-        last SAVEOUT_COOLDOWN seconds (10 seems to be enough). This is the reason
-        we still run this function on every update. We could probably schedule the
-        saveout task instead as long as we can bump it when required, then this task
-        can probably be run *only* when we see device registry changes on scanners,
-        or hook a callback on manager's hascanner activation/removal events.
         """
         _new_ha_scanners = set[BaseHaScanner]
         # Using new API in 2025.2
@@ -1568,230 +1538,19 @@ class BermudaDataUpdateCoordinator(DataUpdateCoordinator):
         self._async_purge_removed_scanners()
 
         # So we can raise a single repair listing all area-less scanners:
-        _scanners_without_areas = []
+        _scanners_without_areas: list[str] = []
 
         # Find active HaBaseScanners in the backend and treat that as our
         # authoritative source of truth.
         #
-        # scanner_ha: BaseHaScanner from HA's bluetooth backend
-        # scanner_devreg_bt: DeviceEntry from HA's device_registry from Bluetooth integration
-        # scanner_devreg_mac: DeviceEntry from HA's *other* integrations, like ESPHome, Shelly.
-        # scanner_b: BermudaDevice entry
-
         for hascanner in self._hascanners:
             scanner_address = mac_norm(hascanner.source)
-            scanner_b = self._get_or_create_device(scanner_address)
-            scanner_b.async_as_scanner_init(hascanner)
+            bermuda_scanner = self._get_or_create_device(scanner_address)
+            bermuda_scanner.async_as_scanner_init(hascanner)
 
-            # As of 2025.2.0 The bluetooth integration creates its own device entries
-            # for all HaScanners, not just local adaptors. So since there are two integration
-            # pages where a user might apply an area setting (eg, the bluetooth page or the shelly/esphome pages)
-            # we should check both to see if the user has applied an area (or name) anywhere, and
-            # prefer the bluetooth one if both are set.
-
-            # espressif devices have a base_mac
-            # https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/misc_system_api.html#local-mac-addresses
-            # base_mac (WiFi STA), +1 (AP), +2 (BLE), +3 (Ethernet)
-            # Also possible for them to use LocalMAC, where the AP and Ether MACs are derived from STA and BLE
-            # MACs, with first octet having bitvalue0x2 set, or if it was already, bitvalue0x4 XORd
-            #
-            # core Bluetooth now reports the BLE MAC address, while ESPHome (and maybe Shelly?) use
-            # the ethernet MAC for their connection links. We want both devices (if present) so that
-            # we can let the user apply name and area settings to either device.
-
-            connlist = set()  # For macthing against device_registry connections
-            maclist = set()  # For matching against device_registry identifier
-
-            # The device registry devices for the bluetooth and ESPHome/Shelly devices.
-            scanner_devreg_bt = None
-            scanner_devreg_mac = None
-            scanner_devreg_mac_address = None
-            scanner_devreg_bt_address = None
-
-            # We don't know which address is being reported/used. So create the full
-            # range of possible addresses, and see what we find in the device registry,
-            # on the *assumption* that there won't be overlap between devices.
-            for offset in range(-3, 3):
-                if (altmac := mac_math_offset(scanner_address, offset)) is not None:
-                    connlist.add(("bluetooth", altmac.upper()))
-                    connlist.add(("mac", altmac))
-                    maclist.add(altmac)
-
-            # Requires 2025.3
-            devreg_devices = self._device_registry.devices.get_entries(None, connections=connlist)
-            devreg_count = 0  # can't len() an iterable.
-            devreg_stringlist = ""  # for debug logging
-            for devreg_device in devreg_devices:
-                devreg_count += 1
-                # _LOGGER.debug("DevregScanner: %s", devreg_device)
-                devreg_stringlist += f"** {devreg_device.name_by_user or devreg_device.name}\n"
-                for conn in devreg_device.connections:
-                    if conn[0] == "bluetooth":
-                        # Bluetooth component's device!
-                        scanner_devreg_bt = devreg_device
-                        scanner_devreg_bt_address = conn[1].lower()
-                    if conn[0] == "mac":
-                        # ESPHome, Shelly
-                        scanner_devreg_mac = devreg_device
-                        scanner_devreg_mac_address = conn[1]
-
-            if devreg_count not in (1, 2, 3):
-                # We expect just the bt, or bt and another like esphome/shelly, or
-                # two bt's and shelly/esphome, the second bt being the alternate
-                # MAC address.
-                _LOGGER_SPAM_LESS.warning(
-                    f"multimatch_devreg_{hascanner.source}",
-                    "Unexpectedly got %d device registry matches for %s: %s\n",
-                    devreg_count,
-                    hascanner.name,
-                    devreg_stringlist,
-                )
-
-            if scanner_devreg_bt is None and scanner_devreg_mac is None:
-                _LOGGER_SPAM_LESS.error(
-                    f"scanner_not_in_devreg_{scanner_address:s}",
-                    "Failed to find scanner %s (%s) in Device Registry",
-                    hascanner.name,
-                    hascanner.source,
-                )
-                continue
-
-            # We found the device entry and have created our scannerdevice,
-            # now update any fields that might be new from the device reg.
-            # First clear the existing to make prioritising the bt/mac matches
-            # easier (feel free to refactor, bear in mind we prefer bt first)
-            scanner_b.area_id = None
-
-            _bt_name = None
-            _mac_name = None
-            _bt_name_by_user = None
-            _mac_name_by_user = None
-
-            if scanner_devreg_bt is not None:
-                scanner_b.area_id = scanner_devreg_bt.area_id
-                scanner_b.entry_id = scanner_devreg_bt.id
-                _bt_name_by_user = scanner_devreg_bt.name_by_user
-                _bt_name = scanner_devreg_bt.name
-            if scanner_devreg_mac is not None:
-                # Only apply if the bt device entry hasn't been applied:
-                scanner_b.area_id = scanner_b.area_id or scanner_devreg_mac.area_id
-                scanner_b.entry_id = scanner_b.entry_id or scanner_devreg_mac.id
-                _mac_name = scanner_devreg_mac.name
-                _mac_name_by_user = scanner_devreg_mac.name_by_user
-
-            # As of ESPHome 2025.3.0 (via aioesphomeapi 29.3.1) ESPHome proxies now
-            # report their BLE MAC address instead of their WIFI MAC in the hascanner
-            # details.
-            # To work around breaking the existing distance_to entities, retain the
-            # ESPHome / Shelly integration's MAC as the unique_id
-            scanner_b.unique_id = scanner_devreg_mac_address or scanner_devreg_bt_address or hascanner.source
-            scanner_b.address_ble_mac = scanner_devreg_bt_address or scanner_devreg_mac_address or hascanner.source
-            scanner_b.address_wifi_mac = scanner_devreg_mac_address
-
-            # Populate the possible metadevice source MACs so that we capture any
-            # data the scanner is sending (Shelly's already send broadcasts, and
-            # future ESPHome Bermuda templates will, too). We can't easily tell
-            # if our base address is the wifi mac, ble mac or ether mac, so whack
-            # 'em all in and let the loop sort it out.
-            for mac in (
-                scanner_b.address_ble_mac,  # BLE mac, if known
-                mac_math_offset(scanner_b.address_wifi_mac, 2),  # WIFI+2=BLE
-                mac_math_offset(scanner_b.address_wifi_mac, -1),  # ETHER-1=BLE
-            ):
-                if (
-                    mac is not None
-                    and mac not in scanner_b.metadevice_sources
-                    and mac != scanner_b.address  # because it won't need to be a metadevice
-                ):
-                    scanner_b.metadevice_sources.append(mac)
-
-            # Bluetooth integ names scanners by address, so prefer the source integration's
-            # autogenerated name over that.
-            scanner_b.name_devreg = _mac_name or _bt_name
-            # Bluetooth device reg is newer, so use the user-given name there if it exists.
-            scanner_b.name_by_user = _bt_name_by_user or _mac_name_by_user
-            # Apply any name changes.
-            scanner_b.make_name()
-
-            # Look up areas
-            areas = self.area_reg.async_get_area(scanner_b.area_id) if scanner_b.area_id else None
-            if areas is not None and hasattr(areas, "name") and areas.name is not None:
-                scanner_b.area_name = areas.name
-            else:
-                _LOGGER_SPAM_LESS.warning(
-                    f"no_area_on_update{scanner_b.name}",
-                    "No area name or no area id updating scanner %s, area_id %s",
-                    scanner_b.name,
-                    areas,
-                )
-                _scanners_without_areas.append(f"{scanner_b.name} [{scanner_b.address}]")
-                scanner_b.area_name = f"Invalid Area for {scanner_b.name}"
-
+            if bermuda_scanner.area_id is None:
+                _scanners_without_areas.append(f"{bermuda_scanner.name} [{bermuda_scanner.address}]")
         self._async_manage_repair_scanners_without_areas(_scanners_without_areas)
-
-    #     return self._async_saveout_scanner_config()
-
-    # def _async_saveout_scanner_config(self) -> bool:
-    #     """
-    #     Check if the scanner config has changed and save out to config_entry.
-
-    #     Currently called on every update so it can choose when to do the actual
-    #     saveout (which needs to be debounced). Should ultimately replace it with
-    #     a cancellable scheduled task so we can bump it if desired and not have
-    #     to poll for when to run it.
-
-    #     Returns False if it can't do something it wants to, which should result
-    #     in the caller trying it again next time around.
-    #     """
-    #     # bail out if the config entry isn't ready yet.
-    #     if self.config_entry is None or self.config_entry.state != ConfigEntryState.LOADED:
-    #         # _LOGGER.debug("Aborting refresh scanners due to config entry not being ready")
-    #         self._do_full_scanner_init = True
-    #         return False
-
-    #     # Build the config_data and self.scanner_list structs fresh
-    #     # ready to update our config entry if needed.
-    #     self.scanner_list.clear()
-    #     confdata_scanners: dict[str, dict] = {}
-    #     for device in self.devices.values():
-    #         if device.is_scanner:
-    #             self.scanner_list.append(device.address)
-    #             # Only add the necessary fields to confdata
-    #             confdata_scanners[device.address] = {
-    #                 key: getattr(device, key)
-    #                 for key in [
-    #                     "name",
-    #                     "name_devreg",
-    #                     "name_by_user",
-    #                     "address",
-    #                     "ref_power",
-    #                     "unique_id",
-    #                     "address_type",
-    #                     "area_id",
-    #                     "area_name",
-    #                     "is_scanner",
-    #                     "entry_id",
-    #                 ]
-    #             }
-
-    #     if self.config_entry.data.get(CONFDATA_SCANNERS, {}) == confdata_scanners:
-    #         # **** BAIL OUT, CONFIG HAS NOT CHANGED ****
-    #         # _LOGGER.debug("Scanner configs are identical, not doing update.")
-    #         self._do_full_scanner_init = False
-    #         return True
-
-    #     # We will arrive here every second for as long as the saved config is
-    #     # different from our running config. But we don't want to save immediately,
-    #     # since there is a lot of bouncing that happens during setup.
-
-    #     # Make sure we haven't requested recently...
-    #     if self.last_config_entry_update_request < monotonic_time_coarse() - SAVEOUT_COOLDOWN:
-    #         # OK, we're good to go.
-    #         self.last_config_entry_update_request = monotonic_time_coarse()
-    #         _LOGGER.debug("Requesting save-out of scanner configs")
-    #         self.hass.add_job(self.async_call_update_entry, confdata_scanners)
-    #         return True
-    #     return False
 
     def _async_purge_removed_scanners(self):
         """Demotes any devices that are no longer scanners based on new self.hascanners."""
