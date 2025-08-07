@@ -174,6 +174,7 @@ class CloudflareSpeedTestSensor(
     entity_description: CloudflareSpeedTestSensorEntityDescription
     _attr_attribution = ATTRIBUTION
     _attr_has_entity_name = True
+    _attr_force_update = True
 
     def __init__(
         self,
@@ -220,3 +221,12 @@ class CloudflareSpeedTestSensor(
             )
 
         return self._attrs
+
+    @property
+    def available(self) -> bool:
+        """Keep entity available during coordinator refresh if we have prior data."""
+
+        base_available = super().available
+        have_prior_data = self._state is not None or bool(self.coordinator.data)
+
+        return base_available or have_prior_data
