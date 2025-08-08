@@ -1,0 +1,15 @@
+---
+platform: rest
+name: "[Lightning] Latest Strike Area"
+resource_template: >-
+  https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={{ state_attr(states('sensor.latest_lightning_strike_entity_id'), 'latitude') }},{{ state_attr(states('sensor.latest_lightning_strike_entity_id'), 'longitude') }}
+headers:
+  User-Agent: HomeAssistant/1.0
+value_template: >
+  {{ value_json.address.suburb
+      or value_json.address.city
+      or value_json.address.town
+      or value_json.address.village
+      or value_json.address.state
+      or value_json.display_name }}
+scan_interval: 3600
