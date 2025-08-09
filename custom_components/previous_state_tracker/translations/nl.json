@@ -1,0 +1,50 @@
+{
+    "title": "Previous State Tracker",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Stel de Previous State Tracker in",
+                "description": "Selecteer de entiteit waarvan je de vorige status in de gaten wilt houden.",
+                "data": {
+                    "entity_id": "Entiteit"
+                }
+            },
+            "options": {
+                "title": "Configureer de sensor",
+                "data": {
+                    "name": "Naam voor de nieuwe sensor",
+                    "ignore_unknown": "Negeer de status 'onbekend'",
+                    "ignore_unavailable": "Negeer de status 'niet beschikbaar'"
+                }
+            }
+        },
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Pas de opties aan voor de Previous State Tracker",
+                "data": {
+                    "ignore_unknown": "Negeer de status 'onbekend'",
+                    "ignore_unavailable": "Negeer de status 'niet beschikbaar'"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "previous_state": {
+                "state": {
+                    "unavailable": "Onbeschikbaar (bron-entiteit niet gevonden)"
+                },
+                "state_attributes": {
+                    "last_changed": {
+                        "name": "Laatste Wijziging"
+                    }
+                }
+            }
+        }
+    }
+}

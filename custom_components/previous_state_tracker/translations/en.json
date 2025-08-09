@@ -1,0 +1,50 @@
+{
+    "title": "Previous State Tracker",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Set up the Previous State Tracker",
+                "description": "Select the entity for which you want to track the previous state.",
+                "data": {
+                    "entity_id": "Entity"
+                }
+            },
+            "options": {
+                "title": "Configure the Sensor",
+                "data": {
+                    "name": "Name for the new sensor",
+                    "ignore_unknown": "Ignore the 'unknown' state",
+                    "ignore_unavailable": "Ignore the 'unavailable' state"
+                }
+            }
+        },
+        "abort": {
+            "already_configured": "Device is already configured"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Adjust options for the Previous State Tracker",
+                "data": {
+                    "ignore_unknown": "Ignore the 'unknown' state",
+                    "ignore_unavailable": "Ignore the 'unavailable' state"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "previous_state": {
+                "state": {
+                    "unavailable": "Unavailable (source entity not found)"
+                },
+                "state_attributes": {
+                    "last_changed": {
+                        "name": "Last Changed"
+                    }
+                }
+            }
+        }
+    }
+}

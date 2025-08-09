@@ -1,0 +1,13 @@
+{
+    "domain": "previous_state_tracker",
+    "name": "Previous State Tracker",
+    "codeowners": ["@klaptafel"],
+    "config_flow": true,
+    "dependencies": [],
+    "documentation": "https://github.com/klaptafel/ha-previous-state-tracker",
+    "integration_type": "helper",
+    "iot_class": "local_push",
+    "issue_tracker": "https://github.com/klaptafel/ha-previous-state-tracker/issues",
+    "requirements": [],
+    "version": "1.0.0"
+}
