@@ -53,6 +53,7 @@ XIAOMI_TYPE_DICT = {
     0x045C: "V-SK152",
     0x040A: "WX08ZM",
     0x04E1: "XMMF01JQD",
+    0x4683: "XMOSB01XS",
     0x1203: "XMWSDJ04MMC",
     0x1949: "XMWXKG01YL",
     0x2387: "XMWXKG01LM",
@@ -817,14 +818,22 @@ def obj4840(xobj):
     return {"pressure not present time set": duration}
 
 
-def obj484e(xobj):
+def obj484e(xobj, device_type=None):
     """Occupancy Status"""
     (occupancy,) = struct.unpack("<B", xobj)
-    if occupancy == 0:
-        # no motion is being taken care of by the timer in HA
-        return {}
+    # For ES3 and XMOSB01XS: This sensor is being treated as an occupancy sensor
+    if device_type in ["ES3", "XMOSB01XS"]:
+        if occupancy == 0:
+            return {"occupancy": 0}
+        else:
+            return {"occupancy": 1}
     else:
-        return {"motion": 1, "motion timer": 1}
+        # For other devices: This sensor is being treated as a motion sensor and will be using the timer in
+        # of ble_monitor to set "no motion" state
+        if occupancy == 0:
+            return {}
+        else:
+            return {"motion": 1, "motion timer": 1}
 
 
 def obj484f(xobj):
@@ -843,6 +852,18 @@ def obj4850(xobj):
     (motion_time,) = struct.unpack("<B", xobj)
     # minutes with motion (not used, we use motion timer in obj484e)
     return {"motion time": motion_time}
+
+
+def obj4851(xobj):
+    """From miot-spec: has-someone-duration: uint8: 2 - 2 minutes, 5 - 5 minutes (not used)"""
+    (duration,) = struct.unpack("<I", xobj)
+    return {"duration occupancy detected": duration}
+
+
+def obj4852(xobj):
+    """From miot-spec: no-one-duration: uint8: 2/5/10/30 - 2/5/10/30 minutes (not used)"""
+    (duration,) = struct.unpack("<I", xobj)
+    return {"duration no occupancy detected": duration}
 
 
 def obj4a01(xobj):
@@ -1328,6 +1349,8 @@ xiaomi_dataobject_dict = {
     0x484e: obj484e,
     0x484f: obj484f,
     0x4850: obj4850,
+    0x4851: obj4851,
+    0x4852: obj4852,
     0x4a01: obj4a01,
     0x4a08: obj4a08,
     0x4a0c: obj4a0c,
@@ -1554,6 +1577,7 @@ def parse_xiaomi(self, data: bytes, mac: bytes):
                         "0x1001",
                         "0xf",
                         "0xb",
+                        "0x484e",
                         "0x4e0c",
                         "0x4e0d",
                         "0x4e0e",
