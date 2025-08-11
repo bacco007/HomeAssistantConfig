@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.13.0";
+var version = "0.14.1";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -665,6 +665,25 @@ var DesktopPosition;
   DesktopPosition2["bottom"] = "bottom";
   DesktopPosition2["right"] = "right";
 })(DesktopPosition ||= {});
+var DEFAULT_NAVBAR_CONFIG = {
+  routes: [],
+  template: undefined,
+  layout: {
+    auto_padding: {
+      enabled: true,
+      desktop_px: 100,
+      mobile_px: 80
+    }
+  },
+  desktop: {
+    show_labels: false,
+    min_width: 768,
+    position: "bottom" /* bottom */
+  },
+  mobile: {
+    show_labels: false
+  }
+};
 
 // src/utils.ts
 var mapStringToEnum = (enumType, value) => {
@@ -745,6 +764,59 @@ var forceResetRipple = (target) => {
       ripple.pressed = false;
     }, 10);
   });
+};
+var findHuiRoot = () => {
+  return window.document.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-panel-lovelace")?.shadowRoot?.querySelector("hui-root");
+};
+var forceDashboardPadding = (options) => {
+  const autoPaddingEnabled = options?.auto_padding?.enabled ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.enabled;
+  const huiRoot = findHuiRoot();
+  if (!huiRoot?.shadowRoot) {
+    console.warn("[navbar-card] Could not find hui-root. Custom padding styles will not be applied.");
+    return;
+  }
+  const styleId = "navbar-card-forced-padding-styles";
+  let styleEl = huiRoot.shadowRoot.querySelector(`#${styleId}`);
+  if (!autoPaddingEnabled) {
+    if (styleEl) {
+      styleEl.remove();
+    }
+    return;
+  }
+  const desktopMinWidth = options?.desktop?.min_width ?? 768;
+  const mobileMaxWidth = desktopMinWidth - 1;
+  let cssText = "";
+  const desktopPaddingPx = options?.auto_padding?.desktop_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.desktop_px;
+  const desktopPadding = options?.desktop?.position === "left" ? `padding-left: ${desktopPaddingPx}px !important;` : options?.desktop?.position === "right" ? `padding-right: ${desktopPaddingPx}px !important;` : undefined;
+  if (desktopPadding) {
+    cssText += `
+        @media (min-width: ${desktopMinWidth}px) {
+          :not(.edit-mode) > #view {
+            ${desktopPadding}
+          }
+        }
+      `;
+  }
+  const mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px;
+  cssText += `
+      @media (max-width: ${mobileMaxWidth}px) {
+        :not(.edit-mode) > hui-view:after {
+          content: "";
+          display: block;
+          height: ${mobilePaddingPx}px;
+          width: 100%;
+          background-color: transparent; 
+        }
+      }
+    `;
+  if (!styleEl) {
+    styleEl = document.createElement("style");
+    styleEl.id = styleId;
+    styleEl.textContent = cssText;
+    huiRoot.shadowRoot.appendChild(styleEl);
+  } else {
+    styleEl.textContent = cssText;
+  }
 };
 
 // src/styles.ts
@@ -1061,6 +1133,15 @@ var POPUP_STYLES = i`
     background: var(--navbar-background-color);
     box-shadow: var(--navbar-box-shadow-desktop);
   }
+
+  .popup-item.active {
+    --icon-primary-color: var(--navbar-primary-color);
+  }
+
+  .popup-item.active .button {
+    color: var(--navbar-primary-color);
+    background: color-mix(in srgb, var(--navbar-primary-color) 30%, white);
+  }
 `;
 var getDefaultStyles = () => {
   return i`
@@ -1360,6 +1441,11 @@ class NavbarCard extends i4 {
         throw new Error('"double_tap_action" must have an "action" property');
       }
     });
+    forceDashboardPadding({
+      desktop: config.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
+      mobile: config.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
+      auto_padding: config.layout?.auto_padding ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding
+    });
     this._config = config;
   }
   static getStubConfig() {
@@ -1589,6 +1675,7 @@ class NavbarCard extends i4 {
         "
         style="${style}">
         ${popupItems.map((popupItem, index) => {
+      const isActive = popupItem.selected != null ? processTemplate(this.hass, this, popupItem.selected) : window.location.pathname == popupItem.url;
       const isHidden = processTemplate(this.hass, this, popupItem.hidden);
       if (isHidden) {
         return null;
@@ -1599,11 +1686,12 @@ class NavbarCard extends i4 {
               popup-item 
               ${popupDirectionClassName}
               ${labelPositionClassName}
+              ${isActive ? "active" : ""}
             "
               style="--index: ${index}"
               @click=${(e5) => this._handlePointerUp(e5, popupItem, true)}>
               <div class="button">
-                ${this._getRouteIcon(popupItem, false)}
+                ${this._getRouteIcon(popupItem, isActive)}
                 <md-ripple></md-ripple>
               </div>
               ${label ? x`<div class="label">${label}</div>` : x``}
@@ -1742,6 +1830,14 @@ class NavbarCard extends i4 {
         hapticFeedback();
       }
       fireDOMEvent(this, "hass-toggle-menu", { bubbles: true, composed: true });
+    } else if (action?.action === "show-notifications") {
+      if (this._shouldTriggerHaptic(actionType)) {
+        hapticFeedback();
+      }
+      fireDOMEvent(this, "hass-show-notifications", {
+        bubbles: true,
+        composed: true
+      });
     } else if (action?.action === "navigate-back") {
       if (this._shouldTriggerHaptic(actionType, true)) {
         hapticFeedback();
