@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import Set, Tuple
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, callback, State
 from homeassistant.helpers import entity_registry as er, device_registry as dr
-from homeassistant.helpers.entity import DeviceInfo, EntityCategory # <-- NIEUWE IMPORT
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event, EventStateChangedData
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -29,8 +29,23 @@ async def async_setup_entry(
     name = config["name"]
     ignore_unknown = config.get(CONF_IGNORE_UNKNOWN, True)
     ignore_unavailable = config.get(CONF_IGNORE_UNAVAILABLE, True)
-    device_id = config.get("device_id")
+    
+    source_unit: str | None = None
+    source_device_class: SensorDeviceClass | None = None
+    source_state_class: SensorStateClass | None = None
 
+    # --- NIEUW: Controleer of de bron een sensor is ---
+    source_state = hass.states.get(entity_id)
+    if source_state and entity_id.startswith("sensor."):
+        source_unit = source_state.attributes.get("unit_of_measurement")
+        source_device_class = source_state.attributes.get("device_class")
+        source_state_class = source_state.attributes.get("state_class")
+    # -----------------------------------------------
+    
+    entity_registry = er.async_get(hass)
+    source_entity_entry = entity_registry.async_get(entity_id)
+    device_id = source_entity_entry.device_id if source_entity_entry else None
+    
     device_identifiers: Set[Tuple[str, str]] | None = None
     if device_id:
         device_registry = dr.async_get(hass)
@@ -45,7 +60,10 @@ async def async_setup_entry(
         ignore_unknown=ignore_unknown,
         ignore_unavailable=ignore_unavailable,
         unique_id=config_entry.entry_id,
-        device_identifiers=device_identifiers
+        device_identifiers=device_identifiers,
+        unit_of_measurement=source_unit,
+        device_class=source_device_class,
+        state_class=source_state_class,
     )
     async_add_entities([sensor])
 
@@ -54,7 +72,7 @@ class PreviousStateSensor(SensorEntity, RestoreEntity):
     _attr_should_poll = False
     _attr_icon = "mdi:history"
     _attr_translation_key = "previous_state"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC # <-- TOEGEVOEGDE REGEL
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(
         self,
@@ -64,7 +82,10 @@ class PreviousStateSensor(SensorEntity, RestoreEntity):
         ignore_unknown: bool,
         ignore_unavailable: bool,
         unique_id: str,
-        device_identifiers: Set[Tuple[str, str]] | None
+        device_identifiers: Set[Tuple[str, str]] | None,
+        unit_of_measurement: str | None,
+        device_class: SensorDeviceClass | None,
+        state_class: SensorStateClass | None,
     ) -> None:
         self.hass = hass
         self._tracked_entity_id = entity_id
@@ -77,6 +98,10 @@ class PreviousStateSensor(SensorEntity, RestoreEntity):
             "tracked_entity_id": entity_id,
             "last_changed": None,
         }
+
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_device_class = device_class
+        self._attr_state_class = state_class
 
         if device_identifiers:
             self._attr_device_info = DeviceInfo(
