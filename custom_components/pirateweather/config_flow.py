@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from datetime import timedelta
 
-import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+from aiohttp import ClientError
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -24,12 +24,13 @@ from homeassistant.const import (
     CONF_SCAN_INTERVAL,
 )
 from homeassistant.core import callback
-from httpx import HTTPError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     ALL_CONDITIONS,
     CONF_ENDPOINT,
     CONF_LANGUAGE,
+    CONF_MODELS,
     CONF_UNITS,
     CONFIG_FLOW_VERSION,
     DEFAULT_ENDPOINT,
@@ -87,6 +88,7 @@ class PirateWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(
                     LANGUAGES
                 ),
+                vol.Optional(CONF_MODELS, default=""): str,
                 vol.Optional(CONF_FORECAST, default=""): str,
                 vol.Optional(CONF_HOURLY_FORECAST, default=""): str,
                 vol.Optional(CONF_MONITORED_CONDITIONS, default=[]): cv.multi_select(
@@ -141,7 +143,7 @@ class PirateWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
                         "Invalid API Key, Ensure that you've subscribed to API at https://pirate-weather.apiable.io/"
                     )
 
-            except HTTPError:
+            except ClientError:
                 _LOGGER.warning(
                     "Pirate Weather Setup Error: API HTTP Error: %s", api_status
                 )
@@ -265,6 +267,15 @@ class PirateWeatherOptionsFlow(OptionsFlow):
                     ),
                 ): vol.In(LANGUAGES),
                 vol.Optional(
+                    CONF_MODELS,
+                    default=str(
+                        self.config_entry.options.get(
+                            CONF_MODELS,
+                            self.config_entry.data.get(CONF_MODELS, ""),
+                        ),
+                    ),
+                ): str,
+                vol.Optional(
                     CONF_FORECAST,
                     default=str(
                         self.config_entry.options.get(
@@ -319,8 +330,6 @@ class PirateWeatherOptionsFlow(OptionsFlow):
 async def _is_pw_api_online(hass, api_key, lat, lon, endpoint):
     forecastString = endpoint + "/forecast/" + api_key + "/" + str(lat) + "," + str(lon)
 
-    async with (
-        aiohttp.ClientSession(raise_for_status=False) as session,
-        session.get(forecastString) as resp,
-    ):
+    session = async_get_clientsession(hass)
+    async with session.get(forecastString) as resp:
         return resp.status

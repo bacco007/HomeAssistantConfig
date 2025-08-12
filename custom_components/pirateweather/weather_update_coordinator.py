@@ -1,12 +1,11 @@
 """Weather data coordinator for the Pirate Weather service."""
 
-import json
 import logging
-from http.client import HTTPException
 
-import aiohttp
 import async_timeout
+from aiohttp import ClientError
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -30,8 +29,10 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         scan_interval,
         language,
         endpoint,
+        units,
         hass,
         config_entry: ConfigEntry,
+        models: str | None,
     ):
         """Initialize coordinator."""
         self._api_key = api_key
@@ -40,7 +41,8 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         self.scan_interval = scan_interval
         self.language = language
         self.endpoint = endpoint
-        self.requested_units = "si"
+        self.requested_units = units or "si"
+        self.models = models
 
         self.data = None
         self.currently = None
@@ -62,7 +64,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         async with async_timeout.timeout(60):
             try:
                 data = await self._get_pw_weather()
-            except HTTPException as err:
+            except ClientError as err:
                 raise UpdateFailed(f"Error communicating with API: {err}") from err
         return data
 
@@ -94,16 +96,17 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             + "&lang="
             + self.language
         )
+        if self.models:
+            exclusions = ",".join(
+                m.strip() for m in self.models.split(",") if m.strip()
+            )
+            if exclusions:
+                forecastString += "&exclude=" + exclusions
 
-        async with (
-            aiohttp.ClientSession(raise_for_status=True) as session,
-            session.get(forecastString) as resp,
-        ):
-            resptext = await resp.text()
-            jsonText = json.loads(resptext)
+        session = async_get_clientsession(self.hass)
+        async with session.get(forecastString) as resp:
+            resp.raise_for_status()
+            jsonText = await resp.json()
             headers = resp.headers
-            status = resp.raise_for_status()
-
             _LOGGER.debug("Pirate Weather data update from: %s", self.endpoint)
-
-            return Forecast(jsonText, status, headers)
+            return Forecast(jsonText, resp, headers)
