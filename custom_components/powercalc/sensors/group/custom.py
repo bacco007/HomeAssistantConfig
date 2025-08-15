@@ -429,6 +429,7 @@ class GroupedSensor(BaseEntity, RestoreSensor, SensorEntity):
             self._rounding_digits = int(sensor_config.get(CONF_ENERGY_SENSOR_PRECISION, DEFAULT_ENERGY_SENSOR_PRECISION))
         else:
             self._rounding_digits = int(sensor_config.get(CONF_POWER_SENSOR_PRECISION, DEFAULT_POWER_SENSOR_PRECISION))
+        self._attr_suggested_display_precision = self._rounding_digits
         self._sensor_config = sensor_config
         if unique_id:
             self._attr_unique_id = unique_id
@@ -577,7 +578,7 @@ class GroupedSensor(BaseEntity, RestoreSensor, SensorEntity):
         if unit_of_measurement and self._attr_native_unit_of_measurement != unit_of_measurement:
             converter = UNIT_CONVERTERS[unit_of_measurement]
             convert = converter.converter_factory(unit_of_measurement, self._attr_native_unit_of_measurement)
-            value = convert(float(value))
+            value = str(convert(float(value)))
         try:
             return Decimal(value)
         except DecimalException as err:

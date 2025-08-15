@@ -129,7 +129,7 @@ from .const import (
     SensorType,
     UnitPrefix,
 )
-from .device_binding import attach_entities_to_source_device, bind_config_entry_to_device
+from .device_binding import attach_entities_to_source_device
 from .errors import (
     PowercalcSetupError,
     SensorAlreadyConfiguredError,
@@ -310,8 +310,6 @@ async def async_setup_entry(
 
     sensor_config = convert_config_entry_to_sensor_config(entry, hass)
 
-    bind_config_entry_to_device(hass, entry)
-
     if CONF_UNIQUE_ID not in sensor_config:
         sensor_config[CONF_UNIQUE_ID] = entry.unique_id
 
@@ -347,6 +345,8 @@ async def _async_setup_entities(
     except SensorConfigurationError as err:
         _LOGGER.error(err)
         return
+
+    await attach_entities_to_source_device(config_entry, entities.new, hass, None)
 
     entities_to_add = [entity for entity in entities.new if isinstance(entity, SensorEntity)]
     for entity in entities_to_add:
