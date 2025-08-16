@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.14.1";
+var version = "0.15.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -684,6 +684,97 @@ var DEFAULT_NAVBAR_CONFIG = {
     show_labels: false
   }
 };
+
+// src/dom-utils.ts
+var getNavbarTemplates = () => {
+  const lovelacePanel = document?.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-drawer partial-panel-resolver ha-panel-lovelace");
+  if (lovelacePanel) {
+    return lovelacePanel.lovelace.config["navbar-templates"];
+  }
+  return null;
+};
+var forceResetRipple = (target) => {
+  const rippleElements = target?.querySelectorAll("ha-ripple");
+  rippleElements.forEach((ripple) => {
+    setTimeout(() => {
+      ripple.hovered = false;
+      ripple.pressed = false;
+    }, 10);
+  });
+};
+var findHuiRoot = () => {
+  return window.document.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-panel-lovelace")?.shadowRoot?.querySelector("hui-root");
+};
+var forceDashboardPadding = (options) => {
+  const autoPaddingEnabled = options?.auto_padding?.enabled ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.enabled;
+  const huiRoot = findHuiRoot();
+  if (!huiRoot?.shadowRoot) {
+    console.warn("[navbar-card] Could not find hui-root. Custom padding styles will not be applied.");
+    return;
+  }
+  const styleId = "navbar-card-forced-padding-styles";
+  let styleEl = huiRoot.shadowRoot.querySelector(`#${styleId}`);
+  if (!autoPaddingEnabled) {
+    if (styleEl) {
+      styleEl.remove();
+    }
+    return;
+  }
+  const desktopMinWidth = options?.desktop?.min_width ?? 768;
+  const mobileMaxWidth = desktopMinWidth - 1;
+  let cssText = "";
+  const desktopPaddingPx = options?.auto_padding?.desktop_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.desktop_px;
+  if (["left", "right"].includes(options?.desktop?.position ?? "")) {
+    cssText += `
+      @media (min-width: ${desktopMinWidth}px) {
+       :not(.edit-mode) > #view {
+            padding-${options?.desktop?.position}: ${desktopPaddingPx}px !important;
+          }
+      }
+    `;
+  } else if (options?.desktop?.position === "bottom" || options?.desktop?.position === "top") {
+    cssText += `
+      @media (min-width: ${desktopMinWidth}px) {
+        :not(.edit-mode) > hui-view:${options?.desktop?.position === "top" ? "before" : "after"} {
+          content: "";
+          display: block;
+          height: ${desktopPaddingPx}px;  
+          width: 100%;
+          background-color: transparent; 
+        }
+      }
+    `;
+  }
+  const mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px;
+  cssText += `
+      @media (max-width: ${mobileMaxWidth}px) {
+        :not(.edit-mode) > hui-view:after {
+          content: "";
+          display: block;
+          height: ${mobilePaddingPx}px;
+          width: 100%;
+          background-color: transparent; 
+        }
+      }
+    `;
+  if (!styleEl) {
+    styleEl = document.createElement("style");
+    styleEl.id = styleId;
+    styleEl.textContent = cssText;
+    huiRoot.shadowRoot.appendChild(styleEl);
+  } else {
+    styleEl.textContent = cssText;
+  }
+};
+function fireDOMEvent(node, type, options, detailOverride, EventConstructor) {
+  const constructor = EventConstructor || Event;
+  const event = new constructor(type, options);
+  if (detailOverride !== undefined) {
+    event.detail = detailOverride;
+  }
+  node.dispatchEvent(event);
+  return event;
+}
 
 // src/utils.ts
 var mapStringToEnum = (enumType, value) => {
@@ -738,85 +829,8 @@ var processTemplate = (hass, navbar, template) => {
     return template;
   }
 };
-var fireDOMEvent = (node, type, options, detail) => {
-  const event = new Event(type, options ?? {});
-  event.detail = detail;
-  node.dispatchEvent(event);
-  return event;
-};
 var hapticFeedback = (hapticType = "selection") => {
   return fireDOMEvent(window, "haptic", undefined, hapticType);
-};
-
-// src/dom-utils.ts
-var getNavbarTemplates = () => {
-  const lovelacePanel = document?.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-drawer partial-panel-resolver ha-panel-lovelace");
-  if (lovelacePanel) {
-    return lovelacePanel.lovelace.config["navbar-templates"];
-  }
-  return null;
-};
-var forceResetRipple = (target) => {
-  const rippleElements = target?.querySelectorAll("ha-ripple");
-  rippleElements.forEach((ripple) => {
-    setTimeout(() => {
-      ripple.hovered = false;
-      ripple.pressed = false;
-    }, 10);
-  });
-};
-var findHuiRoot = () => {
-  return window.document.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-panel-lovelace")?.shadowRoot?.querySelector("hui-root");
-};
-var forceDashboardPadding = (options) => {
-  const autoPaddingEnabled = options?.auto_padding?.enabled ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.enabled;
-  const huiRoot = findHuiRoot();
-  if (!huiRoot?.shadowRoot) {
-    console.warn("[navbar-card] Could not find hui-root. Custom padding styles will not be applied.");
-    return;
-  }
-  const styleId = "navbar-card-forced-padding-styles";
-  let styleEl = huiRoot.shadowRoot.querySelector(`#${styleId}`);
-  if (!autoPaddingEnabled) {
-    if (styleEl) {
-      styleEl.remove();
-    }
-    return;
-  }
-  const desktopMinWidth = options?.desktop?.min_width ?? 768;
-  const mobileMaxWidth = desktopMinWidth - 1;
-  let cssText = "";
-  const desktopPaddingPx = options?.auto_padding?.desktop_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.desktop_px;
-  const desktopPadding = options?.desktop?.position === "left" ? `padding-left: ${desktopPaddingPx}px !important;` : options?.desktop?.position === "right" ? `padding-right: ${desktopPaddingPx}px !important;` : undefined;
-  if (desktopPadding) {
-    cssText += `
-        @media (min-width: ${desktopMinWidth}px) {
-          :not(.edit-mode) > #view {
-            ${desktopPadding}
-          }
-        }
-      `;
-  }
-  const mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px;
-  cssText += `
-      @media (max-width: ${mobileMaxWidth}px) {
-        :not(.edit-mode) > hui-view:after {
-          content: "";
-          display: block;
-          height: ${mobilePaddingPx}px;
-          width: 100%;
-          background-color: transparent; 
-        }
-      }
-    `;
-  if (!styleEl) {
-    styleEl = document.createElement("style");
-    styleEl.id = styleId;
-    styleEl.textContent = cssText;
-    huiRoot.shadowRoot.appendChild(styleEl);
-  } else {
-    styleEl.textContent = cssText;
-  }
 };
 
 // src/styles.ts
@@ -1810,56 +1824,90 @@ class NavbarCard extends i4 {
       this._executeAction(target, route, route.tap_action, "tap", isPopupItem);
     }
   };
+  _chooseKeyForQuickbar = (action) => {
+    switch (action.mode) {
+      case "devices":
+        return "d";
+      case "entities":
+        return "e";
+      case "commands":
+      default:
+        return "c";
+    }
+  };
   _executeAction = (target, route, action, actionType, isPopupItem = false) => {
     forceResetRipple(target);
     if (action?.action !== "open-popup" && isPopupItem) {
       this._closePopup();
     }
-    if (!isPopupItem && action?.action === "open-popup") {
-      const popupItems = route.popup ?? route.submenu;
-      if (!popupItems) {
-        console.error("No popup items found for route:", route);
-      } else {
+    switch (action?.action) {
+      case "open-popup":
+        if (!isPopupItem) {
+          const popupItems = route.popup ?? route.submenu;
+          if (!popupItems) {
+            console.error("No popup items found for route:", route);
+          } else {
+            if (this._shouldTriggerHaptic(actionType)) {
+              hapticFeedback();
+            }
+            this._openPopup(popupItems, target);
+          }
+        }
+        break;
+      case "toggle-menu":
         if (this._shouldTriggerHaptic(actionType)) {
           hapticFeedback();
         }
-        this._openPopup(popupItems, target);
-      }
-    } else if (action?.action === "toggle-menu") {
-      if (this._shouldTriggerHaptic(actionType)) {
-        hapticFeedback();
-      }
-      fireDOMEvent(this, "hass-toggle-menu", { bubbles: true, composed: true });
-    } else if (action?.action === "show-notifications") {
-      if (this._shouldTriggerHaptic(actionType)) {
-        hapticFeedback();
-      }
-      fireDOMEvent(this, "hass-show-notifications", {
-        bubbles: true,
-        composed: true
-      });
-    } else if (action?.action === "navigate-back") {
-      if (this._shouldTriggerHaptic(actionType, true)) {
-        hapticFeedback();
-      }
-      window.history.back();
-    } else if (action != null) {
-      if (this._shouldTriggerHaptic(actionType)) {
-        hapticFeedback();
-      }
-      setTimeout(() => {
-        fireDOMEvent(this, "hass-action", { bubbles: true, composed: true }, {
-          action: actionType,
-          config: {
-            [`${actionType}_action`]: action
-          }
+        fireDOMEvent(this, "hass-toggle-menu", {
+          bubbles: true,
+          composed: true
         });
-      }, 10);
-    } else if (actionType === "tap" && route.url) {
-      if (this._shouldTriggerHaptic(actionType, true)) {
-        hapticFeedback();
-      }
-      de(this, route.url);
+        break;
+      case "quickbar":
+        if (this._shouldTriggerHaptic(actionType)) {
+          hapticFeedback();
+        }
+        fireDOMEvent(this, "keydown", {
+          bubbles: true,
+          composed: true,
+          key: this._chooseKeyForQuickbar(action)
+        }, undefined, KeyboardEvent);
+        break;
+      case "show-notifications":
+        if (this._shouldTriggerHaptic(actionType)) {
+          hapticFeedback();
+        }
+        fireDOMEvent(this, "hass-show-notifications", {
+          bubbles: true,
+          composed: true
+        });
+        break;
+      case "navigate-back":
+        if (this._shouldTriggerHaptic(actionType, true)) {
+          hapticFeedback();
+        }
+        window.history.back();
+        break;
+      default:
+        if (action != null) {
+          if (this._shouldTriggerHaptic(actionType)) {
+            hapticFeedback();
+          }
+          setTimeout(() => {
+            fireDOMEvent(this, "hass-action", { bubbles: true, composed: true }, {
+              action: actionType,
+              config: {
+                [`${actionType}_action`]: action
+              }
+            });
+          }, 10);
+        } else if (actionType === "tap" && route.url) {
+          if (this._shouldTriggerHaptic(actionType, true)) {
+            hapticFeedback();
+          }
+          de(this, route.url);
+        }
+        break;
     }
   };
   render() {

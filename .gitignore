@@ -24,6 +24,7 @@ glances
 www/browserless
 .mypy_cache
 custom_icons
+gtfs_static_cache
 
 # Ignore File Extensions
 *.conf
