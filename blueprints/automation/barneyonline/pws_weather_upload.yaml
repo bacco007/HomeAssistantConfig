@@ -1,0 +1,347 @@
+blueprint:
+  name: PWS Weather Upload
+  description: "Upload weather data from Home Assistant to PWSWeather API. Refer to
+    `PWSweather-API_string_2020.txt` for a list of API parameters supported by PWSWeather.\nAs
+    a pre-requisite, add the following to your configuration.yaml: rest_command:\n
+    \ pws_upload:\n    url: \"{{ url }}\"\n    method: POST\n"
+  domain: automation
+  input:
+    ID:
+      name: Station ID
+      description: Your PWSWeather station ID (required)
+      selector:
+        text:
+          multiple: false
+          multiline: false
+      default: ''
+    PASSWORD:
+      name: API Key
+      description: Your PWSWeather API key (required)
+      selector:
+        text:
+          multiple: false
+          multiline: false
+      default: ''
+    tempf_entity:
+      name: Temperature Sensor
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - temperature
+          reorder: false
+          multiple: false
+      default: ''
+    humidity_entity:
+      name: Humidity Sensor
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - humidity
+          reorder: false
+          multiple: false
+      default: ''
+    baromin_entity:
+      name: Barometric Pressure Sensor
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - pressure
+          reorder: false
+          multiple: false
+      default: ''
+    winddir_entity:
+      name: Wind Direction/Angle (in Degrees)
+      selector:
+        entity:
+          domain:
+          - sensor
+          reorder: false
+          multiple: false
+      default: ''
+    windspeedmph_entity:
+      name: Wind Speed Sensor
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - wind_speed
+          reorder: false
+          multiple: false
+      default: ''
+    windgustmph_entity:
+      name: Wind Gust Sensor
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - wind_speed
+          reorder: false
+          multiple: false
+      default: ''
+    rainin_entity:
+      name: Hourly Rainfall (in millimeters or inches)
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - precipitation
+          reorder: false
+          multiple: false
+      default: ''
+    dailyrainin_entity:
+      name: Daily Rainfall (in millimeters or inches)
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - precipitation
+          reorder: false
+          multiple: false
+      default: ''
+    monthrainin_entity:
+      name: Monthly Rainfall (in millimeters or inches)
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - precipitation
+          reorder: false
+          multiple: false
+      default: ''
+    yearrainin_entity:
+      name: Yearly Rainfall (in millimeters or inches)
+      selector:
+        entity:
+          domain:
+          - sensor
+          device_class:
+          - precipitation
+          reorder: false
+          multiple: false
+      default: ''
+    weather_condition:
+      name: Weather Condition (e.g. -RA, +SN, SKC)
+      selector:
+        text:
+          multiple: false
+          multiline: false
+      default: ''
+    softwaretype:
+      name: Software Type
+      description: Sent as the `softwaretype` parameter.
+      selector:
+        text:
+          multiple: false
+          multiline: false
+      default: HomeAssistant
+    solarradiation_entity:
+      name: Solar Radiation Sensor (in W/m2)
+      selector:
+        entity:
+          domain:
+          - sensor
+          reorder: false
+          multiple: false
+      default: ''
+    UV_entity:
+      name: UV Index Sensor
+      selector:
+        entity:
+          domain:
+          - sensor
+          reorder: false
+          multiple: false
+      default: ''
+    calculate_dewpt:
+      name: Calculate Dew Point
+      description: Calculate dew point if temperature and humidity sensors are available.
+      selector:
+        boolean: {}
+      default: true
+    trigger_entities:
+      name: Trigger Entities
+      description: Entities to trigger the automation upon state changes (e.g., temperature,
+        humidity)
+      selector:
+        entity:
+          multiple: true
+          filter:
+          - domain:
+            - sensor
+          reorder: false
+      default: ''
+    rest_command_service:
+      name: REST Command Service
+      selector:
+        text:
+          multiple: false
+          multiline: false
+      default: rest_command.pws_upload
+    min_upload_interval:
+      name: Minimum Upload Interval (minutes)
+      description: 'Minimum number of minutes between uploads. Set to 0 to disable
+        throttling.
+
+        '
+      selector:
+        number:
+          min: 0.0
+          max: 60.0
+          mode: box
+          unit_of_measurement: minutes
+          step: 1.0
+      default: 0
+    enable_logging:
+      name: Enable Logging
+      description: Log upload attempts to `system_log`. The API key is never recorded.
+      selector:
+        boolean: {}
+      default: true
+  source_url: https://github.com/barneyonline/pwsweatherupload/blob/main/pws_weather_upload.yaml
+mode: single
+max_exceeded: silent
+trigger:
+- platform: state
+  entity_id: !input trigger_entities
+variables:
+  station_id: !input ID
+  station_key: !input PASSWORD
+  baromin_entity: !input baromin_entity
+  tempf_entity: !input tempf_entity
+  humidity_entity: !input humidity_entity
+  winddir_entity: !input winddir_entity
+  windspeedmph_entity: !input windspeedmph_entity
+  windgustmph_entity: !input windgustmph_entity
+  rainin_entity: !input rainin_entity
+  dailyrainin_entity: !input dailyrainin_entity
+  monthrainin_entity: !input monthrainin_entity
+  yearrainin_entity: !input yearrainin_entity
+  solarradiation_entity: !input solarradiation_entity
+  UV_entity: !input UV_entity
+  weather_condition: !input weather_condition
+  softwaretype: !input softwaretype
+  calculate_dewpt: !input calculate_dewpt
+  enable_logging: !input enable_logging
+  min_upload_interval: !input min_upload_interval
+  baromin: "{% if baromin_entity != '' and states(baromin_entity) is not none and
+    states(baromin_entity) not in ['unknown', 'unavailable'] %}\n  {% set unit = state_attr(baromin_entity,
+    'unit_of_measurement') %}\n  {% if unit == 'hPa' %}\n    {{ (states(baromin_entity)
+    | float) / 33.8639 }}\n  {% else %}\n    {{ states(baromin_entity) | float }}\n
+    \ {% endif %}\n{% else %}\n  none\n{% endif %}\n"
+  tempf: "{% if tempf_entity != '' and states(tempf_entity) is not none and states(tempf_entity)
+    not in ['unknown', 'unavailable'] %}\n  {% set unit = state_attr(tempf_entity,
+    'unit_of_measurement') %}\n  {% if unit == '°C' %}\n    {{ (states(tempf_entity)
+    | float) * 1.8 + 32 }}\n  {% else %}\n    {{ states(tempf_entity) | float }}\n
+    \ {% endif %}\n{% else %}\n  none\n{% endif %}\n"
+  humidity: "{% if humidity_entity != '' and states(humidity_entity) is not none and
+    states(humidity_entity) not in ['unknown', 'unavailable'] %}\n  {{ states(humidity_entity)
+    | float }}\n{% else %}\n  none\n{% endif %}\n"
+  winddir: "{% if winddir_entity != '' and states(winddir_entity) is not none and
+    states(winddir_entity) not in ['unknown', 'unavailable'] %}\n  {{ states(winddir_entity)
+    | float }}\n{% else %}\n  none\n{% endif %}\n"
+  windspeedmph: "{% if windspeedmph_entity != '' and states(windspeedmph_entity) is
+    not none and states(windspeedmph_entity) not in ['unknown', 'unavailable'] %}\n
+    \ {% set unit = state_attr(windspeedmph_entity, 'unit_of_measurement') %}\n  {%
+    if unit == 'km/h' %}\n    {{ (states(windspeedmph_entity) | float) * 0.621371
+    }}\n  {% else %}\n    {{ states(windspeedmph_entity) | float }}\n  {% endif %}\n{%
+    else %}\n  none\n{% endif %}\n"
+  windgustmph: "{% if windgustmph_entity != '' and states(windgustmph_entity) is not
+    none and states(windgustmph_entity) not in ['unknown', 'unavailable'] %}\n  {%
+    set unit = state_attr(windgustmph_entity, 'unit_of_measurement') %}\n  {% if unit
+    == 'km/h' %}\n    {{ (states(windgustmph_entity) | float) * 0.621371 }}\n  {%
+    else %}\n    {{ states(windgustmph_entity) | float }}\n  {% endif %}\n{% else
+    %}\n  none\n{% endif %}\n"
+  rainin: "{% if rainin_entity != '' and states(rainin_entity) is not none and states(rainin_entity)
+    not in ['unknown', 'unavailable'] %}\n  {% set unit = state_attr(rainin_entity,
+    'unit_of_measurement') %}\n  {% if unit == 'mm' %}\n    {{ (states(rainin_entity)
+    | float) * 0.0393701 }}\n  {% else %}\n    {{ states(rainin_entity) | float }}\n
+    \ {% endif %}\n{% else %}\n  none\n{% endif %}\n"
+  dailyrainin: "{% if dailyrainin_entity != '' and states(dailyrainin_entity) is not
+    none and states(dailyrainin_entity) not in ['unknown', 'unavailable'] %}\n  {%
+    set unit = state_attr(dailyrainin_entity, 'unit_of_measurement') %}\n  {% if unit
+    == 'mm' %}\n    {{ (states(dailyrainin_entity) | float) * 0.0393701 }}\n  {% else
+    %}\n    {{ states(dailyrainin_entity) | float }}\n  {% endif %}\n{% else %}\n
+    \ none\n{% endif %}\n"
+  monthrainin: "{% if monthrainin_entity != '' and states(monthrainin_entity) is not
+    none and states(monthrainin_entity) not in ['unknown', 'unavailable'] %}\n  {%
+    set unit = state_attr(monthrainin_entity, 'unit_of_measurement') %}\n  {% if unit
+    == 'mm' %}\n    {{ (states(monthrainin_entity) | float) * 0.0393701 }}\n  {% else
+    %}\n    {{ states(monthrainin_entity) | float }}\n  {% endif %}\n{% else %}\n
+    \ none\n{% endif %}\n"
+  yearrainin: "{% if yearrainin_entity != '' and states(yearrainin_entity) is not
+    none and states(yearrainin_entity) not in ['unknown', 'unavailable'] %}\n  {%
+    set unit = state_attr(yearrainin_entity, 'unit_of_measurement') %}\n  {% if unit
+    == 'mm' %}\n    {{ (states(yearrainin_entity) | float) * 0.0393701 }}\n  {% else
+    %}\n    {{ states(yearrainin_entity) | float }}\n  {% endif %}\n{% else %}\n  none\n{%
+    endif %}\n"
+  solarradiation: "{% if solarradiation_entity != '' and states(solarradiation_entity)
+    is not none and states(solarradiation_entity) not in ['unknown', 'unavailable']
+    %}\n  {{ states(solarradiation_entity) | float }}\n{% else %}\n  none\n{% endif
+    %}\n"
+  UV: "{% if UV_entity != '' and states(UV_entity) is not none and states(UV_entity)
+    not in ['unknown', 'unavailable'] %}\n  {{ states(UV_entity) | int }}\n{% else
+    %}\n  none\n{% endif %}\n"
+  weather: "{% if weather_condition != '' %}\n  {{ weather_condition }}\n{% else %}\n
+    \ none\n{% endif %}\n"
+  dewptf: "{% if calculate_dewpt and tempf != 'none' and humidity != 'none' and (humidity
+    | float) > 0 %}\n  {% set T = tempf | float %}\n  {% set RH = humidity | float
+    %}\n  {# Convert F to C for dew point calculation #}\n  {% set T_C = (T - 32)
+    / 1.8 %}\n  {% set A = 17.27 %}\n  {% set B = 237.7 %}\n  {# Calculate alpha using
+    the natural logarithm of RH/100 #}\n  {% set alpha = (A * T_C / (B + T_C)) + log(RH/100)
+    %}\n  {% set dewpt_C = (B * alpha) / (A - alpha) %}\n  {% set dewpt_F = (dewpt_C
+    * 1.8) + 32 %}\n  {{ dewpt_F }}\n{% else %}\n  none\n{% endif %}\n"
+  payload: "{% set data = namespace(sensors=[]) %} {% for i in [\n      ['ID', station_id],\n
+    \     ['PASSWORD', station_key],\n      ['dateutc', utcnow().strftime('%Y-%m-%d
+    %H:%M:%S')],\n      ['tempf', tempf],\n      ['humidity', humidity],\n      ['winddir',
+    winddir],\n      ['windspeedmph', windspeedmph],\n      ['windgustmph', windgustmph],\n
+    \     ['baromin', baromin],\n      ['dewptf', dewptf],\n      ['rainin', rainin],\n
+    \     ['dailyrainin', dailyrainin],\n      ['monthrainin', monthrainin],\n      ['yearrainin',
+    yearrainin],\n      ['solarradiation', solarradiation],\n      ['UV', UV],\n      ['weather',
+    weather],\n      ['softwaretype', softwaretype],\n      ['action', 'updateraw']\n
+    \   ] %}\n  {% if i[1] != 'none' and i[1] != '' %}\n    {% if i[0] == 'dateutc'
+    %}\n      {% set val = i[1] | replace(' ', '%20') %}\n      {% set data.sensors
+    = data.sensors + ['{}={}'.format(i[0] | urlencode, val)] %}\n    {% else %}\n
+    \     {% set data.sensors = data.sensors + ['{}={}'.format(i[0] | urlencode, i[1]
+    | urlencode)] %}\n    {% endif %}\n  {% endif %}\n{% endfor %} {{ data.sensors
+    | join('&') }}\n"
+condition:
+- condition: template
+  value_template: "{% if min_upload_interval | int == 0 %}\n  true\n{% else %}\n  {%
+    set last = state_attr(this.entity_id, 'last_triggered') %}\n  {% if last %}\n
+    \   {{ (as_timestamp(now()) - as_timestamp(last)) > (min_upload_interval | int
+    * 60) }}\n  {% else %}\n    true\n  {% endif %}\n{% endif %}\n"
+action:
+- alias: Check credentials and send data
+  if: '{{ station_id != '''' and station_key != '''' }}
+
+    '
+  then:
+  - service: !input rest_command_service
+    response_variable: resp
+    data:
+      url: https://pwsupdate.pwsweather.com/api/v1/submitwx?{{ payload }}
+  - if: '{{ enable_logging }}'
+    then:
+    - service: system_log.write
+      data:
+        level: info
+        message: 'Upload response {{ resp.status | default(''unknown'') }} from PWSWeather
+          API for Station ID {{ station_id }}.
+
+          '
+  else:
+  - service: system_log.write
+    data:
+      level: warning
+      message: Station ID or API Key not provided. PWSWeather upload skipped.

@@ -249,6 +249,19 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('average')|reject('has_value')|list|count }}"
 
+  - name: "[HA Connected Integration] aviationweather"
+    unique_id: ha_connected_integration_aviationweather
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/aviationweather/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('aviationweather')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+      entity_count: >
+        "{{ integration_entities('aviationweather')|list|count }}"
+      entity_broken_count: >
+        "{{ integration_entities('aviationweather')|select('has_value')|list|count }}"
+
   - name: "[HA Connected Integration] backup"
     unique_id: ha_connected_integration_backup
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -469,6 +482,19 @@ binary_sensor:
         "{{ integration_entities('derivative')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('derivative')|reject('has_value')|list|count }}"
+
+  - name: "[HA Connected Integration] docker_status"
+    unique_id: ha_connected_integration_docker_status
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/docker_status/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('docker_status')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+      entity_count: >
+        "{{ integration_entities('docker_status')|list|count }}"
+      entity_broken_count: >
+        "{{ integration_entities('docker_status')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] doomsday_clock"
     unique_id: ha_connected_integration_doomsday_clock
@@ -1419,19 +1445,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('pirateweather')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] playstation_network"
-    unique_id: ha_connected_integration_playstation_network
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/playstation_network/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('playstation_network')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('playstation_network')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('playstation_network')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] plex"
     unique_id: ha_connected_integration_plex
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -1600,6 +1613,19 @@ binary_sensor:
         "{{ integration_entities('radarr_upcoming_media')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('radarr_upcoming_media')|reject('has_value')|list|count }}"
+
+  - name: "[HA Connected Integration] remote_calendar"
+    unique_id: ha_connected_integration_remote_calendar
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/remote_calendar/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('remote_calendar')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+      entity_count: >
+        "{{ integration_entities('remote_calendar')|list|count }}"
+      entity_broken_count: >
+        "{{ integration_entities('remote_calendar')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] rest"
     unique_id: ha_connected_integration_rest
@@ -1847,6 +1873,19 @@ binary_sensor:
         "{{ integration_entities('sql_json')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('sql_json')|reject('has_value')|list|count }}"
+
+  - name: "[HA Connected Integration] starlink"
+    unique_id: ha_connected_integration_starlink
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/starlink/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('starlink')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+      entity_count: >
+        "{{ integration_entities('starlink')|list|count }}"
+      entity_broken_count: >
+        "{{ integration_entities('starlink')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] start_time"
     unique_id: ha_connected_integration_start_time
@@ -2121,6 +2160,19 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('unifi_insights')|reject('has_value')|list|count }}"
 
+  - name: "[HA Connected Integration] unifi_site_manager"
+    unique_id: ha_connected_integration_unifi_site_manager
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/unifi_site_manager/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('unifi_site_manager')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+      entity_count: >
+        "{{ integration_entities('unifi_site_manager')|list|count }}"
+      entity_broken_count: >
+        "{{ integration_entities('unifi_site_manager')|select('has_value')|list|count }}"
+
   - name: "[HA Connected Integration] universal"
     unique_id: ha_connected_integration_universal
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -2289,6 +2341,19 @@ binary_sensor:
         "{{ integration_entities('webostv')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('webostv')|reject('has_value')|list|count }}"
+
+  - name: "[HA Connected Integration] whoop"
+    unique_id: ha_connected_integration_whoop
+    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
+    picture: https://brands.home-assistant.io/whoop/icon.png
+    device_class: connectivity
+    state: "{{ integration_entities('whoop')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant_connectivity
+      entity_count: >
+        "{{ integration_entities('whoop')|list|count }}"
+      entity_broken_count: >
+        "{{ integration_entities('whoop')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] withings"
     unique_id: ha_connected_integration_withings
