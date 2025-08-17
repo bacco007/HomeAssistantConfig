@@ -5,11 +5,25 @@ const threshold_default_number = [
   { value: 100, color: '#FF8A65' }  // hot
 ];
 const threshold_default_boolean = [
-  { value: 0, color: '#4FC3F7' },  // cold
-  { value: 1, color: '#FF8A65' },  // hot
+  { value: 0, color: '#636363' },  // off
+  { value: 1, color: '#EEEEEE' },  // on
 ];
 
 class waterfallHistoryCard extends HTMLElement {
+  // FIX: Hardcoded default domain icons
+  DEFAULT_DOMAIN_ICONS = {
+    sensor: "mdi:gauge",
+    binary_sensor: "mdi:eye",
+    switch: "mdi:toggle-switch",
+    light: "mdi:lightbulb",
+    climate: "mdi:thermostat",
+    lock: "mdi:lock",
+    cover: "mdi:window-shutter",
+    media_player: "mdi:play-circle",
+    person: "mdi:account",
+    device_tracker: "mdi:map-marker",
+  };
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -42,7 +56,11 @@ class waterfallHistoryCard extends HTMLElement {
   }
 
   setConfig(config) {
-    if (!config.entities || !Array.isArray(config.entities) || config.entities.length === 0) {
+    // FIX: ensure config object exists before accessing properties
+    this.config = this.config || {};
+    // FIX: add show_icons option (default true)
+    this.config.show_icons = (config.show_icons !== false);
+if (!config.entities || !Array.isArray(config.entities) || config.entities.length === 0) {
       throw new Error('Please define a list of entities.');
     }
 
@@ -166,6 +184,11 @@ class waterfallHistoryCard extends HTMLElement {
   renderCard(processedHistories) {
     this.shadowRoot.innerHTML = `
       <style>
+        /* FIX: Keep icon+name on the left, value on the right */
+        .entity-header { display: flex; align-items: center; gap: 8px; }
+        .current-value { margin-left: auto; }
+        .entity-icon { width: 20px; height: 20px; }
+
         :host {
           padding: 16px;
           background: var(--ha-card-background, var(--card-background-color, #fff));
@@ -250,7 +273,20 @@ class waterfallHistoryCard extends HTMLElement {
         if (!entity) return `<div class="error">Entity not found: ${entityId}</div>`;
 
         const name = entityConfig.name || entity.attributes.friendly_name || entityId;
-        const history = [...(processedHistories[entityId] || [])];
+                // FIX: derive icon per-entity if provided on the state
+        // FIX: resolve icon per entity with domain fallback
+        let icon = null;
+        if (entity.attributes && entity.attributes.icon) {
+          icon = entity.attributes.icon;
+        } else {
+          const domain = entityId.split('.')[0];
+          icon = this.DEFAULT_DOMAIN_ICONS[domain] || 'mdi:bookmark';
+        }
+        // FIX: resolve show_icons safely even if this.config is not yet defined
+        const globalShowIcons = (this && this.config && this.config.show_icons !== undefined) ? this.config.show_icons : true;
+        const perEntityShowIcons = (entityConfig.show_icons !== undefined) ? entityConfig.show_icons : globalShowIcons;
+        const iconHtml = (perEntityShowIcons && icon) ? `<ha-icon class="entity-icon" icon="${icon}"></ha-icon>` : '';
+const history = [...(processedHistories[entityId] || [])];
         const current = this.parseState(entity.state);
         history.push(current);
         
@@ -263,8 +299,9 @@ class waterfallHistoryCard extends HTMLElement {
         const intervals = entityConfig.intervals ?? this.config.intervals;
         
         return `
-          <div class="entity-container" data-entity-id="${entityId}" @click="${() => this.openMoreInfo(entityId)}">
+          <div class="entity-container" data-entity-id="${entityId}" >
             <div class="entity-header">
+              ${iconHtml}
               <span class="entity-name">${name}</span>
               ${showCurrent ? `<span class="current-value" data-entity="${entityId}">${this.displayState(current, entityConfig)}</span>` : ''}
             </div>
@@ -298,7 +335,28 @@ class waterfallHistoryCard extends HTMLElement {
     customElements.whenDefined("card-mod").then((cardMod) => {
       cardMod.applyToElement(this, "card", this.config.card_mod);
     });
-  }
+  
+    // Attach real click handlers for More Info (HA)
+    const containers = this.shadowRoot.querySelectorAll('.entity-container');
+    containers.forEach((el) => {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', (ev) => {
+        // Try to resolve the entity id from composedPath()
+        const path = ev.composedPath ? ev.composedPath() : [];
+        let id = el.dataset.entityId;
+        for (const node of path) {
+          if (node && node.dataset) {
+            if (node.dataset.entityId) { id = node.dataset.entityId; break; }
+            if (node.dataset.entity) { id = node.dataset.entity; break; }
+          }
+        }
+        if (id) {
+          ev.stopPropagation();
+          this.openMoreInfo(id);
+        }
+      });
+    });
+}
 
   processHistoryData(historyData, intervals, timeStep, entityConfig) {
     const defaultValue = entityConfig.default_value ?? this.config.default_value;
@@ -478,7 +536,7 @@ window.customCards.push({
 });
 
 console.info(
-  `%c WATERFALL-HISTORY-CARD %c v2.0 `,
+  `%c waterFALL-HISTORY-CARD %c v2.0 `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray'
 );
