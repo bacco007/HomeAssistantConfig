@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.15.0";
+var version = "0.16.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -657,7 +657,7 @@ var de = function(e5, t5, r7) {
   r7 === undefined && (r7 = false), r7 ? history.replaceState(null, "", t5) : history.pushState(null, "", t5), ne(window, "location-changed", { replace: r7 });
 };
 
-// src/types.ts
+// src/config.ts
 var DesktopPosition;
 ((DesktopPosition2) => {
   DesktopPosition2["top"] = "top";
@@ -681,7 +681,8 @@ var DEFAULT_NAVBAR_CONFIG = {
     position: "bottom" /* bottom */
   },
   mobile: {
-    show_labels: false
+    show_labels: false,
+    mode: "docked"
   }
 };
 
@@ -705,6 +706,12 @@ var forceResetRipple = (target) => {
 var findHuiRoot = () => {
   return window.document.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-panel-lovelace")?.shadowRoot?.querySelector("hui-root");
 };
+var forceOpenEditMode = () => {
+  const huiRoot = findHuiRoot();
+  if (!huiRoot?.shadowRoot)
+    return;
+  huiRoot.lovelace.setEditMode(true);
+};
 var forceDashboardPadding = (options) => {
   const autoPaddingEnabled = options?.auto_padding?.enabled ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.enabled;
   const huiRoot = findHuiRoot();
@@ -723,8 +730,8 @@ var forceDashboardPadding = (options) => {
   const desktopMinWidth = options?.desktop?.min_width ?? 768;
   const mobileMaxWidth = desktopMinWidth - 1;
   let cssText = "";
-  const desktopPaddingPx = options?.auto_padding?.desktop_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.desktop_px;
-  if (["left", "right"].includes(options?.desktop?.position ?? "")) {
+  const desktopPaddingPx = options?.auto_padding?.desktop_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.desktop_px ?? 0;
+  if (["left", "right"].includes(options?.desktop?.position ?? "") && desktopPaddingPx > 0) {
     cssText += `
       @media (min-width: ${desktopMinWidth}px) {
        :not(.edit-mode) > #view {
@@ -732,7 +739,7 @@ var forceDashboardPadding = (options) => {
           }
       }
     `;
-  } else if (options?.desktop?.position === "bottom" || options?.desktop?.position === "top") {
+  } else if ((options?.desktop?.position === "bottom" || options?.desktop?.position === "top") && desktopPaddingPx > 0) {
     cssText += `
       @media (min-width: ${desktopMinWidth}px) {
         :not(.edit-mode) > hui-view:${options?.desktop?.position === "top" ? "before" : "after"} {
@@ -745,8 +752,9 @@ var forceDashboardPadding = (options) => {
       }
     `;
   }
-  const mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px;
-  cssText += `
+  const mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px ?? 0;
+  if (mobilePaddingPx > 0) {
+    cssText += `
       @media (max-width: ${mobileMaxWidth}px) {
         :not(.edit-mode) > hui-view:after {
           content: "";
@@ -754,9 +762,10 @@ var forceDashboardPadding = (options) => {
           height: ${mobilePaddingPx}px;
           width: 100%;
           background-color: transparent; 
+          }
         }
-      }
-    `;
+      `;
+  }
   if (!styleEl) {
     styleEl = document.createElement("style");
     styleEl.id = styleId;
@@ -836,12 +845,14 @@ var hapticFeedback = (hapticType = "selection") => {
 // src/styles.ts
 var HOST_STYLES = i`
   :host {
+    --navbar-border-radius: var(--ha-card-border-radius, 12px);
     --navbar-background-color: var(--card-background-color);
     --navbar-route-icon-size: 24px;
     --navbar-route-image-size: 32px;
     --navbar-primary-color: var(--primary-color);
     --navbar-box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.14);
     --navbar-box-shadow-desktop: var(--material-shadow-elevation-2dp);
+    --navbar-box-shadow-mobile: var(--material-shadow-elevation-2dp);
 
     --navbar-z-index: 3;
     --navbar-popup-backdrop-index: 900;
@@ -880,9 +891,22 @@ var NAVBAR_STYLES = i`
     transform: none !important;
   }
 
+  /* Mobile mode styles */
+  .navbar.mobile.floating {
+    border-radius: var(--navbar-border-radius) !important;
+    border: none !important;
+    box-shadow: var(--navbar-box-shadow-mobile) !important;
+  }
+  .navbar.mobile.floating:not(.edit-mode) {
+    bottom: 10px !important;
+    left: 5vw !important;
+    right: 5vw !important;
+    width: 90vw !important;
+  }
+
   /* Desktop mode styles */
   .navbar.desktop {
-    border-radius: var(--ha-card-border-radius, 12px);
+    border-radius: var(--navbar-border-radius);
     box-shadow: var(--navbar-box-shadow-desktop);
     width: auto;
     justify-content: space-evenly;
@@ -1888,6 +1912,12 @@ class NavbarCard extends i4 {
         }
         window.history.back();
         break;
+      case "open-edit-mode":
+        if (this._shouldTriggerHaptic(actionType)) {
+          hapticFeedback();
+        }
+        forceOpenEditMode();
+        break;
       default:
         if (action != null) {
           if (this._shouldTriggerHaptic(actionType)) {
@@ -1917,11 +1947,11 @@ class NavbarCard extends i4 {
     const { routes, desktop, mobile } = this._config;
     const { position: desktopPosition, hidden: desktopHidden } = desktop ?? {};
     const { hidden: mobileHidden } = mobile ?? {};
-    this._lastRender = new Date().getTime();
     const isEditMode = this._inEditDashboardMode || this._inPreviewMode || this._inEditCardMode;
     const desktopPositionClassname = mapStringToEnum(DesktopPosition, desktopPosition) ?? DEFAULT_DESKTOP_POSITION;
     const deviceModeClassName = this._isDesktop ? "desktop" : "mobile";
     const editModeClassname = isEditMode ? "edit-mode" : "";
+    const mobileModeClassname = mobile?.mode === "floating" ? "floating" : "";
     const isDesktopHidden = processTemplate(this.hass, this, desktopHidden);
     const isMobileHidden = processTemplate(this.hass, this, mobileHidden);
     if (!isEditMode && (this._isDesktop && !!isDesktopHidden || !this._isDesktop && !!isMobileHidden)) {
@@ -1929,7 +1959,7 @@ class NavbarCard extends i4 {
     }
     return x`
       <ha-card
-        class="navbar ${editModeClassname} ${deviceModeClassName} ${desktopPositionClassname}">
+        class="navbar ${editModeClassname} ${deviceModeClassName} ${desktopPositionClassname} ${mobileModeClassname}">
         ${routes?.map(this._renderRoute).filter((x2) => x2 != null)}
       </ha-card>
       ${this._popup}
@@ -1944,7 +1974,7 @@ class NavbarCard extends i4 {
   }
 }
 __legacyDecorateClassTS([
-  r5()
+  n4({ attribute: false })
 ], NavbarCard.prototype, "hass", undefined);
 __legacyDecorateClassTS([
   r5()
