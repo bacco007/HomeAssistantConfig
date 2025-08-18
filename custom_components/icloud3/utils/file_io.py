@@ -2,7 +2,8 @@
 from ..global_variables     import GlobalVariables as Gb
 from ..const                import (CRLF_DOT,  )
 from .utils                 import (instr, is_empty, isnot_empty, list_to_str, )
-from .messaging             import (log_exception, _evlog, _log, log_error_msg, )
+from .messaging             import (log_exception, _evlog, _log, log_debug_msg,
+                                    log_data_unfiltered, write_ic3log_recd, )
 
 from collections            import OrderedDict
 import asyncio
@@ -37,49 +38,46 @@ async def async_httpx_request_url_data(url, headers=None):
             occurred
     '''
     try:
-        error_type = ''
-        error_code = -99
+        error_type = 'InternetError-'
+        error_code = 104
         try:
             if headers is None:
-                # Use HA httpx client
                 httpx = httpx_client.get_async_client(Gb.hass, verify_ssl=False)
 
             else:
                 httpx = create_async_httpx_client(headers=headers)
 
 
-            error_type = 'InternetError-'
-
-            # response = await Gb.httpx.get(url)
             response = await httpx.get(url)
-            response.raise_for_status()
 
-            data = response.json()
 
-            data['url'] = url
+            try:
+                data = response.json()
+            except:
+                data = {}
+
+            data['url']         = url
+            data['error']       = ''
             data['status_code'] = response.status_code
 
             return data
 
         except HTTPStatusError:
             error_type = 'ClientError'
+            error_code = 400
         except (ConnectTimeout) as err:
             error_type += 'ConnectTimeout'
+            error_code = 104
         except (ConnectionError) as err:
             error_type += 'ConnectionError'
+            error_code = 105
         except (HTTPError) as err:
             error_type += 'HTTPError'
+            error_code = 500
         except Exception as err:
             log_exception(err)
-            error_type += 'General'
-
-        try:
-            error_code = response.status_code
-        except:
-            if error_type == 'InternetError-':
-                error_code = 104
-            else:
-                error_code = -999
+            error_type += 'Other'
+            error_code = 500
 
         data = {'url': url, 'error': error_type, 'status_code': error_code}
 
@@ -216,15 +214,17 @@ def request_url_data(url):
 #            JSON FILE UTILITIES
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def async_read_json_file(filename):
+async def async_read_json_file(filename):
 
     if file_exists(filename) is False:
+        log_debug_msg(f"Read Json File (async)-{filename}, File Not Found")
         return {}
 
     try:
-        data = Gb.hass.async_add_executor_job(
+        data = await Gb.hass.async_add_executor_job(
                             read_json_file,
-                            filename)
+                            filename,
+                            True)
         return data
 
     except Exception as err:
@@ -232,34 +232,36 @@ def async_read_json_file(filename):
         log_exception(err)
         pass
 
+    if instr(filename, 'dashboard') or True is True:
+        _log("async_read_json_file data={}")
     return {}
 
 #--------------------------------------------------------------------
-def read_json_file(filename):
+def read_json_file(filename, async_msg=False):
+
+    _async_msg = '' if async_msg is False else ' (async)'
+    filename_msg = f"\n🔻 READ JSON FILE{_async_msg}--{filename}"
 
     if file_exists(filename) is False:
+        log_debug_msg(f"{filename_msg}\n❗ File Not Found")
         return {}
 
     try:
-        if Gb.initial_icloud3_loading_flag:
-            data = json_util.load_json(filename)
-        else:
-            data = Gb.hass.async_add_executor_job(
-                            json_util.load_json,
-                            filename)
-
-        return data
+        data = json_util.load_json(filename)
 
     except RuntimeError as err:
-        if str(err) == 'no running event loop':
-            data = json_util.load_json(filename)
-            return data
+        # log_exception(err)
+        log_debug_msg(f"{filename_msg}\n❗ NoEventLoop-`await` not needed")
+        data = {}
 
     except Exception as err:
-        _LOGGER.exception(err)
-        pass
+        log_exception(err)
+        data = {}
 
-    return {}
+    _data = data if Gb.log_rawdata_flag else {str(data)[:100]}
+    log_data_unfiltered(f"{filename_msg}", _data)
+
+    return data
 
 #--------------------------------------------------------------------
 async def async_save_json_file(filename, data):
@@ -280,7 +282,6 @@ async def async_save_json_file(filename, data):
 #--------------------------------------------------------------------
 def save_json_file(filename, data):
     try:
-        # The HA event loop has not been set up yet during initialization
         json_helpers.save_json(filename, data)
         return True
 

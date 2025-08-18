@@ -13,7 +13,7 @@ from ..utils.messaging    import (log_info_msg, log_debug_msg, log_exception,
                                     post_event, post_evlog_greenbar_msg,
                                     _evlog, _log, )
 from ..utils.time_util    import (datetime_now, secs_to_datetime, )
-from ..utils.file_io      import (file_exists, async_read_json_file, )
+from ..utils.file_io      import (file_exists, async_read_json_file, read_json_file, )
 from ..utils                 import entity_io
 
 # import os
@@ -62,11 +62,11 @@ async def check_hacs_icloud3_update_available():
 
         hacs_update_avail_msg = f", Hacs Update Available-{Gb.version_hacs}" if Gb.version_hacs else ""
 
-        log_info_msg(   f"Checking HACS for new iCloud3 Version, "
-                        f"{hacs_update_avail_msg}"
-                        f"Running-{Gb.version}, "
-                        f"HACS/iCloud3-{version_hacs_ic3}{hacs_ic3_newer_msg}, "
-                        f"HACS/iCloud3_Dev-{version_hacs_ic3dev}{hacs_ic3dev_newer_msg}")
+        post_event( f"Checking HACS for new iCloud3 Version, "
+                    f"{hacs_update_avail_msg}"
+                    f"Running-v{Gb.version}, "
+                    f"HACS/iCloud3-{version_hacs_ic3}{hacs_ic3_newer_msg}, "
+                    f"HACS/iCloud3_Dev-{version_hacs_ic3dev}{hacs_ic3dev_newer_msg}")
 
     except Exception as err:
         log_exception(err)
@@ -96,6 +96,9 @@ async def _async_get_hacs_ic3_data(hacs_repository_file):
 
     try:
         hacs_repository_file_data = await async_read_json_file(hacs_repository_file)
+        # hacs_repository_file_data = await Gb.hass.async_add_executor_job(
+        #                     read_json_file,
+        #                     hacs_repository_file)
 
         if hacs_repository_file_data != {}:
             hacs_ic3_items = {_component_name(hacs_item_data):

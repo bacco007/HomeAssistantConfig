@@ -29,6 +29,10 @@ _LOGGER = logging.getLogger(f"icloud3")
 #   .STORAGE/ICLOUD3.RESTORE_STATE FILE ROUTINES
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+async def async_load_icloud3_restore_state_file():
+    return await Gb.hass.async_add_executor_job(load_icloud3_restore_state_file)
+
+
 def load_icloud3_restore_state_file():
 
     try:
@@ -55,7 +59,7 @@ def load_icloud3_restore_state_file():
 #--------------------------------------------------------------------
 def build_initial_restore_state_file_structure():
     '''
-    Create the initial data structure of the ic3 config file
+    Create the initial data structure of the ic3 restore state file
 
     |---profile
     |---devices
@@ -66,6 +70,10 @@ def build_initial_restore_state_file_structure():
                 |---actual sensor names & values
             |---warehouse
                 |---actual sensor names & values
+    |---sensor_entities
+        |----devices
+            |---base
+            |---from_zone
         .
         .
         .
@@ -85,7 +93,7 @@ def read_icloud3_restore_state_file():
     '''
     Read the config/.storage/.icloud3.restore_state file.
         - Extract the data into the Global Variables.
-        - Restoreeach device's sensors values
+        - Restore each device's sensors values
         - Reinitialize sensors that should not be restored
     '''
 

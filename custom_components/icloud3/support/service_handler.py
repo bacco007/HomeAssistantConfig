@@ -396,7 +396,7 @@ def _handle_global_action(global_action, action_option):
 
     if global_action == CMD_RESTART:
         Gb.log_debug_flag_restart         = Gb.log_debug_flag
-        Gb.log_data_flag_restart       = Gb.log_data_flag
+        Gb.log_rawdata_flag_restart       = Gb.log_rawdata_flag
         Gb.restart_icloud3_request_flag   = True
         Gb.InternetError.reset_internet_error_fields()
         Gb.EvLog.display_user_message('iCloud3 is Restarting', clear_evlog_greenbar_msg=True)
@@ -466,23 +466,23 @@ def handle_action_log_level(action_option, change_conf_log_level=True):
         return
 
     new_log_debug_flag   = Gb.log_debug_flag
-    new_log_data_flag = Gb.log_data_flag
+    new_log_rawdata_flag = Gb.log_rawdata_flag
 
     # Log Level Debug
     if instr(action_option, 'debug'):
         new_log_debug_flag   = (not Gb.log_debug_flag)
-        new_log_data_flag = False
+        new_log_rawdata_flag = False
 
     # Log Level Rawdata
     if instr(action_option, 'rawdata'):
-        new_log_data_flag = (not Gb.log_data_flag)
-        new_log_debug_flag   = new_log_data_flag
+        new_log_rawdata_flag = (not Gb.log_rawdata_flag)
+        new_log_debug_flag   = new_log_rawdata_flag
 
-    if new_log_data_flag is False:
-        Gb.log_data_flag_unfiltered = False
+    if new_log_rawdata_flag is False:
+        Gb.log_rawdata_flag_unfiltered = False
 
     # Log Level Rawdata Auto Reset at midnight
-    new_log_level = 'rawdata-auto-reset' if new_log_data_flag \
+    new_log_level = 'rawdata-auto-reset' if new_log_rawdata_flag \
         else 'debug-auto-reset' if new_log_debug_flag \
         else 'info'
 
@@ -544,8 +544,8 @@ def _handle_action_device_locate(Device, action_option):
         Device.resume_tracking()
 
     Gb.InternetError.reset_internet_error_fields()
-    Gb.icloud_force_update_flag = True
-    Device.icloud_force_update_flag = True
+    # Gb.icloud_force_update_flag = True
+    # Device.icloud_force_update_flag = True
     Device.reset_tracking_fields(interval_secs)
     det_interval.update_all_device_fm_zone_sensors_interval(Device, interval_secs)
     Device.icloud_update_reason = f"Location Requested@{time_now()}"
