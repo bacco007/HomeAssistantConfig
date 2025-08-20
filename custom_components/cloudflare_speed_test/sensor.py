@@ -198,25 +198,23 @@ class CloudflareSpeedTestSensor(
         """Return native value for entity."""
         if self.coordinator.data:
             location = "meta" if self.entity_description.key == "ip" else "tests"
-            state = self.coordinator.data[location][self.entity_description.key].value
-            self._state = cast(StateType, self.entity_description.value(state))
+            location_dict = self.coordinator.data.get(location, {})
+            value_obj = location_dict.get(self.entity_description.key, {})
+            state = getattr(value_obj, "value")
+            if state is not None:
+                self._state = cast(StateType, self.entity_description.value(state))
         return self._state
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the state attributes."""
         if self.coordinator.data:
+            meta = self.coordinator.data.get("meta", {})
             self._attrs.update(
                 {
-                    ATTR_SERVER_CITY: self.coordinator.data["meta"][
-                        "location_city"
-                    ].value,
-                    ATTR_SERVER_REGION: self.coordinator.data["meta"][
-                        "location_region"
-                    ].value,
-                    ATTR_SERVER_CODE: self.coordinator.data["meta"][
-                        "location_code"
-                    ].value,
+                    ATTR_SERVER_CITY: getattr(meta.get("location_city"), "value"),
+                    ATTR_SERVER_REGION: getattr(meta.get("location_region"), "value"),
+                    ATTR_SERVER_CODE: getattr(meta.get("location_code"), "value"),
                 }
             )
 
