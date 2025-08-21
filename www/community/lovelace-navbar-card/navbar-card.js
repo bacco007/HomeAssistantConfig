@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.16.0";
+var version = "0.17.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -672,7 +672,8 @@ var DEFAULT_NAVBAR_CONFIG = {
     auto_padding: {
       enabled: true,
       desktop_px: 100,
-      mobile_px: 80
+      mobile_px: 80,
+      media_player_px: 100
     }
   },
   desktop: {
@@ -685,8 +686,54 @@ var DEFAULT_NAVBAR_CONFIG = {
     mode: "docked"
   }
 };
+var STUB_CONFIG = {
+  routes: [
+    { url: window.location.pathname, icon: "mdi:home", label: "Home" },
+    {
+      url: `${window.location.pathname}/devices`,
+      icon: "mdi:devices",
+      label: "Devices",
+      hold_action: {
+        action: "navigate",
+        navigation_path: "/config/devices/dashboard"
+      }
+    },
+    {
+      url: "/config/automation/dashboard",
+      icon: "mdi:creation",
+      label: "Automations"
+    },
+    { url: "/config/dashboard", icon: "mdi:cog", label: "Settings" },
+    {
+      icon: "mdi:dots-horizontal",
+      label: "More",
+      tap_action: {
+        action: "open-popup"
+      },
+      popup: [
+        { icon: "mdi:cog", url: "/config/dashboard" },
+        {
+          icon: "mdi:hammer",
+          url: "/developer-tools/yaml"
+        },
+        {
+          icon: "mdi:power",
+          tap_action: {
+            action: "call-service",
+            service: "homeassistant.restart",
+            service_data: {},
+            confirmation: {
+              text: "Are you sure you want to restart Home Assistant?"
+            }
+          }
+        }
+      ]
+    }
+  ]
+};
 
 // src/dom-utils.ts
+var DASHBOARD_PADDING_STYLE_ID = "navbar-card-forced-padding-styles";
 var getNavbarTemplates = () => {
   const lovelacePanel = document?.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-drawer partial-panel-resolver ha-panel-lovelace");
   if (lovelacePanel) {
@@ -712,6 +759,15 @@ var forceOpenEditMode = () => {
     return;
   huiRoot.lovelace.setEditMode(true);
 };
+var removeDashboardPadding = () => {
+  const huiRoot = findHuiRoot();
+  if (!huiRoot?.shadowRoot)
+    return;
+  const styleEl = huiRoot.shadowRoot.querySelector(`#${DASHBOARD_PADDING_STYLE_ID}`);
+  if (styleEl) {
+    styleEl.remove();
+  }
+};
 var forceDashboardPadding = (options) => {
   const autoPaddingEnabled = options?.auto_padding?.enabled ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.enabled;
   const huiRoot = findHuiRoot();
@@ -719,8 +775,7 @@ var forceDashboardPadding = (options) => {
     console.warn("[navbar-card] Could not find hui-root. Custom padding styles will not be applied.");
     return;
   }
-  const styleId = "navbar-card-forced-padding-styles";
-  let styleEl = huiRoot.shadowRoot.querySelector(`#${styleId}`);
+  let styleEl = huiRoot.shadowRoot.querySelector(`#${DASHBOARD_PADDING_STYLE_ID}`);
   if (!autoPaddingEnabled) {
     if (styleEl) {
       styleEl.remove();
@@ -752,7 +807,10 @@ var forceDashboardPadding = (options) => {
       }
     `;
   }
-  const mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px ?? 0;
+  let mobilePaddingPx = options?.auto_padding?.mobile_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.mobile_px ?? 0;
+  if (options?.show_media_player) {
+    mobilePaddingPx += options?.auto_padding?.media_player_px ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding?.media_player_px ?? 0;
+  }
   if (mobilePaddingPx > 0) {
     cssText += `
       @media (max-width: ${mobileMaxWidth}px) {
@@ -768,7 +826,7 @@ var forceDashboardPadding = (options) => {
   }
   if (!styleEl) {
     styleEl = document.createElement("style");
-    styleEl.id = styleId;
+    styleEl.id = DASHBOARD_PADDING_STYLE_ID;
     styleEl.textContent = cssText;
     huiRoot.shadowRoot.appendChild(styleEl);
   } else {
@@ -813,7 +871,7 @@ var generateHash = (str) => {
 var templateFunctionCache = new Map;
 var extractAccessibleStateVariables = (navbar) => {
   return {
-    isDesktop: navbar._isDesktop ?? false
+    isDesktop: navbar.isDesktop ?? false
   };
 };
 var processTemplate = (hass, navbar, template) => {
@@ -852,98 +910,213 @@ var HOST_STYLES = i`
     --navbar-primary-color: var(--primary-color);
     --navbar-box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.14);
     --navbar-box-shadow-desktop: var(--material-shadow-elevation-2dp);
-    --navbar-box-shadow-mobile: var(--material-shadow-elevation-2dp);
+    --navbar-box-shadow-mobile-floating: var(--material-shadow-elevation-2dp);
 
     --navbar-z-index: 3;
-    --navbar-popup-backdrop-index: 900;
-    --navbar-popup-index: 901;
+    --navbar-popup-backdrop-z-index: 900;
+    --navbar-popup-z-index: 901;
   }
 `;
-var NAVBAR_STYLES = i`
+var NAVBAR_CONTAINER_STYLES = i`
   .navbar {
-    background: var(--navbar-background-color);
-    border-radius: 0px;
-    box-shadow: var(--navbar-box-shadow);
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px;
-    gap: 10px;
+    flex-direction: column;
     width: 100vw;
     position: fixed;
+    gap: 10px;
     left: 0;
     right: 0;
     bottom: 0;
     top: unset;
     z-index: var(--navbar-z-index);
+
+    ha-card {
+      background: var(--navbar-background-color);
+      border-radius: 0px;
+      box-shadow: var(--navbar-box-shadow);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 12px;
+      gap: 10px;
+    }
+
+    .navbar-card {
+      justify-content: space-between;
+      width: 100%;
+    }
   }
 
   /* Edit mode styles */
   .navbar.edit-mode {
     position: relative !important;
-    flex-direction: row !important;
+    flex-direction: column !important;
     left: unset !important;
     right: unset !important;
     bottom: unset !important;
-    top: unset !important;
     width: auto !important;
+    top: unset !important;
     transform: none !important;
+
+    ha-card {
+      width: 100% !important;
+      flex-direction: row !important;
+    }
   }
 
-  /* Mobile mode styles */
+  /* Mobile floating style */
   .navbar.mobile.floating {
-    border-radius: var(--navbar-border-radius) !important;
-    border: none !important;
-    box-shadow: var(--navbar-box-shadow-mobile) !important;
+    .navbar-card {
+      border: none !important;
+      box-shadow: var(--navbar-box-shadow-mobile-floating) !important;
+      border-radius: var(--navbar-border-radius) !important;
+    }
   }
   .navbar.mobile.floating:not(.edit-mode) {
-    bottom: 10px !important;
-    left: 5vw !important;
-    right: 5vw !important;
-    width: 90vw !important;
+    .navbar-card {
+      margin-bottom: 10px !important;
+      width: 90% !important;
+    }
   }
 
   /* Desktop mode styles */
   .navbar.desktop {
-    border-radius: var(--navbar-border-radius);
-    box-shadow: var(--navbar-box-shadow-desktop);
     width: auto;
     justify-content: space-evenly;
 
     --navbar-route-icon-size: 28px;
+
+    ha-card {
+      border-radius: var(--navbar-border-radius);
+      box-shadow: var(--navbar-box-shadow-desktop);
+    }
   }
   .navbar.desktop.bottom {
-    flex-direction: row;
+    flex-direction: column;
     top: unset;
     right: unset;
     bottom: 16px;
     left: calc(50% + var(--mdc-drawer-width, 0px) / 2);
     transform: translate(-50%, 0);
+
+    .navbar-card {
+      flex-direction: row;
+    }
   }
   .navbar.desktop.top {
-    flex-direction: row;
+    flex-direction: column;
     bottom: unset;
     right: unset;
     top: 16px;
     left: calc(50% + var(--mdc-drawer-width, 0px) / 2);
     transform: translate(-50%, 0);
+
+    .navbar-card {
+      flex-direction: row;
+    }
   }
   .navbar.desktop.left {
-    flex-direction: column;
+    flex-direction: row-reverse;
     left: calc(var(--mdc-drawer-width, 0px) + 16px);
     right: unset;
     bottom: unset;
     top: 50%;
     transform: translate(0, -50%);
+
+    .navbar-card {
+      flex-direction: column;
+    }
   }
   .navbar.desktop.right {
-    flex-direction: column;
+    flex-direction: row;
     right: 16px;
     left: unset;
     bottom: unset;
     top: 50%;
     transform: translate(0, -50%);
+
+    .navbar-card {
+      flex-direction: column;
+    }
+  }
+`;
+var MEDIA_PLAYER_STYLES = i`
+  .navbar {
+    .media-player.error {
+      padding: 0px !important;
+      ha-alert {
+        width: 100%;
+      }
+    }
+
+    .media-player {
+      cursor: pointer;
+      width: 90%;
+      overflow: hidden;
+      position: relative;
+      border: none;
+      box-shadow: var(--navbar-box-shadow-mobile-floating);
+      border-radius: var(--navbar-border-radius);
+      display: flex;
+      flex-direction: row;
+
+      .media-player-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: blur(20px);
+        opacity: 0.03;
+        z-index: 0;
+      }
+
+      .media-player-image {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        object-fit: cover;
+        margin-right: 6px;
+      }
+
+      .media-player-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .media-player-title {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .media-player-artist {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+      }
+
+      .media-player-button {
+        width: 38px;
+        --ha-button-height: 38px;
+        --ha-button-border-radius: 999px;
+      }
+
+      .media-player-button.media-player-button-play-pause {
+      }
+
+      .media-player-progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+      }
+
+      .media-player-progress-bar-fill {
+        background-color: var(--navbar-primary-color);
+        height: 100%;
+      }
+    }
   }
 `;
 var ROUTE_STYLES = i`
@@ -1049,7 +1222,7 @@ var POPUP_STYLES = i`
     top: 0;
     left: 0;
     opacity: 0;
-    z-index: var(--navbar-popup-backdrop-index);
+    z-index: var(--navbar-popup-backdrop-z-index);
     transition: opacity 0.2s ease;
   }
 
@@ -1066,7 +1239,7 @@ var POPUP_STYLES = i`
     opacity: 0;
     padding: 6px;
     gap: 10px;
-    z-index: var(--navbar-popup-index);
+    z-index: var(--navbar-popup-z-index);
 
     display: flex;
     justify-content: center;
@@ -1184,7 +1357,8 @@ var POPUP_STYLES = i`
 var getDefaultStyles = () => {
   return i`
     ${HOST_STYLES}
-    ${NAVBAR_STYLES}
+    ${NAVBAR_CONTAINER_STYLES}
+    ${MEDIA_PLAYER_STYLES}
     ${ROUTE_STYLES}
     ${POPUP_STYLES}
   `;
@@ -1435,11 +1609,25 @@ class NavbarCard extends i4 {
     const style = document.createElement("style");
     style.textContent = this.generateCustomStyles().cssText;
     this.shadowRoot?.appendChild(style);
+    forceDashboardPadding({
+      desktop: this._config?.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
+      mobile: this._config?.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
+      auto_padding: this._config?.layout?.auto_padding,
+      show_media_player: this._showMediaPlayer ?? false
+    });
   }
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener("resize", this._checkDesktop);
+    removeDashboardPadding();
     this._popup = null;
+  }
+  set hass(hass) {
+    this._hass = hass;
+    const { visible } = this._shouldShowMediaPlayer();
+    if (this._showMediaPlayer !== visible) {
+      this._showMediaPlayer = visible;
+    }
   }
   setConfig(config) {
     if (config?.template) {
@@ -1479,65 +1667,27 @@ class NavbarCard extends i4 {
         throw new Error('"double_tap_action" must have an "action" property');
       }
     });
-    forceDashboardPadding({
-      desktop: config.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
-      mobile: config.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
-      auto_padding: config.layout?.auto_padding ?? DEFAULT_NAVBAR_CONFIG.layout?.auto_padding
-    });
     this._config = config;
   }
+  updated(_changedProperties) {
+    super.updated(_changedProperties);
+    if (_changedProperties.has("_showMediaPlayer")) {
+      forceDashboardPadding({
+        desktop: this._config?.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
+        mobile: this._config?.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
+        auto_padding: this._config?.layout?.auto_padding,
+        show_media_player: this._showMediaPlayer ?? false
+      });
+    }
+  }
   static getStubConfig() {
-    return {
-      routes: [
-        { url: window.location.pathname, icon: "mdi:home", label: "Home" },
-        {
-          url: `${window.location.pathname}/devices`,
-          icon: "mdi:devices",
-          label: "Devices",
-          hold_action: {
-            action: "navigate",
-            navigation_path: "/config/devices/dashboard"
-          }
-        },
-        {
-          url: "/config/automation/dashboard",
-          icon: "mdi:creation",
-          label: "Automations"
-        },
-        { url: "/config/dashboard", icon: "mdi:cog", label: "Settings" },
-        {
-          icon: "mdi:dots-horizontal",
-          label: "More",
-          tap_action: {
-            action: "open-popup"
-          },
-          popup: [
-            { icon: "mdi:cog", url: "/config/dashboard" },
-            {
-              icon: "mdi:hammer",
-              url: "/developer-tools/yaml"
-            },
-            {
-              icon: "mdi:power",
-              tap_action: {
-                action: "call-service",
-                service: "homeassistant.restart",
-                service_data: {},
-                confirmation: {
-                  text: "Are you sure you want to restart Home Assistant?"
-                }
-              }
-            }
-          ]
-        }
-      ]
-    };
+    return STUB_CONFIG;
   }
   _getRouteIcon(route, isActive) {
-    const icon = processTemplate(this.hass, this, route.icon);
-    const image = processTemplate(this.hass, this, route.image);
-    const iconSelected = processTemplate(this.hass, this, route.icon_selected);
-    const imageSelected = processTemplate(this.hass, this, route.image_selected);
+    const icon = processTemplate(this._hass, this, route.icon);
+    const image = processTemplate(this._hass, this, route.image);
+    const iconSelected = processTemplate(this._hass, this, route.icon_selected);
+    const imageSelected = processTemplate(this._hass, this, route.image_selected);
     return image ? x`<img
           class="image ${isActive ? "active" : ""}"
           src="${isActive && imageSelected ? imageSelected : image}"
@@ -1551,17 +1701,17 @@ class NavbarCard extends i4 {
     }
     let showBadge = false;
     if (route.badge.show !== undefined) {
-      showBadge = processTemplate(this.hass, this, route.badge.show);
+      showBadge = processTemplate(this._hass, this, route.badge.show);
     } else if (route.badge.template) {
-      showBadge = processBadgeTemplate(this.hass, route.badge.template);
+      showBadge = processBadgeTemplate(this._hass, route.badge.template);
     }
     if (!showBadge) {
       return x``;
     }
-    const count = processTemplate(this.hass, this, route.badge.count) ?? null;
+    const count = processTemplate(this._hass, this, route.badge.count) ?? null;
     const hasCount = count != null;
-    const backgroundColor = processTemplate(this.hass, this, route.badge.color) ?? "red";
-    const textColor = processTemplate(this.hass, this, route.badge.textColor);
+    const backgroundColor = processTemplate(this._hass, this, route.badge.color) ?? "red";
+    const textColor = processTemplate(this._hass, this, route.badge.textColor);
     const contrastingColor = textColor ?? Color.from(backgroundColor).contrastingColor().hex();
     return x`<div
       class="badge ${isRouteActive ? "active" : ""} ${hasCount ? "with-counter" : ""}"
@@ -1592,21 +1742,21 @@ class NavbarCard extends i4 {
     }
   }
   _shouldShowLabels = (isSubmenu) => {
-    const config = this._isDesktop ? this._config?.desktop?.show_labels : this._config?.mobile?.show_labels;
+    const config = this.isDesktop ? this._config?.desktop?.show_labels : this._config?.mobile?.show_labels;
     if (typeof config === "boolean")
       return config;
     return config === "popup_only" && isSubmenu || config === "routes_only" && !isSubmenu;
   };
   _checkDesktop = () => {
-    this._isDesktop = (window.innerWidth ?? 0) >= (this._config?.desktop?.min_width ?? 768);
+    this.isDesktop = (window.innerWidth ?? 0) >= (this._config?.desktop?.min_width ?? 768);
   };
   _renderRoute = (route) => {
-    const isActive = route.selected != null ? processTemplate(this.hass, this, route.selected) : window.location.pathname == route.url;
-    const isHidden = processTemplate(this.hass, this, route.hidden);
+    const isActive = route.selected != null ? processTemplate(this._hass, this, route.selected) : window.location.pathname == route.url;
+    const isHidden = processTemplate(this._hass, this, route.hidden);
     if (isHidden) {
       return null;
     }
-    const label = this._shouldShowLabels(false) ? processTemplate(this.hass, this, route.label) ?? " " : null;
+    const label = this._shouldShowLabels(false) ? processTemplate(this._hass, this, route.label) ?? " " : null;
     return x`
       <div
         class="route ${isActive ? "active" : ""}"
@@ -1695,13 +1845,14 @@ class NavbarCard extends i4 {
         }
     }
   }
-  _openPopup = (popupItems, target) => {
+  _openPopup = (route, target) => {
+    const popupItems = route.popup ?? route.submenu;
     if (!popupItems || popupItems.length === 0) {
-      console.warn("No popup items provided");
+      console.warn(`[navbar-card] No popup items provided for route: ${route.label}`);
       return;
     }
     const anchorRect = target.getBoundingClientRect();
-    const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this._isDesktop ? "mobile" : this._config?.desktop?.position ?? DEFAULT_DESKTOP_POSITION);
+    const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this.isDesktop ? "mobile" : this._config?.desktop?.position ?? DEFAULT_DESKTOP_POSITION);
     this._popup = x`
       <div class="navbar-popup-backdrop"></div>
       <div
@@ -1709,16 +1860,16 @@ class NavbarCard extends i4 {
           navbar-popup
           ${popupDirectionClassName}
           ${labelPositionClassName}
-          ${this._isDesktop ? "desktop" : "mobile"}
+          ${this.isDesktop ? "desktop" : "mobile"}
         "
         style="${style}">
         ${popupItems.map((popupItem, index) => {
-      const isActive = popupItem.selected != null ? processTemplate(this.hass, this, popupItem.selected) : window.location.pathname == popupItem.url;
-      const isHidden = processTemplate(this.hass, this, popupItem.hidden);
+      const isActive = popupItem.selected != null ? processTemplate(this._hass, this, popupItem.selected) : window.location.pathname == popupItem.url;
+      const isHidden = processTemplate(this._hass, this, popupItem.hidden);
       if (isHidden) {
         return null;
       }
-      const label = this._shouldShowLabels(true) ? processTemplate(this.hass, this, popupItem.label) ?? " " : null;
+      const label = this._shouldShowLabels(true) ? processTemplate(this._hass, this, popupItem.label) ?? " " : null;
       return x`<div
               class="
               popup-item 
@@ -1869,12 +2020,12 @@ class NavbarCard extends i4 {
         if (!isPopupItem) {
           const popupItems = route.popup ?? route.submenu;
           if (!popupItems) {
-            console.error("No popup items found for route:", route);
+            console.error(`[navbar-card] No popup items found for route: ${route.label}`);
           } else {
             if (this._shouldTriggerHaptic(actionType)) {
               hapticFeedback();
             }
-            this._openPopup(popupItems, target);
+            this._openPopup(route, target);
           }
         }
         break;
@@ -1940,6 +2091,115 @@ class NavbarCard extends i4 {
         break;
     }
   };
+  _shouldShowMediaPlayer = () => {
+    if (!this._config || !this._config.media_player || !this._config.media_player.entity) {
+      return { visible: false };
+    }
+    if (this.isDesktop)
+      return { visible: false };
+    const mediaPlayerState = this._hass.states[this._config.media_player.entity];
+    if (!mediaPlayerState)
+      return {
+        visible: true,
+        error: `Entity not found "${this._config.media_player.entity}"`
+      };
+    return {
+      visible: ["playing", "paused"].includes(mediaPlayerState?.state)
+    };
+  };
+  _handleMediaPlayerClick = (e5) => {
+    e5.preventDefault();
+    e5.stopPropagation();
+    const mediaPlayerEntity = this._config?.media_player?.entity;
+    if (!mediaPlayerEntity)
+      return;
+    fireDOMEvent(this, "hass-more-info", {
+      bubbles: true,
+      composed: true
+    }, {
+      entityId: mediaPlayerEntity
+    });
+  };
+  _handleMediaPlayerSkipNextClick = (e5) => {
+    e5.preventDefault();
+    e5.stopPropagation();
+    const mediaPlayerEntity = this._config?.media_player?.entity;
+    if (!mediaPlayerEntity)
+      return;
+    this._hass.callService("media_player", "media_next_track", {
+      entity_id: mediaPlayerEntity
+    });
+  };
+  _handleMediaPlayerPlayPauseClick = (e5) => {
+    e5.preventDefault();
+    e5.stopPropagation();
+    const mediaPlayerEntity = this._config?.media_player?.entity;
+    if (!mediaPlayerEntity)
+      return;
+    const mediaPlayerState = this._hass.states[mediaPlayerEntity];
+    if (!mediaPlayerState)
+      return;
+    if (mediaPlayerState.state === "playing") {
+      this._hass.callService("media_player", "media_pause", {
+        entity_id: mediaPlayerEntity
+      });
+    } else {
+      this._hass.callService("media_player", "media_play", {
+        entity_id: mediaPlayerEntity
+      });
+    }
+  };
+  _renderMediaPlayer = () => {
+    const { visible, error } = this._shouldShowMediaPlayer();
+    if (!visible)
+      return x``;
+    if (error) {
+      return x`<ha-card class="media-player error">
+        <ha-alert alert-type="error"> ${error} </ha-alert>
+      </ha-card>`;
+    }
+    const mediaPlayerState = this._hass.states[this._config.media_player.entity];
+    const progress = mediaPlayerState.attributes.media_position != null ? mediaPlayerState.attributes.media_position / mediaPlayerState.attributes.media_duration : null;
+    return x`
+      <ha-card class="media-player" @click=${this._handleMediaPlayerClick}>
+        <div
+          class="media-player-bg"
+          style="background-image: url(${mediaPlayerState.attributes.entity_picture});"></div>
+        ${progress != null ? x` <div class="media-player-progress-bar">
+              <div
+                class="media-player-progress-bar-fill"
+                style="width: ${progress * 100}%"></div>
+            </div>` : x``}
+        <img
+          class="media-player-image"
+          src=${mediaPlayerState.attributes.entity_picture}
+          alt=${mediaPlayerState.attributes.media_title} />
+        <div class="media-player-info">
+          <span class="media-player-title"
+            >${mediaPlayerState.attributes.media_title}</span
+          >
+          <span class="media-player-artist"
+            >${mediaPlayerState.attributes.media_artist}</span
+          >
+        </div>
+        <ha-button
+          class="media-player-button media-player-button-play-pause"
+          appearance="accent"
+          variant="brand"
+          @click=${this._handleMediaPlayerPlayPauseClick}>
+          <ha-icon
+            icon=${mediaPlayerState.state === "playing" ? "mdi:pause" : "mdi:play"}></ha-icon>
+        </ha-button>
+        <ha-button
+          class="media-player-button media-player-button-skip"
+          appearance="plain"
+          variant="neutral"
+          @click=${this._handleMediaPlayerSkipNextClick}>
+          <ha-icon icon="mdi:skip-next"></ha-icon>
+        </ha-button>
+      </ha-card>
+    `;
+  };
   render() {
     if (!this._config) {
       return x``;
@@ -1949,19 +2209,23 @@ class NavbarCard extends i4 {
     const { hidden: mobileHidden } = mobile ?? {};
     const isEditMode = this._inEditDashboardMode || this._inPreviewMode || this._inEditCardMode;
     const desktopPositionClassname = mapStringToEnum(DesktopPosition, desktopPosition) ?? DEFAULT_DESKTOP_POSITION;
-    const deviceModeClassName = this._isDesktop ? "desktop" : "mobile";
+    const deviceModeClassName = this.isDesktop ? "desktop" : "mobile";
     const editModeClassname = isEditMode ? "edit-mode" : "";
     const mobileModeClassname = mobile?.mode === "floating" ? "floating" : "";
-    const isDesktopHidden = processTemplate(this.hass, this, desktopHidden);
-    const isMobileHidden = processTemplate(this.hass, this, mobileHidden);
-    if (!isEditMode && (this._isDesktop && !!isDesktopHidden || !this._isDesktop && !!isMobileHidden)) {
+    const isDesktopHidden = processTemplate(this._hass, this, desktopHidden);
+    const isMobileHidden = processTemplate(this._hass, this, mobileHidden);
+    if (!isEditMode && (this.isDesktop && !!isDesktopHidden || !this.isDesktop && !!isMobileHidden)) {
       return x``;
     }
     return x`
-      <ha-card
+      <div
         class="navbar ${editModeClassname} ${deviceModeClassName} ${desktopPositionClassname} ${mobileModeClassname}">
-        ${routes?.map(this._renderRoute).filter((x2) => x2 != null)}
-      </ha-card>
+        ${this._renderMediaPlayer()}
+        <ha-card
+          class="navbar-card ${deviceModeClassName} ${desktopPositionClassname} ${mobileModeClassname}">
+          ${routes?.map(this._renderRoute).filter((x2) => x2 != null)}
+        </ha-card>
+      </div>
       ${this._popup}
     `;
   }
@@ -1969,19 +2233,21 @@ class NavbarCard extends i4 {
     const userStyles = this._config?.styles ? r(this._config.styles) : i``;
     return i`
       ${getDefaultStyles()}
-      ${userStyles}
+      :host {
+        ${userStyles}
+      }
     `;
   }
 }
 __legacyDecorateClassTS([
   n4({ attribute: false })
-], NavbarCard.prototype, "hass", undefined);
+], NavbarCard.prototype, "_hass", undefined);
 __legacyDecorateClassTS([
   r5()
 ], NavbarCard.prototype, "_config", undefined);
 __legacyDecorateClassTS([
   r5()
-], NavbarCard.prototype, "_isDesktop", undefined);
+], NavbarCard.prototype, "isDesktop", undefined);
 __legacyDecorateClassTS([
   r5()
 ], NavbarCard.prototype, "_inEditDashboardMode", undefined);
@@ -1993,10 +2259,10 @@ __legacyDecorateClassTS([
 ], NavbarCard.prototype, "_inPreviewMode", undefined);
 __legacyDecorateClassTS([
   r5()
-], NavbarCard.prototype, "_lastRender", undefined);
+], NavbarCard.prototype, "_popup", undefined);
 __legacyDecorateClassTS([
   r5()
-], NavbarCard.prototype, "_popup", undefined);
+], NavbarCard.prototype, "_showMediaPlayer", undefined);
 NavbarCard = __legacyDecorateClassTS([
   t3("navbar-card")
 ], NavbarCard);
