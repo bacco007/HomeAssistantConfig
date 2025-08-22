@@ -17,7 +17,7 @@ class HaVisualiserPanel extends HTMLElement {
   }
  
   connectedCallback() {
-    console.log('HA Visualiser Panel v0.7.1: Added area filtering with Show Areas checkbox');
+    console.log('HA Visualiser Panel v0.8.5: Improved scene entity relationship detection');
     console.log('HA Visualiser Panel: Loading enhanced vis.js version');
     
     // Load vis.js if not already loaded
@@ -71,7 +71,7 @@ class HaVisualiserPanel extends HTMLElement {
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
-          z-index: 100;
+          z-index: 1;
         }
         
         .search-input {
@@ -98,7 +98,7 @@ class HaVisualiserPanel extends HTMLElement {
           border: 1px solid var(--divider-color);
           border-radius: 4px;
           box-shadow: var(--ha-card-box-shadow, 0 2px 8px rgba(0,0,0,0.15));
-          z-index: 1000;
+          z-index: 2;
         }
         
         .search-result {
@@ -162,70 +162,11 @@ class HaVisualiserPanel extends HTMLElement {
           position: absolute;
           top: 16px;
           right: 16px;
-          z-index: 100;
+          z-index: 1;
           display: flex;
           gap: 8px;
         }
         
-        .debug-panel {
-          position: absolute;
-          top: 16px;
-          left: 16px;
-          z-index: 100;
-          background: var(--card-background-color, white);
-          border: 1px solid var(--divider-color, #ccc);
-          border-radius: 8px;
-          padding: 16px;
-          max-width: 400px;
-          max-height: 500px;
-          box-shadow: var(--ha-card-box-shadow, 0 2px 4px rgba(0,0,0,0.1));
-          display: none;
-          flex-direction: column;
-        }
-        
-        .debug-panel.open {
-          display: flex;
-        }
-        
-        .debug-panel h3 {
-          margin: 0 0 12px 0;
-          font-size: 14px;
-          color: var(--primary-text-color, #333);
-        }
-        
-        .debug-textarea {
-          width: 100%;
-          min-height: 300px;
-          font-family: 'Courier New', monospace;
-          font-size: 12px;
-          border: 1px solid var(--divider-color, #ccc);
-          border-radius: 4px;
-          padding: 8px;
-          background: var(--primary-background-color, white);
-          color: var(--primary-text-color, #333);
-          resize: vertical;
-        }
-        
-        .debug-controls {
-          display: flex;
-          gap: 8px;
-          margin-top: 12px;
-          align-items: center;
-        }
-        
-        .debug-status {
-          font-size: 12px;
-          color: var(--secondary-text-color, #666);
-          flex: 1;
-        }
-        
-        .debug-status.error {
-          color: var(--error-color, #e74c3c);
-        }
-        
-        .debug-status.success {
-          color: var(--success-color, #27ae60);
-        }
         
         .control-button {
           padding: 8px 12px;
@@ -343,7 +284,7 @@ class HaVisualiserPanel extends HTMLElement {
           padding: 8px 12px;
           border-radius: 4px;
           font-size: 12px;
-          z-index: 100;
+          z-index: 1;
         }
         
         .loading {
@@ -406,17 +347,6 @@ class HaVisualiserPanel extends HTMLElement {
             <div class="graph-controls">
               <button class="control-button" id="fitBtn">Fit</button>
               <button class="control-button" id="resetBtn">Reset</button>
-              <button class="control-button" id="debugBtn" title="Toggle Debug Panel">🔧</button>
-            </div>
-            <div class="debug-panel" id="debugPanel">
-              <h3>Layout Debug</h3>
-              <textarea class="debug-textarea" id="layoutEditor" placeholder="Layout options JSON will appear here..."></textarea>
-              <div class="debug-controls">
-                <div class="debug-status" id="debugStatus">Ready</div>
-                <button class="control-button" id="applyBtn">Apply</button>
-                <button class="control-button" id="resetLayoutBtn">Reset</button>
-                <button class="control-button" id="clearOverrideBtn">Clear Override</button>
-              </div>
             </div>
             <div class="graph-info" id="graphInfo">
               Select an entity to see its relationships
@@ -428,7 +358,6 @@ class HaVisualiserPanel extends HTMLElement {
 
     this.setupSearchEventListeners();
     this.setupDepthControl();
-    this.setupDebugPanel();
   }
 
   setupSearchEventListeners() {
@@ -489,138 +418,6 @@ class HaVisualiserPanel extends HTMLElement {
           this.selectEntity(this.currentEntityId);
         }
       });
-    }
-  }
-
-  setupDebugPanel() {
-    const debugBtn = this.querySelector('#debugBtn');
-    const debugPanel = this.querySelector('#debugPanel');
-    const layoutEditor = this.querySelector('#layoutEditor');
-    const applyBtn = this.querySelector('#applyBtn');
-    const resetLayoutBtn = this.querySelector('#resetLayoutBtn');
-    const debugStatus = this.querySelector('#debugStatus');
-    
-    // Initialize with default layout options
-    this.defaultLayoutOptions = {
-      improvedLayout: true,
-      hierarchical: {
-        enabled: true,
-        direction: 'LR',
-        sortMethod: 'directed',
-        shakeTowards: 'leaves',
-        edgeMinimization: true,
-        blockShifting: true,
-        parentCentralization: true,
-        levelSeparation: 250,
-        nodeSpacing: 20,  
-        treeSpacing: 100
-      },
-      randomSeed: 42
-    };
-
-    // Don't set currentLayoutOptions by default - let layout selector work
-    // this.currentLayoutOptions will only be set when user actively uses debug panel
-    
-    if (debugBtn && debugPanel) {
-      debugBtn.addEventListener('click', () => {
-        debugPanel.classList.toggle('open');
-        if (debugPanel.classList.contains('open')) {
-          // Initialize currentLayoutOptions when debug panel is opened
-          if (!this.currentLayoutOptions) {
-            const layoutSelector = this.querySelector('#layoutSelect');
-            const selectedLayout = layoutSelector ? layoutSelector.value : 'hierarchical';
-            this.currentLayoutOptions = this.getLayoutOptions(selectedLayout);
-          }
-          // Update the editor with current layout options
-          layoutEditor.value = JSON.stringify(this.currentLayoutOptions, null, 2);
-          debugStatus.textContent = 'Panel opened';
-          debugStatus.className = 'debug-status';
-        }
-      });
-    }
-    
-    if (layoutEditor) {
-      // Auto-apply on typing (with debounce)
-      let debounceTimer;
-      layoutEditor.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-          this.validateAndApplyLayout();
-        }, 500); // 500ms delay
-      });
-    }
-    
-    if (applyBtn) {
-      applyBtn.addEventListener('click', () => {
-        this.validateAndApplyLayout();
-      });
-    }
-    
-    if (resetLayoutBtn) {
-      resetLayoutBtn.addEventListener('click', () => {
-        const layoutSelector = this.querySelector('#layoutSelect');
-        const selectedLayout = layoutSelector ? layoutSelector.value : 'hierarchical';
-        this.currentLayoutOptions = this.getLayoutOptions(selectedLayout);
-        layoutEditor.value = JSON.stringify(this.currentLayoutOptions, null, 2);
-        this.applyLayoutToNetwork();
-        debugStatus.textContent = 'Reset to layout selector defaults';
-        debugStatus.className = 'debug-status success';
-      });
-    }
-    
-    const clearOverrideBtn = this.querySelector('#clearOverrideBtn');
-    if (clearOverrideBtn) {
-      clearOverrideBtn.addEventListener('click', () => {
-        // Clear the debug override and go back to layout selector control
-        this.currentLayoutOptions = null;
-        debugStatus.textContent = 'Override cleared - using layout selector';
-        debugStatus.className = 'debug-status success';
-        
-        // Close the debug panel
-        debugPanel.classList.remove('open');
-        
-        // Refresh the graph with layout selector settings
-        if (this.currentEntityId) {
-          this.selectEntity(this.currentEntityId);
-        }
-      });
-    }
-  }
-
-  validateAndApplyLayout() {
-    const layoutEditor = this.querySelector('#layoutEditor');
-    const debugStatus = this.querySelector('#debugStatus');
-    
-    try {
-      const newOptions = JSON.parse(layoutEditor.value);
-      this.currentLayoutOptions = newOptions;
-      this.applyLayoutToNetwork();
-      debugStatus.textContent = 'Layout applied successfully';
-      debugStatus.className = 'debug-status success';
-    } catch (error) {
-      debugStatus.textContent = `JSON Error: ${error.message}`;
-      debugStatus.className = 'debug-status error';
-    }
-  }
-
-  applyLayoutToNetwork() {
-    if (this.network && this.currentGraphData) {
-      console.log('Applying new layout options:', this.currentLayoutOptions);
-      
-      // Update the network options with new layout
-      this.network.setOptions({
-        layout: this.currentLayoutOptions,
-        physics: { enabled: true } // Re-enable physics to apply new layout
-      });
-      
-      // Disable physics after a short delay to stabilize
-      setTimeout(() => {
-        if (this.network) {
-          this.network.setOptions({
-            physics: { enabled: false }
-          });
-        }
-      }, 2000);
     }
   }
 
@@ -752,7 +549,7 @@ class HaVisualiserPanel extends HTMLElement {
   renderGraph(graphData) {
     console.log('HA Visualiser: Rendering graph with data:', graphData);
     
-    // Store graph data for debug panel
+    // Store graph data for layout handling
     this.currentGraphData = graphData;
     
     if (!window.vis) {
@@ -831,13 +628,13 @@ class HaVisualiserPanel extends HTMLElement {
     
     const data = { nodes: visNodes, edges: visEdges };
 
-    // Use debug panel layout options if available, otherwise use layout selector
+    // Use layout selector to determine layout options
     const layoutSelector = this.querySelector('#layoutSelect');
     const selectedLayout = layoutSelector ? layoutSelector.value : 'hierarchical';
     
     const layoutOptions = this.currentLayoutOptions ? this.currentLayoutOptions : this.getLayoutOptions(selectedLayout);
 
-    // Use appropriate physics for the layout type (debug panel can override layout but not physics logic)
+    // Use appropriate physics for the layout type
     const effectiveLayoutType = this.currentLayoutOptions && this.currentLayoutOptions.hierarchical && this.currentLayoutOptions.hierarchical.enabled 
       ? 'hierarchical' 
       : selectedLayout;
@@ -911,10 +708,19 @@ class HaVisualiserPanel extends HTMLElement {
       });
     });
     
-    // Add event listeners - use double-click to change focus node
+    // Add event listeners - single-click opens entity dialog, double-click changes focus
+    this.network.on('click', (params) => {
+      if (params.nodes.length > 0) {
+        const nodeId = params.nodes[0];
+        // Open entity dialog for single click
+        this.openEntityDialog(nodeId);
+      }
+    });
+    
     this.network.on('doubleClick', (params) => {
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0];
+        // Navigate to entity's neighborhood on double-click
         this.onNodeClick(nodeId);
       }
     });
@@ -987,18 +793,28 @@ class HaVisualiserPanel extends HTMLElement {
       tooltip += `ID: ${node.device_id}<br/>`;
       if (node.area) tooltip += `Area: ${node.area}<br/>`;
       tooltip += `Status: ${node.state}<br/>`;
-      tooltip += `Click to see entities`;
+      tooltip += `<hr>Double-click to explore entities`;
     } else if (node.domain === 'label') {
       tooltip += `Type: Label<br/>`;
       tooltip += `ID: ${node.id}<br/>`;
       tooltip += `Usage: ${node.state}<br/>`;
-      tooltip += `Click to see labelled items`;
-    } else {
+      tooltip += `<hr>Double-click to see labelled items`;
+    } else if (node.id && node.id.includes('.') && !node.id.startsWith('area:') && !node.id.startsWith('zone:')) {
+      // This is an actual entity
       tooltip += `ID: ${node.id}<br/>`;
       tooltip += `Domain: ${node.domain}<br/>`;
       if (node.area) tooltip += `Area: ${node.area}<br/>`;
       if (node.state) tooltip += `State: ${node.state}<br/>`;
-      if (node.device_id) tooltip += `Device: ${node.device_id}`;
+      if (node.device_id) tooltip += `Device: ${node.device_id}<br/>`;
+      tooltip += `<hr>Click: Open entity dialog<br/>Double-click: Explore relationships`;
+    } else {
+      // This is area, zone, or other special node
+      tooltip += `ID: ${node.id}<br/>`;
+      tooltip += `Domain: ${node.domain}<br/>`;
+      if (node.area) tooltip += `Area: ${node.area}<br/>`;
+      if (node.state) tooltip += `State: ${node.state}<br/>`;
+      if (node.device_id) tooltip += `Device: ${node.device_id}<br/>`;
+      tooltip += `<hr>Double-click to explore relationships`;
     }
     
     return tooltip;
@@ -1403,6 +1219,40 @@ class HaVisualiserPanel extends HTMLElement {
     console.log('HA Visualiser: Node clicked:', nodeId);
     // Navigate to the clicked entity's neighborhood
     this.selectEntity(nodeId);
+  }
+
+  openEntityDialog(entityId) {
+    // Only open dialogs for actual entities (not device/area/zone nodes)
+    if (entityId && entityId.includes('.') && !entityId.startsWith('device:') && !entityId.startsWith('area:') && !entityId.startsWith('zone:') && !entityId.startsWith('label:')) {
+      
+      // Use Home Assistant's action event system (2023.7+ pattern)
+      const actionEvent = new CustomEvent('hass-action', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          config: {
+            action: 'more-info',
+            entity: entityId
+          },
+          source: 'ha-visualiser'
+        }
+      });
+      this.dispatchEvent(actionEvent);
+      
+      
+      // Fallback: Try HA's direct dialog system
+      const homeAssistant = document.querySelector('home-assistant');
+      if (homeAssistant && homeAssistant.hass) {
+        if (homeAssistant.hass.moreInfoDialog) {
+          homeAssistant.hass.moreInfoDialog.open(entityId);
+        } else if (homeAssistant._showMoreInfoDialog) {
+          homeAssistant._showMoreInfoDialog(entityId);
+        }
+      }
+      
+      // Fallback: Try document-level event dispatch
+      document.dispatchEvent(actionEvent);
+    }
   }
 
   set hass(hass) {

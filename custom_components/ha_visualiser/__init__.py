@@ -47,7 +47,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     # Register the frontend panel
     await hass.http.async_register_static_paths([
         StaticPathConfig(
-            "/hacsfiles/ha_visualiser",
+            "/api/ha_visualiser/static",
             hass.config.path("custom_components/ha_visualiser/www"),
             False
         )
@@ -61,7 +61,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             webcomponent_name="ha-visualiser-panel",
             sidebar_title="Entity Visualizer",
             sidebar_icon="mdi:graph",
-            module_url="/hacsfiles/ha_visualiser/ha-visualiser-panel.js",
+            module_url="/api/ha_visualiser/static/ha-visualiser-panel.js",
             config={},
             require_admin=False,
         )
@@ -94,7 +94,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Register the frontend panel
         await hass.http.async_register_static_paths([
             StaticPathConfig(
-                "/hacsfiles/ha_visualiser",
+                "/api/ha_visualiser/static",
                 hass.config.path("custom_components/ha_visualiser/www"),
                 False
             )
@@ -108,7 +108,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 webcomponent_name="ha-visualiser-panel",
                 sidebar_title="Entity Visualizer",
                 sidebar_icon="mdi:graph",
-                module_url="/hacsfiles/ha_visualiser/ha-visualiser-panel.js",
+                module_url="/api/ha_visualiser/static/ha-visualiser-panel.js",
                 config={},
                 require_admin=False,
             )
