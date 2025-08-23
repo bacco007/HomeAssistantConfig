@@ -11,5 +11,5 @@
   "requirements": [
     "cloudflarepycli@git+https://github.com/DigitallyRefined/cloudflarepycli.git@v2.1.0-rc"
   ],
-  "version": "0.0.3"
+  "version": "0.0.4"
 }

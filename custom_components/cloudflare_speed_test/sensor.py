@@ -212,9 +212,11 @@ class CloudflareSpeedTestSensor(
             meta = self.coordinator.data.get("meta", {})
             self._attrs.update(
                 {
-                    ATTR_SERVER_CITY: getattr(meta.get("location_city"), "value"),
-                    ATTR_SERVER_REGION: getattr(meta.get("location_region"), "value"),
-                    ATTR_SERVER_CODE: getattr(meta.get("location_code"), "value"),
+                    ATTR_SERVER_CITY: getattr(meta.get("location_city"), "value", None),
+                    ATTR_SERVER_REGION: getattr(
+                        meta.get("location_region"), "value", None
+                    ),
+                    ATTR_SERVER_CODE: getattr(meta.get("location_code"), "value", None),
                 }
             )
 
