@@ -131,7 +131,7 @@ cards:
               card_mod: *style
               tap_action:
                 action: toggle
-              entity: script.sonos_favourites_double_j_sydney_nsw
+              entity: script.sonos_favourites_double_j_sydney
               picture: /local/radioicons/double_j_sydney_nsw.png
             - type: template
               card_mod: *style
