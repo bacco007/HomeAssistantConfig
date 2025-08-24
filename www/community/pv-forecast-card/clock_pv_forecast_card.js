@@ -1,5 +1,5 @@
 // pv-forecast-card
-import { LitElement, html, css } from 'https://unpkg.com/lit@2.8.0/index.js?module';
+import { LitElement, html, css } from 'lit';
 
 console.info("📦 clock-pv-forecast-card v0.025 loaded");
 
@@ -64,6 +64,7 @@ class ClockPvForecastCard extends LitElement {
       day_column_width: dayColumnWidth,
       entity_remaining: config.entity_remaining || null,
       remaining_label: config.remaining_label || 'Rest',
+      remaining_indicator: config.remaining_indicator || 'bar',
       show_tooltips: config.show_tooltips ?? false,
       ...config,
     };
@@ -116,7 +117,7 @@ class ClockPvForecastCard extends LitElement {
     return html`
       <ha-card>
         <div class="forecast-rows" role="table" aria-label="PV Forecast">
-          ${this.config.entity_remaining ? this._renderRemainingBar() : ''}
+          ${this.config.entity_remaining && this.config.remaining_indicator === 'bar' ? this._renderRemainingBar() : ''}
           ${forecast.map((item, index) => this._renderForecastRow(item, index))}
         </div>
       </ha-card>
@@ -137,12 +138,21 @@ class ClockPvForecastCard extends LitElement {
 
     const dayLabel = this._getDayLabel(item.offset);
     const barStyle = `--bar-width: ${this._barWidth(value)}%; --bar-gradient: linear-gradient(to right, ${this.config.bar_color_start}, ${this.config.bar_color_end}); --animation-time: ${this.config.animation_duration}`;
-    
+
+    let remainingDot = '';
+    if (item.offset === 0 && this.config.remaining_indicator === 'marker' && this.config.entity_remaining) {
+      const remaining = parseFloat(this.hass.states[this.config.entity_remaining]?.state || '0');
+      const produced = value - remaining;
+      const percent = Math.max(0, Math.min(100, (produced / this.config.max_value) * 100));
+      remainingDot = html`<div class="remaining-dot" style="left: ${percent}%"></div>`;
+    }
+
     return html`
       <div class="forecast-row" role="row" aria-label="Tag ${index + 1}">
         <div class="day" role="cell" style="width: ${this.config.day_column_width}">${dayLabel}</div>
         <div class="bar-container" role="cell" aria-label="Prognose ${this._formatValue(value, item.entity)}">
           <div class="bar" style="${barStyle}" aria-hidden="true"></div>
+          ${remainingDot}
           ${this.config.show_tooltips ? this._renderTooltip(value, item.entity, dayLabel) : ''}
         </div>
         <div class="value" role="cell">${this._formatValue(value, item.entity)}</div>
@@ -365,7 +375,17 @@ class ClockPvForecastCard extends LitElement {
     .bar.blink {
       animation: fill-bar var(--animation-time) ease-out forwards, blink 1s infinite;
     }
-    
+
+    .remaining-dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary-color);
+    }
+
     .value {
       width: 4.5em;
       text-align: right;
