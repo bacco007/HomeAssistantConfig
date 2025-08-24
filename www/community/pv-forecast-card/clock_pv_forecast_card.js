@@ -1,5 +1,5 @@
 // pv-forecast-card
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css } from 'https://unpkg.com/lit@2.8.0/index.js?module';
 
 console.info("📦 clock-pv-forecast-card v0.025 loaded");
 
