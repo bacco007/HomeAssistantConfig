@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.17.0";
+var version = "0.18.0";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -678,11 +678,13 @@ var DEFAULT_NAVBAR_CONFIG = {
   },
   desktop: {
     show_labels: false,
+    show_popup_label_backgrounds: false,
     min_width: 768,
     position: "bottom" /* bottom */
   },
   mobile: {
     show_labels: false,
+    show_popup_label_backgrounds: false,
     mode: "docked"
   }
 };
@@ -1280,6 +1282,10 @@ var POPUP_STYLES = i`
   .navbar-popup.visible {
     opacity: 1;
   }
+  
+  .navbar-popup.popuplabelbackground {
+    padding-left: 0px;
+  }
 
   /****************************************/
   /* Popup item styles */
@@ -1343,6 +1349,14 @@ var POPUP_STYLES = i`
     height: 50px;
     background: var(--navbar-background-color);
     box-shadow: var(--navbar-box-shadow-desktop);
+  }
+
+  .popup-item .button.popuplabelbackground {
+    width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+    flex-direction: row;
+    gap: 4px;
   }
 
   .popup-item.active {
@@ -1695,6 +1709,10 @@ class NavbarCard extends i4 {
           class="icon ${isActive ? "active" : ""}"
           icon="${isActive && iconSelected ? iconSelected : icon}"></ha-icon>`;
   }
+  _shouldShowLabelBackground = () => {
+    const enabled = this.isDesktop ? this._config?.desktop?.show_popup_label_backgrounds : this._config?.mobile?.show_popup_label_backgrounds;
+    return !!enabled;
+  };
   _renderBadge(route, isRouteActive) {
     if (!route.badge) {
       return x``;
@@ -1861,6 +1879,7 @@ class NavbarCard extends i4 {
           ${popupDirectionClassName}
           ${labelPositionClassName}
           ${this.isDesktop ? "desktop" : "mobile"}
+          ${this._shouldShowLabelBackground() ? "popuplabelbackground" : ""}
         "
         style="${style}">
         ${popupItems.map((popupItem, index) => {
@@ -1870,21 +1889,24 @@ class NavbarCard extends i4 {
         return null;
       }
       const label = this._shouldShowLabels(true) ? processTemplate(this._hass, this, popupItem.label) ?? " " : null;
+      const showLabelBackground = this._shouldShowLabelBackground();
       return x`<div
               class="
               popup-item 
               ${popupDirectionClassName}
               ${labelPositionClassName}
               ${isActive ? "active" : ""}
-            "
+              "
               style="--index: ${index}"
               @click=${(e5) => this._handlePointerUp(e5, popupItem, true)}>
-              <div class="button">
+              <div
+                class="button ${showLabelBackground ? "popuplabelbackground" : ""}">
                 ${this._getRouteIcon(popupItem, isActive)}
                 <md-ripple></md-ripple>
+                ${this._renderBadge(popupItem, false)}
+                ${showLabelBackground && label ? x`<div class="label">${label}</div>` : x``}
               </div>
-              ${label ? x`<div class="label">${label}</div>` : x``}
-              ${this._renderBadge(popupItem, false)}
+              ${!showLabelBackground && label ? x`<div class="label">${label}</div>` : x``}
             </div>`;
     }).filter((x2) => x2 != null)}
       </div>
@@ -2097,12 +2119,17 @@ class NavbarCard extends i4 {
     }
     if (this.isDesktop)
       return { visible: false };
-    const mediaPlayerState = this._hass.states[this._config.media_player.entity];
+    const entity = processTemplate(this._hass, this, this._config.media_player.entity);
+    const mediaPlayerState = this._hass.states[entity];
     if (!mediaPlayerState)
       return {
         visible: true,
-        error: `Entity not found "${this._config.media_player.entity}"`
+        error: `Entity not found "${entity}"`
       };
+    if (this._config.media_player.show != null) {
+      const show = processTemplate(this._hass, this, this._config.media_player.show);
+      return { visible: show };
+    }
     return {
       visible: ["playing", "paused"].includes(mediaPlayerState?.state)
     };
@@ -2110,42 +2137,42 @@ class NavbarCard extends i4 {
   _handleMediaPlayerClick = (e5) => {
     e5.preventDefault();
     e5.stopPropagation();
-    const mediaPlayerEntity = this._config?.media_player?.entity;
-    if (!mediaPlayerEntity)
+    const entity = processTemplate(this._hass, this, this._config?.media_player?.entity);
+    if (!entity)
       return;
     fireDOMEvent(this, "hass-more-info", {
       bubbles: true,
       composed: true
     }, {
-      entityId: mediaPlayerEntity
+      entityId: entity
     });
   };
   _handleMediaPlayerSkipNextClick = (e5) => {
     e5.preventDefault();
     e5.stopPropagation();
-    const mediaPlayerEntity = this._config?.media_player?.entity;
-    if (!mediaPlayerEntity)
+    const entity = processTemplate(this._hass, this, this._config?.media_player?.entity);
+    if (!entity)
       return;
     this._hass.callService("media_player", "media_next_track", {
-      entity_id: mediaPlayerEntity
+      entity_id: entity
     });
   };
   _handleMediaPlayerPlayPauseClick = (e5) => {
     e5.preventDefault();
     e5.stopPropagation();
-    const mediaPlayerEntity = this._config?.media_player?.entity;
-    if (!mediaPlayerEntity)
+    const entity = processTemplate(this._hass, this, this._config?.media_player?.entity);
+    if (!entity)
       return;
-    const mediaPlayerState = this._hass.states[mediaPlayerEntity];
+    const mediaPlayerState = this._hass.states[entity];
     if (!mediaPlayerState)
       return;
     if (mediaPlayerState.state === "playing") {
       this._hass.callService("media_player", "media_pause", {
-        entity_id: mediaPlayerEntity
+        entity_id: entity
       });
     } else {
       this._hass.callService("media_player", "media_play", {
-        entity_id: mediaPlayerEntity
+        entity_id: entity
       });
     }
   };
@@ -2153,12 +2180,13 @@ class NavbarCard extends i4 {
     const { visible, error } = this._shouldShowMediaPlayer();
     if (!visible)
       return x``;
+    const entity = processTemplate(this._hass, this, this._config.media_player.entity);
     if (error) {
       return x`<ha-card class="media-player error">
         <ha-alert alert-type="error"> ${error} </ha-alert>
       </ha-card>`;
     }
-    const mediaPlayerState = this._hass.states[this._config.media_player.entity];
+    const mediaPlayerState = this._hass.states[entity];
     const progress = mediaPlayerState.attributes.media_position != null ? mediaPlayerState.attributes.media_position / mediaPlayerState.attributes.media_duration : null;
     return x`
       <ha-card class="media-player" @click=${this._handleMediaPlayerClick}>
