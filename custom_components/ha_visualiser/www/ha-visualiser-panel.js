@@ -17,7 +17,7 @@ class HaVisualiserPanel extends HTMLElement {
   }
  
   connectedCallback() {
-    console.log('HA Visualiser Panel v0.8.5: Improved scene entity relationship detection');
+    console.log('HA Visualiser Panel v0.8.6: Fixed double-click navigation regression');
     console.log('HA Visualiser Panel: Loading enhanced vis.js version');
     
     // Load vis.js if not already loaded
@@ -708,19 +708,49 @@ class HaVisualiserPanel extends HTMLElement {
       });
     });
     
-    // Add event listeners - single-click opens entity dialog, double-click changes focus
+    // Add event listeners with proper single/double-click handling
+    let clickTimeout = null;
+    let isDoubleClick = false;
+    
     this.network.on('click', (params) => {
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0];
-        // Open entity dialog for single click
-        this.openEntityDialog(nodeId);
+        
+        // Clear any existing timeout
+        if (clickTimeout) {
+          clearTimeout(clickTimeout);
+          clickTimeout = null;
+        }
+        
+        // If this is part of a double-click, don't process as single click
+        if (isDoubleClick) {
+          isDoubleClick = false;
+          return;
+        }
+        
+        // Set a timeout to handle single click after double-click delay
+        clickTimeout = setTimeout(() => {
+          // Single click - open entity dialog
+          this.openEntityDialog(nodeId);
+          clickTimeout = null;
+        }, 300); // 300ms delay to detect double-clicks
       }
     });
     
     this.network.on('doubleClick', (params) => {
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0];
-        // Navigate to entity's neighborhood on double-click
+        
+        // Mark as double-click to prevent single-click action
+        isDoubleClick = true;
+        
+        // Clear the single-click timeout
+        if (clickTimeout) {
+          clearTimeout(clickTimeout);
+          clickTimeout = null;
+        }
+        
+        // Double-click - navigate to entity's neighborhood
         this.onNodeClick(nodeId);
       }
     });
