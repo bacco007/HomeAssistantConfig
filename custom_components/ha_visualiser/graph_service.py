@@ -1055,6 +1055,10 @@ class GraphService:
                 
             # Check all entities for location
             for test_entity_id in self.hass.states.async_entity_ids():
+                # Skip self-references (zone can't contain itself)
+                if test_entity_id == entity_id:
+                    continue
+                    
                 test_state = self.hass.states.get(test_entity_id)
                 if not test_state:
                     continue
@@ -1615,6 +1619,10 @@ class GraphService:
         _LOGGER.debug(f"Found {len(zone_entities)} zones to check: {zone_entities}")
         
         for zone_id in zone_entities:
+            # Skip self-references (zone can't contain itself)
+            if zone_id == entity_id:
+                continue
+                
             zone_state = self.hass.states.get(zone_id)
             if not zone_state:
                 continue
@@ -2830,7 +2838,12 @@ class GraphService:
         return related
 
     def _entity_referenced_in_config(self, entity_id: str, config_list: List[Dict[str, Any]]) -> bool:
-        """Check if entity is referenced in automation config."""
+        """Check if entity or device is referenced in automation config."""
+        # Handle device node IDs
+        if entity_id.startswith("device:"):
+            device_id = entity_id.replace("device:", "")
+            return self._device_referenced_in_config(device_id, config_list)
+        
         for config in config_list:
             if not isinstance(config, dict):
                 continue
@@ -2863,10 +2876,49 @@ class GraphService:
         
         return False
 
+    def _device_referenced_in_config(self, device_id: str, config_list: List[Dict[str, Any]]) -> bool:
+        """Check if device is referenced in automation config."""
+        for config in config_list:
+            if not isinstance(config, dict):
+                continue
+                
+            # Check direct device_id references
+            if config.get("device_id") == device_id:
+                return True
+                
+            # Check in lists of device_ids
+            device_ids = config.get("device_id", [])
+            if isinstance(device_ids, list) and device_id in device_ids:
+                return True
+                
+            # Check in service data
+            service_data = config.get("data", {})
+            if isinstance(service_data, dict):
+                if service_data.get("device_id") == device_id:
+                    return True
+                if isinstance(service_data.get("device_id"), list) and device_id in service_data.get("device_id", []):
+                    return True
+                    
+            # Recursively check nested configurations
+            for value in config.values():
+                if isinstance(value, list):
+                    if self._device_referenced_in_config(device_id, value):
+                        return True
+                elif isinstance(value, dict):
+                    if self._device_referenced_in_config(device_id, [value]):
+                        return True
+        
+        return False
+
     def _entity_referenced_in_conditions(self, entity_id: str, conditions: Any) -> bool:
-        """Check if entity is referenced in automation conditions."""
+        """Check if entity or device is referenced in automation conditions."""
         if not conditions:
             return False
+        
+        # Handle device node IDs
+        if entity_id.startswith("device:"):
+            device_id = entity_id.replace("device:", "")
+            return self._device_referenced_in_conditions(device_id, conditions)
         
         # Handle different condition formats
         if isinstance(conditions, str):
@@ -2879,6 +2931,24 @@ class GraphService:
             # List of conditions
             for condition in conditions:
                 if self._entity_referenced_in_conditions(entity_id, condition):
+                    return True
+        
+        return False
+
+    def _device_referenced_in_conditions(self, device_id: str, conditions: Any) -> bool:
+        """Check if device is referenced in automation conditions."""
+        if not conditions:
+            return False
+        
+        # Handle different condition formats
+        if isinstance(conditions, dict):
+            # Single condition object
+            if conditions.get("device_id") == device_id:
+                return True
+        elif isinstance(conditions, list):
+            # List of conditions
+            for condition in conditions:
+                if self._device_referenced_in_conditions(device_id, condition):
                     return True
         
         return False
