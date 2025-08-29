@@ -636,7 +636,7 @@ function r5(r6) {
   return n4({ ...r6, state: true, attribute: false });
 }
 // package.json
-var version = "0.18.0";
+var version = "0.18.1";
 
 // node_modules/custom-card-helpers/dist/index.m.js
 var t4;
@@ -736,6 +736,8 @@ var STUB_CONFIG = {
 
 // src/dom-utils.ts
 var DASHBOARD_PADDING_STYLE_ID = "navbar-card-forced-padding-styles";
+var DEFAULT_STYLES_ID = "navbar-card-default-styles";
+var USER_STYLES_ID = "navbar-card-user-styles";
 var getNavbarTemplates = () => {
   const lovelacePanel = document?.querySelector("home-assistant")?.shadowRoot?.querySelector("home-assistant-main")?.shadowRoot?.querySelector("ha-drawer partial-panel-resolver ha-panel-lovelace");
   if (lovelacePanel) {
@@ -844,6 +846,22 @@ function fireDOMEvent(node, type, options, detailOverride, EventConstructor) {
   node.dispatchEvent(event);
   return event;
 }
+var createStyleElement = (root, id, styles) => {
+  const rootEl = root.shadowRoot;
+  let styleEl = rootEl?.querySelector(`#${id}`);
+  if (styleEl) {
+    styleEl.remove();
+  }
+  styleEl = document.createElement("style");
+  styleEl.id = id;
+  styleEl.textContent = styles.cssText;
+  rootEl?.appendChild(styleEl);
+};
+var injectStyles = (root, defaultStyles, userStyles) => {
+  console.log("••••• injectStyles");
+  createStyleElement(root, DEFAULT_STYLES_ID, defaultStyles);
+  createStyleElement(root, USER_STYLES_ID, userStyles);
+};
 
 // src/utils.ts
 var mapStringToEnum = (enumType, value) => {
@@ -931,23 +949,23 @@ var NAVBAR_CONTAINER_STYLES = i`
     bottom: 0;
     top: unset;
     z-index: var(--navbar-z-index);
+  }
 
-    ha-card {
-      background: var(--navbar-background-color);
-      border-radius: 0px;
-      box-shadow: var(--navbar-box-shadow);
-      margin: 0 auto;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 12px;
-      gap: 10px;
-    }
+  ha-card {
+    background: var(--navbar-background-color);
+    border-radius: 0px;
+    box-shadow: var(--navbar-box-shadow);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    gap: 10px;
+  }
 
-    .navbar-card {
-      justify-content: space-between;
-      width: 100%;
-    }
+  .navbar-card {
+    justify-content: space-between;
+    width: 100%;
   }
 
   /* Edit mode styles */
@@ -960,40 +978,34 @@ var NAVBAR_CONTAINER_STYLES = i`
     width: auto !important;
     top: unset !important;
     transform: none !important;
+  }
 
-    ha-card {
-      width: 100% !important;
-      flex-direction: row !important;
-    }
+  .navbar.edit-mode ha-card {
+    width: 100% !important;
+    flex-direction: row !important;
   }
 
   /* Mobile floating style */
-  .navbar.mobile.floating {
-    .navbar-card {
-      border: none !important;
-      box-shadow: var(--navbar-box-shadow-mobile-floating) !important;
-      border-radius: var(--navbar-border-radius) !important;
-    }
-  }
-  .navbar.mobile.floating:not(.edit-mode) {
-    .navbar-card {
-      margin-bottom: 10px !important;
-      width: 90% !important;
-    }
+  .navbar-card.mobile.floating {
+    border: none !important;
+    box-shadow: var(--navbar-box-shadow-mobile-floating) !important;
+    border-radius: var(--navbar-border-radius) !important;
+    margin-bottom: 10px;
+    width: 90%;
   }
 
   /* Desktop mode styles */
   .navbar.desktop {
     width: auto;
     justify-content: space-evenly;
-
     --navbar-route-icon-size: 28px;
-
-    ha-card {
-      border-radius: var(--navbar-border-radius);
-      box-shadow: var(--navbar-box-shadow-desktop);
-    }
   }
+
+  .navbar-card.desktop {
+    border-radius: var(--navbar-border-radius);
+    box-shadow: var(--navbar-box-shadow-desktop);
+  }
+
   .navbar.desktop.bottom {
     flex-direction: column;
     top: unset;
@@ -1001,11 +1013,12 @@ var NAVBAR_CONTAINER_STYLES = i`
     bottom: 16px;
     left: calc(50% + var(--mdc-drawer-width, 0px) / 2);
     transform: translate(-50%, 0);
-
-    .navbar-card {
-      flex-direction: row;
-    }
   }
+
+  .navbar-card.desktop.bottom {
+    flex-direction: row;
+  }
+
   .navbar.desktop.top {
     flex-direction: column;
     bottom: unset;
@@ -1013,11 +1026,12 @@ var NAVBAR_CONTAINER_STYLES = i`
     top: 16px;
     left: calc(50% + var(--mdc-drawer-width, 0px) / 2);
     transform: translate(-50%, 0);
-
-    .navbar-card {
-      flex-direction: row;
-    }
   }
+
+  .navbar-card.desktop.top {
+    flex-direction: row;
+  }
+
   .navbar.desktop.left {
     flex-direction: row-reverse;
     left: calc(var(--mdc-drawer-width, 0px) + 16px);
@@ -1025,11 +1039,12 @@ var NAVBAR_CONTAINER_STYLES = i`
     bottom: unset;
     top: 50%;
     transform: translate(0, -50%);
-
-    .navbar-card {
-      flex-direction: column;
-    }
   }
+
+  .navbar-card.desktop.left {
+    flex-direction: column;
+  }
+
   .navbar.desktop.right {
     flex-direction: row;
     right: 16px;
@@ -1037,88 +1052,87 @@ var NAVBAR_CONTAINER_STYLES = i`
     bottom: unset;
     top: 50%;
     transform: translate(0, -50%);
+  }
 
-    .navbar-card {
-      flex-direction: column;
-    }
+  .navbar-card.desktop.right {
+    flex-direction: column;
   }
 `;
 var MEDIA_PLAYER_STYLES = i`
-  .navbar {
-    .media-player.error {
-      padding: 0px !important;
-      ha-alert {
-        width: 100%;
-      }
-    }
+  .media-player.error {
+    padding: 0px !important;
+  }
 
-    .media-player {
-      cursor: pointer;
-      width: 90%;
-      overflow: hidden;
-      position: relative;
-      border: none;
-      box-shadow: var(--navbar-box-shadow-mobile-floating);
-      border-radius: var(--navbar-border-radius);
-      display: flex;
-      flex-direction: row;
+  .media-player.error ha-alert {
+    width: 100%;
+  }
 
-      .media-player-bg {
-        position: absolute;
-        inset: 0;
-        background-size: cover;
-        background-position: center;
-        filter: blur(20px);
-        opacity: 0.03;
-        z-index: 0;
-      }
+  .media-player {
+    cursor: pointer;
+    width: 90%;
+    overflow: hidden;
+    position: relative;
+    border: none;
+    box-shadow: var(--navbar-box-shadow-mobile-floating);
+    border-radius: var(--navbar-border-radius);
+    display: flex;
+    flex-direction: row;
+  }
 
-      .media-player-image {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        object-fit: cover;
-        margin-right: 6px;
-      }
+  .media-player .media-player-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px);
+    opacity: 0.03;
+    z-index: 0;
+  }
 
-      .media-player-info {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-      }
+  .media-player .media-player-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    object-fit: cover;
+    margin-right: 6px;
+  }
 
-      .media-player-title {
-        font-size: 14px;
-        font-weight: 500;
-      }
+  .media-player .media-player-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 
-      .media-player-artist {
-        font-size: 12px;
-        color: var(--secondary-text-color);
-      }
+  .media-player .media-player-title {
+    font-size: 14px;
+    font-weight: 500;
+  }
 
-      .media-player-button {
-        width: 38px;
-        --ha-button-height: 38px;
-        --ha-button-border-radius: 999px;
-      }
+  .media-player .media-player-artist {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+  }
 
-      .media-player-button.media-player-button-play-pause {
-      }
+  .media-player .media-player-button {
+    width: 38px;
+    --ha-button-height: 38px;
+    --ha-button-border-radius: 999px;
+  }
 
-      .media-player-progress-bar {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-      }
+  .media-player .media-player-button.media-player-button-play-pause {
+  }
 
-      .media-player-progress-bar-fill {
-        background-color: var(--navbar-primary-color);
-        height: 100%;
-      }
-    }
+  .media-player .media-player-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .media-player .media-player-progress-bar-fill {
+    background-color: var(--navbar-primary-color);
+    height: 100%;
   }
 `;
 var ROUTE_STYLES = i`
@@ -1203,11 +1217,11 @@ var ROUTE_STYLES = i`
   }
 
   /* Desktop mode styles */
-  .navbar.desktop .route {
+  .desktop .route {
     height: 60px;
     width: 60px;
   }
-  .navbar.desktop .button {
+  .desktop .button {
     flex: unset;
     height: 100%;
   }
@@ -1266,9 +1280,17 @@ var POPUP_STYLES = i`
     margin-left: 32px;
   }
 
+  .navbar-popup.open-right.popuplabelbackground {
+    gap: 24px;
+  }
+
   .navbar-popup.open-left {
     flex-direction: row-reverse;
     margin-right: 32px;
+  }
+
+  .navbar-popup.open-left.popuplabelbackground {
+    gap: 24px;
   }
 
   .navbar-popup.label-right {
@@ -1282,7 +1304,7 @@ var POPUP_STYLES = i`
   .navbar-popup.visible {
     opacity: 1;
   }
-  
+
   .navbar-popup.popuplabelbackground {
     padding-left: 0px;
   }
@@ -1309,12 +1331,6 @@ var POPUP_STYLES = i`
     transform: translateY(10px);
     transition: filter 0.2s ease;
     transition: all 0.2s ease;
-  }
-
-  .navbar-popup.visible .popup-item {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: calc(var(--index) * 0.05s);
   }
 
   .navbar-popup.visible .popup-item {
@@ -1620,9 +1636,7 @@ class NavbarCard extends i4 {
     this._inEditDashboardMode = this.parentElement?.closest("hui-card-edit-mode") != null;
     this._inEditCardMode = homeAssistantRoot?.shadowRoot?.querySelector("hui-dialog-edit-card")?.shadowRoot?.querySelector("ha-dialog") != null;
     this._inPreviewMode = this.parentElement?.closest(".card > .preview") != null;
-    const style = document.createElement("style");
-    style.textContent = this.generateCustomStyles().cssText;
-    this.shadowRoot?.appendChild(style);
+    injectStyles(this, getDefaultStyles(), this._config?.styles ? r(this._config.styles) : i``);
     forceDashboardPadding({
       desktop: this._config?.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
       mobile: this._config?.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
@@ -2255,15 +2269,6 @@ class NavbarCard extends i4 {
         </ha-card>
       </div>
       ${this._popup}
-    `;
-  }
-  generateCustomStyles() {
-    const userStyles = this._config?.styles ? r(this._config.styles) : i``;
-    return i`
-      ${getDefaultStyles()}
-      :host {
-        ${userStyles}
-      }
     `;
   }
 }
