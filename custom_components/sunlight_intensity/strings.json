@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sunlight Intensity Configuration",
+        "description": "Configure the Sunlight Intensity integration",
+        "data": {
+          "latitude": "Latitude (degrees)",
+          "longitude": "Longitude (degrees)",
+          "house_angle": "House Angle (degrees, 0° = North-facing front)"
+        }
+      }
+    },
+    "error": {
+      "invalid_latitude": "Latitude must be between -90 and 90 degrees",
+      "invalid_longitude": "Longitude must be between -180 and 180 degrees",
+      "invalid_house_angle": "House angle must be between 0 and 360 degrees",
+      "unknown": "Unexpected error occurred"
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "Sunlight Intensity Options",
+        "description": "Update the Sunlight Intensity configuration",
+        "data": {
+          "latitude": "Latitude (degrees)",
+          "longitude": "Longitude (degrees)",
+          "house_angle": "House Angle (degrees, 0° = North-facing front)"
+        }
+      }
+    }
+  }
+}
