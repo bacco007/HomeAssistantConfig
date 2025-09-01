@@ -28,15 +28,16 @@ from homeassistant.helpers.config_validation import (
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.util import Throttle
 
 _LOGGER: Final = logging.getLogger(__name__)
+
+# Match the default scrape_interval in Prometheus
+SCAN_INTERVAL: Final = timedelta(seconds=15)
 
 DEFAULT_URL: Final = "http://localhost:9090"
 CONF_QUERIES: Final = "queries"
 CONF_EXPR: Final = "expr"
 CONF_STATE_CLASS: Final = "state_class"
-MIN_TIME_BETWEEN_UPDATES: Final = timedelta(seconds=60)
 
 _QUERY_SCHEMA: Final = vol.Schema(
     {
@@ -153,7 +154,6 @@ class PrometheusSensor(SensorEntity):
         self._attr_state_class = state_class
         self._attr_unique_id = unique_id
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def async_update(self) -> None:
         """Update state by executing query."""
         result = await self._prometheus.query(self._expression)
