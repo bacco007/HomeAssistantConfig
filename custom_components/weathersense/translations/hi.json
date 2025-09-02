@@ -1,0 +1,41 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "HA WeatherSense सेटअप करें",
+        "description": "पर्यावरणीय स्थितियों के आधार पर महसूस होने वाले तापमान की गणना के लिए एक सेंसर सेटअप करें।",
+        "data": {
+          "name": "सेंसर का नाम",
+          "temperature_sensor": "तापमान सेंसर",
+          "humidity_sensor": "आर्द्रता सेंसर",
+          "wind_speed_sensor": "हवा की गति सेंसर (वैकल्पिक)",
+          "pressure_sensor": "दबाव सेंसर (वैकल्पिक)",
+          "solar_radiation_sensor": "सौर विकिरण सेंसर (वैकल्पिक)",
+          "is_outdoor": "क्या यह बाहरी स्थितियों के लिए है?",
+          "display_unit": "तापमान प्रदर्शन इकाई"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "तापमान सेंसर आवश्यक है",
+      "humidity_required": "आर्द्रता सेंसर आवश्यक है"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "HA WeatherSense विकल्प",
+        "data": {
+          "temperature_sensor": "तापमान सेंसर",
+          "humidity_sensor": "आर्द्रता सेंसर",
+          "wind_speed_sensor": "हवा की गति सेंसर (वैकल्पिक)",
+          "pressure_sensor": "दबाव सेंसर (वैकल्पिक)",
+          "solar_radiation_sensor": "सौर विकिरण सेंसर (वैकल्पिक)",
+          "is_outdoor": "क्या यह बाहरी स्थितियों के लिए है?",
+          "display_unit": "तापमान प्रदर्शन इकाई"
+        }
+      }
+    }
+  }
+}
