@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Alternative Zeitsysteme",
+        "description": "Willkommen bei Alternative Zeitsysteme!\n\nDiese Integration bietet verschiedene alternative Kalender und Zeitsysteme für Bildungs- und Unterhaltungszwecke.",
+        "data": {
+          "name": "Name der Integration"
+        }
+      },
+      "select_categories": {
+        "title": "Kalenderkategorien auswählen",
+        "description": "Wählen Sie, welche Kategorien von Kalendern Sie konfigurieren möchten:\n\n{details}",
+        "data": {
+          "categories": "Einzuschließende Kategorien"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "{category} Kalender auswählen",
+        "description": "Wählen Sie Kalender aus der Kategorie {category}:\n\n{details}",
+        "data": {
+          "calendars": "Zu aktivierende Kalender"
+        }
+      },
+      "plugin_options": {
+        "title": "{calendar_name} konfigurieren",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nKonfigurieren Sie die folgenden Optionen:"
+      },
+      "disclaimer": {
+        "title": "Wichtiger Hinweis",
+        "description": "## ⚠️ Alternative Zeitsysteme - Haftungsausschluss\n\nDie von dieser Integration bereitgestellten alternativen Kalender und Zeitsysteme dienen **ausschließlich Bildungs- und Unterhaltungszwecken**.\n\n### Bitte beachten Sie:\n• Die Berechnungen sind möglicherweise nicht 100% genau\n• Einige Kalender sind fiktiv oder theoretisch\n• Historische Kalender können Variationen aufweisen\n• Zeitzonen und Umrechnungen sind Näherungswerte\n\n### Fehler gefunden?\nWenn Sie Fehler entdecken oder Verbesserungsvorschläge haben, melden Sie diese bitte in unserem GitHub-Repository:\n\n**https://github.com/Lexorius/alternative_time**\n\nMit dem Fortfahren bestätigen Sie, dass diese Zeitsysteme nicht für kritische Zeiterfassung oder offizielle Zwecke verwendet werden sollten."
+      }
+    },
+    "error": {
+      "unknown": "Ein unerwarteter Fehler ist aufgetreten"
+    },
+    "abort": {
+      "no_calendars_found": "Keine Kalender-Implementierungen gefunden. Bitte überprüfen Sie die Installation.",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kalenderoptionen konfigurieren",
+        "description": "Wählen Sie einen Kalender aus, um dessen Optionen zu konfigurieren:\n\n{title}",
+        "data": {
+          "calendar": "Zu konfigurierender Kalender"
+        }
+      },
+      "configure_calendar": {
+        "title": "{calendar_name} konfigurieren",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nPassen Sie die Einstellungen unten an:"
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}

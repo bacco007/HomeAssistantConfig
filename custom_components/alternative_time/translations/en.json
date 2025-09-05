@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Alternative Time Systems",
+        "description": "Welcome to Alternative Time Systems!\n\nThis integration provides various alternative calendars and time systems for educational and entertainment purposes.",
+        "data": {
+          "name": "Integration Name"
+        }
+      },
+      "select_categories": {
+        "title": "Select Calendar Categories",
+        "description": "Choose which categories of calendars you want to configure:\n\n{details}",
+        "data": {
+          "categories": "Categories to include"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "Select {category} Calendars",
+        "description": "Choose calendars from the {category} category:\n\n{details}",
+        "data": {
+          "calendars": "Calendars to enable"
+        }
+      },
+      "plugin_options": {
+        "title": "Configure {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nConfigure the options below:"
+      },
+      "disclaimer": {
+        "title": "Important Notice",
+        "description": "## ⚠️ Alternative Time Systems - Disclaimer\n\nThe alternative calendars and time systems provided by this integration are for **educational and entertainment purposes only**.\n\n### Please note:\n• The calculations might not be 100% accurate\n• Some calendars are fictional or theoretical\n• Historical calendars may have variations\n• Time zones and conversions are approximations\n\n### Found an issue?\nIf you discover any errors or have suggestions for improvements, please report them on our GitHub repository:\n\n**https://github.com/Lexorius/alternative_time**\n\nBy continuing, you acknowledge that these time systems should not be used for critical time-keeping or official purposes."
+      }
+    },
+    "error": {
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "no_calendars_found": "No calendar implementations found. Please check the installation.",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Calendar Options",
+        "description": "Select a calendar to configure its options:\n\n{title}",
+        "data": {
+          "calendar": "Calendar to configure"
+        }
+      },
+      "configure_calendar": {
+        "title": "Configure {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nAdjust the settings below:"
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}

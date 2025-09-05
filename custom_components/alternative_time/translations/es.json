@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sistemas de Tiempo Alternativos",
+        "description": "¡Bienvenido a Sistemas de Tiempo Alternativos!\n\nEsta integración proporciona varios calendarios y sistemas de tiempo alternativos con fines educativos y de entretenimiento.",
+        "data": {
+          "name": "Nombre de la integración"
+        }
+      },
+      "select_categories": {
+        "title": "Seleccionar categorías de calendario",
+        "description": "Elija qué categorías de calendarios desea configurar:\n\n{details}",
+        "data": {
+          "categories": "Categorías a incluir"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "Seleccionar calendarios de {category}",
+        "description": "Elija calendarios de la categoría {category}:\n\n{details}",
+        "data": {
+          "calendars": "Calendarios para activar"
+        }
+      },
+      "plugin_options": {
+        "title": "Configurar {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nConfigure las siguientes opciones:"
+      },
+      "disclaimer": {
+        "title": "Aviso importante",
+        "description": "## ⚠️ Sistemas de Tiempo Alternativos - Descargo de responsabilidad\n\nLos calendarios y sistemas de tiempo alternativos proporcionados por esta integración son **solo con fines educativos y de entretenimiento**.\n\n### Tenga en cuenta:\n• Los cálculos pueden no ser 100% precisos\n• Algunos calendarios son ficticios o teóricos\n• Los calendarios históricos pueden tener variaciones\n• Las zonas horarias y conversiones son aproximaciones\n\n### ¿Encontró un problema?\nSi descubre errores o tiene sugerencias de mejora, infórmelos en nuestro repositorio de GitHub:\n\n**https://github.com/Lexorius/alternative_time**\n\nAl continuar, reconoce que estos sistemas de tiempo no deben usarse para el cronometraje crítico o propósitos oficiales."
+      }
+    },
+    "error": {
+      "unknown": "Ocurrió un error inesperado"
+    },
+    "abort": {
+      "no_calendars_found": "No se encontraron implementaciones de calendario. Por favor, verifique la instalación.",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configurar opciones de calendario",
+        "description": "Seleccione un calendario para configurar sus opciones:\n\n{title}",
+        "data": {
+          "calendar": "Calendario a configurar"
+        }
+      },
+      "configure_calendar": {
+        "title": "Configurar {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nAjuste la configuración a continuación:"
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}

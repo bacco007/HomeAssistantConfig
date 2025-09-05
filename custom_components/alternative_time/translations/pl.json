@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Alternatywne Systemy Czasu",
+        "description": "Witamy w Alternatywnych Systemach Czasu!\n\nTa integracja zapewnia różne alternatywne kalendarze i systemy czasu do celów edukacyjnych i rozrywkowych.",
+        "data": {
+          "name": "Nazwa integracji"
+        }
+      },
+      "select_categories": {
+        "title": "Wybierz kategorie kalendarzy",
+        "description": "Wybierz kategorie kalendarzy, które chcesz skonfigurować:\n\n{details}",
+        "data": {
+          "categories": "Kategorie do uwzględnienia"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "Wybierz kalendarze {category}",
+        "description": "Wybierz kalendarze z kategorii {category}:\n\n{details}",
+        "data": {
+          "calendars": "Kalendarze do aktywacji"
+        }
+      },
+      "plugin_options": {
+        "title": "Konfiguruj {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nSkonfiguruj poniższe opcje:"
+      },
+      "disclaimer": {
+        "title": "Ważna informacja",
+        "description": "## ⚠️ Alternatywne Systemy Czasu - Zastrzeżenie\n\nAlternatywne kalendarze i systemy czasu dostarczane przez tę integrację są **wyłącznie do celów edukacyjnych i rozrywkowych**.\n\n### Proszę zauważyć:\n• Obliczenia mogą nie być w 100% dokładne\n• Niektóre kalendarze są fikcyjne lub teoretyczne\n• Kalendarze historyczne mogą mieć różnice\n• Strefy czasowe i konwersje są przybliżeniami\n\n### Znalazłeś problem?\nJeśli odkryjesz błędy lub masz sugestie dotyczące ulepszeń, zgłoś je w naszym repozytorium GitHub:\n\n**https://github.com/Lexorius/alternative_time**\n\nKontynuując, potwierdzasz, że te systemy czasu nie powinny być używane do krytycznego pomiaru czasu lub celów oficjalnych."
+      }
+    },
+    "error": {
+      "unknown": "Wystąpił nieoczekiwany błąd"
+    },
+    "abort": {
+      "no_calendars_found": "Nie znaleziono implementacji kalendarza. Proszę sprawdzić instalację.",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Konfiguruj opcje kalendarza",
+        "description": "Wybierz kalendarz, aby skonfigurować jego opcje:\n\n{title}",
+        "data": {
+          "calendar": "Kalendarz do konfiguracji"
+        }
+      },
+      "configure_calendar": {
+        "title": "Konfiguruj {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nDostosuj poniższe ustawienia:"
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}

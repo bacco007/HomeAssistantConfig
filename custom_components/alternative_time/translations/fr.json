@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Systèmes de Temps Alternatifs",
+        "description": "Bienvenue dans les Systèmes de Temps Alternatifs !\n\nCette intégration fournit divers calendriers et systèmes de temps alternatifs à des fins éducatives et de divertissement.",
+        "data": {
+          "name": "Nom de l'intégration"
+        }
+      },
+      "select_categories": {
+        "title": "Sélectionner les catégories de calendrier",
+        "description": "Choisissez quelles catégories de calendriers vous souhaitez configurer :\n\n{details}",
+        "data": {
+          "categories": "Catégories à inclure"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "Sélectionner les calendriers {category}",
+        "description": "Choisissez les calendriers de la catégorie {category} :\n\n{details}",
+        "data": {
+          "calendars": "Calendriers à activer"
+        }
+      },
+      "plugin_options": {
+        "title": "Configurer {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nConfigurez les options ci-dessous :"
+      },
+      "disclaimer": {
+        "title": "Avis important",
+        "description": "## ⚠️ Systèmes de Temps Alternatifs - Avertissement\n\nLes calendriers et systèmes de temps alternatifs fournis par cette intégration sont **uniquement à des fins éducatives et de divertissement**.\n\n### Veuillez noter :\n• Les calculs peuvent ne pas être précis à 100%\n• Certains calendriers sont fictifs ou théoriques\n• Les calendriers historiques peuvent présenter des variations\n• Les fuseaux horaires et les conversions sont des approximations\n\n### Vous avez trouvé un problème ?\nSi vous découvrez des erreurs ou avez des suggestions d'améliorations, veuillez les signaler sur notre dépôt GitHub :\n\n**https://github.com/Lexorius/alternative_time**\n\nEn continuant, vous reconnaissez que ces systèmes de temps ne doivent pas être utilisés pour la mesure critique du temps ou à des fins officielles."
+      }
+    },
+    "error": {
+      "unknown": "Une erreur inattendue s'est produite"
+    },
+    "abort": {
+      "no_calendars_found": "Aucune implémentation de calendrier trouvée. Veuillez vérifier l'installation.",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configurer les options du calendrier",
+        "description": "Sélectionnez un calendrier pour configurer ses options :\n\n{title}",
+        "data": {
+          "calendar": "Calendrier à configurer"
+        }
+      },
+      "configure_calendar": {
+        "title": "Configurer {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nAjustez les paramètres ci-dessous :"
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}
