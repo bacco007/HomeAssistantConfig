@@ -9,7 +9,8 @@ import os
 
 from gtfs_station_stop.feed_subject import FeedSubject
 from gtfs_station_stop.route_status import RouteStatus
-from gtfs_station_stop.schedule import GtfsSchedule, async_build_schedule
+from gtfs_station_stop.schedule import GtfsSchedule
+from gtfs_station_stop.schedule import async_build_schedule  # noqa: F401
 from gtfs_station_stop.station_stop import StationStop
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -97,16 +98,16 @@ class GtfsRealtimeCoordinator(DataUpdateCoordinator):
             self.gtfs_update_data.schedule = GtfsSchedule()
             _LOGGER.debug("GTFS Static data cleared")
 
-        if self.gtfs_update_data.schedule == GtfsSchedule():
-            self.gtfs_update_data.schedule = await async_build_schedule(
-                *self.static_update_targets, session=None, **self.kwargs
+        for target in self.static_update_targets:
+            await self.gtfs_update_data.schedule.async_build_schedule(
+                target,
+                session=async_get_clientsession(self.hass),
+                **self.kwargs,
             )
-        else:
-            await self.gtfs_update_data.schedule.async_update_schedule(
-                *self.static_update_targets, session=None, **self.kwargs
+            await self.gtfs_update_data.schedule.async_load_stop_times(
+                set(self.gtfs_update_data.station_stops.keys())
             )
 
-        for target in self.static_update_targets:
             _LOGGER.debug("GTFS Static Feed %s updated", target)
             self.last_static_update[target] = datetime.now()
         self.static_update_targets.clear()

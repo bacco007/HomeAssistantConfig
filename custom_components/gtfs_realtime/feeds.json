@@ -329,18 +329,19 @@
     }
   },
   "transport_victoria": {
-    "name": "Transport Victoria",
-    "auth_hint": "Ocp-Apim-Subscription-Key: [your key here]",
-    "disclaimer": "See terms of use at https://data-exchange.vicroads.vic.gov.au/terms_of_use",
+    "name": "Transport Victoria (Open Data)",
+    "auth_hint": "KeyId: [API Key]",
+    "disclaimer": "See Help & Support at https://opendata.transport.vic.gov.au/Help-And-Support",
     "realtime_feeds": {
-      "alerts_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-servicealerts",
-      "trip_update_metro_bus": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrobus-tripupdates",
-      "trip_update_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-tripupdates",
-      "vehicle_positions_metro_trains": "https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-vehicleposition-updates"
+      "alerts_metro_trains": "https://api.opendata.transport.vic.gov.au/opendata/public-transport/gtfs/realtime/v1/metro/service-alerts",
+      "alerts_yarra_tram": "https://api.opendata.transport.vic.gov.au/opendata/public-transport/gtfs/realtime/v1/tram/service-alerts",
+      "trip_update_metro_bus": "https://api.opendata.transport.vic.gov.au/opendata/public-transport/gtfs/realtime/v1/bus/trip-updates",
+      "trip_update_metro_trains": "https://api.opendata.transport.vic.gov.au/opendata/public-transport/gtfs/realtime/v1/metro/trip-updates",
+      "trip_update_yarra_tram": "https://api.opendata.transport.vic.gov.au/opendata/public-transport/gtfs/realtime/v1/tram/trip-updates"
     },
     "requires_auth_header": true,
     "static_feeds": {
-      "nested": "https://opendata.transport.vic.gov.au/dataset/3f4e292e-7f8a-4ffe-831f-1953be0fe448/resource/aeee08cf-6da4-4206-b6b4-202ad488401f/download/gtfs.zip"
+      "nested": "http://data.ptv.vic.gov.au/downloads/gtfs.zip#4/google_transit.zip"
     }
   },
   "vancouver_translink": {
@@ -356,7 +357,7 @@
     }
   },
   "washington_metro_area_bus": {
-    "name": "Washington Metropolitan Area Transit Authroity Bus",
+    "name": "Washington Metropolitan Area Transit Authority Bus",
     "realtime_feeds": {
       "alerts": "https://api.wmata.com/gtfs/bus-gtfsrt-alerts.pb",
       "trip_update": "https://api.wmata.com/gtfs/bus-gtfsrt-tripupdates.pb",

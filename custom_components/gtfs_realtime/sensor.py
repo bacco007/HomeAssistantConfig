@@ -43,6 +43,8 @@ PLATFORM_SCHEMA = SENSOR_PLATFORM_SCHEMA.extend(
 
 _LOGGER = logging.getLogger(__name__)
 
+MIN_NEGATIVE_ARRIVAL_TIME_SECONDS = -120  # 2 minutes
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -154,8 +156,16 @@ class ArrivalSensor(SensorEntity, CoordinatorEntity):
     def update(self) -> None:
         """Update state from coordinator data."""
         stop_times_ds = self.coordinator.gtfs_update_data.schedule.stop_times_ds
-        time_to_arrivals = sorted(
-            self.station_stop.get_time_to_arrivals(stop_times_dataset=stop_times_ds)
+        time_to_arrivals = list(
+            filter(
+                lambda tta: tta.time is None
+                or tta.time > MIN_NEGATIVE_ARRIVAL_TIME_SECONDS,
+                sorted(
+                    self.station_stop.get_time_to_arrivals(
+                        stop_times_dataset=stop_times_ds
+                    )
+                ),
+            )
         )
         self._arrival_detail = {}
         if len(time_to_arrivals) > self._idx:

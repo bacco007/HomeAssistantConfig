@@ -229,7 +229,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
     async def _get_route_options(
         self, headers: dict[str, str] | None = None
     ) -> list[SelectOptionDict]:
-        await self.schedule.async_update_schedule(
+        await self.schedule.async_build_schedule(
             *self.hub_config[CONF_GTFS_STATIC_DATA], headers=headers
         )
         route_ds = self.schedule.route_info_ds
@@ -244,7 +244,7 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
     async def _get_stop_options(
         self, headers: dict[str, str] | None = None
     ) -> list[SelectOptionDict]:
-        await self.schedule.async_update_schedule(
+        await self.schedule.async_build_schedule(
             *self.hub_config[CONF_GTFS_STATIC_DATA], headers=headers
         )
         ssi_ds = self.schedule.station_stop_info_ds
@@ -340,6 +340,10 @@ class GtfsRealtimeConfigFlow(ConfigFlow, domain=DOMAIN):
                         self.hub_config[CONF_STATIC_SOURCES_UPDATE_FREQUENCY][uri] = {
                             "hours": CONF_STATIC_SOURCES_UPDATE_FREQUENCY_DEFAULT
                         }
+
+                await self.schedule.async_load_stop_times(
+                    set(self.hub_config["stop_ids"])
+                )
                 return self.async_create_entry(
                     title=user_input.get(CONF_GTFS_PROVIDER, "generic_gtfs_provider"),
                     data=self.hub_config,
