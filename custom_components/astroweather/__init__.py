@@ -211,6 +211,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         name=DOMAIN,
         update_method=astroweather.get_location_data,
         update_interval=timedelta(minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)),
+        config_entry=entry,
     )
     await coordinator.async_config_entry_first_refresh()
     if not coordinator.last_update_success:
@@ -228,6 +229,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         name=DOMAIN,
         update_method=astroweather.get_hourly_forecast,
         update_interval=timedelta(minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)),
+        config_entry=entry,
     )
     await fcst_coordinator.async_config_entry_first_refresh()
     if not fcst_coordinator.last_update_success:

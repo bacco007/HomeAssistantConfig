@@ -6,7 +6,7 @@ from homeassistant.const import Platform
 # Domain and platforms
 # #####################################################
 DOMAIN = "astroweather"
-VERSION = "0.73.0"
+VERSION = "0.74.0"
 MANUFACTURER = "AstroWeather"
 
 ASTROWEATHER_PLATFORMS = (
