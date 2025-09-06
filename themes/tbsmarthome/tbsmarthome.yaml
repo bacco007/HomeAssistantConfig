@@ -207,7 +207,7 @@ tbsmarthome:
 
   # Dialog
   ha-dialog-border-radius: "10px"
-  light-primary-color: 'var(--disabled-text-color)'
+  #light-primary-color: 'var(--disabled-text-color)'
 
   # Icons
   paper-item-icon-color: "#EBEBEB"
