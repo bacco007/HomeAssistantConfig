@@ -5,7 +5,6 @@
     "@thlucas1"
   ],
   "config_flow": true,
-  "homeassistant": ">=2025.7.0",
   "dependencies": [
     "application_credentials",
     "zeroconf"
@@ -24,7 +23,7 @@
     "urllib3>=2.0",
     "zeroconf>=0.132.2"
   ],
-  "version": "v1.0.156",
+  "version": "v1.0.159",
   "zeroconf": [
     "_spotify-connect._tcp.local.",
     "_googlecast._tcp.local."
