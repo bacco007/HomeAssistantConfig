@@ -76,7 +76,29 @@ async def websocket_get_neighborhood(
             show_areas=msg["show_areas"]
         )
         
-        # Convert dataclasses to dicts for JSON serialization
+        # Validate result structure and add defensive checks
+        if not isinstance(result, dict):
+            raise ValueError(f"Graph service returned invalid result type: {type(result)}")
+        
+        nodes = result.get("nodes")
+        edges = result.get("edges")
+        center_node = result.get("center_node")
+        
+        if nodes is None:
+            _LOGGER.error("Graph service returned None for nodes. Result keys: %s", list(result.keys()))
+            nodes = []
+        elif not isinstance(nodes, (list, tuple)):
+            _LOGGER.error("Graph service returned invalid nodes type: %s", type(nodes))
+            nodes = []
+            
+        if edges is None:
+            _LOGGER.error("Graph service returned None for edges. Result keys: %s", list(result.keys()))
+            edges = []
+        elif not isinstance(edges, (list, tuple)):
+            _LOGGER.error("Graph service returned invalid edges type: %s", type(edges))
+            edges = []
+            
+        # Convert dataclasses to dicts for JSON serialization with safe iteration
         serialized_result = {
             "nodes": [
                 {
@@ -88,7 +110,7 @@ async def websocket_get_neighborhood(
                     "state": node.state,
                     "icon": node.icon
                 }
-                for node in result["nodes"]
+                for node in nodes
             ],
             "edges": [
                 {
@@ -97,9 +119,9 @@ async def websocket_get_neighborhood(
                     "relationship_type": edge.relationship_type,
                     "label": edge.label
                 }
-                for edge in result["edges"]
+                for edge in edges
             ],
-            "center_node": result["center_node"]
+            "center_node": center_node or msg["entity_id"]
         }
         
         connection.send_result(msg["id"], serialized_result)

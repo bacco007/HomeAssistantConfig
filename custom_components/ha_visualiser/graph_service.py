@@ -50,50 +50,73 @@ class GraphService:
     ) -> Dict[str, Any]:
         """Get the neighborhood graph for a specific entity, device, area, zone, or label."""
         
-        # Handle device nodes
-        if entity_id.startswith("device:"):
-            device_id = entity_id.replace("device:", "")
-            device = self._device_registry.async_get(device_id)
-            if not device:
-                raise ValueError(f"Device {device_id} not found")
-        # Handle area nodes
-        elif entity_id.startswith("area:"):
-            area_id = entity_id.replace("area:", "")
-            area = self._area_registry.async_get_area(area_id)
-            if not area:
-                raise ValueError(f"Area {area_id} not found")
-        # Handle zone nodes
-        elif entity_id.startswith("zone."):
-            zone_state = self.hass.states.get(entity_id)
-            if not zone_state:
-                raise ValueError(f"Zone {entity_id} not found")
-        # Handle label nodes
-        elif entity_id.startswith("label:"):
-            label_id = entity_id.replace("label:", "")
-            label_entry = self._label_registry.async_get_label(label_id)
-            if not label_entry:
-                raise ValueError(f"Label {label_id} not found")
-        # Handle regular entities
-        elif entity_id not in self.hass.states.async_entity_ids():
-            raise ValueError(f"Entity {entity_id} not found")
+        try:
+            # Handle device nodes
+            if entity_id.startswith("device:"):
+                device_id = entity_id.replace("device:", "")
+                device = self._device_registry.async_get(device_id)
+                if not device:
+                    raise ValueError(f"Device {device_id} not found")
+            # Handle area nodes
+            elif entity_id.startswith("area:"):
+                area_id = entity_id.replace("area:", "")
+                area = self._area_registry.async_get_area(area_id)
+                if not area:
+                    raise ValueError(f"Area {area_id} not found")
+            # Handle zone nodes
+            elif entity_id.startswith("zone."):
+                zone_state = self.hass.states.get(entity_id)
+                if not zone_state:
+                    raise ValueError(f"Zone {entity_id} not found")
+            # Handle label nodes
+            elif entity_id.startswith("label:"):
+                label_id = entity_id.replace("label:", "")
+                label_entry = self._label_registry.async_get_label(label_id)
+                if not label_entry:
+                    raise ValueError(f"Label {label_id} not found")
+            # Handle regular entities
+            elif entity_id not in self.hass.states.async_entity_ids():
+                raise ValueError(f"Entity {entity_id} not found")
 
-        nodes = {}
-        edges = []
-        distances = {}  # Track minimum distance to each node
-        edge_set = set()  # Track edges to prevent duplicates
-        
-        # Start with the target entity or device
-        _LOGGER.debug(f"Building neighborhood for {entity_id}")
-        await self._add_entity_and_neighbors_with_distance(
-            entity_id, nodes, edges, distances, edge_set, max_depth, 0, show_areas
-        )
-        _LOGGER.debug(f"Graph complete: {len(nodes)} nodes, {len(edges)} edges")
-        
-        return {
-            "nodes": list(nodes.values()),
-            "edges": edges,
-            "center_node": entity_id
-        }
+            nodes = {}
+            edges = []
+            distances = {}  # Track minimum distance to each node
+            edge_set = set()  # Track edges to prevent duplicates
+            
+            # Start with the target entity or device
+            _LOGGER.debug(f"Building neighborhood for {entity_id}")
+            await self._add_entity_and_neighbors_with_distance(
+                entity_id, nodes, edges, distances, edge_set, max_depth, 0, show_areas
+            )
+            _LOGGER.debug(f"Graph complete: {len(nodes)} nodes, {len(edges)} edges")
+            
+            # Validate results before returning
+            if nodes is None:
+                _LOGGER.error(f"Graph building resulted in None nodes for {entity_id}")
+                nodes = {}
+            if edges is None:
+                _LOGGER.error(f"Graph building resulted in None edges for {entity_id}")
+                edges = []
+            
+            nodes_list = list(nodes.values()) if isinstance(nodes, dict) else []
+            edges_list = edges if isinstance(edges, list) else []
+            
+            _LOGGER.debug(f"Returning graph: {len(nodes_list)} nodes, {len(edges_list)} edges")
+            
+            return {
+                "nodes": nodes_list,
+                "edges": edges_list,
+                "center_node": entity_id
+            }
+            
+        except Exception as e:
+            _LOGGER.error(f"Error building neighborhood graph for {entity_id}: {e}", exc_info=True)
+            # Return safe empty result on any error
+            return {
+                "nodes": [],
+                "edges": [],
+                "center_node": entity_id
+            }
 
     def _get_entities_for_label(self, label_id: str) -> List[Any]:
         """Get entities for a label with compatibility check."""
@@ -276,51 +299,73 @@ class GraphService:
     ) -> Dict[str, Any]:
         """Get filtered neighborhood graph for a specific entity, device, area, or zone."""
         
-        # Handle device nodes
-        if entity_id.startswith("device:"):
-            device_id = entity_id.replace("device:", "")
-            device = self._device_registry.async_get(device_id)
-            if not device:
-                raise ValueError(f"Device {device_id} not found")
-        # Handle area nodes
-        elif entity_id.startswith("area:"):
-            area_id = entity_id.replace("area:", "")
-            area = self._area_registry.async_get_area(area_id)
-            if not area:
-                raise ValueError(f"Area {area_id} not found")
-        # Handle zone nodes
-        elif entity_id.startswith("zone."):
-            zone_state = self.hass.states.get(entity_id)
-            if not zone_state:
-                raise ValueError(f"Zone {entity_id} not found")
-        # Handle label nodes
-        elif entity_id.startswith("label:"):
-            label_id = entity_id.replace("label:", "")
-            label_entry = self._label_registry.async_get_label(label_id)
-            if not label_entry:
-                raise ValueError(f"Label {label_id} not found")
-        # Handle regular entities
-        elif entity_id not in self.hass.states.async_entity_ids():
-            raise ValueError(f"Entity {entity_id} not found")
+        try:
+            # Handle device nodes
+            if entity_id.startswith("device:"):
+                device_id = entity_id.replace("device:", "")
+                device = self._device_registry.async_get(device_id)
+                if not device:
+                    raise ValueError(f"Device {device_id} not found")
+            # Handle area nodes
+            elif entity_id.startswith("area:"):
+                area_id = entity_id.replace("area:", "")
+                area = self._area_registry.async_get_area(area_id)
+                if not area:
+                    raise ValueError(f"Area {area_id} not found")
+            # Handle zone nodes
+            elif entity_id.startswith("zone."):
+                zone_state = self.hass.states.get(entity_id)
+                if not zone_state:
+                    raise ValueError(f"Zone {entity_id} not found")
+            # Handle label nodes
+            elif entity_id.startswith("label:"):
+                label_id = entity_id.replace("label:", "")
+                label_entry = self._label_registry.async_get_label(label_id)
+                if not label_entry:
+                    raise ValueError(f"Label {label_id} not found")
+            # Handle regular entities
+            elif entity_id not in self.hass.states.async_entity_ids():
+                raise ValueError(f"Entity {entity_id} not found")
 
-        nodes = {}
-        edges = []
-        visited = set()
-        edge_set = set()  # Track edges to prevent duplicates
-        filtered_count = 0
-        
-        # Start with the target entity
-        await self._add_entity_and_neighbors_filtered(
-            entity_id, nodes, edges, visited, edge_set, max_depth,
-            domain_filter, area_filter, relationship_filter, filtered_count
-        )
-        
-        return {
-            "nodes": list(nodes.values()),
-            "edges": edges,
-            "center_node": entity_id,
-            "filtered_count": filtered_count
-        }
+            nodes = {}
+            edges = []
+            visited = set()
+            edge_set = set()  # Track edges to prevent duplicates
+            filtered_count = 0
+            
+            # Start with the target entity
+            await self._add_entity_and_neighbors_filtered(
+                entity_id, nodes, edges, visited, edge_set, max_depth,
+                domain_filter, area_filter, relationship_filter, filtered_count
+            )
+            
+            # Validate results before returning
+            if nodes is None:
+                _LOGGER.error(f"Filtered graph building resulted in None nodes for {entity_id}")
+                nodes = {}
+            if edges is None:
+                _LOGGER.error(f"Filtered graph building resulted in None edges for {entity_id}")
+                edges = []
+            
+            nodes_list = list(nodes.values()) if isinstance(nodes, dict) else []
+            edges_list = edges if isinstance(edges, list) else []
+            
+            return {
+                "nodes": nodes_list,
+                "edges": edges_list,
+                "center_node": entity_id,
+                "filtered_count": filtered_count
+            }
+            
+        except Exception as e:
+            _LOGGER.error(f"Error building filtered neighborhood graph for {entity_id}: {e}", exc_info=True)
+            # Return safe empty result on any error
+            return {
+                "nodes": [],
+                "edges": [],
+                "center_node": entity_id,
+                "filtered_count": 0
+            }
 
     async def get_graph_statistics(self) -> Dict[str, Any]:
         """Get overall graph statistics."""
@@ -994,6 +1039,11 @@ class GraphService:
                         label_node_id = f"label:{label_id}"
                         related.append((label_node_id, "labelled"))
             
+            # IMPORTANT: Also check for automation relationships for device nodes
+            # This was missing and caused the bidirectional relationship bug
+            automation_related = await self._find_automation_relationships(entity_id)
+            related.extend(automation_related)
+            
             return related
         
         # Handle area node relationships - show all entities in the area
@@ -1037,6 +1087,10 @@ class GraphService:
                         label_node_id = f"label:{label_id}"
                         related.append((label_node_id, "labelled"))
             
+            # Also check for automation relationships for area nodes
+            automation_related = await self._find_automation_relationships(entity_id)
+            related.extend(automation_related)
+            
             return related
         
         # Handle zone node relationships - show all entities in the zone
@@ -1071,6 +1125,10 @@ class GraphService:
                     if distance <= zone_radius:
                         # Zone contains entity: return entity with zone_contains relationship
                         related.append((test_entity_id, "zone_contains"))
+            
+            # Also check for automation relationships for zone nodes
+            automation_related = await self._find_automation_relationships(entity_id)
+            related.extend(automation_related)
             
             return related
         
@@ -1219,6 +1277,10 @@ class GraphService:
                     # Label labels area: return area with labelled relationship
                     related.append((area_node_id, "labelled"))
             
+            # Also check for automation relationships for label nodes
+            automation_related = await self._find_automation_relationships(entity_id)
+            related.extend(automation_related)
+            
             return related
         
         # Handle scene node relationships - show all entities controlled by the scene
@@ -1229,6 +1291,10 @@ class GraphService:
                 # Find all entities controlled by this scene
                 scene_related = await self._find_scene_referenced_entities(entity_id)
                 related.extend(scene_related)
+            
+            # Also check for automation relationships for scene nodes
+            automation_related = await self._find_automation_relationships(entity_id)
+            related.extend(automation_related)
             
             return related
         

@@ -17,7 +17,7 @@ class HaVisualiserPanel extends HTMLElement {
   }
  
   connectedCallback() {
-    console.log('HA Visualiser Panel v0.8.7: Fixed automation/device bidirectional relationships and zone self-references');
+    console.log('HA Visualiser Panel v0.8.13: Config flow enabled - should install via Settings → Integrations');
     console.log('HA Visualiser Panel: Loading enhanced vis.js version');
     
     // Load vis.js if not already loaded
@@ -38,6 +38,72 @@ class HaVisualiserPanel extends HTMLElement {
       script.onload = resolve;
       document.head.appendChild(script);
     });
+  }
+  
+  // Preference Management
+  loadUserPreferences() {
+    try {
+      const savedShowAreas = localStorage.getItem('ha_visualiser_show_areas');
+      const savedDepth = localStorage.getItem('ha_visualiser_depth');
+      const savedLayout = localStorage.getItem('ha_visualiser_layout');
+      
+      return {
+        showAreas: savedShowAreas !== null ? savedShowAreas === 'true' : true,
+        depth: savedDepth !== null ? parseInt(savedDepth) : 3,
+        layout: savedLayout !== null ? savedLayout : 'hierarchical'
+      };
+    } catch (error) {
+      console.warn('HA Visualiser: Error loading user preferences, using defaults:', error);
+      return {
+        showAreas: true,
+        depth: 3,
+        layout: 'hierarchical'
+      };
+    }
+  }
+  
+  saveUserPreferences() {
+    try {
+      const depthSelect = this.querySelector('#depthSelect');
+      const showAreasCheckbox = this.querySelector('#showAreasCheckbox');
+      const layoutSelect = this.querySelector('#layoutSelect');
+      
+      if (depthSelect) {
+        localStorage.setItem('ha_visualiser_depth', depthSelect.value);
+      }
+      if (showAreasCheckbox) {
+        localStorage.setItem('ha_visualiser_show_areas', showAreasCheckbox.checked.toString());
+      }
+      if (layoutSelect) {
+        localStorage.setItem('ha_visualiser_layout', layoutSelect.value);
+      }
+      
+      console.log('HA Visualiser: User preferences saved');
+    } catch (error) {
+      console.warn('HA Visualiser: Error saving user preferences:', error);
+    }
+  }
+  
+  applyUserPreferences(preferences) {
+    try {
+      const depthSelect = this.querySelector('#depthSelect');
+      const showAreasCheckbox = this.querySelector('#showAreasCheckbox');
+      const layoutSelect = this.querySelector('#layoutSelect');
+      
+      if (depthSelect && preferences.depth >= 1 && preferences.depth <= 5) {
+        depthSelect.value = preferences.depth.toString();
+      }
+      if (showAreasCheckbox) {
+        showAreasCheckbox.checked = preferences.showAreas;
+      }
+      if (layoutSelect && ['hierarchical', 'force-directed'].includes(preferences.layout)) {
+        layoutSelect.value = preferences.layout;
+      }
+      
+      console.log('HA Visualiser: User preferences applied:', preferences);
+    } catch (error) {
+      console.warn('HA Visualiser: Error applying user preferences:', error);
+    }
   }
   
   initializePanel() {
@@ -321,21 +387,21 @@ class HaVisualiserPanel extends HTMLElement {
             <select id="depthSelect">
               <option value="1">1 Level</option>
               <option value="2">2 Levels</option>
-              <option value="3" selected>3 Levels</option>
+              <option value="3">3 Levels</option>
               <option value="4">4 Levels</option>
               <option value="5">5 Levels</option>
             </select>
           </div>
           <div class="filter-control">
             <label>
-              <input type="checkbox" id="showAreasCheckbox" checked>
+              <input type="checkbox" id="showAreasCheckbox">
               Show Areas
             </label>
           </div>
           <div class="layout-control">
             <label for="layoutSelect">Layout:</label>
             <select id="layoutSelect">
-              <option value="hierarchical" selected>Hierarchical</option>
+              <option value="hierarchical">Hierarchical</option>
               <option value="force-directed">Force-Directed</option>
             </select>
           </div>
@@ -357,6 +423,11 @@ class HaVisualiserPanel extends HTMLElement {
     `;
 
     this.setupSearchEventListeners();
+    
+    // Load and apply saved preferences before setting up controls
+    const preferences = this.loadUserPreferences();
+    this.applyUserPreferences(preferences);
+    
     this.setupDepthControl();
   }
 
@@ -394,6 +465,8 @@ class HaVisualiserPanel extends HTMLElement {
     
     if (depthSelect) {
       depthSelect.addEventListener('change', () => {
+        // Save preference immediately
+        this.saveUserPreferences();
         // If we have a current entity selected, refresh the graph with new depth
         if (this.currentEntityId) {
           this.selectEntity(this.currentEntityId);
@@ -403,6 +476,8 @@ class HaVisualiserPanel extends HTMLElement {
     
     if (showAreasCheckbox) {
       showAreasCheckbox.addEventListener('change', () => {
+        // Save preference immediately
+        this.saveUserPreferences();
         // If we have a current entity selected, refresh the graph with new filter settings
         if (this.currentEntityId) {
           this.selectEntity(this.currentEntityId);
@@ -413,6 +488,8 @@ class HaVisualiserPanel extends HTMLElement {
     const layoutSelect = this.querySelector('#layoutSelect');
     if (layoutSelect) {
       layoutSelect.addEventListener('change', () => {
+        // Save preference immediately
+        this.saveUserPreferences();
         // If we have a current entity selected, refresh the graph with new layout
         if (this.currentEntityId) {
           this.selectEntity(this.currentEntityId);
