@@ -31,38 +31,38 @@
 <line x1="300.0" y1="300.0" x2="165.00" y2="533.83" stroke="#555" stroke-dasharray="6,4" stroke-width="1"/>
 <text x="159.00" y="544.22" fill="#FFFFFF" font-size="10" text-anchor="middle">Dec</text>
 <circle cx="300.0" cy="300.0" r="50.13" fill="none" stroke="#4A90E2" stroke-width="1" stroke-dasharray="4,2"/>
-<circle cx="350.13" cy="299.72" r="8" fill="#4A90E2" stroke="#FFFFFF" stroke-width="2"/>
-<path d="M 350.13 269.72 L 345.13 259.72 L 355.13 259.72 Z" fill="#FFD700" stroke="#FFFFFF" stroke-width="1"/>
-<text x="350.13" y="269.72" fill="#FFD700" font-size="12" font-weight="bold" text-anchor="middle">⊕ Earth - You are here</text>
-<circle cx="300.0" cy="300.0" r="27.07" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="281.21" cy="280.52" r="5" fill="#8C7853" stroke="#FFFFFF" stroke-width="1"/>
-<text x="281.21" y="270.52" fill="#FFFFFF" font-size="10" text-anchor="middle">☿ Mercury</text>
-<circle cx="300.0" cy="300.0" r="39.85" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="271.32" cy="272.33" r="5" fill="#FFC649" stroke="#FFFFFF" stroke-width="1"/>
-<text x="271.32" y="262.33" fill="#FFFFFF" font-size="10" text-anchor="middle">♀ Venus</text>
-<circle cx="300.0" cy="300.0" r="70.49" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="276.23" cy="233.64" r="5" fill="#CD5C5C" stroke="#FFFFFF" stroke-width="1"/>
-<text x="276.23" y="223.64" fill="#FFFFFF" font-size="10" text-anchor="middle">♂ Mars</text>
+<circle cx="350.12" cy="298.83" r="8" fill="#4A90E2" stroke="#FFFFFF" stroke-width="2"/>
+<path d="M 350.12 268.83 L 345.12 258.83 L 355.12 258.83 Z" fill="#FFD700" stroke="#FFFFFF" stroke-width="1"/>
+<text x="350.12" y="268.83" fill="#FFD700" font-size="12" font-weight="bold" text-anchor="middle">⊕ Earth - You are here</text>
+<circle cx="300.0" cy="300.0" r="27.23" fill="none" stroke="#444" stroke-width="0.6"/>
+<circle cx="280.10" cy="281.42" r="5" fill="#8C7853" stroke="#FFFFFF" stroke-width="1"/>
+<text x="280.10" y="271.42" fill="#FFFFFF" font-size="10" text-anchor="middle">☿ Mercury</text>
+<circle cx="300.0" cy="300.0" r="39.86" fill="none" stroke="#444" stroke-width="0.6"/>
+<circle cx="270.56" cy="273.14" r="5" fill="#FFC649" stroke="#FFFFFF" stroke-width="1"/>
+<text x="270.56" y="263.14" fill="#FFFFFF" font-size="10" text-anchor="middle">♀ Venus</text>
+<circle cx="300.0" cy="300.0" r="70.47" fill="none" stroke="#444" stroke-width="0.6"/>
+<circle cx="275.70" cy="233.85" r="5" fill="#CD5C5C" stroke="#FFFFFF" stroke-width="1"/>
+<text x="275.70" y="223.85" fill="#FFFFFF" font-size="10" text-anchor="middle">♂ Mars</text>
 <circle cx="300.0" cy="300.0" r="133.93" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="422.52" cy="245.92" r="5" fill="#DAA520" stroke="#FFFFFF" stroke-width="1"/>
-<text x="422.52" y="235.92" fill="#FFFFFF" font-size="10" text-anchor="middle">♃ Jupiter</text>
+<circle cx="422.45" cy="245.75" r="5" fill="#DAA520" stroke="#FFFFFF" stroke-width="1"/>
+<text x="422.45" y="235.75" fill="#FFFFFF" font-size="10" text-anchor="middle">♃ Jupiter</text>
 <circle cx="300.0" cy="300.0" r="168.71" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="467.27" cy="277.99" r="5" fill="#F4A460" stroke="#FFFFFF" stroke-width="1"/>
-<text x="467.27" y="267.99" fill="#FFFFFF" font-size="10" text-anchor="middle">♄ Saturn</text>
+<circle cx="467.26" cy="277.89" r="5" fill="#F4A460" stroke="#FFFFFF" stroke-width="1"/>
+<text x="467.26" y="267.89" fill="#FFFFFF" font-size="10" text-anchor="middle">♄ Saturn</text>
 <circle cx="300.0" cy="300.0" r="218.63" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="106.97" cy="197.33" r="5" fill="#4FD0E2" stroke="#FFFFFF" stroke-width="1"/>
-<text x="106.97" y="187.33" fill="#FFFFFF" font-size="10" text-anchor="middle">♅ Uranus</text>
+<circle cx="106.95" cy="197.38" r="5" fill="#4FD0E2" stroke="#FFFFFF" stroke-width="1"/>
+<text x="106.95" y="187.38" fill="#FFFFFF" font-size="10" text-anchor="middle">♅ Uranus</text>
 <circle cx="300.0" cy="300.0" r="250.88" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="489.75" cy="464.11" r="5" fill="#4169E1" stroke="#FFFFFF" stroke-width="1"/>
-<text x="489.75" y="454.11" fill="#FFFFFF" font-size="10" text-anchor="middle">♆ Neptune</text>
+<circle cx="489.77" cy="464.09" r="5" fill="#4169E1" stroke="#FFFFFF" stroke-width="1"/>
+<text x="489.77" y="454.09" fill="#FFFFFF" font-size="10" text-anchor="middle">♆ Neptune</text>
 <circle cx="300.0" cy="300.0" r="273.27" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="553.06" cy="196.88" r="5" fill="#9B870C" stroke="#FFFFFF" stroke-width="1"/>
-<text x="553.06" y="186.88" fill="#FFFFFF" font-size="10" text-anchor="middle">♇ Pluto (Dwarf Planet)</text>
+<circle cx="553.06" cy="196.86" r="5" fill="#9B870C" stroke="#FFFFFF" stroke-width="1"/>
+<text x="553.06" y="186.86" fill="#FFFFFF" font-size="10" text-anchor="middle">♇ Pluto (Dwarf Planet)</text>
 <circle cx="300.0" cy="300.0" r="399.13" fill="none" stroke="#444" stroke-width="0.6"/>
 <circle cx="-75.06" cy="436.51" r="5" fill="#00D1B2" stroke="#FFFFFF" stroke-width="1"/>
 <text x="-75.06" y="426.51" fill="#FFFFFF" font-size="10" text-anchor="middle">🛰 Voyager 1</text>
 <circle cx="300.0" cy="300.0" r="388.08" fill="none" stroke="#444" stroke-width="0.6"/>
-<circle cx="-17.90" cy="522.59" r="5" fill="#00A3A3" stroke="#FFFFFF" stroke-width="1"/>
-<text x="-17.90" y="512.59" fill="#FFFFFF" font-size="10" text-anchor="middle">🛰 Voyager 2</text>
+<circle cx="-17.90" cy="522.60" r="5" fill="#00A3A3" stroke="#FFFFFF" stroke-width="1"/>
+<text x="-17.90" y="512.60" fill="#FFFFFF" font-size="10" text-anchor="middle">🛰 Voyager 2</text>
 <text x="10" y="590" fill="#FFFFFF" font-size="11">Sun at center · January at top · Scale: logarithmic</text>
 </svg>
