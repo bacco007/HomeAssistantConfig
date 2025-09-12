@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "[%key:common::config_flow::data::api_key%]",
+          "name": "Name of the integration",
+          "lang": "Language",
+          "latitude": "Latitude",
+          "longitude": "Longitude"
+        },
+        "description": "Set up Weather.com integration. To generate an API key, view the source of https://www.wunderground.com/ and search for apiKey"
+      }
+    },
+    "error": {
+      "invalid_api_key": "[%key:common::config_flow::error::invalid_api_key%]",
+      "unknown_error": "Unknown Error"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "ઝાકળ બિંદુ",
+  "temperatureFeelsLike": "તાપમાન - જેવું લાગે છે",
+  "temperatureHeatIndex": "હીટ ઇન્ડેક્સ",
+  "relativeHumidity": "સંબંધિત ભેજનું પ્રમાણ",
+  "validTimeLocal": "સ્થાનિક અવલોકન સમય",
+  "precip1Hour": "વરસાદ - છેલ્લો કલાક",
+  "precip6Hour": "વરસાદ - છેલ્લા 6 કલાક",
+  "precip24Hour": "વરસાદ - છેલ્લા 24 કલાક",
+  "pressureAltimeter": "દબાણ",
+  "temperature": "તાપમાન",
+  "uvIndex": "યુવી ઇન્ડેક્સ",
+  "temperatureWindChill": "વિન્ડ ચિલ",
+  "visibility": "દૃશ્યતા",
+  "windDirectionCardinal": "પવનની દિશા - કાર્ડિનલ",
+  "windGust": "પવન ગસ્ટ",
+  "windSpeed": "પવનની ઝડપ",
+  "windDirection": "પવનની દિશા - ડિગ્રી",
+  "narrative": "હવામાન સારાંશ",
+  "qpfSnow": "સ્નો જથ્થો",
+  "daypart": {
+    "precipChance": "વરસાદની સંભાવના",
+    "qpf": "વરસાદની માત્રા",
+    "temperature": "આગાહી તાપમાન",
+    "windSpeed": "સરેરાશ પવન"
+  }
+}

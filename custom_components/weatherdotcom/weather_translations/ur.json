@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "اوس کا وقت",
+  "temperatureFeelsLike": "درجہ حرارت - ایسا محسوس ہوتا ہے۔",
+  "temperatureHeatIndex": "ہیٹ انڈیکس",
+  "relativeHumidity": "رشتہ دار نمی",
+  "validTimeLocal": "مقامی مشاہدے کا وقت",
+  "precip1Hour": "بارش - آخری گھنٹہ",
+  "precip6Hour": "بارش - آخری 6 گھنٹے",
+  "precip24Hour": "بارش - آخری 24 گھنٹے",
+  "pressureAltimeter": "دباؤ",
+  "temperature": "درجہ حرارت",
+  "uvIndex": "یووی انڈیکس",
+  "temperatureWindChill": "یخ بستہ ہوا",
+  "visibility": "مرئیت",
+  "windDirectionCardinal": "ہوا کی سمت - کارڈنل",
+  "windGust": "ہوا کا جھونکا",
+  "windSpeed": "ہوا کی رفتار",
+  "windDirection": "ہوا کی سمت - ڈگری",
+  "narrative": "موسم کا خلاصہ",
+  "qpfSnow": "برف کی مقدار",
+  "daypart": {
+    "precipChance": "بارش کا امکان",
+    "qpf": "بارش کی مقدار",
+    "temperature": "درجہ حرارت کی پیشن گوئی",
+    "windSpeed": "اوسط ہوا"
+  }
+}

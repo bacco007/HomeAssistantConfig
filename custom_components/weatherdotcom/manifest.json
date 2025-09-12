@@ -1,0 +1,12 @@
+{
+  "domain": "weatherdotcom",
+  "name": "Weather.com",
+  "codeowners": ["@jaydeethree"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/jaydeethree/Home-Assistant-weatherdotcom",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/jaydeethree/Home-Assistant-weatherdotcom/issues/",
+  "requirements": [],
+  "version": "1.3.0"
+}

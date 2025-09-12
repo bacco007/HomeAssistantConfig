@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Точка росы",
+  "temperatureFeelsLike": "Температура - По ощущениям",
+  "temperatureHeatIndex": "Индекс тепла",
+  "relativeHumidity": "Относительная влажность",
+  "validTimeLocal": "Местное время наблюдения",
+  "precip1Hour": "Осадки - Последний час",
+  "precip6Hour": "Осадки - последние 6 часов",
+  "precip24Hour": "Осадки - последние 24 часа",
+  "pressureAltimeter": "Давление",
+  "temperature": "Температура",
+  "uvIndex": "УФ-индекс",
+  "temperatureWindChill": "Холодный ветер",
+  "visibility": "Видимость",
+  "windDirectionCardinal": "Направление ветра - кардинальное",
+  "windGust": "Порыв ветра",
+  "windSpeed": "Скорость ветра",
+  "windDirection": "Направление ветра - градусы",
+  "narrative": "Сводка погоды",
+  "qpfSnow": "Количество снега",
+  "daypart": {
+    "precipChance": "Вероятность осадков",
+    "qpf": "Количество осадков",
+    "temperature": "Прогноз температуры",
+    "windSpeed": "Средний ветер"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Pika e vesës",
+  "temperatureFeelsLike": "Temperatura - Ndihet si",
+  "temperatureHeatIndex": "Indeksi i nxehtësisë",
+  "relativeHumidity": "Lageshtia relative",
+  "validTimeLocal": "Koha lokale e vëzhgimit",
+  "precip1Hour": "Reshjet - Ora e fundit",
+  "precip6Hour": "Reshjet - 6 orët e fundit",
+  "precip24Hour": "Reshjet - 24 orët e fundit",
+  "pressureAltimeter": "Presioni",
+  "temperature": "Temperatura",
+  "uvIndex": "Indeksi UV",
+  "temperatureWindChill": "Ftohja e erës",
+  "visibility": "Dukshmëria",
+  "windDirectionCardinal": "Drejtimi i erës - Kardinal",
+  "windGust": "Shpërthim i erës",
+  "windSpeed": "Shpejtesia e eres",
+  "windDirection": "Drejtimi i erës - gradë",
+  "narrative": "Përmbledhja e motit",
+  "qpfSnow": "Sasia e borës",
+  "daypart": {
+    "precipChance": "Probabiliteti i reshjeve",
+    "qpf": "Sasia e reshjeve",
+    "temperature": "Temperatura e parashikuar",
+    "windSpeed": "Era mesatare"
+  }
+}

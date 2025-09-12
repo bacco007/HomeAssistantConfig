@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Rasos taškas",
+  "temperatureFeelsLike": "Temperatūra – jaučiasi",
+  "temperatureHeatIndex": "Šilumos indeksas",
+  "relativeHumidity": "Santykinė drėgmė",
+  "validTimeLocal": "Vietinis stebėjimo laikas",
+  "precip1Hour": "Krituliai – Paskutinė valanda",
+  "precip6Hour": "Krituliai – Paskutinės 6 valandos",
+  "precip24Hour": "Krituliai – paskutinės 24 valandos",
+  "pressureAltimeter": "Slėgis",
+  "temperature": "Temperatūra",
+  "uvIndex": "UV indeksas",
+  "temperatureWindChill": "Vėjo atšalimas",
+  "visibility": "Matomumas",
+  "windDirectionCardinal": "Vėjo kryptis – kardinolas",
+  "windGust": "Vėjo gūsis",
+  "windSpeed": "Vėjo greitis",
+  "windDirection": "Vėjo kryptis – laipsniai",
+  "narrative": "Orų santrauka",
+  "qpfSnow": "Sniego kiekis",
+  "daypart": {
+    "precipChance": "Kritulių tikimybė",
+    "qpf": "Kritulių kiekis",
+    "temperature": "Temperatūros prognozė",
+    "windSpeed": "Vidutinis vėjas"
+  }
+}

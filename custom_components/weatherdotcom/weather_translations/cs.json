@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Rosný bod",
+  "temperatureFeelsLike": "Teplota - pocit",
+  "temperatureHeatIndex": "Tepelný index",
+  "relativeHumidity": "Relativní vlhkost",
+  "validTimeLocal": "Místní čas pozorování",
+  "precip1Hour": "Srážky - poslední hodina",
+  "precip6Hour": "Srážky - posledních 6 hodin",
+  "precip24Hour": "Srážky – posledních 24 hodin",
+  "pressureAltimeter": "Tlak",
+  "temperature": "Teplota",
+  "uvIndex": "Uv index",
+  "temperatureWindChill": "Wind Chill",
+  "visibility": "Viditelnost",
+  "windDirectionCardinal": "Směr větru - Kardinální",
+  "windGust": "Závan větru",
+  "windSpeed": "Rychlost větru",
+  "windDirection": "Směr větru - stupně",
+  "narrative": "Shrnutí počasí",
+  "qpfSnow": "Množství sněhu",
+  "daypart": {
+    "precipChance": "Pravděpodobnost srážek",
+    "qpf": "Množství srážek",
+    "temperature": "Předpověď teploty",
+    "windSpeed": "Průměrný vítr"
+  }
+}

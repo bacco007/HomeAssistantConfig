@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "பனிப்புள்ளி",
+  "temperatureFeelsLike": "வெப்பநிலை - போல் உணர்கிறேன்",
+  "temperatureHeatIndex": "வெப்ப குறியீடு",
+  "relativeHumidity": "ஒப்பு ஈரப்பதம்",
+  "validTimeLocal": "உள்ளூர் கண்காணிப்பு நேரம்",
+  "precip1Hour": "மழைப்பொழிவு - கடைசி மணிநேரம்",
+  "precip6Hour": "மழைப்பொழிவு - கடந்த 6 மணிநேரம்",
+  "precip24Hour": "மழைப்பொழிவு - கடந்த 24 மணிநேரம்",
+  "pressureAltimeter": "அழுத்தம்",
+  "temperature": "வெப்ப நிலை",
+  "uvIndex": "UV குறியீடு",
+  "temperatureWindChill": "குளிர் காற்று",
+  "visibility": "தெரிவுநிலை",
+  "windDirectionCardinal": "காற்றின் திசை - கார்டினல்",
+  "windGust": "காற்றுவீச்சு",
+  "windSpeed": "காற்றின் வேகம்",
+  "windDirection": "காற்றின் திசை - டிகிரி",
+  "narrative": "வானிலை சுருக்கம்",
+  "qpfSnow": "பனி அளவு",
+  "daypart": {
+    "precipChance": "மழைப்பொழிவு நிகழ்தகவு",
+    "qpf": "மழை அளவு",
+    "temperature": "முன்னறிவிப்பு வெப்பநிலை",
+    "windSpeed": "சராசரி காற்று"
+  }
+}

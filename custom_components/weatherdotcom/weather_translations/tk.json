@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Dewpoint",
+  "temperatureFeelsLike": "Temperatura - ýaly duýulýar",
+  "temperatureHeatIndex": "Atylylyk görkezijisi",
+  "relativeHumidity": "Otnositel çyglylyk",
+  "validTimeLocal": "Localerli syn etmegiň wagty",
+  "precip1Hour": "Ygalyň ýagmagy - Soňky sagat",
+  "precip6Hour": "Ygalyň ýagmagy - Soňky 6 sagat",
+  "precip24Hour": "Ygalyň ýagmagy - Soňky 24 sagat",
+  "pressureAltimeter": "Basyş",
+  "temperature": "Temperatura",
+  "uvIndex": "UV görkezijisi",
+  "temperatureWindChill": "Windel sowuklygy",
+  "visibility": "Görünmek",
+  "windDirectionCardinal": "Windeliň ugry - Kardinal",
+  "windGust": "Windel öwüsýär",
+  "windSpeed": "Windeliň tizligi",
+  "windDirection": "Windeliň ugry - derejeler",
+  "narrative": "Howanyň gysgaça mazmuny",
+  "qpfSnow": "Gar mukdary",
+  "daypart": {
+    "precipChance": "Ygalyň ähtimallygy",
+    "qpf": "Ygalyň mukdary",
+    "temperature": "Çaklama temperaturasy",
+    "windSpeed": "Ortaça ýel"
+  }
+}

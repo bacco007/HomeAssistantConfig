@@ -1,0 +1,20 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "Chve de API invalida",
+      "unknown_error": "Erro Desconhecido"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Chave da API",
+          "name": "Nome",
+          "lang": "Lingua",
+          "latitude": "Latitude",
+          "longitude": "Longitude"
+        },
+        "description": "Configurar a integração Weather.com .Para gerar uma chave de api consultador https://www.wunderground.com/ e procurar por apiKey"
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Kušanas temperatūra",
+  "temperatureFeelsLike": "Temperatūra - šķiet",
+  "temperatureHeatIndex": "Siltuma indekss",
+  "relativeHumidity": "Relatīvais mitrums",
+  "validTimeLocal": "Vietējais novērošanas laiks",
+  "precip1Hour": "Nokrišņi - Pēdējā stunda",
+  "precip6Hour": "Nokrišņi - pēdējās 6 stundas",
+  "precip24Hour": "Nokrišņi - pēdējās 24 stundas",
+  "pressureAltimeter": "Spiediens",
+  "temperature": "Temperatūra",
+  "uvIndex": "UV indekss",
+  "temperatureWindChill": "Vēja vēsums",
+  "visibility": "Redzamība",
+  "windDirectionCardinal": "Vēja virziens - kardināls",
+  "windGust": "Vēja brāzmas",
+  "windSpeed": "Vēja ātrums",
+  "windDirection": "Vēja virziens - grādi",
+  "narrative": "Laikapstākļu kopsavilkums",
+  "qpfSnow": "Sniega daudzums",
+  "daypart": {
+    "precipChance": "Nokrišņu varbūtība",
+    "qpf": "Nokrišņu daudzums",
+    "temperature": "Temperatūras prognoze",
+    "windSpeed": "Vidējais vējš"
+  }
+}

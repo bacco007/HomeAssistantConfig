@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "露点",
+  "temperatureFeelsLike": "温度 - 感じます",
+  "temperatureHeatIndex": "暑さ指数",
+  "relativeHumidity": "相対湿度",
+  "validTimeLocal": "現地観察時間",
+  "precip1Hour": "降水量 - 過去 1 時間",
+  "precip6Hour": "降水量 - 過去 6 時間",
+  "precip24Hour": "降水量 - 過去 24 時間",
+  "pressureAltimeter": "プレッシャー",
+  "temperature": "温度",
+  "uvIndex": "UV指数",
+  "temperatureWindChill": "風の寒さ",
+  "visibility": "可視性",
+  "windDirectionCardinal": "風向 - カーディナル",
+  "windGust": "突風",
+  "windSpeed": "風速",
+  "windDirection": "風向 - 度",
+  "narrative": "天気の概要",
+  "qpfSnow": "積雪量",
+  "daypart": {
+    "precipChance": "降水確率",
+    "qpf": "降水量",
+    "temperature": "予想気温",
+    "windSpeed": "平均的な風"
+  }
+}

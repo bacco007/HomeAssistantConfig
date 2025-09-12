@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Točka rosišča",
+  "temperatureFeelsLike": "Temperatura - po občutku",
+  "temperatureHeatIndex": "Toplotni indeks",
+  "relativeHumidity": "Relativna vlažnost",
+  "validTimeLocal": "Lokalni čas opazovanja",
+  "precip1Hour": "Padavine - zadnja ura",
+  "precip6Hour": "Padavine - zadnjih 6 ur",
+  "precip24Hour": "Padavine - zadnjih 24 ur",
+  "pressureAltimeter": "Pritisk",
+  "temperature": "Temperatura",
+  "uvIndex": "UV indeks",
+  "temperatureWindChill": "Wind Chill",
+  "visibility": "Vidnost",
+  "windDirectionCardinal": "Smer vetra - kardinal",
+  "windGust": "Sunek vetra",
+  "windSpeed": "Hitrost vetra",
+  "windDirection": "Smer vetra - stopinje",
+  "narrative": "Vremenski povzetek",
+  "qpfSnow": "Količina snega",
+  "daypart": {
+    "precipChance": "Verjetnost padavin",
+    "qpf": "Količina padavin",
+    "temperature": "Napoved temperature",
+    "windSpeed": "Povprečni veter"
+  }
+}

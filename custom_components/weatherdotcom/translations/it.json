@@ -1,0 +1,20 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "Chiave API non valida",
+      "unknown_error": "Errore sconosciuto"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Chiave dell'API",
+          "name": "Nome",
+          "lang": "Lingua",
+          "latitude": "Latitudine",
+          "longitude": "Longitudine"
+        },
+        "description": "Configura l'integrazione Weather.com. "
+      }
+    }
+  }
+}

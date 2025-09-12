@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Dauwpunt",
+  "temperatureFeelsLike": "Temperatuur - voelt aan als",
+  "temperatureHeatIndex": "Warmte-index",
+  "relativeHumidity": "Relatieve vochtigheid",
+  "validTimeLocal": "Lokale observatietijd",
+  "precip1Hour": "Neerslag - Laatste uur",
+  "precip6Hour": "Neerslag - Laatste 6 uur",
+  "precip24Hour": "Neerslag - Laatste 24 uur",
+  "pressureAltimeter": "Druk",
+  "temperature": "Temperatuur",
+  "uvIndex": "UV-index",
+  "temperatureWindChill": "Gevoelstemperatuur",
+  "visibility": "Zichtbaarheid",
+  "windDirectionCardinal": "Windrichting - Kardinaal",
+  "windGust": "Windvlaag",
+  "windSpeed": "Windsnelheid",
+  "windDirection": "Windrichting - Graden",
+  "narrative": "Samenvatting van het weer",
+  "qpfSnow": "Sneeuw hoeveelheid",
+  "daypart": {
+    "precipChance": "Kans op neerslag",
+    "qpf": "Hoeveelheid neerslag",
+    "temperature": "Verwachte temperatuur",
+    "windSpeed": "Gemiddelde wind"
+  }
+}

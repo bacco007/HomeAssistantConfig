@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "이슬점",
+  "temperatureFeelsLike": "온도 - 체감",
+  "temperatureHeatIndex": "열 지수",
+  "relativeHumidity": "상대 습도",
+  "validTimeLocal": "현지 관찰 시간",
+  "precip1Hour": "강수량 - 지난 1시간",
+  "precip6Hour": "강수량 - 지난 6시간",
+  "precip24Hour": "강수량 - 지난 24시간",
+  "pressureAltimeter": "압력",
+  "temperature": "온도",
+  "uvIndex": "자외선 지수",
+  "temperatureWindChill": "차가운 바람",
+  "visibility": "시계",
+  "windDirectionCardinal": "풍향 - 추기경",
+  "windGust": "돌풍",
+  "windSpeed": "바람 속도",
+  "windDirection": "풍향 - 도",
+  "narrative": "날씨 요약",
+  "qpfSnow": "적설량",
+  "daypart": {
+    "precipChance": "강수 확률",
+    "qpf": "강수량",
+    "temperature": "예측 온도",
+    "windSpeed": "평균 바람"
+  }
+}

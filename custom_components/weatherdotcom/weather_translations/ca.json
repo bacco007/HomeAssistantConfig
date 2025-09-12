@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Punt de rosada",
+  "temperatureFeelsLike": "Temperatura - Se sent com",
+  "temperatureHeatIndex": "Índex de calor",
+  "relativeHumidity": "Humitat relativa",
+  "validTimeLocal": "Hora d'observació local",
+  "precip1Hour": "Precipitació - Última hora",
+  "precip6Hour": "Precipitació - Últimes 6 hores",
+  "precip24Hour": "Precipitació - Últimes 24 hores",
+  "pressureAltimeter": "Pressió",
+  "temperature": "Temperatura",
+  "uvIndex": "Índex UV",
+  "temperatureWindChill": "Fred del vent",
+  "visibility": "Visibilitat",
+  "windDirectionCardinal": "Direcció del vent - Cardinal",
+  "windGust": "Ratxa de vent",
+  "windSpeed": "Velocitat del vent",
+  "windDirection": "Direcció del vent - graus",
+  "narrative": "Resum del temps",
+  "qpfSnow": "Quantitat de neu",
+  "daypart": {
+    "precipChance": "Probabilitat de precipitació",
+    "qpf": "Quantitat de precipitació",
+    "temperature": "Previsió de temperatura",
+    "windSpeed": "Vent mitjà"
+  }
+}

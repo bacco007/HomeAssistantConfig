@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Taupunkt",
+  "temperatureFeelsLike": "Temperatur – Gefühlt",
+  "temperatureHeatIndex": "Hitzeindex",
+  "relativeHumidity": "Relative Luftfeuchtigkeit",
+  "validTimeLocal": "Lokale Beobachtungszeit",
+  "precip1Hour": "Niederschlag - Letzte Stunde",
+  "precip6Hour": "Niederschlag - Letzte 6 Stunden",
+  "precip24Hour": "Niederschlag – Letzte 24 Stunden",
+  "pressureAltimeter": "Druck",
+  "temperature": "Temperatur",
+  "uvIndex": "UV-Index",
+  "temperatureWindChill": "Windkälte",
+  "visibility": "Sichtweite",
+  "windDirectionCardinal": "Windrichtung – Kardinal",
+  "windGust": "Windböe",
+  "windSpeed": "Windgeschwindigkeit",
+  "windDirection": "Windrichtung – Grad",
+  "narrative": "Wetterzusammenfassung",
+  "qpfSnow": "Schneemenge",
+  "daypart": {
+    "precipChance": "Niederschlagswahrscheinlichkeit",
+    "qpf": "Niederschlagsmenge",
+    "temperature": "Vorhersage der Temperatur",
+    "windSpeed": "Durchschnittlicher Wind"
+  }
+}

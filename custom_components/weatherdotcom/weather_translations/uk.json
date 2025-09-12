@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Точка роси",
+  "temperatureFeelsLike": "Температура - за відчуттями",
+  "temperatureHeatIndex": "Індекс тепла",
+  "relativeHumidity": "Відносна вологість",
+  "validTimeLocal": "Місцевий час спостереження",
+  "precip1Hour": "Опади - Остання година",
+  "precip6Hour": "Опади - Останні 6 годин",
+  "precip24Hour": "Опади - Останні 24 години",
+  "pressureAltimeter": "Тиск",
+  "temperature": "Температура",
+  "uvIndex": "УФ-індекс",
+  "temperatureWindChill": "Вітер холодний",
+  "visibility": "Видимість",
+  "windDirectionCardinal": "Напрямок вітру - кардинал",
+  "windGust": "Порив вітру",
+  "windSpeed": "Швидкість вітру",
+  "windDirection": "Напрямок вітру - градуси",
+  "narrative": "Зведення про погоду",
+  "qpfSnow": "Кількість снігу",
+  "daypart": {
+    "precipChance": "Імовірність опадів",
+    "qpf": "Кількість опадів",
+    "temperature": "Прогноз температури",
+    "windSpeed": "Середній вітер"
+  }
+}

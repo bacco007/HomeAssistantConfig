@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Ნამის წერტილი",
+  "temperatureFeelsLike": "ტემპერატურა - იგრძნობა",
+  "temperatureHeatIndex": "სითბოს ინდექსი",
+  "relativeHumidity": "Ფარდობითი ტენიანობა",
+  "validTimeLocal": "ადგილობრივი დაკვირვების დრო",
+  "precip1Hour": "ნალექები - ბოლო საათი",
+  "precip6Hour": "ნალექები - ბოლო 6 საათი",
+  "precip24Hour": "ნალექები - ბოლო 24 საათი",
+  "pressureAltimeter": "წნევა",
+  "temperature": "ტემპერატურა",
+  "uvIndex": "UV ინდექსი",
+  "temperatureWindChill": "ქარის შემცივნება",
+  "visibility": "ხილვადობა",
+  "windDirectionCardinal": "ქარის მიმართულება - კარდინალი",
+  "windGust": "ქარის ნაკადი",
+  "windSpeed": "ქარის სიჩქარე",
+  "windDirection": "ქარის მიმართულება - გრადუსი",
+  "narrative": "ამინდის შეჯამება",
+  "qpfSnow": "თოვლის რაოდენობა",
+  "daypart": {
+    "precipChance": "ნალექის ალბათობა",
+    "qpf": "ნალექების რაოდენობა",
+    "temperature": "საპროგნოზო ტემპერატურა",
+    "windSpeed": "საშუალო ქარი"
+  }
+}

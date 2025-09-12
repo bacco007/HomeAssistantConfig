@@ -1,0 +1,20 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "Ungültiger API-Schlüssel",
+      "unknown_error": "Unbekannter Fehler"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "API-Schlüssel",
+          "name": "Name",
+          "lang": "Sprache",
+          "latitude": "Breite",
+          "longitude": "Längengrad"
+        },
+        "description": "Richten Sie die Weather.com-Integration ein. "
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Нуқтаи шабнам",
+  "temperatureFeelsLike": "Ҳарорат - Ҳис мекунад",
+  "temperatureHeatIndex": "Индекси гармӣ",
+  "relativeHumidity": "Рутубати нисбӣ",
+  "validTimeLocal": "Вақти мушоҳидаи маҳаллӣ",
+  "precip1Hour": "Боришот - Соатҳои охир",
+  "precip6Hour": "Боришот - 6 соати охир",
+  "precip24Hour": "Боришот - 24 соати охир",
+  "pressureAltimeter": "Фишор",
+  "temperature": "Ҳарорат",
+  "uvIndex": "Индекси ултрабунафш",
+  "temperatureWindChill": "Хунукии шамол",
+  "visibility": "Намоиш",
+  "windDirectionCardinal": "Самти шамол - Кардинал",
+  "windGust": "Шамоли шамол",
+  "windSpeed": "Суръати шамол",
+  "windDirection": "Самти шамол - Дараҷаҳо",
+  "narrative": "Хулосаи обу ҳаво",
+  "qpfSnow": "Миқдори барф",
+  "daypart": {
+    "precipChance": "Эҳтимолияти боришот",
+    "qpf": "Микдори боришот",
+    "temperature": "Ҳарорати пешгӯӣ",
+    "windSpeed": "Боди миёна"
+  }
+}

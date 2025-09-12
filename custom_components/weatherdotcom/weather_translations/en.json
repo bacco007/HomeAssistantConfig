@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Dewpoint",
+  "temperatureFeelsLike": "Temperature - Feels Like",
+  "temperatureHeatIndex": "Heat Index",
+  "relativeHumidity": "Relative Humidity",
+  "validTimeLocal": "Local Observation Time",
+  "precip1Hour": "Precipitation - Last hour",
+  "precip6Hour": "Precipitation - Last 6 hours",
+  "precip24Hour": "Precipitation - Last 24 hours",
+  "pressureAltimeter": "Pressure",
+  "temperature": "Temperature",
+  "uvIndex": "UV Index",
+  "temperatureWindChill": "Wind Chill",
+  "visibility": "Visibility",
+  "windDirectionCardinal": "Wind Direction - Cardinal",
+  "windGust": "Wind Gust",
+  "windSpeed": "Wind Speed",
+  "windDirection": "Wind Direction - Degrees",
+  "narrative": "Weather Summary",
+  "qpfSnow": "Snow Amount",
+  "daypart": {
+    "precipChance": "Precipitation Probability",
+    "qpf": "Precipitation Amount",
+    "temperature": "Forecast Temperature",
+    "windSpeed": "Average Wind"
+  }
+}

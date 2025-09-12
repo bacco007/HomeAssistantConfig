@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "çiğ noktası",
+  "temperatureFeelsLike": "Sıcaklık - Gibi Hissediyor",
+  "temperatureHeatIndex": "Isı İndeksi",
+  "relativeHumidity": "Bağıl nem",
+  "validTimeLocal": "Yerel Gözlem Süresi",
+  "precip1Hour": "Yağış - Son saat",
+  "precip6Hour": "Yağış - Son 6 saat",
+  "precip24Hour": "Yağış - Son 24 saat",
+  "pressureAltimeter": "Basınç",
+  "temperature": "Sıcaklık",
+  "uvIndex": "UV Endeksi",
+  "temperatureWindChill": "rüzgar soğuğu",
+  "visibility": "görünürlük",
+  "windDirectionCardinal": "Rüzgar Yönü - Kardinal",
+  "windGust": "Sert Rüzgar",
+  "windSpeed": "Rüzgar hızı",
+  "windDirection": "Rüzgar Yönü - Dereceler",
+  "narrative": "Hava Durumu Özeti",
+  "qpfSnow": "Kar Miktarı",
+  "daypart": {
+    "precipChance": "Yağış Olasılığı",
+    "qpf": "Yağış Miktarı",
+    "temperature": "Tahmini Sıcaklık",
+    "windSpeed": "Ortalama Rüzgar"
+  }
+}

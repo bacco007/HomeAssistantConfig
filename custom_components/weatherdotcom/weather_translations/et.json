@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Kastepunkt",
+  "temperatureFeelsLike": "Temperatuur – tundub nagu",
+  "temperatureHeatIndex": "Soojusindeks",
+  "relativeHumidity": "Suhteline niiskus",
+  "validTimeLocal": "Kohalik vaatlusaeg",
+  "precip1Hour": "Sademed – viimane tund",
+  "precip6Hour": "Sademed – viimased 6 tundi",
+  "precip24Hour": "Sademed – viimase 24 tunni jooksul",
+  "pressureAltimeter": "Surve",
+  "temperature": "Temperatuur",
+  "uvIndex": "UV-indeks",
+  "temperatureWindChill": "Tuulekülm",
+  "visibility": "Nähtavus",
+  "windDirectionCardinal": "Tuule suund - Cardinal",
+  "windGust": "Tuule puhangud",
+  "windSpeed": "Tuule kiirus",
+  "windDirection": "Tuule suund - kraadi",
+  "narrative": "Ilma kokkuvõte",
+  "qpfSnow": "Lume kogus",
+  "daypart": {
+    "precipChance": "Sademete tõenäosus",
+    "qpf": "Sademete hulk",
+    "temperature": "Prognoos temperatuur",
+    "windSpeed": "Keskmine tuul"
+  }
+}

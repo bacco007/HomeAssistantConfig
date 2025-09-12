@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "শিশির বিন্দু",
+  "temperatureFeelsLike": "তাপমাত্রা - ভালো লাগে",
+  "temperatureHeatIndex": "তাপ সূচক",
+  "relativeHumidity": "আপেক্ষিক আদ্রতা",
+  "validTimeLocal": "স্থানীয় পর্যবেক্ষণ সময়",
+  "precip1Hour": "বৃষ্টিপাত - শেষ ঘন্টা",
+  "precip6Hour": "বৃষ্টিপাত - শেষ 6 ঘন্টা",
+  "precip24Hour": "বৃষ্টিপাত - শেষ 24 ঘন্টা",
+  "pressureAltimeter": "চাপ",
+  "temperature": "তাপমাত্রা",
+  "uvIndex": "এই UV সূচক",
+  "temperatureWindChill": "বাতাস বইছে",
+  "visibility": "দৃশ্যমানতা",
+  "windDirectionCardinal": "বাতাসের দিক - কার্ডিনাল",
+  "windGust": "আমি আজ খুশি",
+  "windSpeed": "বাতাসের গতি",
+  "windDirection": "বাতাসের দিক - ডিগ্রী",
+  "narrative": "আবহাওয়ার সারাংশ",
+  "qpfSnow": "তুষার পরিমাণ",
+  "daypart": {
+    "precipChance": "বৃষ্টিপাতের সম্ভাবনা",
+    "qpf": "বৃষ্টিপাতের পরিমাণ",
+    "temperature": "পূর্বাভাস তাপমাত্রা",
+    "windSpeed": "গড় বাতাস"
+  }
+}

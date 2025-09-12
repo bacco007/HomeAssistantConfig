@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Шүүдэр цэг",
+  "temperatureFeelsLike": "Температур - Мэдрэмж байна",
+  "temperatureHeatIndex": "Дулааны индекс",
+  "relativeHumidity": "Харьцангуй чийгшил",
+  "validTimeLocal": "Орон нутгийн ажиглалтын цаг",
+  "precip1Hour": "Хур тунадас - Сүүлийн цаг",
+  "precip6Hour": "Хур тунадас - Сүүлийн 6 цаг",
+  "precip24Hour": "Хур тунадас - Сүүлийн 24 цаг",
+  "pressureAltimeter": "Даралт",
+  "temperature": "Температур",
+  "uvIndex": "Хэт ягаан туяаны индекс",
+  "temperatureWindChill": "Салхины хүйтэн",
+  "visibility": "Харагдац",
+  "windDirectionCardinal": "Салхины чиглэл - Кардинал",
+  "windGust": "Салхины шуурга",
+  "windSpeed": "Салхины хурд",
+  "windDirection": "Салхины чиглэл - градус",
+  "narrative": "Цаг агаарын тойм",
+  "qpfSnow": "Цасны хэмжээ",
+  "daypart": {
+    "precipChance": "Хур тунадасны магадлал",
+    "qpf": "Хур тунадасны хэмжээ",
+    "temperature": "Температурын урьдчилсан мэдээ",
+    "windSpeed": "Дундаж салхи"
+  }
+}

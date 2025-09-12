@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Daggpunkt",
+  "temperatureFeelsLike": "Temperatur - känns som",
+  "temperatureHeatIndex": "Värmeindex",
+  "relativeHumidity": "Relativ luftfuktighet",
+  "validTimeLocal": "Lokal observationstid",
+  "precip1Hour": "Nederbörd - Sista timmen",
+  "precip6Hour": "Nederbörd - Senaste 6 timmarna",
+  "precip24Hour": "Nederbörd - Senaste 24 timmarna",
+  "pressureAltimeter": "Tryck",
+  "temperature": "Temperatur",
+  "uvIndex": "UV-index",
+  "temperatureWindChill": "Vindens kyleffekt",
+  "visibility": "Synlighet",
+  "windDirectionCardinal": "Vindriktning - Kardinal",
+  "windGust": "Vindby",
+  "windSpeed": "Vindhastighet",
+  "windDirection": "Vindriktning - grader",
+  "narrative": "Vädersammanfattning",
+  "qpfSnow": "Mängd snö",
+  "daypart": {
+    "precipChance": "Sannolikhet för nederbörd",
+    "qpf": "Nederbördsmängd",
+    "temperature": "Prognos temperatur",
+    "windSpeed": "Medelvind"
+  }
+}

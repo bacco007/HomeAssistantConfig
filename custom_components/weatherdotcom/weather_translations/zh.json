@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "露点",
+  "temperatureFeelsLike": "温度 - 感觉",
+  "temperatureHeatIndex": "热度指数",
+  "relativeHumidity": "相对湿度",
+  "validTimeLocal": "当地观测时间",
+  "precip1Hour": "降水 - 最后一小时",
+  "precip6Hour": "降水 - 过去 6 小时",
+  "precip24Hour": "降水 - 过去 24 小时",
+  "pressureAltimeter": "压力",
+  "temperature": "温度",
+  "uvIndex": "紫外线指数",
+  "temperatureWindChill": "风寒",
+  "visibility": "能见度",
+  "windDirectionCardinal": "风向 - 红衣主教",
+  "windGust": "阵风",
+  "windSpeed": "风速",
+  "windDirection": "风向 - 度",
+  "narrative": "天气摘要",
+  "qpfSnow": "雪量",
+  "daypart": {
+    "precipChance": "降水概率",
+    "qpf": "降水量",
+    "temperature": "预报温度",
+    "windSpeed": "平均风"
+  }
+}

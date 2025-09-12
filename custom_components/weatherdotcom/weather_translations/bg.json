@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Точка на оросяване",
+  "temperatureFeelsLike": "Температура - Усеща се",
+  "temperatureHeatIndex": "Топлинен индекс",
+  "relativeHumidity": "Относителна влажност",
+  "validTimeLocal": "Местно време за наблюдение",
+  "precip1Hour": "Валеж - последния час",
+  "precip6Hour": "Валеж - последните 6 часа",
+  "precip24Hour": "Валежи - последните 24 часа",
+  "pressureAltimeter": "налягане",
+  "temperature": "температура",
+  "uvIndex": "UV индекс",
+  "temperatureWindChill": "Wind Chill",
+  "visibility": "Видимост",
+  "windDirectionCardinal": "Посока на вятъра - Кардинал",
+  "windGust": "Пориви на вятъра",
+  "windSpeed": "Скоростта на вятъра",
+  "windDirection": "Посока на вятъра - градуси",
+  "narrative": "Обобщение на времето",
+  "qpfSnow": "Количество сняг",
+  "daypart": {
+    "precipChance": "Вероятност за валежи",
+    "qpf": "Количество на валежите",
+    "temperature": "Прогнозна температура",
+    "windSpeed": "Среден вятър"
+  }
+}

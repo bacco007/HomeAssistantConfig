@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Шық нүктесі",
+  "temperatureFeelsLike": "Температура - ұнайды",
+  "temperatureHeatIndex": "Жылу индексі",
+  "relativeHumidity": "Салыстырмалы ылғалдылық",
+  "validTimeLocal": "Жергілікті бақылау уақыты",
+  "precip1Hour": "Жауын-шашын - Соңғы сағат",
+  "precip6Hour": "Жауын-шашын - Соңғы 6 сағат",
+  "precip24Hour": "Жауын-шашын - Соңғы 24 сағат",
+  "pressureAltimeter": "Қысым",
+  "temperature": "Температура",
+  "uvIndex": "УК индексі",
+  "temperatureWindChill": "Салқын жел",
+  "visibility": "Көріну",
+  "windDirectionCardinal": "Жел бағыты - кардинал",
+  "windGust": "Желдің екпіні",
+  "windSpeed": "Жел жылдамдығы",
+  "windDirection": "Жел бағыты - градус",
+  "narrative": "Ауа райы туралы қорытынды",
+  "qpfSnow": "Қар мөлшері",
+  "daypart": {
+    "precipChance": "Жауын-шашын ықтималдығы",
+    "qpf": "Жауын-шашын мөлшері",
+    "temperature": "Температураны болжау",
+    "windSpeed": "Орташа жел"
+  }
+}

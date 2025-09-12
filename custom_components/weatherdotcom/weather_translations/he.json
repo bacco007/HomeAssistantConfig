@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "נקודת טל",
+  "temperatureFeelsLike": "טמפרטורה - מרגיש כמו",
+  "temperatureHeatIndex": "מד חום",
+  "relativeHumidity": "לחות יחסית",
+  "validTimeLocal": "זמן תצפית מקומי",
+  "precip1Hour": "משקעים - שעה אחרונה",
+  "precip6Hour": "משקעים - 6 שעות אחרונות",
+  "precip24Hour": "משקעים - 24 שעות אחרונות",
+  "pressureAltimeter": "לַחַץ",
+  "temperature": "טֶמפֶּרָטוּרָה",
+  "uvIndex": "אינדקס UV",
+  "temperatureWindChill": "צינת רוח",
+  "visibility": "רְאוּת",
+  "windDirectionCardinal": "כיוון הרוח - קרדינל",
+  "windGust": "משב רוח",
+  "windSpeed": "מהירות הרוח",
+  "windDirection": "כיוון הרוח - מעלות",
+  "narrative": "סיכום מזג האוויר",
+  "qpfSnow": "כמות השלג",
+  "daypart": {
+    "precipChance": "הסתברות משקעים",
+    "qpf": "כמות המשקעים",
+    "temperature": "טמפרטורה תחזית",
+    "windSpeed": "רוח ממוצעת"
+  }
+}

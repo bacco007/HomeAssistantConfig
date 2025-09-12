@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Kastepiste",
+  "temperatureFeelsLike": "Lämpötila - Tuntuu",
+  "temperatureHeatIndex": "Lämpöindeksi",
+  "relativeHumidity": "Suhteellinen kosteus",
+  "validTimeLocal": "Paikallinen havaintoaika",
+  "precip1Hour": "Sademäärä - Viimeinen tunti",
+  "precip6Hour": "Sademäärä - Viimeiset 6 tuntia",
+  "precip24Hour": "Sademäärä - Viimeiset 24 tuntia",
+  "pressureAltimeter": "Paine",
+  "temperature": "Lämpötila",
+  "uvIndex": "UV-indeksi",
+  "temperatureWindChill": "Tuulen jäähdytys",
+  "visibility": "Näkyvyys",
+  "windDirectionCardinal": "Tuulen suunta - Cardinal",
+  "windGust": "Tuulenpuuska",
+  "windSpeed": "Tuulen nopeus",
+  "windDirection": "Tuulen suunta - astetta",
+  "narrative": "Sää yhteenveto",
+  "qpfSnow": "Lumen määrä",
+  "daypart": {
+    "precipChance": "Sateen todennäköisyys",
+    "qpf": "Sademäärä",
+    "temperature": "Ennuste lämpötila",
+    "windSpeed": "Keskimääräinen tuuli"
+  }
+}

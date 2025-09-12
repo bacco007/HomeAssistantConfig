@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Temperatura kondenzacije",
+  "temperatureFeelsLike": "Temperatura - osjeća se kao",
+  "temperatureHeatIndex": "Indeks topline",
+  "relativeHumidity": "Relativna vlažnost",
+  "validTimeLocal": "Lokalno vrijeme promatranja",
+  "precip1Hour": "Oborina - Zadnji sat",
+  "precip6Hour": "Oborina - Zadnjih 6 sati",
+  "precip24Hour": "Oborina - zadnja 24 sata",
+  "pressureAltimeter": "Pritisak",
+  "temperature": "Temperatura",
+  "uvIndex": "UV indeks",
+  "temperatureWindChill": "Hlađenje vjetra",
+  "visibility": "Vidljivost",
+  "windDirectionCardinal": "Smjer vjetra - kardinal",
+  "windGust": "Udar vjetra",
+  "windSpeed": "Brzina vjetra",
+  "windDirection": "Smjer vjetra - stupnjevi",
+  "narrative": "Sažetak vremena",
+  "qpfSnow": "Količina snijega",
+  "daypart": {
+    "precipChance": "Vjerojatnost padalina",
+    "qpf": "Količina padalina",
+    "temperature": "Prognozirana temperatura",
+    "windSpeed": "Prosječni vjetar"
+  }
+}

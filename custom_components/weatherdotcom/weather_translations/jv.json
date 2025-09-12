@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Titik embun",
+  "temperatureFeelsLike": "Suhu - Rasane Kaya",
+  "temperatureHeatIndex": "Indeks Panas",
+  "relativeHumidity": "Kelembapan Relatif",
+  "validTimeLocal": "Wektu Observasi Lokal",
+  "precip1Hour": "Udan - Jam pungkasan",
+  "precip6Hour": "Precipitation - Suwene 6 jam",
+  "precip24Hour": "Presipitasi - 24 jam pungkasan",
+  "pressureAltimeter": "Tekanan",
+  "temperature": "Suhu",
+  "uvIndex": "Indeks UV",
+  "temperatureWindChill": "Angin Dingin",
+  "visibility": "Visibilitas",
+  "windDirectionCardinal": "Arah Angin - Kardinal",
+  "windGust": "Angin Angin",
+  "windSpeed": "Kacepetan Angin",
+  "windDirection": "Arah Angin - Derajat",
+  "narrative": "Ringkesan Cuaca",
+  "qpfSnow": "Jumlah Salju",
+  "daypart": {
+    "precipChance": "Probabilitas udan",
+    "qpf": "Jumlah udan",
+    "temperature": "Prakiraan Suhu",
+    "windSpeed": "Angin Rata-rata"
+  }
+}

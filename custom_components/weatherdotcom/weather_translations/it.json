@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Punto di rugiada",
+  "temperatureFeelsLike": "Temperatura - Sembra",
+  "temperatureHeatIndex": "Indice di calore",
+  "relativeHumidity": "Umidità relativa",
+  "validTimeLocal": "Tempo di osservazione locale",
+  "precip1Hour": "Precipitazioni - Ultima ora",
+  "precip6Hour": "Precipitazioni - Ultime 6 ore",
+  "precip24Hour": "Precipitazioni - Ultime 24 ore",
+  "pressureAltimeter": "Pressione",
+  "temperature": "Temperatura",
+  "uvIndex": "Indice UV",
+  "temperatureWindChill": "Vento gelido",
+  "visibility": "Visibilità",
+  "windDirectionCardinal": "Direzione del vento - Cardinale",
+  "windGust": "Raffica di vento",
+  "windSpeed": "Velocità del vento",
+  "windDirection": "Direzione del vento - Gradi",
+  "narrative": "Riepilogo meteo",
+  "qpfSnow": "Quantità di neve",
+  "daypart": {
+    "precipChance": "Probabilità di precipitazioni",
+    "qpf": "Quantità di precipitazioni",
+    "temperature": "Temperatura prevista",
+    "windSpeed": "Vento medio"
+  }
+}

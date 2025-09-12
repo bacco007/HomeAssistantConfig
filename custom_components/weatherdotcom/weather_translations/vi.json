@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "điểm sương",
+  "temperatureFeelsLike": "Nhiệt độ - Cảm thấy thích",
+  "temperatureHeatIndex": "Chỉ số nhiệt",
+  "relativeHumidity": "Độ ẩm tương đối",
+  "validTimeLocal": "Thời gian quan sát địa phương",
+  "precip1Hour": "Lượng mưa - Giờ trước",
+  "precip6Hour": "Lượng mưa - 6 giờ qua",
+  "precip24Hour": "Lượng mưa - 24 giờ qua",
+  "pressureAltimeter": "Áp lực",
+  "temperature": "Nhiệt độ",
+  "uvIndex": "Chỉ số UV",
+  "temperatureWindChill": "gió lạnh",
+  "visibility": "Hiển thị",
+  "windDirectionCardinal": "Hướng Gió - Hồng Y",
+  "windGust": "Cơn gió mạnh",
+  "windSpeed": "Tốc độ gió",
+  "windDirection": "Hướng gió - Độ",
+  "narrative": "Tóm tắt thời tiết",
+  "qpfSnow": "Lượng tuyết",
+  "daypart": {
+    "precipChance": "Xác suất lượng mưa",
+    "qpf": "Lượng mưa",
+    "temperature": "Dự báo nhiệt độ",
+    "windSpeed": "Gió trung bình"
+  }
+}

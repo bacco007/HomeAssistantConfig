@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Titik embun",
+  "temperatureFeelsLike": "Suhu - Terasa Seperti",
+  "temperatureHeatIndex": "Indeks Haba",
+  "relativeHumidity": "Kelembapan Relatif",
+  "validTimeLocal": "Waktu Pemerhatian Tempatan",
+  "precip1Hour": "Kerpasan - Sejam terakhir",
+  "precip6Hour": "Kerpasan - 6 jam terakhir",
+  "precip24Hour": "Kerpasan - 24 jam terakhir",
+  "pressureAltimeter": "Tekanan",
+  "temperature": "Suhu",
+  "uvIndex": "Indeks UV",
+  "temperatureWindChill": "Sejuk Angin",
+  "visibility": "Keterlihatan",
+  "windDirectionCardinal": "Arah Angin - Kardinal",
+  "windGust": "Tiupan Angin",
+  "windSpeed": "Kelajuan angin",
+  "windDirection": "Arah Angin - Darjah",
+  "narrative": "Ringkasan Cuaca",
+  "qpfSnow": "Jumlah Salji",
+  "daypart": {
+    "precipChance": "Kebarangkalian Kerpasan",
+    "qpf": "Jumlah Kerpasan",
+    "temperature": "Suhu Ramalan",
+    "windSpeed": "Angin Purata"
+  }
+}

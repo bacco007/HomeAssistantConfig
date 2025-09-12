@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "قطرة ندى",
+  "temperatureFeelsLike": "درجة الحرارة - تبدو وكأنها",
+  "temperatureHeatIndex": "مؤشر الحرارة",
+  "relativeHumidity": "الرطوبة النسبية",
+  "validTimeLocal": "وقت المراقبة المحلية",
+  "precip1Hour": "هطول - آخر ساعة",
+  "precip6Hour": "هطول الأمطار - آخر 6 ساعات",
+  "precip24Hour": "هطول الأمطار - آخر 24 ساعة",
+  "pressureAltimeter": "ضغط",
+  "temperature": "درجة حرارة",
+  "uvIndex": "مؤشر الأشعة فوق البنفسجية",
+  "temperatureWindChill": "هواء بارد",
+  "visibility": "الرؤية",
+  "windDirectionCardinal": "اتجاه الرياح - الكاردينال",
+  "windGust": "عاصفة الرياح",
+  "windSpeed": "سرعة الرياح",
+  "windDirection": "اتجاه الرياح - درجات",
+  "narrative": "ملخص الطقس",
+  "qpfSnow": "كمية الثلج",
+  "daypart": {
+    "precipChance": "احتمالية هطول الأمطار",
+    "qpf": "كمية الهطول",
+    "temperature": "توقعات درجة الحرارة",
+    "windSpeed": "متوسط ​​الرياح"
+  }
+}

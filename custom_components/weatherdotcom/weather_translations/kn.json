@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "ಡ್ಯೂ ಪಾಯಿಂಟ್",
+  "temperatureFeelsLike": "ತಾಪಮಾನ - ಅನಿಸುತ್ತದೆ",
+  "temperatureHeatIndex": "ಶಾಖ ಸೂಚ್ಯಂಕ",
+  "relativeHumidity": "ಸಾಪೇಕ್ಷ ಆರ್ದ್ರತೆ",
+  "validTimeLocal": "ಸ್ಥಳೀಯ ವೀಕ್ಷಣಾ ಸಮಯ",
+  "precip1Hour": "ಮಳೆ - ಕೊನೆಯ ಗಂಟೆ",
+  "precip6Hour": "ಮಳೆ - ಕೊನೆಯ 6 ಗಂಟೆಗಳು",
+  "precip24Hour": "ಮಳೆ - ಕಳೆದ 24 ಗಂಟೆಗಳು",
+  "pressureAltimeter": "ಒತ್ತಡ",
+  "temperature": "ತಾಪಮಾನ",
+  "uvIndex": "ಯುವಿ ಸೂಚ್ಯಂಕ",
+  "temperatureWindChill": "ಗಾಳಿ ಚಿಲ್",
+  "visibility": "ಗೋಚರತೆ",
+  "windDirectionCardinal": "ಗಾಳಿಯ ದಿಕ್ಕು - ಕಾರ್ಡಿನಲ್",
+  "windGust": "ಗಾಳಿ ಗಾಳಿ",
+  "windSpeed": "ಗಾಳಿಯ ವೇಗ",
+  "windDirection": "ಗಾಳಿಯ ದಿಕ್ಕು - ಡಿಗ್ರಿ",
+  "narrative": "ಹವಾಮಾನ ಸಾರಾಂಶ",
+  "qpfSnow": "ಹಿಮದ ಪ್ರಮಾಣ",
+  "daypart": {
+    "precipChance": "ಮಳೆಯ ಸಂಭವನೀಯತೆ",
+    "qpf": "ಮಳೆಯ ಪ್ರಮಾಣ",
+    "temperature": "ಮುನ್ಸೂಚನೆ ತಾಪಮಾನ",
+    "windSpeed": "ಸರಾಸರಿ ಗಾಳಿ"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "نقطه شبنم",
+  "temperatureFeelsLike": "دما - احساس می شود",
+  "temperatureHeatIndex": "شاخص گرما",
+  "relativeHumidity": "رطوبت نسبی",
+  "validTimeLocal": "زمان مشاهده محلی",
+  "precip1Hour": "بارش - ساعت گذشته",
+  "precip6Hour": "بارش - 6 ساعت گذشته",
+  "precip24Hour": "بارش - 24 ساعت گذشته",
+  "pressureAltimeter": "فشار",
+  "temperature": "درجه حرارت",
+  "uvIndex": "شاخص اشعه ماوراء بنفش",
+  "temperatureWindChill": "باد سرد",
+  "visibility": "دید",
+  "windDirectionCardinal": "جهت باد - کاردینال",
+  "windGust": "وزش باد",
+  "windSpeed": "سرعت باد",
+  "windDirection": "جهت باد - درجه",
+  "narrative": "خلاصه آب و هوا",
+  "qpfSnow": "مقدار برف",
+  "daypart": {
+    "precipChance": "احتمال بارش",
+    "qpf": "مقدار بارندگی",
+    "temperature": "پیش بینی دما",
+    "windSpeed": "باد متوسط"
+  }
+}

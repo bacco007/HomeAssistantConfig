@@ -1,0 +1,20 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "Chybný API kľúč",
+      "unknown_error": "Neznáma chyba"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "API kľúč",
+          "name": "Názov",
+          "lang": "Jazyk",
+          "latitude": "Zemepisná šírka",
+          "longitude": "Zemepisná dĺžka"
+        },
+        "description": "Nastavte integráciu Weather.com. Ak chcete vygenerovať kľúč API, pozrite si zdroj https://www.wunderground.com/ a vyhľadajte apiKey"
+      }
+    }
+  }
+}

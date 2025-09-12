@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Shudring nuqtasi",
+  "temperatureFeelsLike": "Harorat - O'zini his qiladi",
+  "temperatureHeatIndex": "Issiqlik indeksi",
+  "relativeHumidity": "Nisbiy namlik",
+  "validTimeLocal": "Mahalliy kuzatuv vaqti",
+  "precip1Hour": "Yog'ingarchilik - oxirgi soat",
+  "precip6Hour": "Yog'ingarchilik - Oxirgi 6 soat",
+  "precip24Hour": "Yog'ingarchilik - Oxirgi 24 soat",
+  "pressureAltimeter": "Bosim",
+  "temperature": "Harorat",
+  "uvIndex": "UV indeksi",
+  "temperatureWindChill": "Shamol sovuq",
+  "visibility": "Ko'rinish",
+  "windDirectionCardinal": "Shamol yo'nalishi - Kardinal",
+  "windGust": "Shamol shamoli",
+  "windSpeed": "Shamol tezligi",
+  "windDirection": "Shamol yo'nalishi - daraja",
+  "narrative": "Ob-havo haqida xulosa",
+  "qpfSnow": "Qor miqdori",
+  "daypart": {
+    "precipChance": "Yog'ingarchilik ehtimoli",
+    "qpf": "Yog'ingarchilik miqdori",
+    "temperature": "Prognozli harorat",
+    "windSpeed": "Oʻrtacha shamol"
+  }
+}

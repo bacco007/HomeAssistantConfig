@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "จุดน้ำค้าง",
+  "temperatureFeelsLike": "อุณหภูมิ - รู้สึกเหมือน",
+  "temperatureHeatIndex": "ดัชนีความร้อน",
+  "relativeHumidity": "ความชื้นสัมพัทธ์",
+  "validTimeLocal": "เวลาสังเกตการณ์ในท้องถิ่น",
+  "precip1Hour": "หยาดน้ำฟ้า - ชั่วโมงที่แล้ว",
+  "precip6Hour": "ปริมาณน้ำฝน - 6 ชั่วโมงที่ผ่านมา",
+  "precip24Hour": "ปริมาณน้ำฝน - 24 ชั่วโมงที่ผ่านมา",
+  "pressureAltimeter": "ความดัน",
+  "temperature": "อุณหภูมิ",
+  "uvIndex": "ดัชนีรังสียูวี",
+  "temperatureWindChill": "ลมหนาว",
+  "visibility": "ทัศนวิสัย",
+  "windDirectionCardinal": "ทิศทางลม - พระคาร์ดินัล",
+  "windGust": "ลมกระโชก",
+  "windSpeed": "ความเร็วลม",
+  "windDirection": "ทิศทางลม - องศา",
+  "narrative": "สรุปสภาพอากาศ",
+  "qpfSnow": "ปริมาณหิมะ",
+  "daypart": {
+    "precipChance": "ความน่าจะเป็นของฝน",
+    "qpf": "ปริมาณน้ำฝน",
+    "temperature": "อุณหภูมิพยากรณ์",
+    "windSpeed": "ลมปานกลาง"
+  }
+}

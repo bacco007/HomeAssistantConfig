@@ -1,0 +1,20 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "مفتاح API غير صالح",
+      "unknown_error": "خطأ غير معروف"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "مفتاح API",
+          "name": "اسم",
+          "lang": "لغة",
+          "latitude": "خط العرض",
+          "longitude": "خط الطول"
+        },
+        "description": "قم بإعداد تكامل Weather.com. "
+      }
+    }
+  }
+}

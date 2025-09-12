@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Duggpunkt",
+  "temperatureFeelsLike": "Temperatur - føles som",
+  "temperatureHeatIndex": "Varmeindeks",
+  "relativeHumidity": "Relativ fuktighet",
+  "validTimeLocal": "Lokal observasjonstid",
+  "precip1Hour": "Nedbør - Siste time",
+  "precip6Hour": "Nedbør - Siste 6 timer",
+  "precip24Hour": "Nedbør - Siste 24 timer",
+  "pressureAltimeter": "Press",
+  "temperature": "Temperatur",
+  "uvIndex": "UV-indeks",
+  "temperatureWindChill": "Vindavkjøling",
+  "visibility": "Synlighet",
+  "windDirectionCardinal": "Vindretning - kardinal",
+  "windGust": "Vindkast",
+  "windSpeed": "Vindfart",
+  "windDirection": "Vindretning - grader",
+  "narrative": "Væroppsummering",
+  "qpfSnow": "Snømengde",
+  "daypart": {
+    "precipChance": "Nedbørsannsynlighet",
+    "qpf": "Nedbørsmengde",
+    "temperature": "Varsel temperatur",
+    "windSpeed": "Gjennomsnittlig vind"
+  }
+}

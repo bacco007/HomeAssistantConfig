@@ -1,0 +1,20 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "无效的 API 密钥",
+      "unknown_error": "未知错误"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "API密钥",
+          "name": "姓名",
+          "lang": "语言",
+          "latitude": "纬度",
+          "longitude": "经度"
+        },
+        "description": "设置 Weather.com 集成。"
+      }
+    }
+  }
+}

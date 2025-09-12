@@ -1,0 +1,27 @@
+{
+  "temperatureDewPoint": "Daggarmark",
+  "temperatureFeelsLike": "Hitastig - líður eins og",
+  "temperatureHeatIndex": "Hitavísitala",
+  "relativeHumidity": "Hlutfallslegur raki",
+  "validTimeLocal": "Staðbundinn athugunartími",
+  "precip1Hour": "Úrkoma - Síðasti klukkutími",
+  "precip6Hour": "Úrkoma - Síðustu 6 klst",
+  "precip24Hour": "Úrkoma - Síðasti 24 klst",
+  "pressureAltimeter": "Þrýstingur",
+  "temperature": "Hitastig",
+  "uvIndex": "UV vísitala",
+  "temperatureWindChill": "Vindkæling",
+  "visibility": "Skyggni",
+  "windDirectionCardinal": "Vindátt - Cardinal",
+  "windGust": "Vindhviða",
+  "windSpeed": "Vindhraði",
+  "windDirection": "Vindátt - gráður",
+  "narrative": "Veður samantekt",
+  "qpfSnow": "Snjómagn",
+  "daypart": {
+    "precipChance": "Úrkomulíkur",
+    "qpf": "Úrkomumagn",
+    "temperature": "Spá um hitastig",
+    "windSpeed": "Meðalvindur"
+  }
+}
