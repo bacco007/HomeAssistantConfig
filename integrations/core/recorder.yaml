@@ -114,9 +114,7 @@ recorder:
       - sensor.ical*
       - sensor.international_space_station*
       - sensor.iss*
-      - sensor.load*
       - sensor.lxc*
-      - sensor.memory_*
       - sensor.mqtt_load*
       - sensor.mqtt_total*
       - sensor.mqtt_total*
@@ -129,7 +127,6 @@ recorder:
       - sensor.plane_overhead_detail*
       - sensor.plex_tautulli*
       - sensor.plexstats_*
-      - sensor.processor_use*
       - sensor.pve_ha_*
       - sensor.pvenuc*
       - sensor.pvetbsh*
