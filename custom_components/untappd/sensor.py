@@ -1,26 +1,38 @@
-"""Sensor platform for Untappd."""
+"""
+A component which allows you to get information from Untappd.
+
+For more details about this component, please refer to the documentation at
+https://github.com/custom-components/sensor.untappd
+"""
+
+from __future__ import annotations
+
 import logging
-from datetime import timedelta
-from typing import Any, Dict
+from datetime import datetime, timedelta
+from typing import Any
 
-from pyuntappd import Untappd
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_USERNAME
+from dateutil import parser
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, CoordinatorEntity, UpdateFailed
-from homeassistant.util import dt as dt_util
+from homeassistant.helpers.entity import Entity  # kept for type hints/back-compat
+
+__version__ = "0.1.6"
 
 _LOGGER = logging.getLogger(__name__)
 
 ATTRIBUTION = "Information provided by Untappd"
-SCAN_INTERVAL = timedelta(minutes=5)
-ICON = "mdi:glass-mug-variant"
 
-# Sensor attribute keys
+CONF_USERNAME = "username"
+CONF_ID = "id"
+CONF_SECRET = "secret"
+
+COMPONENT_REPO = "https://github.com/custom-components/sensor.untappd/"
+
+WISHLIST_DATA = "untappd_wishlist"
+
 ATTR_ABV = "abv"
 ATTR_BEER = "beer"
 ATTR_BREWERY = "brewery"
@@ -33,218 +45,283 @@ ATTR_TOTAL_CHECKINS = "checkins"
 ATTR_TOTAL_FOLLOWINGS = "followings"
 ATTR_TOTAL_FRIENDS = "friends"
 ATTR_TOTAL_PHOTOS = "photos"
-ATTR_BADGE_NAME = "badge_name"
-ATTR_BADGE_LEVEL = "level"
-ATTR_BADGE_DESCRIPTION = "description"
 
-WISHLIST_DATA_KEY = "wishlist_beers"
+ATTR_BADGE = "badge"
+ATTR_LEVEL = "level"
+ATTR_DESCRIPTION = "description"
+
+# Polling interval unchanged
+SCAN_INTERVAL = timedelta(seconds=300)
+
+# Correct icon name format
+ICON = "mdi:glass-mug-variant"
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Required(CONF_USERNAME): cv.string,
+        vol.Required(CONF_ID): cv.string,
+        vol.Required(CONF_SECRET): cv.string,
+    }
+)
 
 
-async def async_setup_entry(
+def setup_platform(
     hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    config: dict,
+    add_entities,  # kept for HA's sync legacy path
+    discovery_info: dict | None = None,
 ) -> None:
-    """Set up the Untappd sensor platform."""
-    username = entry.data[CONF_USERNAME]
-    api_id = entry.data[CONF_CLIENT_ID]
-    api_secret = entry.data[CONF_CLIENT_SECRET]
+    """Legacy sync setup (kept for backward compatibility)."""
+    username = config.get(CONF_USERNAME)
+    api_id = config.get(CONF_ID)
+    api_secret = config.get(CONF_SECRET)
 
-    coordinator = UntappdDataUpdateCoordinator(hass, username, api_id, api_secret)
-
-    await coordinator.async_config_entry_first_refresh()
-
-    sensors = [
-        UntappdCheckinSensor(coordinator),
-        UntappdWishlistSensor(coordinator),
-        UntappdLastBadgeSensor(coordinator),
-    ]
-    async_add_entities(sensors)
+    add_entities(
+        [
+            UntappdCheckinSensor(username, api_id, api_secret),
+            UntappdWishlistSensor(hass, username, api_id, api_secret),
+            UntappdLastBadgeSensor(hass, username, api_id, api_secret),
+        ],
+        True,
+    )
 
 
-class UntappdDataUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching Untappd data."""
+async def async_setup_platform(
+    hass: HomeAssistant,
+    config: dict,
+    async_add_entities,  # current recommended path
+    discovery_info: dict | None = None,
+) -> None:
+    """Async setup wrapper that mirrors the legacy sync behavior."""
+    username = config.get(CONF_USERNAME)
+    api_id = config.get(CONF_ID)
+    api_secret = config.get(CONF_SECRET)
 
-    def __init__(self, hass, username, api_id, api_secret):
-        """Initialize the data update coordinator."""
-        self.username = username
-        self.api_id = api_id
-        self.api_secret = api_secret
+    async_add_entities(
+        [
+            UntappdCheckinSensor(username, api_id, api_secret),
+            UntappdWishlistSensor(hass, username, api_id, api_secret),
+            UntappdLastBadgeSensor(hass, username, api_id, api_secret),
+        ],
+        True,
+    )
+
+
+class UntappdCheckinSensor(SensorEntity):
+    """Sensor for the user's last Untappd check-in."""
+
+    _attr_icon = ICON
+
+    def __init__(self, username: str, api_id: str, api_secret: str) -> None:
+        from pyuntappd import Untappd
+
         self._untappd = Untappd()
+        self._username = username
+        self._apiid = api_id
+        self._apisecret = api_secret
 
-        super().__init__(
-            hass,
-            _LOGGER,
-            name="Untappd",
-            update_interval=SCAN_INTERVAL,
+        # State/attrs initialized to preserve original behavior
+        self._total_badges = None
+        self._total_beers = None
+        self._total_created_beers = None
+        self._total_checkins = None
+        self._total_followings = None
+        self._total_friends = None
+        self._total_photos = None
+        self._abv = None
+        self._venue = None
+        self._state = None
+        self._picture = None
+        self._beer = None
+        self._brewery = None
+        self._score = None
+
+        # Keep initial update on init to match original behavior
+        self.update()
+
+    @property
+    def name(self) -> str:
+        return f"Untappd Last Check-in ({self._username})"
+
+    @property
+    def entity_picture(self) -> str | None:
+        return self._picture
+
+    @property
+    def state(self) -> Any:
+        return self._state
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return {
+            ATTR_ABV: self._abv,
+            ATTR_BEER: self._beer,
+            ATTR_BREWERY: self._brewery,
+            ATTR_SCORE: self._score,
+            ATTR_VENUE: self._venue,
+            ATTR_TOTAL_BADGES: self._total_badges,
+            ATTR_TOTAL_BEERS: self._total_beers,
+            ATTR_TOTAL_CHECKINS: self._total_checkins,
+            ATTR_TOTAL_CREATED_BEERS: self._total_created_beers,
+            ATTR_TOTAL_FRIENDS: self._total_friends,
+            ATTR_TOTAL_FOLLOWINGS: self._total_followings,
+            ATTR_TOTAL_PHOTOS: self._total_photos,
+            ATTR_ATTRIBUTION: ATTRIBUTION,
+        }
+
+    def update(self) -> None:
+        current_date = parser.parse(str(datetime.now())).replace(tzinfo=None)
+        result = self._untappd.get_last_activity(
+            self._apiid, self._apisecret, self._username
         )
+        if not result:
+            return
+        checkin_date = parser.parse(result["created_at"]).replace(tzinfo=None)
+        if (current_date - checkin_date).days > 0:
+            relative_checkin_date = (
+                str((current_date - checkin_date).days + 1) + " days ago"
+            )
+        elif (current_date - checkin_date).days == 0:
+            relative_checkin_date = "Yesterday"
+        else:
+            relative_checkin_date = "Today"
 
-    async def _async_update_data(self) -> Dict[str, Any]:
-        """Fetch data from API."""
-        try:
-            # We run the synchronous pyuntappd library calls in an executor
-            # to avoid blocking the Home Assistant event loop.
-            checkin_data = await self.hass.async_add_executor_job(
-                self._untappd.get_last_activity, self.api_id, self.api_secret, self.username
-            )
-            user_info = await self.hass.async_add_executor_job(
-                self._untappd.get_info, self.api_id, self.api_secret, self.username
-            )
-            wishlist = await self.hass.async_add_executor_job(
-                self._untappd.get_wishlist, self.api_id, self.api_secret, self.username
-            )
-            badges = await self.hass.async_add_executor_job(
-                self._untappd.get_badges, self.api_id, self.api_secret, self.username
-            )
+        self._state = relative_checkin_date
+        self._beer = result["beer"]["beer_name"]
+        self._brewery = result["brewery"]["brewery_name"]
+        self._score = str(result["rating_score"])
+        self._venue = result["venue"]["venue_name"]
+        self._picture = result["beer"]["beer_label"]
+        self._abv = str(result["beer"]["beer_abv"]) + "%"
 
-            # Process wishlist data
-            wishlist_beers = {}
-            if wishlist and wishlist.get("items"):
-                for beer in wishlist["items"]:
-                    name = beer["beer"]["beer_name"]
-                    wishlist_beers[name] = {
-                        "beer_name": name,
-                        "beer_label": beer["beer"]["beer_label"],
-                        "beer_description": beer["beer"]["beer_description"],
-                        "beer_abv": beer["beer"]["beer_abv"],
-                        "beer_style": beer["beer"]["beer_style"],
-                        "beer_ibu": beer["beer"]["beer_ibu"],
-                        "beer_link": f"https://untappd.com/b/{beer['beer']['beer_slug']}/{beer['beer']['bid']}",
-                        "rating_score": beer["beer"]["rating_score"],
-                        "rating_count": beer["beer"]["rating_count"],
-                        "brewery_label": beer["brewery"]["brewery_label"],
-                        "brewery_name": beer["brewery"]["brewery_name"],
-                        "country_name": beer["brewery"]["country_name"],
-                    }
+        result = self._untappd.get_info(self._apiid, self._apisecret, self._username)
+        if not result:
+            return
+        self._total_badges = result["stats"]["total_badges"]
+        self._total_beers = result["stats"]["total_beers"]
+        self._total_checkins = result["stats"]["total_checkins"]
+        self._total_created_beers = result["stats"]["total_created_beers"]
+        self._total_friends = result["stats"]["total_friends"]
+        self._total_followings = result["stats"]["total_followings"]
+        self._total_photos = result["stats"]["total_photos"]
 
-            return {
-                "checkin": checkin_data,
-                "user_info": user_info,
-                "wishlist_count": wishlist.get("count", 0) if wishlist else 0,
-                WISHLIST_DATA_KEY: wishlist_beers,
-                "last_badge": badges[0] if badges else None,
+
+class UntappdWishlistSensor(SensorEntity):
+    """Sensor that exposes the user's Untappd wishlist as attributes."""
+
+    _attr_icon = ICON
+
+    def __init__(self, hass: HomeAssistant, username: str, api_id: str, api_secret: str) -> None:
+        from pyuntappd import Untappd
+
+        self.hass = hass
+        self._untappd = Untappd()
+        self._username = username
+        self._apiid = api_id
+        self._apisecret = api_secret
+        self._state = None
+        # ensure data bucket exists (unchanged behavior)
+        self.hass.data[WISHLIST_DATA] = {}
+        self.update()
+
+    @property
+    def name(self) -> str:
+        return f"Untappd Wishlist ({self._username})"
+
+    @property
+    def state(self) -> Any:
+        return self._state
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return self.hass.data[WISHLIST_DATA]
+
+    def update(self) -> None:
+        result = self._untappd.get_wishlist(
+            self._apiid, self._apisecret, self._username
+        )
+        if not result:
+            return
+        self._state = result["count"]
+        for beer in result["items"]:
+            name = beer["beer"]["beer_name"]
+            self.hass.data[WISHLIST_DATA][name] = {
+                "beer_name": name,
+                "beer_label": beer["beer"]["beer_label"],
+                "beer_description": beer["beer"]["beer_description"],
+                "beer_abv": beer["beer"]["beer_abv"],
+                "beer_style": beer["beer"]["beer_style"],
+                "beer_ibu": beer["beer"]["beer_ibu"],
+                "beer_link": "https://untappd.com/b/"
+                + beer["beer"]["beer_slug"]
+                + "/"
+                + str(beer["beer"]["bid"]),
+                "rating_score": beer["beer"]["rating_score"],
+                "rating_count": beer["beer"]["rating_count"],
+                "brewery_label": beer["brewery"]["brewery_label"],
+                "brewery_name": beer["brewery"]["brewery_name"],
+                "country_name": beer["brewery"]["country_name"],
             }
 
-        except Exception as err:
-            raise UpdateFailed(f"Error communicating with API: {err}") from err
 
+class UntappdLastBadgeSensor(SensorEntity):
+    """Sensor for the user's most recent Untappd badge."""
 
-class UntappdCheckinSensor(CoordinatorEntity, SensorEntity):
-    """Representation of an Untappd check-in sensor."""
+    _attr_icon = ICON
 
-    def __init__(self, coordinator: UntappdDataUpdateCoordinator):
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        self._username = coordinator.username
-        self._attr_name = f"Untappd Last Check-in ({self._username})"
-        self._attr_unique_id = f"untappd_{self._username}_last_checkin"
-        self._attr_icon = ICON
-        self._attr_device_class = "timestamp"  # This lets HA display "x hours ago"
+    def __init__(self, hass: HomeAssistant, username: str, api_id: str, api_secret: str) -> None:
+        from pyuntappd import Untappd
 
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        if self.coordinator.data and self.coordinator.data.get("checkin"):
-            created_at = self.coordinator.data["checkin"]["created_at"]
-            # Convert the string timestamp to a timezone-aware datetime object
-            return dt_util.parse_datetime(created_at)
-        return None
+        self.hass = hass
+        self._untappd = Untappd()
+        self._username = username
+        self._apiid = api_id
+        self._apisecret = api_secret
+        self._state = None
+        self._badge = None
+        self._level = None
+        self._description = None
+        self._picture = None
+        self.update()
 
     @property
-    def entity_picture(self):
-        """Return the entity picture."""
-        if self.coordinator.data and self.coordinator.data.get("checkin"):
-            return self.coordinator.data["checkin"]["beer"]["beer_label"]
-        return None
+    def name(self) -> str:
+        return f"Untappd Last Badge ({self._username})"
 
     @property
-    def extra_state_attributes(self) -> Dict[str, Any]:
-        """Return the state attributes."""
-        if not self.coordinator.data or not self.coordinator.data.get("checkin") or not self.coordinator.data.get("user_info"):
-            return {}
+    def entity_picture(self) -> str | None:
+        return self._picture
 
-        checkin = self.coordinator.data["checkin"]
-        user_info = self.coordinator.data["user_info"]
+    @property
+    def state(self) -> Any:
+        return self._state
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
         return {
-            ATTR_BEER: checkin["beer"]["beer_name"],
-            ATTR_BREWERY: checkin["brewery"]["brewery_name"],
-            ATTR_SCORE: checkin["rating_score"],
-            ATTR_VENUE: checkin["venue"]["venue_name"] if checkin.get("venue") else "N/A",
-            ATTR_ABV: f'{checkin["beer"]["beer_abv"]}%',
-            ATTR_TOTAL_BADGES: user_info["stats"]["total_badges"],
-            ATTR_TOTAL_BEERS: user_info["stats"]["total_beers"],
-            ATTR_TOTAL_CHECKINS: user_info["stats"]["total_checkins"],
-            ATTR_TOTAL_CREATED_BEERS: user_info["stats"]["total_created_beers"],
-            ATTR_TOTAL_FRIENDS: user_info["stats"]["total_friends"],
-            ATTR_TOTAL_FOLLOWINGS: user_info["stats"]["total_followings"],
-            ATTR_TOTAL_PHOTOS: user_info["stats"]["total_photos"],
+            ATTR_BADGE: self._badge,
+            ATTR_LEVEL: self._level,
+            ATTR_DESCRIPTION: self._description,
             ATTR_ATTRIBUTION: ATTRIBUTION,
         }
 
+    def update(self) -> None:
+        result = self._untappd.get_badges(self._apiid, self._apisecret, self._username)
+        if not result or len(result) < 1:
+            return
+        current_date = parser.parse(str(datetime.now())).replace(tzinfo=None)
+        checkin_date = parser.parse(result[0]["created_at"]).replace(tzinfo=None)
+        if (current_date - checkin_date).days > 0:
+            relative_checkin_date = (
+                str((current_date - checkin_date).days + 1) + " days ago"
+            )
+        elif (current_date - checkin_date).days == 0:
+            relative_checkin_date = "Yesterday"
+        else:
+            relative_checkin_date = "Today"
 
-class UntappdWishlistSensor(CoordinatorEntity, SensorEntity):
-    """Representation of an Untappd wishlist sensor."""
-
-    def __init__(self, coordinator: UntappdDataUpdateCoordinator):
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        self._username = coordinator.username
-        self._attr_name = f"Untappd Wishlist ({self._username})"
-        self._attr_unique_id = f"untappd_{self._username}_wishlist"
-        self._attr_icon = ICON
-        self._attr_native_unit_of_measurement = "beers"
-
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        return self.coordinator.data.get("wishlist_count") if self.coordinator.data else 0
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        if self.coordinator.data:
-            return self.coordinator.data.get(WISHLIST_DATA_KEY, {})
-        return {}
-
-
-class UntappdLastBadgeSensor(CoordinatorEntity, SensorEntity):
-    """Representation of an Untappd last badge sensor."""
-
-    def __init__(self, coordinator: UntappdDataUpdateCoordinator):
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        self._username = coordinator.username
-        self._attr_name = f"Untappd Last Badge ({self._username})"
-        self._attr_unique_id = f"untappd_{self._username}_last_badge"
-        self._attr_icon = ICON
-        self._attr_device_class = "timestamp"
-
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        if self.coordinator.data and self.coordinator.data.get("last_badge"):
-            created_at = self.coordinator.data["last_badge"]["created_at"]
-            return dt_util.parse_datetime(created_at)
-        return None
-
-    @property
-    def entity_picture(self):
-        """Return the entity picture."""
-        if self.coordinator.data and self.coordinator.data.get("last_badge"):
-            return self.coordinator.data["last_badge"]["media"]["badge_image_sm"]
-        return None
-
-    @property
-    def extra_state_attributes(self) -> Dict[str, Any]:
-        """Return the state attributes."""
-        if not self.coordinator.data or not self.coordinator.data.get("last_badge"):
-            return {}
-
-        badge = self.coordinator.data["last_badge"]
-        return {
-            ATTR_BADGE_NAME: badge["badge_name"],
-            ATTR_BADGE_LEVEL: badge["levels"]["count"] if badge["is_level"] else 1,
-            ATTR_BADGE_DESCRIPTION: badge["badge_description"],
-            ATTR_ATTRIBUTION: ATTRIBUTION,
-        }
+        self._state = relative_checkin_date
+        self._badge = result[0]["badge_name"]
+        self._level = result[0]["levels"]["count"] if result[0]["is_level"] else 1
+        self._description = result[0]["badge_description"]
+        self._picture = result[0]["media"]["badge_image_sm"]
