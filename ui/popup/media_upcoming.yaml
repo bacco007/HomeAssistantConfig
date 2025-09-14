@@ -7,7 +7,7 @@ cards:
     button_type: name
     name: Upcoming / Recently Added
     icon: mdi:television
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     entity: sensor.frontpage_plex_unwatched_tv
     primary: Plex (New, Unwatched TV)
     secondary: >
@@ -56,7 +56,7 @@ cards:
             padding-top: 5px !important;
             padding-bottom: 5px !important;
           }
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     entity: sensor.frontpage_plex_unwatched_movies
     primary: Plex (New, Unwatched Movies)
     secondary: >
@@ -99,7 +99,7 @@ cards:
             padding-top: 5px !important;
             padding-bottom: 5px !important;
           }
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     entity: sensor.frontpage_sonarr_upcoming
     primary: Sonarr (Upcoming TV)
     secondary: >
@@ -144,7 +144,7 @@ cards:
             padding-top: 5px !important;
             padding-bottom: 5px !important;
           }
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     entity: sensor.frontpage_radarr_upcoming
     primary: Radarr (Upcoming Movies)
     secondary: >

@@ -2,8 +2,11 @@
 sensor:
   - name: Starlink Uptime Tracking
     unique_id: starlink_uptime_tracking
-    state: >
-      {{ (states('sensor.starlink_connectivity_connected') | float / ( (as_timestamp(now()) - as_timestamp(now().replace(hour=0, minute=0, second=0, microsecond=0))) / 3600) * 100) | round(2) }}
+    state: >-
+      {%- set up = states('sensor.starlink_connectivity_connected')|float(0) %}
+      {%- set down = states('sensor.starlink_connectivity_disconnected')|float(0) %}
+      {%- set total = up + down %}
+      {{ (100 * up / total if total > 0 else 0) | round(2) }}
     unit_of_measurement: "%"
     attributes:
       uptime_hm: >-
@@ -11,7 +14,7 @@ sensor:
         {%- set h = hours | int %}
         {%- set m = ((hours - h) * 60) | int %}
         {{ "%02d:%02d" | format(h, m) }}
-      downtime_hm: >-
+      downtime_hm: >- 
         {%- set hours = states('sensor.starlink_connectivity_disconnected') | float(0) %}
         {%- set h = hours | int %}
         {%- set m = ((hours - h) * 60) | int %}

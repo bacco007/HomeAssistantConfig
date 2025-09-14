@@ -15,7 +15,7 @@ sports_card:
             box-shadow: none !important;
           }
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: >-
           {{ state_attr(entity, 'friendly_name') | replace('[Upcoming Sport] ', '')
           }}

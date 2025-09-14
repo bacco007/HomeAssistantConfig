@@ -14,7 +14,7 @@ card_mod:
 entities:
   - type: custom:fold-entity-row
     head:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       card_mod:
         style: |
           ha-card {
@@ -55,7 +55,7 @@ entities:
               sort:
                 method: name
               options:
-                type: custom:mushroom-template-card
+                type: custom:mushroom-legacy-template-card
                 style: |
                   ha-card {
                     background: none;

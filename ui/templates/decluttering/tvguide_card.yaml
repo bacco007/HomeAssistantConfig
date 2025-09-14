@@ -13,7 +13,7 @@ tvguide_card:
           padding-bottom: 10px !important;
           }
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: >
           {{state_attr(entity, 'channel_name')}}
         secondary: >

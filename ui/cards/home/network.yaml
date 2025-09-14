@@ -142,7 +142,7 @@ cards:
     columns: 2
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
         primary: NBN FTTN Upgrade > Home
         secondary: >-
@@ -194,7 +194,7 @@ cards:
                 padding-top: 2px !important;
                 padding-bottom: 2px !important;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
         primary: NBN FTTN Upgrade > Work
         secondary: >-
@@ -246,7 +246,7 @@ cards:
                 padding-top: 2px !important;
                 padding-bottom: 2px !important;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
         primary: NBN FTTN Upgrade > Kate
         secondary: >-

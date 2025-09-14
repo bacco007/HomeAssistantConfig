@@ -67,19 +67,6 @@ binary_sensor:
   # **No orphaned sensors found!**
   # {%- endif %}
 
-  - name: "[HA Connected Integration] accuweather"
-    unique_id: ha_connected_integration_accuweather
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/accuweather/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('accuweather')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('accuweather')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('accuweather')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] adaptive_lighting"
     unique_id: ha_connected_integration_adaptive_lighting
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -248,19 +235,6 @@ binary_sensor:
         "{{ integration_entities('average')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('average')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] aviationweather"
-    unique_id: ha_connected_integration_aviationweather
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/aviationweather/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('aviationweather')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('aviationweather')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('aviationweather')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] backup"
     unique_id: ha_connected_integration_backup
@@ -482,19 +456,6 @@ binary_sensor:
         "{{ integration_entities('derivative')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('derivative')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] docker_status"
-    unique_id: ha_connected_integration_docker_status
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/docker_status/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('docker_status')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('docker_status')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('docker_status')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] doomsday_clock"
     unique_id: ha_connected_integration_doomsday_clock

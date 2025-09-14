@@ -46,7 +46,7 @@ cards:
             {%- for a in ns.result|sort(attribute='published', reverse=true) -%}
               {{
                 {
-                  "type": "custom:mushroom-template-card",
+                  "type": "custom:mushroom-legacy-template-card",
                   "primary": a.title,
                   "multiline_secondary": true,
                   "secondary": "Latest News from " + a.source,

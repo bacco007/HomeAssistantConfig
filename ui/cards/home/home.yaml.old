@@ -30,7 +30,7 @@ cards:
     cards:
       - type: horizontal-stack
         cards:
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             primary: Next Bin Day
             secondary: >
               {% from 'relative_time_plus.jinja' import
@@ -57,7 +57,7 @@ cards:
                 }
           - type: horizontal-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: ''
                 secondary: ''
                 icon: mdi:trash-can
@@ -87,7 +87,7 @@ cards:
                         padding-top: 5px !important;
                         padding-bottom: 5px !important;
                       }
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: ''
                 secondary: ''
                 icon: mdi:recycle
@@ -135,7 +135,7 @@ cards:
                         padding-top: 5px !important;
                         padding-bottom: 5px !important;
                       }
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: ''
                 secondary: ''
                 icon: mdi:leaf

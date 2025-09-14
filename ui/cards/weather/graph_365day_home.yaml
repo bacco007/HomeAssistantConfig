@@ -1,7 +1,7 @@
 ---
 type: custom:vertical-stack-in-card
 cards:
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: Climate Stats (Home) - This Year
     fill_container: true
     icon: mdi:weather-sunny-alert

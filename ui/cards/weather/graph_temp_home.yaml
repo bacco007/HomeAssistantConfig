@@ -1,7 +1,7 @@
 ---
 type: custom:vertical-stack-in-card
 cards:
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary_info: name
     secondary_info: none
     primary: Indoor Temperature Comparison

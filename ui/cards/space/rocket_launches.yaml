@@ -18,7 +18,7 @@ cards:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       entity: sensor.next_spaceflight
       primary: Upcoming Rocket Launches
       secondary: >-

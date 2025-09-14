@@ -6,7 +6,7 @@ bushfire_fireban:
     - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_today
     - name: Today
   card:
-    type: custom:mushroom-template-card
+    type: custom:mushroom-legacy-template-card
     primary: "[[name]]"
     secondary: "Fire Ban: {{states(entity)}}"
     icon: |-

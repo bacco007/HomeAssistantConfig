@@ -283,7 +283,7 @@ cards:
           {% for s in state_attr('sensor.east_tamworth_warnings','warnings') -%}
             {{
               {
-              "type": "custom:mushroom-template-card",
+              "type": "custom:mushroom-legacy-template-card",
               "primary": s.short_title,
               "secondary": s.title,
               "multiline_secondary": true,

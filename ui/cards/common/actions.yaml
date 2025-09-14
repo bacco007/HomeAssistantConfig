@@ -25,7 +25,7 @@ card:
         grid-template-rows: auto
         grid-gap: 0px
   cards:
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Alarm Clock
       secondary: >
         {% if states('binary_sensor.alarm_tomorrow') == 'on' %} Alarm for Tomorrow
@@ -57,7 +57,7 @@ card:
                 100% {box-shadow: 0 0 0 0 transparent;}
             }
             {% endif %}
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Home Assistant
       secondary: ""
       icon: mdi:home-assistant
@@ -75,7 +75,7 @@ card:
               --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Notifications
       secondary: ""
       icon: mdi:message-badge
@@ -91,7 +91,7 @@ card:
               --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Lights
       secondary: ""
       icon: mdi:lightbulb
@@ -121,7 +121,7 @@ card:
                 100% {box-shadow: 0 0 0 0 transparent;}
             }
             {% endif %}
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Media Players
       secondary: ""
       icon: mdi:play-network
@@ -149,7 +149,7 @@ card:
                 100% {box-shadow: 0 0 0 0 transparent;}
             }
             {% endif %}
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Updates
       secondary: |
         {{ states('sensor.summary_updates') }} Updates Available
@@ -185,7 +185,7 @@ card:
         - entity: media_player.currently_playing
           state: playing
       card:
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: Currently Playing
         secondary: ""
         icon: mdi:play
@@ -211,7 +211,7 @@ card:
                   70% {box-shadow: 0 0 0 10px transparent;}
                   100% {box-shadow: 0 0 0 0 transparent;}
               }
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Sonos
       secondary: ""
       icon: si:sonos
@@ -227,7 +227,7 @@ card:
               --card-primary-font-size: 95%;
               box-shadow: none !important;
             }
-    - type: custom:mushroom-template-card
+    - type: custom:mushroom-legacy-template-card
       primary: Upcoming Sport
       secondary: |
         {{ states('sensor.upcoming_sport_next_24_hours') }} Events Today

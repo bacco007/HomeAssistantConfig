@@ -17,7 +17,7 @@ cards:
     square: false
     cards:
       - entity: sensor.unifi_system_www
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: WWW
         icon: mdi:wan
         secondary: |-
@@ -35,7 +35,7 @@ cards:
         tap_action:
           action: more-info
       - entity: sensor.unifi_system_wan
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: WAN
         icon: mdi:access-point-network
         secondary: |-
@@ -53,7 +53,7 @@ cards:
         tap_action:
           action: more-info
       - entity: sensor.unifi_system_vpn
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: VPN
         icon: mdi:shield-link-variant-outline
         secondary: |-

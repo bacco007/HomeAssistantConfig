@@ -16,7 +16,7 @@ card_mod:
 entities:
   - type: custom:fold-entity-row
     head:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Integrations and Domains Used
       icon: mdi:home-assistant
       icon_color: blue

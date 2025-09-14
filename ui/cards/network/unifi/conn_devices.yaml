@@ -17,7 +17,7 @@ cards:
     square: false
     cards:
       - entity: sensor.unifi_networkstats_connected_devices
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: Wired
         icon: mdi:check-network-outline
         secondary: |-
@@ -27,7 +27,7 @@ cards:
         layout: vertical
         multiline_secondary: true
       - entity: sensor.unifi_networkstats_connected_devices
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: WiFi
         icon: mdi:access-point-network
         secondary: |-
@@ -37,7 +37,7 @@ cards:
         layout: vertical
         multiline_secondary: true
       - entity: sensor.unifi_networkstats_connected_devices
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: IoT
         icon: mdi:help-network-outline
         secondary: |-

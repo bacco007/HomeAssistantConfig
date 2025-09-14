@@ -1,5 +1,5 @@
 ---
-type: custom:mushroom-template-card
+type: custom:mushroom-legacy-template-card
 primary: Bird Watch - Closest Plane
 secondary: |-
   {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}} ({{state_attr('sensor.plane_overhead', 'distance')}} km away)

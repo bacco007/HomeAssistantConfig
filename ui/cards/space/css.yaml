@@ -27,7 +27,7 @@ cards:
           background-size: 105%;
         }
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         entity: sensor.css
         primary: Tiangong Space Station
         icon: mdi:space-station

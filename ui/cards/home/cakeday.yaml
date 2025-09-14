@@ -20,7 +20,7 @@ cards:
     columns: 2
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:cake-variant
         primary: |
           In {{ states("sensor.anniversary_my_birthday") }} days
@@ -61,7 +61,7 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:cake-variant
         primary: |
           In {{ states("sensor.anniversary_my_work_birthday") }} days
@@ -103,7 +103,7 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:gift
         primary: |
           {%- from 'next_birthday.jinja' import next_birthday_friendly_name -%}
@@ -143,7 +143,7 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:calendar-heart
         primary: "{{ state_attr(entity, 'holiday') }}"
         icon_color: green
@@ -182,7 +182,7 @@ cards:
   - square: false
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:calendar-end
         primary: Month End
         icon_color: orange
@@ -219,7 +219,7 @@ cards:
                 border-radius: var(--icon-border-radius);
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:calendar-end
         primary: Year End
         icon_color: orange

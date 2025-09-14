@@ -52,7 +52,7 @@ cards:
         show_attribute: true
         attribute: target
     show_icon: true
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: >-
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_name']}}
       ({{state_attr('sensor.untappd_recent_beers', 'data')[0]['brewery']}})

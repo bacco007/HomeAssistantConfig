@@ -1,7 +1,7 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: Downloads
     icon: mdi:download-box
     icon_color: blue

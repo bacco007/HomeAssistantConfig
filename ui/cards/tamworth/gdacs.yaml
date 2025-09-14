@@ -30,7 +30,7 @@ card:
       overlay-margin: 0em
       button-background: transparent
       title-card:
-        type: custom:mushroom-template-card
+        type: custom:mushroom-legacy-template-card
         primary: GDACS Alerts
         icon: mdi:alert-circle
         card_mod:

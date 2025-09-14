@@ -24,7 +24,7 @@ cards:
         columns: 3
         type: grid
         cards:
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             secondary: Home
             primary: |
               {{ states(config.entity) }} Hrs
@@ -34,7 +34,7 @@ cards:
             icon_color: red
             tap_action:
               action: none
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             secondary: Work
             primary: |
               {{ states(config.entity) }} Hrs
@@ -44,7 +44,7 @@ cards:
             icon_color: green
             tap_action:
               action: none
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             secondary: Away
             primary: |
               {{ states(config.entity) }} Hrs

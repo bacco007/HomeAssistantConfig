@@ -43,7 +43,7 @@ browser_mod:
                   box-shadow: none;
                 }
               cards:
-                - type: custom:mushroom-template-card
+                - type: custom:mushroom-legacy-template-card
                   style: |
                     ha-card {
                       background-color: var(--background-color); }
@@ -59,7 +59,7 @@ browser_mod:
                     action: none
                   double_tap_action:
                     action: none
-                - type: custom:mushroom-template-card
+                - type: custom:mushroom-legacy-template-card
                   style: |
                     ha-card {
                       background-color: var(--background-color); }
@@ -76,7 +76,7 @@ browser_mod:
                   double_tap_action:
                     action: none
                   badge_color: ""
-                - type: custom:mushroom-template-card
+                - type: custom:mushroom-legacy-template-card
                   style: |
                     ha-card {
                       background-color: var(--background-color); }
@@ -92,7 +92,7 @@ browser_mod:
                     action: none
                   double_tap_action:
                     action: none
-                - type: custom:mushroom-template-card
+                - type: custom:mushroom-legacy-template-card
                   style: |
                     ha-card {
                       background-color: var(--background-color); }
@@ -118,7 +118,7 @@ browser_mod:
                   badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
                   multiline_secondary: true
                   layout: vertical
-                - type: custom:mushroom-template-card
+                - type: custom:mushroom-legacy-template-card
                   style: |
                     ha-card {
                       background-color: var(--background-color); }
@@ -144,7 +144,7 @@ browser_mod:
                   badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
                   multiline_secondary: true
                   layout: vertical
-                - type: custom:mushroom-template-card
+                - type: custom:mushroom-legacy-template-card
                   style: |
                     ha-card {
                       background-color: var(--background-color); }

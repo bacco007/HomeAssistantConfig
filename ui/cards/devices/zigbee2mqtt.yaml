@@ -168,7 +168,7 @@ cards:
     entities:
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
+          type: custom:mushroom-legacy-template-card
           primary: Zigbee2MQTT Network Map
           icon: mdi:zigbee
           icon_color: yellow

@@ -145,7 +145,7 @@ cards:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Planes Tracked (By Type)
       icon: mdi:airplane
       card_mod:

@@ -1013,7 +1013,9 @@ class $19fe8e3abedf4df0$export$c7c07a37856565d extends HTMLElement {
             const t = i.getPropertyOptions(e), h = "function" == typeof t.converter ? {
                 fromAttribute: t.converter
             } : void 0 !== t.converter?.fromAttribute ? t.converter : $19fe8e3abedf4df0$export$7312b35fbf521afb;
-            this._$Em = e, this[e] = h.fromAttribute(s, t.type) ?? this._$Ej?.get(e) ?? null, this._$Em = null;
+            this._$Em = e;
+            const r = h.fromAttribute(s, t.type);
+            this[e] = r ?? this._$Ej?.get(e) ?? r, this._$Em = null;
         }
     }
     requestUpdate(t, s, i) {
@@ -1088,7 +1090,7 @@ $19fe8e3abedf4df0$export$c7c07a37856565d.elementStyles = [], $19fe8e3abedf4df0$e
     mode: "open"
 }, $19fe8e3abedf4df0$export$c7c07a37856565d[$19fe8e3abedf4df0$var$d("elementProperties")] = new Map, $19fe8e3abedf4df0$export$c7c07a37856565d[$19fe8e3abedf4df0$var$d("finalized")] = new Map, $19fe8e3abedf4df0$var$p?.({
     ReactiveElement: $19fe8e3abedf4df0$export$c7c07a37856565d
-}), ($19fe8e3abedf4df0$var$a.reactiveElementVersions ??= []).push("2.1.0");
+}), ($19fe8e3abedf4df0$var$a.reactiveElementVersions ??= []).push("2.1.1");
 
 
 /**
@@ -1262,7 +1264,7 @@ class $f58f44579a4747ac$var$R {
         e < i.length && (this._$AR(s && s._$AB.nextSibling, e), i.length = e);
     }
     _$AR(t = this._$AA.nextSibling, i) {
-        for(this._$AP?.(!1, !0, i); t && t !== this._$AB;){
+        for(this._$AP?.(!1, !0, i); t !== this._$AB;){
             const i = t.nextSibling;
             t.remove(), t = i;
         }
@@ -1352,7 +1354,7 @@ const $f58f44579a4747ac$export$8613d1ca9052b22e = {
     B: $f58f44579a4747ac$var$H,
     F: $f58f44579a4747ac$var$z
 }, $f58f44579a4747ac$var$j = $f58f44579a4747ac$var$t.litHtmlPolyfillSupport;
-$f58f44579a4747ac$var$j?.($f58f44579a4747ac$var$N, $f58f44579a4747ac$var$R), ($f58f44579a4747ac$var$t.litHtmlVersions ??= []).push("3.3.0");
+$f58f44579a4747ac$var$j?.($f58f44579a4747ac$var$N, $f58f44579a4747ac$var$R), ($f58f44579a4747ac$var$t.litHtmlVersions ??= []).push("3.3.1");
 const $f58f44579a4747ac$export$b3890eb0ae9dca99 = (t, i, s)=>{
     const e = s?.renderBefore ?? i;
     let h = e._$litPart$;
@@ -1408,7 +1410,7 @@ const $ab210b2da7b39b9d$export$f5c524615a7708d6 = {
     },
     _$AL: (t)=>t._$AL
 };
-($ab210b2da7b39b9d$var$s.litElementVersions ??= []).push("4.2.0");
+($ab210b2da7b39b9d$var$s.litElementVersions ??= []).push("4.2.1");
 
 
 /**
@@ -1597,7 +1599,7 @@ const $fc7b5ec53f835fd3$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$d
     --primary-text-color: var(--error-color);
   }
 
-  /* Style for the percentage bar that goes below the state-card-content */
+  /* Style for the percentage bar that goes below the hui-generic-entity-row */
   .percent-gauge {
     position: absolute;
     bottom: 1px;
@@ -1696,7 +1698,47 @@ const $fc7b5ec53f835fd3$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$d
  * This file handles the rendering of collapsible sections within the device card,
  * organizing entities by their type (sensors, controls, etc.) and managing
  * expandable/collapsible behavior.
- */ /**
+ */ var $9a28a77a5af263d9$exports = {};
+$9a28a77a5af263d9$exports = JSON.parse("{\"card\":{\"device_name\":\"Device Name\",\"expand\":\"Expand\",\"collapse\":\"Collapse\",\"loading\":\"Loading...\",\"no_devices_found\":\"No devices found for integration:\",\"device_card_name\":\"Device Card\",\"device_card_description\":\"A card to summarize the status of a Device.\",\"integration_card_name\":\"Integration Card\",\"integration_card_description\":\"A card to display all devices from a specific integration.\"},\"sections\":{\"controls\":\"Controls\",\"configuration\":\"Configuration\",\"sensors\":\"Sensors\",\"diagnostic\":\"Diagnostic\"}}");
+
+
+var $a8bf67e13c48de4e$exports = {};
+$a8bf67e13c48de4e$exports = JSON.parse('{"card":{"device_name":"Nom de l\'appareil","expand":"D\xe9velopper","collapse":"R\xe9duire","loading":"Chargement...","no_devices_found":"Aucun appareil trouv\xe9 pour l\'int\xe9gration :","device_card_name":"Carte d\'Appareil","device_card_description":"Une carte pour r\xe9sumer le statut d\'un Appareil.","integration_card_name":"Carte d\'Int\xe9gration","integration_card_description":"Une carte pour afficher tous les appareils d\'une int\xe9gration sp\xe9cifique."},"sections":{"controls":"Contr\xf4les","configuration":"Configuration","sensors":"Capteurs","diagnostic":"Diagnostic"}}');
+
+
+var $736e6599d6bbd3bf$exports = {};
+$736e6599d6bbd3bf$exports = JSON.parse('{"card":{"device_name":"Nome do Dispositivo","expand":"Expandir","collapse":"Recolher","loading":"Carregando...","no_devices_found":"Nenhum dispositivo encontrado para a integra\xe7\xe3o:","device_card_name":"Cart\xe3o de Dispositivo","device_card_description":"Um cart\xe3o para resumir o status de um Dispositivo.","integration_card_name":"Cart\xe3o de Integra\xe7\xe3o","integration_card_description":"Um cart\xe3o para exibir todos os dispositivos de uma integra\xe7\xe3o espec\xedfica."},"sections":{"controls":"Controles","configuration":"Configura\xe7\xe3o","sensors":"Sensores","diagnostic":"Diagn\xf3stico"}}');
+
+
+// Import other languages as needed above this line and in order
+// Define supported languages
+const $623ffaa3e77fea87$var$languages = {
+    en: $9a28a77a5af263d9$exports,
+    fr: $a8bf67e13c48de4e$exports,
+    pt: $736e6599d6bbd3bf$exports
+};
+const $623ffaa3e77fea87$export$b3bd0bc58e36cd63 = (hass, key, search = '', replace = '')=>{
+    let translated;
+    translated = $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages[hass.language], key) ?? $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages.en, key) ?? key;
+    // Replace placeholders
+    if (search !== '' && replace !== '') translated = translated.replace(search, replace);
+    return translated;
+};
+// Helper function to safely navigate nested objects
+function $623ffaa3e77fea87$var$getNestedTranslation(obj, path) {
+    if (!obj) return undefined;
+    const keys = path.split('.');
+    let result = obj;
+    for (const key of keys){
+        if (result === undefined || result === null || typeof result !== 'object') return undefined;
+        result = result[key];
+    }
+    return typeof result === 'string' ? result : undefined;
+}
+
+
+
+/**
  * @file section.ts
  * @description Section rendering for the device card
  * This file handles the rendering of collapsible sections within the device card,
@@ -2017,14 +2059,33 @@ const $a6a6434f1848f426$export$40075bc608c4544e = (entity)=>{
 
 
 
-const $91384c06f34fa41f$export$535a09426ee2ea59 = (hass, entity, className)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<state-card-content
-    .hass=${hass}
-    .stateObj=${entity}
-    class="${className}"
-  ></state-card-content>`;
+const $91384c06f34fa41f$export$535a09426ee2ea59 = async (hass, entity, className)=>{
+    // Load the card helpers
+    const helpers = await window.loadCardHelpers();
+    // Create the row configuration, we will handle actions ourselves
+    const config = {
+        entity: entity.entity_id,
+        tap_action: {
+            action: 'none'
+        },
+        hold_action: {
+            action: 'none'
+        },
+        double_tap_action: {
+            action: 'none'
+        }
+    };
+    // Create the row element
+    const element = helpers.createRowElement(config);
+    // Set the hass property
+    element.hass = hass;
+    // Apply the class name if provided
+    if (className) element.className = className;
+    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`${element}`;
+};
 
 
-const $68e7242076c3e34e$export$120ff0929b202a6d = (hass, entity, element, expansions, updateExpansions)=>{
+const $68e7242076c3e34e$export$120ff0929b202a6d = async (hass, entity, element, expansions, updateExpansions)=>{
     let statusClassName;
     // Determine status class based on problem state
     if (entity.isProblemEntity) // Add color to problem class based on state
@@ -2033,6 +2094,7 @@ const $68e7242076c3e34e$export$120ff0929b202a6d = (hass, entity, element, expans
     const showBar = entity.attributes.state_class === 'measurement' && entity.attributes.unit_of_measurement === '%';
     // Check if this entity's details are expanded
     const isEntityExpanded = expansions.expandedEntities[entity.entity_id] || false;
+    const stateContentResult = await (0, $91384c06f34fa41f$export$535a09426ee2ea59)(hass, entity, statusClassName);
     return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)` <div
     class="${[
         'row',
@@ -2043,8 +2105,7 @@ const $68e7242076c3e34e$export$120ff0929b202a6d = (hass, entity, element, expans
     .actionHandler=${(0, $57febad8376708f1$export$8a44987212de21b)(entity)}
   >
     <div class="row-content">
-      ${(0, $91384c06f34fa41f$export$535a09426ee2ea59)(hass, entity, statusClassName)}
-      ${showBar ? (0, $a6a6434f1848f426$export$40075bc608c4544e)(entity) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+      ${stateContentResult} ${showBar ? (0, $a6a6434f1848f426$export$40075bc608c4544e)(entity) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
     </div>
     ${isEntityExpanded ? (0, $5cc8c88379d13dba$export$16bd37df0047a29c)(entity.attributes) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
   </div>`;
@@ -2091,7 +2152,7 @@ const $2ae7b32fc5b69f7f$export$ae9a281c4379b144 = (expansion, title, entities, i
   </div>`;
 
 
-const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = (element, expansions, hass, config, title, entities, updateExpansions)=>{
+const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = async (element, expansions, hass, config, title, entities, updateExpansions)=>{
     // Don't render anything if there are no entities to display
     if (!entities || entities.length === 0) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
     // Determine how many entities to preview based on config
@@ -2106,36 +2167,39 @@ const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = (element, expansions, hass, co
     // Determine section class based on expanded state, number of items, and compact feature
     const isCompact = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'compact');
     const sectionClass = `section ${isExpanded ? 'expanded' : ''} ${!needsExpansion ? 'few-items' : ''} ${isCompact ? 'compact' : ''}`;
+    // Render all rows asynchronously
+    const rowPromises = displayEntities.map((entity)=>(0, $68e7242076c3e34e$export$120ff0929b202a6d)(hass, entity, element, expansions, updateExpansions));
+    const rowResults = await Promise.all(rowPromises);
     return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="${sectionClass}">
     <div class="section-header">
       <div class="section-title">${title}</div>
       ${needsExpansion ? (0, $2ae7b32fc5b69f7f$export$980c1089c0604ea3)(expansions, title, isExpanded, updateExpansions) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
     </div>
-    ${displayEntities.map((entity)=>(0, $68e7242076c3e34e$export$120ff0929b202a6d)(hass, entity, element, expansions, updateExpansions))}
+    ${rowResults}
     ${needsExpansion && !isCompact ? (0, $2ae7b32fc5b69f7f$export$ae9a281c4379b144)(expansions, title, entities, isExpanded, size, updateExpansions) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
   </div>`;
 };
 
 
-const $10f7eb590266dd05$export$7dcefa9ef83b8269 = (element, expansions, hass, config, device, updateExpansions)=>{
+const $10f7eb590266dd05$export$7dcefa9ef83b8269 = async (element, expansions, hass, config, device, updateExpansions)=>{
     const sectionConfig = [
         {
-            name: 'Controls',
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.controls'),
             key: 'controls',
             entities: device.controls
         },
         {
-            name: 'Configuration',
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.configuration'),
             key: 'configurations',
             entities: device.configurations
         },
         {
-            name: 'Sensors',
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.sensors'),
             key: 'sensors',
             entities: device.sensors
         },
         {
-            name: 'Diagnostic',
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.diagnostic'),
             key: 'diagnostics',
             entities: device.diagnostics
         }
@@ -2149,7 +2213,9 @@ const $10f7eb590266dd05$export$7dcefa9ef83b8269 = (element, expansions, hass, co
         });
     } else // default order
     orderedSections = sectionConfig;
-    return orderedSections.map((section)=>(0, $9b8ea5fddc8bd48e$export$4c0287abd2ec956e)(element, expansions, hass, config, section.name, section.entities, updateExpansions));
+    const sectionPromises = orderedSections.map((section)=>(0, $9b8ea5fddc8bd48e$export$4c0287abd2ec956e)(element, expansions, hass, config, section.name, section.entities, updateExpansions));
+    const sectionResults = await Promise.all(sectionPromises);
+    return sectionResults.filter((result)=>result !== (0, $f58f44579a4747ac$export$45b790e32b2810ee));
 };
 
 
@@ -2183,6 +2249,112 @@ const $da09c6fad515207c$export$69836945d4c6961f = (hass, config)=>{
     if (!state) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
     return (0, $1ed74ce23f0ef067$export$c18c768bbe3223b7)(hass, state);
 };
+
+
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */ const $1dfff43fc77cdecb$export$61db76a97f26b7e1 = {
+    INITIAL: 0,
+    PENDING: 1,
+    COMPLETE: 2,
+    ERROR: 3
+}, $1dfff43fc77cdecb$export$d4c72bab9d6cc13a = Symbol();
+class $1dfff43fc77cdecb$export$2dea7024bcdd7731 {
+    get taskComplete() {
+        return this.t || (1 === this.i ? this.t = new Promise((t, s)=>{
+            this.o = t, this.h = s;
+        }) : 3 === this.i ? this.t = Promise.reject(this.l) : this.t = Promise.resolve(this.u)), this.t;
+    }
+    constructor(t, s, i){
+        this.p = 0, this.i = 0, (this._ = t).addController(this);
+        const h = "object" == typeof s ? s : {
+            task: s,
+            args: i
+        };
+        this.v = h.task, this.j = h.args, this.m = h.argsEqual ?? $1dfff43fc77cdecb$export$41b40a0c6412e2a2, this.k = h.onComplete, this.A = h.onError, this.autoRun = h.autoRun ?? !0, "initialValue" in h && (this.u = h.initialValue, this.i = 2, this.O = this.T?.());
+    }
+    hostUpdate() {
+        !0 === this.autoRun && this.S();
+    }
+    hostUpdated() {
+        "afterUpdate" === this.autoRun && this.S();
+    }
+    T() {
+        if (void 0 === this.j) return;
+        const t = this.j();
+        if (!Array.isArray(t)) throw Error("The args function must return an array");
+        return t;
+    }
+    async S() {
+        const t = this.T(), s = this.O;
+        this.O = t, t === s || void 0 === t || void 0 !== s && this.m(s, t) || await this.run(t);
+    }
+    async run(t) {
+        let s, h;
+        t ??= this.T(), this.O = t, 1 === this.i ? this.q?.abort() : (this.t = void 0, this.o = void 0, this.h = void 0), this.i = 1, "afterUpdate" === this.autoRun ? queueMicrotask(()=>this._.requestUpdate()) : this._.requestUpdate();
+        const r = ++this.p;
+        this.q = new AbortController;
+        let e = !1;
+        try {
+            s = await this.v(t, {
+                signal: this.q.signal
+            });
+        } catch (t) {
+            e = !0, h = t;
+        }
+        if (this.p === r) {
+            if (s === $1dfff43fc77cdecb$export$d4c72bab9d6cc13a) this.i = 0;
+            else {
+                if (!1 === e) {
+                    try {
+                        this.k?.(s);
+                    } catch  {}
+                    this.i = 2, this.o?.(s);
+                } else {
+                    try {
+                        this.A?.(h);
+                    } catch  {}
+                    this.i = 3, this.h?.(h);
+                }
+                this.u = s, this.l = h;
+            }
+            this._.requestUpdate();
+        }
+    }
+    abort(t) {
+        1 === this.i && this.q?.abort(t);
+    }
+    get value() {
+        return this.u;
+    }
+    get error() {
+        return this.l;
+    }
+    get status() {
+        return this.i;
+    }
+    render(t) {
+        switch(this.i){
+            case 0:
+                return t.initial?.();
+            case 1:
+                return t.pending?.();
+            case 2:
+                return t.complete?.(this.value);
+            case 3:
+                return t.error?.(this.error);
+            default:
+                throw Error("Unexpected status: " + this.i);
+        }
+    }
+}
+const $1dfff43fc77cdecb$export$41b40a0c6412e2a2 = (s, i)=>s === i || s.length === i.length && s.every((s, h)=>!(0, $19fe8e3abedf4df0$export$53a6892c50694894)(s, i[h]));
+
+
+
 
 
 
@@ -2464,7 +2636,7 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $ab210b2da7b39b9d$ex
         <div
           class="card-header ${this.collapse ? 'collapsed' : ''}"
           @click="${()=>this.collapse = !this.collapse}"
-          title="${this.collapse ? 'Expand' : 'Collapse'}"
+          title="${this.collapse ? (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(this._hass, 'card.expand') : (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(this._hass, 'card.collapse')}"
         >
           <div class="title">${titleContent} ${modelContent}</div>
           ${entity}
@@ -2475,7 +2647,12 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $ab210b2da7b39b9d$ex
         return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
       <ha-card class="${problem ? 'problem' : ''}">
         ${headerContent}
-        ${!this.collapse ? (0, $10f7eb590266dd05$export$7dcefa9ef83b8269)(this, this._expansions, this._hass, this._config, this._device, (e)=>this._expansions = e) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+        ${!this.collapse ? this._renderSectionsTask.render({
+            initial: ()=>(0, $f58f44579a4747ac$export$45b790e32b2810ee),
+            pending: ()=>(0, $f58f44579a4747ac$export$45b790e32b2810ee),
+            complete: (sections)=>sections,
+            error: (error)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div>Error rendering sections: ${error}</div>`
+        }) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
       </ha-card>
     `;
     }
@@ -2487,7 +2664,21 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $ab210b2da7b39b9d$ex
             expandedEntities: {}
         }, /**
    * Internal collapsed state, separate from the config
-   */ this.collapse = false;
+   */ this.collapse = false, /**
+   * Task that renders sections asynchronously
+   */ this._renderSectionsTask = new (0, $1dfff43fc77cdecb$export$2dea7024bcdd7731)(this, {
+            task: async ([device, config, hass, expansions])=>{
+                if (!device || !config || !hass) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)``;
+                const sections = await (0, $10f7eb590266dd05$export$7dcefa9ef83b8269)(this, expansions, hass, config, device, (e)=>this._expansions = e);
+                return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`${sections}`;
+            },
+            args: ()=>[
+                    this._device,
+                    this._config,
+                    this._hass,
+                    this._expansions
+                ]
+        });
     }
 }
 (0, $24c52f343453d62d$export$29e00dfd3077644b)([
@@ -2949,6 +3140,7 @@ const $be605d8f132c1e28$export$48cc0f50054c9113 = (device, entryIds)=>device.con
 
 
 
+
 const $49ae81c1680fcc1f$export$78de33bacfd1396b = (config, deviceId, deviceName)=>{
     if (!config.exclude_devices?.length) return false;
     // Check if any exclusion pattern matches the device ID or name
@@ -3076,7 +3268,7 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
    * @returns {TemplateResult} The rendered HTML template
    */ render() {
         if (!this._integration?.devices?.length) {
-            const message = this._integration ? `No devices found for integration: ${this._config.integration}` : 'Loading...';
+            const message = this._integration ? `${(0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(this._hass, 'card.no_devices_found')} ${this._config.integration}` : (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(this._hass, 'card.loading');
             return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-card>
         <div class="card-content">
           <div class="no-devices">${message}</div>
@@ -3136,110 +3328,6 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
 ], $3bda94c4eb71d8c0$export$ad4bbebd033175bb.prototype, "_integration", void 0);
 
 
-
-
-
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */ const $1dfff43fc77cdecb$export$61db76a97f26b7e1 = {
-    INITIAL: 0,
-    PENDING: 1,
-    COMPLETE: 2,
-    ERROR: 3
-}, $1dfff43fc77cdecb$export$d4c72bab9d6cc13a = Symbol();
-class $1dfff43fc77cdecb$export$2dea7024bcdd7731 {
-    get taskComplete() {
-        return this.t || (1 === this.i ? this.t = new Promise((t, s)=>{
-            this.o = t, this.h = s;
-        }) : 3 === this.i ? this.t = Promise.reject(this.l) : this.t = Promise.resolve(this.u)), this.t;
-    }
-    constructor(t, s, i){
-        this.p = 0, this.i = 0, (this._ = t).addController(this);
-        const h = "object" == typeof s ? s : {
-            task: s,
-            args: i
-        };
-        this.v = h.task, this.j = h.args, this.m = h.argsEqual ?? $1dfff43fc77cdecb$export$41b40a0c6412e2a2, this.k = h.onComplete, this.A = h.onError, this.autoRun = h.autoRun ?? !0, "initialValue" in h && (this.u = h.initialValue, this.i = 2, this.O = this.T?.());
-    }
-    hostUpdate() {
-        !0 === this.autoRun && this.S();
-    }
-    hostUpdated() {
-        "afterUpdate" === this.autoRun && this.S();
-    }
-    T() {
-        if (void 0 === this.j) return;
-        const t = this.j();
-        if (!Array.isArray(t)) throw Error("The args function must return an array");
-        return t;
-    }
-    async S() {
-        const t = this.T(), s = this.O;
-        this.O = t, t === s || void 0 === t || void 0 !== s && this.m(s, t) || await this.run(t);
-    }
-    async run(t) {
-        let s, h;
-        t ??= this.T(), this.O = t, 1 === this.i ? this.q?.abort() : (this.t = void 0, this.o = void 0, this.h = void 0), this.i = 1, "afterUpdate" === this.autoRun ? queueMicrotask(()=>this._.requestUpdate()) : this._.requestUpdate();
-        const r = ++this.p;
-        this.q = new AbortController;
-        let e = !1;
-        try {
-            s = await this.v(t, {
-                signal: this.q.signal
-            });
-        } catch (t) {
-            e = !0, h = t;
-        }
-        if (this.p === r) {
-            if (s === $1dfff43fc77cdecb$export$d4c72bab9d6cc13a) this.i = 0;
-            else {
-                if (!1 === e) {
-                    try {
-                        this.k?.(s);
-                    } catch  {}
-                    this.i = 2, this.o?.(s);
-                } else {
-                    try {
-                        this.A?.(h);
-                    } catch  {}
-                    this.i = 3, this.h?.(h);
-                }
-                this.u = s, this.l = h;
-            }
-            this._.requestUpdate();
-        }
-    }
-    abort(t) {
-        1 === this.i && this.q?.abort(t);
-    }
-    get value() {
-        return this.u;
-    }
-    get error() {
-        return this.l;
-    }
-    get status() {
-        return this.i;
-    }
-    render(t) {
-        switch(this.i){
-            case 0:
-                return t.initial?.();
-            case 1:
-                return t.pending?.();
-            case 2:
-                return t.complete?.(this.value);
-            case 3:
-                return t.error?.(this.error);
-            default:
-                throw Error("Unexpected status: " + this.i);
-        }
-    }
-}
-const $1dfff43fc77cdecb$export$41b40a0c6412e2a2 = (s, i)=>s === i || s.length === i.length && s.every((s, h)=>!(0, $19fe8e3abedf4df0$export$53a6892c50694894)(s, i[h]));
 
 
 
@@ -3308,7 +3396,7 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
 
 
 var $b06602ab53bd58a3$exports = {};
-$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.13.5\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc npm run test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && npm i\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.2\",\"@testing-library/dom\":\"^10.4.0\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.0\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.5.0\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.2\",\"prettier\":\"3.5.3\",\"prettier-plugin-organize-imports\":\"^4.1.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^20.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.8.3\"},\"dependencies\":{\"@lit/task\":\"^1.0.2\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.0\"}}");
+$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.14.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
 
 
 // Register the custom elements with the browser

@@ -29,7 +29,7 @@ cards:
                 border: 0;
               }
           cards:
-            - type: custom:mushroom-template-card
+            - type: custom:mushroom-legacy-template-card
               card_mod:
                 style: |
                   ha-card {

@@ -103,7 +103,7 @@ cards:
               background: none;
               --ha-card-box-shadow: 0px;
             }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         entity: sensor.untappd_project_52
         tap_action:
           action: more-info

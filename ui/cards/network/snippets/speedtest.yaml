@@ -72,7 +72,7 @@ cards:
                   box-shadow: none;
                   background: none;
                 }
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             entity: sensor.speedtest_download
             primary: |
               {{states('sensor.speedtest_download')|round(1)}} Mbps
@@ -168,7 +168,7 @@ cards:
                   box-shadow: none;
                   background: none;
                 }
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             entity: sensor.speedtest_upload
             primary: |
               {{states('sensor.speedtest_upload')|round(1)}} Mbps

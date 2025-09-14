@@ -83,7 +83,7 @@ cards:
       }
     card_layout: large-2-rows
 
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     card_mod:
       style:
         .: |

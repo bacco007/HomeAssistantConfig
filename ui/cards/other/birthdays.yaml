@@ -27,7 +27,7 @@ cards:
       include:
         - entity_id: sensor.anniversary_*
           options:
-            type: custom:mushroom-template-card
+            type: custom:mushroom-legacy-template-card
             icon: mdi:gift
             primary: |
               {{ state_attr(entity, 'friendly_name') }} ({{state_attr(entity, 'years_at_anniversary') }})
