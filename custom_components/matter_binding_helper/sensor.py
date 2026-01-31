@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
@@ -112,27 +113,63 @@ class MatterBindingCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             update_interval=timedelta(seconds=SCAN_INTERVAL_SECONDS),
         )
         self.config_entry = config_entry
+        self._initial_load = True  # Track first load to defer binding fetch
 
     async def _async_update_data(self) -> dict[str, Any]:
-        """Fetch data from Matter server."""
+        """Fetch data from Matter server.
+
+        On initial load, only fetches nodes to speed up startup.
+        Bindings are fetched on subsequent updates (after ~30s).
+        """
         data: dict[str, Any] = {
             "nodes": [],
             "bindings": {},  # Key: (node_id, endpoint_id), Value: list of bindings
         }
 
         try:
-            # Get all nodes
+            # Always fetch nodes - needed for entity creation
             nodes = await get_nodes(self.hass)
             data["nodes"] = nodes
 
-            # Fetch bindings for each endpoint with binding cluster
+            # Skip bindings on initial load to speed up HA startup
+            # Entities will show "0 bindings" until first regular update
+            if self._initial_load:
+                self._initial_load = False
+                _LOGGER.debug(
+                    "Initial load: %d nodes fetched, deferring binding fetch to background",
+                    len(nodes),
+                )
+                return data
+
+            # Fetch bindings in parallel for better performance
+            binding_tasks: list[asyncio.Task[list]] = []
+            binding_keys: list[tuple[int, int]] = []
+
             for node in nodes:
                 node_id = node["node_id"]
                 for endpoint in node.get("endpoints", []):
                     endpoint_id = endpoint["endpoint_id"]
                     if endpoint.get("has_binding_cluster") and endpoint_id != 0:
-                        bindings = await get_bindings(self.hass, node_id, endpoint_id)
-                        data["bindings"][(node_id, endpoint_id)] = bindings
+                        binding_tasks.append(
+                            asyncio.create_task(
+                                get_bindings(self.hass, node_id, endpoint_id)
+                            )
+                        )
+                        binding_keys.append((node_id, endpoint_id))
+
+            if binding_tasks:
+                results = await asyncio.gather(*binding_tasks, return_exceptions=True)
+                for key, result in zip(binding_keys, results):
+                    if isinstance(result, Exception):
+                        _LOGGER.warning(
+                            "Failed to fetch bindings for node %d endpoint %d: %s",
+                            key[0],
+                            key[1],
+                            result,
+                        )
+                        data["bindings"][key] = []
+                    else:
+                        data["bindings"][key] = result
 
             _LOGGER.debug(
                 "Coordinator update: %d nodes, %d binding endpoints",
@@ -288,8 +325,10 @@ class MatterBindingSensor(CoordinatorEntity[MatterBindingCoordinator], SensorEnt
 
         return f"Node {node_id}"
 
-    def _get_cluster_name(self, cluster_id: int) -> str:
+    def _get_cluster_name(self, cluster_id: int | None) -> str:
         """Get a human-readable cluster name."""
+        if cluster_id is None:
+            return "Any Cluster"
         # Common Matter cluster names
         cluster_names = {
             0x0003: "Identify",

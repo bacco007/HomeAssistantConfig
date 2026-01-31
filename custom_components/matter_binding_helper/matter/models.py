@@ -36,7 +36,7 @@ class BindingEntry:
 
     node_id: int
     endpoint_id: int
-    cluster_id: int
+    cluster_id: int | None = None
     target_node_id: int | None = None
     target_endpoint_id: int | None = None
     target_group_id: int | None = None

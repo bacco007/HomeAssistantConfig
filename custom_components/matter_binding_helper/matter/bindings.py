@@ -92,7 +92,7 @@ async def get_bindings(
                 entry = BindingEntry(
                     node_id=node_id,
                     endpoint_id=endpoint_id,
-                    cluster_id=binding.get("Cluster", 0),
+                    cluster_id=binding.get("Cluster"),  # Can be None (any cluster)
                     target_node_id=binding.get("Node"),
                     target_endpoint_id=binding.get("Endpoint"),
                     target_group_id=binding.get("Group"),
@@ -286,20 +286,19 @@ def _parse_binding_value(
         )
 
         # Extract binding fields - handle various formats
-        cluster_id = 0
+        # cluster_id can be None (meaning "any cluster" per Matter spec)
+        cluster_id: int | None = None
         target_node = None
         target_endpoint = None
         target_group = None
 
         if isinstance(binding, dict):
             # Dict format - try multiple key naming conventions
-            cluster_id = (
-                binding.get("Cluster")
-                or binding.get("cluster")
-                or binding.get("ClusterId")
-                or binding.get("clusterId")
-                or 0
-            )
+            # Use explicit None check to allow cluster_id=0 (which is falsy but valid)
+            for key in ("Cluster", "cluster", "ClusterId", "clusterId"):
+                if key in binding and binding[key] is not None:
+                    cluster_id = binding[key]
+                    break
             target_node = (
                 binding.get("Node")
                 or binding.get("node")
@@ -320,7 +319,8 @@ def _parse_binding_value(
             )
         elif hasattr(binding, "cluster"):
             # Object with snake_case attributes
-            cluster_id = getattr(binding, "cluster", 0)
+            # cluster can be None (meaning "any cluster" per Matter spec)
+            cluster_id = getattr(binding, "cluster", None)
             target_node = getattr(binding, "node", None)
             target_endpoint = getattr(binding, "endpoint", None)
             target_group = getattr(binding, "group", None)
@@ -952,12 +952,28 @@ async def provision_acls_for_existing_bindings(
             )
             continue
 
+        if binding.cluster_id is None:
+            # Wildcard bindings (cluster_id=None means "any cluster" per Matter spec)
+            # are intentionally skipped because the ACL provisioning functions
+            # (add_acl_entry, provision_acl_for_binding) don't support wildcard clusters.
+            # TODO: Consider adding wildcard cluster ACL support in the future.
+            _LOGGER.debug(
+                "provision_acls_for_existing_bindings: Skipping wildcard binding "
+                "(cluster_id=None means 'any cluster')"
+            )
+            continue
+
+        cluster_label = (
+            f"0x{binding.cluster_id:04X}"
+            if binding.cluster_id is not None
+            else "Any Cluster"
+        )
         _LOGGER.info(
             "provision_acls_for_existing_bindings: Processing binding -> "
-            "node %s ep %s cluster 0x%04X",
+            "node %s ep %s cluster %s",
             binding.target_node_id,
             binding.target_endpoint_id,
-            binding.cluster_id,
+            cluster_label,
         )
 
         result = await provision_acl_for_binding(
