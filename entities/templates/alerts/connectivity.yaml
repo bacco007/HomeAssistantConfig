@@ -150,31 +150,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('alert')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] alternative_time"
-    unique_id: ha_connected_integration_alternative_time
-    icon: "{{ iif(is_state(this.entity_id, 'on'), 'mdi:sync', 'mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/alternative_time/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('alternative_time') | select('has_value') | list | count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: "6"
-      entity_healthy_count: "6"
-      entity_broken_count: "0"
-
-  - name: "[HA Connected Integration] analytics_insights"
-    unique_id: ha_connected_integration_analytics_insights
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/analytics_insights/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('analytics_insights')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('analytics_insights')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('analytics_insights')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] anniversaries"
     unique_id: ha_connected_integration_anniversaries
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -292,32 +267,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('bayesian')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] bermuda"
-    unique_id: ha_connected_integration_bermuda
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/bermuda/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('bermuda')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('bermuda')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('bermuda')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] ble_monitor"
-    unique_id: ha_connected_integration_ble_monitor
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/ble_monitor/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('ble_monitor')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('ble_monitor')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('ble_monitor')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] blitzortung"
     unique_id: ha_connected_integration_blitzortung
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -370,19 +319,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('cast')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] cert_expiry"
-    unique_id: ha_connected_integration_cert_expiry
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/cert_expiry/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('cert_expiry')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('cert_expiry')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('cert_expiry')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] cloud"
     unique_id: ha_connected_integration_cloud
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -408,18 +344,6 @@ binary_sensor:
         "{{ integration_entities('cloudflare_tunnel_monitor')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('cloudflare_tunnel_monitor')|select('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] cloudflare_speed_test"
-    unique_id: ha_connected_integration_cloudflare_speed_test
-    icon: "{{ iif(is_state(this.entity_id, 'on'), 'mdi:sync', 'mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/cloudflare_speed_test/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('cloudflare_speed_test') | select('has_value') | list | count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: "13"
-      entity_healthy_count: "13"
-      entity_broken_count: "0"
 
   - name: "[HA Connected Integration] co2signal"
     unique_id: ha_connected_integration_co2signal
@@ -447,19 +371,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('command_line')|reject('has_value')|list|count }}"
 
-  # - name: "[HA Connected Integration] conversation"
-  #   unique_id: ha_connected_integration_conversation
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/conversation/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('conversation')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('conversation')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('conversation')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] counter"
     unique_id: ha_connected_integration_counter
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -472,19 +383,6 @@ binary_sensor:
         "{{ integration_entities('counter')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('counter')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] daily"
-    unique_id: ha_connected_integration_daily
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/daily/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('daily')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('daily')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('daily')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] derivative"
     unique_id: ha_connected_integration_derivative
@@ -512,19 +410,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('doomsday_clock')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] dynamic_energy_cost"
-    unique_id: ha_connected_integration_dynamic_energy_cost
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/dynamic_energy_cost/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('dynamic_energy_cost')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('dynamic_energy_cost')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('dynamic_energy_cost')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] dyson_local"
     unique_id: ha_connected_integration_dyson_local
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -537,19 +422,6 @@ binary_sensor:
         "{{ integration_entities('dyson_local')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('dyson_local')|reject('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] emsc_earthquake"
-  #   unique_id: ha_connected_integration_emsc_earthquake
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/emsc_earthquake/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('emsc_earthquake')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('emsc_earthquake')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('emsc_earthquake')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] energy"
     unique_id: ha_connected_integration_energy
@@ -602,19 +474,6 @@ binary_sensor:
         "{{ integration_entities('f1_sensor')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('f1_sensor')|select('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] fastdotcom"
-  #   unique_id: ha_connected_integration_fastdotcom
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/fastdotcom/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('fastdotcom')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('fastdotcom')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('fastdotcom')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] feedparser"
     unique_id: ha_connected_integration_feedparser
@@ -733,32 +592,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('gdacs')|reject('has_value')|list|count }}"
 
-  # - name: "[HA Connected Integration] geo_json_events"
-  #   unique_id: ha_connected_integration_geo_json_events
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/geo_json_events/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('geo_json_events')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('geo_json_events')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('geo_json_events')|select('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] github"
-    unique_id: ha_connected_integration_github
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/github/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('github')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('github')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('github')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] google"
     unique_id: ha_connected_integration_google
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -809,32 +642,6 @@ binary_sensor:
         "{{ integration_entities('group')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('group')|reject('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] gtfs2"
-  #   unique_id: ha_connected_integration_gtfs2
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/gtfs2/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('gtfs2')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('gtfs2')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('gtfs2')|reject('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] gtfs_realtime"
-  #   unique_id: ha_connected_integration_gtfs_realtime
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/gtfs_realtime/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('gtfs_realtime')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('gtfs_realtime')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('gtfs_realtime')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] ha_transportnsw"
     unique_id: ha_connected_integration_ha_transportnsw
@@ -977,19 +784,6 @@ binary_sensor:
         "{{ integration_entities('homeassistant')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('homeassistant')|reject('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] homeassistant_sky_connect"
-  #   unique_id: ha_connected_integration_homeassistant_sky_connect
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/homeassistant_sky_connect/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('homeassistant_sky_connect')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('homeassistant_sky_connect')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('homeassistant_sky_connect')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] iaquk"
     unique_id: ha_connected_integration_iaquk
@@ -1238,18 +1032,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('moon')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] moon_astro"
-    unique_id: ha_connected_integration_moon_astro
-    icon: "{{ iif(is_state(this.entity_id, 'on'), 'mdi:sync', 'mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/moon_astro/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('moon_astro') | select('has_value') | list | count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: "27"
-      entity_healthy_count: "27"
-      entity_broken_count: "0"
-
   - name: "[HA Connected Integration] mqtt"
     unique_id: ha_connected_integration_mqtt
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -1276,19 +1058,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('multiscrape')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] music_assistant"
-    unique_id: ha_connected_integration_music_assistant
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/music_assistant/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('music_assistant')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('music_assistant')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('music_assistant')|select('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] myjdownloader"
     unique_id: ha_connected_integration_myjdownloader
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -1313,19 +1082,6 @@ binary_sensor:
       entity_count: "21"
       entity_healthy_count: "21"
       entity_broken_count: "0"
-
-  - name: "[HA Connected Integration] network_scanner"
-    unique_id: ha_connected_integration_network_scanner
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/network_scanner/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('network_scanner')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('network_scanner')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('network_scanner')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] nodered"
     unique_id: ha_connected_integration_nodered
@@ -1365,19 +1121,6 @@ binary_sensor:
         "{{ integration_entities('nsw_fuel_station')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('nsw_fuel_station')|reject('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] nsw_rural_fire_service_feed"
-  #   unique_id: ha_connected_integration_nsw_rural_fire_service_feed
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/nsw_rural_fire_service_feed/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('nsw_rural_fire_service_feed')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('nsw_rural_fire_service_feed')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('nsw_rural_fire_service_feed')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] nsw_rural_fire_service_fire_danger"
     unique_id: ha_connected_integration_nsw_rural_fire_service_fire_danger
@@ -1534,32 +1277,6 @@ binary_sensor:
         "{{ integration_entities('pocketcasts')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('pocketcasts')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] powercalc"
-    unique_id: ha_connected_integration_powercalc
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/powercalc/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('powercalc')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('powercalc')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('powercalc')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] private_ble_device"
-    unique_id: ha_connected_integration_private_ble_device
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/private_ble_device/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('private_ble_device')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('private_ble_device')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('private_ble_device')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] prometheus_query"
     unique_id: ha_connected_integration_prometheus_query
@@ -2170,19 +1887,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('tod')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] tomorrowio"
-    unique_id: ha_connected_integration_tomorrowio
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/tomorrowio/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('tomorrowio')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('tomorrowio')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('tomorrowio')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] trend"
     unique_id: ha_connected_integration_trend
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -2234,19 +1938,6 @@ binary_sensor:
         "{{ integration_entities('unifi_insights')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('unifi_insights')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] unifi_site_manager"
-    unique_id: ha_connected_integration_unifi_site_manager
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/unifi_site_manager/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('unifi_site_manager')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('unifi_site_manager')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('unifi_site_manager')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] universal"
     unique_id: ha_connected_integration_universal
@@ -2339,19 +2030,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('waqi')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] watchman"
-    unique_id: ha_connected_integration_watchman
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/watchman/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('watchman')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('watchman')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('watchman')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] waternsw"
     unique_id: ha_connected_integration_waternsw
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -2364,18 +2042,6 @@ binary_sensor:
         "{{ integration_entities('waternsw')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('waternsw')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] weatherdotcom"
-    unique_id: ha_connected_integration_weatherdotcom
-    icon: "{{ iif(is_state(this.entity_id, 'on'), 'mdi:sync', 'mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/weatherdotcom/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('weatherdotcom') | select('has_value') | list | count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: "23"
-      entity_healthy_count: "10"
-      entity_broken_count: "13"
 
   - name: "[HA Connected Integration] weatherflow"
     unique_id: ha_connected_integration_weatherflow
@@ -2530,19 +2196,6 @@ binary_sensor:
         "{{ integration_entities('wud_getupdates')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('wud_getupdates')|reject('has_value')|list|count }}"
-
-  # - name: "[HA Connected Integration] xtend_tuya"
-  #   unique_id: ha_connected_integration_xtend_tuya
-  #   icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-  #   picture: https://brands.home-assistant.io/xtend_tuya/icon.png
-  #   device_class: connectivity
-  #   state: "{{ integration_entities('xtend_tuya')|select('has_value')|list|count > 0 }}"
-  #   attributes:
-  #     category: homeassistant_connectivity
-  #     entity_count: >
-  #       "{{ integration_entities('xtend_tuya')|list|count }}"
-  #     entity_broken_count: >
-  #       "{{ integration_entities('xtend_tuya')|select('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] yahoofinance"
     unique_id: ha_connected_integration_yahoofinance

@@ -1,1 +1,0 @@
-"""Config for calendars"""

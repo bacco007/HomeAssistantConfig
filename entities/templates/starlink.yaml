@@ -14,7 +14,7 @@ sensor:
         {%- set h = hours | int %}
         {%- set m = ((hours - h) * 60) | int %}
         {{ "%02d:%02d" | format(h, m) }}
-      downtime_hm: >- 
+      downtime_hm: >-
         {%- set hours = states('sensor.starlink_connectivity_disconnected') | float(0) %}
         {%- set h = hours | int %}
         {%- set m = ((hours - h) * 60) | int %}

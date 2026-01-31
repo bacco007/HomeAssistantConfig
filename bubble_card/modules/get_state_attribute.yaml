@@ -1,5 +1,5 @@
 get_state_attribute:
-  name: 'Advanced example: Get state/attribute from other entities'
+  name: "Advanced example: Get state/attribute from other entities"
   version: v1.3
   creator: Clooos
   description: |
@@ -61,7 +61,7 @@ get_state_attribute:
       title: Select entities and attributes
       icon: mdi:list-box-outline
       schema:
-        - name: '0'
+        - name: "0"
           type: expandable
           title: Entity 1
           schema:
@@ -73,7 +73,7 @@ get_state_attribute:
               label: Attribute
               selector:
                 attribute: {}
-        - name: '1'
+        - name: "1"
           type: expandable
           title: Entity 2
           schema:
@@ -85,7 +85,7 @@ get_state_attribute:
               label: Attribute
               selector:
                 attribute: {}
-        - name: '2'
+        - name: "2"
           type: expandable
           title: Entity 3
           schema:
@@ -97,7 +97,7 @@ get_state_attribute:
               label: Attribute
               selector:
                 attribute: {}
-        - name: '3'
+        - name: "3"
           type: expandable
           title: Entity 4
           schema:

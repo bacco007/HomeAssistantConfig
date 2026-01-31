@@ -41,3 +41,18 @@
       node_id: 22
       endpoint: 0
   mode: restart
+- id: '1769834483895'
+  alias: '[FlightRadar24] Set Airport'
+  description: ''
+  triggers:
+  - trigger: homeassistant
+    event: start
+  conditions: []
+  actions:
+  - action: text.set_value
+    metadata: {}
+    target:
+      entity_id: text.flightradar24_airport_track
+    data:
+      value: YSTW
+  mode: single

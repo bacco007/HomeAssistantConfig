@@ -38,24 +38,24 @@ text{font-family:Arial,system-ui,Segoe UI,Roboto,sans-serif}
 <text x="44.52" y="152.50" class="month-label" text-anchor="middle" dominant-baseline="middle">Nov</text>
 <line x1="287.50" y1="278.35" x2="160.00" y2="57.51" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
 <text x="152.50" y="44.52" class="month-label" text-anchor="middle" dominant-baseline="middle">Dec</text>
-<circle cx="300.0" cy="300.0" r="21.81" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
-<circle cx="282.38" cy="312.86" r="5" fill="#8C7853" stroke="#FFFFFF" stroke-width="1"/>
-<text x="282.38" y="302.86" class="planet-label" text-anchor="middle">☿ Mercury</text>
+<circle cx="300.0" cy="300.0" r="21.77" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="282.27" cy="312.64" r="5" fill="#8C7853" stroke="#FFFFFF" stroke-width="1"/>
+<text x="282.27" y="302.64" class="planet-label" text-anchor="middle">☿ Mercury</text>
 <circle cx="300.0" cy="300.0" r="36.36" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
-<circle cx="274.81" cy="326.21" r="5" fill="#FFC649" stroke="#FFFFFF" stroke-width="1"/>
-<text x="274.81" y="316.21" class="planet-label" text-anchor="middle">♀ Venus</text>
+<circle cx="274.70" cy="326.10" r="5" fill="#FFC649" stroke="#FFFFFF" stroke-width="1"/>
+<text x="274.70" y="316.10" class="planet-label" text-anchor="middle">♀ Venus</text>
 <circle cx="300.0" cy="300.0" r="45.57" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
-<circle cx="322.86" cy="260.57" r="8" fill="#4A90E2" stroke="#00FF00" stroke-width="2"/>
-<text x="322.86" y="242.57" class="earth-label" text-anchor="middle">⊕ You are here</text>
-<circle cx="300.0" cy="300.0" r="58.24" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
-<circle cx="278.87" cy="354.27" r="5" fill="#CD5C5C" stroke="#FFFFFF" stroke-width="1"/>
-<text x="278.87" y="344.27" class="planet-label" text-anchor="middle">♂ Mars</text>
+<circle cx="322.96" cy="260.64" r="8" fill="#4A90E2" stroke="#00FF00" stroke-width="2"/>
+<text x="322.96" y="242.64" class="earth-label" text-anchor="middle">⊕ You are here</text>
+<circle cx="300.0" cy="300.0" r="58.23" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="278.78" cy="354.23" r="5" fill="#CD5C5C" stroke="#FFFFFF" stroke-width="1"/>
+<text x="278.78" y="344.23" class="planet-label" text-anchor="middle">♂ Mars</text>
 <circle cx="300.0" cy="300.0" r="121.50" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
-<circle cx="322.62" cy="180.63" r="6" fill="#DAA520" stroke="#FFFFFF" stroke-width="1"/>
-<text x="322.62" y="170.63" class="planet-label" text-anchor="middle">♃ Jupiter</text>
+<circle cx="322.65" cy="180.63" r="6" fill="#DAA520" stroke="#FFFFFF" stroke-width="1"/>
+<text x="322.65" y="170.63" class="planet-label" text-anchor="middle">♃ Jupiter</text>
 <circle cx="300.0" cy="300.0" r="156.36" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
-<circle cx="145.19" cy="321.95" r="6" fill="#F4A460" stroke="#FFFFFF" stroke-width="1"/>
-<text x="145.19" y="311.95" class="planet-label" text-anchor="middle">♄ Saturn</text>
+<circle cx="145.19" cy="321.93" r="6" fill="#F4A460" stroke="#FFFFFF" stroke-width="1"/>
+<text x="145.19" y="311.93" class="planet-label" text-anchor="middle">♄ Saturn</text>
 <circle cx="300.0" cy="300.0" r="200.73" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
 <circle cx="170.98" cy="146.23" r="5" fill="#4FD0E2" stroke="#FFFFFF" stroke-width="1"/>
 <text x="170.98" y="136.23" class="planet-label" text-anchor="middle">♅ Uranus</text>

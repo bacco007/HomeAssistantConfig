@@ -84,6 +84,7 @@ recorder:
       - sensor.energy_solar_tariff
       - sensor.stats_watchman
       - sensor.stats_docker
+      - sensor.system_ha_global_health_score
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -208,6 +209,9 @@ recorder:
       - sensor.tbsmarthome_cheapest_u95*
       - sensor.*pvenuc*
       - sensor.abc_emergency_*
+      - sensor.switchy_switch_*
+      - sensor.eve_energy_*
+      - sensor.daylight*
     event_types:
       - automation_triggered
       - call_service

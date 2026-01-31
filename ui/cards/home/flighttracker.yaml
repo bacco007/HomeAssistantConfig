@@ -168,3 +168,57 @@ cards:
             # background-color: var(--background-color);
             box-shadow: none;
           }
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-legacy-template-card
+        primary: Next Arrival (YSTW)
+        secondary: >-
+          {%- set flight = state_attr(entity, 'flights') %} {%- if flight and flight
+          | length > 0 %} {{ flight[0].flight_number or 'N/A' }}, {{
+          flight[0].aircraft_registration }} ({{ state_attr('sensor.plane_overhead',
+          'distance') }} km)
+
+          {{ flight[0].airline or 'Private' }}, ({{ flight[0].callsign }}), {{
+          flight[0].aircraft_model }}
+
+          Origin: {{ flight[0].airport_name }} ({{ flight[0].airport_code_icao }})
+          {%- else %}
+            No arrival data available
+          {%- endif %}
+        entity: sensor.flightradar24_airport_arrivals
+        fill_container: true
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        multiline_secondary: true
+        icon: mdi:airplane-landing
+      - type: custom:mushroom-legacy-template-card
+        primary: Next Departure (YSTW)
+        secondary: >-
+          {%- set flight = state_attr(entity, 'flights') %} {%- if flight and flight
+          | length > 0 %} {{ flight[0].flight_number or 'N/A' }}, {{
+          flight[0].aircraft_registration }} ({{ state_attr('sensor.plane_overhead',
+          'distance') }} km)
+
+          {{ flight[0].airline or 'Private' }}, ({{ flight[0].callsign }}), {{
+          flight[0].aircraft_model }}
+
+          Destination: {{ flight[0].airport_name }} ({{ flight[0].airport_code_icao
+          }}) {%- else %}
+            No departure data available
+          {%- endif %}
+        entity: sensor.flightradar24_airport_departures
+        fill_container: true
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        multiline_secondary: true
+        icon: mdi:airplane-takeoff

@@ -39,7 +39,7 @@ sql:
       WHERE table_schema = 'homeassistant';
     column: "size"
     unit_of_measurement: "MB"
-    value_template: "{{ value | float }}" 
+    value_template: "{{ value | float }}"
 
   # Table count
   - name: "Database Tables Count"

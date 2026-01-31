@@ -3,4 +3,4 @@ sensor:
   - default_entity_id: sensor.count_all_components
     icon: mdi:code-tags
     name: All Components
-    state: '{{ states.sensor.hass_main_config.attributes.components | count }}'
+    state: "{{ states.sensor.hass_main_config.attributes.components | count }}"

@@ -1,8 +1,0 @@
----
-id: github_push
-alias: Github - Push config to GitHub (Daily)
-trigger:
-  - at: "06:00:00"
-    platform: time
-action:
-  - service: shell_command.push_to_github

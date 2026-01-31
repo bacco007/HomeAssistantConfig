@@ -3,17 +3,17 @@ ring_tile_mod:
   version: "1.1.0"
   creator: "KingNutshell"
   link: "https://github.com/Clooos/Bubble-Card/discussions/XXXX"
-  
+
   supported:
     - button
     - climate
     - cover
     - media-player
     - select
-  
+
   description: |
     Transform your Bubble Cards into powerful Ring Tile Cards! This module converts any Bubble Card button into a feature-rich ring visualization with advanced entity support and an intuitive, organized editor interface. Features include: Ring Types (Open 270° or Closed 360°), Advanced Entity Objects with attribute access, Smart Unit Detection (4-tier priority system), Multiple Indicators (Arc/Dot/Pointer), Scale options with labels, Dual markers with flexible positioning, Smart color handling, and performance optimizations.
-  
+
   code: |
     ${(() => {
       if (card.dataset.ringTileModApplied) return;
@@ -985,7 +985,7 @@ ring_tile_mod:
       card.appendChild(style);
     }
     })()}
-  
+
   editor:
     - type: expandable
       title: Ring Configuration
@@ -1124,7 +1124,7 @@ ring_tile_mod:
           description: Text to display when Info Zone is set to 'Custom Text'
           selector:
             text: {}
-          default: ''
+          default: ""
     - type: expandable
       title: Ring Zone Settings
       expanded: false
@@ -1159,7 +1159,7 @@ ring_tile_mod:
           description: Text to display when Ring Zone is set to 'Custom Text'
           selector:
             text: {}
-          default: ''
+          default: ""
     - type: expandable
       title: Markers
       expanded: false
@@ -1172,7 +1172,7 @@ ring_tile_mod:
               label: Marker 1 - Position
               selector:
                 text: {}
-              default: '78'
+              default: "78"
             - name: marker_colour
               label: Marker 1 - Color
               selector:
@@ -1186,7 +1186,7 @@ ring_tile_mod:
               label: Marker 2 - Position
               selector:
                 text: {}
-              default: '32'
+              default: "32"
             - name: marker2_colour
               label: Marker 2 - Color
               selector:
